@@ -10,12 +10,12 @@ import 'package:wallet/wallet.dart';
 
 class SingleWalletAddressVerifyPage extends StatelessWidget {
   final Wallet pairedWallet;
-  SingleWalletAddressVerifyPage(this.pairedWallet);
+  const SingleWalletAddressVerifyPage(this.pairedWallet, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      key: Key("single_wallet_address_verify"),
+      key: const Key("single_wallet_address_verify"),
       qrCode: pairedWallet.getAddress(),
       text: [
         OnboardingText(
@@ -27,7 +27,7 @@ class SingleWalletAddressVerifyPage extends StatelessWidget {
             label: S().component_continue,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return SingleWalletAddressVerifyConfirmPage();
+                return const SingleWalletAddressVerifyConfirmPage();
               }));
             }),
       ],

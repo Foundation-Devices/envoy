@@ -7,6 +7,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class SupportPage extends StatelessWidget {
+  const SupportPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -20,7 +22,7 @@ class SupportPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(height: 50),
+                  const SizedBox(height: 50),
                   MenuOption(
                     label: S().envoy_support_documentation,
                     onTap: () {
@@ -28,7 +30,7 @@ class SupportPage extends StatelessWidget {
                           Uri.parse("https://docs.foundationdevices.com"));
                     },
                   ),
-                  SizedBox(height: 50),
+                  const SizedBox(height: 50),
                   MenuOption(
                     label: S().envoy_support_telegram,
                     onTap: () {
@@ -37,7 +39,7 @@ class SupportPage extends StatelessWidget {
                           mode: LaunchMode.externalApplication);
                     },
                   ),
-                  SizedBox(height: 50),
+                  const SizedBox(height: 50),
                   MenuOption(
                     label: S().envoy_support_email,
                     onTap: () {
@@ -61,17 +63,17 @@ class MenuOption extends StatelessWidget {
   final Function() onTap;
 
   const MenuOption({
-    Key? key,
+    super.key,
     required this.label,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(children: [
-      Expanded(flex: 3, child: SizedBox.shrink()),
+      const Expanded(flex: 3, child: SizedBox.shrink()),
       Expanded(
-        flex: 4,
+        flex: 6,
         child: GestureDetector(
           onTap: onTap,
           child: Text(
@@ -90,7 +92,7 @@ class MenuOption extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: GestureDetector(
             onTap: onTap,
-            child: Icon(
+            child: const Icon(
               Icons.arrow_forward_ios,
               color: Colors.white,
               size: 12,

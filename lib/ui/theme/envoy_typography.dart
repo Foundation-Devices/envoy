@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:ui';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,7 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 // https://github.com/material-foundation/flutter-packages/issues/35
 extension WeightBugWorkaroung on TextStyle {
   TextStyle setWeight(FontWeight weight) {
-    return this.copyWith(
+    return copyWith(
       fontFamily: GoogleFonts.montserrat(fontWeight: weight).fontFamily,
     );
   }
@@ -20,7 +19,7 @@ extension WeightBugWorkaroung on TextStyle {
 class EnvoyTypography {
   static TextStyle baseFont = GoogleFonts.montserrat(
     fontFeatures: [
-      FontFeature.tabularFigures(),
+      const FontFeature.tabularFigures(),
     ],
   );
 

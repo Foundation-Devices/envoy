@@ -20,12 +20,14 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet/generated_bindings.dart' as rust;
 import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class RBFSpendState {
   Psbt psbt;
@@ -82,11 +84,12 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         return;
       }
     } catch (e) {
-      print(e);
+      kPrint(e);
     }
   }
 
   Future _checkRBF(BuildContext context) async {
+    final navigator = Navigator.of(context);
     setState(() {
       _isLoading = true;
     });
@@ -94,10 +97,10 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
       EnvoyToast(
         backgroundColor: EnvoyColors.danger,
         replaceExisting: true,
-        duration: Duration(seconds: 4),
+        duration: const Duration(seconds: 4),
         message: "Error: Transaction Confirmed",
         // TODO: Figma
-        icon: Icon(
+        icon: const Icon(
           Icons.info_outline,
           color: EnvoyColors.solidWhite,
         ),
@@ -160,7 +163,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
           minFeeRate: rates.min_fee_rate.ceil().toInt(),
           maxFeeRate: rates.max_fee_rate.floor().toInt(),
         );
-        Navigator.push(context, MaterialPageRoute(
+        navigator.push(MaterialPageRoute(
           builder: (context) {
             return RBFSpendScreen(
               rbfSpendState: rbfSpendState,
@@ -170,21 +173,14 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         return;
       }
     } catch (e, stackTrace) {
-      print(stackTrace);
-      EnvoyToast(
-        backgroundColor: EnvoyColors.danger,
-        replaceExisting: true,
-        duration: Duration(seconds: 4),
-        message: "${e.toString()}",
-        icon: Icon(
-          Icons.info_outline,
-          color: EnvoyColors.solidWhite,
-        ),
-      ).show(context);
+      kPrint(stackTrace);
+      if (context.mounted) {
+        showNoBoostNoFundsDialog(context);
+      }
       setState(() {
         _isLoading = false;
       });
-      print(e);
+      kPrint(e);
     } finally {
       setState(() {
         _isLoading = false;
@@ -212,7 +208,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
       child: _buildButtonContainer(
           active: _canBoost,
           child: _isLoading
-              ? Row(
+              ? const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -233,11 +229,11 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.fast_forward_outlined,
                       color: Colors.white,
                     ),
-                    Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                    const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                     Text(
                       S().coindetails_overlay_confirmation_boost,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -261,9 +257,9 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         : Colors.grey;
 
     return AnimatedContainer(
-        duration: Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 200),
         height: 28,
-        padding: EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
+        padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
         decoration: BoxDecoration(
             color: buttonColor,
             borderRadius: BorderRadius.circular(EnvoySpacing.small)),
@@ -272,7 +268,8 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
 
   void _showRBFDialog(BuildContext context) async {
     if (!(await EnvoyStorage()
-        .checkPromptDismissed(DismissiblePrompt.rbfWarning))) {
+            .checkPromptDismissed(DismissiblePrompt.rbfWarning)) &&
+        context.mounted) {
       showEnvoyDialog(
         context: context,
         dialog: EnvoyDialog(
@@ -305,93 +302,167 @@ class _RBFWarningState extends State<RBFWarning> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-            child: EnvoyIcon(
-              EnvoyIcons.info,
-              size: EnvoyIconSize.big,
-              color: EnvoyColors.accentPrimary,
-            ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(bottom: EnvoySpacing.medium1),
+          child: EnvoyIcon(
+            EnvoyIcons.info,
+            size: EnvoyIconSize.big,
+            color: EnvoyColors.accentPrimary,
           ),
-          Text(
-            S().replaceByFee_coindetails_overlay_modal_heading,
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(fontWeight: FontWeight.w600, fontSize: 16),
-          ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          Text(
-            S().replaceByFee_coindetails_overlay_modal_subheading,
+        ),
+        Text(
+          S().replaceByFee_coindetails_overlay_modal_heading,
+          style: Theme.of(context)
+              .textTheme
+              .titleMedium
+              ?.copyWith(fontWeight: FontWeight.w600, fontSize: 16),
+        ),
+        const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+        Text(
+          S().replaceByFee_coindetails_overlay_modal_subheading,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
+          textAlign: TextAlign.center,
+        ),
+        const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+        GestureDetector(
+          child: Text(
+            S().component_learnMore,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontWeight: FontWeight.w500,
+                  color: EnvoyColors.accentPrimary,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
                 ),
-            textAlign: TextAlign.center,
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          GestureDetector(
-            child: Text(
-              S().component_learnMore,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: EnvoyColors.accentPrimary,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-            ),
-            onTap: () {
-              launchUrl(Uri.parse(
-                  "https://docs.foundationdevices.com/en/envoy/accounts#boost-or-cancel-a-transaction"));
-            },
+          onTap: () {
+            launchUrl(Uri.parse(
+                "https://docs.foundationdevices.com/en/envoy/accounts#boost-or-cancel-a-transaction"));
+          },
+        ),
+        const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              dismissed = !dismissed;
+            });
+          },
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                child: EnvoyCheckbox(
+                  value: dismissed,
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        dismissed = value;
+                      });
+                    }
+                  },
+                ),
+              ),
+              Text(
+                S().component_dontShowAgain,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: dismissed ? Colors.black : const Color(0xff808080),
+                    ),
+              ),
+            ],
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          GestureDetector(
+        ),
+        const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+        EnvoyButton(
+            label: S().component_continue,
             onTap: () {
-              setState(() {
-                dismissed = !dismissed;
-              });
+              if (dismissed) {
+                EnvoyStorage().addPromptState(DismissiblePrompt.rbfWarning);
+              }
+              widget.onConfirm();
             },
-            child: Row(
+            type: ButtonType.primary,
+            state: ButtonState.defaultState),
+      ],
+    );
+  }
+}
+
+void showNoBoostNoFundsDialog(BuildContext context) {
+  showEnvoyDialog(
+      context: context,
+      dialog: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.8,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(EnvoySpacing.medium2),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(
-                  child: EnvoyCheckbox(
-                    value: dismissed,
-                    onChanged: (value) {
-                      if (value != null)
-                        setState(() {
-                          dismissed = value;
-                        });
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () {
+                      Navigator.of(context).pop();
                     },
                   ),
                 ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium3),
+                  child: EnvoyIcon(
+                    EnvoyIcons.alert,
+                    size: EnvoyIconSize.big,
+                    color: EnvoyColors.danger,
+                  ),
+                ),
                 Text(
-                  S().component_dontShowAgain,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: dismissed ? Colors.black : Color(0xff808080),
-                      ),
+                  S().coindetails_overlay_noBoostNoFunds_heading,
+                  textAlign: TextAlign.center,
+                  style: EnvoyTypography.subheading,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: EnvoySpacing.medium1),
+                  child: Text(
+                    S().coindetails_overlay_noBoostNoFunds_subheading,
+                    style: EnvoyTypography.info
+                        .copyWith(color: EnvoyColors.textSecondary),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                GestureDetector(
+                  child: Text(
+                    S().component_learnMore,
+                    style: EnvoyTypography.button.copyWith(
+                      color: EnvoyColors.accentPrimary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  onTap: () {
+                    launchUrl(Uri.parse(
+                        "https://docs.foundationdevices.com/en/troubleshooting#why-cant-envoy-boost-or-cancel-my-transaction"));
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
+                  child: EnvoyButton(
+                    label: S().component_continue,
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    type: ButtonType.primary,
+                    state: ButtonState.defaultState,
+                  ),
                 ),
               ],
             ),
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          EnvoyButton(
-              label: S().component_continue,
-              onTap: () {
-                if (dismissed) {
-                  EnvoyStorage().addPromptState(DismissiblePrompt.rbfWarning);
-                }
-                widget.onConfirm();
-              },
-              type: ButtonType.primary,
-              state: ButtonState.default_state),
-        ],
-      ),
-    );
-  }
+        ),
+      ));
 }

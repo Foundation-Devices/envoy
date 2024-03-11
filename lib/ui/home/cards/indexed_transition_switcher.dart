@@ -12,7 +12,8 @@ import 'package:flutter/widgets.dart';
 class IndexedTransitionSwitcher extends StatefulWidget {
   /// Creates an [IndexedTransitionSwitcher].
   const IndexedTransitionSwitcher(
-      {required this.index,
+      {super.key,
+      required this.index,
       required this.children,
       required this.transitionBuilder,
       this.reverse = false,
@@ -43,11 +44,11 @@ class IndexedTransitionSwitcher extends StatefulWidget {
   final bool reverse;
 
   @override
-  _IndexedTransitionSwitcherState createState() =>
-      _IndexedTransitionSwitcherState();
+  IndexedTransitionSwitcherState createState() =>
+      IndexedTransitionSwitcherState();
 }
 
-class _IndexedTransitionSwitcherState extends State<IndexedTransitionSwitcher>
+class IndexedTransitionSwitcherState extends State<IndexedTransitionSwitcher>
     with TickerProviderStateMixin {
   late List<_ChildEntry> _childEntries;
 
@@ -58,7 +59,7 @@ class _IndexedTransitionSwitcherState extends State<IndexedTransitionSwitcher>
   }
 
   void _createChildEntries() {
-    this._childEntries = widget.children
+    _childEntries = widget.children
         .asMap()
         .entries
         .map((entry) => _createPageEntry(entry.key, entry.value))

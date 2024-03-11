@@ -10,7 +10,7 @@ class SettingDropdown extends StatefulWidget {
   final String? Function() getter;
   final Map<String, String?> options;
 
-  SettingDropdown(this.options, this.getter, this.setter);
+  const SettingDropdown(this.options, this.getter, this.setter, {super.key});
 
   @override
   State<SettingDropdown> createState() => _SettingDropdownState();
@@ -21,8 +21,8 @@ class _SettingDropdownState extends State<SettingDropdown> {
   Widget build(BuildContext context) {
     return DropdownButton(
       dropdownColor: Colors.black,
-      underline: SizedBox.shrink(),
-      style: TextStyle(
+      underline: const SizedBox.shrink(),
+      style: const TextStyle(
         color: EnvoyColors.darkTeal,
         fontSize: 16.0,
         fontWeight: FontWeight.w500,

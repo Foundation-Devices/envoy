@@ -12,7 +12,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
 
 class EmptyAccountsCard extends StatelessWidget {
-  EmptyAccountsCard() : super(key: UniqueKey()) {}
+  EmptyAccountsCard() : super(key: UniqueKey());
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +21,12 @@ class EmptyAccountsCard extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: ColorFiltered(
-            colorFilter: ColorFilter.mode(
+            colorFilter: const ColorFilter.mode(
               Color.fromRGBO(255, 255, 255, 0.7),
               BlendMode.hardLight,
             ),
             child: ColorFiltered(
-              colorFilter: ColorFilter.mode(
+              colorFilter: const ColorFilter.mode(
                 Colors.grey,
                 BlendMode.saturation,
               ),
@@ -63,7 +63,7 @@ class EmptyAccountsCard extends StatelessWidget {
                   onTap: () {
                     Navigator.of(context, rootNavigator: true)
                         .push(MaterialPageRoute(builder: (context) {
-                      return WelcomeScreen();
+                      return const WelcomeScreen();
                     }));
                   },
                 ),

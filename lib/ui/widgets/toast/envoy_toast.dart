@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 typedef OnTap = void Function(EnvoyToast toast);
 
 //Store the last toast
-EnvoyToast<dynamic>? _toast = null;
+EnvoyToast<dynamic>? _toast;
 
 class EnvoyToast<T> extends StatefulWidget {
   late final EnvoyToastRoute<T?> envoyToastRoute;
@@ -35,7 +35,9 @@ class EnvoyToast<T> extends StatefulWidget {
 
   final bool isDismissible;
 
+  // ignore: prefer_const_constructors_in_immutables
   EnvoyToast({
+    super.key,
     this.onTap,
     this.onActionTap,
     this.builder,
@@ -67,7 +69,6 @@ class EnvoyToast<T> extends StatefulWidget {
         return null;
       }
     }
-    ;
     _toast = this;
     T? result = await Navigator.of(context, rootNavigator: false)
         .push(envoyToastRoute as Route<T>);
@@ -90,7 +91,7 @@ class EnvoyToastState extends State<EnvoyToast> {
   Widget build(BuildContext context) {
     return Container(
         constraints: BoxConstraints(minHeight: Platform.isIOS ? 65 : 55),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
             gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -117,8 +118,8 @@ class EnvoyToastState extends State<EnvoyToast> {
   }
 
   Widget createGenericToast(context) {
-    return this.widget.builder != null
-        ? this.widget.builder!(context)
+    return widget.builder != null
+        ? widget.builder!(context)
         : Container(
             constraints:
                 BoxConstraints(minWidth: MediaQuery.of(context).size.width),
@@ -128,7 +129,7 @@ class EnvoyToastState extends State<EnvoyToast> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.only(left: 18, right: 6),
+                  padding: const EdgeInsets.only(left: 18, right: 6),
                   child: widget.icon ?? Container(),
                 ),
                 Expanded(
@@ -138,7 +139,7 @@ class EnvoyToastState extends State<EnvoyToast> {
                     children: [
                       Expanded(
                         child: Container(
-                          margin: EdgeInsets.only(left: 10),
+                          margin: const EdgeInsets.only(left: 10),
                           child: Text(
                             widget.message ?? "",
                             overflow: TextOverflow.ellipsis,
@@ -150,7 +151,7 @@ class EnvoyToastState extends State<EnvoyToast> {
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(right: 10),
+                        margin: const EdgeInsets.only(right: 10),
                         child: InkWell(
                           onTap: widget.onActionTap,
                           child: Padding(
@@ -172,7 +173,7 @@ class EnvoyToastState extends State<EnvoyToast> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 28,
                       width: 1,
                       child: VerticalDivider(
@@ -181,11 +182,11 @@ class EnvoyToastState extends State<EnvoyToast> {
                       ),
                     ),
                     IconButton(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       onPressed: () {
                         widget.envoyToastRoute.navigator?.pop();
                       },
-                      icon: Icon(Icons.close, color: Colors.white),
+                      icon: const Icon(Icons.close, color: Colors.white),
                     ),
                   ],
                 ),

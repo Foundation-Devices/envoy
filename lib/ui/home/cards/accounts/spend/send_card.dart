@@ -13,6 +13,7 @@ import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -20,7 +21,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 //ignore: must_be_immutable
 class SendCard extends ConsumerStatefulWidget {
-  SendCard() : super(key: UniqueKey()) {}
+  SendCard() : super(key: UniqueKey());
 
   @override
   ConsumerState<SendCard> createState() => _SendCardState();
@@ -29,9 +30,9 @@ class SendCard extends ConsumerStatefulWidget {
 class _SendCardState extends ConsumerState<SendCard>
     with AutomaticKeepAliveClientMixin {
   Account? account;
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
-  var _amountEntry = AmountEntry();
+  var _amountEntry = const AmountEntry();
 
   Future<void> _onPaste(ParseResult parsed) async {
     setState(() {
@@ -58,7 +59,7 @@ class _SendCardState extends ConsumerState<SendCard>
       onPaste: _onPaste,
       account: ref.read(selectedAccountProvider),
     );
-    Future.delayed(Duration(milliseconds: 10)).then((value) {
+    Future.delayed(const Duration(milliseconds: 10)).then((value) {
       ref.read(homePageTitleProvider.notifier).state =
           S().receive_tx_list_send.toUpperCase();
       account = ref.read(selectedAccountProvider);
@@ -93,11 +94,11 @@ class _SendCardState extends ConsumerState<SendCard>
   Widget build(BuildContext context) {
     super.build(context);
     account = ref.read(selectedAccountProvider);
-    String _addressText = ref.read(spendAddressProvider);
+    String addressText = ref.read(spendAddressProvider);
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        return Container(
+        return SizedBox(
           height: constraints.maxHeight,
           child: SingleChildScrollView(
             child: Column(
@@ -109,9 +110,9 @@ class _SendCardState extends ConsumerState<SendCard>
                         bottom: EnvoySpacing.medium2,
                         left: EnvoySpacing.medium2,
                         right: EnvoySpacing.medium2),
-                    child: new AddressEntry(
+                    child: AddressEntry(
                         account: account!,
-                        initalAddress: _addressText,
+                        initalAddress: addressText,
                         controller: _controller,
                         onPaste: _onPaste,
                         onAmountChanged: (amount) {
@@ -188,11 +189,12 @@ class _SendCardState extends ConsumerState<SendCard>
                             }
                           }
                           if (tx.loading) {
-                            buttonText = "Loading..."; //TODO: Figma
+                            buttonText = S().send_keyboard_address_loading;
                           }
 
                           return EnvoyTextButton(
                               onTap: () async {
+                                final router = GoRouter.of(context);
                                 if (formValidation) {
                                   try {
                                     ref
@@ -202,11 +204,11 @@ class _SendCardState extends ConsumerState<SendCard>
                                         .read(spendTransactionProvider.notifier)
                                         .validate(
                                             ProviderScope.containerOf(context));
-                                    if (valid)
-                                      GoRouter.of(context)
-                                          .push(ROUTE_ACCOUNT_SEND_CONFIRM);
+                                    if (valid) {
+                                      router.push(ROUTE_ACCOUNT_SEND_CONFIRM);
+                                    }
                                   } catch (e) {
-                                    print(e);
+                                    kPrint(e);
                                   }
                                 }
                                 if (spendAmount == 0) {

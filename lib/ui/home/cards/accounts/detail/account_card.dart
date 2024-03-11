@@ -13,7 +13,7 @@ import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
-import 'package:envoy/ui/envoy_icons.dart' as oldIcons;
+import 'package:envoy/ui/envoy_icons.dart' as old_icons;
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
@@ -36,7 +36,7 @@ import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart' as newColorScheme;
+import 'package:envoy/ui/theme/envoy_colors.dart' as new_color_scheme;
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -57,7 +57,7 @@ import 'package:envoy/ui/components/ramp_widget_test.dart';
 class AccountCard extends ConsumerStatefulWidget {
   final bool showUtxoPage;
 
-  AccountCard({this.showUtxoPage = false}) : super(key: UniqueKey()) {}
+  AccountCard({this.showUtxoPage = false}) : super(key: UniqueKey());
 
   // @override
   // String? title = S().manage_account_address_heading.toUpperCase();
@@ -81,13 +81,14 @@ class _AccountCardState extends ConsumerState<AccountCard>
     super.initState();
     // Redraw when we fetch exchange rate
     ExchangeRate().addListener(_redraw);
-    animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 200));
-    animation = Tween(begin: Alignment(0.0, 1.0), end: Alignment(0.0, 0.65))
-        .animate(CurvedAnimation(
-            parent: animationController, curve: Curves.easeInOut));
+    animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 200));
+    animation =
+        Tween(begin: const Alignment(0.0, 1.0), end: const Alignment(0.0, 0.65))
+            .animate(CurvedAnimation(
+                parent: animationController, curve: Curves.easeInOut));
 
-    Future.delayed(Duration()).then((value) {
+    Future.delayed(const Duration()).then((value) {
       account =
           ref.read(selectedAccountProvider) ?? AccountManager().accounts[0];
       ref.read(homePageTitleProvider.notifier).state = "";
@@ -176,18 +177,18 @@ class _AccountCardState extends ConsumerState<AccountCard>
                             builder: (context) => runRamp(account)),
                       );
                     },
-                    child: Text("Buy Bitcoin via Ramp")),
+                    child: const Text("Buy Bitcoin via Ramp")),
               ),
             AnimatedSwitcher(
-              duration: Duration(milliseconds: 200),
+              duration: const Duration(milliseconds: 200),
               child: (transactions.isNotEmpty || txFiltersEnabled)
                   ? Container(
-                      padding: EdgeInsets.only(
+                      padding: const EdgeInsets.only(
                           top: EnvoySpacing.medium2,
                           bottom: EnvoySpacing.small),
-                      child: FilterOptions(),
+                      child: const FilterOptions(),
                     )
-                  : SizedBox.shrink(),
+                  : const SizedBox.shrink(),
             ),
             Expanded(
               child: Padding(
@@ -202,7 +203,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                         padding: EdgeInsets.zero,
                         itemCount: 4,
                         itemBuilder: (BuildContext context, int index) {
-                          return GhostListTile();
+                          return const GhostListTile();
                         },
                       )
                     : _getMainWidget(context, transactions, txFiltersEnabled),
@@ -218,14 +219,14 @@ class _AccountCardState extends ConsumerState<AccountCard>
           return IgnorePointer(
             ignoring: (hide || isInEditMode),
             child: AnimatedOpacity(
-                duration: Duration(milliseconds: 200),
+                duration: const Duration(milliseconds: 200),
                 opacity: (hide || isInEditMode) ? 0 : 1,
                 child: child),
           );
         },
         child: Container(
           height: 100,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             boxShadow: [
               BoxShadow(
                 color: EnvoyColors.white100,
@@ -240,7 +241,10 @@ class _AccountCardState extends ConsumerState<AccountCard>
               ),
             ],
           ),
-          padding: const EdgeInsets.only(left: 50.0, right: 50.0, bottom: 35.0),
+          padding: const EdgeInsets.only(
+              left: EnvoySpacing.large1,
+              right: EnvoySpacing.large1,
+              bottom: EnvoySpacing.medium3),
           child: Row(
             children: [
               Expanded(
@@ -249,6 +253,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
                   child: EnvoyTextButton(
                       label: S().receive_tx_list_receive,
                       onTap: () {
+                        EnvoyStorage().addPromptState(
+                            DismissiblePrompt.userInteractedWithReceive);
                         context.go(ROUTE_ACCOUNT_RECEIVE, extra: account);
                       }),
                 ),
@@ -258,8 +264,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
                   padding: const EdgeInsets.all(8),
                   child: IconButton(
                     padding: EdgeInsets.zero,
-                    icon: Icon(
-                      oldIcons.EnvoyIcons.qr_scan,
+                    icon: const Icon(
+                      old_icons.EnvoyIcons.qrScan,
                       size: 30,
                       color: EnvoyColors.darkTeal,
                     ),
@@ -269,7 +275,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                           return MediaQuery.removePadding(
                             context: context,
                             child: ScannerPage(
-                              [
+                              const [
                                 ScannerType.address,
                                 ScannerType.azteco,
                                 ScannerType.btcPay
@@ -321,7 +327,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
     AccountToggleState accountToggleState =
         ref.watch(accountToggleStateProvider);
     return PageTransitionSwitcher(
-      reverse: accountToggleState == AccountToggleState.Tx,
+      reverse: accountToggleState == AccountToggleState.tx,
       transitionBuilder: (
         Widget child,
         Animation<double> animation,
@@ -335,7 +341,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
           child: child,
         );
       },
-      child: accountToggleState == AccountToggleState.Tx
+      child: accountToggleState == AccountToggleState.tx
           ? _buildTransactionListWidget(transactions, txFiltersEnabled)
           : CoinsList(account: account),
     );
@@ -348,7 +354,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          GhostListTile(animate: false),
+          const GhostListTile(animate: false),
           Expanded(
             child: Center(
               child: Text(
@@ -370,15 +376,13 @@ class _AccountCardState extends ConsumerState<AccountCard>
           child: StatefulBuilder(builder: (c, s) {
             return ListView.builder(
               //Space for the white gradient shadow at the bottom
-              padding: EdgeInsets.only(bottom: EnvoySpacing.medium3),
-              physics: BouncingScrollPhysics(),
+              padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
+              physics: const BouncingScrollPhysics(),
               controller: _scrollController,
               itemCount: transactions.length,
               itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  child: TransactionListTile(
-                      transaction: transactions[index], account: account),
-                );
+                return TransactionListTile(
+                    transaction: transactions[index], account: account);
               },
             );
           }));
@@ -391,8 +395,8 @@ class GhostListTile extends StatelessWidget {
 
   const GhostListTile({
     this.animate = true,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -444,17 +448,17 @@ class GhostListTile extends StatelessWidget {
 
 class TransactionListTile extends StatelessWidget {
   TransactionListTile({
-    Key? key,
+    super.key,
     required this.transaction,
     required this.account,
-  }) : super(key: key);
+  });
 
   final Transaction transaction;
   final Account account;
 
   final TextStyle _transactionTextStyleInfo = EnvoyTypography.body.copyWith(
     fontWeight: FontWeight.w400,
-    color: newColorScheme.EnvoyColors.txInfo,
+    color: new_color_scheme.EnvoyColors.txInfo,
   );
 
   @override
@@ -469,9 +473,12 @@ class TransactionListTile extends StatelessWidget {
             action();
           },
           onLongPress: () async {
+            final navigator = Navigator.of(context);
+            final scaffold = ScaffoldMessenger.of(context);
+            final scaffoldMessenger = ScaffoldMessenger.of(context);
             bool dismissed = await EnvoyStorage()
                 .checkPromptDismissed(DismissiblePrompt.copyTxId);
-            if (!dismissed) {
+            if (!dismissed && context.mounted) {
               showEnvoyPopUp(
                   context,
                   S().coincontrol_coin_change_spendable_tate_modal_subheading,
@@ -479,11 +486,11 @@ class TransactionListTile extends StatelessWidget {
                   (BuildContext context) {
                     Clipboard.setData(
                         ClipboardData(text: transaction.txId)); // here
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    scaffold.showSnackBar(const SnackBar(
                       content: Text(
                           "Transaction ID copied to clipboard!"), //TODO: FIGMA
                     ));
-                    Navigator.pop(context);
+                    navigator.pop();
                   },
                   icon: EnvoyIcons.info,
                   secondaryButtonLabel: S().component_cancel,
@@ -502,7 +509,7 @@ class TransactionListTile extends StatelessWidget {
                   });
             } else {
               Clipboard.setData(ClipboardData(text: transaction.txId)); // here
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              scaffoldMessenger.showSnackBar(const SnackBar(
                 content:
                     Text("Transaction ID copied to clipboard!"), //TODO: FIGMA
               ));
@@ -523,7 +530,7 @@ class TransactionListTile extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: txSubtitle(activeLocale),
                   ),
-                  contentPadding: EdgeInsets.all(0),
+                  contentPadding: const EdgeInsets.all(0),
                   trailing: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: Settings().selectedFiat == null
@@ -542,7 +549,7 @@ class TransactionListTile extends StatelessWidget {
                               child: Container(
                                 width: double.infinity,
                                 height: double.infinity,
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                   color: Color(0xffEEEEEE),
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(20)),
@@ -581,24 +588,27 @@ class TransactionListTile extends StatelessWidget {
   }
 
   Widget txSubtitle(Locale activeLocale) {
-    if (transaction.type == TransactionType.azteco)
+    if (transaction.type == TransactionType.azteco) {
       return Text(
         S().azteco_account_tx_history_pending_voucher,
         style: _transactionTextStyleInfo,
       );
+    }
 
-    if (transaction.type == TransactionType.btcPay)
+    if (transaction.type == TransactionType.btcPay) {
       return Text(
         "Pending BTCPay Voucher", // TODO: Figma
         style: _transactionTextStyleInfo,
       );
-    if (transaction.type == TransactionType.ramp)
+    }
+    if (transaction.type == TransactionType.ramp) {
       return Text(
         "Pending Ramp transaction", // TODO: Figma
         style: _transactionTextStyleInfo,
       );
+    }
 
-    if (transaction.type == TransactionType.normal && transaction.isConfirmed)
+    if (transaction.type == TransactionType.normal && transaction.isConfirmed) {
       return Builder(builder: (context) {
         String time = timeago
             .format(transaction.date, locale: activeLocale.languageCode)
@@ -608,11 +618,12 @@ class TransactionListTile extends StatelessWidget {
           style: _transactionTextStyleInfo,
         );
       });
-    else
+    } else {
       return Text(
         S().receive_tx_list_awaitingConfirmation,
         style: _transactionTextStyleInfo,
       );
+    }
   }
 
   Widget transactionIcon(BuildContext context) {
@@ -650,7 +661,7 @@ class TransactionListTile extends StatelessWidget {
               scale: 1.1,
               child: EnvoyIcon(
                 txIcon,
-                color: newColorScheme.EnvoyColors.textTertiary,
+                color: new_color_scheme.EnvoyColors.textTertiary,
                 size: EnvoyIconSize.normal,
               ),
             ),
@@ -734,27 +745,27 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Divider(),
-        SizedBox(
+        const Divider(),
+        const SizedBox(
           height: 10,
         ),
         GestureDetector(
           child: Text(
             S().manage_account_menu_showDescriptor.toUpperCase(),
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           ),
           onTap: () {
             HomePageState.of(context)?.toggleOptions();
             context.go(ROUTE_ACCOUNT_DESCRIPTOR, extra: widget.account);
           },
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         GestureDetector(
           child: Text(
             S().manage_account_menu_editAccountName.toUpperCase(),
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           ),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
@@ -769,7 +780,8 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
               dialog: Builder(
                 builder: (context) {
                   if (!isKeyboardShown) {
-                    Future.delayed(Duration(milliseconds: 200)).then((value) {
+                    Future.delayed(const Duration(milliseconds: 200))
+                        .then((value) {
                       FocusScope.of(context).requestFocus(focusNode);
                     });
                     isKeyboardShown = true;
@@ -793,12 +805,12 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
             );
           },
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         GestureDetector(
           child: Text(S().component_delete.toUpperCase(),
-              style: TextStyle(color: EnvoyColors.lightCopper)),
+              style: const TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             if (!widget.account.wallet.hot) {
@@ -810,11 +822,13 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                     actions: [
                       EnvoyButton(
                         S().component_delete,
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(8)),
                         onTap: () async {
                           Navigator.pop(context);
                           GoRouter.of(context).pop();
-                          await Future.delayed(Duration(milliseconds: 50));
+                          await Future.delayed(
+                              const Duration(milliseconds: 50));
                           AccountManager().deleteAccount(widget.account);
                         },
                       ),

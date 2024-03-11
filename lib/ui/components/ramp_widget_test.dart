@@ -4,6 +4,7 @@
 
 import 'dart:io';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:ramp_flutter/configuration.dart';
@@ -41,7 +42,7 @@ Future<void> _setupNotifications() async {
 }
 
 class RampFlutterApp extends StatefulWidget {
-  const RampFlutterApp({Key? key, required this.account}) : super(key: key);
+  const RampFlutterApp({super.key, required this.account});
   final Account account;
 
   @override
@@ -61,7 +62,7 @@ class _RampFlutterAppState extends State<RampFlutterApp> {
 
   Future<void> initializeAsync() async {
     address = await widget.account.wallet.getAddress();
-    print(address);
+    kPrint(address);
     _configuration.hostAppName = "Ramp Flutter";
     _configuration.url = "https://app.ramp.network";
     _configuration.hostApiKey = rampApiKey;
@@ -120,12 +121,12 @@ class _RampFlutterAppState extends State<RampFlutterApp> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   "Tap the button below to be redirected to the Ramp app",
                   textAlign: TextAlign.center,
                 ),
                 Text(
-                  "Address: " + address,
+                  "Address: $address",
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -137,7 +138,7 @@ class _RampFlutterAppState extends State<RampFlutterApp> {
             ),
           );
         } else {
-          return Center(
+          return const Center(
             child: SizedBox(
               height: 60,
               width: 60,

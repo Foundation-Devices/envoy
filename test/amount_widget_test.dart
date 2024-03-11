@@ -11,7 +11,7 @@ import 'util/preload_fonts.dart';
 
 void main() {
   testWidgets('AmountWidget', (tester) async {
-    tester.view.physicalSize = Size(1200, 700);
+    tester.view.physicalSize = const Size(1200, 700);
     tester.view.devicePixelRatio = 1.0;
 
     await preloadFonts(tester);
@@ -24,8 +24,8 @@ void main() {
           textDirection: TextDirection.ltr,
           child: Container(
               color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
+              child: const Padding(
+                padding: EdgeInsets.all(10.0),
                 child: AmountWidgetTestCases(),
               )),
         ),
@@ -37,7 +37,7 @@ void main() {
   });
 
   testWidgets('AmountWidget with testnet account', (tester) async {
-    tester.view.physicalSize = Size(400, 600);
+    tester.view.physicalSize = const Size(400, 600);
     tester.view.devicePixelRatio = 1.0;
 
     await preloadFonts(tester);
@@ -50,8 +50,8 @@ void main() {
           textDirection: TextDirection.ltr,
           child: Container(
               color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
+              child: const Padding(
+                padding: EdgeInsets.all(10.0),
                 child: AmountWidgetTestnetCases(),
               )),
         ),
@@ -70,13 +70,13 @@ class AmountWidgetTestCases extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fxRateFiat = 34743.76026697552;
-    return Padding(
-      padding: const EdgeInsets.all(EnvoySpacing.large1),
+    const fxRateFiat = 34743.76026697552;
+    return const Padding(
+      padding: EdgeInsets.all(EnvoySpacing.large1),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Container(
+          SizedBox(
             width: 200,
             child: Column(
               children: [
@@ -388,12 +388,12 @@ class AmountWidgetTestnetCases extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(EnvoySpacing.large1),
+    return const Padding(
+      padding: EdgeInsets.all(EnvoySpacing.large1),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Container(
+          SizedBox(
             width: 200,
             child: Column(
               children: [

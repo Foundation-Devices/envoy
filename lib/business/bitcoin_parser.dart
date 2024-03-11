@@ -41,8 +41,9 @@ class BitcoinParser {
       );
     }
 
-    if (data.indexOf(urnScheme) != 0 || data[urnScheme.length] != ":")
+    if (data.indexOf(urnScheme) != 0 || data[urnScheme.length] != ":") {
       isBip21 = false;
+    }
 
     if (isBip21) {
       var bip21 = Bip21.decode(data);
@@ -165,11 +166,12 @@ class BitcoinParser {
       }
       var copiedInBtc = copiedStringParsed;
 
-      var amountInWalletBtc;
-      if (wallet == null)
+      int amountInWalletBtc;
+      if (wallet == null) {
         amountInWalletBtc = 0;
-      else
-        amountInWalletBtc = (wallet.balance / 100000000);
+      } else {
+        amountInWalletBtc = wallet.balance ~/ 100000000;
+      }
 
       if (copiedInBtc < amountInWalletBtc) {
         amountInSats = convertBtcStringToSats(data);

@@ -6,9 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
 
-/**
- * Cache rive file to avoid loading it multiple times
- */
+/// Cache rive file to avoid loading it multiple times
 final riveLoaderProvider = FutureProvider.family<RiveFile, String>(
     (ref, asset) async => RiveFile.import(await rootBundle.load(asset)));
 

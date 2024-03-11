@@ -4,15 +4,15 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-enum LearnFilters { All, Videos, FAQs, Blogs }
+enum LearnFilters { all, videos, faqs, blogs }
 
 enum LearnSortTypes {
   newestFirst,
   oldestFirst,
 }
 
-final learnFilterStateProvider = StateProvider<Set<LearnFilters>>(
-    (ref) => Set()..addAll(LearnFilters.values));
+final learnFilterStateProvider =
+    StateProvider<Set<LearnFilters>>((ref) => {}..addAll(LearnFilters.values));
 
 final learnSortStateProvider =
     StateProvider<LearnSortTypes>((ref) => LearnSortTypes.newestFirst);

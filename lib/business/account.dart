@@ -16,7 +16,7 @@ class Account with _$Account {
   const Account._();
 
   static generateNewId() {
-    return Uuid().v4();
+    return const Uuid().v4();
   }
 
   // Multipath specifier as per https://github.com/bitcoin/bitcoin/pull/22838

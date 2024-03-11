@@ -7,12 +7,11 @@ import 'package:envoy/ui/envoy_colors.dart';
 
 class EnvoyTextButton extends StatelessWidget {
   const EnvoyTextButton(
-      {Key? key,
+      {super.key,
       required this.label,
       this.onTap,
       this.error = false,
-      this.textStyle})
-      : super(key: key);
+      this.textStyle});
 
   final String label;
   final Function()? onTap;

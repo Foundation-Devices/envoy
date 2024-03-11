@@ -26,7 +26,7 @@ import 'package:timeago/timeago.dart' as timeago;
 class DeviceCard extends ConsumerStatefulWidget {
   final Device device;
 
-  DeviceCard(this.device) : super(key: UniqueKey()) {}
+  DeviceCard(this.device) : super(key: UniqueKey());
 
   @override
   ConsumerState<DeviceCard> createState() => _DeviceCardState();
@@ -91,16 +91,13 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
           ),
           Padding(
             padding: const EdgeInsets.only(top: 18.0, left: 35.0),
-            child: Text(S().manage_device_details_deviceSerial +
-                ": " +
-                widget.device.serial),
+            child: Text(
+                "${S().manage_device_details_deviceSerial}: ${widget.device.serial}"),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 10.0, left: 35.0),
-            child: Text(S().manage_device_details_devicePaired +
-                " " +
-                timeago.format(widget.device.datePaired,
-                    locale: activeLocale.languageCode)),
+            child: Text(
+                "${S().manage_device_details_devicePaired} ${timeago.format(widget.device.datePaired, locale: activeLocale.languageCode)}"),
           ),
         ],
       ),
@@ -111,7 +108,7 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
 class DeviceOptions extends ConsumerStatefulWidget {
   final Device device;
 
-  DeviceOptions(this.device);
+  const DeviceOptions(this.device, {super.key});
 
   @override
   ConsumerState<DeviceOptions> createState() => _DeviceOptionsState();
@@ -131,14 +128,14 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Divider(),
-        SizedBox(
+        const Divider(),
+        const SizedBox(
           height: 10,
         ),
         GestureDetector(
           child: Text(
             S().manage_device_details_menu_editDevice,
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           ),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
@@ -147,7 +144,8 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                 context: context,
                 dialog: Builder(builder: (BuildContext context) {
                   if (!isKeyboardShown) {
-                    Future.delayed(Duration(milliseconds: 200)).then((value) {
+                    Future.delayed(const Duration(milliseconds: 200))
+                        .then((value) {
                       FocusScope.of(context).requestFocus(focusNode);
                     });
                     isKeyboardShown = true;
@@ -176,12 +174,12 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                 }));
           },
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         GestureDetector(
           child: Text(S().component_delete.toUpperCase(),
-              style: TextStyle(color: EnvoyColors.lightCopper)),
+              style: const TextStyle(color: EnvoyColors.lightCopper)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             showEnvoyDialog(
@@ -190,12 +188,12 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                   content: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      EnvoyIcon(
+                      const EnvoyIcon(
                         EnvoyIcons.alert,
                         color: EnvoyColors.darkCopper,
                         size: EnvoyIconSize.big,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: EnvoySpacing.medium1,
                       ),
                       Text(
@@ -208,8 +206,8 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                   actions: [
                     EnvoyButton(
                       S().component_delete,
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(EnvoySpacing.small)),
+                      borderRadius: const BorderRadius.all(
+                          Radius.circular(EnvoySpacing.small)),
                       textStyle: EnvoyTypography.button
                           .copyWith(color: EnvoyColors.white100),
                       type: EnvoyButtonTypes.primaryModal,

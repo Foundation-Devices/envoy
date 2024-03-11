@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:cbor/cbor.dart' as cbor;
 import 'package:envoy/business/scv_server.dart';
+import 'package:envoy/util/console.dart';
 import 'package:typed_data/typed_data.dart';
 import 'package:ur/ur.dart';
 import 'package:uuid/uuid.dart';
@@ -152,7 +153,7 @@ class CryptoRequest extends UniformResourceWriter {
     generateUuid();
   }
 
-  CryptoRequest.specificUuid(List<int> uuid) : uuid = uuid {
+  CryptoRequest.specificUuid(this.uuid) {
     cborEncoder = inst.encoder;
     _writeTlMapKey();
     tlMap.writeTag(37);
@@ -201,10 +202,8 @@ class CryptoRequest extends UniformResourceWriter {
 
     var buffer = inst.output.getData().cast<int>();
 
-    if (_urEncoder == null) {
-      _urEncoder =
-          Ur().encoder('crypto-request', Uint8List.fromList(buffer), 50);
-    }
+    _urEncoder ??=
+        Ur().encoder('crypto-request', Uint8List.fromList(buffer), 50);
 
     return _urEncoder!.nextPart();
   }
@@ -226,7 +225,7 @@ class CryptoRequest extends UniformResourceWriter {
 
     // UUIDs are 128 bit
     Uint8Buffer uuidBuffer = Uint8Buffer(16);
-    uuid = Uuid().v4buffer(uuidBuffer);
+    uuid = const Uuid().v4buffer(uuidBuffer);
 
     tlMap.writeBytes(uuidBuffer);
   }
@@ -280,7 +279,7 @@ class UniformResourceReader {
       try {
         payload = urDecoder.receive(data);
       } on Exception catch (_) {
-        print("Couldn't decode UR!");
+        kPrint("Couldn't decode UR!");
       }
     }
 
@@ -314,9 +313,9 @@ class CryptoHdKey extends CborObject {
   String get path {
     String keypathString = "";
     for (var index in keypath!) {
-      keypathString = keypathString + "/" + index.key.toString();
+      keypathString = "$keypathString/${index.key}";
       if (index.hardened) {
-        keypathString = keypathString + "h";
+        keypathString = "${keypathString}h";
       }
     }
     return keypathString;

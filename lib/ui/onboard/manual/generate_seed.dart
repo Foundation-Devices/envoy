@@ -23,15 +23,15 @@ import 'package:envoy/ui/envoy_button.dart';
 class SeedScreen extends StatefulWidget {
   final bool generate;
 
-  const SeedScreen({Key? key, this.generate = true}) : super(key: key);
+  const SeedScreen({super.key, this.generate = true});
 
   @override
   State<SeedScreen> createState() => _SeedScreenState();
 }
 
 class _SeedScreenState extends State<SeedScreen> {
-  PageController _pageController = PageController();
-  PageController _seedDisplayPageController = PageController();
+  final PageController _pageController = PageController();
+  final PageController _seedDisplayPageController = PageController();
   bool _onSecondPage = false;
 
   List<String> seedList = [];
@@ -43,12 +43,12 @@ class _SeedScreenState extends State<SeedScreen> {
       enableSecureScreen();
 
       if (widget.generate) {
-        await Future.delayed(Duration(seconds: 1));
+        await Future.delayed(const Duration(seconds: 1));
         setState(() {
           seedList = Wallet.generateSeed().split(" ");
         });
         _pageController.animateToPage(1,
-            duration: Duration(milliseconds: 300), curve: Curves.ease);
+            duration: const Duration(milliseconds: 300), curve: Curves.ease);
       } else {
         final seed = await EnvoySeed().get();
 
@@ -72,7 +72,7 @@ class _SeedScreenState extends State<SeedScreen> {
         color: Colors.transparent,
         child: PageView(
           controller: _pageController,
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           children: [
             if (widget.generate) _buildSeedGenerating(context),
             _buildMnemonicGrid(context),
@@ -86,20 +86,22 @@ class _SeedScreenState extends State<SeedScreen> {
                         if (success) {
                           Navigator.of(context, rootNavigator: true)
                               .push(MaterialPageRoute(builder: (context) {
-                            return ManualSetupCreateAndStoreBackup();
+                            return const ManualSetupCreateAndStoreBackup();
                           }));
                         }
                       });
                     } else {
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
-                        return ManualSetupCreateAndStoreBackup();
+                        return const ManualSetupCreateAndStoreBackup();
                       }));
                     }
                   } else {
-                    await Future.delayed(Duration(milliseconds: 100));
+                    await Future.delayed(const Duration(milliseconds: 100));
                     Haptics.heavyImpact();
-                    showVerificationFailedDialog(context);
+                    if (context.mounted) {
+                      showVerificationFailedDialog(context);
+                    }
                   }
                 }),
           ],
@@ -114,7 +116,7 @@ class _SeedScreenState extends State<SeedScreen> {
         Container(
           alignment: Alignment.centerLeft,
           child: IconButton(
-            icon: Icon(Icons.chevron_left, color: Colors.black),
+            icon: const Icon(Icons.chevron_left, color: Colors.black),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -125,23 +127,23 @@ class _SeedScreenState extends State<SeedScreen> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Container(
+              SizedBox(
                 width: 240,
                 height: 240,
                 child: RiveAnimation.asset(
                   "assets/envoy_loader.riv",
                   fit: BoxFit.contain,
                   onInit: (artboard) {
-                    var _stateMachineController =
+                    var stateMachineController =
                         StateMachineController.fromArtboard(artboard, 'STM');
-                    artboard.addController(_stateMachineController!);
-                    _stateMachineController
+                    artboard.addController(stateMachineController!);
+                    stateMachineController
                         .findInput<bool>("indeterminate")
                         ?.change(true);
                   },
                 ),
               ),
-              Padding(padding: EdgeInsets.all(14)),
+              const Padding(padding: EdgeInsets.all(14)),
               Text("Generating Seed", // TODO: FIGMA
                   style: Theme.of(context).textTheme.titleMedium),
             ],
@@ -161,7 +163,7 @@ class _SeedScreenState extends State<SeedScreen> {
         Container(
           alignment: Alignment.centerLeft,
           child: IconButton(
-            icon: Icon(Icons.chevron_left, color: Colors.black),
+            icon: const Icon(Icons.chevron_left, color: Colors.black),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -181,11 +183,11 @@ class _SeedScreenState extends State<SeedScreen> {
                         : S().manual_setup_generate_seed_write_words_heading,
                     style: Theme.of(context).textTheme.titleLarge,
                     textAlign: TextAlign.center),
-                Padding(padding: EdgeInsets.all(18)),
+                const Padding(padding: EdgeInsets.all(18)),
                 Expanded(
                   child: PageView(
                       controller: _seedDisplayPageController,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       children: [
                         _buildTwoMnemonicColumns(0),
                         if (seedList.length > 12) _buildTwoMnemonicColumns(12),
@@ -193,7 +195,7 @@ class _SeedScreenState extends State<SeedScreen> {
                 ),
                 if (seedList.length > 12)
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
                     child: DotsIndicator(
                         pageController: _seedDisplayPageController,
                         totalPages: 2),
@@ -202,14 +204,14 @@ class _SeedScreenState extends State<SeedScreen> {
                   onTap: () async {
                     if (seedList.length == 12 || _onSecondPage) {
                       await _pageController.nextPage(
-                          duration: Duration(milliseconds: 300),
+                          duration: const Duration(milliseconds: 300),
                           curve: Curves.ease);
                     } else {
                       setState(() {
                         _onSecondPage = true;
                       });
                       await _seedDisplayPageController.nextPage(
-                          duration: Duration(milliseconds: 300),
+                          duration: const Duration(milliseconds: 300),
                           curve: Curves.ease);
                     }
                   },
@@ -254,21 +256,21 @@ class _SeedScreenState extends State<SeedScreen> {
   }
 
   Widget _buildMnemonicColumn(List<Tuple<int, String>> list) {
-    final TextStyle textTheme = TextStyle(
+    const TextStyle textTheme = TextStyle(
         fontSize: 15, color: Colors.black87, fontWeight: FontWeight.bold);
     return Column(
       children: list.map((word) {
         return Container(
           height: 40,
-          margin: EdgeInsets.symmetric(vertical: 14, horizontal: 8),
-          padding: EdgeInsets.symmetric(horizontal: 8),
-          constraints: BoxConstraints(maxWidth: 200, maxHeight: 80),
+          margin: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          constraints: const BoxConstraints(maxWidth: 200, maxHeight: 80),
           decoration: BoxDecoration(
               color: Colors.grey[300], borderRadius: BorderRadius.circular(8)),
           child: Row(
             children: [
               Text("${word.item1}. ", style: textTheme),
-              Expanded(child: Text("${word.item2}", style: textTheme)),
+              Expanded(child: Text(word.item2, style: textTheme)),
             ],
           ),
         );
@@ -284,20 +286,20 @@ class _SeedScreenState extends State<SeedScreen> {
         return Container(
           height: MediaQuery.of(context).size.height * 0.38,
           width: MediaQuery.of(context).size.width * 0.8,
-          constraints: BoxConstraints(maxHeight: 400, maxWidth: 400),
+          constraints: const BoxConstraints(maxHeight: 400, maxWidth: 400),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(padding: EdgeInsets.all(24)),
+                const Padding(padding: EdgeInsets.all(24)),
                 Expanded(
                     child: Column(
                   children: [
-                    Icon(EnvoyIcons.exclamation_warning,
+                    const Icon(EnvoyIcons.exclamationWarning,
                         color: EnvoyColors.darkCopper, size: 56),
-                    Padding(padding: EdgeInsets.all(12)),
+                    const Padding(padding: EdgeInsets.all(12)),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
@@ -313,10 +315,10 @@ class _SeedScreenState extends State<SeedScreen> {
                     onTap: () async {
                       Navigator.pop(context);
                       _pageController.animateToPage(1,
-                          duration: Duration(milliseconds: 320),
+                          duration: const Duration(milliseconds: 320),
                           curve: Curves.ease);
                     }),
-                Padding(padding: EdgeInsets.all(12)),
+                const Padding(padding: EdgeInsets.all(12)),
               ],
             ),
           ),
@@ -331,13 +333,13 @@ class _SeedScreenState extends State<SeedScreen> {
         Container(
           alignment: Alignment.centerLeft,
           child: IconButton(
-            icon: Icon(Icons.chevron_left, color: Colors.black),
+            icon: const Icon(Icons.chevron_left, color: Colors.black),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
         ),
-        Padding(padding: EdgeInsets.all(14)),
+        const Padding(padding: EdgeInsets.all(14)),
         Expanded(
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -361,7 +363,7 @@ class _SeedScreenState extends State<SeedScreen> {
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      Padding(padding: EdgeInsets.all(24)),
+                      const Padding(padding: EdgeInsets.all(24)),
                       Text(
                         S().manual_setup_generate_seed_verify_seed_subheading,
                         textAlign: TextAlign.center,
@@ -373,8 +375,8 @@ class _SeedScreenState extends State<SeedScreen> {
                     ],
                   ),
                 )),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
                   child: SizedBox.shrink(),
                 ),
                 OnboardingButton(
@@ -382,7 +384,7 @@ class _SeedScreenState extends State<SeedScreen> {
                     fontWeight: FontWeight.w600,
                     onTap: () {
                       _pageController.nextPage(
-                          duration: Duration(milliseconds: 300),
+                          duration: const Duration(milliseconds: 300),
                           curve: Curves.ease);
                     })
               ],

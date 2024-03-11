@@ -319,7 +319,7 @@ class RawTransaction {
     List<RawTransactionInput> inputs = [];
 
     for (var i = 0; i < tx.outputs_len; i++) {
-      rust.RawTransactionOutput nativeOutput = tx.outputs.elementAt(i).ref;
+      rust.RawTransactionOutput nativeOutput = (tx.outputs + i).ref;
       outputs.add(RawTransactionOutput(
           address: nativeOutput.address.cast<Utf8>().toDartString(),
           amount: nativeOutput.amount,
@@ -327,7 +327,7 @@ class RawTransaction {
     }
 
     for (var i = 0; i < tx.inputs_len; i++) {
-      rust.RawTransactionInput nativeInput = tx.inputs.elementAt(i).ref;
+      rust.RawTransactionInput nativeInput = (tx.inputs + i).ref;
       inputs.add(RawTransactionInput(
           previousOutputHash:
               nativeInput.previous_output.cast<Utf8>().toDartString(),
@@ -625,9 +625,9 @@ class Wallet {
     listPointer.ref.utxos = calloc<rust.Utxo>(len);
 
     utxos?.forEachIndexed((index, utxo) {
-      listPointer.ref.utxos.elementAt(index).ref.value = utxo.value;
-      listPointer.ref.utxos.elementAt(index).ref.vout = utxo.vout;
-      listPointer.ref.utxos.elementAt(index).ref.txid =
+      (listPointer.ref.utxos + index).ref.value = utxo.value;
+      (listPointer.ref.utxos + index).ref.vout = utxo.vout;
+      (listPointer.ref.utxos + index).ref.txid =
           utxo.txid.toNativeUtf8().cast();
     });
 
@@ -880,7 +880,7 @@ class Wallet {
 
     List<Utxo> utxos = [];
     for (var i = 0; i < utxoList.utxos_len; i++) {
-      rust.Utxo nativeUtxo = utxoList.utxos.elementAt(i).ref;
+      rust.Utxo nativeUtxo = (utxoList.utxos + i).ref;
       utxos.add(Utxo(
           txid: nativeUtxo.txid.cast<Utf8>().toDartString(),
           vout: nativeUtxo.vout,
@@ -906,7 +906,7 @@ class Wallet {
 
     List<Transaction> transactions = [];
     for (var i = 0; i < txList.transactionsLen; i++) {
-      var tx = txList.transactions.elementAt(i).ref;
+      var tx = (txList.transactions + i).ref;
       transactions.add(Transaction(
           "",
           tx.txid.cast<Utf8>().toDartString(),
@@ -928,7 +928,7 @@ class Wallet {
       Pointer<Pointer<Uint8>> strings, int stringsLen) {
     List<String> ret = [];
     for (var i = 0; i < stringsLen; i++) {
-      ret.add(strings.elementAt(i).value.cast<Utf8>().toDartString());
+      ret.add((strings + i).value.cast<Utf8>().toDartString());
     }
 
     return ret;

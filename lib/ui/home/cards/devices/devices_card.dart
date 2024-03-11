@@ -23,9 +23,9 @@ import 'package:envoy/ui/home/home_page.dart';
 
 //ignore: must_be_immutable
 class DevicesCard extends ConsumerStatefulWidget {
-  DevicesCard({
-    Key? key,
-  }) : super(key: key);
+  const DevicesCard({
+    super.key,
+  });
 
   @override
   ConsumerState createState() => DevicesCardState();
@@ -77,7 +77,7 @@ class DevicesCardState extends ConsumerState<DevicesCard>
 
 //ignore: must_be_immutable
 class DevicesList extends StatefulWidget {
-  DevicesList() : super(key: UniqueKey()) {}
+  DevicesList() : super(key: UniqueKey());
 
   @override
   State<DevicesList> createState() => _DevicesListState();
@@ -118,7 +118,7 @@ class _DevicesListState extends State<DevicesList> {
             padding: const EdgeInsets.all(EnvoySpacing.medium1),
             child: ShaderMask(
               shaderCallback: (Rect rect) {
-                return LinearGradient(
+                return const LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
@@ -133,7 +133,7 @@ class _DevicesListState extends State<DevicesList> {
               blendMode: BlendMode.dstOut,
               child: CustomScrollView(
                 slivers: [
-                  SliverPadding(
+                  const SliverPadding(
                       padding:
                           EdgeInsets.symmetric(vertical: EnvoySpacing.xs / 2)),
                   SliverList(
@@ -161,7 +161,7 @@ class _DevicesListState extends State<DevicesList> {
                       childCount: Devices().devices.length,
                     ),
                   ),
-                  SliverPadding(
+                  const SliverPadding(
                       padding:
                           EdgeInsets.symmetric(vertical: EnvoySpacing.medium2)),
                 ],
@@ -172,39 +172,39 @@ class _DevicesListState extends State<DevicesList> {
 }
 
 class DevicesOptions extends ConsumerWidget {
-  DevicesOptions();
+  const DevicesOptions({super.key});
 
   @override
   Widget build(context, ref) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Divider(),
-        SizedBox(
+        const Divider(),
+        const SizedBox(
           height: 10,
         ),
         GestureDetector(
           child: Text(
             S().passport_welcome_screen_cta2.toUpperCase(),
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           ),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return SingleImportPpIntroPage();
+              return const SingleImportPpIntroPage();
             }));
           },
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         GestureDetector(
           child: Text(S().passport_welcome_screen_cta1.toUpperCase(),
-              style: TextStyle(color: EnvoyColors.accentSecondary)),
+              style: const TextStyle(color: EnvoyColors.accentSecondary)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return TouPage();
+              return const TouPage();
             }));
           },
         ),
@@ -215,8 +215,8 @@ class DevicesOptions extends ConsumerWidget {
 
 class GhostDevice extends StatelessWidget {
   GhostDevice({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final device = Device(
       "Primary",
@@ -233,7 +233,7 @@ class GhostDevice extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: ColorFiltered(
-            colorFilter: ColorFilter.mode(
+            colorFilter: const ColorFilter.mode(
               Color.fromRGBO(255, 255, 255, 0.75),
               BlendMode.hardLight,
             ),
@@ -254,7 +254,7 @@ class GhostDevice extends StatelessWidget {
                   S().devices_empty_text_explainer,
                   style: EnvoyTypography.explainer,
                 ),
-                SizedBox(width: EnvoySpacing.small),
+                const SizedBox(width: EnvoySpacing.small),
                 GestureDetector(
                   child: Text(S().component_learnMore,
                       style: EnvoyTypography.explainer
@@ -265,7 +265,7 @@ class GhostDevice extends StatelessWidget {
                       builder: (context) {
                         return BackdropFilter(
                             filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                            child: DeviceEmptyVideo());
+                            child: const DeviceEmptyVideo());
                       },
                     );
                   },
@@ -280,13 +280,13 @@ class GhostDevice extends StatelessWidget {
 }
 
 class DeviceEmptyVideo extends StatelessWidget {
-  DeviceEmptyVideo({
-    Key? key,
-  }) : super(key: key);
+  const DeviceEmptyVideo({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    TextStyle _ctaTextStyle = TextStyle(
+    var ctaTextStyle = const TextStyle(
         color: Colors.white,
         fontFamily: 'Montserrat',
         fontStyle: FontStyle.normal,
@@ -295,13 +295,13 @@ class DeviceEmptyVideo extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
           gradient: LinearGradient(colors: [
         Colors.black,
         Color(0x00000000),
       ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
       child: Column(children: [
-        Container(
+        SizedBox(
           height: 100,
           child: Stack(
             children: [
@@ -311,7 +311,7 @@ class DeviceEmptyVideo extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     S().bottomNav_learn.toUpperCase(),
-                    style: _ctaTextStyle.copyWith(
+                    style: ctaTextStyle.copyWith(
                         fontWeight: FontWeight.w500, fontSize: 18),
                   ),
                 ),
@@ -324,7 +324,7 @@ class DeviceEmptyVideo extends StatelessWidget {
                     color: Colors.transparent,
                     child: IconButton(
                       color: Colors.white,
-                      icon: Icon(Icons.close),
+                      icon: const Icon(Icons.close),
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
@@ -338,7 +338,7 @@ class DeviceEmptyVideo extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(15),
           child: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               boxShadow: [
                 BoxShadow(
                     color: Colors.white,
@@ -347,7 +347,7 @@ class DeviceEmptyVideo extends StatelessWidget {
                     spreadRadius: 1),
               ],
             ),
-            child: EmbeddedVideo(
+            child: const EmbeddedVideo(
               path: "assets/videos/passport_ad.m4v",
               aspectRatio: 16 / 9,
             ),
@@ -360,7 +360,7 @@ class DeviceEmptyVideo extends StatelessWidget {
             children: [
               GestureDetector(
                 child: Text(S().devices_empty_modal_video_cta2,
-                    style: _ctaTextStyle),
+                    style: ctaTextStyle),
                 onTap: () {
                   Navigator.of(context).pop();
                 },
@@ -369,7 +369,7 @@ class DeviceEmptyVideo extends StatelessWidget {
                 child: Text(
                   S().devices_empty_modal_video_cta1,
                   style:
-                      _ctaTextStyle.copyWith(color: EnvoyColors.accentPrimary),
+                      ctaTextStyle.copyWith(color: EnvoyColors.accentPrimary),
                 ),
                 onTap: () {
                   launchUrlString("https://foundationdevices.com/passport/");

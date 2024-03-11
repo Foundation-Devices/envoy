@@ -18,7 +18,7 @@ class EnvoyAmount extends StatelessWidget {
     required this.amountWidgetStyle,
     required this.account,
     this.alignToEnd = true,
-    this.unit = null,
+    this.unit,
   });
 
   final int amountSats;
@@ -42,8 +42,7 @@ class EnvoyAmount extends StatelessWidget {
       mainUnit = unit!;
     }
 
-    String? selectedFiat = Settings().selectedFiat;
-    bool showFiat = selectedFiat != null && badgeColor == null;
+    bool showFiat = badgeColor == null;
     AmountDisplayUnit primaryUnit = mainUnit;
     AmountDisplayUnit? secondaryUnit = showFiat ? AmountDisplayUnit.fiat : null;
     bool decimalDot = fiatDecimalSeparator == ".";

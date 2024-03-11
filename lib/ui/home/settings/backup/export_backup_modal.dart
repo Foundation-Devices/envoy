@@ -10,7 +10,7 @@ import 'package:envoy/business/envoy_seed.dart';
 class ExportBackupModal extends StatefulWidget {
   final Function? onExport;
 
-  const ExportBackupModal({Key? key, this.onExport = null}) : super(key: key);
+  const ExportBackupModal({super.key, this.onExport});
 
   @override
   State<ExportBackupModal> createState() => _ExportBackupModalState();
@@ -23,7 +23,7 @@ class _ExportBackupModalState extends State<ExportBackupModal> {
           fontWeight: FontWeight.w500,
         );
 
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width * 0.85,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -33,7 +33,7 @@ class _ExportBackupModalState extends State<ExportBackupModal> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: IconButton(
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -41,7 +41,7 @@ class _ExportBackupModalState extends State<ExportBackupModal> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 48),
+            padding: const EdgeInsets.symmetric(horizontal: 48),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -59,12 +59,12 @@ class _ExportBackupModalState extends State<ExportBackupModal> {
                     style: textStyle,
                   ),
                 ),
-                Padding(padding: EdgeInsets.all(4)),
+                const Padding(padding: EdgeInsets.all(4)),
               ],
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 48, vertical: 28),
+            padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 28),
             child: Column(
               children: [
                 EnvoyButton(

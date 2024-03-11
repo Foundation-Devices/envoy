@@ -22,7 +22,7 @@ import 'package:share_plus/share_plus.dart';
 class DescriptorCard extends ConsumerStatefulWidget {
   final Account account;
 
-  DescriptorCard(this.account) : super(key: UniqueKey()) {}
+  DescriptorCard(this.account) : super(key: UniqueKey());
 
   @override
   ConsumerState<DescriptorCard> createState() => _DescriptorCardState();
@@ -32,7 +32,7 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 10)).then((value) {
+    Future.delayed(const Duration(milliseconds: 10)).then((value) {
       ref.read(homePageTitleProvider.notifier).state =
           S().manage_account_address_heading;
     });
@@ -60,7 +60,7 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(bottom: EnvoySpacing.xl),
+            padding: const EdgeInsets.only(bottom: EnvoySpacing.xl),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -71,12 +71,13 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
                   child: IconButton(
                       onPressed: () {
                         Clipboard.setData(ClipboardData(text: descriptor));
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
                           content: Text(
                               "Descriptor copied to clipboard!"), //TODO: FIGMA
                         ));
                       },
-                      icon: EnvoyIcon(EnvoyIcons.copy)),
+                      icon: const EnvoyIcon(EnvoyIcons.copy)),
                 ),
                 EnvoyTextButton(
                   onTap: () {
@@ -92,7 +93,7 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
                       onPressed: () {
                         Share.share(descriptor);
                       },
-                      icon: EnvoyIcon(EnvoyIcons.share)),
+                      icon: const EnvoyIcon(EnvoyIcons.share)),
                 ),
               ],
             ),

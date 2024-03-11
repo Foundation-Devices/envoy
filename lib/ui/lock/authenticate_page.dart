@@ -1,3 +1,4 @@
+// ignore_for_file: missing_provider_scope
 // SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -21,11 +22,11 @@ import 'package:local_auth/local_auth.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 
 class AuthenticateApp extends StatelessWidget {
-  const AuthenticateApp({Key? key}) : super(key: key);
+  const AuthenticateApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         systemStatusBarContrastEnforced: true,
         systemNavigationBarColor: Colors.transparent,
         systemNavigationBarDividerColor: Colors.transparent,
@@ -39,7 +40,7 @@ class AuthenticateApp extends StatelessWidget {
         GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);
 
     return MaterialApp(
-        localizationsDelegates: [
+        localizationsDelegates: const [
           S.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
@@ -52,12 +53,12 @@ class AuthenticateApp extends StatelessWidget {
           brightness: Brightness.light,
           scaffoldBackgroundColor: Colors.transparent,
         ),
-        home: Builder(builder: (c) => AuthenticatePage()));
+        home: Builder(builder: (c) => const AuthenticatePage()));
   }
 }
 
 class AuthenticatePage extends StatefulWidget {
-  const AuthenticatePage({Key? key}) : super(key: key);
+  const AuthenticatePage({super.key});
 
   @override
   State<AuthenticatePage> createState() => _AuthenticatePageState();
@@ -67,10 +68,10 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: EnvoyColors.textPrimaryInverse,
-        image: new DecorationImage(
-            image: new ExactAssetImage('assets/splash_blank.png'),
+        image: DecorationImage(
+            image: ExactAssetImage('assets/splash_blank.png'),
             fit: BoxFit.cover,
             filterQuality: FilterQuality.high),
       ),
@@ -84,7 +85,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
     if (availableBiometrics.isNotEmpty) {
       try {
         final bool didAuthenticate = await auth.authenticate(
-            options: AuthenticationOptions(
+            options: const AuthenticationOptions(
               biometricOnly: true,
               stickyAuth: true,
             ),
@@ -93,9 +94,9 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
             localizedReason: 'Authenticate to Access Envoy');
         if (didAuthenticate) {
           if (Platform.isIOS) {
-            await Future.delayed(Duration(milliseconds: 800));
+            await Future.delayed(const Duration(milliseconds: 800));
           }
-          runApp(EnvoyApp());
+          runApp(const EnvoyApp());
           return;
         } else {
           showAuthLockedOutDialog(
@@ -161,13 +162,13 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
     } else {
       ///Authenticate without biometrics
       final bool didAuthenticate = await auth.authenticate(
-          options: AuthenticationOptions(
+          options: const AuthenticationOptions(
             biometricOnly: false,
             stickyAuth: true,
           ),
           localizedReason: 'Authenticate to Access Envoy');
       if (didAuthenticate) {
-        runApp(EnvoyApp());
+        runApp(const EnvoyApp());
         return;
       } else {
         showAuthLockedOutDialog(
@@ -189,7 +190,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
       {required String title,
       required String subtitle,
       required String ctaButtonTitle,
-      GestureTapCallback? ctaTapCallback = null,
+      GestureTapCallback? ctaTapCallback,
       required EnvoyIcons icon}) {
     showEnvoyDialog(
         dismissible: false,
@@ -202,9 +203,9 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
               child: Container(
                 height: 310,
                 width: MediaQuery.of(context).size.width * .8,
-                padding: EdgeInsets.all(EnvoySpacing.medium2)
-                    .add(EdgeInsets.only(top: -6)),
-                constraints: BoxConstraints(
+                padding: const EdgeInsets.all(EnvoySpacing.medium2)
+                    .add(const EdgeInsets.only(top: -6)),
+                constraints: const BoxConstraints(
                   minHeight: 270,
                 ),
                 child: Column(
@@ -222,9 +223,9 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
                           size: EnvoyIconSize.big,
                           color: EnvoyColors.accentPrimary,
                         ),
-                        SizedBox(height: EnvoySpacing.medium2),
+                        const SizedBox(height: EnvoySpacing.medium2),
                         ListTile(
-                          contentPadding: EdgeInsets.all(0),
+                          contentPadding: const EdgeInsets.all(0),
                           title: Text(title,
                               style: EnvoyTypography.subheading
                                   .copyWith(color: EnvoyColors.textPrimary),
@@ -242,11 +243,12 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
                     ctaTapCallback != null
                         ? EnvoyButton(
                             ctaButtonTitle,
-                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(8)),
                             type: EnvoyButtonTypes.primaryModal,
                             onTap: ctaTapCallback,
                           )
-                        : SizedBox.shrink(),
+                        : const SizedBox.shrink(),
                   ],
                 ),
               ),
@@ -263,7 +265,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
       if (useAuth == true) {
         initiateAuth();
       } else {
-        runApp(EnvoyApp());
+        runApp(const EnvoyApp());
       }
     });
   }

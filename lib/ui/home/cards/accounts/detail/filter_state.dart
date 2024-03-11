@@ -5,13 +5,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum AccountToggleState {
-  Tx,
-  Coins,
+  tx,
+  coins,
 }
 
 enum TransactionFilters {
-  Sent,
-  Received,
+  sent,
+  received,
 }
 
 enum TransactionSortTypes {
@@ -29,7 +29,7 @@ enum CoinTagSortTypes {
 }
 
 final txFilterStateProvider = StateProvider<Set<TransactionFilters>>(
-    (ref) => Set()..addAll(TransactionFilters.values));
+    (ref) => {}..addAll(TransactionFilters.values));
 final txSortStateProvider = StateProvider<TransactionSortTypes>(
     (ref) => TransactionSortTypes.newestFirst);
 
@@ -44,15 +44,15 @@ final coinTagSortStateProvider =
     StateProvider<CoinTagSortTypes>((ref) => CoinTagSortTypes.sortByTagNameAsc);
 
 final accountToggleStateProvider =
-    StateProvider<AccountToggleState>((ref) => AccountToggleState.Tx);
+    StateProvider<AccountToggleState>((ref) => AccountToggleState.tx);
 
 ///clears existing filter states. this will be called when the user navigates to account detail page
 clearFilterState(WidgetRef ref) {
   ref.read(txSortStateProvider.notifier).state =
       TransactionSortTypes.newestFirst;
-  ref.read(txFilterStateProvider.notifier).state = Set()
+  ref.read(txFilterStateProvider.notifier).state = {}
     ..addAll(TransactionFilters.values);
   ref.read(coinTagSortStateProvider.notifier).state =
       CoinTagSortTypes.sortByTagNameAsc;
-  ref.read(accountToggleStateProvider.notifier).state = AccountToggleState.Tx;
+  ref.read(accountToggleStateProvider.notifier).state = AccountToggleState.tx;
 }

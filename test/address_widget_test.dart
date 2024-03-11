@@ -17,7 +17,7 @@ void main() {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Expanded(
-                    child: Container(
+                    child: SizedBox(
                       height: 600,
                       width: 400,
                       child: Column(
@@ -52,7 +52,7 @@ void main() {
                     ),
                   ),
                   Expanded(
-                    child: Container(
+                    child: SizedBox(
                       height: 600,
                       width: 400,
                       child: Column(
@@ -92,7 +92,7 @@ void main() {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Expanded(
-                    child: Container(
+                    child: SizedBox(
                       height: 600,
                       width: 400,
                       child: Column(
@@ -125,7 +125,7 @@ void main() {
                     ),
                   ),
                   Expanded(
-                    child: Container(
+                    child: SizedBox(
                       height: 600,
                       width: 400,
                       child: Column(

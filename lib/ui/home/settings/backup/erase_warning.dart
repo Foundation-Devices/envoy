@@ -17,15 +17,16 @@ import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rive/rive.dart' as Rive;
+import 'package:rive/rive.dart' as rive;
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/home/home_state.dart';
 
 class EraseWalletsAndBackupsWarning extends StatefulWidget {
-  const EraseWalletsAndBackupsWarning({Key? key}) : super(key: key);
+  const EraseWalletsAndBackupsWarning({super.key});
 
   @override
   State<EraseWalletsAndBackupsWarning> createState() =>
@@ -34,11 +35,11 @@ class EraseWalletsAndBackupsWarning extends StatefulWidget {
 
 class _EraseWalletsAndBackupsWarningState
     extends State<EraseWalletsAndBackupsWarning> {
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -51,14 +52,14 @@ class _EraseWalletsAndBackupsWarningState
               child: Padding(
                 padding: const EdgeInsets.only(top: 12),
                 child: IconButton(
-                  icon: Icon(Icons.close),
+                  icon: const Icon(Icons.close),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                 ),
               ),
             ),
-            Padding(padding: EdgeInsets.all(8)),
+            const Padding(padding: EdgeInsets.all(8)),
             Column(
               children: [
                 Image.asset(
@@ -66,7 +67,7 @@ class _EraseWalletsAndBackupsWarningState
                   height: 80,
                   width: 80,
                 ),
-                Padding(padding: EdgeInsets.all(4)),
+                const Padding(padding: EdgeInsets.all(4)),
                 Padding(
                     padding:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
@@ -127,15 +128,15 @@ class _EraseWalletsAndBackupsWarningState
                     } else {
                       showEnvoyDialog(
                           context: context,
-                          dialog: EraseWalletsBalanceWarning());
+                          dialog: const EraseWalletsBalanceWarning());
                     }
                   } else {
                     _pageController.nextPage(
-                        duration: Duration(milliseconds: 300),
+                        duration: const Duration(milliseconds: 300),
                         curve: Curves.easeInOutCubicEmphasized);
                   }
                 }),
-            Padding(padding: EdgeInsets.all(12)),
+            const Padding(padding: EdgeInsets.all(12)),
           ],
         ),
       ),
@@ -144,7 +145,7 @@ class _EraseWalletsAndBackupsWarningState
 }
 
 class EraseWalletsBalanceWarning extends ConsumerStatefulWidget {
-  const EraseWalletsBalanceWarning({Key? key}) : super(key: key);
+  const EraseWalletsBalanceWarning({super.key});
 
   @override
   ConsumerState<EraseWalletsBalanceWarning> createState() =>
@@ -155,7 +156,7 @@ class _EraseWalletsBalanceWarningState
     extends ConsumerState<EraseWalletsBalanceWarning> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -168,14 +169,14 @@ class _EraseWalletsBalanceWarningState
               child: Padding(
                 padding: const EdgeInsets.only(top: 12),
                 child: IconButton(
-                  icon: Icon(Icons.close),
+                  icon: const Icon(Icons.close),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                 ),
               ),
             ),
-            Padding(padding: EdgeInsets.all(8)),
+            const Padding(padding: EdgeInsets.all(8)),
             Column(
               children: [
                 Image.asset(
@@ -183,7 +184,7 @@ class _EraseWalletsBalanceWarningState
                   height: 80,
                   width: 80,
                 ),
-                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
@@ -211,7 +212,7 @@ class _EraseWalletsBalanceWarningState
                     style: EnvoyTypography.info,
                   ),
                 ),
-                Padding(padding: EdgeInsets.all(5)),
+                const Padding(padding: EdgeInsets.all(5)),
               ],
             ),
             OnboardingButton(
@@ -238,7 +239,7 @@ class _EraseWalletsBalanceWarningState
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
                 }),
-            Padding(padding: EdgeInsets.all(12)),
+            const Padding(padding: EdgeInsets.all(12)),
           ],
         ),
       ),
@@ -247,7 +248,7 @@ class _EraseWalletsBalanceWarningState
 }
 
 class EraseWalletsConfirmation extends ConsumerStatefulWidget {
-  const EraseWalletsConfirmation({Key? key}) : super(key: key);
+  const EraseWalletsConfirmation({super.key});
 
   @override
   ConsumerState<EraseWalletsConfirmation> createState() =>
@@ -258,7 +259,7 @@ class _EraseWalletsConfirmationState
     extends ConsumerState<EraseWalletsConfirmation> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -271,14 +272,14 @@ class _EraseWalletsConfirmationState
               child: Padding(
                 padding: const EdgeInsets.only(top: 12),
                 child: IconButton(
-                  icon: Icon(Icons.close),
+                  icon: const Icon(Icons.close),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                 ),
               ),
             ),
-            Padding(padding: EdgeInsets.all(8)),
+            const Padding(padding: EdgeInsets.all(8)),
             Column(
               children: [
                 Image.asset(
@@ -295,15 +296,17 @@ class _EraseWalletsConfirmationState
                     style: EnvoyTypography.info,
                   ),
                 ),
-                Padding(padding: EdgeInsets.all(5)),
+                const Padding(padding: EdgeInsets.all(5)),
               ],
             ),
             OnboardingButton(
                 type: EnvoyButtonTypes.tertiary,
                 label: S().delete_wallet_for_good_modal_cta2,
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => EraseProgress()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const EraseProgress()));
                 }),
             OnboardingButton(
                 type: EnvoyButtonTypes.primaryModal,
@@ -311,7 +314,7 @@ class _EraseWalletsConfirmationState
                 onTap: () {
                   OnboardingPage.popUntilHome(context);
                 }),
-            Padding(padding: EdgeInsets.all(12)),
+            const Padding(padding: EdgeInsets.all(12)),
           ],
         ),
       ),
@@ -322,21 +325,21 @@ class _EraseWalletsConfirmationState
 void displaySeedBeforeNuke(BuildContext context) {
   Navigator.of(context).pop();
   Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-    return SeedIntroScreen(
+    return const SeedIntroScreen(
       mode: SeedIntroScreenType.verify,
     );
   }));
 }
 
 class EraseProgress extends ConsumerStatefulWidget {
-  const EraseProgress({Key? key}) : super(key: key);
+  const EraseProgress({super.key});
 
   @override
   ConsumerState<EraseProgress> createState() => _EraseProgressState();
 }
 
 class _EraseProgressState extends ConsumerState<EraseProgress> {
-  Rive.StateMachineController? _stateMachineController;
+  rive.StateMachineController? _stateMachineController;
 
   bool _deleteInProgress = true;
 
@@ -350,14 +353,14 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
         body: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
-              child: Container(
+              child: SizedBox(
                 height: 260,
-                child: Rive.RiveAnimation.asset(
+                child: rive.RiveAnimation.asset(
                   "assets/envoy_loader.riv",
                   fit: BoxFit.contain,
                   onInit: (artboard) {
                     _stateMachineController =
-                        Rive.StateMachineController.fromArtboard(
+                        rive.StateMachineController.fromArtboard(
                             artboard, 'STM');
                     artboard.addController(_stateMachineController!);
                     _stateMachineController
@@ -368,7 +371,7 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
                 ),
               ),
             ),
-            SliverPadding(padding: EdgeInsets.all(28)),
+            const SliverPadding(padding: EdgeInsets.all(28)),
             SliverToBoxAdapter(
               child: Builder(
                 builder: (context) {
@@ -386,7 +389,7 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        Padding(padding: EdgeInsets.all(18)),
+                        const Padding(padding: EdgeInsets.all(18)),
                       ],
                     ),
                   );
@@ -401,6 +404,7 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
 
   _onInit() async {
     try {
+      final navigator = Navigator.of(context);
       setState(() {
         _deleteInProgress = true;
       });
@@ -408,7 +412,7 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       _stateMachineController?.findInput<bool>("happy")?.change(false);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
       //wait for animation
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
       await EnvoySeed().delete();
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
       _stateMachineController?.findInput<bool>("happy")?.change(true);
@@ -416,58 +420,64 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       setState(() {
         _deleteInProgress = false;
       });
-      await Future.delayed(Duration(milliseconds: 2000));
+      await Future.delayed(const Duration(milliseconds: 2000));
 
       //Show android backup info
       if (Platform.isAndroid) {
-        await Future.delayed(Duration(milliseconds: 300));
-        await Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => AndroidBackupWarning()));
+        await Future.delayed(const Duration(milliseconds: 300));
+        await navigator.push(MaterialPageRoute(
+            builder: (context) => const AndroidBackupWarning()));
       } else {
         //wait for pop animation to finish
-        await Future.delayed(Duration(milliseconds: 300));
+        await Future.delayed(const Duration(milliseconds: 300));
         // Show home page and navigate to accounts
-        OnboardingPage.popUntilHome(context);
+        if (mounted) {
+          OnboardingPage.popUntilHome(context);
+        }
         ref.read(homePageBackgroundProvider.notifier).state =
             HomePageBackgroundState.hidden;
         ref.read(homePageTabProvider.notifier).state =
             HomePageTabState.accounts;
         ref.read(homePageTitleProvider.notifier).state = "";
       }
-    } catch (e) {}
+    } catch (e) {
+      kPrint(e);
+    }
   }
 }
 
 class AndroidBackupWarning extends StatelessWidget {
   const AndroidBackupWarning({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    bool _iphoneSE = MediaQuery.of(context).size.height < 700;
+    bool iphoneSE = MediaQuery.of(context).size.height < 700;
     return PopScope(
       onPopInvoked: (_) {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return WalletSetupSuccess();
+          return const WalletSetupSuccess();
         }));
       },
       child: OnboardPageBackground(
         child: Material(
+            color: Colors.transparent,
             child: Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
+                SizedBox(
+                  height: iphoneSE ? 220 : 250,
                   child: Image.asset(
                     "assets/exclamation_icon.png",
                     height: 180,
                     width: 180,
                   ),
-                  height: _iphoneSE ? 220 : 250,
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -477,7 +487,7 @@ class AndroidBackupWarning extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      Padding(padding: EdgeInsets.all(12)),
+                      const Padding(padding: EdgeInsets.all(12)),
                       LinkText(
                         text: S()
                             .delete_wallet_for_good_instant_android_subheading,
@@ -512,7 +522,8 @@ class AndroidBackupWarning extends StatelessWidget {
                                   HomePageTabState.accounts;
                               ref.read(homePageTitleProvider.notifier).state =
                                   "";
-                              await Future.delayed(Duration(milliseconds: 100));
+                              await Future.delayed(
+                                  const Duration(milliseconds: 100));
                             },
                           );
                         },
@@ -527,8 +538,7 @@ class AndroidBackupWarning extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
-            color: Colors.transparent),
+            )),
       ),
     );
   }

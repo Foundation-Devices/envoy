@@ -6,19 +6,19 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class SettingsHeader extends StatelessWidget {
   const SettingsHeader(
-      {Key? key,
+      {super.key,
       required this.title,
       required this.linkText,
       this.onTap,
-      required this.icon})
-      : super(key: key);
+      required this.icon});
 
   final String title;
-  final linkText;
+  final String linkText;
   final Function()? onTap;
   final EnvoyIcons icon;
 
@@ -27,28 +27,27 @@ class SettingsHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            EnvoyIcon(icon),
-            SizedBox(
-              width: EnvoySpacing.small,
-            ),
-            Container(
-              width: 160,
-              child: Text(
+        Flexible(
+          flex: 3,
+          child: Row(
+            children: [
+              EnvoyIcon(icon),
+              const SizedBox(
+                width: EnvoySpacing.small,
+              ),
+              Text(
                 title,
                 style: EnvoyTypography.body,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.left,
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-        SizedBox(),
-        GestureDetector(
-          onTap: onTap,
-          child: Container(
-            width: 140,
+        Flexible(
+          flex: 2,
+          child: GestureDetector(
+            onTap: onTap,
             child: Text(
               linkText,
               style: EnvoyTypography.button
@@ -60,5 +59,11 @@ class SettingsHeader extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('linkText', linkText));
   }
 }

@@ -11,9 +11,9 @@ import 'package:envoy/business/scheduler.dart';
 import 'dart:async';
 
 enum AztecoVoucherRedeemResult {
-  Success,
-  Timeout,
-  VoucherInvalid // Able to reach server but problem with voucher
+  success,
+  timeout,
+  voucherInvalid // Able to reach server but problem with voucher
 }
 
 class AztecoVoucher {
@@ -47,40 +47,31 @@ class AztecoVoucher {
   Future<AztecoVoucherRedeemResult> redeem(String address) async {
     String url = getRedeemUrl(address);
 
-    HttpTor _http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
+    HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
 
-    Response? response = null;
+    Response? response;
 
     try {
-      response = await _http.get(url);
+      response = await http.get(url);
     } on TimeoutException {
-      return AztecoVoucherRedeemResult.Timeout;
+      return AztecoVoucherRedeemResult.timeout;
     }
 
     switch (response.statusCode) {
       case 200:
         // Request succeeded, parse the response
-        return AztecoVoucherRedeemResult.Success;
+        return AztecoVoucherRedeemResult.success;
 
       default:
         // Request failed
         break;
     }
 
-    return AztecoVoucherRedeemResult.VoucherInvalid;
+    return AztecoVoucherRedeemResult.voucherInvalid;
   }
 
   String getRedeemUrl(String address) {
-    return "https://azte.co/fd_despatch.php?CODE_1=" +
-        code[0] +
-        "&CODE_2=" +
-        code[1] +
-        "&CODE_3=" +
-        code[2] +
-        "&CODE_4=" +
-        code[3] +
-        "&ADDRESS=" +
-        address;
+    return "https://azte.co/fd_despatch.php?CODE_1=${code[0]}&CODE_2=${code[1]}&CODE_3=${code[2]}&CODE_4=${code[3]}&ADDRESS=$address";
   }
 
   static bool isVoucher(String url) {

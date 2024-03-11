@@ -12,12 +12,12 @@ import 'package:wallet/wallet.dart';
 class SingleWalletPairSuccessPage extends StatelessWidget {
   final Wallet pairedWallet;
 
-  SingleWalletPairSuccessPage(this.pairedWallet);
+  const SingleWalletPairSuccessPage(this.pairedWallet, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      key: Key("single_wallet_pair_success"),
+      key: const Key("single_wallet_pair_success"),
       clipArt: Padding(
         padding: const EdgeInsets.only(top: 50.0),
         child: Image.asset(

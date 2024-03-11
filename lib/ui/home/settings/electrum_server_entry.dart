@@ -21,7 +21,7 @@ class ElectrumServerEntry extends StatefulWidget {
   final Function(String) setter;
   final String Function() getter;
 
-  ElectrumServerEntry(this.getter, this.setter);
+  const ElectrumServerEntry(this.getter, this.setter, {super.key});
 
   @override
   State<ElectrumServerEntry> createState() => _ElectrumServerEntryState();
@@ -83,11 +83,10 @@ class _ElectrumServerEntryState extends State<ElectrumServerEntry> {
                 _typingTimer!.cancel();
               }
 
-              _typingTimer = Timer(Duration(seconds: 2), () {
+              _typingTimer = Timer(const Duration(seconds: 2), () {
                 if (address.isNotEmpty) {
                   _onAddressChanged(parseNodeUrl(address));
                 }
-                ;
               });
             },
             isError: _isError,
@@ -119,18 +118,17 @@ class _ElectrumServerEntryState extends State<ElectrumServerEntry> {
 
     Wallet.getServerFeatures(address, port).then((features) {
       ConnectivityManager().electrumSuccess();
-      if (this.mounted) {
+      if (mounted) {
         setState(() {
           _state = ElectrumServerEntryState.valid;
           _isError = false;
           _textBelow =
-              "${S().privacy_node_connectedTo} " + features.serverVersion;
+              "${S().privacy_node_connectedTo} ${features.serverVersion}";
         });
       }
-      ;
     }, onError: (e) {
       ConnectivityManager().electrumFailure();
-      if (this.mounted) {
+      if (mounted) {
         setState(() {
           _state = ElectrumServerEntryState.invalid;
           _isError = true;
@@ -139,7 +137,6 @@ class _ElectrumServerEntryState extends State<ElectrumServerEntry> {
               : S().privacy_node_connection_couldNotReach;
         });
       }
-      ;
     });
   }
 }

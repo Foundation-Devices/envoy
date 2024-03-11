@@ -8,7 +8,7 @@ import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart' as newColorScheme;
+import 'package:envoy/ui/theme/envoy_colors.dart' as new_color_scheme;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/util/haptics.dart';
@@ -18,7 +18,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class FilterOptions extends ConsumerStatefulWidget {
-  const FilterOptions({Key? key}) : super(key: key);
+  const FilterOptions({super.key});
 
   @override
   ConsumerState<FilterOptions> createState() => _FilterOptionsState();
@@ -33,31 +33,29 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
 
     //margin on right is diff 8 compare to left, filter icon uses icon button that has touch target padding
     return Container(
-      margin: EdgeInsets.only(left: 20, right: 20),
+      margin: const EdgeInsets.only(left: 20, right: 20),
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                child: SlidingToggle(
-                  onChange: (value) async {
-                    if (value == "Tx") {
-                      if (ref.read(coinSelectionStateProvider).isNotEmpty) {
-                        ref.read(coinSelectionStateProvider.notifier).reset();
-                        //wait for coin selection bottom-sheet to close
-                        await Future.delayed(Duration(milliseconds: 240));
-                      }
+              SlidingToggle(
+                onChange: (value) async {
+                  if (value == "Tx") {
+                    if (ref.read(coinSelectionStateProvider).isNotEmpty) {
+                      ref.read(coinSelectionStateProvider.notifier).reset();
+                      //wait for coin selection bottom-sheet to close
+                      await Future.delayed(const Duration(milliseconds: 240));
                     }
-                    ref.read(accountToggleStateProvider.notifier).state =
-                        toggleState == AccountToggleState.Tx
-                            ? AccountToggleState.Coins
-                            : AccountToggleState.Tx;
-                  },
-                  value: toggleState == AccountToggleState.Tx
-                      ? "Tx"
-                      : "Coins", // TODO: FIGMA
-                ),
+                  }
+                  ref.read(accountToggleStateProvider.notifier).state =
+                      toggleState == AccountToggleState.tx
+                          ? AccountToggleState.coins
+                          : AccountToggleState.tx;
+                },
+                value: toggleState == AccountToggleState.tx
+                    ? "Tx"
+                    : "Coins", // TODO: FIGMA
               ),
               Flexible(
                   flex: 1,
@@ -68,11 +66,11 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
                       bool isInEditMode = ref.watch(spendEditModeProvider);
                       bool hide = isCoinSelectionActive || isInEditMode;
                       return AnimatedOpacity(
-                        duration: Duration(milliseconds: 100),
+                        duration: const Duration(milliseconds: 100),
                         opacity: hide ? 0 : 1,
                         child: AnimatedSlide(
-                          duration: Duration(milliseconds: 200),
-                          offset: hide ? Offset(0, 1.2) : Offset.zero,
+                          duration: const Duration(milliseconds: 200),
+                          offset: hide ? const Offset(0, 1.2) : Offset.zero,
                           child: child,
                         ),
                       );
@@ -84,7 +82,7 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
                         bool coinFiltersEnabled =
                             ref.watch(coinTagSortStateProvider) !=
                                 CoinTagSortTypes.sortByTagNameAsc;
-                        bool enabled = toggleState == AccountToggleState.Tx
+                        bool enabled = toggleState == AccountToggleState.tx
                             ? txFiltersEnabled
                             : coinFiltersEnabled;
                         return GestureDetector(
@@ -96,7 +94,7 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
                                 barrierColor: Colors.black.withOpacity(0.2),
                                 enableDrag: true,
                                 isScrollControlled: true,
-                                shape: RoundedRectangleBorder(
+                                shape: const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.only(
                                     topLeft:
                                         Radius.circular(EnvoySpacing.medium1),
@@ -106,26 +104,28 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
                                 ),
                                 showDragHandle: true,
                                 builder: (context) {
-                                  return toggleState == AccountToggleState.Tx
-                                      ? TxFilterWidget()
-                                      : CoinTagsFilterWidget();
+                                  if (toggleState == AccountToggleState.tx) {
+                                    return const TxFilterWidget();
+                                  } else {
+                                    return const CoinTagsFilterWidget();
+                                  }
                                 });
                           },
                           child: Container(
                             width: 32,
                             height: 32,
-                            padding: EdgeInsets.all(EnvoySpacing.small),
+                            padding: const EdgeInsets.all(EnvoySpacing.small),
                             decoration: BoxDecoration(
                                 color: enabled
                                     ? Theme.of(context).primaryColor
-                                    : newColorScheme.EnvoyColors.solidWhite,
+                                    : new_color_scheme.EnvoyColors.solidWhite,
                                 borderRadius: BorderRadius.circular(
                                     EnvoySpacing.medium3)),
                             child: SvgPicture.asset(
                               "assets/icons/ic_filter.svg",
                               color: enabled
-                                  ? newColorScheme.EnvoyColors.solidWhite
-                                  : newColorScheme.EnvoyColors.textTertiary,
+                                  ? new_color_scheme.EnvoyColors.solidWhite
+                                  : new_color_scheme.EnvoyColors.textTertiary,
                               width: 18,
                               height: 18,
                             ),
@@ -143,6 +143,8 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
 }
 
 class TxFilterWidget extends ConsumerStatefulWidget {
+  const TxFilterWidget({super.key});
+
   @override
   ConsumerState<TxFilterWidget> createState() => _TxFilterWidgetState();
 }
@@ -167,21 +169,17 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
             fontWeight: FontWeight.w600,
             fontSize: 14);
 
-    if (_sortState == null) {
-      _sortState = txSortState;
-    }
-    if (_filterState == null) {
-      _filterState = txFilterState;
-    }
+    _sortState ??= txSortState;
+    _filterState ??= txFilterState;
 
     return Container(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: EnvoySpacing.medium1,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -192,54 +190,54 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
               TextButton(
                 onPressed: () {
                   setState(() {
-                    _filterState = Set()..addAll(TransactionFilters.values);
+                    _filterState = {}..addAll(TransactionFilters.values);
                   });
                 },
-                child: Text(
-                  S().component_reset,
-                  style: filterButtonTextStyle,
-                ),
                 style: TextButton.styleFrom(
                   foregroundColor: Theme.of(context).primaryColor,
                   splashFactory: NoSplash.splashFactory,
                 ),
+                child: Text(
+                  S().component_reset,
+                  style: filterButtonTextStyle,
+                ),
               )
             ],
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           Row(
             children: [
               EnvoyFilterChip(
                 icon: Icons.call_made,
                 text: S().activity_sent,
                 selected:
-                    _filterState?.contains(TransactionFilters.Sent) ?? false,
+                    _filterState?.contains(TransactionFilters.sent) ?? false,
                 onTap: () {
-                  final Set<TransactionFilters> newState = Set()
+                  final Set<TransactionFilters> newState = {}
                     ..addAll(_filterState!);
-                  if (_filterState!.contains(TransactionFilters.Sent)) {
-                    newState.remove(TransactionFilters.Sent);
+                  if (_filterState!.contains(TransactionFilters.sent)) {
+                    newState.remove(TransactionFilters.sent);
                   } else {
-                    newState.add(TransactionFilters.Sent);
+                    newState.add(TransactionFilters.sent);
                   }
                   setState(() {
                     _filterState = newState;
                   });
                 },
               ),
-              Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
               EnvoyFilterChip(
                 icon: Icons.call_received,
-                selected: _filterState?.contains(TransactionFilters.Received) ??
+                selected: _filterState?.contains(TransactionFilters.received) ??
                     false,
                 text: S().activity_received,
                 onTap: () {
-                  final Set<TransactionFilters> newState = Set()
+                  final Set<TransactionFilters> newState = {}
                     ..addAll(_filterState!);
-                  if (_filterState!.contains(TransactionFilters.Received)) {
-                    newState.remove(TransactionFilters.Received);
+                  if (_filterState!.contains(TransactionFilters.received)) {
+                    newState.remove(TransactionFilters.received);
                   } else {
-                    newState.add(TransactionFilters.Received);
+                    newState.add(TransactionFilters.received);
                   }
                   setState(() {
                     _filterState = newState;
@@ -248,7 +246,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
               )
             ],
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -261,13 +259,13 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
                     _sortState = TransactionSortTypes.newestFirst;
                   });
                 },
-                child: Text(
-                  S().component_reset,
-                  style: filterButtonTextStyle,
-                ),
                 style: TextButton.styleFrom(
                   foregroundColor: Theme.of(context).primaryColor,
                   splashFactory: NoSplash.splashFactory,
+                ),
+                child: Text(
+                  S().component_reset,
+                  style: filterButtonTextStyle,
                 ),
               )
             ],
@@ -312,7 +310,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
               });
             },
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
             S().component_Apply,
             type: EnvoyButtonTypes.primaryModal,
@@ -327,7 +325,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
               }
             },
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
         ],
       ),
     );
@@ -349,9 +347,7 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
   Widget build(BuildContext context) {
     final coinSort = ref.watch(coinTagSortStateProvider);
 
-    if (_sortState == null) {
-      _sortState = coinSort;
-    }
+    _sortState ??= coinSort;
     final titleStyle = Theme.of(context)
         .textTheme
         .titleMedium
@@ -365,13 +361,13 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
             fontSize: 14);
 
     return Container(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: EnvoySpacing.medium1,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -385,18 +381,18 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
                     _sortState = CoinTagSortTypes.sortByTagNameAsc;
                   });
                 },
-                child: Text(
-                  S().component_reset,
-                  style: filterButtonTextStyle,
-                ),
                 style: TextButton.styleFrom(
                   foregroundColor: Theme.of(context).primaryColor,
                   splashFactory: NoSplash.splashFactory,
                 ),
+                child: Text(
+                  S().component_reset,
+                  style: filterButtonTextStyle,
+                ),
               )
             ],
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           CheckBoxFilterItem(
             text: S().filter_sortBy_aToZ,
             checked: _sortState == CoinTagSortTypes.sortByTagNameAsc,
@@ -436,7 +432,7 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
               });
             },
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           EnvoyButton(
             S().component_Apply,
             type: EnvoyButtonTypes.primaryModal,
@@ -448,7 +444,7 @@ class _CoinTagsFilterWidgetState extends ConsumerState<CoinTagsFilterWidget> {
               }
             },
           ),
-          Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
         ],
       ),
     );
@@ -461,8 +457,11 @@ class CheckBoxFilterItem extends StatelessWidget {
   final String text;
   final GestureTapCallback onTap;
 
-  CheckBoxFilterItem(
-      {required this.checked, required this.text, required this.onTap});
+  const CheckBoxFilterItem(
+      {super.key,
+      required this.checked,
+      required this.text,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -470,7 +469,7 @@ class CheckBoxFilterItem extends StatelessWidget {
       onTap: onTap,
       splashFactory: NoSplash.splashFactory,
       child: Container(
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           vertical: EnvoySpacing.medium1,
         ),
         child: Row(
@@ -479,24 +478,24 @@ class CheckBoxFilterItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Transform.translate(
-              offset: Offset(0, 1.6),
+              offset: const Offset(0, 1.6),
               child: checked
                   ? Icon(
                       CupertinoIcons.checkmark_alt_circle_fill,
                       color: Theme.of(context).primaryColor,
                       size: 24,
                     )
-                  : Icon(
+                  : const Icon(
                       CupertinoIcons.circle,
-                      color: newColorScheme.EnvoyColors.surface2,
+                      color: new_color_scheme.EnvoyColors.surface2,
                       size: 24,
                     ),
             ),
-            Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+            const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
             Text(
               text,
               style: EnvoyTypography.body
-                  .copyWith(color: newColorScheme.EnvoyColors.textPrimary),
+                  .copyWith(color: new_color_scheme.EnvoyColors.textPrimary),
             )
           ],
         ),
@@ -511,11 +510,10 @@ class SlidingToggle extends StatefulWidget {
   final Function(String value) onChange;
 
   const SlidingToggle(
-      {Key? key,
+      {super.key,
       required this.value,
       required this.onChange,
-      this.duration = const Duration(milliseconds: 250)})
-      : super(key: key);
+      this.duration = const Duration(milliseconds: 250)});
 
   @override
   State<SlidingToggle> createState() => _SlidingToggleState();
@@ -525,13 +523,13 @@ class _SlidingToggleState extends State<SlidingToggle>
     with SingleTickerProviderStateMixin {
   String value = "Tx"; // TODO: FIGMA
 
-  final Duration _duration = Duration(milliseconds: 150);
+  final Duration _duration = const Duration(milliseconds: 150);
   late AnimationController _animationController;
   late Animation<Alignment> _slidingSegmentAnimation;
   late Animation<Color?> _textColorAnimation;
   late Animation<Color?> _activityIconColorAnimation;
   late Animation<Color?> _tagsIconColorAnimation;
-  final Color _iconDisabledColor = newColorScheme.EnvoyColors.textTertiary;
+  final Color _iconDisabledColor = new_color_scheme.EnvoyColors.textTertiary;
   String _text = "Activity"; // TODO: FIGMA
 
   @override
@@ -613,11 +611,13 @@ class _SlidingToggleState extends State<SlidingToggle>
       });
     });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (value == "Tx") // TODO: FIGMA
+      if (value == "Tx") {
+        // TODO: FIGMA
         _animationController.reverse();
-      else
+      } else {
         _animationController.animateTo(1.0,
-            duration: Duration(milliseconds: 0));
+            duration: const Duration(milliseconds: 0));
+      }
     });
   }
 
@@ -633,17 +633,19 @@ class _SlidingToggleState extends State<SlidingToggle>
             if (_animationController.isAnimating) {
               _animationController.stop();
             }
-            if (value == "Tx") // TODO: FIGMA
+            if (value == "Tx") {
+              // TODO: FIGMA
               _animationController.reverse();
-            else
+            } else {
               _animationController.forward();
+            }
             widget.onChange(value);
           },
           child: Container(
-            constraints: BoxConstraints.tight(Size(120, 34)),
+            constraints: BoxConstraints.tight(const Size(120, 34)),
             child: Container(
               decoration: BoxDecoration(
-                  color: newColorScheme.EnvoyColors.solidWhite,
+                  color: new_color_scheme.EnvoyColors.solidWhite,
                   borderRadius: BorderRadius.circular(EnvoySpacing.medium3)),
               child: Stack(
                 children: [
@@ -653,9 +655,9 @@ class _SlidingToggleState extends State<SlidingToggle>
                     child: FractionallySizedBox(
                       widthFactor: 0.75,
                       child: Container(
-                        margin: EdgeInsets.all(2),
+                        margin: const EdgeInsets.all(2),
                         decoration: BoxDecoration(
-                            color: newColorScheme.EnvoyColors.accentPrimary,
+                            color: new_color_scheme.EnvoyColors.accentPrimary,
                             borderRadius:
                                 BorderRadius.circular(EnvoySpacing.medium3)),
                       ),
@@ -671,8 +673,8 @@ class _SlidingToggleState extends State<SlidingToggle>
                   ),
                   AlignTransition(
                     alignment: Tween(
-                            begin: Alignment(.85, 0.0),
-                            end: Alignment(-.2, 0.0))
+                            begin: const Alignment(.85, 0.0),
+                            end: const Alignment(-.2, 0.0))
                         .animate(CurvedAnimation(
                             parent: _animationController,
                             curve: Curves.easeInOutCubic)),
@@ -685,22 +687,20 @@ class _SlidingToggleState extends State<SlidingToggle>
                   ),
                   AlignTransition(
                       alignment: Tween(
-                              begin: Alignment(-.12, 0.0),
-                              end: Alignment(.45, 0))
+                              begin: const Alignment(-.12, 0.0),
+                              end: const Alignment(.45, 0))
                           .animate(CurvedAnimation(
                               parent: _animationController,
                               curve: Curves.easeInOutCubic)),
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 2),
-                        child: Container(
-                          child: Text(
-                            _text,
-                            key: ValueKey(_text),
-                            //prevent unnecessary overflows, container size is fixed
-                            textScaler: TextScaler.linear(1),
-                            textAlign: TextAlign.start,
-                            style: textTheme,
-                          ),
+                        child: Text(
+                          _text,
+                          key: ValueKey(_text),
+                          //prevent unnecessary overflows, container size is fixed
+                          textScaler: const TextScaler.linear(1),
+                          textAlign: TextAlign.start,
+                          style: textTheme,
                         ),
                       )),
                 ],

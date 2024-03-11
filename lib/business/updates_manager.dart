@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:envoy/business/scheduler.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:envoy/business/server.dart';
@@ -32,13 +33,13 @@ class UpdatesManager {
   }
 
   UpdatesManager._internal() {
-    print("Instance of UpdatesManager created!");
+    kPrint("Instance of UpdatesManager created!");
 
     // Go fetch the latest from Server
     _fetchUpdates();
 
     // Check once an hour
-    Timer.periodic(Duration(hours: 1), (_) {
+    Timer.periodic(const Duration(hours: 1), (_) {
       _fetchUpdates();
     });
   }
@@ -48,20 +49,20 @@ class UpdatesManager {
         .fetchFirmwareUpdateInfo(0) // Gen1
         .then((fw) => _processFw(fw))
         .catchError((e) {
-      print("Couldn't fetch firmware: " + e.toString());
+      kPrint("Couldn't fetch firmware: $e");
     });
 
     Server()
         .fetchFirmwareUpdateInfo(1) // Gen2
         .then((fw) => _processFw(fw))
         .catchError((e) {
-      print("Couldn't fetch firmware: " + e.toString());
+      kPrint("Couldn't fetch firmware: $e");
     });
   }
 
   _processFw(FirmwareUpdate fw) async {
-    var StoredInfo = await es.getStoredFirmware(fw.deviceId);
-    String? storedVersion = StoredInfo?.storedVersion;
+    var storedInfo = await es.getStoredFirmware(fw.deviceId);
+    String? storedVersion = storedInfo?.storedVersion;
 
     if (fw.version != storedVersion) {
       final fwBinary = await http.get(fw.url);
@@ -79,7 +80,7 @@ class UpdatesManager {
       }
 
       final fileName =
-          fw.version + (fw.deviceId == 0 ? "-founders" : "") + "-passport.bin";
+          "${fw.version}${fw.deviceId == 0 ? "-founders" : ""}-passport.bin";
       ls.saveFileBytes(fileName, fwBinary.bodyBytes);
       es.addNewFirmware(fw.deviceId, fw.version, fileName);
     }
@@ -98,9 +99,8 @@ class UpdatesManager {
       String? storedFwVersion = await getStoredFwVersionString(deviceId);
 
       if (storedFwVersion != null) {
-        final fileName = storedFwVersion +
-            (deviceId == 0 ? "-founders" : "") +
-            "-passport.bin";
+        final fileName =
+            "$storedFwVersion${deviceId == 0 ? "-founders" : ""}-passport.bin";
         var newFile = ls.saveFileBytesSync(fileName, file.readAsBytesSync());
         es.addNewFirmware(deviceId, storedFwVersion, fileName);
         return newFile;
@@ -111,8 +111,8 @@ class UpdatesManager {
   }
 
   Future<String?> getStoredFwVersionString(int deviceId) async {
-    var StoredInfo = await es.getStoredFirmware(deviceId);
-    String? storedVersion = StoredInfo?.storedVersion;
+    var storedInfo = await es.getStoredFirmware(deviceId);
+    String? storedVersion = storedInfo?.storedVersion;
     return storedVersion;
   }
 

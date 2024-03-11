@@ -5,30 +5,31 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
 Directory libDirectory =
-    Directory(Directory.current.path + Platform.pathSeparator + "lib");
+    Directory("${Directory.current.path}${Platform.pathSeparator}lib");
 
 List excludedDirs = [
   "${libDirectory.path}${Platform.pathSeparator}l10n",
   "${libDirectory.path}${Platform.pathSeparator}generated",
 ];
 
-Directory arbDirectory = Directory(Directory.current.path +
-    Platform.pathSeparator +
-    "lib" +
-    Platform.pathSeparator +
-    "l10n");
+Directory arbDirectory = Directory(
+    "${Directory.current.path}${Platform.pathSeparator}lib${Platform.pathSeparator}l10n");
 
 main(args) async {
   File baseArbFile =
-      File(arbDirectory.path + Platform.pathSeparator + "intl_en.arb");
+      File("${arbDirectory.path}${Platform.pathSeparator}intl_en.arb");
 
   String arbContent = await baseArbFile.readAsString();
   Map<String, dynamic> textKeys = jsonDecode(arbContent);
-  print("Total Keys: ${textKeys.keys.length}");
+  if (kDebugMode) {
+    print("Total Keys: ${textKeys.keys.length}");
+  }
 
   List<String> excludedKeys = [];
-  textKeys.keys.forEach((element) {
+  for (var element in textKeys.keys) {
     bool foundUsage = false;
     libDirectory.listSync(recursive: true).forEach((file) {
       if (file is File && file.path.endsWith(".dart")) {
@@ -53,10 +54,14 @@ main(args) async {
         excludedKeys.add(element);
       }
     }
-  });
+  }
 
-  print(
-      "Excluded: ${excludedKeys.length} \nAfter filter: ${textKeys.keys.length - excludedKeys.length}\n Generating intl files...");
+  if (kDebugMode) {
+    print(
+        "Excluded: ${excludedKeys.length} \nAfter filter: ${textKeys.keys.length - excludedKeys.length}\n Generating intl files...");
+  }
 
-  print("Excluded keys:\n ${excludedKeys.join("\n")}");
+  if (kDebugMode) {
+    print("Excluded keys:\n ${excludedKeys.join("\n")}");
+  }
 }

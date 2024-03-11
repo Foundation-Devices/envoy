@@ -24,6 +24,8 @@ import 'package:envoy/ui/routes/home_router.dart';
 class LearnCard extends ConsumerStatefulWidget {
   final TextEditingController controller = TextEditingController();
 
+  LearnCard({super.key});
+
   @override
   ConsumerState<LearnCard> createState() => _LearnCardState();
 }
@@ -41,7 +43,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
       padding: const EdgeInsets.all(EnvoySpacing.medium1),
       child: ShaderMask(
         shaderCallback: (Rect rect) {
-          return LinearGradient(
+          return const LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
@@ -56,14 +58,14 @@ class _LearnCardState extends ConsumerState<LearnCard> {
         blendMode: BlendMode.dstOut,
         child: CustomScrollView(
           slivers: [
-            SliverPadding(
+            const SliverPadding(
                 padding: EdgeInsets.symmetric(vertical: EnvoySpacing.xs / 2)),
             SliverToBoxAdapter(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
+                  SizedBox(
                     width: MediaQuery.of(context).size.width -
                         (EnvoySpacing.medium2 + EnvoySpacing.xl),
                     height: EnvoySpacing.medium3,
@@ -84,7 +86,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                           barrierColor: Colors.black.withOpacity(0.2),
                           enableDrag: true,
                           isScrollControlled: true,
-                          shape: RoundedRectangleBorder(
+                          shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(EnvoySpacing.medium1),
                               topRight: Radius.circular(EnvoySpacing.medium1),
@@ -92,14 +94,14 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                           ),
                           showDragHandle: true,
                           builder: (context) {
-                            return LearnFilterWidget();
+                            return const LearnFilterWidget();
                           });
                     },
                     child: Container(
                         height: EnvoySpacing.medium3,
                         width: EnvoySpacing.medium3,
                         decoration: BoxDecoration(
-                            color: learnFilterState.contains(LearnFilters.All)
+                            color: learnFilterState.contains(LearnFilters.all)
                                 ? EnvoyColors.surface2
                                 : EnvoyColors.accentPrimary,
                             shape: BoxShape.circle),
@@ -107,7 +109,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                           padding: const EdgeInsets.all(EnvoySpacing.xs),
                           child: EnvoyIcon(
                             EnvoyIcons.filter,
-                            color: learnFilterState.contains(LearnFilters.All)
+                            color: learnFilterState.contains(LearnFilters.all)
                                 ? EnvoyColors.textTertiary
                                 : EnvoyColors.accentPrimary,
                           ),
@@ -116,10 +118,10 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                 ],
               ),
             ),
-            SliverPadding(
+            const SliverPadding(
                 padding:
                     EdgeInsets.symmetric(vertical: EnvoySpacing.medium2 / 2)),
-            if (learnFilterState.contains(LearnFilters.Videos) &&
+            if (learnFilterState.contains(LearnFilters.videos) &&
                 videos.isNotEmpty)
               SliverToBoxAdapter(
                   child: Column(
@@ -134,7 +136,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                           .copyWith(color: EnvoyColors.textPrimary),
                     ),
                   ),
-                  Container(
+                  SizedBox(
                       height: videoImageHeight + videoInfoHeight,
                       child: ListView.builder(
                           scrollDirection: Axis.horizontal,
@@ -142,8 +144,8 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                           itemBuilder: (context, index) {
                             Video video = videos[index];
                             return Padding(
-                              padding:
-                                  EdgeInsets.only(right: EnvoySpacing.small),
+                              padding: const EdgeInsets.only(
+                                  right: EnvoySpacing.small),
                               child: VideoCard(
                                 video: video,
                               ),
@@ -151,10 +153,10 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                           })),
                 ],
               )),
-            SliverPadding(
+            const SliverPadding(
                 padding:
                     EdgeInsets.symmetric(vertical: EnvoySpacing.medium2 / 2)),
-            if (learnFilterState.contains(LearnFilters.Blogs) &&
+            if (learnFilterState.contains(LearnFilters.blogs) &&
                 blogs.isNotEmpty)
               SliverToBoxAdapter(
                   child: Column(
@@ -169,7 +171,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                           .copyWith(color: EnvoyColors.textPrimary),
                     ),
                   ),
-                  Container(
+                  SizedBox(
                       height: 270.0,
                       child: ListView.builder(
                           scrollDirection: Axis.horizontal,
@@ -177,8 +179,8 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                           itemBuilder: (context, index) {
                             BlogPost blogPost = blogs[index];
                             return Padding(
-                              padding:
-                                  EdgeInsets.only(right: EnvoySpacing.small),
+                              padding: const EdgeInsets.only(
+                                  right: EnvoySpacing.small),
                               child: BlogPostWidget(
                                   blog: blogPost,
                                   onTap: () {
@@ -189,14 +191,14 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                           })),
                 ],
               )),
-            SliverPadding(
+            const SliverPadding(
                 padding:
                     EdgeInsets.symmetric(vertical: EnvoySpacing.medium2 / 2)),
-            if (learnFilterState.contains(LearnFilters.FAQs))
+            if (learnFilterState.contains(LearnFilters.faqs))
               SliverToBoxAdapter(
                 child: Faq(searchText: widget.controller.text),
               ),
-            SliverPadding(
+            const SliverPadding(
                 padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium2)),
           ],
         ),

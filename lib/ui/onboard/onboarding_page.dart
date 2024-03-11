@@ -17,7 +17,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:go_router/go_router.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart' as newColorScheme;
+import 'package:envoy/ui/theme/envoy_colors.dart' as new_color_scheme;
 import 'package:envoy/ui/components/address_widget.dart';
 
 class OnboardingPage extends StatelessWidget {
@@ -58,14 +58,16 @@ class OnboardingPage extends StatelessWidget {
     router.go("/");
 
     /// wait for the go router to push the route
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(const Duration(milliseconds: 100));
 
-    /// Pop until we get to the home page (GoRouter Shell)
-    popUntilGoRoute(context);
+    if (context.mounted) {
+      /// Pop until we get to the home page (GoRouter Shell)
+      popUntilGoRoute(context);
+    }
   }
 
-  OnboardingPage({
-    Key? key,
+  const OnboardingPage({
+    super.key,
     this.qrCode,
     this.clipArt,
     this.text,
@@ -79,14 +81,14 @@ class OnboardingPage extends StatelessWidget {
     this.rightFunction = popUntilHome,
     this.leftFunction = goBack,
     this.right,
-  }) : super(key: key);
+  });
 
   Widget? _determineQr() {
     if (qrCode != null) {
       return FutureBuilder<String>(
           future: qrCode,
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-            return Container(
+            return SizedBox(
               width: double.infinity,
               child: snapshot.hasData
                   ? Center(
@@ -94,10 +96,11 @@ class OnboardingPage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           EnvoyQR(
+                            //TODO: adjust Qr for Boomers
                             dimension: 230,
                             data: snapshot.data!,
                           ),
-                          Container(
+                          SizedBox(
                             width: 250,
                             child: AddressWidget(
                               address: snapshot.data!,
@@ -109,18 +112,18 @@ class OnboardingPage extends StatelessWidget {
                       ),
                     )
                   : Center(
-                      child: Container(
+                      child: SizedBox(
                         height: 260,
                         child: RiveAnimation.asset(
                           "assets/envoy_loader.riv",
                           fit: BoxFit.contain,
-                          animations: ["indeterminate"],
+                          animations: const ["indeterminate"],
                           onInit: (artboard) {
-                            var _stateMachineController =
+                            var stateMachineController =
                                 StateMachineController.fromArtboard(
                                     artboard, 'STM');
-                            artboard.addController(_stateMachineController!);
-                            _stateMachineController
+                            artboard.addController(stateMachineController!);
+                            stateMachineController
                                 .findInput<bool>("indeterminate")
                                 ?.change(true);
                           },
@@ -147,7 +150,7 @@ class OnboardingPage extends StatelessWidget {
                 return AnimatedQrImage.fromUrCryptoRequest(snapshot.data!
                   ..fragmentLength = 20); // NOTE: Adjusted for Jean-Pierre
               } else {
-                return Container(
+                return const SizedBox(
                   height: 150,
                   width: 150,
                   child: CircularProgressIndicator(
@@ -186,10 +189,11 @@ class OnboardingPage extends StatelessWidget {
                                   onTap: () {
                                     leftFunction!(context);
                                   },
-                                  child: Icon(Icons.arrow_back_ios_rounded,
+                                  child: const Icon(
+                                      Icons.arrow_back_ios_rounded,
                                       size: 20)),
                             )
-                          : SizedBox.shrink(),
+                          : const SizedBox.shrink(),
                       rightFunction != null
                           ? Padding(
                               padding:
@@ -198,11 +202,10 @@ class OnboardingPage extends StatelessWidget {
                                   onTap: () {
                                     rightFunction!(context);
                                   },
-                                  child: this.right == null
-                                      ? Icon(Icons.close_rounded)
-                                      : this.right),
+                                  child:
+                                      right ?? const Icon(Icons.close_rounded)),
                             )
-                          : SizedBox.shrink()
+                          : const SizedBox.shrink()
                     ]),
               ),
               if (clipArt != null || _determineQr() != null)
@@ -212,41 +215,41 @@ class OnboardingPage extends StatelessWidget {
                     child: clipArt != null ? clipArt! : _determineQr(),
                   ),
                 ),
+              Flexible(
+                child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [...?text]),
+              ),
             ]),
           ),
-          Column(
-            children: [
-              Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [...?text]),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    navigationDots != 0
-                        ? DotsIndicator(
-                            decorator: DotsDecorator(
-                                size: Size.square(5.0),
-                                activeSize: Size.square(5.0),
-                                spacing: EdgeInsets.symmetric(
-                                    horizontal: EnvoySpacing.xs)),
-                            dotsCount: navigationDots,
-                            position: navigationDotsIndex.toDouble(),
-                          )
-                        : SizedBox.shrink(),
-                    Padding(
-                      padding: const EdgeInsets.all(EnvoySpacing.small),
-                      child: helperTextAbove ?? SizedBox.shrink(),
-                    ),
-                    ...?buttons,
-                    helperTextBelow ?? SizedBox.shrink()
-                  ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                navigationDots != 0
+                    ? Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: DotsIndicator(
+                          decorator: const DotsDecorator(
+                              size: Size.square(5.0),
+                              activeSize: Size.square(5.0),
+                              spacing: EdgeInsets.symmetric(horizontal: 5)),
+                          dotsCount: navigationDots,
+                          position: navigationDotsIndex.toDouble(),
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: helperTextAbove ?? const SizedBox.shrink(),
                 ),
-              ),
-            ],
+                ...?buttons,
+                helperTextBelow ?? const SizedBox.shrink()
+              ],
+            ),
           ),
         ],
       ),
@@ -258,7 +261,7 @@ class OnboardingText extends StatelessWidget {
   final String? header;
   final String? text;
 
-  const OnboardingText({this.header, this.text, Key? key}) : super(key: key);
+  const OnboardingText({this.header, this.text, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -280,7 +283,7 @@ class OnboardingText extends StatelessWidget {
                                 color: EnvoyColors.gray1000,
                                 decoration: TextDecoration.none)
                             .setWeight(FontWeight.w500)))
-                : SizedBox.shrink(),
+                : const SizedBox.shrink(),
             text != null
                 ? Padding(
                     padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
@@ -289,12 +292,12 @@ class OnboardingText extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: EnvoyTypography.info.copyWith(
                         height: 1.2,
-                        color: newColorScheme.EnvoyColors.inactiveDark,
+                        color: new_color_scheme.EnvoyColors.inactiveDark,
                         decoration: TextDecoration.none,
                       ),
                     ),
                   )
-                : SizedBox.shrink()
+                : const SizedBox.shrink()
           ],
         ),
       ),
@@ -308,7 +311,10 @@ class ActionText extends StatelessWidget {
   final Function() action;
 
   const ActionText(
-      {required this.header, required this.text, required this.action});
+      {super.key,
+      required this.header,
+      required this.text,
+      required this.action});
 
   @override
   Widget build(BuildContext context) {
@@ -341,8 +347,9 @@ class LinkText extends StatelessWidget {
   final TextStyle? textStyle;
   final TextStyle? linkStyle;
 
-  LinkText(
-      {required this.text,
+  const LinkText(
+      {super.key,
+      required this.text,
       this.onTap,
       this.textStyle,
       this.linkStyle,
@@ -353,8 +360,9 @@ class LinkText extends StatelessWidget {
     TextStyle textStyleBuild = textStyle == null
         ? Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 13)
         : textStyle!;
-    TextStyle linkStyleBuild =
-        linkStyle == null ? TextStyle(color: EnvoyColors.darkTeal) : linkStyle!;
+    TextStyle linkStyleBuild = linkStyle == null
+        ? const TextStyle(color: EnvoyColors.darkTeal)
+        : linkStyle!;
 
     List<TextSpan> spans = [];
 
@@ -404,14 +412,13 @@ class OnboardingButton extends StatelessWidget {
   final bool enabled;
 
   const OnboardingButton(
-      {Key? key,
+      {super.key,
       required this.label,
       this.type = EnvoyButtonTypes.primary,
       this.textStyle,
-      this.fontWeight = null,
+      this.fontWeight,
       this.enabled = true,
-      required this.onTap})
-      : super(key: key);
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -421,7 +428,7 @@ class OnboardingButton extends StatelessWidget {
         label,
         onTap: onTap,
         fontWeight: fontWeight,
-        textStyle: this.textStyle,
+        textStyle: textStyle,
         type: type,
       ),
     );

@@ -8,7 +8,7 @@ class MockQrView extends StatelessWidget {
   final Function()? happyPath;
   final Function()? unhappyPath;
 
-  MockQrView({this.happyPath, this.unhappyPath});
+  const MockQrView({super.key, this.happyPath, this.unhappyPath});
 
   @override
   Widget build(BuildContext context) {

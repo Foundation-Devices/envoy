@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-const seed_en = [
+const List<String> seedEn = [
   "abandon",
   "ability",
   "able",

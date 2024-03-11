@@ -6,6 +6,7 @@ import 'dart:convert';
 
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -18,9 +19,9 @@ class HideStateNotifier extends ChangeNotifier {
     LocalStorage().readSecure("balance_hidden").then((value) {
       if (value != null) {
         List<dynamic> savedState = jsonDecode(value);
-        savedState.forEach((element) {
-          if (element is String) amountHiddenAccounts.add(element);
-        });
+        for (var state in savedState) {
+          if (state is String) amountHiddenAccounts.add(state);
+        }
         notifyListeners();
       }
     });
@@ -42,7 +43,7 @@ class HideStateNotifier extends ChangeNotifier {
     try {
       LocalStorage().saveSecure("balance_hidden", jsonEncode(stateAsList));
     } catch (e) {
-      print(e);
+      kPrint(e);
     }
   }
 }

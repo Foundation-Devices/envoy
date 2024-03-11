@@ -158,8 +158,8 @@ String truncateWithEllipsisInCenter(String text, int maxLength) {
     return text;
   }
 
-  final ellipsis = '...';
-  final ellipsisLength = ellipsis.length;
+  const ellipsis = '...';
+  const ellipsisLength = ellipsis.length;
 
   final halfMaxLength = (maxLength - ellipsisLength) ~/ 2;
   final firstHalf = text.substring(0, halfMaxLength);
@@ -187,6 +187,7 @@ Widget displayIcon(Account account, AmountDisplayUnit unit) {
 
   if (unit == AmountDisplayUnit.btc) {
     return getBtcIcon(account);
-  } else
+  } else {
     return getSatsIcon(account);
+  }
 }

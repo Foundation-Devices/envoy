@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+// ignore_for_file: constant_identifier_names
+
 import 'dart:async';
 
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
@@ -27,15 +29,14 @@ class EnvoyToastRoute<T> extends OverlayRoute<T> {
 
   EnvoyToastRoute({
     required this.envoy,
-    RouteSettings? settings,
+    super.settings,
   })  : _builder = Builder(builder: (BuildContext innerContext) {
           return GestureDetector(
             onTap: envoy.onTap != null ? () => envoy.onTap!(envoy) : null,
             child: envoy,
           );
         }),
-        _onStatusChanged = envoy.onStatusChanged,
-        super(settings: settings) {
+        _onStatusChanged = envoy.onStatusChanged {
     _configureAlignment();
   }
 

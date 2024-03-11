@@ -2,6 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+//TODO: Reimplement AnimatedQrImage to follow proper widget conventions.
+// ignore_for_file: prefer_const_constructors_in_immutables
+
 import 'dart:async';
 import 'dart:typed_data';
 
@@ -13,6 +16,7 @@ import 'package:ur/ur.dart';
 
 class AnimatedQrImage extends StatefulWidget {
   // We can either iterate over a 'raw' UrEncoder (to send binary messages)...
+
   late final UrEncoder? urEncoder;
 
   // ...or a CryptoRequest object that has its own encoder within
@@ -22,12 +26,14 @@ class AnimatedQrImage extends StatefulWidget {
   final double? size;
 
   AnimatedQrImage(Uint8List message,
-      {this.refreshRate = 3,
+      {super.key,
+      this.refreshRate = 3,
       int maxFragmentLength = 100,
       this.size,
       this.cryptoRequest,
       String urType = "bytes",
-      bool binaryCborTag = false}) {
+      bool binaryCborTag = false,
+      this.urEncoder}) {
     List<int> tag = [];
     if (binaryCborTag) {
       // https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2020-005-ur.md#canonical-cbor
@@ -50,7 +56,7 @@ class AnimatedQrImage extends StatefulWidget {
   }
 
   AnimatedQrImage.fromUrCryptoRequest(CryptoRequest request,
-      {this.refreshRate = 5, this.size, this.urEncoder})
+      {super.key, this.refreshRate = 5, this.size, this.urEncoder})
       : cryptoRequest = request;
 
   void onLoad(BuildContext context) {}
@@ -66,7 +72,7 @@ class AnimatedQrImageState extends State<AnimatedQrImage> {
 
   void startTimer() {
     var duration = Duration(milliseconds: 1000 ~/ widget.refreshRate);
-    _timer = new Timer.periodic(duration, (Timer timer) {
+    _timer = Timer.periodic(duration, (Timer timer) {
       setState(() {});
     });
   }
@@ -78,6 +84,7 @@ class AnimatedQrImageState extends State<AnimatedQrImage> {
     widget.onLoad(context);
   }
 
+  @override
   void dispose() {
     _timer.cancel();
     super.dispose();
