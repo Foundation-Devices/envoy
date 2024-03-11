@@ -86,19 +86,23 @@ class _EraseWalletsAndBackupsWarningState
                         },
                         controller: _pageController,
                         children: [
-                          Text(
-                            Platform.isAndroid
-                                ? S()
-                                    .backups_erase_wallets_and_backups_modal_1_2_android_subheading
-                                : S()
-                                    .backups_erase_wallets_and_backups_modal_1_2_ios_subheading,
-                            textAlign: TextAlign.center,
-                            style: EnvoyTypography.info,
+                          SingleChildScrollView(
+                            child: Text(
+                              Platform.isAndroid
+                                  ? S()
+                                      .backups_erase_wallets_and_backups_modal_1_2_android_subheading
+                                  : S()
+                                      .backups_erase_wallets_and_backups_modal_1_2_ios_subheading,
+                              textAlign: TextAlign.center,
+                              style: EnvoyTypography.info,
+                            ),
                           ),
-                          Text(
-                            S().backups_erase_wallets_and_backups_modal_2_2_subheading,
-                            textAlign: TextAlign.center,
-                            style: EnvoyTypography.info,
+                          SingleChildScrollView(
+                            child: Text(
+                              S().backups_erase_wallets_and_backups_modal_2_2_subheading,
+                              textAlign: TextAlign.center,
+                              style: EnvoyTypography.info,
+                            ),
                           ),
                         ],
                       ),
