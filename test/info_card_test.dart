@@ -150,6 +150,35 @@ class DetailsWidgetTestCases extends StatelessWidget {
                 ),
               ),
             )),
+        EnvoyInfoCardListItem(
+            title:
+                '${S().coindetails_overlay_confirmationIn} ~$confirmationTime more text',
+            icon: const EnvoyIcon(EnvoyIcons.clock,
+                color: EnvoyColors.textPrimary, size: EnvoyIconSize.extraSmall),
+            trailing: Container(
+              height: EnvoySpacing.medium2,
+              decoration: BoxDecoration(
+                  color: EnvoyColors.accentPrimary,
+                  borderRadius: BorderRadius.circular(EnvoySpacing.small)),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: EnvoySpacing.medium1),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    const EnvoyIcon(EnvoyIcons.rbf_boost,
+                        color: EnvoyColors.textPrimaryInverse,
+                        size: EnvoyIconSize.small),
+                    const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                    Text(S().coindetails_overlay_confirmation_boost,
+                        style: EnvoyTypography.button.copyWith(
+                          color: EnvoyColors.textPrimaryInverse,
+                        ))
+                  ],
+                ),
+              ),
+            )),
         const EnvoyInfoCardListItem(
           title: "Boosted Fee",
           icon: EnvoyIcon(EnvoyIcons.rbf_boost,

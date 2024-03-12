@@ -38,7 +38,7 @@ class EnvoyInfoCardListItem extends StatelessWidget {
           Flexible(
             flex: flexAlignment == FlexAlignment.flexRight ? 8 : 5,
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
