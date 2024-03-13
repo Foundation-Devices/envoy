@@ -32,8 +32,7 @@ class AnimatedQrImage extends StatefulWidget {
       this.size,
       this.cryptoRequest,
       String urType = "bytes",
-      bool binaryCborTag = false,
-      this.urEncoder}) {
+      bool binaryCborTag = false}) {
     List<int> tag = [];
     if (binaryCborTag) {
       // https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2020-005-ur.md#canonical-cbor
