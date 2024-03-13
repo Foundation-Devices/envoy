@@ -27,49 +27,43 @@ class EnvoyDialog extends StatelessWidget {
         minHeight: 270,
         maxWidth: MediaQuery.of(context).size.width * 0.80,
       ),
-      child: Flexible(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              dismissible
-                  ? Align(
-                      alignment:
-                          Alignment.centerRight.add(const Alignment(.1, 0)),
-                      child: IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    )
-                  : const SizedBox(),
-              title != null
-                  ? Text(title ?? '',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge
-                          ?.copyWith(fontWeight: FontWeight.w500, fontSize: 24))
-                  : const SizedBox(),
-              Padding(padding: EdgeInsets.all(title != null ? 8 : 0)),
-              Flexible(
-                child: SingleChildScrollView(
-                  child: content ?? Container(),
-                ),
-              ),
-              Padding(padding: EdgeInsets.all(paddingBottom)),
-              ...actions?.map((widget) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: widget,
-                    );
-                  }).toList() ??
-                  [],
-            ],
-          ),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            dismissible
+                ? Align(
+                    alignment:
+                        Alignment.centerRight.add(const Alignment(.1, 0)),
+                    child: IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  )
+                : const SizedBox(),
+            title != null
+                ? Text(title ?? '',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(fontWeight: FontWeight.w500, fontSize: 24))
+                : const SizedBox(),
+            Padding(padding: EdgeInsets.all(title != null ? 8 : 0)),
+            content ?? Container(),
+            Padding(padding: EdgeInsets.all(paddingBottom)),
+            ...actions?.map((widget) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: widget,
+                  );
+                }).toList() ??
+                [],
+          ],
         ),
       ),
     );

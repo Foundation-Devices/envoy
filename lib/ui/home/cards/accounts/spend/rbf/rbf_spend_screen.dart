@@ -65,6 +65,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     _originalTx = widget.rbfSpendState.originalTx;
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      //add the note as staging note
+      EnvoyStorage().getTxNote(widget.rbfSpendState.originalTx.txId).then(
+          (value) => ref.read(stagingTxNoteProvider.notifier).state = value);
       _checkInputsChanged();
       ref
           .read(spendTransactionProvider.notifier)
@@ -87,13 +90,14 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
             ? S().coincontrol_tx_detail_subheading
             : S().coincontrol_txDetail_subheading_passport;
 
-    bool canPoop =
+    bool canPop =
         !(broadcastProgress == BroadcastProgress.inProgress) && !_rebuildingTx;
     ProviderContainer scope = ProviderScope.containerOf(context);
 
     return PopScope(
-      canPop: canPoop,
+      canPop: canPop,
       onPopInvoked: (didPop) {
+        ref.read(stagingTxNoteProvider.notifier).state = null;
         clearSpendState(scope);
       },
       child: background(
@@ -664,6 +668,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
   }
 
   bool hapticCalled = false;
+
   void addHapticFeedback() async {
     if (hapticCalled) return;
     hapticCalled = true;

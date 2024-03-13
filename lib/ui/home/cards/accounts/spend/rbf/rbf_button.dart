@@ -65,7 +65,8 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
   @override
   void initState() {
     super.initState();
-    _checkIfCanBoost();
+    WidgetsBinding.instance
+        .addPostFrameCallback((timeStamp) => _checkIfCanBoost());
   }
 
   Future<void> _checkIfCanBoost() async {
@@ -84,8 +85,17 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
           _canBoost = true;
         });
         return;
+      } else {
+        setState(() {
+          _canBoost = false;
+          _isLoading = false;
+        });
       }
     } catch (e) {
+      setState(() {
+        _canBoost = false;
+        _isLoading = false;
+      });
       kPrint(e);
     }
   }
