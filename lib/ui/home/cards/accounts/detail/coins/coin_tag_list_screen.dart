@@ -127,6 +127,7 @@ class CoinItemWidget extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Flexible(
+                          flex: 2,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,20 +145,23 @@ class CoinItemWidget extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  Consumer(
-                    builder: (context, ref, child) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 4.5),
-                        child: SizedBox(
-                          height: 34,
-                          child: CoinTagBalanceWidget(
-                            coinTag: tag,
-                            isListScreen: isInListScreen,
+                  Flexible(
+                    flex: 2,
+                    child: Consumer(
+                      builder: (context, ref, child) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 4.5),
+                          child: SizedBox(
+                            height: 34,
+                            child: CoinTagBalanceWidget(
+                              coinTag: tag,
+                              isListScreen: isInListScreen,
+                            ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),

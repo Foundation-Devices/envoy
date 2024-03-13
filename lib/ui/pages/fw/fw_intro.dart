@@ -28,15 +28,24 @@ class FwIntroPage extends StatelessWidget {
       },
       clipArt: Image.asset("assets/fw_intro.png"),
       text: [
-        OnboardingText(header: S().envoy_fw_intro_heading),
-        LinkText(
-            text: S().envoy_fw_intro_subheading,
-            linkStyle: EnvoyTypography.button
-                .copyWith(color: EnvoyColors.accentPrimary),
-            onTap: () {
-              launchUrlString(
-                  "https://github.com/Foundation-Devices/passport2/releases");
-            })
+        Flexible(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                OnboardingText(header: S().envoy_fw_intro_heading),
+                LinkText(
+                    text: S().envoy_fw_intro_subheading,
+                    linkStyle: EnvoyTypography.button
+                        .copyWith(color: EnvoyColors.accentPrimary),
+                    onTap: () {
+                      launchUrlString(
+                          "https://github.com/Foundation-Devices/passport2/releases");
+                    }),
+              ],
+            ),
+          ),
+        )
       ],
       navigationDots: 6,
       navigationDotsIndex: 0,
