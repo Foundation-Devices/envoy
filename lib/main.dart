@@ -6,6 +6,7 @@
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/map_data.dart';
 import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/notifications.dart';
@@ -75,6 +76,7 @@ Future<void> initSingletons() async {
   AccountManager.init();
   Notifications.init();
   FeedManager.init();
+  MapData.init();
   ConnectivityManager.init();
 }
 

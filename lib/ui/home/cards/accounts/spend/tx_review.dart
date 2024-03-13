@@ -567,102 +567,116 @@ class _TransactionReviewScreenState
           ),
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                  vertical: EnvoySpacing.small,
-                  horizontal: EnvoySpacing.medium1),
-              child: ListTile(
-                title: Text(header,
-                    textAlign: TextAlign.center,
-                    style: EnvoyTypography.heading),
-                subtitle: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
-                  child: Text(
-                    subHeading,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(fontSize: 13, fontWeight: FontWeight.w400),
-                  ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+                vertical: EnvoySpacing.small, horizontal: EnvoySpacing.medium1),
+            child: ListTile(
+              title: Text(header,
+                  textAlign: TextAlign.center, style: EnvoyTypography.heading),
+              subtitle: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
+                child: Text(
+                  subHeading,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(fontSize: 13, fontWeight: FontWeight.w400),
                 ),
               ),
             ),
-            Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Consumer(builder: (context, ref, child) {
-                    return TransactionReviewCard(
-                      psbt: psbt,
-                      onTxDetailTap: () {
-                        if (transactionModel.psbt == null) return;
-                        Navigator.of(context, rootNavigator: true).push(
-                            PageRouteBuilder(
-                                pageBuilder:
-                                    (context, animation, secondaryAnimation) {
-                                  return StagingTxDetails(
-                                    psbt: transactionModel.psbt!,
-                                  );
+          ),
+          Flexible(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 160),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Consumer(builder: (context, ref, child) {
+                            return TransactionReviewCard(
+                              psbt: psbt,
+                              onTxDetailTap: () {
+                                if (transactionModel.psbt == null) return;
+                                Navigator.of(context, rootNavigator: true).push(
+                                    PageRouteBuilder(
+                                        pageBuilder: (context, animation,
+                                            secondaryAnimation) {
+                                          return StagingTxDetails(
+                                            psbt: transactionModel.psbt!,
+                                          );
+                                        },
+                                        transitionDuration:
+                                            const Duration(milliseconds: 100),
+                                        transitionsBuilder: (context, animation,
+                                            secondaryAnimation, child) {
+                                          return FadeTransition(
+                                            opacity: animation,
+                                            child: child,
+                                          );
+                                        },
+                                        opaque: false,
+                                        fullscreenDialog: true));
+                              },
+                              psbtFinalized: transactionModel.isPSBTFinalized,
+                              loading: transactionModel.loading,
+                              address: address,
+                              feeTitle: S().coincontrol_tx_detail_fee,
+                              feeChooserWidget: FeeChooser(
+                                onFeeSelect: (fee, context, bool customFee) {
+                                  setFee(fee, context, customFee);
+                                  ref
+                                      .read(userHasChangedFeesProvider.notifier)
+                                      .state = true;
                                 },
-                                transitionDuration:
-                                    const Duration(milliseconds: 100),
-                                transitionsBuilder: (context, animation,
-                                    secondaryAnimation, child) {
-                                  return FadeTransition(
-                                    opacity: animation,
-                                    child: child,
-                                  );
-                                },
-                                opaque: false,
-                                fullscreenDialog: true));
-                      },
-                      psbtFinalized: transactionModel.isPSBTFinalized,
-                      loading: transactionModel.loading,
-                      address: address,
-                      feeTitle: S().coincontrol_tx_detail_fee,
-                      feeChooserWidget: FeeChooser(
-                        onFeeSelect: (fee, context, bool customFee) {
-                          setFee(fee, context, customFee);
-                          ref.read(userHasChangedFeesProvider.notifier).state =
-                              true;
-                        },
+                              ),
+                            );
+                          }),
+                          if (feePercentage >= 25)
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: EnvoySpacing.small),
+                              child: feeOverSpendWarning(feePercentage),
+                            ),
+                        ]),
+
+                    // Special warning if we are sending max or the fee changed the TX
+                    if (transactionModel.mode == SpendMode.sendMax ||
+                        showFeeChangeNotice)
+                      ListTile(
+                        subtitle: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 12, horizontal: EnvoySpacing.small),
+                            child: Padding(
+                              padding: const EdgeInsets.all(EnvoySpacing.small),
+                              child: Text(
+                                showFeeChangeNotice
+                                    ? S()
+                                        .coincontrol_tx_detail_feeChange_information
+                                    : S().send_reviewScreen_sendMaxWarning,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w400),
+                                textAlign: TextAlign.center,
+                              ),
+                            )),
                       ),
-                    );
-                  }),
-                  if (feePercentage >= 25)
-                    Padding(
-                      padding: const EdgeInsets.only(top: EnvoySpacing.small),
-                      child: feeOverSpendWarning(feePercentage),
-                    ),
-                ]),
-            // Special warning if we are sending max or the fee changed the TX
-            if (transactionModel.mode == SpendMode.sendMax ||
-                showFeeChangeNotice)
-              ListTile(
-                subtitle: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 12, horizontal: EnvoySpacing.small),
-                    child: Padding(
-                      padding: const EdgeInsets.all(EnvoySpacing.small),
-                      child: Text(
-                        showFeeChangeNotice
-                            ? S().coincontrol_tx_detail_feeChange_information
-                            : S().send_reviewScreen_sendMaxWarning,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontSize: 13, fontWeight: FontWeight.w400),
-                        textAlign: TextAlign.center,
-                      ),
-                    )),
+                  ],
+                ),
               ),
-          ],
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }

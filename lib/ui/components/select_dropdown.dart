@@ -132,33 +132,41 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
                     color: isSelectedOption
                         ? EnvoyColors.accentPrimary
                         : Colors.transparent,
-                    child: Padding(
-                      padding: const EdgeInsets.all(14.0),
-                      //size of the blue background
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            option.label,
-                            style: EnvoyTypography.body.copyWith(
-                              color: isSelectedOption && _isTapped
-                                  ? EnvoyColors.textPrimaryInverse
-                                  : EnvoyColors.textPrimary,
-                            ),
-                          ),
-                          if (_isTapped)
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: EnvoySpacing.medium1),
-                              child: EnvoyIcon(
-                                EnvoyIcons.check,
-                                color: isSelectedOption
-                                    ? EnvoyColors.textPrimaryInverse
-                                    : Colors.transparent,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox.shrink(),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                          //size of the blue background
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                option.label,
+                                style: EnvoyTypography.body.copyWith(
+                                  color: isSelectedOption && _isTapped
+                                      ? EnvoyColors.textPrimaryInverse
+                                      : EnvoyColors.textPrimary,
+                                ),
                               ),
-                            ),
-                        ],
-                      ),
+                              if (_isTapped)
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: EnvoySpacing.medium1),
+                                  child: EnvoyIcon(
+                                    EnvoyIcons.check,
+                                    color: isSelectedOption
+                                        ? EnvoyColors.textPrimaryInverse
+                                        : Colors.transparent,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox.shrink(),
+                      ],
                     ),
                   ),
                 );

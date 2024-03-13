@@ -245,6 +245,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               ),
               Padding(padding: EdgeInsets.all(marginBetweenItems)),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 mainAxisSize: MainAxisSize.max,
                 children: [

@@ -110,7 +110,7 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                             height: 75,
                             child: Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 20.0, vertical: 14),
+                                    horizontal: 20.0),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -118,7 +118,7 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                     Expanded(
                                       child: Column(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
+                                            MainAxisAlignment.center,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
@@ -133,8 +133,10 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                                     overflow:
                                                         TextOverflow.ellipsis),
                                           ),
-                                          // SizedBox(),
+                                          const SizedBox(),
                                           Text(
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
                                             widget.device.type ==
                                                     DeviceType.passportGen12
                                                 ? "Passport" // TODO: FIGMA

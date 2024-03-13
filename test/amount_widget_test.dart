@@ -88,6 +88,7 @@ class AmountWidgetTestCases extends StatelessWidget {
                   decimalDot: true,
                   fxRateFiat: fxRateFiat,
                   symbolFiat: "\$",
+                  alignToEnd: false,
                 ),
                 SizedBox(height: 10),
                 AmountWidget(
@@ -167,6 +168,7 @@ class AmountWidgetTestCases extends StatelessWidget {
                   decimalDot: true,
                   fxRateFiat: fxRateFiat,
                   symbolFiat: "\$",
+                  alignToEnd: false,
                 ),
               ],
             ),

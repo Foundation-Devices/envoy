@@ -36,9 +36,13 @@ class FwMicrosdPage extends ConsumerWidget {
       key: const Key("fw_microsd"),
       clipArt: Image.asset("assets/fw_microsd.png"),
       text: [
-        OnboardingText(
-          header: S().envoy_fw_microsd_heading,
-          text: S().envoy_fw_microsd_subheading,
+        Flexible(
+          child: SingleChildScrollView(
+            child: OnboardingText(
+              header: S().envoy_fw_microsd_heading,
+              text: S().envoy_fw_microsd_subheading,
+            ),
+          ),
         )
       ],
       navigationDots: 6,
