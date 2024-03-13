@@ -17,7 +17,6 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/state/onboarding_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +27,7 @@ import 'package:tor/tor.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/util/console.dart';
 
 class OnboardPrivacySetup extends ConsumerStatefulWidget {
   final bool setUpEnvoyWallet;
@@ -81,148 +81,147 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
         ],
       ),
       header: const PrivacyShieldAnimated(),
-      shield: SingleChildScrollView(
-        child: Flexible(
-          child: Container(
-            margin:
-                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: EnvoySpacing.medium1),
-                  child: Consumer(
-                    builder: (context, ref, child) {
-                      NodeConnectionState nodeConnectionState =
-                          ref.watch(nodeConnectionStateProvider);
-                      bool usingTor =
-                          !ref.watch(privacyOnboardSelectionProvider);
-                      String heading = S().privacy_setting_perfomance_heading;
-                      String subheading =
-                          S().privacy_setting_perfomance_subheading;
-                      if (nodeConnectionState.isConnected && usingTor) {
-                        heading = S().privacySetting_nodeConnected;
-                        subheading = S().privacy_setting_onion_node_sbheading;
-                      }
-                      if (nodeConnectionState.isConnected && !usingTor) {
-                        heading = S().privacySetting_nodeConnected;
-                        subheading =
-                            S().privacy_setting_clearnet_node_subheading;
-                      }
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Padding(
-                              padding: EdgeInsets.all(EnvoySpacing.small)),
-                          Text(
-                            heading,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          const Padding(
-                              padding: EdgeInsets.all(EnvoySpacing.small)),
-                          SizedBox(
-                            width: 250,
-                            child: Text(
-                              subheading,
-                              style: Theme.of(context).textTheme.bodySmall,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-                Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.small),
-                    child: const PrivacyOptionSelect()),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: EnvoySpacing.xs,
-                      horizontal: EnvoySpacing.medium3),
-                  child: Consumer(
-                    builder: (context, ref, child) {
-                      bool betterPerformance0 =
-                          ref.watch(privacyOnboardSelectionProvider);
-                      return betterPerformance0
-                          ? LinkText(
-                              text: S().privacy_privacyMode_torSuggestionOff,
-                              linkStyle: messageStyle?.copyWith(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w900,
-                                  color: EnvoyColors.listAccountTileColors[0]))
-                          : LinkText(
-                              text: S().privacy_privacyMode_torSuggestionOn,
-                              linkStyle: messageStyle?.copyWith(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w900,
-                                  color: EnvoyColors.listAccountTileColors[1]));
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: EnvoySpacing.medium1,
-                      right: EnvoySpacing.medium1,
-                      top: EnvoySpacing.xs),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      EnvoyButton(
-                        S().component_continue,
-                        onTap: () async {
-                          final navigator = Navigator.of(context);
-                          //tor is necessary if user selects onion node
-                          bool torRequire = ref.read(isNodeRequiredTorProvider);
-                          //tor is not required if user selects better performance
-                          bool betterPerformance =
-                              ref.read(privacyOnboardSelectionProvider);
-                          //based on both conditions, set tor enabled or disabled. before entering to the main screen
-                          Settings()
-                              .setTorEnabled(torRequire || !betterPerformance);
-                          LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
-                          if (!widget.setUpEnvoyWallet) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const OnboardPassportWelcomeScreen(),
-                                ));
-                          } else {
-                            //if there is magic recovery seed, go to recover wallet screen else go to welcome screen
-                            try {
-                              if (await EnvoySeed().get() != null) {
-                                navigator.push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        const MagicRecoverWallet()));
-                              } else {
-                                navigator.push(MaterialPageRoute(
-                                  builder: (context) =>
-                                      const OnboardEnvoyWelcomeScreen(),
-                                ));
-                              }
-                            } catch (e) {
-                              navigator.push(MaterialPageRoute(
-                                builder: (context) =>
-                                    const OnboardEnvoyWelcomeScreen(),
-                              ));
-                            }
+      shield: Column(
+        children: [
+          Flexible(
+            child: SingleChildScrollView(
+              child: Container(
+                margin: const EdgeInsets.symmetric(
+                    horizontal: EnvoySpacing.medium2),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium1),
+                      child: Consumer(
+                        builder: (context, ref, child) {
+                          NodeConnectionState nodeConnectionState =
+                              ref.watch(nodeConnectionStateProvider);
+                          bool usingTor =
+                              !ref.watch(privacyOnboardSelectionProvider);
+                          String heading =
+                              S().privacy_setting_perfomance_heading;
+                          String subheading =
+                              S().privacy_setting_perfomance_subheading;
+                          if (nodeConnectionState.isConnected && usingTor) {
+                            heading = S().privacySetting_nodeConnected;
+                            subheading =
+                                S().privacy_setting_onion_node_sbheading;
                           }
+                          if (nodeConnectionState.isConnected && !usingTor) {
+                            heading = S().privacySetting_nodeConnected;
+                            subheading =
+                                S().privacy_setting_clearnet_node_subheading;
+                          }
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Padding(
+                                  padding: EdgeInsets.all(EnvoySpacing.small)),
+                              Text(
+                                heading,
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                              const Padding(
+                                  padding: EdgeInsets.all(EnvoySpacing.small)),
+                              SizedBox(
+                                width: 250,
+                                child: Text(
+                                  subheading,
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
+                          );
                         },
-                      )
-                    ],
-                  ),
-                )
-              ],
+                      ),
+                    ),
+                    Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: EnvoySpacing.small),
+                        child: const PrivacyOptionSelect()),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: EnvoySpacing.xs,
+                          horizontal: EnvoySpacing.medium3),
+                      child: Consumer(
+                        builder: (context, ref, child) {
+                          bool betterPerformance0 =
+                              ref.watch(privacyOnboardSelectionProvider);
+                          return betterPerformance0
+                              ? LinkText(
+                                  text:
+                                      S().privacy_privacyMode_torSuggestionOff,
+                                  linkStyle: messageStyle?.copyWith(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w900,
+                                      color:
+                                          EnvoyColors.listAccountTileColors[0]))
+                              : LinkText(
+                                  text: S().privacy_privacyMode_torSuggestionOn,
+                                  linkStyle: messageStyle?.copyWith(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w900,
+                                      color: EnvoyColors
+                                          .listAccountTileColors[1]));
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.only(
+                left: EnvoySpacing.medium1,
+                right: EnvoySpacing.medium1,
+                top: EnvoySpacing.xs),
+            child: EnvoyButton(
+              S().component_continue,
+              onTap: () async {
+                final navigator = Navigator.of(context);
+                //tor is necessary if user selects onion node
+                bool torRequire = ref.read(isNodeRequiredTorProvider);
+                //tor is not required if user selects better performance
+                bool betterPerformance =
+                    ref.read(privacyOnboardSelectionProvider);
+                //based on both conditions, set tor enabled or disabled. before entering to the main screen
+                Settings().setTorEnabled(torRequire || !betterPerformance);
+                LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
+                if (!widget.setUpEnvoyWallet) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const OnboardPassportWelcomeScreen(),
+                      ));
+                } else {
+                  //if there is magic recovery seed, go to recover wallet screen else go to welcome screen
+                  try {
+                    if (await EnvoySeed().get() != null) {
+                      navigator.push(MaterialPageRoute(
+                          builder: (context) => const MagicRecoverWallet()));
+                    } else {
+                      navigator.push(MaterialPageRoute(
+                        builder: (context) => const OnboardEnvoyWelcomeScreen(),
+                      ));
+                    }
+                  } catch (e) {
+                    navigator.push(MaterialPageRoute(
+                      builder: (context) => const OnboardEnvoyWelcomeScreen(),
+                    ));
+                  }
+                }
+              },
+            ),
+          )
+        ],
       ),
     );
   }
@@ -596,6 +595,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                           .bodyMedium
                           ?.copyWith(fontSize: 10.5),
                       textAlign: TextAlign.center,
+                      maxLines: 2,
                     ),
                   )
                 ],
@@ -639,6 +639,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                         .bodyMedium
                         ?.copyWith(fontSize: 10.5),
                     textAlign: TextAlign.center,
+                    maxLines: 2,
                   )
                 ],
               )),

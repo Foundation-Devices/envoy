@@ -43,9 +43,12 @@ class PrivacyCardState extends State<PrivacyCard> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      setState(() {
-        _useLocalAuth = LocalStorage().prefs.getBool("useLocalAuth");
-      });
+      bool? value = LocalStorage().prefs.getBool("useLocalAuth");
+      if (value != null) {
+        setState(() {
+          _useLocalAuth = value;
+        });
+      }
     });
   }
 

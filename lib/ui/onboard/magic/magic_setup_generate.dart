@@ -135,7 +135,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
                 ),
                 SliverToBoxAdapter(
                   child: SizedBox(
-                    height: 280,
+                    height: 340,
                     child: PageView(
                       physics: const NeverScrollableScrollPhysics(),
                       controller: _pageController,
@@ -145,36 +145,42 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: EnvoySpacing.xs,
                                 horizontal: EnvoySpacing.small),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  heading,
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.titleLarge,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: EnvoySpacing.medium1,
-                                    left: EnvoySpacing.medium1,
-                                    right: EnvoySpacing.medium1,
-                                  ),
-                                  child: Text(
-                                    stepSubHeadings[
-                                        stepsHeadings.indexOf(heading)],
-                                    key: ValueKey<String>(
-                                      stepSubHeadings[
-                                          stepsHeadings.indexOf(heading)],
+                            child: Flexible(
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      heading,
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge,
                                     ),
-                                    textAlign: TextAlign.center,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(fontSize: 14),
-                                  ),
-                                )
-                              ],
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        top: EnvoySpacing.medium1,
+                                        left: EnvoySpacing.medium1,
+                                        right: EnvoySpacing.medium1,
+                                      ),
+                                      child: Text(
+                                        stepSubHeadings[
+                                            stepsHeadings.indexOf(heading)],
+                                        key: ValueKey<String>(
+                                          stepSubHeadings[
+                                              stepsHeadings.indexOf(heading)],
+                                        ),
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(fontSize: 14),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
                             ),
                           );
                         })

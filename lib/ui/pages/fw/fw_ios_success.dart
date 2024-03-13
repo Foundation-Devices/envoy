@@ -26,9 +26,13 @@ class FwIosSuccessPage extends StatelessWidget {
       },
       key: const Key("fw_ios_success"),
       text: [
-        OnboardingText(
-          header: S().envoy_fw_success_heading,
-          text: S().envoy_fw_success_subheading_ios,
+        Flexible(
+          child: SingleChildScrollView(
+            child: OnboardingText(
+              header: S().envoy_fw_success_heading,
+              text: S().envoy_fw_success_subheading_ios,
+            ),
+          ),
         ),
       ],
       clipArt: const RiveAnimation.asset(

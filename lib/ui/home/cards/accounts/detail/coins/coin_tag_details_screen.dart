@@ -24,7 +24,6 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
-import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -175,16 +174,14 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               child: _selectedCoin != null
                   ? GestureDetector(
                       onTap: () {}, // if you tap inside the window do not exit
-                      child: Align(
-                          alignment: Alignment.topCenter,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: EnvoySpacing.medium2),
-                            child: CoinDetailsWidget(
-                              coin: _selectedCoin!,
-                              tag: widget.coinTag,
-                            ),
-                          )),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: EnvoySpacing.medium2),
+                        child: CoinDetailsWidget(
+                          coin: _selectedCoin!,
+                          tag: widget.coinTag,
+                        ),
+                      ),
                     )
                   : coinTagDetails(context),
             ),
@@ -196,16 +193,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
 
   Widget coinTagDetails(BuildContext context) {
     final tag = widget.coinTag;
-    final maxContainerHeight = MediaQuery.of(context).size.height * 0.50;
-    double totalTagHeight = tag.coins.length == 1 ? 98 : 108;
-    double textHeight =
-        (EnvoyTypography.info.height ?? 1.3) * EnvoyTypography.info.fontSize!;
-    double extraSpace = getMessage(tag, ref).length < 50 ? 0.0 : textHeight;
-    double coinListHeight =
-        (tag.coins.length * 38).toDouble().clamp(34, maxContainerHeight);
-    if (widget.showCoins) {
-      totalTagHeight += coinListHeight + extraSpace;
-    }
+    const double maxHeight = 400;
+
     Color border = tag.untagged
         ? const Color(0xff808080)
         : tag.getAccount()?.color ?? EnvoyColors.listAccountTileColors[0];
@@ -213,202 +202,131 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
         ? const Color(0xff808080)
         : tag.getAccount()?.color ?? EnvoyColors.listAccountTileColors[0];
 
-    if (tag.coins.isEmpty) {
-      ///for empty state
-      totalTagHeight = 240;
-    }
     //Listen to coin tag lock states
     ref.watch(coinTagLockStateProvider(widget.coinTag));
-    if (tag.coins.length == 1) {
-      ///only show header of the tag
-      totalTagHeight = 108;
-    }
+
     const cardRadius = 24.0;
-    return RawScrollbar(
-      thumbColor: Colors.white38,
-      thumbVisibility: totalTagHeight >= maxContainerHeight,
-
-      interactive: true,
-
-      ///sets up top margin for scroller
-      mainAxisMargin: -100,
-      thickness: 6,
-      trackRadius: const Radius.circular(EnvoySpacing.medium1),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
-      ),
-      child: Stack(
-        fit: StackFit.expand,
+    return SizedBox(
+      height: maxHeight,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            height: _menuHeight,
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            height: _menuVisible ? _menuHeight : 0,
+            padding: const EdgeInsets.only(top: EnvoySpacing.small),
             child: Column(
-              children: [
-                Container(
-                  height: _menuHeight,
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Column(
-                    children: _getMenuItems(context, tag),
-                  ),
-                ),
-              ],
+              children: _getMenuItems(context, tag),
             ),
           ),
-          AnimatedPositioned(
-            top: _menuVisible ? _menuHeight - 8 : 0,
-            right: 0,
-            left: 0,
-            bottom: 0,
-            curve: EnvoyEasing.easeInOut,
-            duration: const Duration(milliseconds: 250),
+          Flexible(
             child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      height: totalTagHeight,
-                      key: _detailWidgetKey,
-                      decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(cardRadius)),
-                        border: Border.all(
-                            color: Colors.black,
-                            width: 2,
-                            style: BorderStyle.solid),
-                        gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              cardBackground,
-                              Colors.black,
-                            ]),
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(
-                                Radius.circular(cardRadius)),
-                            border: Border.all(
-                                color: border,
-                                width: 2,
-                                style: BorderStyle.solid)),
-                        child: ClipRRect(
-                            borderRadius: const BorderRadius.all(
-                                Radius.circular(cardRadius - 2)),
-                            child: StripesBackground(
-                              child: tag.coins.length == 1
-                                  ? singleCoinWidget(context)
-                                  : Column(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        _coinHeader(context),
-                                        (tag.coins.isNotEmpty &&
-                                                tag.coins.length >= 2)
-                                            ? Expanded(
-                                                child: Container(
-                                                  margin: const EdgeInsets
-                                                      .symmetric(
-                                                      vertical: 4,
-                                                      horizontal: 4),
-                                                  decoration: const BoxDecoration(
-                                                      color: Colors.white,
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  cardRadius -
-                                                                      5.5))),
-                                                  child: SizedBox(
-                                                    height: coinListHeight,
-                                                    child: ListView.builder(
-                                                      physics:
-                                                          const BouncingScrollPhysics(),
-                                                      itemCount:
-                                                          tag.coins.length,
-                                                      itemBuilder:
-                                                          (context, index) {
-                                                        Coin coin =
-                                                            tag.coins[index];
-                                                        return InkWell(
-                                                          splashColor: Colors
-                                                              .transparent,
-                                                          onTap: () {
-                                                            selectCoin(
-                                                                context, coin);
-                                                          },
-                                                          child: SizedBox(
-                                                            height: 38,
-                                                            child: Container(
-                                                                alignment:
-                                                                    Alignment
-                                                                        .center,
-                                                                child:
-                                                                    CoinBalanceWidget(
-                                                                  coin: coin,
-                                                                )),
-                                                          ),
-                                                        );
+              padding: const EdgeInsets.all(EnvoySpacing.medium1),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                key: _detailWidgetKey,
+                decoration: BoxDecoration(
+                  borderRadius:
+                      const BorderRadius.all(Radius.circular(cardRadius)),
+                  border: Border.all(
+                      color: Colors.black, width: 2, style: BorderStyle.solid),
+                  gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        cardBackground,
+                        Colors.black,
+                      ]),
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(cardRadius)),
+                      border: Border.all(
+                          color: border, width: 2, style: BorderStyle.solid)),
+                  child: ClipRRect(
+                      borderRadius: const BorderRadius.all(
+                          Radius.circular(cardRadius - 2)),
+                      child: StripesBackground(
+                        child: tag.coins.length == 1
+                            ? singleCoinWidget(context)
+                            : Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  _coinHeader(context),
+                                  (tag.coins.isNotEmpty &&
+                                          tag.coins.length >= 2)
+                                      ? Flexible(
+                                          child: Container(
+                                              margin: const EdgeInsets.all(
+                                                  EnvoySpacing.xs),
+                                              decoration: const BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius: BorderRadius
+                                                      .all(Radius.circular(
+                                                          cardRadius - 5.5))),
+                                              child: ListView(
+                                                shrinkWrap: true,
+                                                children: List.generate(
+                                                  tag.coins.length,
+                                                  (index) {
+                                                    Coin coin =
+                                                        tag.coins[index];
+                                                    return InkWell(
+                                                      splashColor:
+                                                          Colors.transparent,
+                                                      onTap: () {
+                                                        selectCoin(
+                                                            context, coin);
                                                       },
-                                                      padding:
-                                                          tag.coins.length >= 8
-                                                              ? const EdgeInsets
-                                                                  .only(
-                                                                  bottom: 4,
-                                                                  top: 4)
-                                                              : EdgeInsets.zero,
-                                                    ),
-                                                  ),
+                                                      child: Container(
+                                                          alignment:
+                                                              Alignment.center,
+                                                          child:
+                                                              CoinBalanceWidget(
+                                                            coin: coin,
+                                                          )),
+                                                    );
+                                                  },
                                                 ),
-                                              )
-                                            : const SizedBox.shrink(),
-                                        tag.coins.isEmpty
-                                            ? Expanded(
-                                                child: Container(
-                                                  alignment: Alignment.center,
-                                                  margin: const EdgeInsets
-                                                      .symmetric(
-                                                      vertical: 4,
-                                                      horizontal: 4),
-                                                  padding:
-                                                      const EdgeInsets.all(16),
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                          color: Colors.white,
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          16))),
-                                                  child: Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      const GhostListTile(
-                                                        animate: false,
-                                                      ),
-                                                      Text(
-                                                        S().tagged_tagDetails_emptyState_explainer,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodySmall,
-                                                      ),
-                                                    ],
-                                                  ),
+                                              )),
+                                        )
+                                      : const SizedBox.shrink(),
+                                  tag.coins.isEmpty
+                                      ? Flexible(
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                            margin: const EdgeInsets.all(
+                                                EnvoySpacing.xs),
+                                            padding: const EdgeInsets.all(
+                                                EnvoySpacing.medium1),
+                                            decoration: const BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(16))),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                const GhostListTile(
+                                                  animate: false,
                                                 ),
-                                              )
-                                            : const SizedBox.shrink()
-                                      ],
-                                    ),
-                            )),
-                      ),
-                    ),
-                  ],
+                                                Text(
+                                                  S().tagged_tagDetails_emptyState_explainer,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodySmall,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      : const SizedBox.shrink(),
+                                ],
+                              ),
+                      )),
                 ),
               ),
             ),
@@ -435,36 +353,33 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
       child: Consumer(
         builder: (context, ref, child) {
           return Column(
-            mainAxisSize: MainAxisSize.max,
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(
-                child: Container(
-                  width: double.infinity,
-                  height: 42,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Text(
-                        widget.coinTag.name,
-                        style: textStyleWallet,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      CoinSubTitleText(tag),
-                    ],
-                  ),
+              Container(
+                width: double.infinity,
+                height: 42,
+                padding: const EdgeInsets.symmetric(
+                    horizontal: EnvoySpacing.small, vertical: 0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      widget.coinTag.name,
+                      style: textStyleWallet,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    CoinSubTitleText(tag),
+                  ],
                 ),
               ),
               Consumer(
                 builder: (context, ref, child) {
                   return Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                    padding: const EdgeInsets.all(EnvoySpacing.xs),
                     height: 44,
                     child: CoinTagBalanceWidget(coinTag: tag),
                   );

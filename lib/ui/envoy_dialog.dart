@@ -55,7 +55,11 @@ class EnvoyDialog extends StatelessWidget {
                           ?.copyWith(fontWeight: FontWeight.w500, fontSize: 24))
                   : const SizedBox(),
               Padding(padding: EdgeInsets.all(title != null ? 8 : 0)),
-              content ?? Container(),
+              Flexible(
+                child: SingleChildScrollView(
+                  child: content ?? Container(),
+                ),
+              ),
               Padding(padding: EdgeInsets.all(paddingBottom)),
               ...actions?.map((widget) {
                     return Padding(
