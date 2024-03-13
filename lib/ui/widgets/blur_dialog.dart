@@ -18,6 +18,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
   double borderRadius;
   final Alignment alignment;
   bool dismissible;
+  bool linearGradient;
 
   Builder builder;
   late AnimationController _controller;
@@ -32,6 +33,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
     this.alignment = Alignment.center,
     this.cardColor,
     this.borderRadius = 14,
+    this.linearGradient = false,
   });
 
   @override
@@ -105,11 +107,23 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
         builder: (context, child) {
           return BackdropFilter(
             filter: ImageFilter.blur(
-                sigmaX: _filterBlurAnimation!.value,
-                sigmaY: _filterBlurAnimation!.value),
+              sigmaX: _filterBlurAnimation!.value,
+              sigmaY: _filterBlurAnimation!.value,
+            ),
             child: Container(
               constraints: const BoxConstraints.expand(),
-              color: _filterColorAnimation!.value,
+              decoration: BoxDecoration(
+                  gradient: linearGradient
+                      ? LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            blurColor,
+                            Colors.transparent
+                          ], // Adjust colors as needed
+                        )
+                      : null,
+                  color: !linearGradient ? _filterColorAnimation!.value : null),
             ),
           );
         },
@@ -234,18 +248,20 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
 }
 
 // Shows a dialog with a blur background
-Future<T?> showEnvoyDialog<T>(
-    {required BuildContext context,
-    Color blurColor = Colors.black38,
-    Color? cardColor,
-    double blur = 6,
-    routeSettings,
-    Widget? dialog,
-    bool useRootNavigator = false,
-    Alignment alignment = Alignment.center,
-    Builder? builder,
-    bool dismissible = true,
-    double borderRadius = EnvoySpacing.medium2}) async {
+Future<T?> showEnvoyDialog<T>({
+  required BuildContext context,
+  Color blurColor = Colors.black38,
+  Color? cardColor,
+  double blur = 6,
+  routeSettings,
+  Widget? dialog,
+  bool useRootNavigator = false,
+  Alignment alignment = Alignment.center,
+  Builder? builder,
+  bool dismissible = true,
+  double borderRadius = EnvoySpacing.medium2,
+  bool linearGradient = false,
+}) async {
   var route = BlurDialogRoute<T>(
       blur: blur,
       builder: builder ?? Builder(builder: (context) => dialog ?? Container()),
@@ -254,7 +270,8 @@ Future<T?> showEnvoyDialog<T>(
       alignment: alignment,
       dismissible: dismissible,
       settings: routeSettings,
-      borderRadius: borderRadius);
+      borderRadius: borderRadius,
+      linearGradient: linearGradient);
   return await Navigator.of(context, rootNavigator: useRootNavigator)
       .push(route);
 }

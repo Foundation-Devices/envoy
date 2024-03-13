@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/shield_path.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/background.dart';
 
 class Shield extends StatelessWidget {
   const Shield({
@@ -86,4 +87,20 @@ class BoxShadowPainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) {
     return true;
   }
+}
+
+Stack fullScreenShield(Widget child) {
+  //double appBarHeight = AppBar().preferredSize.height;
+  double topAppBarOffset = 10; //appBarHeight ;//+ 10; // check this size
+  return Stack(
+    children: [
+      const AppBackground(),
+      Positioned(
+          top: topAppBarOffset,
+          left: 5,
+          bottom: const BottomAppBar().height ?? 20 + 8,
+          right: 5,
+          child: Shield(child: child))
+    ],
+  );
 }

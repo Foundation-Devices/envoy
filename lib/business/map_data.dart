@@ -104,4 +104,10 @@ class MapData {
 
     return locallyVenues;
   }
+
+  Future<Response> getVenueInfo(int id) async {
+    return await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
+      "https://coinmap.org/api/v1/venues/$id",
+    );
+  }
 }

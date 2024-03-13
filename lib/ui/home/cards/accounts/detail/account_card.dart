@@ -187,9 +187,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
                     Navigator.of(context, rootNavigator: true).push(
                       MaterialPageRoute(builder: (context) {
                         return MediaQuery.removePadding(
-                          context: context,
-                          child: const MarkersPage(),
-                        );
+                            context: context,
+                            child: fullScreenShield(const MarkersPage()));
                       }),
                     );
                   },
