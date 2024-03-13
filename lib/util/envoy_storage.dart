@@ -9,6 +9,7 @@ import 'package:envoy/business/blog_post.dart';
 import 'package:envoy/business/coins.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/media.dart';
+import 'package:envoy/business/venue.dart';
 import 'package:envoy/business/video.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
@@ -60,6 +61,7 @@ const String tagsStoreName = "tags";
 const String preferencesStoreName = "preferences";
 const String blogPostsStoreName = "blog_posts";
 const String exchangeRateStoreName = "exchange_rate";
+const String locationsStoreName = "locations";
 
 ///keeps track of spend input tags, this would be handy to show previously used tags
 ///for example when user trying RBF.
@@ -106,7 +108,10 @@ class EnvoyStorage {
   StoreRef<String, Map> exchangeRateStore =
       StoreRef<String, Map>(exchangeRateStoreName);
 
-  // Store everything except videos and blogs
+  StoreRef<int, String> locationStore =
+      StoreRef<int, String>(locationsStoreName);
+
+  // Store everything except videos, blogs and locations
   Map<String, StoreRef> storesToBackUp = {};
 
   static final EnvoyStorage _instance = EnvoyStorage._();
@@ -618,6 +623,38 @@ class EnvoyStorage {
     } else {
       return null;
     }
+  }
+
+  Future<bool> clearLocationStore() async {
+    var cleared = await locationStore.delete(_db);
+    return cleared > 0;
+  }
+
+  insertLocation(Venue venue) async {
+    await locationStore.record(venue.id).put(_db, jsonEncode(venue));
+  }
+
+  updateLocation(Venue venue) {
+    locationStore.record(venue.id).update(_db, jsonEncode(venue));
+  }
+
+  Venue? transformLocation(RecordSnapshot<int, String> records) {
+    return Venue.fromJson(jsonDecode(records.value));
+  }
+
+  Future<List<Venue?>?> getAllLocations() async {
+    var venues = await locationStore.find(_db);
+
+    return venues.map((e) => transformLocation(e)).toList();
+  }
+
+  Future<Venue?> getLocationById(int id) async {
+    var finder = Finder(filter: Filter.byKey(id));
+    var venue = await locationStore.findFirst(_db, finder: finder);
+    if (venue != null) {
+      return transformLocation(venue);
+    }
+    return null;
   }
 
   Database get db => _db;
