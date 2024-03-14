@@ -501,11 +501,16 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     if (account.wallet.hot) {
       broadcastTx(account, _psbt);
     } else {
-      final psbt = await Navigator.of(context, rootNavigator: false).push(
-          MaterialPageRoute(
-              builder: (context) => Background(
-                  child: PsbtCard(_psbt, account), context: context)));
-      broadcastTx(account, psbt);
+      await Navigator.of(context, rootNavigator: false).push(MaterialPageRoute(
+          builder: (context) => Background(
+              child: PsbtCard(
+                _psbt,
+                account,
+                onScan: (psbt) {
+                  broadcastTx(account, psbt);
+                },
+              ),
+              context: context)));
     }
   }
 
@@ -654,6 +659,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
   }
 
   bool hapticCalled = false;
+
   void addHapticFeedback() async {
     if (hapticCalled) return;
     hapticCalled = true;
