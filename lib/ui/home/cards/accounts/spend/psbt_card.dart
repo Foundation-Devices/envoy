@@ -23,8 +23,10 @@ import 'package:wallet/wallet.dart';
 class PsbtCard extends StatelessWidget {
   final Psbt psbt;
   final Account account;
+  final Function(Psbt)? onSignedPsbtScanned;
 
-  PsbtCard(this.psbt, this.account) : super(key: UniqueKey());
+  PsbtCard(this.psbt, this.account, {this.onSignedPsbtScanned})
+      : super(key: UniqueKey());
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +99,7 @@ class PsbtCard extends StatelessWidget {
                       child: Padding(
                           padding: const EdgeInsets.all(15),
                           child: Consumer(
-                            builder: (context, ref, child) {
+                            builder: (_, ref, child) {
                               return IconButton(
                                 padding: EdgeInsets.zero,
                                 icon: const Icon(
@@ -107,13 +109,17 @@ class PsbtCard extends StatelessWidget {
                                 ),
                                 onPressed: () {
                                   final navigator = Navigator.of(context,
-                                      rootNavigator: true);
-                                  navigator
+                                      rootNavigator: false);
+                                  Navigator.of(context, rootNavigator: true)
                                       .push(MaterialPageRoute(builder: (_) {
                                     return ScannerPage.tx((psbt) async {
                                       Psbt psbtParsed =
                                           await account.wallet.decodePsbt(psbt);
-                                      navigator.pop(psbtParsed);
+                                      if (onSignedPsbtScanned == null) {
+                                        navigator.pop(psbtParsed);
+                                      } else {
+                                        onSignedPsbtScanned?.call(psbtParsed);
+                                      }
                                     });
                                   }));
                                 },
