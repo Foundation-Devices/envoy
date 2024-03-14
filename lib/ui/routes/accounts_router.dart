@@ -20,6 +20,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:envoy/ui/home/cards/buy_bitcoin.dart';
 
 /// Different routes for accounts.
 /// The nested routes cannot start with a slash,
@@ -33,6 +34,9 @@ const ROUTE_ACCOUNTS_HOME = '/account';
 
 const _ACCOUNT_DETAIL = 'details';
 const ROUTE_ACCOUNT_DETAIL = '$ROUTE_ACCOUNTS_HOME/$_ACCOUNT_DETAIL';
+
+const _BUY_BITCOIN = 'buy';
+const ROUTE_BUY_BITCOIN = '$ROUTE_ACCOUNTS_HOME/$_BUY_BITCOIN';
 
 const _ACCOUNT_RECEIVE = 'receive';
 const ROUTE_ACCOUNT_RECEIVE = '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_RECEIVE';
@@ -213,6 +217,12 @@ final accountsRouter = StatefulShellBranch(
                 return wrapWithVerticalAxisAnimation(AccountCard());
               },
             ),
+            GoRoute(
+              path: _BUY_BITCOIN,
+              pageBuilder: (context, state) {
+                return wrapWithVerticalAxisAnimation(const BuyBitcoinCard());
+              },
+            )
           ]),
     ]);
 

@@ -18,14 +18,18 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+
+import '../../../shield.dart';
 
 //ignore: must_be_immutable
 class AccountsCard extends StatefulWidget {
@@ -46,7 +50,45 @@ class AccountsCardState extends State<AccountsCard>
     super.build(context);
     // ignore: unused_local_variable
 
-    return AccountsList();
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Flexible(child: AccountsList()),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: GestureDetector(
+            onTap: () {
+              context.go(
+                ROUTE_BUY_BITCOIN,
+              );
+            },
+            child: QrShield( // TODO: make own widget
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: EnvoySpacing.large3, vertical: EnvoySpacing.xs),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const EnvoyIcon(
+                      EnvoyIcons.btc,
+                      color: EnvoyColors.accentPrimary,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
+                      child: Text(
+                        "Buy",
+                        style: EnvoyTypography.label
+                            .copyWith(color: EnvoyColors.accentPrimary),
+                      ),
+                    ), //TODO: localize
+                  ],
+                ),
+              ),
+            ),
+          ),
+        )
+      ],
+    );
     // final navigator = CardNavigator(push, pop, hideOptions);
     //
     // return WillPopScope(
