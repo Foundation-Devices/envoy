@@ -23,13 +23,11 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
-
-import '../../../shield.dart';
+import 'package:envoy/ui/shield.dart';
 
 //ignore: must_be_immutable
 class AccountsCard extends StatefulWidget {
@@ -62,7 +60,8 @@ class AccountsCardState extends State<AccountsCard>
                 ROUTE_BUY_BITCOIN,
               );
             },
-            child: QrShield( // TODO: make own widget
+            child: QrShield(
+              // TODO: make new widget or modify QrShield
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: EnvoySpacing.large3, vertical: EnvoySpacing.xs),
@@ -76,7 +75,7 @@ class AccountsCardState extends State<AccountsCard>
                     Padding(
                       padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
                       child: Text(
-                        "Buy",
+                        S().component_minishield_buy,
                         style: EnvoyTypography.label
                             .copyWith(color: EnvoyColors.accentPrimary),
                       ),

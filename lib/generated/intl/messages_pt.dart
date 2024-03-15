@@ -1,5 +1,5 @@
 // DO NOT EDIT. This is code generated via package:intl/generate_localized.dart
-// This is a library that provides messages for a en locale. All the
+// This is a library that provides messages for a pt locale. All the
 // messages from the main program should be duplicated here with the same
 // function name.
 
@@ -18,7 +18,7 @@ final messages = new MessageLookup();
 typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
-  String get localeName => 'en';
+  String get localeName => 'pt';
 
   static String m0(period) =>
       "This voucher expired on ${period}.\n\n\nPlease contact the issuer with any voucher-related questions.";
@@ -32,14 +32,15 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "_": MessageLookupByLibrary.simpleMessage("Redeem"),
-        "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
+        "about_appVersion":
+            MessageLookupByLibrary.simpleMessage("Versão da Aplicação"),
         "about_openSourceLicences":
-            MessageLookupByLibrary.simpleMessage("Open Source Licences"),
+            MessageLookupByLibrary.simpleMessage("Licenças de Código Aberto"),
         "about_privacyPolicy":
-            MessageLookupByLibrary.simpleMessage("Privacy Policy"),
-        "about_show": MessageLookupByLibrary.simpleMessage("Show"),
+            MessageLookupByLibrary.simpleMessage("Política de Privacidade"),
+        "about_show": MessageLookupByLibrary.simpleMessage("Mostrar"),
         "about_termsOfUse":
-            MessageLookupByLibrary.simpleMessage("Terms of Use"),
+            MessageLookupByLibrary.simpleMessage("Termos de Uso"),
         "account_details_filter_tags_sortBy":
             MessageLookupByLibrary.simpleMessage("Sort by"),
         "account_details_untagged_card":
@@ -70,15 +71,15 @@ class MessageLookup extends MessageLookupByLibrary {
             "There is no activity to display."),
         "activity_envoyUpdate":
             MessageLookupByLibrary.simpleMessage("Envoy App Updated"),
-        "activity_firmwareUpdate":
-            MessageLookupByLibrary.simpleMessage("Firmware update available"),
+        "activity_firmwareUpdate": MessageLookupByLibrary.simpleMessage(
+            "Actualização de firmware disponível"),
         "activity_incomingPurchase":
             MessageLookupByLibrary.simpleMessage("Incoming Purchase"),
         "activity_listHeader_Today":
             MessageLookupByLibrary.simpleMessage("Today"),
         "activity_pending": MessageLookupByLibrary.simpleMessage("Pending"),
         "activity_received": MessageLookupByLibrary.simpleMessage("Received"),
-        "activity_sent": MessageLookupByLibrary.simpleMessage("Sent"),
+        "activity_sent": MessageLookupByLibrary.simpleMessage("Enviado"),
         "activity_sent_boosted":
             MessageLookupByLibrary.simpleMessage("Sent (Boosted)"),
         "activity_sent_canceled":
@@ -130,11 +131,13 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Any connected Passport accounts will not be removed as part of this process.\n\nBefore deleting your Envoy Wallet, let’s ensure your Seed and Backup File are saved.\n"),
         "backups_erase_wallets_and_backups_show_seed_CTA":
             MessageLookupByLibrary.simpleMessage("Show Seed"),
-        "bottomNav_accounts": MessageLookupByLibrary.simpleMessage("Accounts"),
-        "bottomNav_activity": MessageLookupByLibrary.simpleMessage("Activity"),
+        "bottomNav_accounts": MessageLookupByLibrary.simpleMessage("Contas"),
+        "bottomNav_activity":
+            MessageLookupByLibrary.simpleMessage("Actividade"),
         "bottomNav_devices": MessageLookupByLibrary.simpleMessage("Devices"),
         "bottomNav_learn": MessageLookupByLibrary.simpleMessage("Learn"),
-        "bottomNav_privacy": MessageLookupByLibrary.simpleMessage("Privacy"),
+        "bottomNav_privacy":
+            MessageLookupByLibrary.simpleMessage("Privacidade"),
         "btcpay_connection_modal_expired_subheading": m0,
         "btcpay_connection_modal_fail_heading":
             MessageLookupByLibrary.simpleMessage("Voucher Expired"),
@@ -145,7 +148,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "The scanned voucher was not created with onchain support.\n\nPlease contact the voucher creator."),
         "btcpay_redeem_modal_description":
-            MessageLookupByLibrary.simpleMessage("Description:"),
+            MessageLookupByLibrary.simpleMessage("Descrição:"),
         "btcpay_redeem_modal_name":
             MessageLookupByLibrary.simpleMessage("Name:"),
         "btcpay_redeem_modal_title":
@@ -230,7 +233,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Non-custodial, peer-to-peer Bitcoin purchases."),
         "buy_bitcoin_buyOptions_peerToPeer_options_heading":
-            MessageLookupByLibrary.simpleMessage("Select an option"),
+            MessageLookupByLibrary.simpleMessage("Seleciona uma opção"),
         "buy_bitcoin_buyOptions_peerToPeer_options_peach":
             MessageLookupByLibrary.simpleMessage("Peach"),
         "buy_bitcoin_buyOptions_peerToPeer_options_peach_subheading":
@@ -429,10 +432,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_Apply": MessageLookupByLibrary.simpleMessage("Apply"),
         "component_back": MessageLookupByLibrary.simpleMessage("Back"),
         "component_cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
-        "component_continue": MessageLookupByLibrary.simpleMessage("Continue"),
+        "component_continue": MessageLookupByLibrary.simpleMessage("Continuar"),
         "component_delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "component_dismiss": MessageLookupByLibrary.simpleMessage("Dismiss"),
-        "component_done": MessageLookupByLibrary.simpleMessage("Done"),
+        "component_done": MessageLookupByLibrary.simpleMessage("Concluído"),
         "component_dontShowAgain":
             MessageLookupByLibrary.simpleMessage("Don’t show again"),
         "component_filter": MessageLookupByLibrary.simpleMessage("Filter"),
@@ -786,10 +789,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "learningcenter_status_watched":
             MessageLookupByLibrary.simpleMessage("Watched"),
         "magic_setup_generate_backup_heading":
-            MessageLookupByLibrary.simpleMessage("Encrypting Your Backup"),
+            MessageLookupByLibrary.simpleMessage(
+                "A Encriptar a tua Cópia de Segurança"),
         "magic_setup_generate_backup_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Envoy is encrypting your wallet backup.\n\nThis backup contains useful wallet data such as tags, notes, accounts, and settings."),
+                "Envoy está a encriptar a cópia de segurança da tua carteira.\n\nEsta cópia de segurança contém dados utéis da carteira, tais como etiquetas, notas, contas e definições."),
         "magic_setup_generate_envoy_key_android_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your Android backup."),
@@ -799,7 +803,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain."),
         "magic_setup_recovery_fail_Android_CTA2":
-            MessageLookupByLibrary.simpleMessage("Recover with QR Code"),
+            MessageLookupByLibrary.simpleMessage(
+                "Recuperar através de Código QR"),
         "magic_setup_recovery_fail_Android_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy is unable to locate a Magic Backup.\n\nPlease confirm you are logged in with the correct Google account and that you’ve restored your latest device backup."),
@@ -822,7 +827,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Recovering your Envoy wallet"),
         "magic_setup_send_backup_to_envoy_server_heading":
-            MessageLookupByLibrary.simpleMessage("Uploading Your Backup"),
+            MessageLookupByLibrary.simpleMessage(
+                "A Carregar a tua Cópia de Segurança"),
         "magic_setup_send_backup_to_envoy_server_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents."),
@@ -935,8 +941,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "That seed appears to be invalid. Please check the words entered, including the order they are in and try again."),
         "manual_setup_import_seed_12_words_heading":
             MessageLookupByLibrary.simpleMessage("Enter Your Seed"),
-        "manual_setup_import_seed_CTA1":
-            MessageLookupByLibrary.simpleMessage("Import with QR code"),
+        "manual_setup_import_seed_CTA1": MessageLookupByLibrary.simpleMessage(
+            "Importar através de código QR"),
         "manual_setup_import_seed_CTA2":
             MessageLookupByLibrary.simpleMessage("24 Word Seed"),
         "manual_setup_import_seed_CTA3":
@@ -1056,10 +1062,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_toggle_on_seed_not_backedup_pending_iOS_seed_pending_backup":
             MessageLookupByLibrary.simpleMessage(
                 "Pending backup to iCloud Keychain"),
-        "menu_about": MessageLookupByLibrary.simpleMessage("ABOUT"),
-        "menu_backups": MessageLookupByLibrary.simpleMessage("BACKUPS"),
+        "menu_about": MessageLookupByLibrary.simpleMessage("SOBRE"),
+        "menu_backups":
+            MessageLookupByLibrary.simpleMessage("CÓPIAS DE SEGURANÇA"),
         "menu_heading": MessageLookupByLibrary.simpleMessage("ENVOY"),
-        "menu_settings": MessageLookupByLibrary.simpleMessage("SETTINGS"),
+        "menu_settings": MessageLookupByLibrary.simpleMessage("DEFINIÇÕES"),
         "menu_support": MessageLookupByLibrary.simpleMessage("SUPPORT"),
         "pair_existing_device_intro_heading":
             MessageLookupByLibrary.simpleMessage(
@@ -1369,7 +1376,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "wallet_security_modal_subheading": MessageLookupByLibrary.simpleMessage(
             "Envoy is storing more than the recommended amount of Bitcoin for a mobile, internet connected wallet.\n\nFor ultra-secure, offline storage, Foundation suggests Passport hardware wallet."),
         "wallet_setup_success_heading":
-            MessageLookupByLibrary.simpleMessage("Your Wallet Is Ready"),
+            MessageLookupByLibrary.simpleMessage("A Tua Carteira Está Pronta"),
         "wallet_setup_success_subheading": MessageLookupByLibrary.simpleMessage(
             "Envoy is set up and ready for your Bitcoin!"),
         "welcome_screen_ctA1":

@@ -52,20 +52,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `OK`
-  String get OK {
-    return Intl.message(
-      'OK',
-      name: 'OK',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Secondary action`
+  /// `Redeem`
   String get _ {
     return Intl.message(
-      'Secondary action',
+      'Redeem',
       name: '_',
       desc: '',
       args: [],
@@ -212,6 +202,16 @@ class S {
     );
   }
 
+  /// `Passport`
+  String get accounts_screen_walletType_Passport {
+    return Intl.message(
+      'Passport',
+      name: 'accounts_screen_walletType_Passport',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Mobile Wallet`
   String get accounts_screen_walletType_defaultName {
     return Intl.message(
@@ -267,6 +267,16 @@ class S {
     return Intl.message(
       'Firmware update available',
       name: 'activity_firmwareUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Incoming Purchase`
+  String get activity_incomingPurchase {
+    return Intl.message(
+      'Incoming Purchase',
+      name: 'activity_incomingPurchase',
       desc: '',
       args: [],
     );
@@ -657,6 +667,498 @@ class S {
     return Intl.message(
       'Title:',
       name: 'btcpay_redeem_modal_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose different account`
+  String get buy_bitcoin_accountSelection_chooseAccount {
+    return Intl.message(
+      'Choose different account',
+      name: 'buy_bitcoin_accountSelection_chooseAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Where should the Bitcoin be sent?`
+  String get buy_bitcoin_accountSelection_heading {
+    return Intl.message(
+      'Where should the Bitcoin be sent?',
+      name: 'buy_bitcoin_accountSelection_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Leaving Envoy`
+  String get buy_bitcoin_accountSelection_modal_heading {
+    return Intl.message(
+      'Leaving Envoy',
+      name: 'buy_bitcoin_accountSelection_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You are about to leave Envoy for our partner service to purchase Bitcoin. Foundation never learns any purchase information.`
+  String get buy_bitcoin_accountSelection_modal_subheading {
+    return Intl.message(
+      'You are about to leave Envoy for our partner service to purchase Bitcoin. Foundation never learns any purchase information.',
+      name: 'buy_bitcoin_accountSelection_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Bitcoin will be sent to this address:`
+  String get buy_bitcoin_accountSelection_subheading {
+    return Intl.message(
+      'Your Bitcoin will be sent to this address:',
+      name: 'buy_bitcoin_accountSelection_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verify Address with Passport`
+  String get buy_bitcoin_accountSelection_verify {
+    return Intl.message(
+      'Verify Address with Passport',
+      name: 'buy_bitcoin_accountSelection_verify',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Navigate to {AccountName} on Passport, choose ‘Verify Address’, then scan the QR code.`
+  String buy_bitcoin_accountSelection_verify_modal_heading(Object AccountName) {
+    return Intl.message(
+      'Navigate to $AccountName on Passport, choose ‘Verify Address’, then scan the QR code.',
+      name: 'buy_bitcoin_accountSelection_verify_modal_heading',
+      desc: '',
+      args: [AccountName],
+    );
+  }
+
+  /// `How would you like to buy?`
+  String get buy_bitcoin_buyOptions_atms_heading {
+    return Intl.message(
+      'How would you like to buy?',
+      name: 'buy_bitcoin_buyOptions_atms_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Opening Hours:`
+  String get buy_bitcoin_buyOptions_atms_map_modal_openingHours {
+    return Intl.message(
+      'Opening Hours:',
+      name: 'buy_bitcoin_buyOptions_atms_map_modal_openingHours',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Different ATM providers require varying amounts of personal information. This info is never shared with Foundation.`
+  String get buy_bitcoin_buyOptions_atms_modal_subheading {
+    return Intl.message(
+      'Different ATM providers require varying amounts of personal information. This info is never shared with Foundation.',
+      name: 'buy_bitcoin_buyOptions_atms_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Find a Bitcoin ATM in your local area to purchase Bitcoin with cash.`
+  String get buy_bitcoin_buyOptions_atms_subheading {
+    return Intl.message(
+      'Find a Bitcoin ATM in your local area to purchase Bitcoin with cash.',
+      name: 'buy_bitcoin_buyOptions_atms_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ATMs`
+  String get buy_bitcoin_buyOptions_card_atms {
+    return Intl.message(
+      'ATMs',
+      name: 'buy_bitcoin_buyOptions_card_atms',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Coming soon in your area.`
+  String get buy_bitcoin_buyOptions_card_commingSoon {
+    return Intl.message(
+      'Coming soon in your area.',
+      name: 'buy_bitcoin_buyOptions_card_commingSoon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Buy in Envoy`
+  String get buy_bitcoin_buyOptions_card_inEnvoy_heading {
+    return Intl.message(
+      'Buy in Envoy',
+      name: 'buy_bitcoin_buyOptions_card_inEnvoy_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Buy Bitcoin in seconds, directly to your Passport accounts or mobile wallet.`
+  String get buy_bitcoin_buyOptions_card_inEnvoy_subheading {
+    return Intl.message(
+      'Buy Bitcoin in seconds, directly to your Passport accounts or mobile wallet.',
+      name: 'buy_bitcoin_buyOptions_card_inEnvoy_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Peer to Peer`
+  String get buy_bitcoin_buyOptions_card_peerToPeer {
+    return Intl.message(
+      'Peer to Peer',
+      name: 'buy_bitcoin_buyOptions_card_peerToPeer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vouchers`
+  String get buy_bitcoin_buyOptions_card_vouchers {
+    return Intl.message(
+      'Vouchers',
+      name: 'buy_bitcoin_buyOptions_card_vouchers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How would you like to buy?`
+  String get buy_bitcoin_buyOptions_inEnvoy_heading {
+    return Intl.message(
+      'How would you like to buy?',
+      name: 'buy_bitcoin_buyOptions_inEnvoy_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Info shared with Ramp when you purchase Bitcoin using this method. This info is never shared with Foundation.`
+  String get buy_bitcoin_buyOptions_inEnvoy_modal_subheading {
+    return Intl.message(
+      'Info shared with Ramp when you purchase Bitcoin using this method. This info is never shared with Foundation.',
+      name: 'buy_bitcoin_buyOptions_inEnvoy_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Buy with credit card, Apple Pay, Google Pay or bank transfer, directly into your Passport accounts or mobile wallet.`
+  String get buy_bitcoin_buyOptions_inEnvoy_subheading {
+    return Intl.message(
+      'Buy with credit card, Apple Pay, Google Pay or bank transfer, directly into your Passport accounts or mobile wallet.',
+      name: 'buy_bitcoin_buyOptions_inEnvoy_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Address`
+  String get buy_bitcoin_buyOptions_modal_address {
+    return Intl.message(
+      'Address',
+      name: 'buy_bitcoin_buyOptions_modal_address',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Banking Info`
+  String get buy_bitcoin_buyOptions_modal_bankingInfo {
+    return Intl.message(
+      'Banking Info',
+      name: 'buy_bitcoin_buyOptions_modal_bankingInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email`
+  String get buy_bitcoin_buyOptions_modal_email {
+    return Intl.message(
+      'Email',
+      name: 'buy_bitcoin_buyOptions_modal_email',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Identification`
+  String get buy_bitcoin_buyOptions_modal_identification {
+    return Intl.message(
+      'Identification',
+      name: 'buy_bitcoin_buyOptions_modal_identification',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Powered by `
+  String get buy_bitcoin_buyOptions_modal_poweredBy {
+    return Intl.message(
+      'Powered by ',
+      name: 'buy_bitcoin_buyOptions_modal_poweredBy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check out these other ways to purchase Bitcoin.`
+  String get buy_bitcoin_buyOptions_notSupported_subheading {
+    return Intl.message(
+      'Check out these other ways to purchase Bitcoin.',
+      name: 'buy_bitcoin_buyOptions_notSupported_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Most trades require no info sharing, but your trade partner may learn your banking info. This info is never shared with Foundation.`
+  String get buy_bitcoin_buyOptions_peerToPeer_modal_subheading {
+    return Intl.message(
+      'Most trades require no info sharing, but your trade partner may learn your banking info. This info is never shared with Foundation.',
+      name: 'buy_bitcoin_buyOptions_peerToPeer_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AgoraDesk`
+  String get buy_bitcoin_buyOptions_peerToPeer_options_agoraDesk {
+    return Intl.message(
+      'AgoraDesk',
+      name: 'buy_bitcoin_buyOptions_peerToPeer_options_agoraDesk',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non-custodial, peer-to-peer Bitcoin purchases.`
+  String get buy_bitcoin_buyOptions_peerToPeer_options_agoraDesk_subheading {
+    return Intl.message(
+      'Non-custodial, peer-to-peer Bitcoin purchases.',
+      name: 'buy_bitcoin_buyOptions_peerToPeer_options_agoraDesk_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bisq`
+  String get buy_bitcoin_buyOptions_peerToPeer_options_bisq {
+    return Intl.message(
+      'Bisq',
+      name: 'buy_bitcoin_buyOptions_peerToPeer_options_bisq',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non-custodial, peer-to-peer Bitcoin purchases.`
+  String get buy_bitcoin_buyOptions_peerToPeer_options_bisq_subheading {
+    return Intl.message(
+      'Non-custodial, peer-to-peer Bitcoin purchases.',
+      name: 'buy_bitcoin_buyOptions_peerToPeer_options_bisq_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hodl Hodl`
+  String get buy_bitcoin_buyOptions_peerToPeer_options_card_hodlHodl {
+    return Intl.message(
+      'Hodl Hodl',
+      name: 'buy_bitcoin_buyOptions_peerToPeer_options_card_hodlHodl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non-custodial, peer-to-peer Bitcoin purchases.`
+  String
+      get buy_bitcoin_buyOptions_peerToPeer_options_card_hodlHodl_subheading {
+    return Intl.message(
+      'Non-custodial, peer-to-peer Bitcoin purchases.',
+      name:
+          'buy_bitcoin_buyOptions_peerToPeer_options_card_hodlHodl_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select an option`
+  String get buy_bitcoin_buyOptions_peerToPeer_options_heading {
+    return Intl.message(
+      'Select an option',
+      name: 'buy_bitcoin_buyOptions_peerToPeer_options_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Peach`
+  String get buy_bitcoin_buyOptions_peerToPeer_options_peach {
+    return Intl.message(
+      'Peach',
+      name: 'buy_bitcoin_buyOptions_peerToPeer_options_peach',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non-custodial, peer-to-peer Bitcoin purchases.`
+  String get buy_bitcoin_buyOptions_peerToPeer_options_peach_subheading {
+    return Intl.message(
+      'Non-custodial, peer-to-peer Bitcoin purchases.',
+      name: 'buy_bitcoin_buyOptions_peerToPeer_options_peach_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Robosats`
+  String get buy_bitcoin_buyOptions_peerToPeer_options_robosats {
+    return Intl.message(
+      'Robosats',
+      name: 'buy_bitcoin_buyOptions_peerToPeer_options_robosats',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non-custodial, Lightning native, peer-to-peer Bitcoin purchases.`
+  String get buy_bitcoin_buyOptions_peerToPeer_options_robosats_subheading {
+    return Intl.message(
+      'Non-custodial, Lightning native, peer-to-peer Bitcoin purchases.',
+      name: 'buy_bitcoin_buyOptions_peerToPeer_options_robosats_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Buy Bitcoin outside of Envoy, without middlemen. Requires more steps, but can be more private.`
+  String get buy_bitcoin_buyOptions_peerToPeer_subheading {
+    return Intl.message(
+      'Buy Bitcoin outside of Envoy, without middlemen. Requires more steps, but can be more private.',
+      name: 'buy_bitcoin_buyOptions_peerToPeer_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Different vendors will require varying amounts of personal information. This info is never shared with Foundation.`
+  String get buy_bitcoin_buyOptions_vouchers_modal_subheading {
+    return Intl.message(
+      'Different vendors will require varying amounts of personal information. This info is never shared with Foundation.',
+      name: 'buy_bitcoin_buyOptions_vouchers_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Purchase Bitcoin vouchers online or in person. Redeem using the scanner inside any account.`
+  String get buy_bitcoin_buyOptions_vouchers_subheading {
+    return Intl.message(
+      'Purchase Bitcoin vouchers online or in person. Redeem using the scanner inside any account.',
+      name: 'buy_bitcoin_buyOptions_vouchers_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Region`
+  String get buy_bitcoin_defineLocation_heading {
+    return Intl.message(
+      'Your Region',
+      name: 'buy_bitcoin_defineLocation_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select your region so Envoy can display the purchase options available to you.  This info will never leave Envoy.`
+  String get buy_bitcoin_defineLocation_subheading {
+    return Intl.message(
+      'Select your region so Envoy can display the purchase options available to you.  This info will never leave Envoy.',
+      name: 'buy_bitcoin_defineLocation_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel Buying Process`
+  String get buy_bitcoin_exit_modal_heading {
+    return Intl.message(
+      'Cancel Buying Process',
+      name: 'buy_bitcoin_exit_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You are about to cancel the buying process. Are you sure?`
+  String get buy_bitcoin_exit_modal_subheading {
+    return Intl.message(
+      'You are about to cancel the buying process. Are you sure?',
+      name: 'buy_bitcoin_exit_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Purchase Complete`
+  String get buy_bitcoin_purchaseComplete_heading {
+    return Intl.message(
+      'Purchase Complete',
+      name: 'buy_bitcoin_purchaseComplete_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Finalization may take some time depending on\npayment method and network congestion.`
+  String get buy_bitcoin_purchaseComplete_subheading {
+    return Intl.message(
+      'Finalization may take some time depending on\npayment method and network congestion.',
+      name: 'buy_bitcoin_purchaseComplete_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please contact Ramp for support.`
+  String get buy_bitcoin_purchaseError_contactRamp {
+    return Intl.message(
+      'Please contact Ramp for support.',
+      name: 'buy_bitcoin_purchaseError_contactRamp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Something Went Wrong`
+  String get buy_bitcoin_purchaseError_heading {
+    return Intl.message(
+      'Something Went Wrong',
+      name: 'buy_bitcoin_purchaseError_heading',
       desc: '',
       args: [],
     );
@@ -1354,6 +1856,16 @@ class S {
     );
   }
 
+  /// `Ramp ID`
+  String get coindetails_overlay_rampID {
+    return Intl.message(
+      'Ramp ID',
+      name: 'coindetails_overlay_rampID',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Status`
   String get coindetails_overlay_status {
     return Intl.message(
@@ -1499,6 +2011,16 @@ class S {
     return Intl.message(
       'Learn more',
       name: 'component_learnMore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Buy`
+  String get component_minishield_buy {
+    return Intl.message(
+      'Buy',
+      name: 'component_minishield_buy',
       desc: '',
       args: [],
     );
@@ -3006,6 +3528,26 @@ class S {
     );
   }
 
+  /// `BUY BITCOIN`
+  String get header_buyBitcoin {
+    return Intl.message(
+      'BUY BITCOIN',
+      name: 'header_buyBitcoin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `CHOOSE ACCOUNT`
+  String get header_chooseAccount {
+    return Intl.message(
+      'CHOOSE ACCOUNT',
+      name: 'header_chooseAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Swipe to show and hide your balance.`
   String get hide_amount_first_time_text {
     return Intl.message(
@@ -3118,10 +3660,10 @@ class S {
     );
   }
 
-  /// `Passport`
+  /// `Search...`
   String get learning_center_search_input {
     return Intl.message(
-      'Passport',
+      'Search...',
       name: 'learning_center_search_input',
       desc: '',
       args: [],
@@ -3725,6 +4267,16 @@ class S {
     return Intl.message(
       'Write Down These 12 Words',
       name: 'manual_setup_generate_seed_write_words_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Generating Seed`
+  String get manual_setup_generatingSeedLoadingInfo {
+    return Intl.message(
+      'Generating Seed',
+      name: 'manual_setup_generatingSeedLoadingInfo',
       desc: '',
       args: [],
     );
@@ -4623,6 +5175,16 @@ class S {
     return Intl.message(
       'Couldn\'t reach node.',
       name: 'privacy_node_connection_couldNotReach',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Even with ‘Improved Privacy’ active, Envoy cannot prevent interference by compromised devices on your local network.`
+  String get privacy_node_connection_localAddress_warning {
+    return Intl.message(
+      'Even with ‘Improved Privacy’ active, Envoy cannot prevent interference by compromised devices on your local network.',
+      name: 'privacy_node_connection_localAddress_warning',
       desc: '',
       args: [],
     );
@@ -5807,6 +6369,8 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
       Locale.fromSubtags(languageCode: 'en'),
       Locale.fromSubtags(languageCode: 'ca'),
       Locale.fromSubtags(languageCode: 'es'),
+      Locale.fromSubtags(languageCode: 'ko-KR'),
+      Locale.fromSubtags(languageCode: 'pt'),
     ];
   }
 

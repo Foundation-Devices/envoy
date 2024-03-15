@@ -83,7 +83,7 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
                   onTap: () {
                     context.pop();
                   },
-                  label: S().OK,
+                  label: "S().OK", // TODO: fix localize
                   textStyle: EnvoyTypography.subheading.copyWith(
                       fontWeight: FontWeight.w400, color: EnvoyColors.darkTeal),
                 ),

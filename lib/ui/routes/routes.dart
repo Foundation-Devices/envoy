@@ -75,7 +75,8 @@ final modalModeRoutes = [
   ROUTE_ACCOUNT_SEND,
   ROUTE_ACCOUNT_RECEIVE,
   ROUTE_ACCOUNT_DESCRIPTOR,
-  ROUTE_BUY_BITCOIN
+  ROUTE_BUY_BITCOIN,
+  ROUTE_PEER_TO_PEER,
 ];
 
 ///Any routes that required the app bar and bottom navigation bar to be hidden

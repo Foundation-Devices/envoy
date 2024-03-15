@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/home/cards/buy_bitcoin.dart';
+import 'package:envoy/ui/home/cards/peer_to_peer_options.dart';
 
 /// Different routes for accounts.
 /// The nested routes cannot start with a slash,
@@ -37,6 +38,9 @@ const ROUTE_ACCOUNT_DETAIL = '$ROUTE_ACCOUNTS_HOME/$_ACCOUNT_DETAIL';
 
 const _BUY_BITCOIN = 'buy';
 const ROUTE_BUY_BITCOIN = '$ROUTE_ACCOUNTS_HOME/$_BUY_BITCOIN';
+
+const _PEER_TO_PEER = 'peer';
+const ROUTE_PEER_TO_PEER = '$ROUTE_BUY_BITCOIN/$_PEER_TO_PEER';
 
 const _ACCOUNT_RECEIVE = 'receive';
 const ROUTE_ACCOUNT_RECEIVE = '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_RECEIVE';
@@ -218,11 +222,19 @@ final accountsRouter = StatefulShellBranch(
               },
             ),
             GoRoute(
-              path: _BUY_BITCOIN,
-              pageBuilder: (context, state) {
-                return wrapWithVerticalAxisAnimation(const BuyBitcoinCard());
-              },
-            )
+                path: _BUY_BITCOIN,
+                pageBuilder: (context, state) {
+                  return wrapWithVerticalAxisAnimation(const BuyBitcoinCard());
+                },
+                routes: [
+                  GoRoute(
+                    path: _PEER_TO_PEER,
+                    pageBuilder: (context, state) {
+                      return wrapWithVerticalAxisAnimation(
+                          const PeerToPeerCard());
+                    },
+                  ),
+                ])
           ]),
     ]);
 
