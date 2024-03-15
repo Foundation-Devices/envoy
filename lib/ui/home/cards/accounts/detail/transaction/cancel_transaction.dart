@@ -429,7 +429,7 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                                         navigator.pop();
                                         //wait for route to pop
                                         await Future.delayed(
-                                            Duration(milliseconds: 100));
+                                            const Duration(milliseconds: 100));
                                         navigator.push(MaterialPageRoute(
                                           builder: (context) =>
                                               CancelTransactionProgress(
