@@ -506,7 +506,8 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
               child: PsbtCard(
                 _psbt,
                 account,
-                onScan: (psbt) {
+                onSignedPsbtScanned: (psbt) {
+                  Navigator.pop(context);
                   broadcastTx(account, psbt);
                 },
               ),

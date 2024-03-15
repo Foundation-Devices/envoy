@@ -179,12 +179,14 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
       final originalTxRaw = await selectedAccount.wallet
           .decodeWalletRawTx(originalTxRawHex, selectedAccount.wallet.network);
 
+      final navigator = Navigator.of(context, rootNavigator: true);
       showEnvoyDialog(
           context: context,
           builder: Builder(
               builder: (context) => TxCancelDialog(
                   originalTx: widget.transaction,
                   cancelRawTx: rawTx,
+                  navigator: navigator,
                   originalRawTx: originalTxRaw,
                   cancelTx: psbt)));
     } catch (e, s) {
@@ -217,13 +219,15 @@ class TxCancelDialog extends ConsumerStatefulWidget {
   final Psbt cancelTx;
   final RawTransaction cancelRawTx;
   final RawTransaction originalRawTx;
+  final NavigatorState navigator;
 
   const TxCancelDialog(
       {super.key,
       required this.originalTx,
       required this.cancelTx,
       required this.cancelRawTx,
-      required this.originalRawTx});
+      required this.originalRawTx,
+      required this.navigator});
 
   @override
   ConsumerState createState() => _TxCancelDialogState();
@@ -410,22 +414,31 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                     ).show(context);
                     return;
                   } else {
-                    if (account.wallet.hot == false) {
-                      Psbt? psbt = await navigator.push(MaterialPageRoute(
+                    if (!account.wallet.hot) {
+                      await navigator.push(MaterialPageRoute(
                           builder: (context) => Builder(builder: (context) {
                                 return _Background(
-                                    child: PsbtCard(widget.cancelTx, account),
+                                    child: PsbtCard(
+                                      widget.cancelTx,
+                                      account,
+                                      onSignedPsbtScanned: (psbt) async {
+                                        navigator.pop();
+                                        navigator.pop();
+                                        //wait for route to pop
+                                        await Future.delayed(
+                                            Duration(milliseconds: 100));
+                                        navigator.push(MaterialPageRoute(
+                                          builder: (context) =>
+                                              CancelTransactionProgress(
+                                            cancelTx: psbt,
+                                            cancelRawTx: widget.cancelRawTx,
+                                            originalTx: widget.originalTx,
+                                          ),
+                                        ));
+                                      },
+                                    ),
                                     context: context);
                               })));
-                      navigator.push(MaterialPageRoute(
-                        builder: (context) {
-                          return CancelTransactionProgress(
-                            cancelTx: psbt!,
-                            cancelRawTx: widget.cancelRawTx,
-                            originalTx: widget.originalTx,
-                          );
-                        },
-                      ));
                     } else {
                       Navigator.pop(context);
                       Navigator.of(context).push(MaterialPageRoute(

@@ -23,9 +23,10 @@ import 'package:wallet/wallet.dart';
 class PsbtCard extends StatelessWidget {
   final Psbt psbt;
   final Account account;
-  final Function(Psbt)? onScan;
+  final Function(Psbt)? onSignedPsbtScanned;
 
-  PsbtCard(this.psbt, this.account, {this.onScan}) : super(key: UniqueKey()) {}
+  PsbtCard(this.psbt, this.account, {this.onSignedPsbtScanned})
+      : super(key: UniqueKey()) {}
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +40,7 @@ class PsbtCard extends StatelessWidget {
             color: Colors.black,
           ),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context, false);
           },
         ),
       ),
@@ -105,18 +106,18 @@ class PsbtCard extends StatelessWidget {
                                   color: EnvoyColors.darkTeal,
                                 ),
                                 onPressed: () {
-                                  //for full screen scanner
-                                  final rootNavigator = Navigator.of(context,
-                                      rootNavigator: true);
-                                  final navigator = Navigator.of(context,
-                                      rootNavigator: false);
-                                  rootNavigator
-                                      .push(MaterialPageRoute(builder: (_) {
+                                  final navigator = Navigator.of(context);
+                                  Navigator.of(context, rootNavigator: true)
+                                      .push(
+                                          MaterialPageRoute(builder: (context) {
                                     return ScannerPage.tx((psbt) async {
-                                      Psbt PsbtParsed =
+                                      Psbt psbtParsed =
                                           await account.wallet.decodePsbt(psbt);
-                                      onScan?.call(PsbtParsed);
-                                      navigator.pop(PsbtParsed);
+                                      if (onSignedPsbtScanned != null) {
+                                        onSignedPsbtScanned?.call(psbtParsed);
+                                      } else {
+                                        navigator.pop(psbtParsed);
+                                      }
                                     });
                                   }));
                                 },
