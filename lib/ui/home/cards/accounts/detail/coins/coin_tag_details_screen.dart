@@ -192,8 +192,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
   }
 
   Widget coinTagDetails(BuildContext context) {
+    final scrollController = ScrollController();
     final tag = widget.coinTag;
-    const double maxDetailsHeight = 400;
 
     Color border = tag.untagged
         ? const Color(0xff808080)
@@ -206,70 +206,79 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     ref.watch(coinTagLockStateProvider(widget.coinTag));
 
     const cardRadius = 24.0;
-    return SizedBox(
-      height: maxDetailsHeight,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            height: _menuVisible ? _menuHeight : 0,
-            padding: const EdgeInsets.only(top: EnvoySpacing.small),
-            child: Column(
-              children: _getMenuItems(context, tag),
-            ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          height: _menuVisible ? _menuHeight : 0,
+          padding: const EdgeInsets.only(top: EnvoySpacing.small),
+          child: Column(
+            children: _getMenuItems(context, tag),
           ),
-          Flexible(
-            child: Padding(
-              padding: const EdgeInsets.all(EnvoySpacing.medium2),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                key: _detailWidgetKey,
+        ),
+        Flexible(
+          child: Padding(
+            padding: const EdgeInsets.all(EnvoySpacing.medium2),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              key: _detailWidgetKey,
+              decoration: BoxDecoration(
+                borderRadius:
+                    const BorderRadius.all(Radius.circular(cardRadius)),
+                border: Border.all(
+                    color: Colors.black, width: 2, style: BorderStyle.solid),
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      cardBackground,
+                      Colors.black,
+                    ]),
+              ),
+              child: Container(
                 decoration: BoxDecoration(
-                  borderRadius:
-                      const BorderRadius.all(Radius.circular(cardRadius)),
-                  border: Border.all(
-                      color: Colors.black, width: 2, style: BorderStyle.solid),
-                  gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        cardBackground,
-                        Colors.black,
-                      ]),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(cardRadius)),
-                      border: Border.all(
-                          color: border, width: 2, style: BorderStyle.solid)),
+                    borderRadius:
+                        const BorderRadius.all(Radius.circular(cardRadius)),
+                    border: Border.all(
+                        color: border, width: 2, style: BorderStyle.solid)),
+                child: RawScrollbar(
+                  controller: scrollController,
+                  padding: EdgeInsets.only(
+                      right: -EnvoySpacing.medium1, top: 100, bottom: -100),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
+                  ),
                   child: ClipRRect(
-                      borderRadius: const BorderRadius.all(
-                          Radius.circular(cardRadius - 2)),
-                      child: StripesBackground(
-                        child: tag.coins.length == 1
-                            ? singleCoinWidget(context)
-                            : Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  _coinHeader(context),
-                                  (tag.coins.isNotEmpty &&
-                                          tag.coins.length >= 2)
-                                      ? Flexible(
-                                          child: Container(
-                                              margin: const EdgeInsets.all(
-                                                  EnvoySpacing.xs),
-                                              decoration: const BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius: BorderRadius
-                                                      .all(Radius.circular(
-                                                          cardRadius - 5.5))),
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(
-                                                        cardRadius - 5.5)),
-                                                child: ListView(
+                    borderRadius:
+                        const BorderRadius.all(Radius.circular(cardRadius - 2)),
+                    child: StripesBackground(
+                      child: tag.coins.length == 1
+                          ? singleCoinWidget(context)
+                          : Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                _coinHeader(context),
+                                (tag.coins.isNotEmpty && tag.coins.length >= 2)
+                                    ? Flexible(
+                                        child: Container(
+                                          margin: const EdgeInsets.all(
+                                              EnvoySpacing.xs),
+                                          decoration: const BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(
+                                                      cardRadius - 5.5))),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(
+                                                    cardRadius - 5.5)),
+                                            child: ScrollConfiguration(
+                                              behavior: ScrollConfiguration.of(
+                                                      context)
+                                                  .copyWith(scrollbars: false),
+                                              child: ListView(
+                                                  controller: scrollController,
                                                   padding: EdgeInsets.zero,
                                                   shrinkWrap: true,
                                                   children: List.generate(
@@ -293,52 +302,53 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                             )),
                                                       );
                                                     },
-                                                  ),
-                                                ),
-                                              )),
-                                        )
-                                      : const SizedBox.shrink(),
-                                  tag.coins.isEmpty
-                                      ? Flexible(
-                                          child: Container(
-                                            alignment: Alignment.center,
-                                            margin: const EdgeInsets.all(
-                                                EnvoySpacing.xs),
-                                            padding: const EdgeInsets.all(
-                                                EnvoySpacing.medium1),
-                                            decoration: const BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(16))),
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                const GhostListTile(
-                                                  animate: false,
-                                                ),
-                                                Text(
-                                                  S().tagged_tagDetails_emptyState_explainer,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall,
-                                                ),
-                                              ],
+                                                  )),
                                             ),
                                           ),
-                                        )
-                                      : const SizedBox.shrink(),
-                                ],
-                              ),
-                      )),
+                                        ),
+                                      )
+                                    : const SizedBox.shrink(),
+                                tag.coins.isEmpty
+                                    ? Flexible(
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          margin: const EdgeInsets.all(
+                                              EnvoySpacing.xs),
+                                          padding: const EdgeInsets.all(
+                                              EnvoySpacing.medium1),
+                                          decoration: const BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(16))),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const GhostListTile(
+                                                animate: false,
+                                              ),
+                                              Text(
+                                                S().tagged_tagDetails_emptyState_explainer,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodySmall,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    : const SizedBox.shrink(),
+                              ],
+                            ),
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
-        ],
-      ),
+        )
+      ],
     );
   }
 
