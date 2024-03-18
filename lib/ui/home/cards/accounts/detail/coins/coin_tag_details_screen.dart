@@ -270,6 +270,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                     Radius.circular(
                                                         cardRadius - 5.5)),
                                                 child: ListView(
+                                                  padding: EdgeInsets.zero,
                                                   shrinkWrap: true,
                                                   children: List.generate(
                                                     tag.coins.length,
