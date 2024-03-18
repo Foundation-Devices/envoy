@@ -108,7 +108,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                             onTap: () {
                               GoRouter.of(context).pop();
                             },
-                            label: S().OK,
+                            label: "OK", // TODO: Figma
                           ),
                           IconButton(
                               onPressed: () {
