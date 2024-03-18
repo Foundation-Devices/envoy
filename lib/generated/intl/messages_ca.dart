@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("Confirm"),
+        "_": MessageLookupByLibrary.simpleMessage("TAPROOT"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versió de l\'aplicació"),
         "about_openSourceLicences":
@@ -447,6 +447,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_minishield_buy": MessageLookupByLibrary.simpleMessage("Buy"),
         "component_next": MessageLookupByLibrary.simpleMessage("Següent"),
         "component_no": MessageLookupByLibrary.simpleMessage("No"),
+        "component_ok": MessageLookupByLibrary.simpleMessage("OK"),
         "component_redeem": MessageLookupByLibrary.simpleMessage("Bescanviar"),
         "component_reset": MessageLookupByLibrary.simpleMessage("Reinicia"),
         "component_retry":

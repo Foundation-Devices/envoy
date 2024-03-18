@@ -1,6 +1,6 @@
 {
   ":": ":",
-  "_": "Confirm",
+  "_": "TAPROOT",
   "about_appVersion": "Versió de l'aplicació",
   "about_openSourceLicences": "Llicències de Codi Obert",
   "about_privacyPolicy": "Política de Privacitat",
@@ -199,6 +199,7 @@
   "component_minishield_buy": "Buy",
   "component_next": "Següent",
   "component_no": "No",
+  "component_ok": "OK",
   "component_redeem": "Bescanviar",
   "component_reset": "Reinicia",
   "component_retry": "Torna-ho a provar",

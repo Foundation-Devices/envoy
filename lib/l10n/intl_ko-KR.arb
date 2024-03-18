@@ -1,6 +1,6 @@
 {
   ":": ":",
-  "_": "Confirm",
+  "_": "TAPROOT",
   "about_appVersion": "App Version",
   "about_openSourceLicences": "Open Source Licences",
   "about_privacyPolicy": "Privacy Policy",
@@ -199,6 +199,7 @@
   "component_minishield_buy": "Buy",
   "component_next": "Next",
   "component_no": "No",
+  "component_ok": "OK",
   "component_redeem": "Redeem",
   "component_reset": "Reset",
   "component_retry": "Retry",

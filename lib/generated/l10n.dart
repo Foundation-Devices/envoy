@@ -52,10 +52,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `Confirm`
+  /// `TAPROOT`
   String get _ {
     return Intl.message(
-      'Confirm',
+      'TAPROOT',
       name: '_',
       desc: '',
       args: [],
@@ -2031,6 +2031,16 @@ class S {
     return Intl.message(
       'No',
       name: 'component_no',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OK`
+  String get component_ok {
+    return Intl.message(
+      'OK',
+      name: 'component_ok',
       desc: '',
       args: [],
     );
