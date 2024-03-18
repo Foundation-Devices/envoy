@@ -23,13 +23,15 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(period) =>
       "This voucher expired on ${period}.\n\n\nPlease contact the issuer with any voucher-related questions.";
 
-  static String m1(tagName) =>
+  static String m1(AccountName) =>
+      "Navigate to ${AccountName} on Passport, choose ‘Verify Address’, then scan the QR code.";
+
+  static String m2(tagName) =>
       "Your ${tagName} tag is now empty. Would you like to delete it?";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "OK": MessageLookupByLibrary.simpleMessage("OK"),
-        "_": MessageLookupByLibrary.simpleMessage("Secondary action"),
+        "_": MessageLookupByLibrary.simpleMessage("Confirm"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences":
             MessageLookupByLibrary.simpleMessage("Open Source Licences"),
@@ -58,6 +60,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Get Started"),
         "accounts_screen_walletType_Envoy":
             MessageLookupByLibrary.simpleMessage("Envoy"),
+        "accounts_screen_walletType_Passport":
+            MessageLookupByLibrary.simpleMessage("Passport"),
         "accounts_screen_walletType_defaultName":
             MessageLookupByLibrary.simpleMessage("Mobile Wallet"),
         "activity_boosted": MessageLookupByLibrary.simpleMessage("Boosted"),
@@ -68,6 +72,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Envoy App Updated"),
         "activity_firmwareUpdate":
             MessageLookupByLibrary.simpleMessage("Firmware update available"),
+        "activity_incomingPurchase":
+            MessageLookupByLibrary.simpleMessage("Incoming Purchase"),
         "activity_listHeader_Today":
             MessageLookupByLibrary.simpleMessage("Today"),
         "activity_pending": MessageLookupByLibrary.simpleMessage("Pending"),
@@ -142,8 +148,126 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Description:"),
         "btcpay_redeem_modal_name":
             MessageLookupByLibrary.simpleMessage("Name:"),
-        "btcpay_redeem_modal_title":
-            MessageLookupByLibrary.simpleMessage("Title:"),
+        "buy_bitcoin_accountSelection_chooseAccount":
+            MessageLookupByLibrary.simpleMessage("Choose different account"),
+        "buy_bitcoin_accountSelection_heading":
+            MessageLookupByLibrary.simpleMessage(
+                "Where should the Bitcoin be sent?"),
+        "buy_bitcoin_accountSelection_modal_heading":
+            MessageLookupByLibrary.simpleMessage("Leaving Envoy"),
+        "buy_bitcoin_accountSelection_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "You are about to leave Envoy for our partner service to purchase Bitcoin. Foundation never learns any purchase information."),
+        "buy_bitcoin_accountSelection_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Your Bitcoin will be sent to this address:"),
+        "buy_bitcoin_accountSelection_verify":
+            MessageLookupByLibrary.simpleMessage(
+                "Verify Address with Passport"),
+        "buy_bitcoin_accountSelection_verify_modal_heading": m1,
+        "buy_bitcoin_buyOptions_atms_heading":
+            MessageLookupByLibrary.simpleMessage("How would you like to buy?"),
+        "buy_bitcoin_buyOptions_atms_map_modal_openingHours":
+            MessageLookupByLibrary.simpleMessage("Opening Hours:"),
+        "buy_bitcoin_buyOptions_atms_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Different ATM providers require varying amounts of personal information. This info is never shared with Foundation."),
+        "buy_bitcoin_buyOptions_atms_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Find a Bitcoin ATM in your local area to purchase Bitcoin with cash."),
+        "buy_bitcoin_buyOptions_card_atms":
+            MessageLookupByLibrary.simpleMessage("ATMs"),
+        "buy_bitcoin_buyOptions_card_commingSoon":
+            MessageLookupByLibrary.simpleMessage("Coming soon in your area."),
+        "buy_bitcoin_buyOptions_card_inEnvoy_heading":
+            MessageLookupByLibrary.simpleMessage("Buy in Envoy"),
+        "buy_bitcoin_buyOptions_card_inEnvoy_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Buy Bitcoin in seconds, directly to your Passport accounts or mobile wallet."),
+        "buy_bitcoin_buyOptions_card_peerToPeer":
+            MessageLookupByLibrary.simpleMessage("Peer to Peer"),
+        "buy_bitcoin_buyOptions_card_vouchers":
+            MessageLookupByLibrary.simpleMessage("Vouchers"),
+        "buy_bitcoin_buyOptions_inEnvoy_heading":
+            MessageLookupByLibrary.simpleMessage("How would you like to buy?"),
+        "buy_bitcoin_buyOptions_inEnvoy_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Info shared with Ramp when you purchase Bitcoin using this method. This info is never shared with Foundation."),
+        "buy_bitcoin_buyOptions_inEnvoy_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Buy with credit card, Apple Pay, Google Pay or bank transfer, directly into your Passport accounts or mobile wallet."),
+        "buy_bitcoin_buyOptions_modal_address":
+            MessageLookupByLibrary.simpleMessage("Address"),
+        "buy_bitcoin_buyOptions_modal_bankingInfo":
+            MessageLookupByLibrary.simpleMessage("Banking Info"),
+        "buy_bitcoin_buyOptions_modal_email":
+            MessageLookupByLibrary.simpleMessage("Email"),
+        "buy_bitcoin_buyOptions_modal_identification":
+            MessageLookupByLibrary.simpleMessage("Identification"),
+        "buy_bitcoin_buyOptions_modal_poweredBy":
+            MessageLookupByLibrary.simpleMessage("Powered by "),
+        "buy_bitcoin_buyOptions_notSupported_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Check out these other ways to purchase Bitcoin."),
+        "buy_bitcoin_buyOptions_peerToPeer_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Most trades require no info sharing, but your trade partner may learn your banking info. This info is never shared with Foundation."),
+        "buy_bitcoin_buyOptions_peerToPeer_options_agoraDesk":
+            MessageLookupByLibrary.simpleMessage("AgoraDesk"),
+        "buy_bitcoin_buyOptions_peerToPeer_options_agoraDesk_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Non-custodial, peer-to-peer Bitcoin purchases."),
+        "buy_bitcoin_buyOptions_peerToPeer_options_bisq":
+            MessageLookupByLibrary.simpleMessage("Bisq"),
+        "buy_bitcoin_buyOptions_peerToPeer_options_bisq_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Non-custodial, peer-to-peer Bitcoin purchases."),
+        "buy_bitcoin_buyOptions_peerToPeer_options_card_hodlHodl":
+            MessageLookupByLibrary.simpleMessage("Hodl Hodl"),
+        "buy_bitcoin_buyOptions_peerToPeer_options_card_hodlHodl_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Non-custodial, peer-to-peer Bitcoin purchases."),
+        "buy_bitcoin_buyOptions_peerToPeer_options_heading":
+            MessageLookupByLibrary.simpleMessage("Select an option"),
+        "buy_bitcoin_buyOptions_peerToPeer_options_peach":
+            MessageLookupByLibrary.simpleMessage("Peach"),
+        "buy_bitcoin_buyOptions_peerToPeer_options_peach_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Non-custodial, peer-to-peer Bitcoin purchases."),
+        "buy_bitcoin_buyOptions_peerToPeer_options_robosats":
+            MessageLookupByLibrary.simpleMessage("Robosats"),
+        "buy_bitcoin_buyOptions_peerToPeer_options_robosats_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Non-custodial, Lightning native, peer-to-peer Bitcoin purchases."),
+        "buy_bitcoin_buyOptions_peerToPeer_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Buy Bitcoin outside of Envoy, without middlemen. Requires more steps, but can be more private."),
+        "buy_bitcoin_buyOptions_vouchers_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Different vendors will require varying amounts of personal information. This info is never shared with Foundation."),
+        "buy_bitcoin_buyOptions_vouchers_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Purchase Bitcoin vouchers online or in person. Redeem using the scanner inside any account."),
+        "buy_bitcoin_defineLocation_heading":
+            MessageLookupByLibrary.simpleMessage("Your Region"),
+        "buy_bitcoin_defineLocation_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Select your region so Envoy can display the purchase options available to you.  This info will never leave Envoy."),
+        "buy_bitcoin_exit_modal_heading":
+            MessageLookupByLibrary.simpleMessage("Cancel Buying Process"),
+        "buy_bitcoin_exit_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "You are about to cancel the buying process. Are you sure?"),
+        "buy_bitcoin_purchaseComplete_heading":
+            MessageLookupByLibrary.simpleMessage("Purchase Complete"),
+        "buy_bitcoin_purchaseComplete_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Finalization may take some time depending on\npayment method and network congestion."),
+        "buy_bitcoin_purchaseError_contactRamp":
+            MessageLookupByLibrary.simpleMessage(
+                "Please contact Ramp for support."),
+        "buy_bitcoin_purchaseError_heading":
+            MessageLookupByLibrary.simpleMessage("Something Went Wrong"),
         "card_coin_locked": MessageLookupByLibrary.simpleMessage("Coin Locked"),
         "card_coin_selected":
             MessageLookupByLibrary.simpleMessage("Coin Selected"),
@@ -289,6 +413,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Note"),
         "coindetails_overlay_paymentID":
             MessageLookupByLibrary.simpleMessage("Payment ID"),
+        "coindetails_overlay_rampID":
+            MessageLookupByLibrary.simpleMessage("Ramp ID"),
         "coindetails_overlay_status":
             MessageLookupByLibrary.simpleMessage("Status"),
         "coindetails_overlay_status_confirmed":
@@ -310,6 +436,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_filter": MessageLookupByLibrary.simpleMessage("Filter"),
         "component_learnMore":
             MessageLookupByLibrary.simpleMessage("Learn more"),
+        "component_minishield_buy": MessageLookupByLibrary.simpleMessage("Buy"),
         "component_next": MessageLookupByLibrary.simpleMessage("Next"),
         "component_no": MessageLookupByLibrary.simpleMessage("No"),
         "component_redeem": MessageLookupByLibrary.simpleMessage("Redeem"),
@@ -355,7 +482,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Watch Later"),
         "devices_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
             "Secure your Bitcoin with Passport."),
-        "empty_tag_modal_subheading": m1,
+        "empty_tag_modal_subheading": m2,
         "envoy_account_tos_cta":
             MessageLookupByLibrary.simpleMessage("I Accept"),
         "envoy_account_tos_heading": MessageLookupByLibrary.simpleMessage(
@@ -614,6 +741,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_sortBy_oldest":
             MessageLookupByLibrary.simpleMessage("Oldest first"),
         "filter_sortBy_zToA": MessageLookupByLibrary.simpleMessage("Z to A"),
+        "header_buyBitcoin":
+            MessageLookupByLibrary.simpleMessage("BUY BITCOIN"),
+        "header_chooseAccount":
+            MessageLookupByLibrary.simpleMessage("CHOOSE ACCOUNT"),
         "hide_amount_first_time_text": MessageLookupByLibrary.simpleMessage(
             "Swipe to show and hide your balance."),
         "hot_wallet_accounts_creation_done_text_explainer":
@@ -641,7 +772,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "learning_center_results_title":
             MessageLookupByLibrary.simpleMessage("Results"),
         "learning_center_search_input":
-            MessageLookupByLibrary.simpleMessage("Passport"),
+            MessageLookupByLibrary.simpleMessage("Search..."),
         "learning_center_title_blog":
             MessageLookupByLibrary.simpleMessage("Blog"),
         "learning_center_title_faq":
@@ -783,6 +914,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Write Down These 24 Words"),
         "manual_setup_generate_seed_write_words_heading":
             MessageLookupByLibrary.simpleMessage("Write Down These 12 Words"),
+        "manual_setup_generatingSeedLoadingInfo":
+            MessageLookupByLibrary.simpleMessage("Generating Seed"),
         "manual_setup_import_backup_CTA1":
             MessageLookupByLibrary.simpleMessage("Create Envoy Backup File"),
         "manual_setup_import_backup_CTA2":
@@ -981,6 +1114,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Connected to"),
         "privacy_node_connection_couldNotReach":
             MessageLookupByLibrary.simpleMessage("Couldn\'t reach node."),
+        "privacy_node_connection_localAddress_warning":
+            MessageLookupByLibrary.simpleMessage(
+                "Even with ‘Improved Privacy’ active, Envoy cannot prevent interference by compromised devices on your local network."),
         "privacy_node_nodeAddress":
             MessageLookupByLibrary.simpleMessage("Enter your node address"),
         "privacy_node_nodeType_foundation":
@@ -1067,11 +1203,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Your transaction could not be canceled"),
         "replaceByFee_cancel_overlay_modal_cancelationFees":
-            MessageLookupByLibrary.simpleMessage("Cancellation fee"),
+            MessageLookupByLibrary.simpleMessage("Cancellation Fee"),
         "replaceByFee_cancel_overlay_modal_proceedWithCancelation":
-            MessageLookupByLibrary.simpleMessage("Proceed with cancellation"),
+            MessageLookupByLibrary.simpleMessage("Proceed with Cancellation"),
         "replaceByFee_cancel_overlay_modal_receivingAmount":
-            MessageLookupByLibrary.simpleMessage("Receiving amount"),
+            MessageLookupByLibrary.simpleMessage("Receiving Amount"),
         "replaceByFee_cancel_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Replace the unconfirmed transaction with one that contains a higher fee and sends the funds back to your wallet."),
@@ -1134,8 +1270,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_amount":
             MessageLookupByLibrary.simpleMessage("View Amount in Sats"),
         "settings_currency": MessageLookupByLibrary.simpleMessage("Currency"),
-        "settings_electrum":
-            MessageLookupByLibrary.simpleMessage("Connect my Node"),
         "settings_show_fiat":
             MessageLookupByLibrary.simpleMessage("Display Fiat Values"),
         "settings_viewEnvoyLogs":
