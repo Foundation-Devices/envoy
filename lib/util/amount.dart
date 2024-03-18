@@ -13,11 +13,11 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/locale.dart';
 
-// Always use comma to group thousands of BTC and dot to separate the sats
 String btcSatoshiSeparator = fiatDecimalSeparator;
 String thousandSatSeparator = fiatGroupSeparator;
 
-NumberFormat satsFormatter = NumberFormat("###,###,###,###,###,###,###");
+NumberFormat satsFormatter =
+    NumberFormat("###,###,###,###,###,###,###", currentLocale);
 
 String getDisplayAmount(
   int amountSats,

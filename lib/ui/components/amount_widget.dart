@@ -24,6 +24,7 @@ class AmountWidget extends StatelessWidget {
   final double? fxRateFiat;
   final Color? badgeColor;
   final bool alignToEnd;
+  final String? localeForTest;
 
   const AmountWidget({
     super.key,
@@ -36,6 +37,7 @@ class AmountWidget extends StatelessWidget {
     this.decimalDot = true,
     this.badgeColor,
     this.alignToEnd = true,
+    this.localeForTest,
   });
 
   @override
@@ -45,14 +47,14 @@ class AmountWidget extends StatelessWidget {
         return Column(
           children: [
             PrimaryAmountWidget(
-              unit: primaryUnit,
-              style: PrimaryAmountWidgetStyle.large,
-              amountSats: amountSats,
-              decimalDot: decimalDot,
-              symbolFiat: symbolFiat,
-              fxRateFiat: fxRateFiat,
-              badgeColor: badgeColor,
-            ),
+                unit: primaryUnit,
+                style: PrimaryAmountWidgetStyle.large,
+                amountSats: amountSats,
+                decimalDot: decimalDot,
+                symbolFiat: symbolFiat,
+                fxRateFiat: fxRateFiat,
+                badgeColor: badgeColor,
+                localeForTest: localeForTest),
             if (secondaryUnit != null)
               SecondaryAmountWidget(
                   unit: secondaryUnit!,
@@ -61,7 +63,8 @@ class AmountWidget extends StatelessWidget {
                   symbolFiat: symbolFiat,
                   fxRateFiat: fxRateFiat,
                   decimalDot: decimalDot,
-                  badgeColor: badgeColor),
+                  badgeColor: badgeColor,
+                  localeForTest: localeForTest),
           ],
         );
       case AmountWidgetStyle.normal:
@@ -70,14 +73,14 @@ class AmountWidget extends StatelessWidget {
               alignToEnd ? CrossAxisAlignment.end : CrossAxisAlignment.center,
           children: [
             PrimaryAmountWidget(
-              unit: primaryUnit,
-              style: PrimaryAmountWidgetStyle.normal,
-              amountSats: amountSats,
-              decimalDot: decimalDot,
-              symbolFiat: symbolFiat,
-              fxRateFiat: fxRateFiat,
-              badgeColor: badgeColor,
-            ),
+                unit: primaryUnit,
+                style: PrimaryAmountWidgetStyle.normal,
+                amountSats: amountSats,
+                decimalDot: decimalDot,
+                symbolFiat: symbolFiat,
+                fxRateFiat: fxRateFiat,
+                badgeColor: badgeColor,
+                localeForTest: localeForTest),
             if (secondaryUnit != null)
               SecondaryAmountWidget(
                   unit: secondaryUnit!,
@@ -86,7 +89,8 @@ class AmountWidget extends StatelessWidget {
                   symbolFiat: symbolFiat,
                   fxRateFiat: fxRateFiat,
                   decimalDot: decimalDot,
-                  badgeColor: badgeColor),
+                  badgeColor: badgeColor,
+                  localeForTest: localeForTest),
           ],
         );
       case AmountWidgetStyle.singleLine:
@@ -96,14 +100,14 @@ class AmountWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             PrimaryAmountWidget(
-              unit: primaryUnit,
-              style: PrimaryAmountWidgetStyle.normal,
-              amountSats: amountSats,
-              decimalDot: decimalDot,
-              symbolFiat: symbolFiat,
-              fxRateFiat: fxRateFiat,
-              badgeColor: badgeColor,
-            ),
+                unit: primaryUnit,
+                style: PrimaryAmountWidgetStyle.normal,
+                amountSats: amountSats,
+                decimalDot: decimalDot,
+                symbolFiat: symbolFiat,
+                fxRateFiat: fxRateFiat,
+                badgeColor: badgeColor,
+                localeForTest: localeForTest),
             if (secondaryUnit != null)
               Padding(
                 padding: const EdgeInsets.only(left: EnvoySpacing.small),
@@ -114,7 +118,8 @@ class AmountWidget extends StatelessWidget {
                     symbolFiat: symbolFiat,
                     fxRateFiat: fxRateFiat,
                     decimalDot: decimalDot,
-                    badgeColor: badgeColor),
+                    badgeColor: badgeColor,
+                    localeForTest: localeForTest),
               ),
           ],
         );
@@ -128,6 +133,7 @@ class AmountWidget extends StatelessWidget {
           symbolFiat: symbolFiat,
           fxRateFiat: fxRateFiat,
           badgeColor: badgeColor,
+          localeForTest: localeForTest,
           sendScreen: true,
         );
     }
@@ -146,6 +152,7 @@ class PrimaryAmountWidget extends StatelessWidget {
   final PrimaryAmountWidgetStyle style;
   final Color? badgeColor;
   final bool sendScreen;
+  final String? localeForTest;
 
   final EnvoyIcons iconBtc = EnvoyIcons.btc;
   final EnvoyIcons iconSat = EnvoyIcons.sats;
@@ -153,18 +160,18 @@ class PrimaryAmountWidget extends StatelessWidget {
   final TextStyle textStyleFiatSymbol = EnvoyTypography.body
       .copyWith(color: EnvoyColors.textPrimary, fontSize: 24);
 
-  PrimaryAmountWidget({
-    super.key,
-    required this.unit,
-    required this.amountSats,
-    this.decimalDot = true,
-    this.fiatDecimals = 2,
-    this.symbolFiat = "",
-    this.fxRateFiat,
-    this.style = PrimaryAmountWidgetStyle.normal,
-    this.badgeColor,
-    this.sendScreen = false,
-  });
+  PrimaryAmountWidget(
+      {super.key,
+      required this.unit,
+      required this.amountSats,
+      this.decimalDot = true,
+      this.fiatDecimals = 2,
+      this.symbolFiat = "",
+      this.fxRateFiat,
+      this.style = PrimaryAmountWidgetStyle.normal,
+      this.badgeColor,
+      this.sendScreen = false,
+      this.localeForTest});
 
   @override
   Widget build(BuildContext context) {
@@ -228,7 +235,8 @@ class PrimaryAmountWidget extends StatelessWidget {
                     amountSats, decimalDot, textStyleBlack, textStyleGray)
                 : unit == AmountDisplayUnit.fiat
                     ? buildPrimaryFiatTextSpans(amountSats, fxRateFiat!,
-                        decimalDot, fiatDecimals, textStyleBlack, textStyleGray)
+                        decimalDot, fiatDecimals, textStyleBlack, textStyleGray,
+                        localeForTest: localeForTest)
                     : buildPrimarySatsTextSpans(
                         amountSats, decimalDot, textStyleBlack, textStyleGray),
           ),
@@ -248,7 +256,7 @@ class SecondaryAmountWidget extends StatelessWidget {
   final bool decimalDot;
   final SecondaryAmountWidgetStyle style;
   final Color? badgeColor;
-
+  final String? localeForTest;
   final EnvoyIcons iconBtc = EnvoyIcons.btc;
 
   const SecondaryAmountWidget(
@@ -259,7 +267,8 @@ class SecondaryAmountWidget extends StatelessWidget {
       this.fxRateFiat,
       this.decimalDot = true,
       this.style = SecondaryAmountWidgetStyle.normal,
-      this.badgeColor});
+      this.badgeColor,
+      this.localeForTest});
 
   @override
   Widget build(BuildContext context) {
@@ -304,7 +313,8 @@ class SecondaryAmountWidget extends StatelessWidget {
           text: TextSpan(
               children: unit == AmountDisplayUnit.fiat
                   ? buildSecondaryFiatTextSpans(
-                      amountSats, fxRateFiat!, decimalDot, textStyle)
+                      amountSats, fxRateFiat!, decimalDot, textStyle,
+                      localeForTest: localeForTest)
                   : buildSecondaryBtcTextSpans(
                       amountSats, decimalDot, textStyle, textStyle)),
         ),
@@ -462,9 +472,11 @@ List<TextSpan> buildPrimarySatsTextSpans(int amountSats, bool decimalDot,
     String char = satsString[i];
     textSpans.add(_createTextSpan(char, textStyleBlack!));
 
-    // Insert commas after every three digits
+    // Insert commas or dots after every three digits
     if (i % 3 == 2 && i != satsString.length - 1) {
-      textSpans.add(_createTextSpan(',', textStyleBlack));
+      String separator =
+          decimalDot ? ',' : '.'; // if decimal dot, separator is comma
+      textSpans.add(_createTextSpan(separator, textStyleBlack));
     }
   }
 
@@ -474,13 +486,7 @@ List<TextSpan> buildPrimarySatsTextSpans(int amountSats, bool decimalDot,
     textSpans.insert(0, _createTextSpan("-", textStyleBlack!));
   }
 
-  return changeDecimalMark(
-      AmountDisplayUnit.sat,
-      decimalDot,
-      false, // place false here if not BTC or if the BTC < 1
-      textSpans,
-      textStyleBlack,
-      textStyleGray);
+  return textSpans;
 }
 
 List<TextSpan> buildPrimaryFiatTextSpans(
@@ -489,12 +495,14 @@ List<TextSpan> buildPrimaryFiatTextSpans(
     bool decimalDot,
     int decimals,
     TextStyle? textStyleBlack,
-    TextStyle? textStyleGray) {
+    TextStyle? textStyleGray,
+    {String? localeForTest}) {
   List<TextSpan> textSpans = [];
 
   double amountValue =
       convertSatsToFiat(amountSats, fxRateFiat, decimals: decimals);
-  String amountValueString = convertSatsToFiatString(amountSats, fxRateFiat);
+  String amountValueString = convertSatsToFiatString(amountSats, fxRateFiat,
+      localeForTest: localeForTest);
 
   if (amountValue >= 1000000000) {
     // Convert to billions and round to 1 decimal point
@@ -514,28 +522,23 @@ List<TextSpan> buildPrimaryFiatTextSpans(
     }
   }
 
-  return changeDecimalMark(AmountDisplayUnit.fiat, decimalDot, false, textSpans,
-      textStyleBlack, textStyleGray);
+  return textSpans;
 }
 
 List<TextSpan> buildSecondaryFiatTextSpans(int amountSats, double fxRateFiat,
-    bool decimalDot, TextStyle? textStyleTeal) {
+    bool decimalDot, TextStyle? textStyleTeal,
+    {String? localeForTest}) {
   List<TextSpan> textSpans = [];
 
-  String amountFiat = convertSatsToFiatString(amountSats, fxRateFiat);
+  String amountFiat = convertSatsToFiatString(amountSats, fxRateFiat,
+      localeForTest: localeForTest);
 
   for (int i = 0; i < amountFiat.length; i++) {
     String char = amountFiat[i];
     textSpans.add(_createTextSpan(char, textStyleTeal!));
   }
 
-  return changeDecimalMark(
-      AmountDisplayUnit.fiat,
-      decimalDot,
-      false, // place false here if not BTC or if the BTC < 1
-      textSpans,
-      textStyleTeal,
-      textStyleTeal); // no secondary color for lower number
+  return textSpans;
 }
 
 List<TextSpan> buildSecondaryBtcTextSpans(int amountSats, bool decimalDot,
@@ -630,9 +633,12 @@ double convertSatsToFiat(int amountSats, double fxRateFiat,
   return fiatValue;
 }
 
-String convertSatsToFiatString(int amountSats, double fxRateFiat) {
+String convertSatsToFiatString(int amountSats, double fxRateFiat,
+    {String? localeForTest}) {
+  String usedLocale = localeForTest ?? currentLocale;
+
   NumberFormat currencyFormatter =
-      NumberFormat.currency(locale: currentLocale, symbol: "");
+      NumberFormat.currency(locale: usedLocale, symbol: "");
 
   String formattedAmount =
       currencyFormatter.format(fxRateFiat * amountSats / 100000000);
