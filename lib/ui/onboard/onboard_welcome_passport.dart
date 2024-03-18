@@ -25,7 +25,6 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
     return EnvoyPatternScaffold(
       gradientHeight: 1.8,
       shield: Container(
-        height: max(MediaQuery.of(context).size.height * 0.38, 300),
         margin: EdgeInsets.all(EnvoySpacing.medium1),
         padding: EdgeInsets.only(top: EnvoySpacing.large1),
         child: Column(

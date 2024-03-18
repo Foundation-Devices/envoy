@@ -82,6 +82,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
       ),
       header: PrivacyShieldAnimated(),
       shield: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Flexible(
             child: SingleChildScrollView(
