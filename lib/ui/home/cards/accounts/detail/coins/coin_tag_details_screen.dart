@@ -193,7 +193,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
 
   Widget coinTagDetails(BuildContext context) {
     final tag = widget.coinTag;
-    const double maxHeight = 400;
+    const double maxDetailsHeight = 400;
 
     Color border = tag.untagged
         ? const Color(0xff808080)
@@ -207,7 +207,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
 
     const cardRadius = 24.0;
     return SizedBox(
-      height: maxHeight,
+      height: maxDetailsHeight,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -221,7 +221,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
           ),
           Flexible(
             child: Padding(
-              padding: const EdgeInsets.all(EnvoySpacing.medium1),
+              padding: const EdgeInsets.all(EnvoySpacing.medium2),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 key: _detailWidgetKey,
@@ -265,29 +265,35 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                   borderRadius: BorderRadius
                                                       .all(Radius.circular(
                                                           cardRadius - 5.5))),
-                                              child: ListView(
-                                                shrinkWrap: true,
-                                                children: List.generate(
-                                                  tag.coins.length,
-                                                  (index) {
-                                                    Coin coin =
-                                                        tag.coins[index];
-                                                    return InkWell(
-                                                      splashColor:
-                                                          Colors.transparent,
-                                                      onTap: () {
-                                                        selectCoin(
-                                                            context, coin);
-                                                      },
-                                                      child: Container(
-                                                          alignment:
-                                                              Alignment.center,
-                                                          child:
-                                                              CoinBalanceWidget(
-                                                            coin: coin,
-                                                          )),
-                                                    );
-                                                  },
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(
+                                                            cardRadius - 5.5)),
+                                                child: ListView(
+                                                  shrinkWrap: true,
+                                                  children: List.generate(
+                                                    tag.coins.length,
+                                                    (index) {
+                                                      Coin coin =
+                                                          tag.coins[index];
+                                                      return InkWell(
+                                                        splashColor:
+                                                            Colors.transparent,
+                                                        onTap: () {
+                                                          selectCoin(
+                                                              context, coin);
+                                                        },
+                                                        child: Container(
+                                                            alignment: Alignment
+                                                                .center,
+                                                            child:
+                                                                CoinBalanceWidget(
+                                                              coin: coin,
+                                                            )),
+                                                      );
+                                                    },
+                                                  ),
                                                 ),
                                               )),
                                         )
@@ -358,7 +364,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
             children: [
               Container(
                 width: double.infinity,
-                height: 42,
+                height: 62,
                 padding: const EdgeInsets.symmetric(
                     horizontal: EnvoySpacing.small, vertical: 0),
                 child: Column(
