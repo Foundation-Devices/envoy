@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 
 class EnvoyDialog extends StatelessWidget {
@@ -28,7 +29,7 @@ class EnvoyDialog extends StatelessWidget {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           dismissible
@@ -46,8 +47,11 @@ class EnvoyDialog extends StatelessWidget {
               ? Container(
                   child: Text(this.title ?? '',
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.w500, fontSize: 24)),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge
+                          ?.copyWith(fontSize: 24)
+                          .setWeight(FontWeight.w500)),
                 )
               : SizedBox(),
           Padding(padding: EdgeInsets.all(this.title != null ? 8 : 0)),
