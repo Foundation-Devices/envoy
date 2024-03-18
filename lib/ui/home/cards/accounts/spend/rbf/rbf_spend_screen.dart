@@ -507,13 +507,17 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     if (account.wallet.hot) {
       broadcastTx(account, _psbt, context);
     } else {
-      final psbt = await Navigator.of(context, rootNavigator: false).push(
-          MaterialPageRoute(
-              builder: (context) => background(
-                  child: PsbtCard(_psbt, account), context: context)));
-      if (context.mounted) {
-        broadcastTx(account, psbt, context);
-      }
+      await Navigator.of(context, rootNavigator: false).push(MaterialPageRoute(
+          builder: (context) => background(
+              child: PsbtCard(
+                _psbt,
+                account,
+                onSignedPsbtScanned: (psbt) {
+                  Navigator.pop(context);
+                  broadcastTx(account, psbt, context);
+                },
+              ),
+              context: context)));
     }
   }
 
