@@ -266,13 +266,13 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       case ROUTE_ACCOUNT_DETAIL:
         return S().manage_account_address_heading;
       case ROUTE_BUY_BITCOIN:
-        return "Buy Bitcoin"; //TODO: Figma
+        return S().header_buyBitcoin;
       case ROUTE_PEER_TO_PEER:
-        return "Buy Bitcoin"; //TODO: Figma
+        return S().header_buyBitcoin;
       case ROUTE_SELECT_REGION:
-        return "Buy Bitcoin"; //TODO: Figma
+        return S().header_buyBitcoin;
       case ROUTE_SELECT_ACCOUNT:
-        return "Buy Bitcoin"; //TODO: Figma
+        return S().header_buyBitcoin;
 
       default:
         return S().menu_heading;

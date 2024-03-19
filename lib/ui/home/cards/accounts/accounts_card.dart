@@ -50,6 +50,7 @@ class AccountsCardState extends State<AccountsCard>
 
     return Column(
       mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Flexible(child: AccountsList()),
         Padding(

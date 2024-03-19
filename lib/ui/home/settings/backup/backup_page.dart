@@ -216,7 +216,8 @@ class _BackupPageState extends ConsumerState<BackupPage>
                                 ? S()
                                     .manual_toggle_on_seed_backup_in_progress_ios_backup_in_progress
                                 : lastEnvoyServerBackup == null
-                                    ? "S().manual_toggle_on_seed_not_backedup_pending_android_data_pending_backup" // TODO: fix localazy
+                                    ? S()
+                                        .manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup
                                     : "${timeago.format(lastEnvoyServerBackup, locale: activeLocale.languageCode).capitalize()} ${S().manual_toggle_on_seed_backedup_iOS_toFoundationServers}",
                             color: EnvoyColors.grey,
                             maxLines: 2,
