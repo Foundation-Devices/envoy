@@ -40,7 +40,14 @@ class AmountWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool decimalDot = fiatDecimalSeparator == ".";
+    String getDecimalSeparator(String locale) {
+      // Get the decimal separator for the specified locale
+      NumberFormat numberFormat = NumberFormat.decimalPattern(locale);
+      return numberFormat.symbols.DECIMAL_SEP;
+    }
+
+    String decimalSeparator = getDecimalSeparator(locale);
+    bool decimalDot = decimalSeparator == ".";
 
     switch (style) {
       case AmountWidgetStyle.large:
@@ -474,7 +481,7 @@ List<TextSpan> buildPrimarySatsTextSpans(int amountSats, bool decimalDot,
     // Insert commas or dots after every three digits
     if (i % 3 == 2 && i != satsString.length - 1) {
       String separator =
-          decimalDot ? '.' : ','; // if decimal dot, separator is comma
+          decimalDot ? ',' : '.'; // if decimal dot, separator is comma
       textSpans.add(_createTextSpan(separator, textStyleBlack));
     }
   }
@@ -633,11 +640,6 @@ String convertSatsToFiatString(
 
   String formattedAmount =
       currencyFormatter.format(fxRateFiat * amountSats / 100000000);
-
-  // NumberFormat still adds a non-breaking space if symbol is empty
-  const int nonBreakingSpace = 0x00A0;
-  formattedAmount =
-      formattedAmount.replaceAll(String.fromCharCode(nonBreakingSpace), "");
 
   return formattedAmount;
 }
