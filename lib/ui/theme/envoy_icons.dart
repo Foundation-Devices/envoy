@@ -70,6 +70,7 @@ enum EnvoyIcons {
   peach,
   ramp,
   robosats,
+  externalLink,
 }
 
 class EnvoyIcon extends StatelessWidget {

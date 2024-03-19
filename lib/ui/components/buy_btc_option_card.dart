@@ -62,24 +62,31 @@ class BuyOptionCardState extends State<BuyOptionCard> {
                 size: EnvoyIconSize.mediumLarge,
                 color: iconColor,
               ),
-              Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.label,
-                    style: titleStyle.copyWith(
-                      color: textColor,
+              const SizedBox(
+                width: EnvoySpacing.medium1,
+              ),
+              Flexible(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.label,
+                      style: titleStyle.copyWith(
+                        color: textColor,
+                      ),
                     ),
-                  ),
-                  Text(
-                    widget.description,
-                    style: EnvoyTypography.info.copyWith(
-                      color: iconColor,
+                    Text(
+                      widget.description,
+                      style: EnvoyTypography.info.copyWith(
+                        color: iconColor,
+                      ),
+                      textAlign: TextAlign.start,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    textAlign: TextAlign.start, // TODO: fix overflows
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),

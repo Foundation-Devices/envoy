@@ -15,6 +15,7 @@ import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 enum BuyBitcoinCardState { buyInEnvoy, peerToPeer, vouchers, atms, none }
 
@@ -146,29 +147,21 @@ class _BuyBitcoinCardState extends State<BuyBitcoinCard> {
               state: currentState == BuyBitcoinCardState.none
                   ? ButtonState.disabled
                   : ButtonState.defaultState,
+              icon: currentState == BuyBitcoinCardState.vouchers
+                  ? EnvoyIcons.externalLink
+                  : null,
               onTap: () {
                 switch (currentState) {
                   case BuyBitcoinCardState.buyInEnvoy:
-                    showEnvoyDialog(
-                        context: context,
-                        dialog: const Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Text("Not Implemented"),
-                        ));
-                  // TODO: Handle this case.
+                    context.go(
+                      ROUTE_SELECT_ACCOUNT,
+                    );
                   case BuyBitcoinCardState.peerToPeer:
                     context.go(
                       ROUTE_PEER_TO_PEER,
                     );
-
                   case BuyBitcoinCardState.vouchers:
-                    showEnvoyDialog(
-                        context: context,
-                        dialog: const Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Text("Not Implemented"),
-                        ));
-                  // TODO: Handle this case.
+                    launchUrl(Uri.parse("https://azte.co/"));
                   case BuyBitcoinCardState.atms:
                     Navigator.of(context, rootNavigator: true).push(
                       MaterialPageRoute(builder: (context) {

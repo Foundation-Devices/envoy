@@ -240,7 +240,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     if (path.contains(ROUTE_LEARN_BLOG)) {
       return true;
     }
-    if (path.contains(ROUTE_BUY_BITCOIN)) {
+    if (path.contains(ROUTE_SELECT_REGION)) {
       return true;
     }
     return false;
@@ -266,6 +266,12 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       case ROUTE_ACCOUNT_DETAIL:
         return S().manage_account_address_heading;
       case ROUTE_BUY_BITCOIN:
+        return "Buy Bitcoin"; //TODO: Figma
+      case ROUTE_PEER_TO_PEER:
+        return "Buy Bitcoin"; //TODO: Figma
+      case ROUTE_SELECT_REGION:
+        return "Buy Bitcoin"; //TODO: Figma
+      case ROUTE_SELECT_ACCOUNT:
         return "Buy Bitcoin"; //TODO: Figma
 
       default:

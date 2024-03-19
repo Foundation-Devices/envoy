@@ -57,11 +57,11 @@ class AccountsCardState extends State<AccountsCard>
           child: GestureDetector(
             onTap: () {
               context.go(
-                ROUTE_BUY_BITCOIN,
+                ROUTE_SELECT_REGION,
               );
             },
             child: QrShield(
-              // TODO: make new widget or modify QrShield
+              arcSizeRatio: 15.0,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: EnvoySpacing.large3, vertical: EnvoySpacing.xs),

@@ -91,14 +91,7 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
                 ? (EnvoyDropdownOption? newValue) {
                     setState(() {
                       _selectedOption = newValue;
-
-                      for (final (int index, EnvoyDropdownOption option)
-                          in widget.options.indexed) {
-                        if (option.type == newValue!.type) {
-                          _selectedIndex = index;
-                        }
-                      }
-
+                      _selectedIndex = widget.options.indexOf(newValue!);
                       if (widget.onOptionChanged != null) {
                         widget.onOptionChanged!(newValue);
                       }
@@ -113,6 +106,7 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
                     option.label,
                     style: EnvoyTypography.body.copyWith(
                       color: EnvoyColors.textPrimary,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 );
@@ -150,6 +144,7 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
                                       ? EnvoyColors.textPrimaryInverse
                                       : EnvoyColors.textPrimary,
                                 ),
+                                overflow: TextOverflow.ellipsis,
                               ),
                               if (_isTapped)
                                 Padding(
