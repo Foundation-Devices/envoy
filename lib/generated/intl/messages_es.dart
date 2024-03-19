@@ -152,8 +152,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Descripción:"),
         "btcpay_redeem_modal_name":
             MessageLookupByLibrary.simpleMessage("Nombre:"),
-        "btcpay_redeem_modal_title":
-            MessageLookupByLibrary.simpleMessage("Título:"),
         "buy_bitcoin_accountSelection_chooseAccount":
             MessageLookupByLibrary.simpleMessage("Elige otra cuenta"),
         "buy_bitcoin_accountSelection_heading":
@@ -449,6 +447,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Comprar"),
         "component_next": MessageLookupByLibrary.simpleMessage("Siguiente"),
         "component_no": MessageLookupByLibrary.simpleMessage("No"),
+        "component_ok": MessageLookupByLibrary.simpleMessage("OK"),
         "component_redeem": MessageLookupByLibrary.simpleMessage("Canjear"),
         "component_reset":
             MessageLookupByLibrary.simpleMessage("Restablecer filtro"),
@@ -850,7 +849,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "magic_setup_tutorial_ios_CTA2": MessageLookupByLibrary.simpleMessage(
             "Restaurar Copia de Seguridad Mágica"),
         "magic_setup_tutorial_ios_subheading": MessageLookupByLibrary.simpleMessage(
-            "La forma más fácil de crear una cartera nueva de Bitcoin manteniendo tu soberanía.\n\nLa Copia de Seguridad Mágica realiza automáticamente una copia de seguridad de tu cartera y su configuración en la Copia de Seguridad de Android, 100% encriptado de extremo a extremo. \n\n[[Más información]]."),
+            "La forma más fácil de crear una cartera nueva de Bitcoin manteniendo tu soberanía.\n\nLa Copia de Seguridad Mágica realiza automáticamente una copia de seguridad de tu cartera y su configuración en tu Llavero iCloud, 100% encriptado de extremo a extremo. \n\n[[Más información]]."),
         "manage_account_address_card_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Por motivos de privacidad, creamos una dirección nueva cada vez que visitas esta pantalla."),
@@ -1076,9 +1075,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Esta copia de seguridad contiene información soibre los dispositivos y cuentas vinculadas, etiquetas, notas y configuración. No contiene información sobre la semilla.\n\nLas copias de seguridad de Envoy están encriptadas de extremo a extremo, Foundation no tiene acceso ni conocimiento de su contenido. \n\nEnvoy te notificará cuando se complete la carga."),
         "manual_toggle_on_seed_not_backedup_android_open_settings":
             MessageLookupByLibrary.simpleMessage("Configuración Android"),
-        "manual_toggle_on_seed_not_backedup_pending_android_data_pending_backup":
-            MessageLookupByLibrary.simpleMessage(
-                "Copia de seguridad pendiente en los servidores de Foundation"),
         "manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup":
             MessageLookupByLibrary.simpleMessage(
                 "Copia de Seguridad de Android pendiente (una vez al día)"),
@@ -1235,11 +1231,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Tu transacción no ha podido ser cancelada"),
         "replaceByFee_cancel_overlay_modal_cancelationFees":
-            MessageLookupByLibrary.simpleMessage("Tasa de cancelación"),
+            MessageLookupByLibrary.simpleMessage("Tasa de Cancelación"),
         "replaceByFee_cancel_overlay_modal_proceedWithCancelation":
-            MessageLookupByLibrary.simpleMessage("Proceder con cancelación"),
+            MessageLookupByLibrary.simpleMessage("Proceder con Cancelación"),
         "replaceByFee_cancel_overlay_modal_receivingAmount":
-            MessageLookupByLibrary.simpleMessage("Cantidad a recibir"),
+            MessageLookupByLibrary.simpleMessage("Cantidad a Recibir"),
         "replaceByFee_cancel_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Reemplaza la transacción no confirmada por una que contenga una tasa más alta y devuelve los fondos a tu cartera."),
@@ -1301,8 +1297,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_amount":
             MessageLookupByLibrary.simpleMessage("Ver cantidad en Sats"),
         "settings_currency": MessageLookupByLibrary.simpleMessage("Divisa"),
-        "settings_electrum":
-            MessageLookupByLibrary.simpleMessage("Conectar mi Nodo"),
         "settings_show_fiat":
             MessageLookupByLibrary.simpleMessage("Mostrar Valores Fiat"),
         "settings_viewEnvoyLogs":

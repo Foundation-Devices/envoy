@@ -418,21 +418,30 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                     return;
                   } else {
                     if (account.wallet.hot == false) {
-                      Psbt? psbt = await navigator.push(MaterialPageRoute(
+                      await navigator.push(MaterialPageRoute(
                           builder: (context) => Builder(builder: (context) {
                                 return background(
-                                    child: PsbtCard(widget.cancelTx, account),
+                                    child: PsbtCard(
+                                      widget.cancelTx,
+                                      account,
+                                      onSignedPsbtScanned: (psbt) async {
+                                        navigator.pop();
+                                        navigator.pop();
+                                        //wait for route to pop
+                                        await Future.delayed(
+                                            const Duration(milliseconds: 100));
+                                        navigator.push(MaterialPageRoute(
+                                          builder: (context) =>
+                                              CancelTransactionProgress(
+                                            cancelTx: psbt,
+                                            cancelRawTx: widget.cancelRawTx,
+                                            originalTx: widget.originalTx,
+                                          ),
+                                        ));
+                                      },
+                                    ),
                                     context: context);
                               })));
-                      navigator.push(MaterialPageRoute(
-                        builder: (context) {
-                          return CancelTransactionProgress(
-                            cancelTx: psbt!,
-                            cancelRawTx: widget.cancelRawTx,
-                            originalTx: widget.originalTx,
-                          );
-                        },
-                      ));
                     } else {
                       Navigator.pop(context);
                       Navigator.of(context).push(MaterialPageRoute(

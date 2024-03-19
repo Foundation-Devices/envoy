@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("Redeem"),
+        "_": MessageLookupByLibrary.simpleMessage("TAPROOT"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versió de l\'aplicació"),
         "about_openSourceLicences":
@@ -153,8 +153,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Descripció:"),
         "btcpay_redeem_modal_name":
             MessageLookupByLibrary.simpleMessage("Nom:"),
-        "btcpay_redeem_modal_title":
-            MessageLookupByLibrary.simpleMessage("Títol:"),
         "buy_bitcoin_accountSelection_chooseAccount":
             MessageLookupByLibrary.simpleMessage("Choose different account"),
         "buy_bitcoin_accountSelection_heading":
@@ -449,6 +447,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_minishield_buy": MessageLookupByLibrary.simpleMessage("Buy"),
         "component_next": MessageLookupByLibrary.simpleMessage("Següent"),
         "component_no": MessageLookupByLibrary.simpleMessage("No"),
+        "component_ok": MessageLookupByLibrary.simpleMessage("OK"),
         "component_redeem": MessageLookupByLibrary.simpleMessage("Bescanviar"),
         "component_reset": MessageLookupByLibrary.simpleMessage("Reinicia"),
         "component_retry":
@@ -790,7 +789,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "learning_center_results_title":
             MessageLookupByLibrary.simpleMessage("Resultats"),
         "learning_center_search_input":
-            MessageLookupByLibrary.simpleMessage("Passport"),
+            MessageLookupByLibrary.simpleMessage("Buscar..."),
         "learning_center_title_blog":
             MessageLookupByLibrary.simpleMessage("Blog"),
         "learning_center_title_faq":
@@ -1081,9 +1080,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Aquesta còpia de seguretat conté dispositius i comptes connectats, etiquetes i configuració d\'aplicacions. No conté informació de la teva clau privada.\n\nLes còpies de seguretat d\'Envoy estan xifrades d\'extrem a extrem, Foundation no té accés ni coneixement dels seus continguts.\n\nEnvoy us notificarà quan s\'hagi completat la càrrega."),
         "manual_toggle_on_seed_not_backedup_android_open_settings":
             MessageLookupByLibrary.simpleMessage("Configuració d\'Android"),
-        "manual_toggle_on_seed_not_backedup_pending_android_data_pending_backup":
-            MessageLookupByLibrary.simpleMessage(
-                "Còpia de seguretat pendent als servidors de Foundation"),
         "manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup":
             MessageLookupByLibrary.simpleMessage(
                 "Còpia de Seguretat Automàtica d\'Android Pendent (un cop al dia)"),
@@ -1310,8 +1306,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_amount":
             MessageLookupByLibrary.simpleMessage("Veure Quantitat en Sats"),
         "settings_currency": MessageLookupByLibrary.simpleMessage("Divisa"),
-        "settings_electrum":
-            MessageLookupByLibrary.simpleMessage("Connecta el teu Node"),
         "settings_show_fiat":
             MessageLookupByLibrary.simpleMessage("Mostra els valors en Fiat"),
         "settings_viewEnvoyLogs": MessageLookupByLibrary.simpleMessage(

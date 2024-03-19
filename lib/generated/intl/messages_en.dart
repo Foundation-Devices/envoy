@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("Redeem"),
+        "_": MessageLookupByLibrary.simpleMessage("TAPROOT"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences":
             MessageLookupByLibrary.simpleMessage("Open Source Licences"),
@@ -148,8 +148,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Description:"),
         "btcpay_redeem_modal_name":
             MessageLookupByLibrary.simpleMessage("Name:"),
-        "btcpay_redeem_modal_title":
-            MessageLookupByLibrary.simpleMessage("Title:"),
         "buy_bitcoin_accountSelection_chooseAccount":
             MessageLookupByLibrary.simpleMessage("Choose different account"),
         "buy_bitcoin_accountSelection_heading":
@@ -441,6 +439,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_minishield_buy": MessageLookupByLibrary.simpleMessage("Buy"),
         "component_next": MessageLookupByLibrary.simpleMessage("Next"),
         "component_no": MessageLookupByLibrary.simpleMessage("No"),
+        "component_ok": MessageLookupByLibrary.simpleMessage("OK"),
         "component_redeem": MessageLookupByLibrary.simpleMessage("Redeem"),
         "component_reset": MessageLookupByLibrary.simpleMessage("Reset"),
         "component_retry": MessageLookupByLibrary.simpleMessage("Retry"),
@@ -1047,9 +1046,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "This backup contains connected devices and accounts, labels and app settings. It contains no private key information.\n\nEnvoy backups are end-to-end encrypted, Foundation has no access or knowledge of their contents. \n\nEnvoy will notify you when the upload is complete."),
         "manual_toggle_on_seed_not_backedup_android_open_settings":
             MessageLookupByLibrary.simpleMessage("Open Android Settings"),
-        "manual_toggle_on_seed_not_backedup_pending_android_data_pending_backup":
-            MessageLookupByLibrary.simpleMessage(
-                "Pending backup to Foundation servers"),
         "manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup":
             MessageLookupByLibrary.simpleMessage(
                 "Pending Android Auto Backup (once daily)"),
@@ -1205,11 +1201,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Your transaction could not be canceled"),
         "replaceByFee_cancel_overlay_modal_cancelationFees":
-            MessageLookupByLibrary.simpleMessage("Cancellation fee"),
+            MessageLookupByLibrary.simpleMessage("Cancellation Fee"),
         "replaceByFee_cancel_overlay_modal_proceedWithCancelation":
-            MessageLookupByLibrary.simpleMessage("Proceed with cancellation"),
+            MessageLookupByLibrary.simpleMessage("Proceed with Cancellation"),
         "replaceByFee_cancel_overlay_modal_receivingAmount":
-            MessageLookupByLibrary.simpleMessage("Receiving amount"),
+            MessageLookupByLibrary.simpleMessage("Receiving Amount"),
         "replaceByFee_cancel_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Replace the unconfirmed transaction with one that contains a higher fee and sends the funds back to your wallet."),
@@ -1272,8 +1268,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_amount":
             MessageLookupByLibrary.simpleMessage("View Amount in Sats"),
         "settings_currency": MessageLookupByLibrary.simpleMessage("Currency"),
-        "settings_electrum":
-            MessageLookupByLibrary.simpleMessage("Connect my Node"),
         "settings_show_fiat":
             MessageLookupByLibrary.simpleMessage("Display Fiat Values"),
         "settings_viewEnvoyLogs":

@@ -52,10 +52,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `Redeem`
+  /// `TAPROOT`
   String get _ {
     return Intl.message(
-      'Redeem',
+      'TAPROOT',
       name: '_',
       desc: '',
       args: [],
@@ -657,16 +657,6 @@ class S {
     return Intl.message(
       'Name:',
       name: 'btcpay_redeem_modal_name',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Title:`
-  String get btcpay_redeem_modal_title {
-    return Intl.message(
-      'Title:',
-      name: 'btcpay_redeem_modal_title',
       desc: '',
       args: [],
     );
@@ -2041,6 +2031,16 @@ class S {
     return Intl.message(
       'No',
       name: 'component_no',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OK`
+  String get component_ok {
+    return Intl.message(
+      'OK',
+      name: 'component_ok',
       desc: '',
       args: [],
     );
@@ -4844,18 +4844,6 @@ class S {
     );
   }
 
-  /// `Pending backup to Foundation servers`
-  String
-      get manual_toggle_on_seed_not_backedup_pending_android_data_pending_backup {
-    return Intl.message(
-      'Pending backup to Foundation servers',
-      name:
-          'manual_toggle_on_seed_not_backedup_pending_android_data_pending_backup',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Pending Android Auto Backup (once daily)`
   String
       get manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup {
@@ -5570,30 +5558,30 @@ class S {
     );
   }
 
-  /// `Cancellation fee`
+  /// `Cancellation Fee`
   String get replaceByFee_cancel_overlay_modal_cancelationFees {
     return Intl.message(
-      'Cancellation fee',
+      'Cancellation Fee',
       name: 'replaceByFee_cancel_overlay_modal_cancelationFees',
       desc: '',
       args: [],
     );
   }
 
-  /// `Proceed with cancellation`
+  /// `Proceed with Cancellation`
   String get replaceByFee_cancel_overlay_modal_proceedWithCancelation {
     return Intl.message(
-      'Proceed with cancellation',
+      'Proceed with Cancellation',
       name: 'replaceByFee_cancel_overlay_modal_proceedWithCancelation',
       desc: '',
       args: [],
     );
   }
 
-  /// `Receiving amount`
+  /// `Receiving Amount`
   String get replaceByFee_cancel_overlay_modal_receivingAmount {
     return Intl.message(
-      'Receiving amount',
+      'Receiving Amount',
       name: 'replaceByFee_cancel_overlay_modal_receivingAmount',
       desc: '',
       args: [],
@@ -5875,16 +5863,6 @@ class S {
     return Intl.message(
       'Currency',
       name: 'settings_currency',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Connect my Node`
-  String get settings_electrum {
-    return Intl.message(
-      'Connect my Node',
-      name: 'settings_electrum',
       desc: '',
       args: [],
     );

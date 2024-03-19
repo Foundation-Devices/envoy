@@ -108,7 +108,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                             onTap: () {
                               GoRouter.of(context).pop();
                             },
-                            label: "S().OK", //TODO: fix localize
+                            label: S().component_ok,
                           ),
                           IconButton(
                               onPressed: () {
