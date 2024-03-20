@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/icon_tab.dart';
-import 'package:envoy/ui/components/map_test.dart';
+import 'package:envoy/ui/components/map_widget.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -171,13 +171,6 @@ class _BuyBitcoinCardState extends State<BuyBitcoinCard> {
                       }),
                     );
                   case BuyBitcoinCardState.none:
-                    showEnvoyDialog(
-                        context: context,
-                        dialog: const Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Text("Not Implemented"),
-                        ));
-                  // TODO: Handle this case.
                 }
               },
             ),

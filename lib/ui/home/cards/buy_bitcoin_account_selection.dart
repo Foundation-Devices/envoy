@@ -18,6 +18,10 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/components/account_selector.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
+import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/components/ramp_widget.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 
 enum SelectAccountState {
   none,
@@ -168,12 +172,37 @@ class _SelectAccountState extends State<SelectAccount> {
                   label: S().component_continue,
                   type: ButtonType.primary,
                   state: ButtonState.defaultState,
-                  onTap: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //       builder: (context) => runRamp(selectedAccount)),
-                    // ); //TODO
+                  onTap: () async {
+                    bool dismissed = await EnvoyStorage()
+                        .checkPromptDismissed(DismissiblePrompt.leavingEnvoy);
+                    if (!dismissed && context.mounted) {
+                      showEnvoyPopUp(
+                          context,
+                          title: S().buy_bitcoin_accountSelection_modal_heading,
+                          S().buy_bitcoin_accountSelection_modal_subheading,
+                          S().send_keyboard_address_confirm,
+                          (BuildContext context) {
+                            Navigator.pop(context);
+                            RampWidget.showRamp(
+                                context, selectedAccount, address!);
+                          },
+                          icon: EnvoyIcons.info,
+                          checkBoxText: S().component_dontShowAgain,
+                          checkedValue: dismissed,
+                          onCheckBoxChanged: (checkedValue) {
+                            if (!checkedValue) {
+                              EnvoyStorage().addPromptState(
+                                  DismissiblePrompt.leavingEnvoy);
+                            } else if (checkedValue) {
+                              EnvoyStorage().removePromptState(
+                                  DismissiblePrompt.leavingEnvoy);
+                            }
+                          });
+                    } else {
+                      if (context.mounted) {
+                        RampWidget.showRamp(context, selectedAccount, address!);
+                      }
+                    }
                   },
                 ),
               ),
