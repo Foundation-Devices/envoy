@@ -690,41 +690,6 @@ String convertSatsToFiatString(
   return formattedAmount;
 }
 
-List<TextSpan> changeDecimalMark(
-    AmountDisplayUnit unit,
-    bool isDecimalPoint,
-    bool isAmountBtcUnder1, // place false here if not BTC or if the BTC < 1
-    List<TextSpan> textSpansWithSpaces,
-    TextStyle? textStyleBlack,
-    TextStyle? textStyleGray) {
-  List<TextSpan> textSpans = [];
-
-  if (isDecimalPoint) {
-    return textSpansWithSpaces;
-  } else {
-    for (int i = 0; i < textSpansWithSpaces.length; i++) {
-      TextSpan char = textSpansWithSpaces[i];
-
-      if (char.text == '.') {
-        if (isAmountBtcUnder1 && unit == AmountDisplayUnit.btc) {
-          textSpans.add(_createTextSpan(',', textStyleGray!));
-        } else {
-          textSpans.add(_createTextSpan(',', textStyleBlack!));
-        }
-      } else if (char.text == ',') {
-        if (isAmountBtcUnder1 && unit == AmountDisplayUnit.btc) {
-          textSpans.add(_createTextSpan('.', textStyleGray!));
-        } else {
-          textSpans.add(_createTextSpan('.', textStyleBlack!));
-        }
-      } else {
-        textSpans.add(char);
-      }
-    }
-  }
-  return textSpans;
-}
-
 Widget getTestnetBtcIcon(Color badgeColor,
     {EnvoyIconSize? iconSize, Color? iconColor}) {
   return TestnetIcon(
