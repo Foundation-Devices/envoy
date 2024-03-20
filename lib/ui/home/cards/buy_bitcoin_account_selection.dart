@@ -3,12 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:ui';
-
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -16,6 +16,8 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/components/account_selector.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 
 enum SelectAccountState {
   none,
@@ -46,9 +48,11 @@ class _SelectAccountState extends State<SelectAccount> {
     }).catchError((error) {});
   }
 
-  void updateSelectedAccount(Account account) {
+  void updateSelectedAccount(Account account) async {
+    String? address = await account.wallet.getAddress();
     setState(() {
       selectedAccount = account;
+      this.address = address;
     });
   }
 
@@ -128,16 +132,52 @@ class _SelectAccountState extends State<SelectAccount> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
-            child: EnvoyButton(
-              label: S().component_continue,
-              type: ButtonType.primary,
-              state: ButtonState.defaultState,
-              onTap: () {
-                // TODO: implement
-              },
-            ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (!selectedAccount.wallet.hot)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.small),
+                  child: EnvoyButton(
+                    label: S().buy_bitcoin_accountSelection_verify,
+                    icon: EnvoyIcons.verifyAddress,
+                    type: ButtonType.secondary,
+                    state: ButtonState.defaultState,
+                    onTap: () {
+                      if (mounted) {
+                        showEnvoyDialog(
+                          context: context,
+                          blurColor: Colors.black,
+                          useRootNavigator: true,
+                          linearGradient: true,
+                          dialog: SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            child: VerifyAddressDialog(
+                              address: address!,
+                              accountName: selectedAccount.name,
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+                child: EnvoyButton(
+                  label: S().component_continue,
+                  type: ButtonType.primary,
+                  state: ButtonState.defaultState,
+                  onTap: () {
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //       builder: (context) => runRamp(selectedAccount)),
+                    // ); //TODO
+                  },
+                ),
+              ),
+            ],
           )
         ],
       ),
@@ -210,22 +250,118 @@ class ChooseAccount extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: accounts.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: EnvoySpacing.medium2,
-                      horizontal: EnvoySpacing.medium1),
-                  child: AccountListTile(accounts[index], onTap: () {
-                    onSelectAccount(accounts[index]);
-                    Navigator.of(context).pop();
-                  }),
-                );
-              },
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+              child: ShaderMask(
+                shaderCallback: (Rect rect) {
+                  return const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      EnvoyColors.solidWhite,
+                      Colors.transparent,
+                      Colors.transparent,
+                      EnvoyColors.solidWhite,
+                    ],
+                    stops: [0.0, 0.05, 0.95, 1.0],
+                  ).createShader(rect);
+                },
+                blendMode: BlendMode.dstOut,
+                child: ListView.builder(
+                  itemCount: accounts.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: EnvoySpacing.medium2,
+                          horizontal: EnvoySpacing.medium1),
+                      child: AccountListTile(accounts[index], onTap: () {
+                        onSelectAccount(accounts[index]);
+                        Navigator.of(context).pop();
+                      }),
+                    );
+                  },
+                ),
+              ),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class VerifyAddressDialog extends StatelessWidget {
+  const VerifyAddressDialog({
+    super.key,
+    required this.address,
+    required this.accountName,
+  });
+
+  final String address;
+  final String accountName;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(EnvoySpacing.medium2),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: GestureDetector(
+                child: const EnvoyIcon(EnvoyIcons.close),
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium2),
+              child: EnvoyIcon(
+                EnvoyIcons.verifyAddress,
+                size: EnvoyIconSize.big,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+              child: Text(
+                S().buy_bitcoin_accountSelection_verify,
+                style: EnvoyTypography.subheading,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+              child: Text(
+                S().buy_bitcoin_accountSelection_verify_modal_heading(
+                    accountName),
+                style: EnvoyTypography.info,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+              child: AddressWidget(
+                address: address,
+                align: TextAlign.center,
+              ),
+            ),
+            Flexible(child: EnvoyQR(data: address)),
+            Padding(
+              padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+              child: EnvoyButton(
+                label: S().component_done,
+                type: ButtonType.primary,
+                state: ButtonState.defaultState,
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

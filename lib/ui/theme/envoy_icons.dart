@@ -71,6 +71,7 @@ enum EnvoyIcons {
   ramp,
   robosats,
   externalLink,
+  verifyAddress,
 }
 
 class EnvoyIcon extends StatelessWidget {
