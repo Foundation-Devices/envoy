@@ -134,16 +134,13 @@ class ActivityListTile extends StatelessWidget {
           .format(notification.date, locale: activeLocale.languageCode)
           .capitalize();
       iconColor = EnvoyColors.textTertiary;
-      unitIcon = Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          EnvoyAmount(
-            account: AccountManager().getAccountById(notification.accountId!)!,
-            amountSats: notification.amount!,
-            amountWidgetStyle: AmountWidgetStyle.normal,
-            alignToEnd: true,
-          ),
-        ],
+      unitIcon = FittedBox(
+        child: EnvoyAmount(
+          account: AccountManager().getAccountById(notification.accountId!)!,
+          amountSats: notification.amount!,
+          amountWidgetStyle: AmountWidgetStyle.normal,
+          alignToEnd: true,
+        ),
       );
     }
 
