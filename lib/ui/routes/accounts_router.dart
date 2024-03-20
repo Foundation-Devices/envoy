@@ -81,7 +81,8 @@ final accountsRouter = StatefulShellBranch(
               onExit: (context) async {
                 ProviderContainer providerContainer =
                     ProviderScope.containerOf(context);
-                bool isInEdit = providerContainer.read(spendEditModeProvider);
+                bool isInEdit = providerContainer.read(spendEditModeProvider) !=
+                    SpendOverlayContext.hidden;
                 if (providerContainer
                         .read(coinSelectionStateProvider)
                         .isNotEmpty ||
@@ -105,10 +106,7 @@ final accountsRouter = StatefulShellBranch(
                     onExit: (context) {
                       /// if we are exiting the send screen, we need to clear the spend state
                       /// but only if we are not in edit mode
-                      if (!ProviderScope.containerOf(context)
-                          .read(spendEditModeProvider)) {
-                        clearSpendState(ProviderScope.containerOf(context));
-                      }
+                      clearSpendState(ProviderScope.containerOf(context));
                       return true;
                     },
                     pageBuilder: (context, state) {
@@ -121,12 +119,8 @@ final accountsRouter = StatefulShellBranch(
                           ProviderContainer providerContainer =
                               ProviderScope.containerOf(context);
 
-                          /// if the user is not going back for editing and broadcast is not finished
                           /// show a dialog to confirm the user wants to discard the transaction
-                          if (providerContainer.read(spendEditModeProvider) ==
-                              true) {
-                            return true;
-                          } else if (providerContainer
+                          if (providerContainer
                                   .read(spendTransactionProvider)
                                   .broadcastProgress ==
                               BroadcastProgress.success) {
@@ -147,7 +141,7 @@ final accountsRouter = StatefulShellBranch(
                                   .reset();
                               providerContainer
                                   .read(spendEditModeProvider.notifier)
-                                  .state = false;
+                                  .state = SpendOverlayContext.hidden;
                               providerContainer
                                   .read(hideBottomNavProvider.notifier)
                                   .state = false;
@@ -163,8 +157,9 @@ final accountsRouter = StatefulShellBranch(
                             onExit: (context) {
                               /// if we are exiting the send screen, we need to clear the spend state
                               /// but only if we are not in edit mode
-                              if (!ProviderScope.containerOf(context)
-                                  .read(spendEditModeProvider)) {
+                              if (ProviderScope.containerOf(context)
+                                      .read(spendEditModeProvider) !=
+                                  SpendOverlayContext.hidden) {
                                 clearSpendState(
                                     ProviderScope.containerOf(context));
                               }

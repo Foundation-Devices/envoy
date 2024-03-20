@@ -11,6 +11,7 @@ import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_list_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/create_coin_tag_dialog.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/warning_dialogs.dart';
@@ -468,56 +469,8 @@ class SpendRequirementOverlayState
                                         inTagSelectionMode
                                             ? S().tagged_tagDetails_sheet_cta1
                                             : S().component_continue,
-                                        onTap: () async {
-                                          final scope =
-                                              ProviderScope.containerOf(
-                                                  context);
-                                          final router = GoRouter.of(context);
-
-                                          /// if the user is in utxo details screen we need to wait animations to finish
-                                          /// before we can pop back to home screen
-                                          if (Navigator.canPop(context)) {
-                                            Navigator.of(context)
-                                                .popUntil((route) {
-                                              return route.settings
-                                                  is MaterialPage;
-                                            });
-                                            await Future.delayed(const Duration(
-                                                milliseconds: 320));
-                                          }
-
-                                          ///if the user changed the selection, validate the transaction
-                                          if (ref.read(
-                                              userSelectedCoinsThisSessionProvider)) {
-                                            ///reset fees if coin selection changed
-                                            final account = ref
-                                                .read(selectedAccountProvider);
-                                            ref
-                                                .read(spendFeeRateProvider
-                                                    .notifier)
-                                                .state = Fees().slowRate(
-                                                    account!.wallet.network) *
-                                                100000;
-                                            ref
-                                                .read(spendTransactionProvider
-                                                    .notifier)
-                                                .validate(scope);
-                                          }
-                                          hideSpendRequirementOverlay();
-                                          await Future.delayed(const Duration(
-                                              milliseconds: 120));
-
-                                          if (ref.read(spendEditModeProvider)) {
-                                            router.push(
-                                                ROUTE_ACCOUNT_SEND_CONFIRM);
-                                          } else {
-                                            router.push(ROUTE_ACCOUNT_SEND);
-                                          }
-                                          ref
-                                              .read(spendEditModeProvider
-                                                  .notifier)
-                                              .state = false;
-                                        },
+                                        onTap: () =>
+                                            onPrimaryButtonTap(context),
                                       ),
                                       const Padding(
                                           padding:
@@ -549,6 +502,47 @@ class SpendRequirementOverlayState
     );
   }
 
+  Future<void> onPrimaryButtonTap(BuildContext context) async {
+    final scope = ProviderScope.containerOf(context);
+    final router = GoRouter.of(context);
+    final navigator = Navigator.of(context);
+    final mode = ref.read(spendEditModeProvider);
+
+    if (mode == SpendOverlayContext.editCoins) {
+      ref.read(spendEditModeProvider.notifier).state =
+          SpendOverlayContext.hidden;
+      if (ref.read(coinDetailsActiveProvider)) {
+        navigator.pop();
+        //wait for coin details screen to animate out
+        await Future.delayed(const Duration(milliseconds: 320));
+      }
+      hideSpendRequirementOverlay();
+      await Future.delayed(const Duration(milliseconds: 120));
+      if (navigator.canPop()) {
+        navigator.popUntil((route) {
+          return route.settings is MaterialPage;
+        });
+      }
+      Set<String> walletSelection = ref.read(coinSelectionFromWallet);
+      Set<String> coinSelection = ref.read(coinSelectionStateProvider);
+      Set diff = coinSelection.difference(walletSelection);
+
+      ///if the user changed the selection, validate the transaction
+      if (diff.isNotEmpty) {
+        ///reset fees if coin selection changed
+        final account = ref.read(selectedAccountProvider);
+        ref.read(spendFeeRateProvider.notifier).state =
+            Fees().slowRate(account!.wallet.network) * 100000;
+        ref.read(spendTransactionProvider.notifier).validate(scope);
+      }
+      return;
+    } else {
+      hideSpendRequirementOverlay();
+      router.push(ROUTE_ACCOUNT_SEND);
+      return;
+    }
+  }
+
   Widget transactionEditButton(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
@@ -557,28 +551,36 @@ class SpendRequirementOverlayState
         Set<String> coinSelection = ref.watch(coinSelectionStateProvider);
         Set diff = coinSelection.difference(walletSelection);
         bool selectionChanged = diff.isNotEmpty;
-
         return EnvoyButton(
           selectionChanged
               ? S().tagged_coin_details_inputs_fails_cta2
               : S().component_cancel,
           type: EnvoyButtonTypes.secondary,
           onTap: () async {
-            final router = GoRouter.of(context);
+            if (selectionChanged) {
+              ref.read(coinSelectionStateProvider.notifier).reset();
+              ref
+                  .read(coinSelectionStateProvider.notifier)
+                  .addAll(walletSelection.toList());
+              return;
+            }
+            final navigator = Navigator.of(context);
+            //reset to previous coin selection
             ref
                 .read(coinSelectionStateProvider.notifier)
                 .addAll(walletSelection.toList());
 
-            if (Navigator.canPop(context)) {
-              Navigator.of(context).popUntil((route) {
-                return route.settings is MaterialPage;
-              });
-              await Future.delayed(const Duration(milliseconds: 200));
+            if (ref.read(coinDetailsActiveProvider)) {
+              navigator.pop();
+              //wait for coin details screen to animate out
+              await Future.delayed(const Duration(milliseconds: 320));
             }
             hideSpendRequirementOverlay();
-            await Future.delayed(const Duration(milliseconds: 120));
-            ref.read(spendEditModeProvider.notifier).state = false;
-            router.push(ROUTE_ACCOUNT_SEND_CONFIRM);
+            if (navigator.canPop()) {
+              navigator.popUntil((route) {
+                return route.settings is MaterialPage;
+              });
+            }
           },
         );
       },
@@ -706,7 +708,8 @@ class SpendRequirementOverlayState
         .checkPromptDismissed(DismissiblePrompt.txDiscardWarning)) {
       hideSpendRequirementOverlay();
       ref.read(coinSelectionStateProvider.notifier).reset();
-      ref.read(spendEditModeProvider.notifier).state = false;
+      ref.read(spendEditModeProvider.notifier).state =
+          SpendOverlayContext.hidden;
       return;
     }
     setState(() {
@@ -725,7 +728,8 @@ class SpendRequirementOverlayState
       if (discard) {
         ref.read(coinSelectionStateProvider.notifier).reset();
         ref.read(hideBottomNavProvider.notifier).state = false;
-        ref.read(spendEditModeProvider.notifier).state = false;
+        ref.read(spendEditModeProvider.notifier).state =
+            SpendOverlayContext.hidden;
         clearSpendState(container);
         hideSpendRequirementOverlay();
       }

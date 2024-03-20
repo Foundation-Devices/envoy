@@ -15,13 +15,16 @@ import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/choose_coins_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_requirement_overlay.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_details.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/transaction_review_card.dart';
+import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/transactions_note_state.dart';
@@ -34,6 +37,7 @@ import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/tuple.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -373,7 +377,8 @@ class _TxReviewState extends ConsumerState<TxReview> {
     final router = GoRouter.of(context);
 
     ///indicating that we are in edit mode
-    ref.read(spendEditModeProvider.notifier).state = true;
+    ref.read(spendEditModeProvider.notifier).state =
+        SpendOverlayContext.editCoins;
 
     /// The user has is in edit mode and if the psbt
     /// has inputs then use them to populate the coin selection state
@@ -699,10 +704,10 @@ class _TransactionReviewScreenState
   }
 
   void editTransaction(BuildContext context) async {
-    final router = GoRouter.of(context);
+    final router = Navigator.of(context, rootNavigator: true);
 
     ///indicating that we are in edit mode
-    ref.read(spendEditModeProvider.notifier).state = true;
+    ref.read(hideBottomNavProvider.notifier).state = false;
 
     /// The user has is in edit mode and if the psbt
     /// has inputs then use them to populate the coin selection state
@@ -724,13 +729,16 @@ class _TransactionReviewScreenState
     ///toggle to coins view for coin control
     ref.read(accountToggleStateProvider.notifier).state =
         AccountToggleState.coins;
-
-    ///pop review
-    router.pop();
-    await Future.delayed(const Duration(milliseconds: 100));
-
-    ///pop spend form
-    router.pop();
+    ref.read(spendEditModeProvider.notifier).state =
+        SpendOverlayContext.editCoins;
+    if (ref.read(selectedAccountProvider) != null) {
+      showSpendRequirementOverlay(context, ref.read(selectedAccountProvider)!);
+    }
+    router
+        .push(CupertinoPageRoute(
+            builder: (context) => const ChooseCoinsWidget(),
+            fullscreenDialog: true))
+        .then((value) {});
   }
 
   void setFee(int fee, BuildContext context, bool customFee) async {
