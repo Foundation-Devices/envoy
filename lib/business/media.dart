@@ -4,6 +4,9 @@
 
 import 'package:envoy/business/local_storage.dart';
 import 'package:crypto/crypto.dart';
+import 'package:envoy/business/scheduler.dart';
+import 'package:http_tor/http_tor.dart';
+import 'package:tor/tor.dart';
 
 class Media {
   final String title;
@@ -13,16 +16,21 @@ class Media {
   final String url;
   final String id;
 
+  final String thumbnailsFolder = "thumbnails";
+
   Media(this.title, this.description, this.thumbnailUrl, this.publicationDate,
       this.url, this.id);
 
   Future<List<int>?> get thumbnail async {
     if (thumbnailHash == null ||
-        !await LocalStorage().fileExists(thumbnailHash!)) {
+        !await LocalStorage()
+            .fileExists(thumbnailsFolder + "/" + thumbnailHash!)) {
+      _fetchThumbnail();
       return null;
     }
 
-    return LocalStorage().readFileBytes(thumbnailHash!);
+    return LocalStorage()
+        .readFileBytes(thumbnailsFolder + "/" + thumbnailHash!);
   }
 
   String? get thumbnailHash {
@@ -35,5 +43,14 @@ class Media {
     }
 
     return sha256.convert(thumbnailUrl!.codeUnits).toString();
+  }
+
+  _fetchThumbnail() async {
+    HttpTor(Tor.instance, EnvoyScheduler().parallel)
+        .get(thumbnailUrl!)
+        .then((response) async {
+      await LocalStorage().saveFileBytes(
+          thumbnailsFolder + "/" + thumbnailHash!, response.bodyBytes);
+    });
   }
 }
