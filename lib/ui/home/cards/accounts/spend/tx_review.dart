@@ -211,7 +211,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
             accountId: account.id!,
             onEditTransaction: () {
               Navigator.pop(context);
-              editTransaction(context);
+              editTransaction(context, ref);
             },
             hasMultipleTagsInput: true,
             onTagUpdate: () async {
@@ -372,44 +372,6 @@ class _TxReviewState extends ConsumerState<TxReview> {
     );
   }
 
-  // TODO: refactor similar function to just one
-  void editTransaction(BuildContext context) async {
-    final router = GoRouter.of(context);
-
-    ///indicating that we are in edit mode
-    ref.read(spendEditModeProvider.notifier).state =
-        SpendOverlayContext.editCoins;
-
-    /// The user has is in edit mode and if the psbt
-    /// has inputs then use them to populate the coin selection state
-    if (ref.read(rawTransactionProvider) != null) {
-      List<String> inputs = ref
-          .read(rawTransactionProvider)!
-          .inputs
-          .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}")
-          .toList();
-
-      if (ref.read(coinSelectionStateProvider).isEmpty) {
-        ref.read(coinSelectionStateProvider.notifier).addAll(inputs);
-      }
-
-      ///make a copy of wallet selected coins so that we can backtrack to it
-      ref.read(coinSelectionFromWallet.notifier).reset();
-      ref.read(coinSelectionFromWallet.notifier).addAll(inputs);
-    }
-
-    ///toggle to coins view for coin control
-    ref.read(accountToggleStateProvider.notifier).state =
-        AccountToggleState.coins;
-
-    ///pop review
-    router.pop();
-    await Future.delayed(const Duration(milliseconds: 100));
-
-    ///pop spend form
-    router.pop();
-  }
-
   void broadcastTx(BuildContext context) async {
     Account? account = ref.read(selectedAccountProvider);
     TransactionModel transactionModel = ref.read(spendTransactionProvider);
@@ -551,7 +513,7 @@ class _TransactionReviewScreenState
                       onTap: () {
                         ref.read(userHasChangedFeesProvider.notifier).state =
                             false;
-                        editTransaction(context);
+                        editTransaction(context, ref);
                       },
                     ),
                   const Padding(padding: EdgeInsets.all(6)),
@@ -703,44 +665,6 @@ class _TransactionReviewScreenState
     );
   }
 
-  void editTransaction(BuildContext context) async {
-    final router = Navigator.of(context, rootNavigator: true);
-
-    ///indicating that we are in edit mode
-    ref.read(hideBottomNavProvider.notifier).state = false;
-
-    /// The user has is in edit mode and if the psbt
-    /// has inputs then use them to populate the coin selection state
-    if (ref.read(rawTransactionProvider) != null) {
-      List<String> inputs = ref
-          .read(rawTransactionProvider)!
-          .inputs
-          .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}")
-          .toList();
-
-      ref.read(coinSelectionStateProvider.notifier).reset();
-      ref.read(coinSelectionStateProvider.notifier).addAll(inputs);
-
-      ///make a copy of wallet selected coins so that we can backtrack to it
-      ref.read(coinSelectionFromWallet.notifier).reset();
-      ref.read(coinSelectionFromWallet.notifier).addAll(inputs);
-    }
-
-    ///toggle to coins view for coin control
-    ref.read(accountToggleStateProvider.notifier).state =
-        AccountToggleState.coins;
-    ref.read(spendEditModeProvider.notifier).state =
-        SpendOverlayContext.editCoins;
-    if (ref.read(selectedAccountProvider) != null) {
-      showSpendRequirementOverlay(context, ref.read(selectedAccountProvider)!);
-    }
-    router
-        .push(CupertinoPageRoute(
-            builder: (context) => const ChooseCoinsWidget(),
-            fullscreenDialog: true))
-        .then((value) {});
-  }
-
   void setFee(int fee, BuildContext context, bool customFee) async {
     if (!mounted) {
       return;
@@ -758,6 +682,44 @@ class _TransactionReviewScreenState
       Navigator.pop(context);
     }
   }
+}
+
+void editTransaction(BuildContext context, WidgetRef ref) async {
+  final router = Navigator.of(context, rootNavigator: true);
+
+  ///indicating that we are in edit mode
+  ref.read(hideBottomNavProvider.notifier).state = false;
+
+  /// The user has is in edit mode and if the psbt
+  /// has inputs then use them to populate the coin selection state
+  if (ref.read(rawTransactionProvider) != null) {
+    List<String> inputs = ref
+        .read(rawTransactionProvider)!
+        .inputs
+        .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}")
+        .toList();
+
+    ref.read(coinSelectionStateProvider.notifier).reset();
+    ref.read(coinSelectionStateProvider.notifier).addAll(inputs);
+
+    ///make a copy of wallet selected coins so that we can backtrack to it
+    ref.read(coinSelectionFromWallet.notifier).reset();
+    ref.read(coinSelectionFromWallet.notifier).addAll(inputs);
+  }
+
+  ///toggle to coins view for coin control
+  ref.read(accountToggleStateProvider.notifier).state =
+      AccountToggleState.coins;
+  ref.read(spendEditModeProvider.notifier).state =
+      SpendOverlayContext.editCoins;
+  if (ref.read(selectedAccountProvider) != null) {
+    showSpendRequirementOverlay(context, ref.read(selectedAccountProvider)!);
+  }
+  router
+      .push(CupertinoPageRoute(
+          builder: (context) => const ChooseCoinsWidget(),
+          fullscreenDialog: true))
+      .then((value) {});
 }
 
 class DiscardTransactionDialog extends ConsumerStatefulWidget {
