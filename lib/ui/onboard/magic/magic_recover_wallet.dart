@@ -161,7 +161,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
               children: [
                 Column(
                   mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisSize: MainAxisSize.max,
@@ -216,23 +216,17 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                 Flexible(
                   child: SingleChildScrollView(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // Padding(
-                        //     padding: const EdgeInsets.symmetric(
-                        //         vertical: EnvoySpacing.medium1)),
                         AnimatedSwitcher(
                             duration: Duration(milliseconds: 800),
                             child: getMainWidget()),
-                        Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: EnvoySpacing.medium3)),
-                        getBottomButtons() ?? SizedBox(),
                       ],
                     ),
                   ),
                 ),
+                getBottomButtons() ?? SizedBox(),
               ],
             ),
           );
@@ -492,7 +486,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Text(
-              "Recovering your Envoy wallet", //TODO: FIGMA
+              S().magic_setup_recovery_retry_header,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleLarge,
             ),
@@ -511,7 +505,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 S().wallet_setup_success_heading,
