@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:math';
-
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -25,7 +23,6 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
     return EnvoyPatternScaffold(
       gradientHeight: 1.8,
       shield: Container(
-        height: max(MediaQuery.of(context).size.height * 0.38, 300),
         margin: const EdgeInsets.all(EnvoySpacing.medium1),
         padding: const EdgeInsets.only(top: EnvoySpacing.large1),
         child: Column(
