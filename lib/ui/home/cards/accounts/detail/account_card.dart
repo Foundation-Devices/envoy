@@ -117,7 +117,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
           ));
 
       bool showOverlay = ref.read(showSpendRequirementOverlayProvider);
-      bool isInEditMode = ref.read(spendEditModeProvider);
+      bool isInEditMode =
+          ref.read(spendEditModeProvider) != SpendOverlayContext.hidden;
       String path = ref.read(routePathProvider);
       if ((showOverlay || isInEditMode) && path == ROUTE_ACCOUNT_DETAIL) {
         ref.read(hideBottomNavProvider.notifier).state = true;
@@ -230,7 +231,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
       bottomNavigationBar: Consumer(
         builder: (context, ref, child) {
           bool hide = ref.watch(showSpendRequirementOverlayProvider);
-          bool isInEditMode = ref.watch(spendEditModeProvider);
+          bool isInEditMode =
+              ref.watch(spendEditModeProvider) != SpendOverlayContext.hidden;
           return IgnorePointer(
             ignoring: (hide || isInEditMode),
             child: AnimatedOpacity(

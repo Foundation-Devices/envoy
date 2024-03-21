@@ -29,6 +29,13 @@ enum BroadcastProgress {
   staging,
 }
 
+//user can spend coins in two contexts, preselectCoins or edit from transaction review screen
+enum SpendOverlayContext {
+  preselectCoins,
+  editCoins,
+  hidden,
+}
+
 enum SpendMode {
   normal,
   sendMax, // this is the maximum amount we can send (possibly excluding some coins)
@@ -373,7 +380,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       }
       ref.read(stagingTxChangeOutPutTagProvider.notifier).state = null;
       ref.read(stagingTxNoteProvider.notifier).state = null;
-      ref.read(spendEditModeProvider.notifier).state = false;
+      ref.read(spendEditModeProvider.notifier).state =
+          SpendOverlayContext.hidden;
 
       /// wait for bdk to update the transaction list and utxos list
       await Future.delayed(const Duration(seconds: 2));
@@ -428,7 +436,8 @@ final userSelectedCoinsThisSessionProvider =
 final userHasChangedFeesProvider = StateProvider<bool>((ref) => false);
 final transactionInputsChangedProvider = StateProvider<bool>((ref) => false);
 
-final spendEditModeProvider = StateProvider((ref) => false);
+final spendEditModeProvider =
+    StateProvider<SpendOverlayContext>((ref) => SpendOverlayContext.hidden);
 final spendAddressProvider = StateProvider((ref) => "");
 final spendValidationErrorProvider = StateProvider<String?>((ref) => null);
 final spendAmountProvider = StateProvider((ref) => 0);

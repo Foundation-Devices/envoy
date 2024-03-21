@@ -52,7 +52,8 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     HomeShellOptions? homeShellState = ref.watch(homeShellOptionsProvider);
     bool modalShown = ref.watch(hideBottomNavProvider);
     bool optionsShown = ref.watch(homePageOptionsVisibilityProvider);
-    bool inEditMode = ref.watch(spendEditModeProvider);
+    bool inEditMode =
+        ref.watch(spendEditModeProvider) != SpendOverlayContext.hidden;
 
     Widget rightAction = homeShellState?.rightAction ??
         const SizedBox(
@@ -70,7 +71,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         final account = ref.read(selectedAccountProvider);
         if (account != null) showSpendRequirementOverlay(context, account);
       } else {
-        if (!ref.read(spendEditModeProvider)) {
+        if (ref.read(spendEditModeProvider) != SpendOverlayContext.editCoins) {
           hideSpendRequirementOverlay();
         }
       }
@@ -97,7 +98,8 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         }
         if (nextPath == ROUTE_ACCOUNTS_HOME) {
           ref.read(coinSelectionStateProvider.notifier).reset();
-          ref.read(spendEditModeProvider.notifier).state = false;
+          ref.read(spendEditModeProvider.notifier).state =
+              SpendOverlayContext.hidden;
           clearSpendState(ProviderScope.containerOf(context));
         }
 
@@ -109,7 +111,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
             final account = ref.read(selectedAccountProvider);
             if (account != null) showSpendRequirementOverlay(context, account);
           } else {
-            if (!ref.read(spendEditModeProvider)) {
+            if (ref.read(spendEditModeProvider) == SpendOverlayContext.hidden) {
               hideSpendRequirementOverlay();
             }
           }

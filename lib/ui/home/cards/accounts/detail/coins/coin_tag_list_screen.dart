@@ -17,6 +17,11 @@ import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+//to track if the coin details screen is active,
+//so we can close it when the use exits coin selection screen
+//We can't use the navigator stack to track due to the animations used in the coin details screen.
+final coinDetailsActiveProvider = StateProvider<bool>((ref) => false);
+
 class CoinsList extends ConsumerStatefulWidget {
   final Account account;
 
@@ -48,6 +53,7 @@ class _CoinsListState extends ConsumerState<CoinsList> {
                 return BlurContainerTransform(
                   useRootNavigator: true,
                   onTap: () {
+                    ref.read(coinDetailsActiveProvider.notifier).state = true;
                     Haptics.lightImpact();
                   },
                   closedBuilder: (context, action) {
@@ -56,6 +62,9 @@ class _CoinsListState extends ConsumerState<CoinsList> {
                       child: CoinItemWidget(
                           tag: tags[index], isInListScreen: true),
                     );
+                  },
+                  onClosed: (_) {
+                    ref.read(coinDetailsActiveProvider.notifier).state = false;
                   },
                   openBuilder: (context, action) {
                     return CoinTagDetailsScreen(

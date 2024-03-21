@@ -63,7 +63,8 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
                     builder: (context, ref, child) {
                       bool isCoinSelectionActive =
                           ref.watch(isCoinsSelectedProvider);
-                      bool isInEditMode = ref.watch(spendEditModeProvider);
+                      bool isInEditMode = ref.watch(spendEditModeProvider) !=
+                          SpendOverlayContext.hidden;
                       bool hide = isCoinSelectionActive || isInEditMode;
                       return AnimatedOpacity(
                         duration: const Duration(milliseconds: 100),

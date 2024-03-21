@@ -516,9 +516,11 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
 
                                                                   ///indicating that we are in edit mode
                                                                   ref
-                                                                      .read(spendEditModeProvider
-                                                                          .notifier)
-                                                                      .state = true;
+                                                                          .read(spendEditModeProvider
+                                                                              .notifier)
+                                                                          .state =
+                                                                      SpendOverlayContext
+                                                                          .editCoins;
 
                                                                   /// The user has is in edit mode and if the psbt
                                                                   /// has inputs then use them to populate the coin selection state
