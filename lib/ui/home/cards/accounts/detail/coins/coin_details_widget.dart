@@ -111,6 +111,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                       ),
                       child: CoinBalanceWidget(
                         coin: coin,
+                        coinTag: widget.tag,
                       ),
                     ),
                     Flexible(
