@@ -127,49 +127,63 @@ class CoinItemWidget extends ConsumerWidget {
             borderRadius: BorderRadius.all(Radius.circular(cardRadius - 2)),
             child: StripesBackground(
               child: Column(
+                mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 12, top: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Expanded(
+                    flex: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        left: EnvoySpacing.medium1,
+                        right: EnvoySpacing.xs,
+                        top: EnvoySpacing.xs,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  tag.name,
+                                  style: textStyleWallet,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                                CoinSubTitleText(tag),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Flexible(
-                          flex: 2,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                tag.name,
-                                style: textStyleWallet,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                              ),
-                              CoinSubTitleText(tag),
-                            ],
+                        Container(
+                          height: 34,
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: EnvoySpacing.xs + 2,
+                              vertical: EnvoySpacing.xs),
+                          child: Consumer(
+                            builder: (context, ref, child) {
+                              return CoinTagBalanceWidget(
+                                coinTag: tag,
+                                isListScreen: isInListScreen,
+                              );
+                            },
                           ),
                         ),
                       ],
-                    ),
-                  ),
-                  Flexible(
-                    flex: 2,
-                    child: Consumer(
-                      builder: (context, ref, child) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 5, horizontal: 4.5),
-                          child: SizedBox(
-                            height: 34,
-                            child: CoinTagBalanceWidget(
-                              coinTag: tag,
-                              isListScreen: isInListScreen,
-                            ),
-                          ),
-                        );
-                      },
                     ),
                   ),
                 ],

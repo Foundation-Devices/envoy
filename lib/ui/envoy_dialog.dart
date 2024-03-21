@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:flutter/material.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class EnvoyDialog extends StatelessWidget {
   final String? title;
@@ -30,7 +31,7 @@ class EnvoyDialog extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             dismissible
@@ -51,7 +52,8 @@ class EnvoyDialog extends StatelessWidget {
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge
-                        ?.copyWith(fontWeight: FontWeight.w500, fontSize: 24))
+                        ?.copyWith(fontSize: 24)
+                        .setWeight(FontWeight.w500))
                 : const SizedBox(),
             Padding(padding: EdgeInsets.all(title != null ? 8 : 0)),
             content ?? Container(),

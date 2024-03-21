@@ -46,7 +46,6 @@ class EnvoyAmount extends StatelessWidget {
     bool showFiat = selectedFiat != null && badgeColor == null;
     AmountDisplayUnit primaryUnit = mainUnit;
     AmountDisplayUnit? secondaryUnit = showFiat ? AmountDisplayUnit.fiat : null;
-    bool decimalDot = fiatDecimalSeparator == ".";
     String symbolFiat = ExchangeRate().getSymbol();
     double? fxRateFiat = ExchangeRate().selectedCurrencyRate;
 
@@ -54,12 +53,12 @@ class EnvoyAmount extends StatelessWidget {
       amountSats: amountSats,
       primaryUnit: primaryUnit,
       style: amountWidgetStyle,
-      decimalDot: decimalDot,
       fxRateFiat: fxRateFiat,
       secondaryUnit: secondaryUnit,
       symbolFiat: symbolFiat,
       badgeColor: badgeColor,
       alignToEnd: alignToEnd,
+      locale: currentLocale,
     );
   }
 }
