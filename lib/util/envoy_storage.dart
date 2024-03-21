@@ -270,23 +270,13 @@ class EnvoyStorage {
     return records.map(
       (e) {
         final String typeString = e["type"] as String;
-        wallet.TransactionType type;
-        switch (typeString) {
-          case "TransactionType.azteco":
-            type = wallet.TransactionType.azteco;
+        wallet.TransactionType type = wallet.TransactionType.normal;
+        for (wallet.TransactionType transactionType
+            in wallet.TransactionType.values) {
+          if (transactionType.toString() == typeString) {
+            type = transactionType;
             break;
-          case "TransactionType.pending":
-            type = wallet.TransactionType.pending;
-            break;
-          case "TransactionType.btcPay":
-            type = wallet.TransactionType.btcPay;
-            break;
-          case "TransactionType.ramp":
-            type = wallet.TransactionType.ramp;
-            break;
-          default:
-            type = wallet.TransactionType.normal;
-            break;
+          }
         }
         return wallet.Transaction(
           e.key as String,

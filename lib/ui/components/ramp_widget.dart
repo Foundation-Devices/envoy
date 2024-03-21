@@ -33,7 +33,8 @@ class RampWidget {
     ramp.onRampClosed = () => onRampClosed(context);
 
     configuration.enabledFlows = ['ONRAMP'];
-    //configuration.hostLogoUrl = "image url"; //TODO
+    configuration.hostLogoUrl =
+        "https://storage.googleapis.com/cdn-foundation/envoy/foundationLogo.png";
 
     ramp.showRamp(configuration);
   }
