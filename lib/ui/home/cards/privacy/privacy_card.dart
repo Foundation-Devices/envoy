@@ -24,8 +24,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/home/settings/electrum_server_entry.dart';
 import 'dart:io';
 
-final torEnabledProvider = StateProvider<bool>((ref) => Settings().usingTor);
-
 //ignore: must_be_immutable
 class PrivacyCard extends ConsumerStatefulWidget {
   const PrivacyCard({super.key});
@@ -108,7 +106,6 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
                               });
                               ref.read(torEnabledProvider.notifier).state =
                                   !_betterPerformance;
-                              !_betterPerformance;
                               Settings().setTorEnabled(!_betterPerformance);
                             },
                           ),

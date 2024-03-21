@@ -15,7 +15,6 @@ import 'package:envoy/business/node_url.dart';
 import 'package:envoy/ui/components/text_field.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/business/settings.dart';
-import 'package:envoy/ui/home/cards/privacy/privacy_card.dart';
 
 enum ElectrumServerEntryState { pending, valid, invalid }
 

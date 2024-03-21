@@ -30,6 +30,7 @@ final settingsProvider = ChangeNotifierProvider((ref) => Settings());
 final showTestnetAccountsProvider = Provider((ref) {
   return ref.watch(settingsProvider).showTestnetAccounts();
 });
+final torEnabledProvider = StateProvider<bool>((ref) => Settings().usingTor);
 
 final showTaprootAccountsProvider = Provider((ref) {
   return ref.watch(settingsProvider).taprootEnabled();
