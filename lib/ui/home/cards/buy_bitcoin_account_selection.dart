@@ -23,10 +23,6 @@ import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/components/ramp_widget.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 
-enum SelectAccountState {
-  none,
-}
-
 class SelectAccount extends StatefulWidget {
   const SelectAccount({super.key});
 
@@ -35,7 +31,6 @@ class SelectAccount extends StatefulWidget {
 }
 
 class _SelectAccountState extends State<SelectAccount> {
-  SelectAccountState currentState = SelectAccountState.none;
   Account selectedAccount = AccountManager()
       .accounts
       .firstWhere((account) => account.wallet.network != Network.Testnet);

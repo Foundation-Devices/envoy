@@ -65,7 +65,8 @@ class AccountsCardState extends State<AccountsCard>
               arcSizeRatio: 15.0,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.large3, vertical: EnvoySpacing.xs),
+                    horizontal: EnvoySpacing.large3,
+                    vertical: EnvoySpacing.small),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -80,7 +81,7 @@ class AccountsCardState extends State<AccountsCard>
                         style: EnvoyTypography.label
                             .copyWith(color: EnvoyColors.accentPrimary),
                       ),
-                    ), //TODO: localize
+                    ),
                   ],
                 ),
               ),

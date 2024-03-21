@@ -15,6 +15,9 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/components/select_dropdown.dart';
 
+GlobalKey<EnvoyDropdownState> dropdownDivisionKey =
+    GlobalKey<EnvoyDropdownState>();
+
 class SelectRegion extends StatefulWidget {
   const SelectRegion({super.key});
 
@@ -38,7 +41,9 @@ class _SelectRegionState extends State<SelectRegion> {
   void _updateState(Country newCountry) {
     setState(() {
       selectedCountry = newCountry;
+      _divisionSelected = false;
     });
+    dropdownDivisionKey.currentState?.setSelectedIndex(0);
   }
 
   Future<void> readJson() async {
@@ -75,11 +80,11 @@ class _SelectRegionState extends State<SelectRegion> {
     int foundIndex = countries.indexWhere(
       (country) => country.code == countryCode,
     );
+    foundIndex != -1 ? foundIndex : 0;
+    Country foundCountry = countries[foundIndex];
     setState(() {
       _initialIndex = foundIndex;
     });
-    Country foundCountry =
-        foundIndex != -1 ? countries[foundIndex] : countries[0];
     return foundCountry;
   }
 
@@ -156,6 +161,7 @@ class _SelectRegionState extends State<SelectRegion> {
                     height: EnvoySpacing.medium2,
                   ),
                   EnvoyDropdown(
+                    key: dropdownDivisionKey,
                     initialIndex: 0,
                     options: [
                       ...divisionDropdownOptions,
