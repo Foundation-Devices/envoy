@@ -10,7 +10,6 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
-import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
@@ -35,16 +34,23 @@ class EraseWalletsAndBackupsWarning extends StatefulWidget {
 
 class _EraseWalletsAndBackupsWarningState
     extends State<EraseWalletsAndBackupsWarning> {
-  final PageController _pageController = PageController();
+  int currentPage = 0;
+
+  void nextPage() {
+    setState(() {
+      currentPage++;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.min,
           children: [
             Align(
@@ -59,59 +65,72 @@ class _EraseWalletsAndBackupsWarningState
                 ),
               ),
             ),
-            const Padding(padding: EdgeInsets.all(8)),
+            const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
             Column(
+              mainAxisSize: MainAxisSize.max,
               children: [
                 Image.asset(
                   "assets/exclamation_triangle.png",
                   height: 80,
                   width: 80,
                 ),
-                const Padding(padding: EdgeInsets.all(4)),
+                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.small,
+                        horizontal: EnvoySpacing.xs),
                     child: Text(
                       S().component_warning,
                       textAlign: TextAlign.center,
                       style: EnvoyTypography.info,
                     )),
-                Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                    child: SizedBox(
-                      height: 130,
-                      child: PageView(
-                        onPageChanged: (int page) {
-                          setState(() {});
-                        },
-                        controller: _pageController,
+                Container(
+                  constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height * 0.4,
+                  ),
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    switchInCurve: Curves.easeInOutCubicEmphasized,
+                    child: SingleChildScrollView(
+                      key: ValueKey<int>(currentPage),
+                      child: Column(
                         children: [
-                          SingleChildScrollView(
-                            child: Text(
-                              Platform.isAndroid
-                                  ? S()
-                                      .backups_erase_wallets_and_backups_modal_1_2_android_subheading
-                                  : S()
-                                      .backups_erase_wallets_and_backups_modal_1_2_ios_subheading,
-                              textAlign: TextAlign.center,
-                              style: EnvoyTypography.info,
-                            ),
-                          ),
-                          SingleChildScrollView(
-                            child: Text(
-                              S().backups_erase_wallets_and_backups_modal_2_2_subheading,
-                              textAlign: TextAlign.center,
-                              style: EnvoyTypography.info,
-                            ),
+                          Text(
+                            currentPage == 0
+                                ? (Platform.isAndroid
+                                    ? S()
+                                        .backups_erase_wallets_and_backups_modal_1_2_android_subheading
+                                    : S()
+                                        .backups_erase_wallets_and_backups_modal_1_2_ios_subheading)
+                                : S()
+                                    .backups_erase_wallets_and_backups_modal_2_2_subheading,
+                            textAlign: TextAlign.center,
+                            style: EnvoyTypography.info,
                           ),
                         ],
                       ),
-                    )),
-                DotsIndicator(
-                  totalPages: 2,
-                  pageController: _pageController,
+                    ),
+                  ),
                 ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                for (int i = 0; i < 2; i++)
+                  Padding(
+                    padding: const EdgeInsets.all(EnvoySpacing.xs),
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: currentPage == i
+                            ? EnvoyColors.accentPrimary
+                            : EnvoyColors.textTertiary,
+                      ),
+                    ),
+                  ),
               ],
             ),
             OnboardingButton(
@@ -121,25 +140,24 @@ class _EraseWalletsAndBackupsWarningState
                   Navigator.pop(context);
                 }),
             OnboardingButton(
-                type: EnvoyButtonTypes.primaryModal,
-                label: S().component_continue,
-                onTap: () {
-                  int currentPage = _pageController.page?.toInt() ?? 0;
-                  if (currentPage == 1) {
-                    if (AccountManager().hotWalletAccountsEmpty()) {
-                      // Safe to delete
-                      displaySeedBeforeNuke(context);
-                    } else {
-                      showEnvoyDialog(
-                          context: context,
-                          dialog: const EraseWalletsBalanceWarning());
-                    }
+              type: EnvoyButtonTypes.primaryModal,
+              label: S().component_continue,
+              onTap: () {
+                if (currentPage == 1) {
+                  if (AccountManager().hotWalletAccountsEmpty()) {
+                    // Safe to delete
+                    displaySeedBeforeNuke(context);
                   } else {
-                    _pageController.nextPage(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOutCubicEmphasized);
+                    showEnvoyDialog(
+                      context: context,
+                      dialog: const EraseWalletsBalanceWarning(),
+                    );
                   }
-                }),
+                } else {
+                  nextPage();
+                }
+              },
+            ),
             const Padding(padding: EdgeInsets.all(12)),
           ],
         ),
