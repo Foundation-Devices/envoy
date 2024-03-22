@@ -28,6 +28,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/business/notifications.dart';
 
 final _fullScreenProvider = Provider((ref) {
   bool fullScreen = ref.watch(hideBottomNavProvider);
@@ -166,6 +167,28 @@ class HomePageState extends ConsumerState<HomePage>
         ).show(context);
       }
     });
+    isNewAppVersionAvailable.stream.listen((bool newVersion) {
+      if (newVersion) {
+        _notifyAboutNewAppVersion();
+      }
+    });
+  }
+
+  _notifyAboutNewAppVersion() {
+    EnvoyToast(
+      backgroundColor: Colors.lightBlue,
+      replaceExisting: true,
+      message: "New app version available",
+      icon: const EnvoyIcon(
+        EnvoyIcons.info,
+        color: EnvoyColors.accentPrimary,
+      ),
+      actionButtonText: "Update now",
+      onActionTap: () {
+        // TODO: go to AppStore or whatever
+      },
+    ).show(context);
+    isNewAppVersionAvailable.close();
   }
 
   _notifyAboutTor() {
