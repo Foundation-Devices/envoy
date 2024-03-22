@@ -47,8 +47,7 @@ class FeedManager {
     });
   }
 
-  Future<Response> _getVimeoData(
-      {int videosPerPage = 100, int page = 1}) async {
+  Future<Response> getVimeoData({int videosPerPage = 100, int page = 1}) async {
     String videoPerPageString = "?per_page=$videosPerPage";
     String pageString = "&page=$page";
 
@@ -61,7 +60,7 @@ class FeedManager {
   _addVideosFromVimeo() async {
     List<Video> currentVideos = [];
 
-    final response = await _getVimeoData();
+    final response = await getVimeoData();
 
     final data = json.decode(response.body);
     final videos = (data['data'] as List);
@@ -73,7 +72,7 @@ class FeedManager {
 
     if (lastNum > 1) {
       for (var i = 2; i <= lastNum; i++) {
-        var response = await _getVimeoData(
+        var response = await getVimeoData(
           page: i,
         );
 
