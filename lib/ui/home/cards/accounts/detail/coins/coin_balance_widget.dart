@@ -73,8 +73,8 @@ class BalanceWidget extends ConsumerWidget {
 
     return Container(
       alignment: Alignment.center,
-      margin: EdgeInsets.only(left: EnvoySpacing.xs),
-      padding: EdgeInsets.only(left: EnvoySpacing.xs),
+      margin: EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
+      padding: EdgeInsets.symmetric(horizontal: 2),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -82,7 +82,12 @@ class BalanceWidget extends ConsumerWidget {
           Flexible(
               child: Container(
             child: hide
-                ? LoaderGhost(width: 100, height: 20)
+                ? LayoutBuilder(
+                    builder: (context, constraints) {
+                      return LoaderGhost(
+                          width: constraints.maxWidth, height: 20);
+                    },
+                  )
                 : EnvoyAmount(
                     account: account!,
                     amountSats: amount,
