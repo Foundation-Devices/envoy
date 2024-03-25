@@ -44,6 +44,17 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
     if (_controller.text.isNotEmpty) {
       _onAddressChanged(_controller.text);
     }
+    Future.delayed(Duration.zero).then((value) {
+      _updateTorEnabledStatus();
+    });
+  }
+
+  void _updateTorEnabledStatus() {
+    final newTorEnabled = ref.watch(torEnabledProvider);
+    if (_torEnabled != newTorEnabled && _controller.text.isNotEmpty) {
+      _torEnabled = newTorEnabled;
+      _onAddressChanged(_controller.text);
+    }
   }
 
   @override
@@ -56,12 +67,13 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
   }
 
   @override
+  void didUpdateWidget(ElectrumServerEntry oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _updateTorEnabledStatus();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (_torEnabled != ref.watch(torEnabledProvider) &&
-        _controller.text.isNotEmpty) {
-      _torEnabled = !_torEnabled;
-      _onAddressChanged(_controller.text);
-    }
     return Column(
       children: [
         Container(
