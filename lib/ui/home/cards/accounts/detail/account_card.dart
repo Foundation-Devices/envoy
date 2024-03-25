@@ -51,8 +51,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:wallet/wallet.dart';
-import 'package:envoy/ui/components/ramp_widget_test.dart';
-import 'package:envoy/ui/components/map_test.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget {
@@ -166,34 +164,6 @@ class _AccountCardState extends ConsumerState<AccountCard>
                 ref.read(homePageAccountsProvider.notifier).state =
                     HomePageAccountsState(HomePageAccountsNavigationState.list);
               }),
-            ),
-            if (account.wallet.network != Network.Testnet && rampApiKey != "")
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
-                child: ElevatedButton(
-                    onPressed: () async {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => runRamp(account)),
-                      );
-                    },
-                    child: const Text("Buy Bitcoin via Ramp")),
-              ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-              child: ElevatedButton(
-                  onPressed: () async {
-                    Navigator.of(context, rootNavigator: true).push(
-                      MaterialPageRoute(builder: (context) {
-                        return MediaQuery.removePadding(
-                            context: context,
-                            child: fullScreenShield(const MarkersPage()));
-                      }),
-                    );
-                  },
-                  child: const Text("Where can I find Bitcoin ATMs?")),
             ),
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 200),
@@ -620,7 +590,7 @@ class TransactionListTile extends StatelessWidget {
     }
     if (transaction.type == TransactionType.ramp) {
       return Text(
-        "Pending Ramp transaction", // TODO: Figma
+        S().activity_pending,
         style: _transactionTextStyleInfo,
       );
     }
@@ -700,9 +670,11 @@ class TransactionListTile extends StatelessWidget {
       child: Consumer(
         builder: (context, ref, child) {
           bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
-          String txTitle = transaction.amount < 0
-              ? S().activity_sent
-              : S().activity_received;
+          String txTitle = transaction.type == TransactionType.ramp
+              ? S().activity_incomingPurchase
+              : (transaction.amount < 0
+                  ? S().activity_sent
+                  : S().activity_received);
           RBFState? cancelState =
               ref.watch(cancelTxStateProvider(transaction.txId));
           if (cancelState != null) {

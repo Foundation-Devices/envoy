@@ -479,7 +479,6 @@
   "manual_toggle_on_seed_backup_now_modal_heading": "Uploading Envoy Backup",
   "manual_toggle_on_seed_backup_now_modal_subheading": "This backup contains connected devices and accounts, labels and app settings. It contains no private key information.\n\nEnvoy backups are end-to-end encrypted, Foundation has no access or knowledge of their contents. \n\nEnvoy will notify you when the upload is complete.",
   "manual_toggle_on_seed_not_backedup_android_open_settings": "Open Android Settings",
-  "manual_toggle_on_seed_not_backedup_pending_android_data_pending_backup": "Pending backup to Foundation servers",
   "manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup": "Pending Android Auto Backup (once daily)",
   "manual_toggle_on_seed_not_backedup_pending_iOS_seed_pending_backup": "Pending backup to iCloud Keychain",
   "menu_about": "ABOUT",

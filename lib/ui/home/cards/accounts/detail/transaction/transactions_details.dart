@@ -328,6 +328,17 @@ class _TransactionsDetailsWidgetState
                                         getTransactionStatusString(tx),
                                         style: trailingTextStyle),
                                   ),
+                                  if (tx.type == TransactionType.ramp)
+                                    coinTagListItem(
+                                      title: S().coindetails_overlay_rampID,
+                                      icon: const EnvoyIcon(
+                                        EnvoyIcons.ramp_without_name,
+                                        size: EnvoyIconSize.extraSmall,
+                                        color: Colors.black,
+                                      ),
+                                      trailing: Text(tx.txId,
+                                          style: trailingTextStyle),
+                                    ),
                                   rbfPossible
                                       ? coinTagListItem(
                                           color: EnvoyColors.textTertiary,

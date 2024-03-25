@@ -1080,9 +1080,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Aquesta còpia de seguretat conté dispositius i comptes connectats, etiquetes i configuració d\'aplicacions. No conté informació de la teva clau privada.\n\nLes còpies de seguretat d\'Envoy estan xifrades d\'extrem a extrem, Foundation no té accés ni coneixement dels seus continguts.\n\nEnvoy us notificarà quan s\'hagi completat la càrrega."),
         "manual_toggle_on_seed_not_backedup_android_open_settings":
             MessageLookupByLibrary.simpleMessage("Configuració d\'Android"),
-        "manual_toggle_on_seed_not_backedup_pending_android_data_pending_backup":
-            MessageLookupByLibrary.simpleMessage(
-                "Còpia de seguretat pendent als servidors de Foundation"),
         "manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup":
             MessageLookupByLibrary.simpleMessage(
                 "Còpia de Seguretat Automàtica d\'Android Pendent (un cop al dia)"),
