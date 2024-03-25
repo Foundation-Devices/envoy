@@ -61,82 +61,83 @@ class _CoinTagSwitchState extends State<CoinTagSwitch> {
           colors: [gradientStart, gradientStart, gradientEnd],
         ));
 
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () {
-        if (widget.triState) {
-          switch (widget.value) {
-            case CoinTagSwitchState.on:
-              widget.onChanged(CoinTagSwitchState.off);
-              break;
-            case CoinTagSwitchState.partial:
-              widget.onChanged(CoinTagSwitchState.on);
-              break;
-            case CoinTagSwitchState.off:
-              widget.onChanged(CoinTagSwitchState.partial);
-              break;
+    return Container(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          if (widget.triState) {
+            switch (widget.value) {
+              case CoinTagSwitchState.on:
+                widget.onChanged(CoinTagSwitchState.off);
+                break;
+              case CoinTagSwitchState.partial:
+                widget.onChanged(CoinTagSwitchState.on);
+                break;
+              case CoinTagSwitchState.off:
+                widget.onChanged(CoinTagSwitchState.partial);
+                break;
+            }
+          } else {
+            switch (widget.value) {
+              case CoinTagSwitchState.on:
+                widget.onChanged(CoinTagSwitchState.off);
+                break;
+              case CoinTagSwitchState.off:
+                widget.onChanged(CoinTagSwitchState.on);
+                break;
+              case CoinTagSwitchState.partial:
+                break;
+            }
           }
-        } else {
-          switch (widget.value) {
-            case CoinTagSwitchState.on:
-              widget.onChanged(CoinTagSwitchState.off);
-              break;
-            case CoinTagSwitchState.off:
-              widget.onChanged(CoinTagSwitchState.on);
-              break;
-            case CoinTagSwitchState.partial:
-              break;
-          }
-        }
-        Haptics.buttonPress();
-      },
-      child: Container(
-        padding: EdgeInsets.only(right: 5),
-        height: 45,
-        width: 50,
-        color: Colors.transparent,
-        child: FittedBox(
-          fit: BoxFit.fitWidth,
-          child: AnimatedContainer(
-            duration: Duration(milliseconds: 200),
-            curve: Curves.decelerate,
-            width: 48,
-            decoration: boxDecoration,
-            child: AnimatedAlign(
-                alignment: knobAlign,
-                curve: (widget.value == CoinTagSwitchState.off ||
-                        widget.value == CoinTagSwitchState.partial)
-                    ? Curves.decelerate
-                    : Curves.easeIn,
-                duration: Duration(milliseconds: 200),
-                child: Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: Material(
-                    elevation: 1,
-                    shape: CircleBorder(),
-                    child: widget.triState
-                        ? SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: Center(
-                              child: SvgPicture.asset(
-                                "assets/icons/ic_filter_funnel.svg",
-                                width: 10,
-                                height: 10,
-                                fit: BoxFit.fitHeight,
-                                color:
-                                    widget.value == CoinTagSwitchState.partial
-                                        ? EnvoyColors.darkTeal
-                                        : EnvoyColors.transparent,
+          Haptics.buttonPress();
+        },
+        child: Container(
+          height: 45,
+          width: 48,
+          color: Colors.transparent,
+          child: FittedBox(
+            fit: BoxFit.fitWidth,
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: 200),
+              curve: Curves.decelerate,
+              width: 48,
+              decoration: boxDecoration,
+              child: AnimatedAlign(
+                  alignment: knobAlign,
+                  curve: (widget.value == CoinTagSwitchState.off ||
+                          widget.value == CoinTagSwitchState.partial)
+                      ? Curves.decelerate
+                      : Curves.easeIn,
+                  duration: Duration(milliseconds: 200),
+                  child: Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: Material(
+                      elevation: 1,
+                      shape: CircleBorder(),
+                      child: widget.triState
+                          ? SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: Center(
+                                child: SvgPicture.asset(
+                                  "assets/icons/ic_filter_funnel.svg",
+                                  width: 10,
+                                  height: 10,
+                                  fit: BoxFit.fitHeight,
+                                  color:
+                                      widget.value == CoinTagSwitchState.partial
+                                          ? EnvoyColors.darkTeal
+                                          : EnvoyColors.transparent,
+                                ),
                               ),
+                            )
+                          : SizedBox(
+                              width: 18,
+                              height: 18,
                             ),
-                          )
-                        : SizedBox(
-                            width: 18,
-                            height: 18,
-                          ),
-                  ),
-                )),
+                    ),
+                  )),
+            ),
           ),
         ),
       ),

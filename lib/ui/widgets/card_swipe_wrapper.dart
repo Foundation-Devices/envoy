@@ -92,6 +92,7 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
   @override
   void dispose() {
     _controller.dispose();
+    _iconController.dispose();
     super.dispose();
   }
 
