@@ -299,8 +299,9 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                                 .center,
                                                             child:
                                                                 CoinBalanceWidget(
-                                                              coin: coin,
-                                                            )),
+                                                                    coin: coin,
+                                                                    coinTag:
+                                                                        tag)),
                                                       );
                                                     },
                                                   )),
