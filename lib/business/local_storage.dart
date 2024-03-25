@@ -80,7 +80,9 @@ class LocalStorage {
   }
 
   Future<File> saveFile(String name, String content) async {
-    return File('${appSupportDir.path}/$name').writeAsString(content);
+    final file =
+        await File('${appSupportDir.path}/$name').create(recursive: true);
+    return file.writeAsString(content);
   }
 
   Future<String> readFile(String name) async {
@@ -93,11 +95,15 @@ class LocalStorage {
   }
 
   Future<File> saveFileBytes(String name, List<int> content) async {
-    return File('${appSupportDir.path}/$name').writeAsBytes(content);
+    final file =
+        await File('${appSupportDir.path}/$name').create(recursive: true);
+    return file.writeAsBytes(content);
   }
 
   File saveFileBytesSync(String name, List<int> content) {
-    var file = File('${appSupportDir.path}/$name')..writeAsBytesSync(content);
+    var file = File('${appSupportDir.path}/$name')
+      ..createSync(recursive: true)
+      ..writeAsBytesSync(content);
     return file;
   }
 
