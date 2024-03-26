@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 import 'dart:core';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -21,7 +20,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/generated/l10n.dart';
 
-String mapApiKey = Platform.environment['MAP_API_KEY'] ?? "";
 const String mapType = "positron";
 
 const home = LatLng(Angle.degree(34.052235), Angle.degree(-118.243683));
@@ -122,7 +120,7 @@ class MarkersPageState extends State<MarkersPage> {
 
   String _openStreetMap(int z, int x, int y) {
     final url =
-        "https://maps.geoapify.com/v1/tile/$mapType/$z/$x/$y.png?&apiKey=$mapApiKey";
+        "https://maps.geoapify.com/v1/tile/$mapType/$z/$x/$y.png?&apiKey=${MapData.mapApiKey}";
     return url;
   }
 
