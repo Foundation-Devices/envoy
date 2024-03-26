@@ -9,7 +9,6 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
@@ -584,60 +583,59 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     final textEntry = TextEntry(
       maxLength: 30,
       placeholder: widget.coinTag.name,
+      textAlign: TextAlign.center,
     );
     showEnvoyDialog(
-      context: context,
-      dialog: Builder(
-        builder: (context) {
-          return EnvoyDialog(
-            content: Builder(
-              builder: (context) {
-                return Column(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      child: Text(
-                        "Edit Tag Name", // TODO: FIGMA
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                    ),
-                    textEntry,
-                  ],
-                );
-              },
-            ),
-            actions: [
-              EnvoyButton(
-                "Return to my coins", // TODO: FIGMA
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                type: EnvoyButtonTypes.tertiary,
+        context: context,
+        linearGradient: true,
+        blurColor: Colors.black,
+        dialog: Padding(
+          padding: const EdgeInsets.all(EnvoySpacing.medium2),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
               ),
-              EnvoyButton(
-                S().component_save,
-                onTap: () async {
-                  final navigator = Navigator.of(context);
-                  widget.coinTag.name = textEntry.enteredText;
-                  int updated =
-                      await CoinRepository().updateCoinTag(widget.coinTag);
-                  if (updated != 0) {
-                    //Update local instance
-                    setState(() {
-                      widget.coinTag.name = textEntry.enteredText;
-                    });
-                    navigator.pop();
-                  }
-                },
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: EnvoySpacing.medium3),
+                child: Text(
+                  S().tagDetails_EditTagName,
+                  style: EnvoyTypography.subheading,
+                ),
+              ),
+              textEntry,
+              Padding(
+                padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
+                child: EnvoyButton(
+                  S().component_save,
+                  onTap: () async {
+                    widget.coinTag.name = textEntry.enteredText;
+                    int updated =
+                        await CoinRepository().updateCoinTag(widget.coinTag);
+                    if (updated != 0) {
+                      //Update local instance
+                      setState(() {
+                        widget.coinTag.name = textEntry.enteredText;
+                      });
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                      }
+                    }
+                  },
+                  type: EnvoyButtonTypes.primaryModal,
+                ),
               ),
             ],
-          );
-        },
-      ),
-    );
+          ),
+        ));
   }
 
   void selectCoin(BuildContext context, Coin coin) {
