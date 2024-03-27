@@ -9,15 +9,15 @@ class LoaderGhost extends StatefulWidget {
   final double width;
   final double height;
   final bool diagonal;
-  final bool animate;
-
   const LoaderGhost(
       {Key? key,
       required this.width,
       required this.height,
       this.diagonal = false,
-      this.animate = true})
+      this.animate = false})
       : super(key: key);
+
+  final bool animate;
 
   @override
   State<LoaderGhost> createState() => _LoaderGhostState();
@@ -27,8 +27,6 @@ class _LoaderGhostState extends State<LoaderGhost>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
-  late void Function() _animationTickListener;
-  late void Function(AnimationStatus) _animationStatusListener;
 
   @override
   initState() {
@@ -36,65 +34,72 @@ class _LoaderGhostState extends State<LoaderGhost>
     _animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 1));
 
-    _animation = _animationController
-        .drive(Tween(begin: 0.3, end: widget.animate ? 0.1 : 0.3));
-
-    _animationTickListener = () {
-      setState(() {});
-    };
-
-    _animationController.addListener(_animationTickListener);
-
-    _animationStatusListener = (status) {
-      if (status == AnimationStatus.completed) {
-        _animationController.reverse();
-      } else if (status == AnimationStatus.dismissed) {
-        _animationController.forward();
-      }
-    };
-
-    _animationController.addStatusListener(_animationStatusListener);
-
-    _animationController.forward();
+    _animation = Tween(begin: .3, end: .8).animate(
+        new CurvedAnimation(parent: _animationController, curve: Curves.ease));
+    _animationController.addListener(() {
+      if (mounted) setState(() {});
+    });
+    _animationController.repeat(reverse: true, period: Duration(seconds: 1));
   }
 
   @override
   dispose() {
-    _animationController.removeListener(_animationTickListener);
-    _animationController.removeStatusListener(_animationStatusListener);
-
     _animationController.dispose();
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Opacity(
-        opacity: _animation.value,
-        child: widget.diagonal
-            ? SizedBox(
-                width: widget.width,
-                height: widget.height,
-                child: Center(
-                  child: Transform.rotate(
-                    angle: -pi / 4,
-                    child: Container(
-                      width: widget.width - 5,
-                      height: 10,
-                      decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
-                    ),
+    if (!widget.animate) {
+      return widget.diagonal
+          ? SizedBox(
+              width: widget.width,
+              height: widget.height,
+              child: Center(
+                child: Transform.rotate(
+                  angle: -pi / 4,
+                  child: Container(
+                    width: widget.width - 5,
+                    height: 10,
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.all(Radius.circular(20))),
                   ),
                 ),
-              )
-            : Container(
-                width: widget.width,
-                height: widget.height,
-                decoration: BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
-              ));
+              ),
+            )
+          : Container(
+              width: widget.width,
+              height: widget.height,
+              decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
+            );
+    }
+    return widget.diagonal
+        ? SizedBox(
+            width: widget.width,
+            height: widget.height,
+            child: Center(
+              child: Transform.rotate(
+                angle: -pi / 4,
+                child: Container(
+                  width: widget.width - 5,
+                  height: 10,
+                  decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.all(Radius.circular(20))),
+                ),
+              ),
+            ),
+          )
+        : Container(
+            width: widget.width,
+            height: widget.height,
+            // child: Text('${_animation.value}'),
+            decoration: BoxDecoration(
+                color: Colors.grey.shade400.withOpacity(_animation.value),
+                borderRadius: BorderRadius.all(Radius.circular(20))),
+          );
   }
 }
