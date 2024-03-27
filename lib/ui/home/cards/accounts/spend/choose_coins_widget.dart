@@ -19,10 +19,10 @@ class ChooseCoinsWidget extends ConsumerStatefulWidget {
   const ChooseCoinsWidget({super.key});
 
   @override
-  ConsumerState createState() => _SpendTxDetailsState();
+  ConsumerState createState() => _ChooseCoinsWidget();
 }
 
-class _SpendTxDetailsState extends ConsumerState<ChooseCoinsWidget> {
+class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
   @override
   Widget build(BuildContext context) {
     Account? account = ref.watch(selectedAccountProvider);
