@@ -6,17 +6,21 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 class ShieldClipper extends CustomClipper<Path> {
+  final double arcSizeRatio;
+
+  ShieldClipper({this.arcSizeRatio = 4.8});
+
   @override
   Path getClip(Size size) {
-    return shieldPath(size);
+    return shieldPath(size, arcSizeRatio: arcSizeRatio);
   }
 
-  static Path shieldPath(Size size) {
+  static Path shieldPath(Size size, {double arcSizeRatio = 4.8}) {
     // Method to convert degree to radians
     double degToRad(double deg) => deg * (pi / 180.0);
 
     var path = Path();
-    double arcSize = size.width / 4.8;
+    double arcSize = size.width / arcSizeRatio;
     double padding = 1.2;
 
     double shieldCrestAngle = 164;

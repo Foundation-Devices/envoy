@@ -1075,9 +1075,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Esta copia de seguridad contiene información soibre los dispositivos y cuentas vinculadas, etiquetas, notas y configuración. No contiene información sobre la semilla.\n\nLas copias de seguridad de Envoy están encriptadas de extremo a extremo, Foundation no tiene acceso ni conocimiento de su contenido. \n\nEnvoy te notificará cuando se complete la carga."),
         "manual_toggle_on_seed_not_backedup_android_open_settings":
             MessageLookupByLibrary.simpleMessage("Configuración Android"),
-        "manual_toggle_on_seed_not_backedup_pending_android_data_pending_backup":
-            MessageLookupByLibrary.simpleMessage(
-                "Copia de seguridad pendiente en los servidores de Foundation"),
         "manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup":
             MessageLookupByLibrary.simpleMessage(
                 "Copia de Seguridad de Android pendiente (una vez al día)"),

@@ -21,6 +21,7 @@ class EnvoyTextField extends StatefulWidget {
     this.isError = false,
     this.isLoading,
     required this.controller,
+    this.infoContent,
   });
 
   final dynamic defaultText;
@@ -32,6 +33,7 @@ class EnvoyTextField extends StatefulWidget {
   final bool isError;
   final bool? isLoading;
   final TextEditingController controller;
+  final String? infoContent;
 
   @override
   State<EnvoyTextField> createState() => _EnvoyTextFieldState();
@@ -156,18 +158,36 @@ class _EnvoyTextFieldState extends State<EnvoyTextField> {
             ],
           ),
         ),
-        if (widget.informationalText != null)
-          Padding(
-            padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
-            child: Text(
-              widget.isError ? widget.errorText! : widget.informationalText!,
-              style: EnvoyTypography.info.copyWith(
-                color: widget.isError
-                    ? EnvoyColors.danger
-                    : EnvoyColors.textSecondary,
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (widget.informationalText != null)
+              Padding(
+                padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+                child: Text(
+                  widget.isError
+                      ? widget.errorText!
+                      : widget.informationalText!,
+                  style: EnvoyTypography.info.copyWith(
+                    color: widget.isError
+                        ? EnvoyColors.danger
+                        : EnvoyColors.textSecondary,
+                  ),
+                ),
               ),
-            ),
-          ),
+            if (widget.infoContent != null)
+              Padding(
+                padding: const EdgeInsets.only(top: EnvoySpacing.xs),
+                child: Text(
+                  widget.infoContent!,
+                  style: EnvoyTypography.info.copyWith(
+                    color: EnvoyColors.textTertiary,
+                  ),
+                ),
+              ),
+          ],
+        ),
       ],
     );
   }

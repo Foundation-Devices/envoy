@@ -18,6 +18,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
+
 // ignore: implementation_imports
 import 'package:sembast/src/type.dart';
 import 'package:sembast/utils/sembast_import_export.dart';
@@ -266,22 +267,30 @@ class EnvoyStorage {
 
   List<wallet.Transaction> transformPendingTxRecords(
       List<RecordSnapshot<Key?, Value?>> records) {
-    return records
-        .map(
-          (e) => wallet.Transaction(
-              e.key as String,
-              e.key as String,
-              DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
-              e["fee"] as int,
-              0,
-              e["amount"] as int,
-              0,
-              e["address"] as String,
-              type: e["type"] == wallet.TransactionType.azteco.toString()
-                  ? wallet.TransactionType.azteco
-                  : wallet.TransactionType.pending),
-        )
-        .toList();
+    return records.map(
+      (e) {
+        final String typeString = e["type"] as String;
+        wallet.TransactionType type = wallet.TransactionType.normal;
+        for (wallet.TransactionType transactionType
+            in wallet.TransactionType.values) {
+          if (transactionType.toString() == typeString) {
+            type = transactionType;
+            break;
+          }
+        }
+        return wallet.Transaction(
+          e.key as String,
+          e.key as String,
+          DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
+          e["fee"] as int,
+          0,
+          e["amount"] as int,
+          0,
+          e["address"] as String,
+          type: type,
+        );
+      },
+    ).toList();
   }
 
   //returns a stream of all pending transactions that stored in the database

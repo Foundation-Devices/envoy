@@ -70,16 +70,10 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 vertical: EnvoySpacing.medium2),
-                            child: GestureDetector(
-                              onTap: () {
-                                _copyAddressToClipboard(
-                                    context, snapshot.data!);
-                              },
-                              child: AddressWidget(
-                                address: snapshot.data!,
-                                short: false,
-                                align: TextAlign.center,
-                              ),
+                            child: AddressWidget(
+                              address: snapshot.data!,
+                              short: false,
+                              align: TextAlign.center,
                             ),
                           ),
                         ],

@@ -27,7 +27,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Navigate to ${AccountName} on Passport, choose ‘Verify Address’, then scan the QR code.";
 
   static String m2(tagName) =>
-      "Your ${tagName} tag is now empty. Would you like to delete it?";
+      "A tua etiqueta ${tagName} está vazia. Pretendes eliminá-la?";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -47,18 +47,18 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Untagged"),
         "account_emptyTxHistoryTextExplainer_FilteredView":
             MessageLookupByLibrary.simpleMessage(
-                "Applied filters are hiding all transactions.\nUpdate or reset filters to view transactions."),
+                "Os filtros aplicados escondem todas as transacções.\nActualiza ou repõe os filtros para ver as transacções."),
         "account_empty_tx_history_text_explainer":
             MessageLookupByLibrary.simpleMessage(
-                "There are no transactions in this account.\nReceive your first transaction below."),
+                "Não existem transacções nesta conta.\nRecebe a tua primeira transação abaixo."),
         "account_type_label_taproot":
             MessageLookupByLibrary.simpleMessage("Taproot"),
         "account_type_sublabel_testnet":
             MessageLookupByLibrary.simpleMessage("Testnet"),
         "accounts_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
-            "Create a mobile wallet with Magic Backups."),
+            "Cria uma carteira móvel utilizando a Cópia Mágica de Segurança."),
         "accounts_empty_text_learn_more":
-            MessageLookupByLibrary.simpleMessage("Get Started"),
+            MessageLookupByLibrary.simpleMessage("Começar"),
         "accounts_screen_walletType_Envoy":
             MessageLookupByLibrary.simpleMessage("Envoy"),
         "accounts_screen_walletType_Passport":
@@ -68,17 +68,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "activity_boosted": MessageLookupByLibrary.simpleMessage("Boosted"),
         "activity_canceling": MessageLookupByLibrary.simpleMessage("Canceling"),
         "activity_emptyState_label": MessageLookupByLibrary.simpleMessage(
-            "There is no activity to display."),
+            "Não existe actividade para apresentar."),
         "activity_envoyUpdate":
-            MessageLookupByLibrary.simpleMessage("Envoy App Updated"),
+            MessageLookupByLibrary.simpleMessage("Aplicação Envoy Actualizada"),
         "activity_firmwareUpdate": MessageLookupByLibrary.simpleMessage(
             "Actualização de firmware disponível"),
         "activity_incomingPurchase":
             MessageLookupByLibrary.simpleMessage("Incoming Purchase"),
         "activity_listHeader_Today":
-            MessageLookupByLibrary.simpleMessage("Today"),
+            MessageLookupByLibrary.simpleMessage("Hoje"),
         "activity_pending": MessageLookupByLibrary.simpleMessage("Pending"),
-        "activity_received": MessageLookupByLibrary.simpleMessage("Received"),
+        "activity_received": MessageLookupByLibrary.simpleMessage("Recebido"),
         "activity_sent": MessageLookupByLibrary.simpleMessage("Enviado"),
         "activity_sent_boosted":
             MessageLookupByLibrary.simpleMessage("Sent (Boosted)"),
@@ -102,7 +102,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Unable to Connect"),
         "azteco_connection_modal_fail_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Envoy is unable to connect with Azteco.\n\nPlease contact support@azte.co or try again later."),
+                "A Envoy não consegue estabelecer ligação com a Azteco.\n\nPor favor entra em contacto com support@azte.co ou tenta novamente mais tarde."),
         "azteco_redeem_modal__voucher_code":
             MessageLookupByLibrary.simpleMessage("VOUCHER CODE"),
         "azteco_redeem_modal_cta1":
@@ -110,7 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "azteco_redeem_modal_fail_heading":
             MessageLookupByLibrary.simpleMessage("Unable to Redeem"),
         "azteco_redeem_modal_fail_subheading": MessageLookupByLibrary.simpleMessage(
-            "Please confirm that your voucher is still valid.\n\nContact support@azte.co with any voucher related questions."),
+            "Por favor confirma se o teu vale ainda está válido.\n\nContacta o support@azte.co para quaisquer questões relacionadas com o vale."),
         "azteco_redeem_modal_heading":
             MessageLookupByLibrary.simpleMessage("Redeem Voucher?"),
         "azteco_redeem_modal_success_heading":
@@ -119,7 +119,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "An incoming transaction will appear in your account shortly."),
         "backups_erase_wallets_and_backups":
-            MessageLookupByLibrary.simpleMessage("Erase Wallets and Backups"),
+            MessageLookupByLibrary.simpleMessage(
+                "Apagar Carteiras e Cópias de Segurança"),
         "backups_erase_wallets_and_backups_modal_1_2_android_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "You’re about to permanently delete your Envoy Wallet. \n\nIf you are using Magic Backups, your Envoy Seed will also be deleted from Android Auto Backup. "),
@@ -134,8 +135,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "bottomNav_accounts": MessageLookupByLibrary.simpleMessage("Contas"),
         "bottomNav_activity":
             MessageLookupByLibrary.simpleMessage("Actividade"),
-        "bottomNav_devices": MessageLookupByLibrary.simpleMessage("Devices"),
-        "bottomNav_learn": MessageLookupByLibrary.simpleMessage("Learn"),
+        "bottomNav_devices":
+            MessageLookupByLibrary.simpleMessage("Dispositivos"),
+        "bottomNav_learn": MessageLookupByLibrary.simpleMessage("Aprender"),
         "bottomNav_privacy":
             MessageLookupByLibrary.simpleMessage("Privacidade"),
         "btcpay_connection_modal_expired_subheading": m0,
@@ -282,59 +284,59 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_coins_unselected": MessageLookupByLibrary.simpleMessage("Coins"),
         "card_label_of": MessageLookupByLibrary.simpleMessage("of"),
         "change_output_from_multiple_tags_modal_heading":
-            MessageLookupByLibrary.simpleMessage("Choose a Tag"),
+            MessageLookupByLibrary.simpleMessage("Escolhe uma Etiqueta"),
         "change_output_from_multiple_tags_modal_subehading":
             MessageLookupByLibrary.simpleMessage(
-                "This transaction spends coins from multiple tags. How would you like to tag your change?"),
+                "Esta transação gasta moedas de várias etiquetas. De que forma gostarias de etiquetar o teu troco?"),
         "coinDetails_tagDetails":
             MessageLookupByLibrary.simpleMessage("TAG DETAILS"),
         "coincontrol_coin_change_spendable_tate_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Your transaction ID will be copied to the clipboard and may be visible to other apps on your phone."),
+                "O teu ID de transacção vai ser copiado para a tua área de transferência e poderá ser visível para outras aplicações no teu telemóvel."),
         "coincontrol_edit_transaction_available_balance":
             MessageLookupByLibrary.simpleMessage("Available balance"),
         "coincontrol_edit_transaction_requiredAmount":
-            MessageLookupByLibrary.simpleMessage("Required Amount"),
+            MessageLookupByLibrary.simpleMessage("Quantia Necessária"),
         "coincontrol_edit_transaction_selectedAmount":
-            MessageLookupByLibrary.simpleMessage("Selected Amount"),
+            MessageLookupByLibrary.simpleMessage("Quantia Seleccionada"),
         "coincontrol_lock_coin_modal_cta1":
-            MessageLookupByLibrary.simpleMessage("Lock"),
+            MessageLookupByLibrary.simpleMessage("Bloquear"),
         "coincontrol_lock_coin_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Locking coins will prevent them from being used in transactions"),
         "coincontrol_txDetail_ReviewTransaction":
             MessageLookupByLibrary.simpleMessage("Review Transaction"),
         "coincontrol_txDetail_cta1_passport":
-            MessageLookupByLibrary.simpleMessage("Sign with Passport"),
+            MessageLookupByLibrary.simpleMessage("Assinar com o Passport"),
         "coincontrol_txDetail_heading_passport":
             MessageLookupByLibrary.simpleMessage(
-                "Your transaction is ready \nto be signed"),
+                "A tua transacção está pronta\npara ser assinada"),
         "coincontrol_txDetail_subheading_passport":
             MessageLookupByLibrary.simpleMessage(
-                "Confirm the transaction details are correct before signing with Passport."),
+                "Confirma se os dados da transacção estão correctos antes de assinar com o Passport."),
         "coincontrol_tx_add_note_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Save some details about your transaction."),
+                "Guarda alguns detalhes da tua transacção."),
         "coincontrol_tx_detail_amount_details":
-            MessageLookupByLibrary.simpleMessage("Show details"),
+            MessageLookupByLibrary.simpleMessage("Mostrar detalhes"),
         "coincontrol_tx_detail_amount_to_sent":
-            MessageLookupByLibrary.simpleMessage("Amount to send"),
+            MessageLookupByLibrary.simpleMessage("Quantidade a enviar"),
         "coincontrol_tx_detail_change":
             MessageLookupByLibrary.simpleMessage("Change received"),
         "coincontrol_tx_detail_cta1":
-            MessageLookupByLibrary.simpleMessage("Send Transaction"),
+            MessageLookupByLibrary.simpleMessage("Enviar Transacção"),
         "coincontrol_tx_detail_cta2":
-            MessageLookupByLibrary.simpleMessage("Edit Transaction"),
+            MessageLookupByLibrary.simpleMessage("Editar Transacção"),
         "coincontrol_tx_detail_custom_fee_cta":
-            MessageLookupByLibrary.simpleMessage("Confirm Fee"),
+            MessageLookupByLibrary.simpleMessage("Confirmar Taxa"),
         "coincontrol_tx_detail_custom_fee_insufficients_funds_25_cta":
-            MessageLookupByLibrary.simpleMessage("Over 25%"),
+            MessageLookupByLibrary.simpleMessage("Acima de 25%"),
         "coincontrol_tx_detail_custom_fee_insufficients_funds_25_prompt":
-            MessageLookupByLibrary.simpleMessage("Over 25%"),
+            MessageLookupByLibrary.simpleMessage("Acima de 25%"),
         "coincontrol_tx_detail_destination":
-            MessageLookupByLibrary.simpleMessage("Destination"),
+            MessageLookupByLibrary.simpleMessage("Destino"),
         "coincontrol_tx_detail_destination_details":
-            MessageLookupByLibrary.simpleMessage("Show address"),
+            MessageLookupByLibrary.simpleMessage("Mostrar endereço"),
         "coincontrol_tx_detail_expand_changeReceived":
             MessageLookupByLibrary.simpleMessage("Change received"),
         "coincontrol_tx_detail_expand_coin":
@@ -342,22 +344,22 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_detail_expand_coins":
             MessageLookupByLibrary.simpleMessage("coins"),
         "coincontrol_tx_detail_expand_heading":
-            MessageLookupByLibrary.simpleMessage("TRANSACTION DETAILS"),
+            MessageLookupByLibrary.simpleMessage("DETALHES DA TRANSACÇÃO"),
         "coincontrol_tx_detail_expand_spentFrom":
             MessageLookupByLibrary.simpleMessage("Spent from"),
         "coincontrol_tx_detail_fee":
-            MessageLookupByLibrary.simpleMessage("Fee"),
+            MessageLookupByLibrary.simpleMessage("Taxa"),
         "coincontrol_tx_detail_feeChange_information":
             MessageLookupByLibrary.simpleMessage(
                 " Updating your fee may have changed\nyour coin selection. Please review."),
         "coincontrol_tx_detail_fee_custom":
-            MessageLookupByLibrary.simpleMessage("Custom"),
+            MessageLookupByLibrary.simpleMessage("Personalizar"),
         "coincontrol_tx_detail_fee_faster":
-            MessageLookupByLibrary.simpleMessage("Faster"),
+            MessageLookupByLibrary.simpleMessage("Rápida"),
         "coincontrol_tx_detail_fee_standard":
-            MessageLookupByLibrary.simpleMessage("Standard"),
+            MessageLookupByLibrary.simpleMessage("Padrão"),
         "coincontrol_tx_detail_heading": MessageLookupByLibrary.simpleMessage(
-            "Your transaction is ready \nto be sent"),
+            "A tua transacção está pronta\npara ser enviada"),
         "coincontrol_tx_detail_high_fee_info_overlay_learnMore":
             MessageLookupByLibrary.simpleMessage("[[Learn more]]"),
         "coincontrol_tx_detail_high_fee_info_overlay_subheading":
@@ -366,22 +368,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_detail_no_change":
             MessageLookupByLibrary.simpleMessage("No change"),
         "coincontrol_tx_detail_passport_cta2":
-            MessageLookupByLibrary.simpleMessage("Cancel Transaction"),
+            MessageLookupByLibrary.simpleMessage("Cancelar Transacção"),
         "coincontrol_tx_detail_passport_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "By canceling you will lose all transaction progress."),
-        "coincontrol_tx_detail_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "Confirm the transaction details are correct before sending."),
+                "Ao cancelar irás perder todo o progresso da transacção."),
+        "coincontrol_tx_detail_subheading": MessageLookupByLibrary.simpleMessage(
+            "Confirma se os dados da transacção estão correctos antes do envio."),
         "coincontrol_tx_detail_total":
             MessageLookupByLibrary.simpleMessage("Total"),
         "coincontrol_tx_history_tx_detail_note":
             MessageLookupByLibrary.simpleMessage("Note"),
         "coincontrol_unlock_coin_modal_cta1":
-            MessageLookupByLibrary.simpleMessage("Unlock"),
+            MessageLookupByLibrary.simpleMessage("Desbloquear"),
         "coincontrol_unlock_coin_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Unlocking coins will make them available for use in transactions."),
+                "O desbloqueio das moedas torna-as disponíveis para utilização em transacções."),
         "coindetails_overlay_address":
             MessageLookupByLibrary.simpleMessage("Address"),
         "coindetails_overlay_at": MessageLookupByLibrary.simpleMessage("at"),
@@ -453,44 +454,44 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_yes": MessageLookupByLibrary.simpleMessage("Yes"),
         "create_first_tag_modal_1_2_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Tags are a useful way to organize your coins."),
+                "As etiquetas são uma forma útil de organizares as tuas moedas."),
         "create_first_tag_modal_2_2_suggest":
-            MessageLookupByLibrary.simpleMessage("Suggestions"),
+            MessageLookupByLibrary.simpleMessage("Sugestões"),
         "create_second_tag_modal_2_2_mostUsed":
-            MessageLookupByLibrary.simpleMessage("Most used"),
+            MessageLookupByLibrary.simpleMessage("Mais usadas"),
         "delete_emptyTag_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Are you sure you want to delete this tag?"),
+                "Tens a certeza que queres eliminar esta etiqueta?"),
         "delete_tag_modal_cta2":
-            MessageLookupByLibrary.simpleMessage("Delete Tag"),
+            MessageLookupByLibrary.simpleMessage("Eliminar Etiqueta"),
         "delete_tag_modal_subheading": MessageLookupByLibrary.simpleMessage(
-            "Deleting this tag will automatically mark these coins as untagged."),
+            "A eliminação desta etiqueta marcará automaticamente estas moedas como sem etiqueta."),
         "delete_wallet_for_good_instant_android_cta1":
-            MessageLookupByLibrary.simpleMessage("Go to Settings"),
+            MessageLookupByLibrary.simpleMessage("Ir para as Definições"),
         "delete_wallet_for_good_instant_android_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Android automatically backs up your Envoy data every 24 hours.\n\nTo immediately remove your Envoy Seed from Android Auto Backups, you can perform a manual backup in your device [[Settings.]]"),
+                "O Android faz uma cópia de segurança automática dos dados da Envoy a cada 24 horas.\n\nPara removeres imediatamente a tua Semente Envoy da Cópia de Segurança do Android, podes fazer uma cópia de segurança manual nas [[Definições]] do teu dispositivo."),
         "delete_wallet_for_good_loading_heading":
-            MessageLookupByLibrary.simpleMessage("Deleting your Envoy Wallet"),
+            MessageLookupByLibrary.simpleMessage(
+                "A eliminar a tua Carteira Envoy"),
         "delete_wallet_for_good_modal_cta2":
-            MessageLookupByLibrary.simpleMessage("Delete Wallet"),
+            MessageLookupByLibrary.simpleMessage("Eliminar Carteira"),
         "delete_wallet_for_good_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Are you sure you want to DELETE your Envoy Wallet?"),
+                "Tens a certeza que pretendes ELIMINAR a tua Carteira Envoy?"),
         "delete_wallet_for_good_success_heading":
             MessageLookupByLibrary.simpleMessage(
-                "Your wallet was successfully deleted"),
+                "A tua carteira foi eliminada com sucesso"),
         "devices_empty_modal_video_cta1":
-            MessageLookupByLibrary.simpleMessage("Buy Passport"),
+            MessageLookupByLibrary.simpleMessage("Comprar o Passport"),
         "devices_empty_modal_video_cta2":
-            MessageLookupByLibrary.simpleMessage("Watch Later"),
+            MessageLookupByLibrary.simpleMessage("Ver Mais Tarde"),
         "devices_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
             "Protege a tua Bitcoin com o Passport."),
         "empty_tag_modal_subheading": m2,
-        "envoy_account_tos_cta":
-            MessageLookupByLibrary.simpleMessage("I Accept"),
+        "envoy_account_tos_cta": MessageLookupByLibrary.simpleMessage("Aceito"),
         "envoy_account_tos_heading": MessageLookupByLibrary.simpleMessage(
-            "Please review and accept the Passport Terms of Use"),
+            "Por favor revê e aceita as Condições de Utilização do Passport"),
         "envoy_account_tos_subheading": MessageLookupByLibrary.simpleMessage(
             "Last updated: May 16, 2021.\r\n\r\nBy purchasing, using or continuing to use a Passport hardware wallet (“Passport“), you, the purchaser of Passport, agree to be bound by these terms of and use (the “Passport Terms of Use” or “Terms”).\r\n\r\n1. Use of Passport\n\nPassport includes functionality to store and facilitate the transfer of bitcoin (“Bitcoin”) and which may be used to facilitate various types of transactions and other activities (“Transactions”). You understand and agree that Foundation Devices (“Foundation”, “We”, or “Us“) is not responsible for, and has no obligation or liability to you or others in respect of any Transactions. You agree to comply with all applicable laws in your use of Products (including all Transactions), including without limitation any anti-money laundering laws or regulations.\r\n\r\n2. Security\n\r\nYou understand and agree that control and access to Bitcoin stored on any Product is based upon physical possession and control of such Product and that any person given physical possession of the Product may remove or transfer any or all Bitcoin stored on such Product.\r\n\r\n3. BACKUPS\r\nYou are solely responsible for generating and making backups of your recovery phrase and for preserving and maintaining the security and confidentiality of your recovery phrase and your PIN. You acknowledge and agree that failure to do so may result in the complete loss of all Bitcoin stored on Passport and that we have no obligation to liability whatsoever for any such loss.\r\n\r\n4. MODIFICATIONS\r\nYou acknowledge and agree that any modifications to Passport, the installation of any additional software or firmware on a Passport or the use of Passport in connection with any other software or equipment are at your sole risk, and that we have no obligation or liability in respect thereof or in respect of any resulting loss of Bitcoin, damage to Passport, failure of the Passport or errors in storing Bitcoin or processing Transactions;\r\n\r\n5. OPEN SOURCE LICENSES\r\nPassport includes software licensed under the GNU General Public License v3 and other open source licenses, as identified in documentation provided with Passport. Your use of such software is subject to the applicable open source licenses and, to the extent such open source licenses conflicts with this Agreement, the terms of such licenses will prevail.\r\n\r\n6. ACKNOWLEDGEMENT AND ASSUMPTION OF RISK\r\nYou understand and agree that:\r\n\r\n(a) there are risks associated with the use and holding of Bitcoin and you represent and warrant that you are knowledgeable and/or experienced in matters relating to the use of Bitcoin and are capable of evaluating the benefits and risks of using and holding Bitcoin and fully understand the nature of Bitcoin, the limitations and restrictions on its liquidity and transferability and are capable of bearing the economic risk of holding and transacting using Bitcoin;\r\n\r\n(b) the continued ability to use Bitcoin is dependent on many elements beyond our control, including without limitation the publication of blocks, network connectivity, hacking or changes in the technical and other standards, policies and procedures applicable to Bitcoin;\r\n\r\n(c) no regulatory authority has reviewed or passed on the merits, legality or fungibility of Bitcoin;\r\n\r\n(d) there is no government or other insurance covering Bitcoin, the loss or theft of Bitcoin, or any loss in the value of Bitcoin;\r\n\r\n(e) the use of Bitcoin or the Products may become subject to regulatory controls that limit, restrict, prohibit or otherwise impose conditions on your use of same;\r\n\r\n(f) Bitcoin do not constitute a currency, asset, security, negotiable instrument, or other form of property and do not have any intrinsic or inherent value;\r\n\r\n(g) the value of and/or exchange rates for Bitcoin may fluctuate significantly and may result in you incurring significant losses;\r\n\r\n(h) Transactions may have tax consequences (including obligations to report, collect or remit taxes) and you are solely responsible for understanding and complying with all applicable tax laws and regulations; and\r\n\r\n(i) the use of Bitcoin or Products may be illegal or subject to regulation in certain jurisdictions, and it is your responsibility to ensure that you comply with the laws of any jurisdiction in which you use Bitcoin or Products.\r\n\r\n7. TRANSFER OF PASSPORT\r\nYou may transfer or sell Passport to others on the condition that you ensure that the transferee or purchaser agrees to be bound by the then-current form of these Terms available on our website at the time of transfer.\r\n\r\n8. RESTRICTIONS\r\nYou shall not:\r\n\r\n(a) use Passport in a manner or for a purpose that: (i) is illegal or otherwise contravenes applicable law (including the facilitation or furtherance of any criminal or fraudulent activity or the violation of any anti-money laundering legislation); or (ii) infringes upon the lawful rights of others;\r\n\r\n(b) interfere with the security or integrity of Passport;\r\n\r\n(c) remove, destroy, cover, obfuscate or alter in any manner any notices, legends, trademarks, branding or logos appearing on or contained in Passport; or\r\n\r\n(d) attempt, or cause, permit or encourage any other person, to do any of the foregoing.\r\n\r\nNotwithstanding the foregoing, you may investigate security and other vulnerabilities, provided you do so in a reasonable and responsible manner in compliance with applicable law and our responsible disclosure policy and otherwise use good faith efforts to minimize or avoid contravention of any of the foregoing.\r\n\r\n9. REPRESENTATIONS AND WARRANTIES\r\nYou represent, warrant and covenant that:\r\n\r\n(a) you have the capacity to, and are and will be free to, enter into and to fully perform your obligations under these Terms and that no agreement or understanding with any other person exists or will exist which would interfere with such obligations; and\r\n\r\n(b) these Terms constitute a legal, valid and binding obligation upon you.\r\n\r\n10. OWNERSHIP\r\nExcept for the limited rights of use expressly granted to you under these Terms, all right, title and interest (including all copyrights, trademarks, service marks, patents, inventions, trade secrets, intellectual property rights and other proprietary rights) in and to Passport are and shall remain exclusively owned by us and our licensors. All trade names, company names, trademarks, service marks and other names and logos are the proprietary marks of us or our licensors, and are protected by law and may not be copied, imitated or used, in whole or in part, without the consent of their respective owners. These Terms do not grant you any rights in respect of any such marks. You understand and agree that any feedback, input, suggestions, recommendations, improvements, changes, specifications, test results, or other data or information that you provide or make available to us arising from or related to your use of the Products or Software shall become our exclusive property and may be used by us to modify, enhance, maintain and improve Passport without any obligation or payment to you whatsoever.\r\n\r\n11. THIRD PARTY PRODUCTS\r\nYou acknowledge and agree that you will require certain third party equipment, products, software and services in order to use the Products and may also use optional third party equipment, products, software and services that enhance or complement such use (collectively, “Third Party Products”). You acknowledge and agree that failure to use or procure Third Party Products that meet the minimum requirements for Products, or failure to properly configure or setup Third Party Products may result in the inability to use the Products and/or processing failures or errors. Third Party Products include, without limitation, computers, mobile devices, networking equipment, operating system software, web browsers and internet connectivity. We may also identify, recommend, reference or link to optional Third Party Products on our website. You acknowledge and agree that: (a) Third Party Products are be governed by separate licenses, agreements or terms and conditions and we have no obligation or liability to you in respect thereof; and (b) you are solely responsible for procuring any Third Party Products at your cost and expense, and are solely responsible for compliance with any applicable licenses, agreements or terms and conditions governing same. \r\n\r\n12. INDEMNITY\r\nYou agree to indemnify and hold Foundation Devices (and our officers, employees, and agents) harmless, including costs and attorneys’ fees, from any claim or demand due to or arising out of (a) your use of Passport, (b) your violation of this Agreement or (c) your violation of applicable laws or regulations. We reserve the right, at your expense, to assume the exclusive defense and control of any matter for which you are required to indemnify us and you agree to cooperate with our defense of these claims. You agree not to settle any matter without our prior written consent. We will use reasonable efforts to notify you of any such claim, action or proceeding upon becoming aware of it.\r\n\r\n13. DISCLAIMERS\r\nPASSPORT IS PROVIDED “AS-IS” AND “AS AVAILABLE” AND WE (AND OUR SUPPLIERS) EXPRESSLY DISCLAIM ANY WARRANTIES AND CONDITIONS OF ANY KIND, WHETHER EXPRESS OR IMPLIED, INCLUDING THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, QUIET ENJOYMENT, ACCURACY, OR NON-INFRINGEMENT. WE (AND OUR SUPPLIERS) MAKE NO WARRANTY THAT PASSPORT: (A) WILL MEET YOUR REQUIREMENTS; (B) WILL BE AVAILABLE ON AN UNINTERRUPTED, TIMELY, SECURE, OR ERROR-FREE BASIS; OR (C) WILL BE ACCURATE, RELIABLE, FREE OF VIRUSES OR OTHER HARMFUL CODE, COMPLETE, LEGAL, OR SAFE.\r\n\r\nSOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF IMPLIED WARRANTIES, SO THE ABOVE EXCLUSION MAY NOT APPLY TO YOU.\r\n\r\n14. LIMITATION ON LIABILITY\r\nYOU AGREE THAT, TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, OUR AGGREGATE LIABILITY ARISING FROM OR RELATED TO THESE TERMS OR PASSPORT IN ANY MANNER WILL BE LIMITED TO DIRECT DAMAGES NOT TO EXCEED THE PURCHASE PRICE YOU HAVE PAID TO US FOR PASSPORT (EXCLUDING SHIPPING CHARGES AND TAXES). TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL WE (AND OUR SUPPLIERS) BE LIABLE FOR ANY CONSEQUENTIAL, INCIDENTAL, INDIRECT, SPECIAL, PUNITIVE, OR OTHER DAMAGES WHATSOEVER (INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF REVENUE, PROFITS, OR EXPECTED SAVINGS, BUSINESS INTERRUPTION, PERSONAL INJURY, LOSS OF PRIVACY, LOSS OF DATA OR INFORMATION OR OTHER PECUNIARY OR INTANGIBLE LOSS) ARISING OUT OF THESE TERMS OR THE USE OF OR INABILITY TO USE PASSPORT, EVEN IF WE FORESEE OR HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.\r\n\r\nSOME JURISDICTIONS DO NOT ALLOW THE LIMITATION OR EXCLUSION OF LIABILITY FOR INCIDENTAL OF CONSEQUENTIAL DAMAGES, SO THE ABOVE LIMITATION OR EXCLUSION MAY NOT APPLY TO YOU.\r\n\r\n15. RELEASE\r\nYou hereby release and forever discharge us (and our officers, employees, agents, successors, and assigns) from, and hereby waive and relinquish, each and every past, present and future dispute, claim, controversy, demand, right, obligation, liability, action and cause of action of every kind and nature (including personal injuries, death, and property damage), that has arisen or arises directly or indirectly out of, or relates directly or indirectly to, use of Passport. IF YOU ARE A CALIFORNIA RESIDENT, YOU HEREBY WAIVE CALIFORNIA CIVIL CODE SECTION 1542 IN CONNECTION WITH THE FOREGOING, WHICH STATES: “A GENERAL RELEASE DOES NOT EXTEND TO CLAIMS WHICH THE CREDITOR DOES NOT KNOW OR SUSPECT TO EXIST IN HIS OR HER FAVOR AT THE TIME OF EXECUTING THE RELEASE, WHICH IF KNOWN BY HIM OR HER MUST HAVE MATERIALLY AFFECTED HIS OR HER SETTLEMENT WITH THE DEBTOR.”\r\n\r\n16. SURVIVAL\r\nNeither the expiration nor the earlier termination of your account will release you from any obligation or liability that accrued prior to such expiration or termination. The provisions of these Terms requiring performance or fulfilment after the expiration or earlier termination of your account and any other provisions hereof, the nature and intent of which is to survive termination or expiration, will survive.\r\n\r\n17. PRIVACY POLICY\r\nPlease review our Privacy Policy, located at https://foundationdevices.com/privacy, which governs the use of personal information.\r\n\r\n18. DISPUTE RESOLUTION\r\nPlease read the following arbitration agreement in this section (“Arbitration Agreement”) carefully. It requires U.S. users to arbitrate disputes with Foundation Devices and limits the manner in which you can seek relief from us.\r\n\r\n(a) Applicability of Arbitration Agreement. You agree that any dispute, claim, or request for relief relating in any way to your use of Passport will be resolved by binding arbitration, rather than in court, except that (a) you may assert claims or seek relief in small claims court if your claims qualify; and (b) you or we may seek equitable relief in court for infringement or other misuse of intellectual property rights (such as trademarks, trade dress, domain names, trade secrets, copyrights, and patents). This Arbitration Agreement shall apply, without limitation, to all disputes or claims and requests for relief that arose or were asserted before the effective date of this Agreement or any prior version of this Agreement.\r\n\r\n(b) Arbitration Rules and Forum. The Federal Arbitration Act governs the interpretation and enforcement of this Arbitration Agreement. To begin an arbitration proceeding, you must send a letter requesting arbitration and describing your dispute or claim or request for relief to our registered agent. The arbitration will be conducted by JAMS, an established alternative dispute resolution provider. Disputes involving claims, counterclaims, or request for relief under \$250,000, not inclusive of attorneys’ fees and interest, shall be subject to JAMS’s most current version of the Streamlined Arbitration Rules and procedures available at https://jamsadr.com/rules-streamlined-arbitration/; all other disputes shall be subject to JAMS’s most current version of the Comprehensive Arbitration Rules and Procedures, available at https://jamsadr.com/rules-comprehensive-arbitration/. JAMS’s rules are also available at https://jamsadr.com or by calling JAMS at 800-352-5267. If JAMS is not available to arbitrate, the parties will select an alternative arbitral forum. If the arbitrator finds that you cannot afford to pay JAMS’s filing, administrative, hearing and/or other fees and cannot obtain a waiver from JAMS, Company will pay them for you. In addition, Company will reimburse all such JAMS’s filing, administrative, hearing and/or other fees for disputes, claims, or requests for relief totaling less than \$10,000 unless the arbitrator determines the claims are frivolous.\r\n\r\nYou may choose to have the arbitration conducted by telephone, based on written submissions, or in person in the country where you live or at another mutually agreed location. Any judgment on the award rendered by the arbitrator may be entered in any court of competent jurisdiction.\r\n\r\n(c) Authority of Arbitrator. The arbitrator shall have exclusive authority to (a) determine the scope and enforceability of this Arbitration Agreement and (b) resolve any dispute related to the interpretation, applicability, enforceability or formation of this Arbitration Agreement including, but not limited to, any assertion that all or any part of this Arbitration Agreement is void or voidable. The arbitration will decide the rights and liabilities, if any, of you and Company. The arbitration proceeding will not be consolidated with any other matters or joined with any other cases or parties. The arbitrator shall have the authority to grant motions dispositive of all or part of any claim. The arbitrator shall have the authority to award monetary damages and to grant any non-monetary remedy or relief available to an individual under applicable law, the arbitral forum’s rules, and the Agreement (including the Arbitration Agreement). The arbitrator shall issue a written award and statement of decision describing the essential findings and conclusions on which the award is based, including the calculation of any damages awarded. The arbitrator has the same authority to award relief on an individual basis that a judge in a court of law would have. The award of the arbitrator is final and binding upon you and us.\r\n\r\n(d) Waiver of Jury Trial. YOU AND COMPANY HEREBY WAIVE ANY CONSTITUTIONAL AND STATUTORY RIGHTS TO SUE IN COURT AND HAVE A TRIAL IN FRONT OF A JUDGE OR A JURY. You and Company are instead electing that all disputes, claims, or requests for relief shall be resolved by arbitration under this Arbitration Agreement, except as specified in Section 10(a) (Application of Arbitration Agreement) above. An arbitrator can award on an individual basis the same damages and relief as a court and must follow this Agreement as a court would. However, there is no judge or jury in arbitration, and court review of an arbitration award is subject to very limited review.\r\n\r\n(e) Waiver of Class or Other Non-Individualized Relief. ALL DISPUTES, CLAIMS, AND REQUESTS FOR RELIEF WITHIN THE SCOPE OF THIS ARBITRATION AGREEMENT MUST BE ARBITRATED ON AN INDIVIDUAL BASIS AND NOT ON A CLASS OR COLLECTIVE BASIS, ONLY INDIVIDUAL RELIEF IS AVAILABLE, AND CLAIMS OF MORE THAN ONE CUSTOMER OR USER CANNOT BE ARBITRATED OR CONSOLIDATED WITH THOSE OF ANY OTHER CUSTOMER OR USER. If a decision is issued stating that applicable law precludes enforcement of any of this section’s limitations as to a given dispute, claim, or request for relief, then such aspect must be severed from the arbitration and brought into the State or Federal Courts located in the Commonwealth of Massachusetts. All other disputes, claims, or requests for relief shall be arbitrated.\r\n\r\n(f) 30-Day Right to Opt Out. You have the right to opt out of the provisions of this Arbitration Agreement by sending written notice of your decision to opt out to: hello@foundationdevices.com, within thirty (30) days after first becoming subject to this Arbitration Agreement. Your notice must include your name and address, your Company username (if any), the email address you used to set up your Company account (if you have one), and an unequivocal statement that you want to opt out of this Arbitration Agreement. If you opt out of this Arbitration Agreement, all other parts of this Agreement will continue to apply to you. Opting out of this Arbitration Agreement has no effect on any other arbitration agreements that you may currently have, or may enter in the future, with us.\r\n\r\n(g) Severability. Except as provided in Section 10(e)(Waiver of Class or Other Non-Individualized Relief), if any part or parts of this Arbitration Agreement are found under the law to be invalid or unenforceable, then such specific part or parts shall be of no force and effect and shall be severed and the remainder of the Arbitration Agreement shall continue in full force and effect.\r\n\r\n(h) Survival of Agreement. This Arbitration Agreement will survive the termination of your relationship with Company.\r\n\r\nModification. Notwithstanding any provision in this Agreement to the contrary, we agree that if Company makes any future material change to this Arbitration Agreement, you may reject that change within thirty (30) days of such change becoming effective by writing Company at the following address: Foundation Devices, Inc., 6 Liberty Square #6018, Boston, MA 02109, Attn: CEO.\r\n\r\n19. GENERAL\r\n(a) Changes to Terms of Use. This Agreement is subject to occasional revision, and if we make any substantial changes, we may notify you by sending you an e-mail to the last e-mail address you provided to us (if any) and/or by prominently posting notice of the changes on our website. Any changes to this agreement will be effective upon the earlier of thirty (30) calendar days following our dispatch of an e-mail notice to you (if applicable) or thirty (30) calendar days following our posting of notice of the changes on our website. These changes will be effective immediately for new users of our website. You are responsible for providing us with your most current e-mail address. In the event that the last e-mail address that you have provided us is not valid, or for any reason is not capable of delivering to you the notice described above, our dispatch of the e-mail containing such notice will nonetheless constitute effective notice of the changes described in the notice. Continued use of Passport following notice of such changes will indicate your acknowledgement of such changes and agreement to be bound by the terms and conditions of such changes.\r\n\r\nChoice Of Law. The Agreement is made under and will be governed by and construed in accordance with the laws of the Commonwealth of Massachusetts, consistent with the Federal Arbitration Act, without giving effect to any principles that provide for the application of the law of another jurisdiction.\r\n\r\n(b) Entire Agreement. This Agreement constitutes the entire agreement between you and us regarding the use of Passport. Our failure to exercise or enforce any right or provision of this Agreement will not operate as a waiver of such right or provision. The section titles in this Agreement are for convenience only and have no legal or contractual effect. The word including means including without limitation. If any provision of this Agreement is, for any reason, held to be invalid or unenforceable, the other provisions of this Agreement will be unimpaired and the invalid or unenforceable provision will be deemed modified so that it is valid and enforceable to the maximum extent permitted by law. Your relationship to us is that of an independent contractor, and neither party is an agent or partner of the other. This Agreement, and your rights and obligations herein, may not be assigned, subcontracted, delegated, or otherwise transferred by you without our prior written consent, and any attempted assignment, subcontract, delegation, or transfer in violation of the foregoing will be null and void. The terms of this Agreement will be binding upon assignees.\r\n\r\n(c) Copyright/Trademark Information. Copyright © 2020, Foundation Devices, Inc. All rights reserved. All trademarks, logos and service marks displayed on the Site are our property or the property of other third parties. You are not permitted to use such trademarks, logos and service marks without our prior written consent or the consent of such third party which may own the Marks.\r\n\r\nContact Information:\r\n\r\nFoundation Devices, Inc.\r\n6 Liberty Square #6018\r\nBoston, MA 02109\r\nhello@foundationdevices.com"),
         "envoy_faq_answer_1": MessageLookupByLibrary.simpleMessage(
@@ -590,14 +591,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_fw_fail_subheading": MessageLookupByLibrary.simpleMessage(
             "Ensure the microSD card is inserted into your phone correctly and try again. Alternatively the firmware can be downloaded from our [[GitHub]]."),
         "envoy_fw_intro_cta":
-            MessageLookupByLibrary.simpleMessage("Download Firmware"),
+            MessageLookupByLibrary.simpleMessage("Descarregar Firmware"),
         "envoy_fw_intro_heading": MessageLookupByLibrary.simpleMessage(
-            "Next, let’s update Passport\'s firmware"),
+            "De seguida, vamos actualizar o firmware do Passport"),
         "envoy_fw_intro_subheading": MessageLookupByLibrary.simpleMessage(
             "Envoy allows you to update your Passport from your phone using the included microSD adapter.\n\nAdvanced users can [[tap here]] to download and verify their own firmware on a computer."),
         "envoy_fw_ios_instructions_heading":
             MessageLookupByLibrary.simpleMessage(
-                "Allow Envoy to access the microSD card"),
+                "Permitir que Envoy aceda ao cartão microSD"),
         "envoy_fw_ios_instructions_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Grant Envoy access to copy files to the microSD card. Tap Browse, then PASSPORT-SD, then Open."),
@@ -606,7 +607,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_fw_microsd_fails_heading": MessageLookupByLibrary.simpleMessage(
             "Sorry, we can’t get the firmware update right now."),
         "envoy_fw_microsd_heading": MessageLookupByLibrary.simpleMessage(
-            "Insert the microSD card into your Phone"),
+            "Introduz o cartão microSD no teu Telemóvel"),
         "envoy_fw_microsd_subheading": MessageLookupByLibrary.simpleMessage(
             "Insert the provided microSD card adapter into your phone, then insert the microSD card into the adapter."),
         "envoy_fw_passport_heading": MessageLookupByLibrary.simpleMessage(
@@ -627,7 +628,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_fw_success_subheading_ios": MessageLookupByLibrary.simpleMessage(
             "The latest firmware has been copied to the microSD card and is ready to be applied to Passport."),
         "envoy_pin_intro_heading": MessageLookupByLibrary.simpleMessage(
-            "Enter a 6-12 digit PIN on your Passport"),
+            "Introduz um código PIN de 6-12 dígitos no teu Passport"),
         "envoy_pin_intro_subheading": MessageLookupByLibrary.simpleMessage(
             "Passport will always ask for the PIN when starting up. We recommend using a unique PIN and writing it down.\n\nIf you forget your PIN, there is no way to recover Passport, and the device will be permanently disabled."),
         "envoy_pp_new_seed_backup_heading":
@@ -648,7 +649,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_pp_restore_backup_heading": MessageLookupByLibrary.simpleMessage(
             "On Passport, select \nRestore Backup"),
         "envoy_pp_restore_backup_password_heading":
-            MessageLookupByLibrary.simpleMessage("Decrypt your Backup"),
+            MessageLookupByLibrary.simpleMessage(
+                "Desencriptar a tua Cópia de Segurança"),
         "envoy_pp_restore_backup_password_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "To decrypt the backup file, enter the 20 digit backup code shown to you when creating the backup file.\n\nIf you have lost or forgotten this code, you can restore using the seed words instead."),
@@ -659,36 +661,35 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Your Backup File has been successfully restored"),
         "envoy_pp_restore_seed_heading": MessageLookupByLibrary.simpleMessage(
             "On Passport, select \nRestore Seed"),
-        "envoy_pp_restore_seed_subheading":
-            MessageLookupByLibrary.simpleMessage(
-                "Use this feature to restore an existing 12 or 24 word seed."),
+        "envoy_pp_restore_seed_subheading": MessageLookupByLibrary.simpleMessage(
+            "Utiliza esta funcionalidade para restaurar sementes existentes de 12 ou 24 palavras."),
         "envoy_pp_restore_seed_success_heading":
             MessageLookupByLibrary.simpleMessage(
-                "Your seed has been successfully restored"),
+                "A tua semente foi restaurada com sucesso"),
         "envoy_pp_setup_intro_cta1":
-            MessageLookupByLibrary.simpleMessage("Create New Seed"),
+            MessageLookupByLibrary.simpleMessage("Criar Nova Semente"),
         "envoy_pp_setup_intro_cta2":
-            MessageLookupByLibrary.simpleMessage("Restore Seed"),
-        "envoy_pp_setup_intro_cta3":
-            MessageLookupByLibrary.simpleMessage("Restore Backup"),
+            MessageLookupByLibrary.simpleMessage("Restaurar Semente"),
+        "envoy_pp_setup_intro_cta3": MessageLookupByLibrary.simpleMessage(
+            "Restaurar Cópia de Segurança"),
         "envoy_pp_setup_intro_heading": MessageLookupByLibrary.simpleMessage(
-            "How would you like to set up your Passport?"),
+            "De que forma gostarias de configurar o teu Passport?"),
         "envoy_pp_setup_intro_subheading": MessageLookupByLibrary.simpleMessage(
             "As a new owner of a Passport you can create a new seed, restore a wallet using seed words, or restore a backup from an existing Passport."),
         "envoy_scv_intro_heading": MessageLookupByLibrary.simpleMessage(
-            "First, let’s make sure your Passport is secure"),
+            "Primeiro, vamos garantir que o teu Passport é seguro"),
         "envoy_scv_intro_subheading": MessageLookupByLibrary.simpleMessage(
-            "This security check will ensure your Passport has not been tampered with during shipping."),
+            "Este teste de segurança irá garantir que o teu Passport não foi adulterado durante o envio."),
         "envoy_scv_result_fail_cta1":
-            MessageLookupByLibrary.simpleMessage("Contact Us"),
+            MessageLookupByLibrary.simpleMessage("Entrar em Contacto"),
         "envoy_scv_result_fail_heading": MessageLookupByLibrary.simpleMessage(
-            "Your Passport may be insecure"),
+            "O teu Passport pode ser inseguro"),
         "envoy_scv_result_fail_subheading": MessageLookupByLibrary.simpleMessage(
-            "Envoy could not validate the security of your Passport. Please contact us for assistance."),
+            "A Envoy não conseguiu validar a segurança do teu Passport. Por favor contacta-nos para assistência."),
         "envoy_scv_result_ok_heading":
-            MessageLookupByLibrary.simpleMessage("Your Passport is secure"),
+            MessageLookupByLibrary.simpleMessage("O Teu Passport é seguro"),
         "envoy_scv_result_ok_subheading": MessageLookupByLibrary.simpleMessage(
-            "Next, create a PIN to secure your Passport"),
+            "De seguida, cria um PIN para proteger o teu Passport"),
         "envoy_scv_scan_qr_heading": MessageLookupByLibrary.simpleMessage(
             "Next, scan the QR code on Passport\'s screen"),
         "envoy_scv_scan_qr_subheading": MessageLookupByLibrary.simpleMessage(
@@ -698,8 +699,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_scv_show_qr_subheading": MessageLookupByLibrary.simpleMessage(
             "This QR code provides information for validation and setup."),
         "envoy_support_documentation":
-            MessageLookupByLibrary.simpleMessage("Documentation"),
-        "envoy_support_email": MessageLookupByLibrary.simpleMessage("Email"),
+            MessageLookupByLibrary.simpleMessage("Documentação"),
+        "envoy_support_email": MessageLookupByLibrary.simpleMessage("E-mail"),
         "envoy_support_telegram":
             MessageLookupByLibrary.simpleMessage("Telegram"),
         "envoy_welcome_screen_cta1": MessageLookupByLibrary.simpleMessage(
@@ -711,7 +712,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_welcome_screen_subheading": MessageLookupByLibrary.simpleMessage(
             "For a seamless setup, we recommend enabling [[Magic Backups]].\n\nAdvanced users can manually create or restore a wallet seed."),
         "erase_wallet_with_balance_modal_CTA1":
-            MessageLookupByLibrary.simpleMessage("Return to my Accounts"),
+            MessageLookupByLibrary.simpleMessage(
+                "Voltar para as minhas Contas"),
         "erase_wallet_with_balance_modal_CTA2":
             MessageLookupByLibrary.simpleMessage("Delete Accounts anyway"),
         "erase_wallet_with_balance_modal_subheading":
@@ -719,12 +721,12 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Before deleting your Envoy Wallet, please empty your Accounts. \nGo to Backups > Erase Wallets and Backups once you’re done."),
         "export_backup_modal_subheading": MessageLookupByLibrary.simpleMessage(
             "This encrypted file contains useful wallet data such as labels, accounts, and settings.\n\nThis file is encrypted with your Envoy Seed. Ensure your seed is backed up securely. "),
-        "export_backup_send_CTA1":
-            MessageLookupByLibrary.simpleMessage("Download Backup File"),
+        "export_backup_send_CTA1": MessageLookupByLibrary.simpleMessage(
+            "Descarregar Cópia de Segurança"),
         "export_backup_send_CTA2":
-            MessageLookupByLibrary.simpleMessage("Discard"),
+            MessageLookupByLibrary.simpleMessage("Descartar"),
         "export_seed_modal_12_words_CTA2":
-            MessageLookupByLibrary.simpleMessage("View as QR Code"),
+            MessageLookupByLibrary.simpleMessage("Ver como Código QR"),
         "export_seed_modal_QR_code_CTA2":
             MessageLookupByLibrary.simpleMessage("View Seed"),
         "export_seed_modal_QR_code_subheading":
@@ -741,7 +743,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_sortBy_lowest":
             MessageLookupByLibrary.simpleMessage("Lowest value"),
         "filter_sortBy_newest":
-            MessageLookupByLibrary.simpleMessage("Newest first"),
+            MessageLookupByLibrary.simpleMessage("Mais recentes primeiro"),
         "filter_sortBy_oldest":
             MessageLookupByLibrary.simpleMessage("Oldest first"),
         "filter_sortBy_zToA": MessageLookupByLibrary.simpleMessage("Z to A"),
@@ -750,19 +752,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "header_chooseAccount":
             MessageLookupByLibrary.simpleMessage("CHOOSE ACCOUNT"),
         "hide_amount_first_time_text": MessageLookupByLibrary.simpleMessage(
-            "Swipe to show and hide your balance."),
+            "Desliza para mostrar e esconder o teu saldo."),
         "hot_wallet_accounts_creation_done_text_explainer":
             MessageLookupByLibrary.simpleMessage(
                 "Tap the above card to receive Bitcoin."),
         "hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt":
             MessageLookupByLibrary.simpleMessage(
-                "Tap any of the above cards to receive Bitcoin."),
+                "Toca em qualquer um dos cartões representados para receber Bitcoin."),
         "launch_screen_faceID_fail_CTA":
-            MessageLookupByLibrary.simpleMessage("Try Again"),
+            MessageLookupByLibrary.simpleMessage("Tentar Novamente"),
         "launch_screen_faceID_fail_heading":
-            MessageLookupByLibrary.simpleMessage("Authentication Failed"),
+            MessageLookupByLibrary.simpleMessage("Falha na Autenticação"),
         "launch_screen_faceID_fail_subheading":
-            MessageLookupByLibrary.simpleMessage("Please try again"),
+            MessageLookupByLibrary.simpleMessage("Por favor tenta novamente"),
         "launch_screen_lockedout_heading":
             MessageLookupByLibrary.simpleMessage("Locked Out"),
         "launch_screen_lockedout_unlock_subheading":
@@ -772,17 +774,17 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Biometric authentication temporarily disabled. Please close Envoy, wait 30 seconds and try again."),
         "learning_center_filter_all":
-            MessageLookupByLibrary.simpleMessage("All"),
+            MessageLookupByLibrary.simpleMessage("Tudo"),
         "learning_center_results_title":
-            MessageLookupByLibrary.simpleMessage("Results"),
+            MessageLookupByLibrary.simpleMessage("Resultados"),
         "learning_center_search_input":
-            MessageLookupByLibrary.simpleMessage("Search..."),
+            MessageLookupByLibrary.simpleMessage("Pesquisar..."),
         "learning_center_title_blog":
-            MessageLookupByLibrary.simpleMessage("Blog"),
+            MessageLookupByLibrary.simpleMessage("Blogue"),
         "learning_center_title_faq":
-            MessageLookupByLibrary.simpleMessage("FAQs"),
+            MessageLookupByLibrary.simpleMessage("Perguntas Frequentes"),
         "learning_center_title_video":
-            MessageLookupByLibrary.simpleMessage("Videos"),
+            MessageLookupByLibrary.simpleMessage("Vídeos"),
         "learningcenter_status_read":
             MessageLookupByLibrary.simpleMessage("Read"),
         "learningcenter_status_watched":
@@ -837,55 +839,56 @@ class MessageLookup extends MessageLookupByLibrary {
                 "A forma mais fácil de criar uma carteira Bitcoin mantendo a tua soberania.\n\nA Cópia Mágica de Segurança faz automaticamente uma cópia de segurança da tua carteira e definições utilizando a Cópia de Segurança do Android, 100 % encriptado ponta a ponta.\n\n[[Mais informação]]. "),
         "magic_setup_tutorial_heading":
             MessageLookupByLibrary.simpleMessage("Magic Backups"),
-        "magic_setup_tutorial_ios_CTA1":
-            MessageLookupByLibrary.simpleMessage("Create Magic Backup"),
+        "magic_setup_tutorial_ios_CTA1": MessageLookupByLibrary.simpleMessage(
+            "Criar Cópia Mágica de Segurança"),
         "magic_setup_tutorial_ios_CTA2": MessageLookupByLibrary.simpleMessage(
             "Recuperar Cópia Mágica de Segurança"),
         "magic_setup_tutorial_ios_subheading": MessageLookupByLibrary.simpleMessage(
             "A forma mais fácil de criar uma carteira Bitcoin mantendo a tua soberania.\n\nA Cópia Mágica de Segurança faz automaticamente uma cópia de segurança da tua carteira e definições utilizando o Porta-chaves iCloud, 100 % encriptado ponta a ponta.\n\n[[Mais informação]]."),
         "manage_account_address_card_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "For privacy, we create a new address each time you visit this screen."),
+                "Para efeitos de privacidade, criamos um novo endereço cada vez que visitas este menu."),
         "manage_account_address_heading":
-            MessageLookupByLibrary.simpleMessage("ACCOUNT DETAILS"),
+            MessageLookupByLibrary.simpleMessage("DETALHES DA CONTA"),
         "manage_account_descriptor_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Make sure not to share this descriptor unless you are comfortable with your transactions being public."),
         "manage_account_menu_editAccountName":
-            MessageLookupByLibrary.simpleMessage("EDIT ACCOUNT NAME"),
+            MessageLookupByLibrary.simpleMessage("EDITAR NOME DA CONTA"),
         "manage_account_menu_showDescriptor":
             MessageLookupByLibrary.simpleMessage("SHOW DESCRIPTOR"),
         "manage_account_remove_heading":
-            MessageLookupByLibrary.simpleMessage("Are you sure?"),
+            MessageLookupByLibrary.simpleMessage("Tens a certeza?"),
         "manage_account_remove_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "This only removes the account from Envoy."),
+                "Esta acção apenas remove a conta do Envoy."),
         "manage_account_rename_heading":
-            MessageLookupByLibrary.simpleMessage("Rename Account"),
+            MessageLookupByLibrary.simpleMessage("Altera o Nome da Conta"),
         "manage_device_deletePassportWarning": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to disconnect Passport?\nThis will remove the device from Envoy alongside any connected accounts."),
         "manage_device_details_devicePaired":
-            MessageLookupByLibrary.simpleMessage("Paired"),
+            MessageLookupByLibrary.simpleMessage("Emparelhado"),
         "manage_device_details_deviceSerial":
-            MessageLookupByLibrary.simpleMessage("Serial"),
+            MessageLookupByLibrary.simpleMessage("Número de Série"),
         "manage_device_details_heading":
-            MessageLookupByLibrary.simpleMessage("DEVICE DETAILS"),
+            MessageLookupByLibrary.simpleMessage("DETALHES DO DISPOSITIVO"),
         "manage_device_details_menu_editDevice":
             MessageLookupByLibrary.simpleMessage("EDIT DEVICE NAME"),
         "manage_device_rename_modal_heading":
-            MessageLookupByLibrary.simpleMessage("Rename your Passport"),
+            MessageLookupByLibrary.simpleMessage("Altera o nome do Passport"),
         "manualToggleOnSeed_toastHeading_failedText":
             MessageLookupByLibrary.simpleMessage(
-                "Unable to backup. Please try again later."),
+                "Não foi possível fazer a cópia de segurança. Por favor tenta novamente mais tarde."),
         "manual_coin_preselection_dialog_description":
             MessageLookupByLibrary.simpleMessage(
-                "This will discard any coin selection changes. Do you want to proceed?"),
+                "Isto anulará quaisquer alterações na seleção de moedas. Desejas continuar?"),
         "manual_setup_create_and_store_backup_CTA":
-            MessageLookupByLibrary.simpleMessage("Choose Destination"),
+            MessageLookupByLibrary.simpleMessage("Escolher Destino"),
         "manual_setup_create_and_store_backup_heading":
-            MessageLookupByLibrary.simpleMessage("Save Envoy Backup File"),
+            MessageLookupByLibrary.simpleMessage(
+                "Guardar Cópia de Segurança da Envoy"),
         "manual_setup_create_and_store_backup_modal_CTA":
-            MessageLookupByLibrary.simpleMessage("I understand"),
+            MessageLookupByLibrary.simpleMessage("Compreendi"),
         "manual_setup_create_and_store_backup_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Your Envoy Backup File is encrypted by your seed words. \n\nIf you lose access to your seed words, you will be unable to recover your backup."),
@@ -901,28 +904,30 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Lembra-te de manter sempre privadas as tuas palavras semente. Qualquer pessoa com acesso a esta semente pode gastar as tuas Bitcoin!"),
         "manual_setup_generate_seed_verify_seed_again_quiz_infotext":
-            MessageLookupByLibrary.simpleMessage("Choose a word to continue"),
+            MessageLookupByLibrary.simpleMessage(
+                "Escolhe uma palavra para continuar"),
         "manual_setup_generate_seed_verify_seed_heading":
-            MessageLookupByLibrary.simpleMessage("Let’s Verify Your Seed"),
+            MessageLookupByLibrary.simpleMessage(
+                "Vamos Verificar a Tua Semente"),
         "manual_setup_generate_seed_verify_seed_quiz_1_4_heading":
-            MessageLookupByLibrary.simpleMessage("Verify Your Seed"),
+            MessageLookupByLibrary.simpleMessage("Verifica a Tua Semente"),
         "manual_setup_generate_seed_verify_seed_quiz_fail_invalid":
-            MessageLookupByLibrary.simpleMessage("Invalid Entry"),
+            MessageLookupByLibrary.simpleMessage("Entrada Inválida"),
         "manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Envoy is unable to verify your seed. Please confirm that you correctly recorded your seed and try again."),
+                "A Envoy não foi capaz de verificar a tua semente. Por favor confirma que introduziste correctamente a tua semente e tenta novamente."),
         "manual_setup_generate_seed_verify_seed_quiz_question":
             MessageLookupByLibrary.simpleMessage(
                 "What’s your seed word number"),
         "manual_setup_generate_seed_verify_seed_quiz_success_correct":
-            MessageLookupByLibrary.simpleMessage("Correct"),
+            MessageLookupByLibrary.simpleMessage("Correcto"),
         "manual_setup_generate_seed_verify_seed_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Envoy will ask you some questions to verify you correctly recorded your seed."),
+                "A Envoy irá fazer algumas questões para verificar que registaste correctamente a tua semente."),
         "manual_setup_generate_seed_write_words_24_heading":
             MessageLookupByLibrary.simpleMessage("Write Down These 24 Words"),
         "manual_setup_generate_seed_write_words_heading":
-            MessageLookupByLibrary.simpleMessage("Write Down These 12 Words"),
+            MessageLookupByLibrary.simpleMessage("Escreve estas 12 Palavras"),
         "manual_setup_generatingSeedLoadingInfo":
             MessageLookupByLibrary.simpleMessage("Generating Seed"),
         "manual_setup_import_backup_CTA1": MessageLookupByLibrary.simpleMessage(
@@ -930,10 +935,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_import_backup_CTA2": MessageLookupByLibrary.simpleMessage(
             "Importar Cópia Mágica de Segurança"),
         "manual_setup_import_backup_fails_modal_heading":
-            MessageLookupByLibrary.simpleMessage("We can’t read Envoy Backup"),
+            MessageLookupByLibrary.simpleMessage(
+                "Não foi possível ler a Cópia de Segurança da Envoy"),
         "manual_setup_import_backup_fails_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Make sure you have selected the right file."),
+                "Certifica-te que seleccionaste o ficheiro correcto."),
         "manual_setup_import_backup_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Would you like to restore an existing Envoy Backup file?\n\nIf not, Envoy will create a new encrypted backup file."),
@@ -941,7 +947,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "That seed appears to be invalid. Please check the words entered, including the order they are in and try again."),
         "manual_setup_import_seed_12_words_heading":
-            MessageLookupByLibrary.simpleMessage("Enter Your Seed"),
+            MessageLookupByLibrary.simpleMessage("Introduz a Tua Semente"),
         "manual_setup_import_seed_CTA1": MessageLookupByLibrary.simpleMessage(
             "Importar através de código QR"),
         "manual_setup_import_seed_CTA2":
@@ -967,9 +973,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "A Magic Backup was found on the server.  \nRestore your backup?"),
         "manual_setup_recovery_fail_cta2":
-            MessageLookupByLibrary.simpleMessage("Import Seed Words"),
+            MessageLookupByLibrary.simpleMessage("Importar Palavras Semente"),
         "manual_setup_recovery_fail_heading":
-            MessageLookupByLibrary.simpleMessage("Unable to scan QR Code"),
+            MessageLookupByLibrary.simpleMessage(
+                "Não foi possível digitalizar o Código QR"),
         "manual_setup_recovery_fail_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Try scanning again or manually import your seed words instead."),
@@ -997,7 +1004,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "This seed is protected by a passphrase. Enter it below to import your Envoy Wallet."),
         "manual_setup_recovery_success_heading":
-            MessageLookupByLibrary.simpleMessage("Importing your Seed"),
+            MessageLookupByLibrary.simpleMessage("A importar a tua Semente"),
         "manual_setup_tutorial_CTA1":
             MessageLookupByLibrary.simpleMessage("Gerar Nova Semente"),
         "manual_setup_tutorial_CTA2":
@@ -1026,37 +1033,37 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Disabled for Manual Seed Configuration "),
         "manual_toggle_off_download_wallet_data":
-            MessageLookupByLibrary.simpleMessage("Download Envoy Backup File"),
+            MessageLookupByLibrary.simpleMessage(
+                "Descarregar Cópia de Segurança da Envoy"),
         "manual_toggle_off_view_wallet_seed":
-            MessageLookupByLibrary.simpleMessage("View Envoy Seed"),
+            MessageLookupByLibrary.simpleMessage("Ver Semente da Envoy"),
         "manual_toggle_on_seed_backedup_android_stored":
             MessageLookupByLibrary.simpleMessage(
-                "Stored in Android Auto Backup"),
+                "Armazenada na Cópia de Segurança do Android"),
         "manual_toggle_on_seed_backedup_android_wallet_data":
-            MessageLookupByLibrary.simpleMessage("Envoy Backup File"),
+            MessageLookupByLibrary.simpleMessage("Cópia de Segurança da Envoy"),
         "manual_toggle_on_seed_backedup_android_wallet_seed":
-            MessageLookupByLibrary.simpleMessage("Envoy Seed"),
+            MessageLookupByLibrary.simpleMessage("Semente da Envoy"),
         "manual_toggle_on_seed_backedup_iOS_backup_now":
-            MessageLookupByLibrary.simpleMessage("Back Up Now"),
+            MessageLookupByLibrary.simpleMessage("Fazer Cópia de Segurança"),
         "manual_toggle_on_seed_backedup_iOS_stored_in_cloud":
-            MessageLookupByLibrary.simpleMessage("Stored in iCloud Keychain"),
+            MessageLookupByLibrary.simpleMessage(
+                "Armazenado no Porta-chaves iCloud"),
         "manual_toggle_on_seed_backedup_iOS_toFoundationServers":
             MessageLookupByLibrary.simpleMessage("to Foundation Servers"),
         "manual_toggle_on_seed_backup_in_progress_ios_backup_in_progress":
-            MessageLookupByLibrary.simpleMessage("Backup in Progress"),
+            MessageLookupByLibrary.simpleMessage("Cópia de Segurança em Curso"),
         "manual_toggle_on_seed_backup_in_progress_toast_heading":
             MessageLookupByLibrary.simpleMessage(
-                "Your Envoy backup is complete."),
+                "A Cópia de Segurança da Envoy foi concluída."),
         "manual_toggle_on_seed_backup_now_modal_heading":
-            MessageLookupByLibrary.simpleMessage("Uploading Envoy Backup"),
+            MessageLookupByLibrary.simpleMessage(
+                "A Carregar a Cópia de Segurança da Envoy"),
         "manual_toggle_on_seed_backup_now_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "This backup contains connected devices and accounts, labels and app settings. It contains no private key information.\n\nEnvoy backups are end-to-end encrypted, Foundation has no access or knowledge of their contents. \n\nEnvoy will notify you when the upload is complete."),
         "manual_toggle_on_seed_not_backedup_android_open_settings":
-            MessageLookupByLibrary.simpleMessage("Open Android Settings"),
-        "manual_toggle_on_seed_not_backedup_pending_android_data_pending_backup":
-            MessageLookupByLibrary.simpleMessage(
-                "Pending backup to Foundation servers"),
+            MessageLookupByLibrary.simpleMessage("Abrir Definições do Android"),
         "manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup":
             MessageLookupByLibrary.simpleMessage(
                 "Pending Android Auto Backup (once daily)"),
@@ -1068,24 +1075,24 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("CÓPIAS DE SEGURANÇA"),
         "menu_heading": MessageLookupByLibrary.simpleMessage("ENVOY"),
         "menu_settings": MessageLookupByLibrary.simpleMessage("DEFINIÇÕES"),
-        "menu_support": MessageLookupByLibrary.simpleMessage("SUPPORT"),
+        "menu_support": MessageLookupByLibrary.simpleMessage("APOIO TÉCNICO"),
         "pair_existing_device_intro_heading":
             MessageLookupByLibrary.simpleMessage(
                 "Connect Passport\nwith Envoy"),
         "pair_existing_device_intro_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "On Passport, select Manage Account > Connect Wallet > Envoy."),
+                "No Passport, seleciona Gerir Conta > Ligar Carteira > Envoy."),
         "pair_new_device_QR_code_heading": MessageLookupByLibrary.simpleMessage(
-            "Scan this QR code with Passport to validate"),
+            "Digitaliza este Código QR com o Passport para validar"),
         "pair_new_device_QR_code_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "This is a Bitcoin address belonging to your Passport."),
+                "Este endereço Bitcoin pertence ao teu Passport."),
         "pair_new_device_address_cta2":
-            MessageLookupByLibrary.simpleMessage("Contact Support"),
+            MessageLookupByLibrary.simpleMessage("Contactar Apoio Técnico"),
         "pair_new_device_address_heading":
-            MessageLookupByLibrary.simpleMessage("Address validated?"),
+            MessageLookupByLibrary.simpleMessage("Endereço validado?"),
         "pair_new_device_address_subheading": MessageLookupByLibrary.simpleMessage(
-            "If you get a success message on Passport, your setup is now complete.\n\nIf Passport could not verify the address, please try again or contact support."),
+            "Se recebeste uma mensagem de sucesso no Passport, a configuração está concluída.\n\nSe o Passport não conseguiu validar o endereço, por favor tenta novamente ou entra em contacto com o apoio técnico."),
         "pair_new_device_intro_connect_envoy_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "This step allows Envoy to generate receive addresses for Passport and propose spend transactions that Passport must authorize. "),
@@ -1095,31 +1102,31 @@ class MessageLookup extends MessageLookupByLibrary {
             "The QR code contains the information required for Envoy to interact securely with Passport."),
         "pair_new_device_success_cta1":
             MessageLookupByLibrary.simpleMessage("Validate receive address"),
-        "pair_new_device_success_cta2":
-            MessageLookupByLibrary.simpleMessage("Continue to home screen"),
+        "pair_new_device_success_cta2": MessageLookupByLibrary.simpleMessage(
+            "Continuar para o ecrã principal"),
         "pair_new_device_success_heading":
             MessageLookupByLibrary.simpleMessage("Connection successful"),
         "pair_new_device_success_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy is now connected to your Passport."),
         "passport_welcome_screen_cta1":
-            MessageLookupByLibrary.simpleMessage("Set up a new Passport"),
+            MessageLookupByLibrary.simpleMessage("Configurar um novo Passport"),
         "passport_welcome_screen_cta2": MessageLookupByLibrary.simpleMessage(
-            "Connect an existing Passport"),
+            "Ligar a um Passport existente"),
         "passport_welcome_screen_cta3": MessageLookupByLibrary.simpleMessage(
-            "I don’t have a Passport. [[Learn more.]]"),
+            "Não tenho um Passport. [[Mais informação.]]"),
         "passport_welcome_screen_heading":
-            MessageLookupByLibrary.simpleMessage("Welcome to Passport"),
+            MessageLookupByLibrary.simpleMessage("Bem-Vindo ao Passport"),
         "passport_welcome_screen_subheading": MessageLookupByLibrary.simpleMessage(
-            "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience."),
+            "A Envoy oferece uma configuração segura do Passport, actualizações fáceis de firmware e uma experiência de carteira Bitcoin serena."),
         "privacySetting_nodeConnected":
             MessageLookupByLibrary.simpleMessage("Node Connected"),
         "privacy_applicationLock_title":
-            MessageLookupByLibrary.simpleMessage("Application lock"),
+            MessageLookupByLibrary.simpleMessage("Bloqueio da aplicação"),
         "privacy_applicationLock_unlock": MessageLookupByLibrary.simpleMessage(
-            "Unlock with biometrics or PIN"),
+            "Desbloquear através de biometria ou PIN"),
         "privacy_node_configure": MessageLookupByLibrary.simpleMessage(
-            "Improve your privacy by running your own node. Tap learn more above. "),
+            "Aumenta a tua privacidade ao correres o teu próprio nó. Toca em mais informações no canto superior direito para saber mais."),
         "privacy_node_connectedTo":
             MessageLookupByLibrary.simpleMessage("Connected to"),
         "privacy_node_connection_couldNotReach":
@@ -1127,12 +1134,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_node_connection_localAddress_warning":
             MessageLookupByLibrary.simpleMessage(
                 "Even with ‘Improved Privacy’ active, Envoy cannot prevent interference by compromised devices on your local network."),
-        "privacy_node_nodeAddress":
-            MessageLookupByLibrary.simpleMessage("Enter your node address"),
+        "privacy_node_nodeAddress": MessageLookupByLibrary.simpleMessage(
+            "Introduz o endereço do teu nó"),
         "privacy_node_nodeType_foundation":
-            MessageLookupByLibrary.simpleMessage("Foundation (Default)"),
+            MessageLookupByLibrary.simpleMessage("Foundation (Predefinido)"),
         "privacy_node_nodeType_personal":
-            MessageLookupByLibrary.simpleMessage("Personal Node"),
+            MessageLookupByLibrary.simpleMessage("Nó Pessoal"),
         "privacy_node_title": MessageLookupByLibrary.simpleMessage("Node"),
         "privacy_privacyMode_betterPerformance":
             MessageLookupByLibrary.simpleMessage("Better \nPerformance"),
@@ -1148,20 +1155,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_setting_add_node_modal_heading":
             MessageLookupByLibrary.simpleMessage("Adicionar Nó"),
         "privacy_setting_clearnet_node_edit_note":
-            MessageLookupByLibrary.simpleMessage("Edit Node"),
+            MessageLookupByLibrary.simpleMessage("Editar Nó"),
         "privacy_setting_clearnet_node_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Your Node is connected via Clearnet."),
+                "O teu Nó está ligado via Clearnet."),
         "privacy_setting_connecting_node_fails_modal_failed":
             MessageLookupByLibrary.simpleMessage(
-                "We couldn’t connect your node"),
+                "Não conseguimos ligar ao teu nó"),
         "privacy_setting_connecting_node_modal_cta":
             MessageLookupByLibrary.simpleMessage("Ligar"),
         "privacy_setting_connecting_node_modal_loading":
             MessageLookupByLibrary.simpleMessage("A ligar ao Teu Nó"),
         "privacy_setting_onion_node_sbheading":
             MessageLookupByLibrary.simpleMessage(
-                "Your Node is connected via Tor."),
+                "O teu Nó está ligado via Tor."),
         "privacy_setting_perfomance_heading":
             MessageLookupByLibrary.simpleMessage("Escolhe a Tua Privacidade"),
         "privacy_setting_perfomance_subheading":
@@ -1239,72 +1246,71 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. "),
         "send_keyboard_address_confirm":
-            MessageLookupByLibrary.simpleMessage("Confirm"),
+            MessageLookupByLibrary.simpleMessage("Confirmar"),
         "send_keyboard_address_loading":
             MessageLookupByLibrary.simpleMessage("Loading..."),
         "send_keyboard_amount_enter_valid_address":
-            MessageLookupByLibrary.simpleMessage("Enter valid address"),
+            MessageLookupByLibrary.simpleMessage("Introduz um endereço válido"),
         "send_keyboard_amount_insufficient_funds_info":
-            MessageLookupByLibrary.simpleMessage("Insufficient funds"),
+            MessageLookupByLibrary.simpleMessage("Fundos insuficientes"),
         "send_keyboard_amount_too_low_info":
-            MessageLookupByLibrary.simpleMessage("Amount too low"),
+            MessageLookupByLibrary.simpleMessage("Quantia demasiado baixa"),
         "send_keyboard_send_max":
-            MessageLookupByLibrary.simpleMessage("Send Max"),
-        "send_keyboard_to": MessageLookupByLibrary.simpleMessage("To:"),
+            MessageLookupByLibrary.simpleMessage("Enviar o Máximo"),
+        "send_keyboard_to": MessageLookupByLibrary.simpleMessage("Para:"),
         "send_qr_code_card_heading": MessageLookupByLibrary.simpleMessage(
-            "Scan the QR with your Passport"),
+            "Digitaliza o Código QR com o teu Passport"),
         "send_qr_code_card_subheading": MessageLookupByLibrary.simpleMessage(
-            "It contains the transaction for your Passport to sign."),
+            "Contém a transação para o teu Passport assinar."),
         "send_qr_code_subheading": MessageLookupByLibrary.simpleMessage(
-            "You can now scan the QR code displayed on your Passport with your phone camera."),
-        "send_reviewScreen_sendMaxWarning":
-            MessageLookupByLibrary.simpleMessage(
-                "Sending Max: \nFees are deducted from amount being sent."),
-        "settings_advanced": MessageLookupByLibrary.simpleMessage("Advanced"),
+            "Podes digitalizar o código QR apresentado no Passport com a câmara do teu telemóvel."),
+        "send_reviewScreen_sendMaxWarning": MessageLookupByLibrary.simpleMessage(
+            "A enviar o Máximo:\nAs taxas são deduzidas da quantia a enviar."),
+        "settings_advanced": MessageLookupByLibrary.simpleMessage("Avançado"),
         "settings_advanced_enabled_testnet_modal_link":
             MessageLookupByLibrary.simpleMessage(
-                "Learn how to do that [[here]]."),
+                "Aprende a fazer isso [[aqui]]."),
         "settings_advanced_enabled_testnet_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Enabling Testnet adds a Testnet version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport."),
         "settings_advanced_taproot":
             MessageLookupByLibrary.simpleMessage("Taproot"),
         "settings_advanced_taproot_modal_cta1":
-            MessageLookupByLibrary.simpleMessage("Activate"),
+            MessageLookupByLibrary.simpleMessage("Activar"),
         "settings_advanced_taproot_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Taproot is an advanced feature and wallet support is still limited.\n\nProceed with caution."),
+                "O Taproot é uma funcionalidade avançada e o suporte para carteiras ainda é limitado.\n\nAvança com cuidado."),
         "settings_advanced_testnet":
             MessageLookupByLibrary.simpleMessage("Testnet"),
         "settings_amount":
-            MessageLookupByLibrary.simpleMessage("View Amount in Sats"),
-        "settings_currency": MessageLookupByLibrary.simpleMessage("Currency"),
+            MessageLookupByLibrary.simpleMessage("Ver Quantia em Sats"),
+        "settings_currency": MessageLookupByLibrary.simpleMessage("Moeda"),
         "settings_show_fiat":
-            MessageLookupByLibrary.simpleMessage("Display Fiat Values"),
+            MessageLookupByLibrary.simpleMessage("Exibir Valores Fiat"),
         "settings_viewEnvoyLogs":
             MessageLookupByLibrary.simpleMessage("View Envoy Logs"),
         "stalls_before_sending_tx_add_note_modal_cta2":
-            MessageLookupByLibrary.simpleMessage("No thanks"),
+            MessageLookupByLibrary.simpleMessage("Não, obrigado"),
         "stalls_before_sending_tx_add_note_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Transaction notes can be useful when making future spends."),
+                "As notas da transacção podem ser úteis em gastos futuros."),
         "stalls_before_sending_tx_scanning_broadcasting_fail_heading":
             MessageLookupByLibrary.simpleMessage(
-                "Your transaction couldn’t be sent"),
+                "Não foi possível enviar a tua transacção"),
         "stalls_before_sending_tx_scanning_broadcasting_fail_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Please check your connection and try again"),
+                "Por favor verifica a tua ligação e tenta novamente"),
         "stalls_before_sending_tx_scanning_broadcasting_success_heading":
             MessageLookupByLibrary.simpleMessage(
-                "Your transaction was successfully sent"),
+                "A tua transacção foi enviada com sucesso"),
         "stalls_before_sending_tx_scanning_broadcasting_success_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Review the details by tapping on the transaction from the account details screen."),
+                "Revê os detalhes tocando na transacção a partir do menu de detalhes da conta."),
         "stalls_before_sending_tx_scanning_heading":
-            MessageLookupByLibrary.simpleMessage("Sending transaction"),
+            MessageLookupByLibrary.simpleMessage("A enviar a transacção"),
         "stalls_before_sending_tx_scanning_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "This might take a few seconds"),
+                "Isto pode demorar uns segundos"),
         "tagDetails_EditTagName":
             MessageLookupByLibrary.simpleMessage("Edit Tag Name"),
         "tagSelection_example1":
@@ -1317,9 +1323,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Donations"),
         "tagSelection_example5": MessageLookupByLibrary.simpleMessage("Travel"),
         "tagged_coin_details_inputs_fails_cta2":
-            MessageLookupByLibrary.simpleMessage("Discard Changes"),
+            MessageLookupByLibrary.simpleMessage("Anular Alterações"),
         "tagged_coin_details_menu_cta1":
-            MessageLookupByLibrary.simpleMessage("EDIT TAG NAME"),
+            MessageLookupByLibrary.simpleMessage("EDITAR NOME DA ETIQUETA"),
         "tagged_tagDetails_emptyState_explainer":
             MessageLookupByLibrary.simpleMessage(
                 "There are no coins assigned to this tag."),
@@ -1330,7 +1336,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tagged_tagDetails_sheet_retag_cta2":
             MessageLookupByLibrary.simpleMessage("Retag Selected"),
         "tap_and_drag_first_time_text": MessageLookupByLibrary.simpleMessage(
-            "Hold to drag and reorder your accounts."),
+            "Mantêm pressionado para arrastar e reordenar as tuas contas."),
         "taproot_passport_dialog_heading":
             MessageLookupByLibrary.simpleMessage("Taproot on Passport"),
         "taproot_passport_dialog_later":
@@ -1340,9 +1346,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "taproot_passport_dialog_subheading": MessageLookupByLibrary.simpleMessage(
             "To enable a Passport Taproot account, ensure you are running firmware 2.3.0 or later and reconnect your Passport."),
         "torToast_learnMore_retryTorConnection":
-            MessageLookupByLibrary.simpleMessage("Retry Tor Connection"),
+            MessageLookupByLibrary.simpleMessage(
+                "Tentar Novamente Ligação Tor"),
         "torToast_learnMore_temporarilyDisableTor":
-            MessageLookupByLibrary.simpleMessage("Temporarily Disable Tor"),
+            MessageLookupByLibrary.simpleMessage(
+                "Desactivar Temporariamente o Tor"),
         "torToast_learnMore_warningBody": MessageLookupByLibrary.simpleMessage(
             "You may experience degraded app performance until Envoy can re-establish a connection to Tor.\n\nDisabling Tor will establish a direct connection with the Envoy server, but comes with privacy [[tradeoffs]]."),
         "tor_connectivity_toast_warning": MessageLookupByLibrary.simpleMessage(
@@ -1363,14 +1371,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "To recover your wallet, simply log into your iCloud account. Envoy will automatically download your wallet seed and backup data.\n\nWe recommend securing your iCloud account with a strong password and 2FA."),
         "wallet_security_modal_4_4_heading":
-            MessageLookupByLibrary.simpleMessage("How Your Data is Secured"),
+            MessageLookupByLibrary.simpleMessage(
+                "Como são Protegidos os Teus Dados Pessoais"),
         "wallet_security_modal_4_4_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "If you prefer to opt out of Magic Backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manually Configure Seed Words."),
         "wallet_security_modal_HowYourWalletIsSecured":
             MessageLookupByLibrary.simpleMessage("How Your Wallet is Secured"),
         "wallet_security_modal__heading":
-            MessageLookupByLibrary.simpleMessage("Security Tip"),
+            MessageLookupByLibrary.simpleMessage("Dica de Segurança"),
         "wallet_security_modal_subheading": MessageLookupByLibrary.simpleMessage(
             "Envoy is storing more than the recommended amount of Bitcoin for a mobile, internet connected wallet.\n\nFor ultra-secure, offline storage, Foundation suggests Passport hardware wallet."),
         "wallet_setup_success_heading":
@@ -1378,11 +1387,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "wallet_setup_success_subheading": MessageLookupByLibrary.simpleMessage(
             "A Envoy está configurada e pronta para a tua Bitcoin!"),
         "welcome_screen_ctA1":
-            MessageLookupByLibrary.simpleMessage("Set Up Envoy Wallet"),
+            MessageLookupByLibrary.simpleMessage("Configurar a Carteira Envoy"),
         "welcome_screen_cta2":
-            MessageLookupByLibrary.simpleMessage("Manage Passport"),
+            MessageLookupByLibrary.simpleMessage("Gerir o Passport"),
         "welcome_screen_heading":
-            MessageLookupByLibrary.simpleMessage("Welcome to Envoy"),
+            MessageLookupByLibrary.simpleMessage("Bem-vindo ao Envoy"),
         "welcome_screen_subheading": MessageLookupByLibrary.simpleMessage(
             "Reclaim your sovereignty with Envoy, a simple Bitcoin wallet with powerful account management and privacy features.")
       };

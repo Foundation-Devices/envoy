@@ -245,27 +245,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               ),
               Padding(padding: EdgeInsets.all(marginBetweenItems)),
               Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  const Flexible(
-                    flex: 5,
-                    child: SettingText("Allow LAN addresses over clearnet",
-                        // TODO: Need design for this
-                        maxLines: 2),
-                  ),
-                  Flexible(
-                    flex: 2,
-                    child: SettingToggle(
-                      s.allowLANOverClearnet,
-                      s.setLANPermission,
-                    ),
-                  ),
-                ],
-              ),
-              Padding(padding: EdgeInsets.all(marginBetweenItems)),
-              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SettingText(S().settings_viewEnvoyLogs, onTap: () {

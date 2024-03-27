@@ -479,7 +479,6 @@
   "manual_toggle_on_seed_backup_now_modal_heading": "Carregant Còpia de Seguretat d'Envoy",
   "manual_toggle_on_seed_backup_now_modal_subheading": "Aquesta còpia de seguretat conté dispositius i comptes connectats, etiquetes i configuració d'aplicacions. No conté informació de la teva clau privada.\n\nLes còpies de seguretat d'Envoy estan xifrades d'extrem a extrem, Foundation no té accés ni coneixement dels seus continguts.\n\nEnvoy us notificarà quan s'hagi completat la càrrega.",
   "manual_toggle_on_seed_not_backedup_android_open_settings": "Configuració d'Android",
-  "manual_toggle_on_seed_not_backedup_pending_android_data_pending_backup": "Còpia de seguretat pendent als servidors de Foundation",
   "manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup": "Còpia de Seguretat Automàtica d'Android Pendent (un cop al dia)",
   "manual_toggle_on_seed_not_backedup_pending_iOS_seed_pending_backup": "Còpia de Seguretat pendent al Clauer d'iCloud",
   "menu_about": "SOBRE",

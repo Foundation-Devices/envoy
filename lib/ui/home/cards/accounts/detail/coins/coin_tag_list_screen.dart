@@ -59,8 +59,7 @@ class _CoinsListState extends ConsumerState<CoinsList> {
                   closedBuilder: (context, action) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: CoinItemWidget(
-                          tag: tags[index], isInListScreen: true),
+                      child: CoinItemWidget(tag: tags[index]),
                     );
                   },
                   onClosed: (_) {
@@ -82,10 +81,8 @@ class _CoinsListState extends ConsumerState<CoinsList> {
 
 class CoinItemWidget extends ConsumerWidget {
   final CoinTag tag;
-  final bool isInListScreen;
 
-  const CoinItemWidget(
-      {super.key, required this.tag, this.isInListScreen = false});
+  const CoinItemWidget({super.key, required this.tag});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -178,7 +175,6 @@ class CoinItemWidget extends ConsumerWidget {
                             builder: (context, ref, child) {
                               return CoinTagBalanceWidget(
                                 coinTag: tag,
-                                isListScreen: isInListScreen,
                               );
                             },
                           ),

@@ -53,14 +53,16 @@ class QrShield extends StatelessWidget {
   const QrShield({
     super.key,
     required this.child,
+    this.arcSizeRatio = 4.8,
   });
 
   final Widget child;
+  final double arcSizeRatio;
 
   @override
   Widget build(BuildContext context) {
     return PhysicalShape(
-      clipper: ShieldClipper(),
+      clipper: ShieldClipper(arcSizeRatio: arcSizeRatio),
       color: Colors.transparent,
       clipBehavior: Clip.antiAlias,
       shadowColor: EnvoyColors.border1,

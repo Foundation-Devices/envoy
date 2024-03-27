@@ -101,6 +101,10 @@ class _ElectrumServerEntryState extends State<ElectrumServerEntry> {
                 });
               }));
             },
+            infoContent: (isPrivateAddress(_controller.text) &&
+                    ConnectivityManager().torEnabled)
+                ? S().privacy_node_connection_localAddress_warning
+                : null,
           ),
         ),
       ],
