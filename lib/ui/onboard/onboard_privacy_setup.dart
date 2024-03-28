@@ -82,6 +82,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
       ),
       header: PrivacyShieldAnimated(),
       shield: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Flexible(
             child: SingleChildScrollView(
@@ -182,7 +183,8 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
             padding: const EdgeInsets.only(
                 left: EnvoySpacing.medium1,
                 right: EnvoySpacing.medium1,
-                top: EnvoySpacing.xs),
+                top: EnvoySpacing.xs,
+                bottom: EnvoySpacing.medium2),
             child: EnvoyButton(
               S().component_continue,
               onTap: () async {

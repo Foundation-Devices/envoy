@@ -11,8 +11,10 @@ import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/util/haptics.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:flutter/widgets.dart';
 
 class VerifySeedPuzzleWidget extends StatefulWidget {
   final List<String> seed;
@@ -65,7 +67,8 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
               SliverPadding(padding: EdgeInsets.all(EnvoySpacing.small)),
               SliverToBoxAdapter(
                 child: Text(
-                    "${S().manual_setup_generate_seed_verify_seed_quiz_question} ${widget.seed.indexOf(answers[_puzzlePageIndex]) + 1}?", // TODO: FIGMA
+                    "${S().manual_setup_generate_seed_verify_seed_quiz_question} ${widget.seed.indexOf(answers[_puzzlePageIndex]) + 1}?",
+                    // TODO: FIGMA
                     style: Theme.of(context).textTheme.titleSmall,
                     textAlign: TextAlign.center),
               ),
@@ -76,14 +79,15 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Expanded(
+                    Flexible(
+                      flex: 4,
                       child: PageView(
                         physics: NeverScrollableScrollPhysics(),
                         controller: _pageController,
                         children: _puzzleOptions.map((e) {
                           return Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: EnvoySpacing.small),
+                            padding: const EdgeInsets.only(
+                                top: EnvoySpacing.medium2),
                             child: PuzzleWidget(
                               puzzle: e,
                               seedIndex: widget.seed
@@ -113,30 +117,39 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                         }).toList(),
                       ),
                     ),
-                    Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: EnvoySpacing.small),
-                        child: DotsIndicator(
-                            pageController: _pageController,
-                            totalPages: _puzzleOptions.length)),
-                    Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                    !_finishedAnswers
-                        ? Text(
-                            S()
-                                .manual_setup_generate_seed_verify_seed_again_quiz_infotext,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(fontWeight: FontWeight.w400))
-                        : Padding(
-                            padding:
-                                EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-                            child: OnboardingButton(
-                                label: S().component_continue,
-                                onTap: () {
-                                  widget.onVerificationFinished(true);
-                                })),
-                    Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                    Flexible(
+                      flex: 2,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                              padding:
+                                  EdgeInsets.only(top: EnvoySpacing.medium2),
+                              child: DotsIndicator(
+                                  pageController: _pageController,
+                                  totalPages: _puzzleOptions.length)),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  bottom: EnvoySpacing.medium1)),
+                          !_finishedAnswers
+                              ? Text(
+                                  S()
+                                      .manual_setup_generate_seed_verify_seed_again_quiz_infotext,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(fontWeight: FontWeight.w400))
+                              : Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: EnvoySpacing.xs),
+                                  child: OnboardingButton(
+                                      label: S().component_continue,
+                                      onTap: () {
+                                        widget.onVerificationFinished(true);
+                                      })),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               )
@@ -225,6 +238,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
           ),
           Flexible(
             child: GridView.builder(
+                reverse: true,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   childAspectRatio: 2,
@@ -246,6 +260,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                       }
                     },
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Container(
                           height: 80,
