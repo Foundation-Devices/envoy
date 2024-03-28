@@ -171,6 +171,9 @@ class _TransactionsDetailsWidgetState
                   amountWidgetStyle: AmountWidgetStyle.singleLine),
           bottomWidgets: [
             EnvoyInfoCardListItem(
+              flexAlignment: showAddressExpanded
+                  ? FlexAlignment.noFlex
+                  : FlexAlignment.flexLeft,
               title: S().coindetails_overlay_address,
               icon: const EnvoyIcon(EnvoyIcons.send,
                   color: EnvoyColors.textPrimary,
@@ -294,7 +297,7 @@ class _TransactionsDetailsWidgetState
                 title: S().coincontrol_tx_history_tx_detail_note,
                 icon: const EnvoyIcon(
                   EnvoyIcons.note,
-                  size: EnvoyIconSize.extraSmall,
+                  size: EnvoyIconSize.small,
                   color: EnvoyColors.textPrimary,
                 ),
                 trailing: Row(
@@ -320,7 +323,7 @@ class _TransactionsDetailsWidgetState
                             height: 14,
                           )
                         : const Icon(Icons.add_circle_rounded,
-                            color: EnvoyColors.accentPrimary, size: 16),
+                            color: EnvoyColors.accentPrimary, size: 24),
                   ],
                 ),
               ),
