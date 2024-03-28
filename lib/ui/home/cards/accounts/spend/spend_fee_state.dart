@@ -23,6 +23,10 @@ class FeeChooserState {
     required this.minFeeRate,
     required this.maxFeeRate,
   });
+  @override
+  String toString() {
+    return "standardFeeRate: $standardFeeRate, fasterFeeRate: $fasterFeeRate, minFeeRate: $minFeeRate, maxFeeRate: $maxFeeRate";
+  }
 }
 
 final _defaultFeeChooserState = FeeChooserState(

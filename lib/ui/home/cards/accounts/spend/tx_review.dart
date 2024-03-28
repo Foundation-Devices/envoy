@@ -710,8 +710,6 @@ void editTransaction(BuildContext context, WidgetRef ref) async {
   ///toggle to coins view for coin control
   ref.read(accountToggleStateProvider.notifier).state =
       AccountToggleState.coins;
-  ref.read(spendEditModeProvider.notifier).state =
-      SpendOverlayContext.editCoins;
   if (ref.read(selectedAccountProvider) != null) {
     showSpendRequirementOverlay(context, ref.read(selectedAccountProvider)!);
   }

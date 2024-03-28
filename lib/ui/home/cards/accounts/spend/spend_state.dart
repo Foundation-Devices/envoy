@@ -29,9 +29,10 @@ enum BroadcastProgress {
   staging,
 }
 
-//user can spend coins in two contexts, preselectCoins or edit from transaction review screen
+//user can spend coins in 3 contexts, preselectCoins,edit from transaction review screen and edit from RBF screen
 enum SpendOverlayContext {
   preselectCoins,
+  rbfSelection,
   editCoins,
   hidden,
 }

@@ -71,7 +71,8 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         final account = ref.read(selectedAccountProvider);
         if (account != null) showSpendRequirementOverlay(context, account);
       } else {
-        if (ref.read(spendEditModeProvider) != SpendOverlayContext.editCoins) {
+        if (ref.read(spendEditModeProvider) ==
+            SpendOverlayContext.preselectCoins) {
           hideSpendRequirementOverlay();
         }
       }
