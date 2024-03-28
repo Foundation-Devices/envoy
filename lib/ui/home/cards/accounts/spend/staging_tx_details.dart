@@ -10,7 +10,6 @@ import 'package:envoy/business/coins.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_entry.dart';
-import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
@@ -36,6 +35,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/components/envoy_info_card.dart';
+import 'package:envoy/ui/components/envoy_tag_list_item.dart';
 
 class StagingTxDetails extends ConsumerStatefulWidget {
   final Psbt psbt;
@@ -268,523 +269,286 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
               ),
               body: SingleChildScrollView(
                 key: _key,
-                child: Padding(
-                  padding: const EdgeInsets.all(EnvoySpacing.small),
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(EnvoySpacing.small),
-                        child: AnimatedContainer(
-                          height: 275,
-                          duration: const Duration(milliseconds: 250),
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(
-                                Radius.circular(EnvoySpacing.medium2)),
-                            border: Border.all(
+                child: Column(
+                  children: [
+                    EnvoyInfoCard(
+                        backgroundColor: accountAccentColor,
+                        topWidget: EnvoyAmount(
+                            unit: formatUnit,
+                            account: account,
+                            amountSats: totalReceiveAmount,
+                            amountWidgetStyle: AmountWidgetStyle.singleLine),
+                        bottomWidgets: [
+                          EnvoyInfoCardListItem(
+                            title:
+                                "${S().coincontrol_tx_detail_expand_spentFrom} ${inputTagData.length} ${inputTagData.length == 1 ? S().coincontrol_tx_detail_expand_coin : S().coincontrol_tx_detail_expand_coins}",
+                            icon: const EnvoyIcon(EnvoyIcons.utxo,
                                 color: EnvoyColors.textPrimary,
-                                width: 2,
-                                style: BorderStyle.solid),
-                            gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  accountAccentColor,
-                                  EnvoyColors.textPrimary,
-                                ]),
+                                size: EnvoyIconSize.small),
+                            trailing: EnvoyAmount(
+                                unit: formatUnit,
+                                account: account,
+                                amountSats: totalInputAmount,
+                                amountWidgetStyle: AmountWidgetStyle.normal),
                           ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(EnvoySpacing.medium2)),
-                                border: Border.all(
-                                    color: accountAccentColor,
-                                    width: 2,
-                                    style: BorderStyle.solid)),
-                            child: ClipRRect(
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(EnvoySpacing.medium2)),
-                                child: StripesBackground(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
-                                        height: 36,
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: EnvoySpacing.small),
-                                        margin: const EdgeInsets.symmetric(
-                                            vertical: EnvoySpacing.xs,
-                                            horizontal: EnvoySpacing.xs),
-                                        decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(
-                                                  EnvoySpacing.medium2)),
-                                          color: EnvoyColors.textPrimaryInverse,
-                                        ),
-                                        child: EnvoyAmount(
-                                            unit: formatUnit,
-                                            account: account,
-                                            amountSats: totalReceiveAmount,
-                                            amountWidgetStyle:
-                                                AmountWidgetStyle.singleLine),
-                                      ),
-                                      Expanded(
-                                          child: Container(
-                                        margin: const EdgeInsets.symmetric(
-                                            vertical: EnvoySpacing.xs,
-                                            horizontal: EnvoySpacing.xs),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: EnvoySpacing.small,
-                                            vertical: EnvoySpacing.small),
-                                        decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(
-                                                  EnvoySpacing.medium1)),
-                                          color: EnvoyColors.textPrimaryInverse,
-                                        ),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    SvgPicture.asset(
-                                                      "assets/icons/ic_utxos.svg",
-                                                      width: 16,
-                                                      height: 16,
-                                                    ),
-                                                    const Padding(
-                                                        padding: EdgeInsets.only(
-                                                            left: EnvoySpacing
-                                                                .small)),
-                                                    Text(
-                                                        "${S().coincontrol_tx_detail_expand_spentFrom} ${inputTagData.length} ${inputTagData.length == 1 ? S().coincontrol_tx_detail_expand_coin : S().coincontrol_tx_detail_expand_coins}")
-                                                  ],
-                                                ),
-                                                Expanded(child:
-                                                    Builder(builder: (context) {
-                                                  return Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.max,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.end,
-                                                    children: [
-                                                      EnvoyAmount(
-                                                          unit: formatUnit,
-                                                          account: account,
-                                                          amountSats:
-                                                              totalInputAmount,
-                                                          amountWidgetStyle:
-                                                              AmountWidgetStyle
-                                                                  .normal),
-                                                    ],
-                                                  );
-                                                }))
-                                              ],
-                                            ),
-                                            const Padding(
-                                                padding: EdgeInsets.all(
-                                                    EnvoySpacing.xs)),
-                                            Container(
-                                              height: 24,
-                                              margin: const EdgeInsets.only(
-                                                  left: EnvoySpacing.medium2),
-                                              child: ListView(
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                children: spendTags.map((e) {
-                                                  return _coinTag(e);
-                                                }).toList(),
-                                              ),
-                                            ),
-                                            const Padding(
-                                                padding: EdgeInsets.all(
-                                                    EnvoySpacing.xs)),
-                                            Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      const Icon(
-                                                        Icons.compare_arrows,
-                                                        size: 16,
-                                                      ),
-                                                      const Padding(
-                                                          padding: EdgeInsets.only(
-                                                              left: EnvoySpacing
-                                                                  .small)),
-                                                      Text(S()
-                                                          .coincontrol_tx_detail_expand_changeReceived)
-                                                    ],
-                                                  ),
-                                                  Expanded(
-                                                    child: Builder(
-                                                        builder: (context) {
-                                                      return Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.max,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .end,
-                                                        children: [
-                                                          loading
-                                                              ? const Padding(
-                                                                  padding: EdgeInsets.symmetric(
-                                                                      horizontal:
-                                                                          EnvoySpacing
-                                                                              .xs),
-                                                                  child: SizedBox
-                                                                      .square(
-                                                                    dimension:
-                                                                        12,
-                                                                    child:
-                                                                        CircularProgressIndicator(
-                                                                      strokeWidth:
-                                                                          1,
-                                                                    ),
-                                                                  ),
-                                                                )
-                                                              : Container(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .centerRight,
-                                                                  child: totalChangeAmount ==
-                                                                          0
-                                                                      ? Text(
-                                                                          S().coincontrol_tx_detail_no_change,
-                                                                          style: EnvoyTypography
-                                                                              .body
-                                                                              .copyWith(color: EnvoyColors.textTertiary),
-                                                                        )
-                                                                      : EnvoyAmount(
-                                                                          unit:
-                                                                              formatUnit,
-                                                                          account:
-                                                                              account,
-                                                                          amountSats:
-                                                                              totalChangeAmount,
-                                                                          amountWidgetStyle:
-                                                                              AmountWidgetStyle.normal),
-                                                                ),
-                                                        ],
-                                                      );
-                                                    }),
-                                                  )
-                                                ]),
-                                            const Padding(
-                                                padding: EdgeInsets.all(
-                                                    EnvoySpacing.xs)),
-                                            Container(
-                                              height: 24,
-                                              margin: const EdgeInsets.only(
-                                                  left: EnvoySpacing.medium2),
-                                              child: ListView(
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                children: [
-                                                  GestureDetector(
-                                                      onTap: () {
-                                                        showEnvoyDialog(
-                                                            context: context,
-                                                            builder: Builder(
-                                                              builder: (context) =>
-                                                                  ChooseTagForStagingTx(
-                                                                accountId:
-                                                                    account.id!,
-                                                                onEditTransaction:
-                                                                    () async {
-                                                                  Navigator.pop(
-                                                                      context);
-
-                                                                  final router =
-                                                                      GoRouter.of(
-                                                                          context);
-
-                                                                  ///indicating that we are in edit mode
-                                                                  ref
-                                                                          .read(spendEditModeProvider
-                                                                              .notifier)
-                                                                          .state =
-                                                                      SpendOverlayContext
-                                                                          .editCoins;
-
-                                                                  /// The user has is in edit mode and if the psbt
-                                                                  /// has inputs then use them to populate the coin selection state
-                                                                  if (ref.read(
-                                                                          rawTransactionProvider) !=
-                                                                      null) {
-                                                                    List<String> inputs = ref
-                                                                        .read(
-                                                                            rawTransactionProvider)!
-                                                                        .inputs
-                                                                        .map((e) =>
-                                                                            "${e.previousOutputHash}:${e.previousOutputIndex}")
-                                                                        .toList();
-
-                                                                    if (ref
-                                                                        .read(
-                                                                            coinSelectionStateProvider)
-                                                                        .isEmpty) {
-                                                                      ref
-                                                                          .read(coinSelectionStateProvider
-                                                                              .notifier)
-                                                                          .addAll(
-                                                                              inputs);
-                                                                    }
-                                                                  }
-
-                                                                  ///toggle to coins view for coin control
-                                                                  ref
-                                                                          .read(accountToggleStateProvider
-                                                                              .notifier)
-                                                                          .state =
-                                                                      AccountToggleState
-                                                                          .coins;
-
-                                                                  ///pop review
-                                                                  router.pop();
-                                                                  await Future.delayed(
-                                                                      const Duration(
-                                                                          milliseconds:
-                                                                              100));
-
-                                                                  ///pop spend form
-                                                                  router.pop();
-                                                                },
-                                                                onTagUpdate:
-                                                                    () {
-                                                                  Navigator.pop(
-                                                                      context);
-                                                                },
-                                                              ),
-                                                            ),
-                                                            alignment:
-                                                                const Alignment(
-                                                                    0.0, -.6));
-                                                      },
-                                                      child: _coinTag(
-                                                          changeOutputTag == null
-                                                              ? S()
-                                                                  .account_details_untagged_card
-                                                              : changeOutputTag!
-                                                                  .name)),
-                                                ],
-                                              ),
-                                            ),
-                                            const Padding(
-                                                padding: EdgeInsets.all(
-                                                    EnvoySpacing.small)),
-                                            GestureDetector(
-                                              onTap: () {
-                                                showEnvoyDialog(
-                                                    context: context,
-                                                    dialog: TxNoteDialog(
-                                                      onAdd: (note) {
-                                                        ref
-                                                            .read(
-                                                                stagingTxNoteProvider
-                                                                    .notifier)
-                                                            .state = note;
-                                                        Navigator.pop(context);
-                                                      },
-                                                      txId: "UpcomingTx",
-                                                      noteHintText:
-                                                          "i.e. Bought P2P Bitcoin",
-                                                      noteSubTitle: S()
-                                                          .coincontrol_tx_add_note_subheading,
-                                                      noteTitle: S()
-                                                          .add_note_modal_heading,
-                                                      value: ref.read(
-                                                          stagingTxNoteProvider),
-                                                    ),
-                                                    alignment: const Alignment(
-                                                        0.0, -0.5));
-                                              },
-                                              child: Container(
-                                                color: Colors.transparent,
-                                                padding: const EdgeInsets.all(
-                                                    EnvoySpacing.xs),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  mainAxisSize:
-                                                      MainAxisSize.max,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    Flexible(
-                                                      flex: 1,
-                                                      child: Row(
-                                                        children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets
-                                                                .only(
-                                                                left:
-                                                                    EnvoySpacing
-                                                                        .xs),
-                                                            child: SvgPicture
-                                                                .asset(
-                                                              "assets/icons/ic_notes.svg",
-                                                              color: EnvoyColors
-                                                                  .textPrimary,
-                                                              height: 14,
-                                                            ),
-                                                          ),
-                                                          const Padding(
-                                                              padding:
-                                                                  EdgeInsets.all(
-                                                                      EnvoySpacing
-                                                                          .xs)),
-                                                          Text(
-                                                            S().coincontrol_tx_history_tx_detail_note,
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .bodySmall
-                                                                ?.copyWith(
-                                                                    color: EnvoyColors
-                                                                        .textPrimary,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                        child: Container(
-                                                      alignment:
-                                                          Alignment.centerRight,
-                                                      child: Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .end,
-                                                        mainAxisSize:
-                                                            MainAxisSize.max,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .end,
-                                                        children: [
-                                                          Expanded(
-                                                            child: Text(note,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                                maxLines: 2,
-                                                                style: Theme.of(
-                                                                        context)
-                                                                    .textTheme
-                                                                    .bodySmall
-                                                                    ?.copyWith(
-                                                                        color: EnvoyColors
-                                                                            .textPrimary,
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .w600,
-                                                                        fontSize:
-                                                                            12),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .end),
-                                                          ),
-                                                          const Padding(
-                                                              padding:
-                                                                  EdgeInsets.all(
-                                                                      EnvoySpacing
-                                                                          .xs)),
-                                                          note.trim().isNotEmpty
-                                                              ? SvgPicture
-                                                                  .asset(
-                                                                  note
-                                                                          .trim()
-                                                                          .isNotEmpty
-                                                                      ? "assets/icons/ic_edit_note.svg"
-                                                                      : "assets/icons/ic_notes.svg",
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .primaryColor,
-                                                                  height: 14,
-                                                                )
-                                                              : const Icon(
-                                                                  Icons
-                                                                      .add_circle_rounded,
-                                                                  color: EnvoyColors
-                                                                      .accentPrimary,
-                                                                  size: 16),
-                                                        ],
-                                                      ),
-                                                    )),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            const Padding(
-                                                padding: EdgeInsets.all(
-                                                    EnvoySpacing.xs)),
-                                          ],
-                                        ),
-                                      )),
-                                    ],
-                                  ),
-                                )),
-                          ),
-                        ),
-                      ),
-                      if (uneconomicSpends) ...[
-                        const Padding(
-                          padding: EdgeInsets.all(EnvoySpacing.medium1),
-                          child: EnvoyIcon(
-                            EnvoyIcons.info,
-                            size: EnvoyIconSize.big,
-                            color: EnvoyColors.solidWhite,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: EnvoySpacing.medium3),
-                          child: Text(
-                            S().coincontrol_tx_detail_high_fee_info_overlay_subheading,
-                            textAlign: TextAlign.center,
-                            style: EnvoyTypography.info
-                                .copyWith(color: EnvoyColors.solidWhite),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(EnvoySpacing.medium1),
-                          child: SizedBox(
-                            height: 40,
-                            width: 200,
-                            child: LinkText(
-                              text: S()
-                                  .coincontrol_tx_detail_high_fee_info_overlay_learnMore,
-                              textAlign: TextAlign.center,
-                              linkStyle: EnvoyTypography.button
-                                  .copyWith(color: EnvoyColors.solidWhite),
-                              onTap: () {
-                                launchUrlString(
-                                    "https://docs.foundationdevices.com/troubleshooting#envoy-is-excluding-small-coins-from-my-transaction");
-                              },
+                          const Padding(
+                              padding: EdgeInsets.all(EnvoySpacing.xs)),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: EnvoySpacing.small),
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: EnvoySpacing.medium2),
+                                child: Wrap(
+                                  spacing: EnvoySpacing.small,
+                                  runSpacing: EnvoySpacing.small,
+                                  children: spendTags.map((e) {
+                                    return _coinTag(e);
+                                  }).toList(),
+                                ),
+                              ),
                             ),
                           ),
-                        )
-                      ]
-                    ],
-                  ),
+                          const SizedBox(
+                            height: EnvoySpacing.medium2,
+                          ),
+                          EnvoyInfoCardListItem(
+                              title: S()
+                                  .coincontrol_tx_detail_expand_changeReceived,
+                              icon: const EnvoyIcon(EnvoyIcons.transfer,
+                                  color: EnvoyColors.textPrimary,
+                                  size: EnvoyIconSize.extraSmall),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  loading
+                                      ? const Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: EnvoySpacing.xs),
+                                          child: SizedBox.square(
+                                            dimension: 12,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 1,
+                                            ),
+                                          ),
+                                        )
+                                      : Container(
+                                          alignment: Alignment.centerRight,
+                                          child: totalChangeAmount == 0
+                                              ? Text(
+                                                  S().coincontrol_tx_detail_no_change,
+                                                  style: EnvoyTypography.body
+                                                      .copyWith(
+                                                          color: EnvoyColors
+                                                              .textTertiary),
+                                                )
+                                              : EnvoyAmount(
+                                                  unit: formatUnit,
+                                                  account: account,
+                                                  amountSats: totalChangeAmount,
+                                                  amountWidgetStyle:
+                                                      AmountWidgetStyle.normal),
+                                        ),
+                                ],
+                              )),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: EnvoySpacing.small),
+                            child: Container(
+                              height: 24,
+                              margin: const EdgeInsets.only(
+                                  left: EnvoySpacing.medium2),
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                children: [
+                                  GestureDetector(
+                                      onTap: () {
+                                        showEnvoyDialog(
+                                            context: context,
+                                            builder: Builder(
+                                              builder: (context) =>
+                                                  ChooseTagForStagingTx(
+                                                accountId: account.id!,
+                                                onEditTransaction: () async {
+                                                  Navigator.pop(context);
+
+                                                  final router =
+                                                      GoRouter.of(context);
+
+                                                  ///indicating that we are in edit mode
+                                                  ref
+                                                          .read(
+                                                              spendEditModeProvider
+                                                                  .notifier)
+                                                          .state =
+                                                      SpendOverlayContext
+                                                          .editCoins;
+
+                                                  /// The user has is in edit mode and if the psbt
+                                                  /// has inputs then use them to populate the coin selection state
+                                                  if (ref.read(
+                                                          rawTransactionProvider) !=
+                                                      null) {
+                                                    List<String> inputs = ref
+                                                        .read(
+                                                            rawTransactionProvider)!
+                                                        .inputs
+                                                        .map((e) =>
+                                                            "${e.previousOutputHash}:${e.previousOutputIndex}")
+                                                        .toList();
+
+                                                    if (ref
+                                                        .read(
+                                                            coinSelectionStateProvider)
+                                                        .isEmpty) {
+                                                      ref
+                                                          .read(
+                                                              coinSelectionStateProvider
+                                                                  .notifier)
+                                                          .addAll(inputs);
+                                                    }
+                                                  }
+
+                                                  ///toggle to coins view for coin control
+                                                  ref
+                                                          .read(
+                                                              accountToggleStateProvider
+                                                                  .notifier)
+                                                          .state =
+                                                      AccountToggleState.coins;
+
+                                                  ///pop review
+                                                  router.pop();
+                                                  await Future.delayed(
+                                                      const Duration(
+                                                          milliseconds: 100));
+
+                                                  ///pop spend form
+                                                  router.pop();
+                                                },
+                                                onTagUpdate: () {
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
+                                            ),
+                                            alignment:
+                                                const Alignment(0.0, -.6));
+                                      },
+                                      child: _coinTag(changeOutputTag == null
+                                          ? S().account_details_untagged_card
+                                          : changeOutputTag!.name)),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: EnvoySpacing.medium2,
+                          ),
+                          EnvoyInfoCardListItem(
+                            flexAlignment: FlexAlignment.flexLeft,
+                            title: S().coincontrol_tx_history_tx_detail_note,
+                            icon: const EnvoyIcon(EnvoyIcons.note,
+                                color: EnvoyColors.textPrimary,
+                                size: EnvoyIconSize.small),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(note,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
+                                            color: EnvoyColors.textPrimary,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 12),
+                                    textAlign: TextAlign.end),
+                                const Padding(
+                                    padding: EdgeInsets.all(EnvoySpacing.xs)),
+                                GestureDetector(
+                                  onTap: () {
+                                    showEnvoyDialog(
+                                      context: context,
+                                      dialog: TxNoteDialog(
+                                        onAdd: (note) {
+                                          ref
+                                              .read(stagingTxNoteProvider
+                                                  .notifier)
+                                              .state = note;
+                                          Navigator.pop(context);
+                                        },
+                                        txId: "UpcomingTx",
+                                        noteHintText: "i.e. Bought P2P Bitcoin",
+                                        noteSubTitle: S()
+                                            .coincontrol_tx_add_note_subheading,
+                                        noteTitle: S().add_note_modal_heading,
+                                        value: ref.read(stagingTxNoteProvider),
+                                      ),
+                                      alignment: const Alignment(0.0, -0.5),
+                                    );
+                                  },
+                                  child: note.trim().isNotEmpty
+                                      ? SvgPicture.asset(
+                                          note.trim().isNotEmpty
+                                              ? "assets/icons/ic_edit_note.svg"
+                                              : "assets/icons/ic_notes.svg",
+                                          color: Theme.of(context).primaryColor,
+                                          height: 18,
+                                        )
+                                      : const Icon(
+                                          Icons.add_circle_rounded,
+                                          color: EnvoyColors.accentPrimary,
+                                          size: 24,
+                                        ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ]),
+                    if (uneconomicSpends) ...[
+                      const Padding(
+                        padding: EdgeInsets.all(EnvoySpacing.medium1),
+                        child: EnvoyIcon(
+                          EnvoyIcons.info,
+                          size: EnvoyIconSize.big,
+                          color: EnvoyColors.solidWhite,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: EnvoySpacing.medium3),
+                        child: Text(
+                          S().coincontrol_tx_detail_high_fee_info_overlay_subheading,
+                          textAlign: TextAlign.center,
+                          style: EnvoyTypography.info
+                              .copyWith(color: EnvoyColors.solidWhite),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(EnvoySpacing.medium1),
+                        child: SizedBox(
+                          height: 40,
+                          width: 200,
+                          child: LinkText(
+                            text: S()
+                                .coincontrol_tx_detail_high_fee_info_overlay_learnMore,
+                            textAlign: TextAlign.center,
+                            linkStyle: EnvoyTypography.button
+                                .copyWith(color: EnvoyColors.solidWhite),
+                            onTap: () {
+                              launchUrlString(
+                                  "https://docs.foundationdevices.com/troubleshooting#envoy-is-excluding-small-coins-from-my-transaction");
+                            },
+                          ),
+                        ),
+                      )
+                    ]
+                  ],
                 ),
               ),
             ),
@@ -800,23 +564,17 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
           fontSize: 12,
           fontWeight: FontWeight.w400,
         );
-    return Container(
-      margin: const EdgeInsets.only(right: EnvoySpacing.small),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SvgPicture.asset(
-            "assets/icons/ic_tag.svg",
-            color: EnvoyColors.accentPrimary,
-            height: 12,
-          ),
-          const Padding(padding: EdgeInsets.only(left: EnvoySpacing.xs)),
-          Text(
-            title,
-            style: titleStyle,
-          )
-        ],
-      ),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const EnvoyIcon(EnvoyIcons.tag,
+            color: EnvoyColors.accentPrimary, size: EnvoyIconSize.superSmall),
+        const Padding(padding: EdgeInsets.only(left: EnvoySpacing.xs)),
+        Text(
+          title,
+          style: titleStyle,
+        )
+      ],
     );
   }
 }
