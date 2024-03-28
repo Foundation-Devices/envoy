@@ -4,7 +4,6 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/video.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:tor/tor.dart';

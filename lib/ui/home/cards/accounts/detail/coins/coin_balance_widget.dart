@@ -85,7 +85,9 @@ class BalanceWidget extends ConsumerWidget {
                 ? LayoutBuilder(
                     builder: (context, constraints) {
                       return LoaderGhost(
-                          width: constraints.maxWidth, height: 20);
+                          animate: false,
+                          width: constraints.maxWidth,
+                          height: 20);
                     },
                   )
                 : EnvoyAmount(
