@@ -448,6 +448,11 @@ class TransactionListTile extends StatelessWidget {
     color: new_color_scheme.EnvoyColors.txInfo,
   );
 
+  final Color _detailsColor = new_color_scheme.EnvoyColors.textPrimaryInverse;
+
+  final TextStyle _detailsHeadingStyle = EnvoyTypography.subheading
+      .copyWith(color: new_color_scheme.EnvoyColors.textPrimaryInverse);
+
   @override
   Widget build(BuildContext context) {
     final Locale activeLocale = Localizations.localeOf(context);
@@ -567,9 +572,13 @@ class TransactionListTile extends StatelessWidget {
       },
       openBuilder: (context, action) {
         return TransactionsDetailsWidget(
-          account: account,
-          tx: transaction,
-        );
+            account: account,
+            tx: transaction,
+            iconTitleWidget: transactionIcon(context, iconColor: _detailsColor),
+            titleWidget: transactionTitle(
+              context,
+              txTitleStyle: _detailsHeadingStyle,
+            ));
       },
     );
   }
@@ -613,7 +622,10 @@ class TransactionListTile extends StatelessWidget {
     }
   }
 
-  Widget transactionIcon(BuildContext context) {
+  Widget transactionIcon(
+    BuildContext context, {
+    Color iconColor = new_color_scheme.EnvoyColors.textTertiary,
+  }) {
     return FittedBox(
       alignment: Alignment.centerLeft,
       fit: BoxFit.scaleDown,
@@ -626,7 +638,7 @@ class TransactionListTile extends StatelessWidget {
               transaction.amount < 0 ? EnvoyIcons.spend : EnvoyIcons.receive;
           if (cancelState != null) {
             if (!transaction.isConfirmed) {
-              txIcon = EnvoyIcons.close;
+              txIcon = EnvoyIcons.alert;
             } else if (cancelState.newTxId == transaction.txId) {
               txIcon = EnvoyIcons.close;
             } else {
@@ -648,7 +660,7 @@ class TransactionListTile extends StatelessWidget {
               scale: 1.1,
               child: EnvoyIcon(
                 txIcon,
-                color: new_color_scheme.EnvoyColors.textTertiary,
+                color: iconColor,
                 size: EnvoyIconSize.normal,
               ),
             ),
@@ -658,8 +670,8 @@ class TransactionListTile extends StatelessWidget {
     );
   }
 
-  Widget transactionTitle(BuildContext context) {
-    final txTitleStyle = Theme.of(context)
+  Widget transactionTitle(BuildContext context, {TextStyle? txTitleStyle}) {
+    final TextStyle? defaultStyle = Theme.of(context)
         .textTheme
         .bodyLarge
         ?.copyWith(fontWeight: FontWeight.w500, fontSize: 14);
@@ -700,7 +712,7 @@ class TransactionListTile extends StatelessWidget {
           }
           return Text(
             txTitle,
-            style: txTitleStyle,
+            style: txTitleStyle ?? defaultStyle,
           );
         },
       ),

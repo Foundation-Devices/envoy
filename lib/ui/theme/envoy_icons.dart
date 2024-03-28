@@ -73,6 +73,8 @@ enum EnvoyIcons {
   externalLink,
   verifyAddress,
   ramp_without_name,
+  calendar,
+  activity,
 }
 
 class EnvoyIcon extends StatelessWidget {

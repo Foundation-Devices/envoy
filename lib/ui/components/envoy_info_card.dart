@@ -11,110 +11,118 @@ class EnvoyInfoCard extends StatelessWidget {
   final Color backgroundColor;
   final Widget topWidget;
   final List<Widget> bottomWidgets;
+  final Widget? iconTitleWidget;
+  final Widget? titleWidget;
 
   const EnvoyInfoCard({
     required this.backgroundColor,
     required this.topWidget,
     required this.bottomWidgets,
+    this.iconTitleWidget,
+    this.titleWidget,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey detailWidgetKey = GlobalKey();
-
     const double cardRadius = EnvoySpacing.medium2;
 
-    return GestureDetector(
-      onTapDown: (details) {
-        final RenderBox? box =
-            detailWidgetKey.currentContext?.findRenderObject() as RenderBox?;
-        final Offset localOffset = box!.globalToLocal(details.globalPosition);
-
-        if (!box.paintBounds.contains(localOffset)) {
-          Navigator.of(context).pop();
-        }
-      },
-      child: Scaffold(
-        body: Container(
-          key: detailWidgetKey,
-          padding: const EdgeInsets.symmetric(
-            horizontal: EnvoySpacing.medium2,
-            vertical: EnvoySpacing.medium2,
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: EnvoySpacing.medium2,
+        vertical: EnvoySpacing.medium2,
+      ),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 160),
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(cardRadius)),
+          border: Border.all(
+            color: EnvoyColors.textPrimary,
+            width: 2,
+            style: BorderStyle.solid,
           ),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 160),
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(cardRadius)),
-              border: Border.all(
-                color: EnvoyColors.textPrimary,
-                width: 2,
-                style: BorderStyle.solid,
-              ),
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  backgroundColor,
-                  EnvoyColors.textPrimary,
-                ],
-              ),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              backgroundColor,
+              EnvoyColors.textPrimary,
+            ],
+          ),
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius:
+                const BorderRadius.all(Radius.circular(cardRadius - 3)),
+            border: Border.all(
+              color: backgroundColor,
+              width: 2,
+              style: BorderStyle.solid,
             ),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius:
-                    const BorderRadius.all(Radius.circular(cardRadius - 3)),
-                border: Border.all(
-                  color: backgroundColor,
-                  width: 2,
-                  style: BorderStyle.solid,
-                ),
-              ),
-              child: ClipRRect(
-                borderRadius:
-                    const BorderRadius.all(Radius.circular(cardRadius - 2)),
-                child: StripesBackground(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        height: 32,
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.xs,
-                        ),
-                        margin: const EdgeInsets.symmetric(
-                          vertical: EnvoySpacing.xs,
-                          horizontal: EnvoySpacing.xs,
-                        ),
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(EnvoySpacing.medium1),
-                          ),
-                          color: EnvoyColors.textPrimaryInverse,
-                        ),
-                        child: topWidget,
+          ),
+          child: ClipRRect(
+            borderRadius:
+                const BorderRadius.all(Radius.circular(cardRadius - 2)),
+            child: StripesBackground(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        left: 12,
                       ),
-                      Flexible(
-                        child: Container(
-                          margin: const EdgeInsets.all(EnvoySpacing.xs),
-                          padding: const EdgeInsets.all(EnvoySpacing.xs),
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.circular(EnvoySpacing.medium1),
-                            color: EnvoyColors.textPrimaryInverse,
-                          ),
-                          child: ListView(
-                            shrinkWrap: true,
-                            padding: const EdgeInsets.all(0),
-                            children: bottomWidgets,
-                          ),
-                        ),
+                      child: Row(
+                        children: [
+                          if (iconTitleWidget != null)
+                            iconTitleWidget!
+                          else
+                            const SizedBox.shrink(),
+                          if (titleWidget != null)
+                            titleWidget!
+                          else
+                            const SizedBox.shrink(),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  Container(
+                    height: 32,
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.xs,
+                    ),
+                    margin: const EdgeInsets.symmetric(
+                      vertical: EnvoySpacing.xs,
+                      horizontal: EnvoySpacing.xs,
+                    ),
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(EnvoySpacing.medium1),
+                      ),
+                      color: EnvoyColors.textPrimaryInverse,
+                    ),
+                    child: topWidget,
+                  ),
+                  Flexible(
+                    child: Container(
+                      margin: const EdgeInsets.all(EnvoySpacing.xs),
+                      padding: const EdgeInsets.all(EnvoySpacing.xs),
+                      decoration: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.circular(EnvoySpacing.medium1),
+                        color: EnvoyColors.textPrimaryInverse,
+                      ),
+                      child: ListView(
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.all(0),
+                        children: bottomWidgets,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
