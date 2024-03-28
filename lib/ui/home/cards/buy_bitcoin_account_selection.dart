@@ -210,11 +210,16 @@ class _SelectAccountState extends State<SelectAccount> {
 }
 
 List<Account> filterAccounts(List<Account> accounts, Account selectedAccount) {
-  accounts.removeWhere((account) => account.wallet.network == Network.Testnet);
-  accounts.remove(selectedAccount);
-  accounts.add(selectedAccount); // add on the end of list
+  List<Account> filteredAccounts = [];
+  for (var account in accounts) {
+    if (account.wallet.network != Network.Testnet) {
+      filteredAccounts.add(account);
+    }
+  }
+  filteredAccounts.remove(selectedAccount);
+  filteredAccounts.add(selectedAccount); // add selected account at the end
 
-  return accounts;
+  return filteredAccounts;
 }
 
 class ChooseAccount extends StatelessWidget {
