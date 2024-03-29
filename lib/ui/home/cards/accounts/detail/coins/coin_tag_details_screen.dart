@@ -174,13 +174,9 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               child: _selectedCoin != null
                   ? GestureDetector(
                       onTap: () {}, // if you tap inside the window do not exit
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.medium2),
-                        child: CoinDetailsWidget(
-                          coin: _selectedCoin!,
-                          tag: widget.coinTag,
-                        ),
+                      child: CoinDetailsWidget(
+                        coin: _selectedCoin!,
+                        tag: widget.coinTag,
                       ),
                     )
                   : coinTagDetails(context),
