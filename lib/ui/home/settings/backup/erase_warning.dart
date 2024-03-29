@@ -10,6 +10,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
+import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
@@ -23,6 +24,8 @@ import 'package:rive/rive.dart' as rive;
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/widgets/expandable_page_view.dart';
 
 class EraseWalletsAndBackupsWarning extends StatefulWidget {
   const EraseWalletsAndBackupsWarning({super.key});
@@ -34,13 +37,7 @@ class EraseWalletsAndBackupsWarning extends StatefulWidget {
 
 class _EraseWalletsAndBackupsWarningState
     extends State<EraseWalletsAndBackupsWarning> {
-  int currentPage = 0;
-
-  void nextPage() {
-    setState(() {
-      currentPage++;
-    });
-  }
+  final PageController _pageController = PageController();
 
   @override
   Widget build(BuildContext context) {
@@ -50,13 +47,12 @@ class _EraseWalletsAndBackupsWarningState
         padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.min,
           children: [
             Align(
-              alignment: Alignment.centerRight,
+              alignment: Alignment.topRight,
               child: Padding(
-                padding: const EdgeInsets.only(top: 12),
+                padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
                 child: IconButton(
                   icon: const Icon(Icons.close),
                   onPressed: () {
@@ -67,13 +63,10 @@ class _EraseWalletsAndBackupsWarningState
             ),
             const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
             Column(
-              mainAxisSize: MainAxisSize.max,
               children: [
-                Image.asset(
-                  "assets/exclamation_triangle.png",
-                  height: 80,
-                  width: 80,
-                ),
+                const EnvoyIcon(EnvoyIcons.alert,
+                    color: EnvoyColors.accentSecondary,
+                    size: EnvoyIconSize.big),
                 const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 Padding(
                     padding: const EdgeInsets.symmetric(
@@ -84,53 +77,41 @@ class _EraseWalletsAndBackupsWarningState
                       textAlign: TextAlign.center,
                       style: EnvoyTypography.info,
                     )),
-                Container(
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height * 0.4,
-                  ),
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    switchInCurve: Curves.easeInOutCubicEmphasized,
-                    child: SingleChildScrollView(
-                      key: ValueKey<int>(currentPage),
-                      child: Column(
-                        children: [
-                          Text(
-                            currentPage == 0
-                                ? (Platform.isAndroid
-                                    ? S()
-                                        .backups_erase_wallets_and_backups_modal_1_2_android_subheading
-                                    : S()
-                                        .backups_erase_wallets_and_backups_modal_1_2_ios_subheading)
-                                : S()
-                                    .backups_erase_wallets_and_backups_modal_2_2_subheading,
-                            textAlign: TextAlign.center,
-                            style: EnvoyTypography.info,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                for (int i = 0; i < 2; i++)
-                  Padding(
-                    padding: const EdgeInsets.all(EnvoySpacing.xs),
+                Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.small,
+                        horizontal: EnvoySpacing.medium1),
                     child: Container(
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: currentPage == i
-                            ? EnvoyColors.accentPrimary
-                            : EnvoyColors.textTertiary,
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height *
+                            0.6, // max size of PageView
                       ),
-                    ),
-                  ),
+                      child: SingleChildScrollView(
+                        child: ExpandablePageView(
+                          controller: _pageController,
+                          children: [
+                            Text(
+                              Platform.isAndroid
+                                  ? S()
+                                      .backups_erase_wallets_and_backups_modal_1_2_android_subheading
+                                  : S()
+                                      .backups_erase_wallets_and_backups_modal_1_2_ios_subheading,
+                              textAlign: TextAlign.center,
+                              style: EnvoyTypography.info,
+                            ),
+                            Text(
+                              S().backups_erase_wallets_and_backups_modal_2_2_subheading,
+                              textAlign: TextAlign.center,
+                              style: EnvoyTypography.info,
+                            ),
+                          ],
+                        ),
+                      ),
+                    )),
+                DotsIndicator(
+                  totalPages: 2,
+                  pageController: _pageController,
+                ),
               ],
             ),
             OnboardingButton(
@@ -140,25 +121,26 @@ class _EraseWalletsAndBackupsWarningState
                   Navigator.pop(context);
                 }),
             OnboardingButton(
-              type: EnvoyButtonTypes.primaryModal,
-              label: S().component_continue,
-              onTap: () {
-                if (currentPage == 1) {
-                  if (AccountManager().hotWalletAccountsEmpty()) {
-                    // Safe to delete
-                    displaySeedBeforeNuke(context);
+                type: EnvoyButtonTypes.primaryModal,
+                label: S().component_continue,
+                onTap: () {
+                  int currentPage = _pageController.page?.toInt() ?? 0;
+                  if (currentPage == 1) {
+                    if (AccountManager().hotWalletAccountsEmpty()) {
+                      // Safe to delete
+                      displaySeedBeforeNuke(context);
+                    } else {
+                      showEnvoyDialog(
+                          context: context,
+                          dialog: const EraseWalletsBalanceWarning());
+                    }
                   } else {
-                    showEnvoyDialog(
-                      context: context,
-                      dialog: const EraseWalletsBalanceWarning(),
-                    );
+                    _pageController.nextPage(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOutCubicEmphasized);
                   }
-                } else {
-                  nextPage();
-                }
-              },
-            ),
-            const Padding(padding: EdgeInsets.all(12)),
+                }),
+            const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           ],
         ),
       ),
