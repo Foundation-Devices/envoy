@@ -97,6 +97,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             top: EnvoySpacing.medium1,
           ),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(
                 child: SingleChildScrollView(
@@ -196,6 +197,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                           },
                         ));
                       },
+                    ),
+                    SizedBox(
+                      height: EnvoySpacing.medium2,
                     )
                   ],
                 ),

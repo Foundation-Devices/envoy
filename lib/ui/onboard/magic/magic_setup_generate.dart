@@ -226,7 +226,6 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
   @override
   Widget build(BuildContext context) {
     bool isAndroid = Platform.isAndroid;
-    bool _iphoneSE = MediaQuery.of(context).size.height < 700;
     return PopScope(
       canPop: false,
       onPopInvoked: (_) async {
@@ -252,20 +251,47 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  constraints: BoxConstraints.tight(Size.fromHeight(240)),
-                  child: Image.asset(
-                    "assets/exclamation_icon.png",
-                    height: 180,
-                    width: 180,
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: EnvoySpacing.large3),
+                  child: Container(
+                    constraints: BoxConstraints.tight(Size.fromHeight(150)),
+                    child: Image.asset(
+                      "assets/exclamation_icon.png",
+                      height: 150,
+                      width: 150,
+                    ),
                   ),
-                  height: _iphoneSE ? 220 : 250,
                 ),
                 Flexible(
                   child: SingleChildScrollView(
                       child: isAndroid
                           ? _androidBackUPInfo(context)
                           : _recoverStepsInfo(context)),
+                ),
+                OnboardingButton(
+                  label: S().component_continue,
+                  onTap: () {
+                    if (!isAndroid) {
+                      if (widget.onContinue != null) {
+                        widget.onContinue!.call();
+                        return;
+                      }
+                      if (widget.skipSuccessScreen) {
+                        //clear on-boarding routes and go to home
+                        OnboardingPage.popUntilHome(context);
+                      } else {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return WalletSetupSuccess();
+                        }));
+                      }
+                    } else {
+                      setState(() {
+                        _androidBackupInfoPage = 1;
+                      });
+                    }
+                  },
                 )
               ],
             ),
@@ -393,30 +419,6 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
               ],
             ),
           ),
-          Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: EnvoySpacing.medium3)),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
-            child: OnboardingButton(
-              label: S().component_continue,
-              onTap: () {
-                if (widget.onContinue != null) {
-                  widget.onContinue!.call();
-                  return;
-                }
-                if (widget.skipSuccessScreen) {
-                  //clear on-boarding routes and go to home
-                  OnboardingPage.popUntilHome(context);
-                } else {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return WalletSetupSuccess();
-                  }));
-                }
-              },
-            ),
-          ),
         ],
       ),
     );
@@ -442,10 +444,11 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
       },
       child: _androidBackupInfoPage == 0
           ? Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
               children: [
                 Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       S().android_backup_info_heading,
@@ -472,22 +475,6 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                       ),
                     ),
                   ],
-                ),
-                Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.medium3)),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.small,
-                  ),
-                  child: OnboardingButton(
-                    label: S().component_continue,
-                    onTap: () {
-                      setState(() {
-                        _androidBackupInfoPage = 1;
-                      });
-                    },
-                  ),
                 ),
               ],
             )

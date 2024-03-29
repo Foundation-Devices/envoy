@@ -225,14 +225,11 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                         AnimatedSwitcher(
                             duration: Duration(milliseconds: 800),
                             child: getMainWidget()),
-                        Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: EnvoySpacing.medium3)),
-                        getBottomButtons() ?? SizedBox(),
                       ],
                     ),
                   ),
                 ),
+                getBottomButtons() ?? SizedBox(),
               ],
             ),
           );
@@ -483,19 +480,16 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
 
   Widget _recoveryInProgress(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            child: Text(
-              "Recovering your Envoy wallet", //TODO: FIGMA
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+          Text(
+            S().magic_setup_recovery_retry_header,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleLarge,
           ),
         ],
       ),
