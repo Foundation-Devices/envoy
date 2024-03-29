@@ -39,7 +39,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
     super.initState();
     Future.delayed(Duration.zero).then((_) {
       setState(() {
-        selectedAccount = ref.read(nonTestnetAccountsProvider).first;
+        selectedAccount = ref.read(nonTestnetAccountsProvider(null)).first;
       });
       selectedAccount?.wallet.getAddress().then((value) {
         setState(() {
@@ -59,10 +59,9 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
 
   @override
   Widget build(BuildContext context) {
-    var accounts = ref.watch(nonTestnetAccountsProvider);
     List<Account> filteredAccounts = [];
     if (selectedAccount != null) {
-      filteredAccounts = moveSelectedAccountToEnd(accounts, selectedAccount!);
+      filteredAccounts = ref.watch(nonTestnetAccountsProvider(selectedAccount));
     }
     return (selectedAccount == null)
         ? const Center(child: CircularProgressIndicator())
@@ -223,16 +222,6 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
             ),
           );
   }
-}
-
-List<Account> moveSelectedAccountToEnd(
-    List<Account> accounts, Account selectedAccount) {
-  List<Account> filteredAccounts = List.from(accounts);
-
-  filteredAccounts.removeWhere((account) => account.id == selectedAccount.id);
-  filteredAccounts.add(selectedAccount); // Add the selected account at the end
-
-  return filteredAccounts;
 }
 
 class ChooseAccount extends StatelessWidget {
