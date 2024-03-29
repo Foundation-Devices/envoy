@@ -477,19 +477,16 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
 
   Widget _recoveryInProgress(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            child: Text(
-              S().magic_setup_recovery_retry_header,
+          Text(
+            S().magic_setup_recovery_retry_header,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleLarge,
-            ),
           ),
         ],
       ),

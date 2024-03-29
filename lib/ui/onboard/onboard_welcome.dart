@@ -192,6 +192,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                           },
                         ));
                       },
+                    ),
+                    SizedBox(
+                      height: EnvoySpacing.medium2,
                     )
                   ],
                 ),

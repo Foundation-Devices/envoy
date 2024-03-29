@@ -184,7 +184,8 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                 bottom: EnvoySpacing.medium1,
                 left: EnvoySpacing.medium1,
                 right: EnvoySpacing.medium1,
-                top: EnvoySpacing.xs),
+                top: EnvoySpacing.xs,
+                bottom: EnvoySpacing.medium2),
             child: EnvoyButton(
               S().component_continue,
               onTap: () async {

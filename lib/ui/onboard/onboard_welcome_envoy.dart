@@ -86,6 +86,7 @@ class _OnboardEnvoyWelcomeScreenState
           Padding(
               padding: const EdgeInsets.all(EnvoySpacing.medium1),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Flexible(
                     child: SingleChildScrollView(
@@ -143,7 +144,7 @@ class _OnboardEnvoyWelcomeScreenState
                         left: EnvoySpacing.medium1,
                         right: EnvoySpacing.medium1,
                         top: EnvoySpacing.medium1,
-                        bottom: EnvoySpacing.large2),
+                        bottom: EnvoySpacing.xl),
                     child: Column(
                       children: [
                         Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
