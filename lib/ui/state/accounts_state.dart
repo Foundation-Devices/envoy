@@ -31,6 +31,13 @@ final accountsProvider = Provider<List<Account>>((ref) {
   }).toList();
 });
 
+final nonTestnetAccountsProvider = Provider<List<Account>>((ref) {
+  final accounts = ref.watch(accountsProvider);
+  return accounts
+      .where((account) => account.wallet.network != Network.Testnet)
+      .toList();
+});
+
 final accountStateProvider = Provider.family<Account?, String?>((ref, id) {
   final accountManager = ref.watch(accountManagerProvider);
   return accountManager.accounts
