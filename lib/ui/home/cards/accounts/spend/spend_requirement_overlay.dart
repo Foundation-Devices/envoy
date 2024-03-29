@@ -233,9 +233,11 @@ class SpendRequirementOverlayState
       }
     });
 
+    final spendEditMode = ref.watch(spendEditModeProvider);
     final requiredAmount = ref.watch(spendAmountProvider);
-
     bool inTagSelectionMode = requiredAmount == 0;
+
+    bool showRequiredAmount = !inTagSelectionMode;
 
     bool valid =
         (totalSelectedAmount != 0 && totalSelectedAmount >= requiredAmount);
@@ -243,6 +245,11 @@ class SpendRequirementOverlayState
     _currentOverlyAlignment = _appearAnimation!.value;
 
     final size = MediaQuery.of(context).size;
+
+    if (spendEditMode == SpendOverlayContext.rbfSelection) {
+      showRequiredAmount = false;
+      valid = totalSelectedAmount != 0;
+    }
 
     //hide when dialog is shown, we dont want to remove overlay from the widget tree
     //if the user chose to stay in the coin selection screen and we need to show the overlay again
@@ -361,7 +368,7 @@ class SpendRequirementOverlayState
                                     const Padding(
                                         padding: EdgeInsets.symmetric(
                                             horizontal: EnvoySpacing.xs)),
-                                    !inTagSelectionMode
+                                    showRequiredAmount
                                         ? Padding(
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: EnvoySpacing.small),
@@ -507,6 +514,10 @@ class SpendRequirementOverlayState
     final router = GoRouter.of(context);
     final navigator = Navigator.of(context);
     final mode = ref.read(spendEditModeProvider);
+    Set<String> walletSelection = ref.read(coinSelectionFromWallet);
+    Set<String> coinSelection = ref.read(coinSelectionStateProvider);
+    bool selectionChanged =
+        walletSelection.difference(coinSelection).isNotEmpty;
 
     if (mode == SpendOverlayContext.editCoins) {
       ref.read(spendEditModeProvider.notifier).state =
@@ -518,25 +529,32 @@ class SpendRequirementOverlayState
       }
       hideSpendRequirementOverlay();
       await Future.delayed(const Duration(milliseconds: 120));
-      if (navigator.canPop()) {
-        navigator.popUntil((route) {
-          return route.settings is MaterialPage;
-        });
-      }
-      Set<String> walletSelection = ref.read(coinSelectionFromWallet);
-      Set<String> coinSelection = ref.read(coinSelectionStateProvider);
-      Set diff = coinSelection.difference(walletSelection);
 
       ///if the user changed the selection, validate the transaction
-      if (diff.isNotEmpty) {
+      if (selectionChanged) {
         ///reset fees if coin selection changed
         final account = ref.read(selectedAccountProvider);
         ref.read(spendFeeRateProvider.notifier).state =
             Fees().slowRate(account!.wallet.network) * 100000;
         ref.read(spendTransactionProvider.notifier).validate(scope);
       }
+      //pop coin selection screen, specifically for edit coins for spend screen
+      navigator.pop();
       return;
+    } else if (mode == SpendOverlayContext.rbfSelection) {
+      if (ref.read(coinDetailsActiveProvider)) {
+        navigator.pop();
+        //wait for coin details screen to animate out
+        await Future.delayed(const Duration(milliseconds: 320));
+      }
+      hideSpendRequirementOverlay();
+      navigator.pop(selectionChanged);
     } else {
+      if (ref.read(coinDetailsActiveProvider)) {
+        navigator.pop();
+        //wait for coin details screen to animate out
+        await Future.delayed(const Duration(milliseconds: 320));
+      }
       hideSpendRequirementOverlay();
       router.push(ROUTE_ACCOUNT_SEND);
       return;

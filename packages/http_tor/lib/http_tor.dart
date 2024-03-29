@@ -214,6 +214,11 @@ class HttpTor {
 
   Future<Response> _makeHttpRequest(Verb verb, String uri,
       {String? body, Map<String, String>? headers}) async {
+    // pretend to be wget to avoid cloudflare captchas and other challenges
+    if (headers == null) {
+      headers = {"User-Agent": "Wget/1.12"};
+    }
+
     await tor.isReady();
     int torPort = tor.port;
     return scheduler

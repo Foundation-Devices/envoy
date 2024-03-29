@@ -71,7 +71,8 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         final account = ref.read(selectedAccountProvider);
         if (account != null) showSpendRequirementOverlay(context, account);
       } else {
-        if (ref.read(spendEditModeProvider) != SpendOverlayContext.editCoins) {
+        if (ref.read(spendEditModeProvider) ==
+            SpendOverlayContext.preselectCoins) {
           hideSpendRequirementOverlay();
         }
       }
@@ -242,6 +243,9 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     if (path.contains(ROUTE_LEARN_BLOG)) {
       return true;
     }
+    if (path.contains(ROUTE_SELECT_REGION)) {
+      return true;
+    }
     return false;
   }
 
@@ -264,6 +268,15 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         return "send"; //TODO: Figma
       case ROUTE_ACCOUNT_DETAIL:
         return S().manage_account_address_heading;
+      case ROUTE_BUY_BITCOIN:
+        return S().header_buyBitcoin;
+      case ROUTE_PEER_TO_PEER:
+        return S().header_buyBitcoin;
+      case ROUTE_SELECT_REGION:
+        return S().header_buyBitcoin;
+      case ROUTE_SELECT_ACCOUNT:
+        return S().header_buyBitcoin;
+
       default:
         return S().menu_heading;
     }

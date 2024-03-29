@@ -16,6 +16,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/components/select_dropdown.dart';
 import 'package:envoy/ui/components/toggle.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
@@ -24,14 +25,14 @@ import 'package:envoy/ui/home/settings/electrum_server_entry.dart';
 import 'dart:io';
 
 //ignore: must_be_immutable
-class PrivacyCard extends StatefulWidget {
+class PrivacyCard extends ConsumerStatefulWidget {
   const PrivacyCard({super.key});
 
   @override
-  State<PrivacyCard> createState() => PrivacyCardState();
+  ConsumerState<PrivacyCard> createState() => PrivacyCardState();
 }
 
-class PrivacyCardState extends State<PrivacyCard> {
+class PrivacyCardState extends ConsumerState<PrivacyCard> {
   bool _showPersonalNodeTextField = false;
   bool _betterPerformance = !Settings().torEnabled();
 
@@ -106,6 +107,8 @@ class PrivacyCardState extends State<PrivacyCard> {
                               setState(() {
                                 _betterPerformance = true;
                               });
+                              ref.read(torEnabledProvider.notifier).state =
+                                  !_betterPerformance;
                               Settings().setTorEnabled(!_betterPerformance);
                             },
                           ),
@@ -117,6 +120,8 @@ class PrivacyCardState extends State<PrivacyCard> {
                               setState(() {
                                 _betterPerformance = false;
                               });
+                              ref.read(torEnabledProvider.notifier).state =
+                                  !_betterPerformance;
                               Settings().setTorEnabled(!_betterPerformance);
                             },
                           ),
