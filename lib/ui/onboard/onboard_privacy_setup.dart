@@ -181,7 +181,6 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
           ),
           Padding(
             padding: const EdgeInsets.only(
-                bottom: EnvoySpacing.medium1,
                 left: EnvoySpacing.medium1,
                 right: EnvoySpacing.medium1,
                 top: EnvoySpacing.xs,
