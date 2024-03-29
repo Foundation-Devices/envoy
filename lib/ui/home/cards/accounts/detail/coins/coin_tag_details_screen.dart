@@ -27,6 +27,7 @@ import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/ui/envoy_dialog.dart';
 
 class CoinTagDetailsScreen extends ConsumerStatefulWidget {
   final bool showCoins;
@@ -589,33 +590,16 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
         context: context,
         linearGradient: true,
         blurColor: Colors.black,
-        dialog: Padding(
-          padding: const EdgeInsets.all(EnvoySpacing.medium2),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Align(
-                alignment: Alignment.centerRight,
-                child: IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: EnvoySpacing.medium3),
-                child: Text(
-                  S().tagDetails_EditTagName,
-                  style: EnvoyTypography.subheading,
-                ),
-              ),
-              textEntry,
-              Padding(
-                padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
-                child: EnvoyButton(
+        dialog: Builder(
+          builder: (context) {
+            return EnvoyDialog(
+              title: S().tagDetails_EditTagName,
+              titleTextTile: EnvoyTypography.subheading,
+              content: textEntry,
+              actions: [
+                EnvoyButton(
                   S().component_save,
+                  type: EnvoyButtonTypes.primaryModal,
                   onTap: () async {
                     widget.coinTag.name = textEntry.enteredText;
                     int updated =
@@ -630,11 +614,10 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                       }
                     }
                   },
-                  type: EnvoyButtonTypes.primaryModal,
                 ),
-              ),
-            ],
-          ),
+              ],
+            );
+          },
         ));
   }
 
