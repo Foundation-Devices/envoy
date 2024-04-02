@@ -36,7 +36,7 @@ final showTaprootAccountsProvider = Provider((ref) {
 class Settings extends ChangeNotifier {
   static const String SETTINGS_PREFS = "settings";
   static const String DEFAULT_ELECTRUM_SERVER =
-      "ssl://mainnet.foundationdevices.com:50002";
+      "ssl://mainnet.foundation.xyz:50002";
 
   // FD testnet server
   static const String TESTNET_ELECTRUM_SERVER =
@@ -134,16 +134,16 @@ class Settings extends ChangeNotifier {
       case Environment.local:
         return "http://127.0.0.1:8000";
       case Environment.development:
-        return "https://development.envoy.foundationdevices.com";
+        return "https://development.envoy.foundation.xyz";
       case Environment.staging:
-        return "https://staging.envoy.foundationdevices.com";
+        return "https://staging.envoy.foundation.xyz";
       case Environment.production:
-        return "https://production.envoy.foundationdevices.com";
+        return "https://production.envoy.foundation.xyz";
     }
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  String nguServerAddress = "https://ngu.foundationdevices.com";
+  String nguServerAddress = "https://ngu.foundation.xyz";
 
   @JsonKey(defaultValue: false)
   bool syncToCloudSetting = false;

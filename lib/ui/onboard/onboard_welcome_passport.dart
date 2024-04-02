@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -69,8 +68,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                     linkStyle: EnvoyTypography.button
                         .copyWith(color: EnvoyColors.accentPrimary),
                     onTap: () {
-                      launchUrl(
-                          Uri.parse("https://foundationdevices.com/passport"));
+                      launchUrl(Uri.parse("https://foundation.xyz/passport"));
                     },
                   ),
                   Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
@@ -233,8 +231,8 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                           linkStyle: EnvoyTypography.button
                               .copyWith(color: EnvoyColors.accentPrimary),
                           onTap: () {
-                            launchUrl(Uri.parse(
-                                "https://foundationdevices.com/passport"));
+                            launchUrl(
+                                Uri.parse("https://foundation.xyz/passport"));
                           },
                         ),
                         Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),

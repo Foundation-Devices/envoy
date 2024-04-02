@@ -4,7 +4,7 @@
 
 FROM envoy:latest
 
-MAINTAINER Igor Cota <igor@foundationdevices.com>
+MAINTAINER Igor Cota <igor@foundation.xyz>
 
 # Build
 ENV PATH=/root/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin:$PATH

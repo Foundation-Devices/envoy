@@ -332,7 +332,7 @@ class _RBFWarningState extends State<RBFWarning> {
             ),
             onTap: () {
               launchUrl(Uri.parse(
-                  "https://docs.foundationdevices.com/en/envoy/accounts#boost-or-cancel-a-transaction"));
+                  "https://docs.foundation.xyz/en/envoy/accounts#boost-or-cancel-a-transaction"));
             },
           ),
           Padding(padding: EdgeInsets.all(EnvoySpacing.small)),

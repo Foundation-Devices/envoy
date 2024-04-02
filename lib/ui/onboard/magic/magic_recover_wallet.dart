@@ -485,8 +485,8 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
         children: [
           Text(
             S().magic_setup_recovery_retry_header,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleLarge,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleLarge,
           ),
         ],
       ),

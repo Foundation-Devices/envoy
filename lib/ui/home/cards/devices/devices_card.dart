@@ -372,7 +372,7 @@ class DeviceEmptyVideo extends StatelessWidget {
                       _ctaTextStyle.copyWith(color: EnvoyColors.accentPrimary),
                 ),
                 onTap: () {
-                  launchUrlString("https://foundationdevices.com/passport/");
+                  launchUrlString("https://foundation.xyz/passport/");
                 },
               ),
             ],

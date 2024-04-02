@@ -30,7 +30,7 @@ class ScvResultFailPage extends StatelessWidget {
         OnboardingButton(
             label: S().envoy_scv_result_fail_cta1,
             onTap: () {
-              launchUrl(Uri.parse("mailto:hello@foundationdevices.com"));
+              launchUrl(Uri.parse("mailto:hello@foundation.xyz"));
             }),
       ],
     );

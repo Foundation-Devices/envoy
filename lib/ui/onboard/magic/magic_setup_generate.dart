@@ -256,8 +256,8 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                       const EdgeInsets.symmetric(vertical: EnvoySpacing.large3),
                   child: Container(
                     constraints: BoxConstraints.tight(Size.fromHeight(150)),
-                  child: Image.asset(
-                    "assets/exclamation_icon.png",
+                    child: Image.asset(
+                      "assets/exclamation_icon.png",
                       height: 150,
                       width: 150,
                     ),

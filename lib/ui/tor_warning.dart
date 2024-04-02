@@ -60,8 +60,7 @@ class _TorWarningState extends State<TorWarning> {
                           .copyWith(color: EnvoyColors.accentPrimary),
                       onTap: () {
                         launchUrl(
-                            Uri.parse(
-                                "https://docs.foundationdevices.com/envoy/tor"),
+                            Uri.parse("https://docs.foundation.xyz/envoy/tor"),
                             mode: LaunchMode.externalApplication);
                       },
                     )),

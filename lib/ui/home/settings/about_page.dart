@@ -81,7 +81,7 @@ class _AboutPageState extends State<AboutPage> {
                 AboutButton(
                   "Show", //TODO: FIGMA
                   onTap: () {
-                    launchUrlString("https://foundationdevices.com/terms/");
+                    launchUrlString("https://foundation.xyz/terms/");
                   },
                 )
               ],
@@ -94,7 +94,7 @@ class _AboutPageState extends State<AboutPage> {
                 AboutButton(
                   "Show", //TODO: FIGMA
                   onTap: () {
-                    launchUrlString("https://foundationdevices.com/privacy/");
+                    launchUrlString("https://foundation.xyz/privacy/");
                   },
                 )
               ],

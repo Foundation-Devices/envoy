@@ -56,7 +56,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="*envoy.foundationdevices.com"
+                    android:host="*envoy.foundation.xyz"
                     android:scheme="http" />
                 <data android:scheme="https" />
             </intent-filter>
