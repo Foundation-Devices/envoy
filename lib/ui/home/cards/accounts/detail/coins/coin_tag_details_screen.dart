@@ -168,22 +168,21 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                   fillColor: Colors.transparent,
                   secondaryAnimation: secondaryAnimation,
                   transitionType: SharedAxisTransitionType.scaled,
-                  child: child,
+                  child: Align(alignment: Alignment.topCenter, child: child),
                 );
               },
               child: _selectedCoin != null
-                  ? GestureDetector(
-                      onTap: () {}, // if you tap inside the window do not exit
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.medium2),
-                        child: CoinDetailsWidget(
-                          coin: _selectedCoin!,
-                          tag: widget.coinTag,
-                        ),
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium2),
+                      child: CoinDetailsWidget(
+                        coin: _selectedCoin!,
+                        tag: widget.coinTag,
                       ),
                     )
-                  : coinTagDetails(context),
+                  : Align(
+                      alignment: Alignment.topCenter,
+                      child: coinTagDetails(context)),
             ),
           ),
         ),
