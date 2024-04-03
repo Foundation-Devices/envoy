@@ -306,9 +306,11 @@ class Numpad extends StatefulWidget {
 }
 
 class _NumpadState extends State<Numpad> {
+  bool _isDecimalAdded = false;
+
   @override
   void dispose() {
-    widget.events.close();
+    _isDecimalAdded = false;
     super.dispose();
   }
 
@@ -338,8 +340,11 @@ class _NumpadState extends State<Numpad> {
                 NumpadButtonType.text,
                 text: fiatDecimalSeparator,
                 onTap: () {
-                  Haptics.lightImpact();
-                  widget.events.sink.add(NumpadEvents.dot);
+                  if (!_isDecimalAdded) {
+                    Haptics.lightImpact();
+                    widget.events.sink.add(NumpadEvents.dot);
+                    _isDecimalAdded = true;
+                  }
                 },
               )
             : const SizedBox.shrink(),
@@ -368,6 +373,7 @@ class _NumpadState extends State<Numpad> {
                 onLongPressDown: () {
                   Haptics.lightImpact();
                   widget.events.sink.add(NumpadEvents.clearAll);
+                  _isDecimalAdded = false;
                 },
               ),
       ],
