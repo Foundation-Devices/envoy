@@ -14,8 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:envoy/business/bitcoin_parser.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'dart:async';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 
 class AddressEntry extends ConsumerStatefulWidget {
   final Function(String)? onAddressChanged;
@@ -170,9 +170,12 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                                     .push(MaterialPageRoute(builder: (context) {
                                   return MediaQuery.removePadding(
                                     context: context,
-                                    child:
-                                        ScannerPage.address((address, amount) {
+                                    child: ScannerPage.address(
+                                        (address, amount, message) {
                                       widget.controller?.text = address;
+                                      ref
+                                          .read(stagingTxNoteProvider.notifier)
+                                          .state = message;
                                       if (widget.onAddressChanged != null) {
                                         widget.onAddressChanged?.call(address);
                                       }
