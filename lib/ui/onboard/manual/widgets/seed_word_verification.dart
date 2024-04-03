@@ -32,6 +32,8 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
   List<String> answers = [];
   bool _finishedAnswers = false;
 
+  List<int> _seedIndexes = [];
+
   int _puzzlePageIndex = 0;
 
   @override
@@ -64,7 +66,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
               const SliverPadding(padding: EdgeInsets.all(EnvoySpacing.small)),
               SliverToBoxAdapter(
                 child: Text(
-                    "${S().manual_setup_generate_seed_verify_seed_quiz_question} ${widget.seed.indexOf(answers[_puzzlePageIndex]) + 1}?", // TODO: FIGMA
+                    "${S().manual_setup_generate_seed_verify_seed_quiz_question} ${_seedIndexes[_puzzlePageIndex] + 1}?",
                     style: Theme.of(context).textTheme.titleSmall,
                     textAlign: TextAlign.center),
               ),
@@ -85,13 +87,16 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                                 vertical: EnvoySpacing.small),
                             child: PuzzleWidget(
                               puzzle: e,
-                              seedIndex: widget.seed
-                                  .indexOf(answers[_puzzleOptions.indexOf(e)]),
+                              seedIndex: _seedIndexes[_puzzlePageIndex],
                               answer: answers[_puzzleOptions.indexOf(e)],
                               onAnswered: (answer) async {
                                 if (answer ==
                                     answers[_puzzleOptions.indexOf(e)]) {
-                                  if (answers.last == answer) {
+                                  bool isLastQuestion =
+                                      (_puzzleOptions.indexOf(e) + 1) ==
+                                          _puzzleOptions.length;
+                                  if (answers.last == answer &&
+                                      isLastQuestion) {
                                     setState(() {
                                       _finishedAnswers = true;
                                     });
@@ -172,12 +177,12 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
       while (randomIndexes.length < 4) {
         randomIndexes.add(random.nextInt(widget.seed.length));
       }
-      List<int> seedIndexes = randomIndexes.toList();
+      _seedIndexes = randomIndexes.toList();
       _puzzleOptions = List.generate(4, (index) {
         List<String> options = List.generate(3,
             (index) => filteredSeed[random.nextInt(filteredSeed.length - 1)]);
-        options.add(widget.seed[seedIndexes[index]]);
-        answers.add(widget.seed[seedIndexes[index]]);
+        options.add(widget.seed[_seedIndexes[index]]);
+        answers.add(widget.seed[_seedIndexes[index]]);
         options.shuffle();
         return options;
       });
