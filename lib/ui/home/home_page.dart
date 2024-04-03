@@ -88,9 +88,18 @@ class HomePageState extends ConsumerState<HomePage>
   Timer? _torWarningTimer;
   bool _torWarningDisplayedMoreThan5minAgo = true;
 
+  Timer? _backupWarningTimer;
+  bool _backupWarningDisplayedMoreThan2minAgo = true;
+
   void _resetTorWarningTimer() {
     _torWarningTimer = Timer.periodic(const Duration(minutes: 5), (_) async {
       _torWarningDisplayedMoreThan5minAgo = true;
+    });
+  }
+
+  void _resetBackupWarningTimer() {
+    _backupWarningTimer = Timer.periodic(const Duration(minutes: 2), (_) {
+      _backupWarningDisplayedMoreThan2minAgo = true;
     });
   }
 
@@ -98,6 +107,7 @@ class HomePageState extends ConsumerState<HomePage>
   void initState() {
     super.initState();
     _resetTorWarningTimer();
+    _resetBackupWarningTimer();
 
     Future.delayed(const Duration(milliseconds: 10), () {
       ///register for back button press
@@ -142,28 +152,10 @@ class HomePageState extends ConsumerState<HomePage>
     });
 
     EnvoySeed().backupCompletedStream.stream.listen((bool success) {
-      if (success) {
-        EnvoyToast(
-          backgroundColor: Colors.lightBlue,
-          replaceExisting: true,
-          duration: const Duration(seconds: 4),
-          message: S().manual_toggle_on_seed_backup_in_progress_toast_heading,
-          icon: const Icon(
-            Icons.info_outline,
-            color: EnvoyColors.accentPrimary,
-          ),
-        ).show(context);
-      } else {
-        EnvoyToast(
-          backgroundColor: Colors.lightBlue,
-          replaceExisting: true,
-          duration: const Duration(seconds: 3),
-          message: S().manualToggleOnSeed_toastHeading_failedText,
-          icon: const Icon(
-            Icons.error_outline_rounded,
-            color: EnvoyColors.accentSecondary,
-          ),
-        ).show(context);
+      if (_backupWarningDisplayedMoreThan2minAgo) {
+        _displayBackupToast(success);
+        _backupWarningDisplayedMoreThan2minAgo = false;
+        _resetBackupWarningTimer();
       }
     });
   }
@@ -182,6 +174,27 @@ class HomePageState extends ConsumerState<HomePage>
         EnvoyToast.dismissPreviousToasts(context);
         showEnvoyDialog(dialog: const TorWarning(), context: context);
       },
+    ).show(context);
+  }
+
+  _displayBackupToast(bool success) {
+    EnvoyToast(
+      backgroundColor: Colors.lightBlue,
+      replaceExisting: true,
+      duration:
+          success ? const Duration(seconds: 4) : const Duration(seconds: 3),
+      message: success
+          ? S().manual_toggle_on_seed_backup_in_progress_toast_heading
+          : S().manualToggleOnSeed_toastHeading_failedText,
+      icon: success
+          ? const EnvoyIcon(
+              EnvoyIcons.info,
+              color: EnvoyColors.accentPrimary,
+            )
+          : const EnvoyIcon(
+              EnvoyIcons.alert,
+              color: EnvoyColors.accentSecondary,
+            ),
     ).show(context);
   }
 
@@ -223,6 +236,7 @@ class HomePageState extends ConsumerState<HomePage>
   @override
   void dispose() {
     _torWarningTimer?.cancel();
+    _backupWarningTimer?.cancel();
     backButtonDispatcher.removeCallback(_handleHomePageBackPress);
     super.dispose();
   }
