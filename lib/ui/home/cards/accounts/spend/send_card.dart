@@ -141,6 +141,8 @@ class _SendCardState extends ConsumerState<SendCard>
                           final formValidation =
                               ref.watch(spendValidationProvider);
                           int spendAmount = ref.watch(spendAmountProvider);
+                          int spendableBalance =
+                              ref.watch(totalSpendableAmountProvider);
                           TransactionModel tx =
                               ref.watch(spendTransactionProvider);
                           bool txValidation = tx.valid;
@@ -164,8 +166,11 @@ class _SendCardState extends ConsumerState<SendCard>
                               }
                             }
                             if (spendAmount != 0 && addressEmpty) {
-                              buttonText =
-                                  S().send_keyboard_amount_enter_valid_address;
+                              buttonText = (spendAmount > spendableBalance)
+                                  ? S()
+                                      .send_keyboard_amount_insufficient_funds_info
+                                  : S()
+                                      .send_keyboard_amount_enter_valid_address;
                               valid = false;
                             }
                           } else {
