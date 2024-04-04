@@ -134,7 +134,7 @@ class ActivityListTile extends StatelessWidget {
       Widget? unitIcon;
       final Locale activeLocale = Localizations.localeOf(context);
       final accountId = notification.accountId;
-      bool? hide;
+      bool hide = false;
 
       if (accountId != null) {
         hide = ref.watch(balanceHideStateStatusProvider(accountId));
@@ -152,17 +152,18 @@ class ActivityListTile extends StatelessWidget {
             .capitalize();
         iconColor = EnvoyColors.textTertiary;
 
-        if (hide! ||
+        if (hide ||
             AccountManager().getAccountById(accountId!)!.dateSynced == null) {
           unitIcon = const Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              SizedBox(height: EnvoySpacing.xs),
               LoaderGhost(
                 width: 120,
                 height: 15,
                 animate: false,
               ),
-              Padding(padding: EdgeInsets.only(top: 3.0)),
+              SizedBox(height: EnvoySpacing.xs),
               LoaderGhost(
                 width: 40,
                 height: 15,
