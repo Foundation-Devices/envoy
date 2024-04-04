@@ -98,7 +98,8 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     var unit = ref.watch(sendScreenUnitProvider);
 
     Numpad numpad = Numpad(unit,
-        isAmountZero: _enteredAmount.isEmpty || _enteredAmount == "0");
+        isAmountZero: _enteredAmount.isEmpty || _enteredAmount == "0",
+        isDecimalSeparator: _enteredAmount.contains(fiatDecimalSeparator));
     numpad.events.stream.listen((event) async {
       switch (event) {
         case NumpadEvents.backspace:
@@ -298,22 +299,18 @@ class Numpad extends StatefulWidget {
   final StreamController events = StreamController();
   late final AmountDisplayUnit amountDisplayUnit;
   final bool isAmountZero;
+  final bool isDecimalSeparator;
 
-  Numpad(this.amountDisplayUnit, {super.key, required this.isAmountZero});
+  Numpad(this.amountDisplayUnit,
+      {super.key,
+      required this.isAmountZero,
+      required this.isDecimalSeparator});
 
   @override
   State<Numpad> createState() => _NumpadState();
 }
 
 class _NumpadState extends State<Numpad> {
-  bool _isDecimalAdded = false;
-
-  @override
-  void dispose() {
-    _isDecimalAdded = false;
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return GridView.count(
@@ -340,10 +337,9 @@ class _NumpadState extends State<Numpad> {
                 NumpadButtonType.text,
                 text: fiatDecimalSeparator,
                 onTap: () {
-                  if (!_isDecimalAdded) {
+                  if (!widget.isDecimalSeparator) {
                     Haptics.lightImpact();
                     widget.events.sink.add(NumpadEvents.dot);
-                    _isDecimalAdded = true;
                   }
                 },
               )
@@ -373,7 +369,6 @@ class _NumpadState extends State<Numpad> {
                 onLongPressDown: () {
                   Haptics.lightImpact();
                   widget.events.sink.add(NumpadEvents.clearAll);
-                  _isDecimalAdded = false;
                 },
               ),
       ],
