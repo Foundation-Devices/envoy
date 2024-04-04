@@ -590,34 +590,30 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
         context: context,
         linearGradient: true,
         blurColor: Colors.black,
-        dialog: Builder(
-          builder: (context) {
-            return EnvoyDialog(
-              title: S().tagDetails_EditTagName,
-              titleTextTile: EnvoyTypography.subheading,
-              content: textEntry,
-              actions: [
-                EnvoyButton(
-                  S().component_save,
-                  type: EnvoyButtonTypes.primaryModal,
-                  onTap: () async {
+        dialog: EnvoyDialog(
+          title: S().tagDetails_EditTagName,
+          titleTextTile: EnvoyTypography.subheading,
+          content: textEntry,
+          actions: [
+            EnvoyButton(
+              S().component_save,
+              type: EnvoyButtonTypes.primaryModal,
+              onTap: () async {
+                widget.coinTag.name = textEntry.enteredText;
+                int updated =
+                    await CoinRepository().updateCoinTag(widget.coinTag);
+                if (updated != 0) {
+                  //Update local instance
+                  setState(() {
                     widget.coinTag.name = textEntry.enteredText;
-                    int updated =
-                        await CoinRepository().updateCoinTag(widget.coinTag);
-                    if (updated != 0) {
-                      //Update local instance
-                      setState(() {
-                        widget.coinTag.name = textEntry.enteredText;
-                      });
-                      if (context.mounted) {
-                        Navigator.of(context).pop();
-                      }
-                    }
-                  },
-                ),
-              ],
-            );
-          },
+                  });
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                  }
+                }
+              },
+            ),
+          ],
         ));
   }
 
