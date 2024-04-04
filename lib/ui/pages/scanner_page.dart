@@ -255,6 +255,7 @@ class ScannerPageState extends State<ScannerPage> {
 
     // Seed recovery flow
     if (widget._acceptableTypes.contains(ScannerType.seed)) {
+      code = extractSeedFromQRCode(code);
       final seedLength = code.split(" ").length;
       // TODO: account for passphrases (when we reenable that feature)
       if ((seedLength == 12 || seedLength == 24) && Wallet.validateSeed(code)) {
@@ -450,4 +451,17 @@ class ViewFinder extends StatelessWidget {
       ),
     ]);
   }
+}
+
+String extractSeedFromQRCode(String code) {
+  // Split the code based on various delimiters
+  final seedList = code.split(RegExp(r'\s+|,|/'));
+
+  // Join the separated words to form a single seed string
+  final parsedSeed = seedList.join(" ");
+
+  // Remove consecutive white spaces
+  final cleanedSeed = parsedSeed.replaceAll(RegExp(r'\s+'), ' ');
+
+  return cleanedSeed;
 }
