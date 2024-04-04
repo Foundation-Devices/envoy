@@ -15,6 +15,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_details_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
@@ -280,8 +281,19 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                   .copyWith(scrollbars: false),
                                               child: ListView(
                                                   controller: scrollController,
-                                                  padding: EdgeInsets.zero,
+                                                  padding: EdgeInsets.only(
+                                                    bottom: (tag.coins.length >
+                                                                12 &&
+                                                            ref.read(
+                                                                    spendEditModeProvider) !=
+                                                                SpendOverlayContext
+                                                                    .hidden)
+                                                        ? 120
+                                                        : 0,
+                                                  ),
                                                   shrinkWrap: true,
+                                                  physics:
+                                                      const BouncingScrollPhysics(),
                                                   children: List.generate(
                                                     tag.coins.length,
                                                     (index) {
