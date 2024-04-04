@@ -88,30 +88,26 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                             child: PuzzleWidget(
                               puzzle: e,
                               seedIndex: _seedIndexes[_puzzlePageIndex],
-                              answer: answers[_puzzleOptions.indexOf(e)],
-                              onAnswered: (answer) async {
-                                if (answer ==
-                                    answers[_puzzleOptions.indexOf(e)]) {
-                                  bool isLastQuestion =
-                                      (_puzzleOptions.indexOf(e) + 1) ==
-                                          _puzzleOptions.length;
-                                  if (answers.last == answer &&
-                                      isLastQuestion) {
-                                    setState(() {
-                                      _finishedAnswers = true;
-                                    });
-                                    return;
-                                  }
-                                  await Future.delayed(
-                                      const Duration(milliseconds: 600));
-                                  _pageController.animateToPage(
-                                      _puzzleOptions.indexOf(e) + 1,
-                                      duration:
-                                          const Duration(milliseconds: 300),
-                                      curve: Curves.ease);
-                                } else {
-                                  widget.onVerificationFinished(false);
+                              correctAnswer: answers[_puzzleOptions.indexOf(e)],
+                              onCorrectAnswer: (answers) async {
+                                bool isLastQuestion =
+                                    (_puzzleOptions.indexOf(e) + 1) ==
+                                        _puzzleOptions.length;
+                                if (isLastQuestion) {
+                                  setState(() {
+                                    _finishedAnswers = true;
+                                  });
+                                  return;
                                 }
+                                await Future.delayed(
+                                    const Duration(milliseconds: 600));
+                                _pageController.animateToPage(
+                                    _puzzleOptions.indexOf(e) + 1,
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.ease);
+                              },
+                              onWrongAnswer: (answers) {
+                                widget.onVerificationFinished(false);
                               },
                             ),
                           );
@@ -192,16 +188,18 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
 
 class PuzzleWidget extends StatefulWidget {
   final List<String> puzzle;
-  final Function(String) onAnswered;
-  final String answer;
+  final String correctAnswer;
   final int seedIndex;
+  final Function(String) onCorrectAnswer;
+  final Function(String) onWrongAnswer;
 
   const PuzzleWidget(
       {super.key,
       required this.puzzle,
-      required this.onAnswered,
-      required this.answer,
-      required this.seedIndex});
+      required this.correctAnswer,
+      required this.seedIndex,
+      required this.onCorrectAnswer,
+      required this.onWrongAnswer});
 
   @override
   State<PuzzleWidget> createState() => _PuzzleWidgetState();
@@ -223,7 +221,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
             children: [
               _answerField(context),
               if (chosenAnswer != null)
-                _buildAnswerStatus(chosenAnswer == widget.answer),
+                _buildAnswerStatus(chosenAnswer == widget.correctAnswer),
             ],
           ),
         ),
@@ -241,12 +239,14 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                     fontWeight: FontWeight.bold);
                 return GestureDetector(
                   onTap: () {
-                    widget.onAnswered(widget.puzzle[index]);
                     setState(() {
                       chosenAnswer = widget.puzzle[index];
                     });
-                    if (chosenAnswer == widget.answer) {
+                    if (chosenAnswer == widget.correctAnswer) {
+                      widget.onCorrectAnswer(widget.puzzle[index]);
                       Haptics.lightImpact();
+                    } else {
+                      widget.onWrongAnswer(widget.puzzle[index]);
                     }
                   },
                   child: Column(
@@ -323,7 +323,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
     if (chosenAnswer == null) {
       borderColor = Colors.transparent;
     } else {
-      if (chosenAnswer != widget.answer) {
+      if (chosenAnswer != widget.correctAnswer) {
         borderColor = EnvoyColors.brown;
       } else {
         borderColor = EnvoyColors.teal;
