@@ -13,6 +13,7 @@ import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/components/bottom_navigation.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/home/top_bar_home.dart';
 import 'package:envoy/ui/shield.dart';
@@ -323,103 +324,105 @@ class HomePageState extends ConsumerState<HomePage>
       type: MaterialType.transparency,
       child: Shield(child: widget.mainNavigationShell),
     );
-    return Scaffold(
-        extendBodyBehindAppBar: true,
-        resizeToAvoidBottomInset: false,
-        appBar: PreferredSize(
-            preferredSize: Size.fromHeight(
-                AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight),
-            child: IgnorePointer(
-              ignoring: fullScreen,
-              child: AnimatedOpacity(
-                  opacity: fullScreen ? 0.0 : 1.0,
-                  duration: _animationsDuration,
-                  child: const HomeAppBar(backGroundShown: false)),
-            )),
-        body: // Something behind
-            Stack(
-          children: [
-            // Main background
-            AnimatedPositioned(
-                top: 0,
-                height: _backgroundShown ? screenHeight + 1500 : screenHeight,
-                left: 0,
-                right: 0,
-                curve: Curves.easeIn,
-                duration: Duration(
-                    milliseconds: _animationsDuration.inMilliseconds - 50),
-                child: const AppBackground()),
-            // Variable background
-            SafeArea(
-              child: AnimatedSwitcher(
-                  duration: _animationsDuration,
+    return CoinSelectionOverlay(
+      child: Scaffold(
+          extendBodyBehindAppBar: true,
+          resizeToAvoidBottomInset: false,
+          appBar: PreferredSize(
+              preferredSize: Size.fromHeight(
+                  AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight),
+              child: IgnorePointer(
+                ignoring: fullScreen,
+                child: AnimatedOpacity(
+                    opacity: fullScreen ? 0.0 : 1.0,
+                    duration: _animationsDuration,
+                    child: const HomeAppBar(backGroundShown: false)),
+              )),
+          body: // Something behind
+              Stack(
+            children: [
+              // Main background
+              AnimatedPositioned(
+                  top: 0,
+                  height: _backgroundShown ? screenHeight + 1500 : screenHeight,
+                  left: 0,
+                  right: 0,
+                  curve: Curves.easeIn,
+                  duration: Duration(
+                      milliseconds: _animationsDuration.inMilliseconds - 50),
+                  child: const AppBackground()),
+              // Variable background
+              SafeArea(
+                child: AnimatedSwitcher(
+                    duration: _animationsDuration,
+                    child: Container(
+                      child: _backgroundShown ? background : Container(),
+                    )),
+              ),
+              // Tab bar
+              AnimatedSlide(
+                  duration: Duration(
+                      milliseconds: _animationsDuration.inMilliseconds),
+                  offset: Offset(
+                      0,
+                      _backgroundShown ||
+                              (modalShown || optionsShown || fullScreen)
+                          ? 0.5
+                          : 0.0),
                   child: Container(
-                    child: _backgroundShown ? background : Container(),
-                  )),
-            ),
-            // Tab bar
-            AnimatedSlide(
-                duration:
-                    Duration(milliseconds: _animationsDuration.inMilliseconds),
-                offset: Offset(
-                    0,
-                    _backgroundShown ||
-                            (modalShown || optionsShown || fullScreen)
-                        ? 0.5
-                        : 0.0),
-                child: Container(
-                  alignment: Alignment.bottomCenter,
-                  child: IgnorePointer(
-                    ignoring: _backgroundShown || modalShown || fullScreen,
-                    child: EnvoyBottomNavigation(
-                      onIndexChanged: (selectedIndex) {
-                        widget.mainNavigationShell.goBranch(selectedIndex);
-                      },
+                    alignment: Alignment.bottomCenter,
+                    child: IgnorePointer(
+                      ignoring: _backgroundShown || modalShown || fullScreen,
+                      child: EnvoyBottomNavigation(
+                        onIndexChanged: (selectedIndex) {
+                          widget.mainNavigationShell.goBranch(selectedIndex);
+                        },
+                      ),
                     ),
+                  )),
+              Positioned(
+                  top: shieldTop - 20,
+                  left: 0,
+                  right: 0,
+                  child: IgnorePointer(
+                      ignoring: !optionsShown,
+                      child: AnimatedOpacity(
+                          opacity: optionsShown ? 1.0 : 0.0,
+                          duration: _animationsDuration,
+                          child: AnimatedSwitcher(
+                              duration: _animationsDuration, child: options)))),
+              // Shield
+              AnimatedPositioned(
+                duration: _animationsDuration,
+                top: shieldTotalTop,
+                height: shieldTotalHeight,
+                left: 5,
+                right: 5,
+                child: AnimatedOpacity(
+                  opacity: _backgroundShown ? 0.1 : 1.0,
+                  duration: _backgroundShown
+                      ? Duration(
+                          milliseconds: _animationsDuration.inMilliseconds ~/ 4)
+                      : _animationsDuration,
+                  curve: _backgroundShown
+                      ? Curves.linear
+                      : ShieldFadeInAnimationCurve(),
+                  child: Stack(
+                    children: [
+                      Hero(
+                          tag: "shield",
+                          child: Shield(
+                              child: Container(
+                            color: Colors.transparent,
+                          ))),
+                      mainWidget,
+                    ],
                   ),
-                )),
-            Positioned(
-                top: shieldTop - 20,
-                left: 0,
-                right: 0,
-                child: IgnorePointer(
-                    ignoring: !optionsShown,
-                    child: AnimatedOpacity(
-                        opacity: optionsShown ? 1.0 : 0.0,
-                        duration: _animationsDuration,
-                        child: AnimatedSwitcher(
-                            duration: _animationsDuration, child: options)))),
-            // Shield
-            AnimatedPositioned(
-              duration: _animationsDuration,
-              top: shieldTotalTop,
-              height: shieldTotalHeight,
-              left: 5,
-              right: 5,
-              child: AnimatedOpacity(
-                opacity: _backgroundShown ? 0.1 : 1.0,
-                duration: _backgroundShown
-                    ? Duration(
-                        milliseconds: _animationsDuration.inMilliseconds ~/ 4)
-                    : _animationsDuration,
-                curve: _backgroundShown
-                    ? Curves.linear
-                    : ShieldFadeInAnimationCurve(),
-                child: Stack(
-                  children: [
-                    Hero(
-                        tag: "shield",
-                        child: Shield(
-                            child: Container(
-                          color: Colors.transparent,
-                        ))),
-                    mainWidget,
-                  ],
                 ),
               ),
-            ),
-          ],
-        ));
+            ],
+          )),
+    );
   }
 
   AbsorbPointer buildRightAction() {

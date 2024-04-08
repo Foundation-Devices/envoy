@@ -3,9 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_requirement_overlay.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/home/home_state.dart';
@@ -65,19 +63,6 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     String path = ref.watch(routePathProvider);
     bool backDropEnabled = homePageDropState != HomePageBackgroundState.hidden;
 
-    ///show spend overlay for account detail page
-    ref.listen(showSpendRequirementOverlayProvider, (previous, next) {
-      if (next) {
-        final account = ref.read(selectedAccountProvider);
-        if (account != null) showSpendRequirementOverlay(context, account);
-      } else {
-        if (ref.read(spendEditModeProvider) ==
-            SpendOverlayContext.preselectCoins) {
-          hideSpendRequirementOverlay();
-        }
-      }
-    });
-
     String homePageTitle = ref.watch(homePageTitleProvider);
     ref.listen(
       routePathProvider,
@@ -102,20 +87,6 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
           ref.read(spendEditModeProvider.notifier).state =
               SpendOverlayContext.hidden;
           clearSpendState(ProviderScope.containerOf(context));
-        }
-
-        ///shows/hide spend overlay for account detail page, ovelay is only needed within account detail page..
-        /// any other navigation should hide the overlay (except coin tag screens)
-        if (nextPath == ROUTE_ACCOUNT_DETAIL) {
-          if (ref.read(showSpendRequirementOverlayProvider) ||
-              ref.read(coinSelectionStateProvider).isNotEmpty) {
-            final account = ref.read(selectedAccountProvider);
-            if (account != null) showSpendRequirementOverlay(context, account);
-          } else {
-            if (ref.read(spendEditModeProvider) == SpendOverlayContext.hidden) {
-              hideSpendRequirementOverlay();
-            }
-          }
         }
       },
     );
@@ -167,6 +138,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
           },
         ),
       ),
+      centerTitle: true,
       title: Stack(fit: StackFit.loose, alignment: Alignment.center, children: [
         Center(
           child: AnimatedSwitcher(
@@ -189,8 +161,9 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       ]),
       actions: [
 // Right action
-        if (!inEditMode)
-          AnimatedSwitcher(
+        Opacity(
+          opacity: inEditMode ? 0.0 : 1.0,
+          child: AnimatedSwitcher(
               duration: _animationsDuration,
               child: AbsorbPointer(
                   absorbing: backDropEnabled || modalShown,
@@ -227,7 +200,8 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                                     ),
                                   ),
                                 )
-                              : rightAction))))
+                              : rightAction)))),
+        )
       ],
     );
   }
@@ -241,6 +215,9 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       return true;
     }
     if (path.contains(ROUTE_LEARN_BLOG)) {
+      return true;
+    }
+    if (path.contains(ROUTE_ACCOUNT_SEND)) {
       return true;
     }
     if (path.contains(ROUTE_SELECT_REGION)) {

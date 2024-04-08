@@ -6,12 +6,18 @@ import 'package:flutter/material.dart';
 
 class TextEntry extends StatelessWidget {
   final _controller = TextEditingController();
+
   get enteredText => _controller.text;
   final FocusNode? focusNode;
   final int? maxLength;
+  final TextAlign textAlign;
 
   TextEntry(
-      {super.key, String placeholder = "", this.focusNode, this.maxLength}) {
+      {super.key,
+      String placeholder = "",
+      this.focusNode,
+      this.maxLength,
+      this.textAlign = TextAlign.start}) {
     _controller.text = placeholder;
   }
 
@@ -28,6 +34,7 @@ class TextEntry extends StatelessWidget {
               focusNode: focusNode,
               controller: _controller,
               maxLength: maxLength,
+              textAlign: textAlign,
               validator: (value) {
                 return null;
               },
