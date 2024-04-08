@@ -61,6 +61,7 @@ class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                 onPressed: () {
                   setState(() {
                     _filterState = {}..addAll(LearnFilters.values);
+                    _sortState = LearnSortTypes.newestFirst;
                   });
                 },
                 style: TextButton.styleFrom(
