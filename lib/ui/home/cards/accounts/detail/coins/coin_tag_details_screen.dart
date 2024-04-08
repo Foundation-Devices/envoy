@@ -9,7 +9,6 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
@@ -29,6 +28,7 @@ import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/ui/envoy_dialog.dart';
 
 class CoinTagDetailsScreen extends ConsumerStatefulWidget {
   final bool showCoins;
@@ -592,60 +592,37 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     final textEntry = TextEntry(
       maxLength: 30,
       placeholder: widget.coinTag.name,
+      textAlign: TextAlign.center,
     );
     showEnvoyDialog(
-      context: context,
-      dialog: Builder(
-        builder: (context) {
-          return EnvoyDialog(
-            content: Builder(
-              builder: (context) {
-                return Column(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      child: Text(
-                        "Edit Tag Name", // TODO: FIGMA
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                    ),
-                    textEntry,
-                  ],
-                );
+        context: context,
+        linearGradient: true,
+        blurColor: Colors.black,
+        dialog: EnvoyDialog(
+          title: S().tagDetails_EditTagName,
+          titleTextTile: EnvoyTypography.subheading,
+          content: textEntry,
+          actions: [
+            EnvoyButton(
+              S().component_save,
+              type: EnvoyButtonTypes.primaryModal,
+              onTap: () async {
+                widget.coinTag.name = textEntry.enteredText;
+                int updated =
+                    await CoinRepository().updateCoinTag(widget.coinTag);
+                if (updated != 0) {
+                  //Update local instance
+                  setState(() {
+                    widget.coinTag.name = textEntry.enteredText;
+                  });
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                  }
+                }
               },
             ),
-            actions: [
-              EnvoyButton(
-                "Return to my coins", // TODO: FIGMA
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                type: EnvoyButtonTypes.tertiary,
-              ),
-              EnvoyButton(
-                S().component_save,
-                onTap: () async {
-                  final navigator = Navigator.of(context);
-                  widget.coinTag.name = textEntry.enteredText;
-                  int updated =
-                      await CoinRepository().updateCoinTag(widget.coinTag);
-                  if (updated != 0) {
-                    //Update local instance
-                    setState(() {
-                      widget.coinTag.name = textEntry.enteredText;
-                    });
-                    navigator.pop();
-                  }
-                },
-              ),
-            ],
-          );
-        },
-      ),
-    );
+          ],
+        ));
   }
 
   void selectCoin(BuildContext context, Coin coin) {

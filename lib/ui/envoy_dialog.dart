@@ -11,6 +11,7 @@ class EnvoyDialog extends StatelessWidget {
   final Widget? content;
   final List<Widget>? actions;
   final double paddingBottom;
+  final TextStyle? titleTextTile;
 
   const EnvoyDialog(
       {super.key,
@@ -18,7 +19,8 @@ class EnvoyDialog extends StatelessWidget {
       this.content,
       this.paddingBottom = 12,
       this.actions,
-      this.dismissible = true});
+      this.dismissible = true,
+      this.titleTextTile});
 
   @override
   Widget build(BuildContext context) {
@@ -49,11 +51,12 @@ class EnvoyDialog extends StatelessWidget {
             title != null
                 ? Text(title ?? '',
                     textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge
-                        ?.copyWith(fontSize: 24)
-                        .setWeight(FontWeight.w500))
+                    style: titleTextTile ??
+                        Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            ?.copyWith(fontSize: 24)
+                            .setWeight(FontWeight.w500))
                 : const SizedBox(),
             Padding(padding: EdgeInsets.all(title != null ? 8 : 0)),
             content ?? Container(),
