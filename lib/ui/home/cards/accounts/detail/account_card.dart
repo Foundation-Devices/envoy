@@ -268,12 +268,14 @@ class _AccountCardState extends ConsumerState<AccountCard>
                                 ScannerType.btcPay
                               ],
                               account: account,
-                              onAddressValidated: (address, amount) {
+                              onAddressValidated: (address, amount, message) {
                                 // Navigator.pop(context);
                                 ref.read(spendAddressProvider.notifier).state =
                                     address;
                                 ref.read(spendAmountProvider.notifier).state =
                                     amount;
+                                ref.read(stagingTxNoteProvider.notifier).state =
+                                    message;
                                 context.go(ROUTE_ACCOUNT_SEND, extra: {
                                   "account": account,
                                   "address": address,
