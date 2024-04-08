@@ -127,7 +127,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
             }
           }
           break;
-        case NumpadEvents.dot:
+        case NumpadEvents.separator:
           {
             if (unit == AmountDisplayUnit.sat) {
               break;
@@ -182,7 +182,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
           (unit != AmountDisplayUnit.sat) &&
           (_enteredAmount.contains(fiatDecimalSeparator));
 
-      bool addDot = (event == NumpadEvents.dot) &&
+      bool addDot = (event == NumpadEvents.separator) &&
           (unit == AmountDisplayUnit.fiat &&
                   !_enteredAmount.contains(fiatDecimalSeparator) ||
               unit == AmountDisplayUnit.btc &&
@@ -289,7 +289,7 @@ class SpendableAmountWidget extends ConsumerWidget {
   }
 }
 
-enum NumpadEvents { dot, ok, backspace, clearAll, clipboard }
+enum NumpadEvents { separator, ok, backspace, clearAll, clipboard }
 
 class Numpad extends StatefulWidget {
   // Dart linter is reporting a false positive here
@@ -339,7 +339,7 @@ class _NumpadState extends State<Numpad> {
                 onTap: () {
                   if (!widget.isDecimalSeparator) {
                     Haptics.lightImpact();
-                    widget.events.sink.add(NumpadEvents.dot);
+                    widget.events.sink.add(NumpadEvents.separator);
                   }
                 },
               )
