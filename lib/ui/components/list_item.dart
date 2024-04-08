@@ -152,33 +152,37 @@ class ActivityListTile extends StatelessWidget {
             .capitalize();
         iconColor = EnvoyColors.textTertiary;
 
-        if (hide ||
-            AccountManager().getAccountById(accountId!)!.dateSynced == null) {
-          unitIcon = const Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              SizedBox(height: EnvoySpacing.xs),
-              LoaderGhost(
-                width: 120,
-                height: 15,
-                animate: false,
+        unitIcon = () {
+          if (hide ||
+              AccountManager().getAccountById(accountId!)!.dateSynced == null) {
+            return const Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                SizedBox(height: EnvoySpacing.xs),
+                LoaderGhost(
+                  width: 120,
+                  height: 15,
+                  animate: false,
+                ),
+                SizedBox(height: EnvoySpacing.xs),
+                LoaderGhost(
+                  width: 40,
+                  height: 15,
+                  animate: false,
+                ),
+              ],
+            );
+          } else {
+            return FittedBox(
+              child: EnvoyAmount(
+                account: AccountManager().getAccountById(accountId)!,
+                amountSats: notification.amount!,
+                amountWidgetStyle: AmountWidgetStyle.normal,
+                alignToEnd: true,
               ),
-              SizedBox(height: EnvoySpacing.xs),
-              LoaderGhost(
-                width: 40,
-                height: 15,
-                animate: false,
-              ),
-            ],
-          );
-        } else {
-          unitIcon = EnvoyAmount(
-            account: AccountManager().getAccountById(accountId)!,
-            amountSats: notification.amount!,
-            amountWidgetStyle: AmountWidgetStyle.normal,
-            alignToEnd: true,
-          );
-        }
+            );
+          }
+        }();
       }
 
       if (notification.type == EnvoyNotificationType.firmware) {
