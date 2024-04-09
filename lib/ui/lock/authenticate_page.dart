@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:envoy/business/local_storage.dart';
@@ -64,7 +65,63 @@ class AuthenticatePage extends StatefulWidget {
   State<AuthenticatePage> createState() => _AuthenticatePageState();
 }
 
-class _AuthenticatePageState extends State<AuthenticatePage> {
+class _AuthenticatePageState extends State<AuthenticatePage>
+    with WidgetsBindingObserver {
+  bool? useAuth = LocalStorage().prefs.getBool("useLocalAuth");
+
+  Timer? _authTimer;
+  bool _wasAuthMoreThan1minAgo = true;
+
+  void _startAuthTimer() {
+    _authTimer = Timer.periodic(const Duration(seconds: 5), (_) async {
+      _wasAuthMoreThan1minAgo = true;
+    });
+  }
+
+  void _stopAuthTimer() {
+    _wasAuthMoreThan1minAgo = false;
+    _authTimer?.cancel();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (useAuth == true) {
+        initiateAuth();
+      } else {
+        runApp(const EnvoyApp());
+      }
+    });
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    useAuth = LocalStorage()
+        .prefs
+        .getBool("useLocalAuth"); // update useAuth on state change too
+
+    switch (state) {
+      case AppLifecycleState.paused:
+        if (useAuth == true) {
+          _wasAuthMoreThan1minAgo = false;
+          _startAuthTimer();
+        }
+        break;
+      case AppLifecycleState.resumed:
+        if (_wasAuthMoreThan1minAgo && useAuth == true) {
+          initiateAuth();
+        } else {
+          _stopAuthTimer();
+        }
+        break;
+
+      default:
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -97,6 +154,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
             await Future.delayed(const Duration(milliseconds: 800));
           }
           runApp(const EnvoyApp());
+          _stopAuthTimer();
           return;
         } else {
           showAuthLockedOutDialog(
@@ -255,18 +313,5 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
             );
           },
         ));
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      bool? useAuth = LocalStorage().prefs.getBool("useLocalAuth");
-      if (useAuth == true) {
-        initiateAuth();
-      } else {
-        runApp(const EnvoyApp());
-      }
-    });
   }
 }
