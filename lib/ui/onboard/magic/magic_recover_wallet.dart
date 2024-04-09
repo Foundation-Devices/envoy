@@ -27,7 +27,9 @@ import 'package:rive/rive.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
 
 class MagicRecoverWallet extends ConsumerStatefulWidget {
-  const MagicRecoverWallet({super.key});
+  //Flag to try manual recovery if the user manually presses the recovery button.
+  final bool tryManualRecovery;
+  const MagicRecoverWallet({super.key, this.tryManualRecovery = false});
 
   @override
   ConsumerState<MagicRecoverWallet> createState() => _MagicRecoverWalletState();
@@ -55,7 +57,10 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
       if (!ref.read(triedAutomaticRecovery) &&
           !ref.read(successfulManualRecovery) &&
           !ref.read(successfulSetupWallet)) {
-        _tryAutomaticRecovery();
+        _tryRecovery();
+      }
+      if (widget.tryManualRecovery) {
+        _tryRecovery();
       }
     });
 
@@ -68,7 +73,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
     super.dispose();
   }
 
-  void _tryAutomaticRecovery() async {
+  void _tryRecovery() async {
     ref.read(triedAutomaticRecovery.notifier).state = true;
     await Future.delayed(const Duration(seconds: 1));
     var success = false;
@@ -316,7 +321,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                       MagicRecoveryWalletState.recovering;
                 });
                 _setIndeterminateState();
-                _tryAutomaticRecovery();
+                _tryRecovery();
               },
             ),
           ],
@@ -384,7 +389,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                                         const WalletSetupSuccess())).then((_) {
                               //Try automatic recovery if the user press back button
                               if (mounted) {
-                                _tryAutomaticRecovery();
+                                _tryRecovery();
                               }
                             });
                           } else {
@@ -436,7 +441,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                       _magicRecoverWalletState =
                           MagicRecoveryWalletState.recovering;
                     });
-                    _tryAutomaticRecovery();
+                    _tryRecovery();
                   },
                 );
               },
@@ -478,7 +483,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                       MagicRecoveryWalletState.recovering;
                 });
                 _setIndeterminateState();
-                _tryAutomaticRecovery();
+                _tryRecovery();
               },
             ),
           ],
