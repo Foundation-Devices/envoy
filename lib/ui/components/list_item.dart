@@ -11,9 +11,12 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/business/notifications.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
+import 'package:envoy/ui/loader_ghost.dart';
+import 'package:envoy/ui/state/hide_balance_state.dart';
 
 class EnvoyListTile extends StatelessWidget {
   const EnvoyListTile({
@@ -123,59 +126,92 @@ class ActivityListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String textLeft1 = "";
-    String? textLeft2;
-    EnvoyIcons? leftIcon;
-    Color? iconColor;
-    Widget? unitIcon;
-    final Locale activeLocale = Localizations.localeOf(context);
+    return Consumer(builder: (context, ref, _) {
+      String textLeft1 = "";
+      String? textLeft2;
+      EnvoyIcons? leftIcon;
+      Color? iconColor;
+      Widget? unitIcon;
+      final Locale activeLocale = Localizations.localeOf(context);
+      final accountId = notification.accountId;
+      bool hide = false;
 
-    if (notification.type == EnvoyNotificationType.transaction) {
-      leftIcon = notification.amount! >= 0
-          ? EnvoyIcons.arrow_down_left
-          : EnvoyIcons.arrow_up_right;
-      textLeft1 =
-          notification.amount! >= 0 ? S().activity_received : S().activity_sent;
-      textLeft2 = timeago
-          .format(notification.date, locale: activeLocale.languageCode)
-          .capitalize();
-      iconColor = EnvoyColors.textTertiary;
-      unitIcon = FittedBox(
-        child: EnvoyAmount(
-          account: AccountManager().getAccountById(notification.accountId!)!,
-          amountSats: notification.amount!,
-          amountWidgetStyle: AmountWidgetStyle.normal,
-          alignToEnd: true,
-        ),
+      if (accountId != null) {
+        hide = ref.watch(balanceHideStateStatusProvider(accountId));
+      }
+
+      if (notification.type == EnvoyNotificationType.transaction) {
+        leftIcon = notification.amount! >= 0
+            ? EnvoyIcons.arrow_down_left
+            : EnvoyIcons.arrow_up_right;
+        textLeft1 = notification.amount! >= 0
+            ? S().activity_received
+            : S().activity_sent;
+        textLeft2 = timeago
+            .format(notification.date, locale: activeLocale.languageCode)
+            .capitalize();
+        iconColor = EnvoyColors.textTertiary;
+
+        unitIcon = () {
+          if (hide ||
+              AccountManager().getAccountById(accountId!)!.dateSynced == null) {
+            return const Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                SizedBox(height: EnvoySpacing.xs),
+                LoaderGhost(
+                  width: 120,
+                  height: 15,
+                  animate: false,
+                ),
+                SizedBox(height: EnvoySpacing.xs),
+                LoaderGhost(
+                  width: 40,
+                  height: 15,
+                  animate: false,
+                ),
+              ],
+            );
+          } else {
+            return FittedBox(
+              child: EnvoyAmount(
+                account: AccountManager().getAccountById(accountId)!,
+                amountSats: notification.amount!,
+                amountWidgetStyle: AmountWidgetStyle.normal,
+                alignToEnd: true,
+              ),
+            );
+          }
+        }();
+      }
+
+      if (notification.type == EnvoyNotificationType.firmware) {
+        leftIcon = EnvoyIcons.tool;
+        textLeft1 = S().activity_firmwareUpdate;
+        textLeft2 = timeago
+            .format(notification.date, locale: activeLocale.languageCode)
+            .capitalize();
+
+        iconColor = EnvoyColors.textTertiary;
+      }
+
+      if (notification.type == EnvoyNotificationType.envoyUpdate) {
+        leftIcon = EnvoyIcons.tool;
+        textLeft1 = S().activity_envoyUpdate;
+        textLeft2 = timeago
+            .format(notification.date, locale: activeLocale.languageCode)
+            .capitalize();
+
+        iconColor = EnvoyColors.textTertiary;
+      }
+
+      return EnvoyListTile(
+        textLeft1: textLeft1,
+        textLeft2: textLeft2,
+        leftIcon: leftIcon,
+        iconColor: iconColor,
+        unitIcon: unitIcon,
       );
-    }
-
-    if (notification.type == EnvoyNotificationType.firmware) {
-      leftIcon = EnvoyIcons.tool;
-      textLeft1 = S().activity_firmwareUpdate;
-      textLeft2 = timeago
-          .format(notification.date, locale: activeLocale.languageCode)
-          .capitalize();
-
-      iconColor = EnvoyColors.textTertiary;
-    }
-
-    if (notification.type == EnvoyNotificationType.envoyUpdate) {
-      leftIcon = EnvoyIcons.tool;
-      textLeft1 = S().activity_envoyUpdate;
-      textLeft2 = timeago
-          .format(notification.date, locale: activeLocale.languageCode)
-          .capitalize();
-
-      iconColor = EnvoyColors.textTertiary;
-    }
-
-    return EnvoyListTile(
-      textLeft1: textLeft1,
-      textLeft2: textLeft2,
-      leftIcon: leftIcon,
-      iconColor: iconColor,
-      unitIcon: unitIcon,
-    );
+    });
   }
 }
