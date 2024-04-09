@@ -67,13 +67,13 @@ class AuthenticatePage extends StatefulWidget {
 
 class _AuthenticatePageState extends State<AuthenticatePage>
     with WidgetsBindingObserver {
-  bool? useAuth = LocalStorage().prefs.getBool("useLocalAuth");
+  bool useAuth = LocalStorage().prefs.getBool("useLocalAuth")!;
 
   Timer? _authTimer;
   bool _wasAuthMoreThan1minAgo = true;
 
   void _startAuthTimer() {
-    _authTimer = Timer.periodic(const Duration(seconds: 5), (_) async {
+    _authTimer = Timer.periodic(const Duration(seconds: 60), (_) async {
       _wasAuthMoreThan1minAgo = true;
     });
   }
@@ -87,7 +87,7 @@ class _AuthenticatePageState extends State<AuthenticatePage>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (useAuth == true) {
+      if (useAuth) {
         initiateAuth();
       } else {
         runApp(const EnvoyApp());
@@ -100,17 +100,17 @@ class _AuthenticatePageState extends State<AuthenticatePage>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     useAuth = LocalStorage()
         .prefs
-        .getBool("useLocalAuth"); // update useAuth on state change too
+        .getBool("useLocalAuth")!; // update useAuth on state change too
 
     switch (state) {
       case AppLifecycleState.paused:
-        if (useAuth == true) {
+        if (useAuth) {
           _wasAuthMoreThan1minAgo = false;
           _startAuthTimer();
         }
         break;
       case AppLifecycleState.resumed:
-        if (_wasAuthMoreThan1minAgo && useAuth == true) {
+        if (_wasAuthMoreThan1minAgo && useAuth) {
           initiateAuth();
         } else {
           _stopAuthTimer();
