@@ -104,7 +104,9 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                       _playerKey.currentState?.pause();
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
-                        return const MagicRecoverWallet();
+                        return const MagicRecoverWallet(
+                          tryManualRecovery: true,
+                        );
                       }));
                     }),
                 OnboardingButton(
