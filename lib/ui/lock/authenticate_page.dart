@@ -3,8 +3,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -59,71 +59,39 @@ class AuthenticateApp extends StatelessWidget {
 }
 
 class AuthenticatePage extends StatefulWidget {
-  const AuthenticatePage({super.key});
+  ///[sessionAuthenticate] will show a overlay to prevent user interaction
+  ///if this is set to true, after successful authentication navigator
+  ///will pop the blur overlay
+  final bool sessionAuthenticate;
+
+  const AuthenticatePage({super.key, this.sessionAuthenticate = false});
 
   @override
   State<AuthenticatePage> createState() => _AuthenticatePageState();
 }
 
-class _AuthenticatePageState extends State<AuthenticatePage>
-    with WidgetsBindingObserver {
-  bool useAuth = LocalStorage().prefs.getBool("useLocalAuth")!;
-
-  Timer? _authTimer;
-  bool _wasAuthMoreThan1minAgo = true;
-
-  void _startAuthTimer() {
-    _authTimer = Timer.periodic(const Duration(seconds: 60), (_) async {
-      _wasAuthMoreThan1minAgo = true;
-    });
-  }
-
-  void _stopAuthTimer() {
-    _wasAuthMoreThan1minAgo = false;
-    _authTimer?.cancel();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (useAuth) {
-        initiateAuth();
-      } else {
-        runApp(const EnvoyApp());
-      }
-    });
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    useAuth = LocalStorage()
-        .prefs
-        .getBool("useLocalAuth")!; // update useAuth on state change too
-
-    switch (state) {
-      case AppLifecycleState.paused:
-        if (useAuth) {
-          _wasAuthMoreThan1minAgo = false;
-          _startAuthTimer();
-        }
-        break;
-      case AppLifecycleState.resumed:
-        if (_wasAuthMoreThan1minAgo && useAuth) {
-          initiateAuth();
-        } else {
-          _stopAuthTimer();
-        }
-        break;
-
-      default:
-        break;
-    }
-  }
-
+class _AuthenticatePageState extends State<AuthenticatePage> {
   @override
   Widget build(BuildContext context) {
+    if (widget.sessionAuthenticate) {
+      return PopScope(
+        canPop: false,
+        child: TweenAnimationBuilder(
+          duration: const Duration(milliseconds: 400),
+          tween: Tween<double>(begin: 0, end: 14),
+          builder: (context, value, child) {
+            return BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: value, sigmaY: value),
+              child: child,
+            );
+          },
+          child: const DecoratedBox(
+              decoration: BoxDecoration(
+            color: Colors.black12,
+          )),
+        ),
+      );
+    }
     return Container(
       decoration: const BoxDecoration(
         color: EnvoyColors.textPrimaryInverse,
@@ -136,6 +104,7 @@ class _AuthenticatePageState extends State<AuthenticatePage>
   }
 
   void initiateAuth() async {
+    final navigator = Navigator.of(context);
     final LocalAuthentication auth = LocalAuthentication();
     final List<BiometricType> availableBiometrics =
         await auth.getAvailableBiometrics();
@@ -153,8 +122,11 @@ class _AuthenticatePageState extends State<AuthenticatePage>
           if (Platform.isIOS) {
             await Future.delayed(const Duration(milliseconds: 800));
           }
-          runApp(const EnvoyApp());
-          _stopAuthTimer();
+          if (widget.sessionAuthenticate && navigator.mounted) {
+            navigator.pop();
+          } else {
+            runApp(const EnvoyApp());
+          }
           return;
         } else {
           showAuthLockedOutDialog(
@@ -226,7 +198,11 @@ class _AuthenticatePageState extends State<AuthenticatePage>
           ),
           localizedReason: 'Authenticate to Access Envoy');
       if (didAuthenticate) {
-        runApp(const EnvoyApp());
+        if (widget.sessionAuthenticate && navigator.mounted) {
+          navigator.pop();
+        } else {
+          runApp(const EnvoyApp());
+        }
         return;
       } else {
         showAuthLockedOutDialog(
@@ -313,5 +289,18 @@ class _AuthenticatePageState extends State<AuthenticatePage>
             );
           },
         ));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      bool? useAuth = LocalStorage().prefs.getBool("useLocalAuth");
+      if (useAuth == true) {
+        initiateAuth();
+      } else {
+        runApp(const EnvoyApp());
+      }
+    });
   }
 }
