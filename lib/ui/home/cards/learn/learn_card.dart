@@ -42,6 +42,10 @@ class _LearnCardState extends ConsumerState<LearnCard> {
         learnFilterState.contains(LearnFilters.all) &&
             learnSortState == LearnSortTypes.newestFirst;
 
+    final bool isEverythingEmpty = videos.isEmpty &&
+        blogs.isEmpty &&
+        !learnFilterState.contains(LearnFilters.faqs);
+
     return Padding(
       padding: const EdgeInsets.all(EnvoySpacing.medium1),
       child: ShaderMask(
@@ -198,6 +202,22 @@ class _LearnCardState extends ConsumerState<LearnCard> {
             if (learnFilterState.contains(LearnFilters.faqs))
               SliverToBoxAdapter(
                 child: Faq(searchText: widget.controller.text),
+              ),
+            // Adding SliverPadding for empty state
+            if (isEverythingEmpty)
+              SliverPadding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: EnvoySpacing.medium2),
+                sliver: SliverToBoxAdapter(
+                  child: Center(
+                    child: Text(
+                      "Applied filters are hiding all content. Please update or reset filters.",
+                      style: EnvoyTypography.body
+                          .copyWith(color: EnvoyColors.textPrimary),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
               ),
             const SliverPadding(
                 padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium2)),
