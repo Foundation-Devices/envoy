@@ -5,6 +5,7 @@
 
 import 'dart:async';
 
+import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/lock/authenticate_page.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +47,10 @@ class SessionManager with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    final lockEnabled = LocalStorage().prefs.getBool("useLocalAuth") == true;
+    if (!lockEnabled) {
+      return;
+    }
     if (state == AppLifecycleState.inactive && !_authenticateInProcess) {
       _timer?.cancel();
       _timer = Timer(
