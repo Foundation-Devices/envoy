@@ -267,9 +267,9 @@ class EnvoyToastRoute<T> extends OverlayRoute<T> {
       }
       _timer = Timer(envoy.duration!, () {
         if (isCurrent) {
-          navigator!.pop();
+          navigator?.pop();
         } else if (isActive) {
-          navigator!.removeRoute(this);
+          navigator?.removeRoute(this);
         }
       });
     } else {
