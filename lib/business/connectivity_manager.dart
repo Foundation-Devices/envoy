@@ -31,7 +31,10 @@ class ConnectivityManager {
 
   bool get torCircuitEstablished => Tor.instance.bootstrapped;
 
-  bool get usingDefaultServer => Settings().usingDefaultElectrumServer;
+  bool get usingDefaultServer => s.usingDefaultElectrumServer;
+
+  var s = Settings();
+  int failedFoundationServerAttempts = 0;
 
   bool electrumConnected = true;
   bool nguConnected = false;
@@ -81,6 +84,7 @@ class ConnectivityManager {
   }
 
   electrumSuccess() {
+    failedFoundationServerAttempts = 0;
     electrumConnected = true;
     events.add(ConnectivityManagerEvent.electrumReachable);
     checkTor();
@@ -115,7 +119,12 @@ class ConnectivityManager {
     if (usingDefaultServer) {
       Response response = await FeedManager().getVimeoData();
       if (response.code == 200) {
-        events.add(ConnectivityManagerEvent.foundationServerDown);
+        failedFoundationServerAttempts++;
+        if (failedFoundationServerAttempts >= 3) {
+          events.add(ConnectivityManagerEvent.foundationServerDown);
+        } else {
+          s.switchToNextServer();
+        }
       }
     }
   }

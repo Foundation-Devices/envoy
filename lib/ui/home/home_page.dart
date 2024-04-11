@@ -206,15 +206,15 @@ class HomePageState extends ConsumerState<HomePage>
     EnvoyToast(
       backgroundColor: Colors.lightBlue,
       replaceExisting: true,
-      message: "Foundation server down",
-      //TODO figma
+      message: S().toast_foundationServersDown,
       icon: const EnvoyIcon(
         EnvoyIcons.info,
         color: EnvoyColors.accentPrimary,
       ),
-      actionButtonText: S().component_learnMore,
+      actionButtonText: S().component_retry,
       onActionTap: () {
-        EnvoyToast.dismissPreviousToasts(context); //TODO: per figma
+        EnvoyToast.dismissPreviousToasts(context);
+        Settings().switchToNextServer();
       },
     ).show(context);
   }

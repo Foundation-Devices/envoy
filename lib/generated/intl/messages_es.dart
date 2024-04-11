@@ -47,7 +47,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Sin etiquetar"),
         "account_emptyTxHistoryTextExplainer_FilteredView":
             MessageLookupByLibrary.simpleMessage(
-                "Los filtros aplicados ocultan todas las transacciones.\nActualice o restablezca los filtros para ver las transacciones."),
+                "Los filtros aplicados ocultan todas las transacciones.\nActualiza o restablece los filtros para ver las transacciones."),
         "account_empty_tx_history_text_explainer":
             MessageLookupByLibrary.simpleMessage(
                 "No hay transacciones en esta cuenta.\nRecibe tu primera transacción debajo."),
@@ -59,6 +59,12 @@ class MessageLookup extends MessageLookupByLibrary {
             "Crea una cartera móvil con Copia de Seguridad Mágica."),
         "accounts_empty_text_learn_more":
             MessageLookupByLibrary.simpleMessage("Comenzar"),
+        "accounts_forceUpdate_cta":
+            MessageLookupByLibrary.simpleMessage("Actualizar Envoy"),
+        "accounts_forceUpdate_heading": MessageLookupByLibrary.simpleMessage(
+            "Se Requiere Actualizar Envoy"),
+        "accounts_forceUpdate_subheading": MessageLookupByLibrary.simpleMessage(
+            "Hay disponible una nueva actualización de Envoy que contiene importantes mejoras y arreglos.\n\nPara seguir utilizando Envoy, por favor actualiza a la última versión. Muchas gracias."),
         "accounts_screen_walletType_Envoy":
             MessageLookupByLibrary.simpleMessage("Envoy"),
         "accounts_screen_walletType_Passport":
@@ -71,7 +77,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "activity_emptyState_label": MessageLookupByLibrary.simpleMessage(
             "No hay ninguna actividad que mostrar."),
         "activity_envoyUpdate": MessageLookupByLibrary.simpleMessage(
-            "Aplicación Envoy actualizada"),
+            "Aplicación Envoy Actualizada"),
+        "activity_envoyUpdateAvailable": MessageLookupByLibrary.simpleMessage(
+            "Actualización de Envoy disponible"),
         "activity_firmwareUpdate": MessageLookupByLibrary.simpleMessage(
             "Actualización de firmware disponible"),
         "activity_incomingPurchase":
@@ -300,7 +308,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_edit_transaction_selectedAmount":
             MessageLookupByLibrary.simpleMessage("Cantidad Seleccionada"),
         "coincontrol_lock_coin_modal_cta1":
-            MessageLookupByLibrary.simpleMessage("Cerradura"),
+            MessageLookupByLibrary.simpleMessage("Bloquear"),
         "coincontrol_lock_coin_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Bloquear monedas evitará que se utilicen en transacciones."),
@@ -379,7 +387,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_history_tx_detail_note":
             MessageLookupByLibrary.simpleMessage("Notas"),
         "coincontrol_unlock_coin_modal_cta1":
-            MessageLookupByLibrary.simpleMessage("Abrir"),
+            MessageLookupByLibrary.simpleMessage("Desbloquear"),
         "coincontrol_unlock_coin_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Desbloquear monedas hará que estén disponibles para su uso en transacciones."),
@@ -434,13 +442,17 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Aplicar Filtro"),
         "component_back": MessageLookupByLibrary.simpleMessage("Atrás"),
         "component_cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
+        "component_content": MessageLookupByLibrary.simpleMessage("Contenido"),
         "component_continue": MessageLookupByLibrary.simpleMessage("Continuar"),
         "component_delete": MessageLookupByLibrary.simpleMessage("Eliminar"),
+        "component_device": MessageLookupByLibrary.simpleMessage("Dispositivo"),
         "component_dismiss": MessageLookupByLibrary.simpleMessage("Cerrar"),
         "component_done": MessageLookupByLibrary.simpleMessage("Listo"),
         "component_dontShowAgain":
             MessageLookupByLibrary.simpleMessage("No volver a mostrar"),
         "component_filter": MessageLookupByLibrary.simpleMessage("Filtrar"),
+        "component_filter_button_all":
+            MessageLookupByLibrary.simpleMessage("Todo"),
         "component_learnMore":
             MessageLookupByLibrary.simpleMessage("Más información"),
         "component_minishield_buy":
@@ -454,8 +466,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_retry": MessageLookupByLibrary.simpleMessage("Reintentar"),
         "component_save": MessageLookupByLibrary.simpleMessage("Guardar"),
         "component_skip": MessageLookupByLibrary.simpleMessage("Saltar"),
+        "component_sortBy": MessageLookupByLibrary.simpleMessage("Ordenar por"),
         "component_tryAgain":
             MessageLookupByLibrary.simpleMessage("Intentar de Nuevo"),
+        "component_update": MessageLookupByLibrary.simpleMessage("Actualizar"),
         "component_warning":
             MessageLookupByLibrary.simpleMessage("ADVERTENCIA"),
         "component_yes": MessageLookupByLibrary.simpleMessage("Sí"),
@@ -780,6 +794,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "launch_screen_lockedout_wait_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Autenticación biométrica desactivada temporalmente. Por favor, cierra Envoy, espera 30 segundos e inténtalo de nuevo."),
+        "learning_center_device_defender":
+            MessageLookupByLibrary.simpleMessage("Defender"),
+        "learning_center_device_envoy":
+            MessageLookupByLibrary.simpleMessage("Envoy"),
+        "learning_center_device_passport":
+            MessageLookupByLibrary.simpleMessage("Passport"),
+        "learning_center_device_passportPrime":
+            MessageLookupByLibrary.simpleMessage("Passport Prime"),
+        "learning_center_filterEmpty_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Los filtros aplicados ocultan todos los resultados de búsqueda.\nActualiza o restablece los filtros para ver más resultados."),
         "learning_center_filter_all":
             MessageLookupByLibrary.simpleMessage("Todos"),
         "learning_center_results_title":
@@ -868,7 +893,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Esto solo elimina la cuenta de Envoy."),
         "manage_account_rename_heading":
-            MessageLookupByLibrary.simpleMessage("Cambiar Nombre de Cuenta"),
+            MessageLookupByLibrary.simpleMessage("Renombrar Cuenta"),
         "manage_device_deletePassportWarning": MessageLookupByLibrary.simpleMessage(
             "¿Estás seguro de que quieres desconectar Passport?\nEsto eliminará el dispositivo de Envoy junto con todas las cuentas conectadas."),
         "manage_device_details_devicePaired":
@@ -1075,9 +1100,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Esta copia de seguridad contiene información soibre los dispositivos y cuentas vinculadas, etiquetas, notas y configuración. No contiene información sobre la semilla.\n\nLas copias de seguridad de Envoy están encriptadas de extremo a extremo, Foundation no tiene acceso ni conocimiento de su contenido. \n\nEnvoy te notificará cuando se complete la carga."),
         "manual_toggle_on_seed_not_backedup_android_open_settings":
             MessageLookupByLibrary.simpleMessage("Configuración Android"),
-        "manual_toggle_on_seed_not_backedup_pending_android_data_pending_backup":
-            MessageLookupByLibrary.simpleMessage(
-                "Copia de seguridad pendiente en los servidores de Foundation"),
         "manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup":
             MessageLookupByLibrary.simpleMessage(
                 "Copia de Seguridad de Android pendiente (una vez al día)"),
@@ -1359,6 +1381,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Volver a Conectar Passport"),
         "taproot_passport_dialog_subheading": MessageLookupByLibrary.simpleMessage(
             "Para habilitar una cuenta de Taproot en Passport, asegúrate de que estás ejecutando el firmware 2.3.0 o posterior y vuelve a conectar tu Passport."),
+        "toast_foundationServersDown": MessageLookupByLibrary.simpleMessage(
+            "Servidores de Foundation no accesibles"),
+        "toast_newEnvoyUpdateAvailable": MessageLookupByLibrary.simpleMessage(
+            "Actualización de Envoy disponible"),
         "torToast_learnMore_retryTorConnection":
             MessageLookupByLibrary.simpleMessage("Reintentar la Conexión Tor"),
         "torToast_learnMore_temporarilyDisableTor":

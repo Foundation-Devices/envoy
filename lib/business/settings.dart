@@ -4,6 +4,7 @@
 
 // ignore_for_file: constant_identifier_names
 
+import 'dart:math';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/node_url.dart';
@@ -38,8 +39,45 @@ final showTaprootAccountsProvider = Provider((ref) {
 @JsonSerializable()
 class Settings extends ChangeNotifier {
   static const String SETTINGS_PREFS = "settings";
-  static const String DEFAULT_ELECTRUM_SERVER =
-      "ssl://mainnet.foundationdevices.com:50002";
+
+  static final List<String> servers = getDefaultFulcrumServers();
+  static final int initialRandomIndex = Random().nextInt(servers.length);
+  String currentServer = servers[initialRandomIndex];
+
+  String selectRandomServer() {
+    return servers[Random().nextInt(servers.length)];
+  }
+
+  void switchToNextServer() {
+    final currentIndex = servers.indexOf(currentServer);
+    currentServer = servers[(currentIndex + 1) % servers.length];
+    store();
+    notifyListeners();
+  }
+
+  String getCurrentServer() {
+    return currentServer;
+  }
+
+  static List<String> getDefaultFulcrumServers({bool ssl = false}) {
+    List<String> servers = [
+      "mainnet-0.foundation.xyz",
+      "mainnet-1.foundation.xyz",
+      "mainnet-2.foundation.xyz"
+    ];
+
+    String protocol = ssl ? "ssl://" : "tcp://";
+    String port = ssl ? ":50002" : ":50001";
+
+    List<String> modifiedServers = [];
+
+    for (String server in servers) {
+      String modifiedServer = protocol + server + port;
+      modifiedServers.add(modifiedServer);
+    }
+
+    return modifiedServers;
+  }
 
   // FD testnet server
   static const String TESTNET_ELECTRUM_SERVER =
@@ -78,7 +116,7 @@ class Settings extends ChangeNotifier {
   // Electrum and Tor require additional setter logic
   // Because at this point wallets on the Rust side are most likely already initialised
   //String _electrumAddress = "ssl://electrum.blockstream.info:60002";
-  String selectedElectrumAddress = DEFAULT_ELECTRUM_SERVER;
+  String selectedElectrumAddress = servers[initialRandomIndex];
 
   bool allowLANAddressOverClearnet = true;
 
@@ -91,7 +129,7 @@ class Settings extends ChangeNotifier {
     }
 
     if (usingDefaultElectrumServer) {
-      return DEFAULT_ELECTRUM_SERVER;
+      return getCurrentServer();
     } else {
       return parseNodeUrl(selectedElectrumAddress);
     }
@@ -108,6 +146,7 @@ class Settings extends ChangeNotifier {
   }
 
   useDefaultElectrumServer(bool enabled) {
+    currentServer = selectRandomServer();
     usingDefaultElectrumServer = enabled;
     notifyListeners();
     store();
