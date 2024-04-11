@@ -25,7 +25,7 @@ enum EnvoyNotificationType { firmware, transaction, security, envoyUpdate }
 
 const String updateAppId = "updateApp";
 
-StreamController<bool> isNewAppVersionAvailable = StreamController();
+StreamController<String> isNewAppVersionAvailable = StreamController();
 
 @JsonSerializable()
 class EnvoyNotification {
@@ -191,7 +191,7 @@ class Notifications {
         ));
         notificationsAdded = true;
         if (!isNewAppVersionAvailable.isClosed) {
-          isNewAppVersionAvailable.add(true);
+          isNewAppVersionAvailable.add(latestEnvoyVersion);
         }
       }
     }

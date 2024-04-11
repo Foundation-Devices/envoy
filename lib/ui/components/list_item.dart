@@ -196,8 +196,8 @@ class ActivityListTile extends StatelessWidget {
       }
 
       if (notification.type == EnvoyNotificationType.envoyUpdate) {
-        leftIcon = EnvoyIcons.bell;
-        textLeft1 = "App update available ${notification.body}"; // TODO: Figma
+        leftIcon = EnvoyIcons.download;
+        textLeft1 = S().activity_envoyUpdateAvailable;
         textLeft2 = timeago
             .format(notification.date, locale: activeLocale.languageCode)
             .capitalize();

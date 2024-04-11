@@ -29,6 +29,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/notifications.dart';
 
@@ -161,10 +162,8 @@ class HomePageState extends ConsumerState<HomePage>
         _resetBackupWarningTimer();
       }
     });
-    isNewAppVersionAvailable.stream.listen((bool newVersion) {
-      if (newVersion) {
-        _notifyAboutNewAppVersion();
-      }
+    isNewAppVersionAvailable.stream.listen((String newVersion) {
+      _notifyAboutNewAppVersion(newVersion);
     });
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -173,18 +172,20 @@ class HomePageState extends ConsumerState<HomePage>
     });
   }
 
-  _notifyAboutNewAppVersion() {
+  _notifyAboutNewAppVersion(String newVersion) {
     EnvoyToast(
       backgroundColor: Colors.lightBlue,
       replaceExisting: true,
-      message: "New app version available",
+      message: S().toast_newEnvoyUpdateAvailable,
       icon: const EnvoyIcon(
         EnvoyIcons.info,
         color: EnvoyColors.accentPrimary,
       ),
-      actionButtonText: "Update now",
+      actionButtonText: S().component_update,
       onActionTap: () {
-        // TODO: go to AppStore or whatever
+        EnvoyToast.dismissPreviousToasts(context);
+        launchUrlString(
+            "https://github.com/Foundation-Devices/envoy/releases/tag/$newVersion");
       },
     ).show(context);
     isNewAppVersionAvailable.close();
