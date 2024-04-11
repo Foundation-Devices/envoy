@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("TAPROOT"),
+        "_": MessageLookupByLibrary.simpleMessage("Passport"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versió de l\'aplicació"),
         "about_openSourceLicences":
@@ -59,6 +59,12 @@ class MessageLookup extends MessageLookupByLibrary {
             "Creeu una cartera mòbil amb Còpia de Seguretat Màgica."),
         "accounts_empty_text_learn_more":
             MessageLookupByLibrary.simpleMessage("Comença"),
+        "accounts_forceUpdate_cta":
+            MessageLookupByLibrary.simpleMessage("Update Envoy"),
+        "accounts_forceUpdate_heading":
+            MessageLookupByLibrary.simpleMessage("Envoy Update Required"),
+        "accounts_forceUpdate_subheading": MessageLookupByLibrary.simpleMessage(
+            "A new Envoy update is available that contains important upgrades and fixes. \n\nTo continue using Envoy, please update to the latest version. Thank you."),
         "accounts_screen_walletType_Envoy":
             MessageLookupByLibrary.simpleMessage("Envoy"),
         "accounts_screen_walletType_Passport":
@@ -72,6 +78,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "No hi ha cap activitat per mostrar."),
         "activity_envoyUpdate": MessageLookupByLibrary.simpleMessage(
             "S\'ha actualitzat l\'aplicació Envoy"),
+        "activity_envoyUpdateAvailable":
+            MessageLookupByLibrary.simpleMessage("Envoy update available"),
         "activity_firmwareUpdate": MessageLookupByLibrary.simpleMessage(
             "Actualització del firmware disponible"),
         "activity_incomingPurchase":
@@ -435,13 +443,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_Apply": MessageLookupByLibrary.simpleMessage("Aplica"),
         "component_back": MessageLookupByLibrary.simpleMessage("Enrere"),
         "component_cancel": MessageLookupByLibrary.simpleMessage("Cancel·la"),
+        "component_content": MessageLookupByLibrary.simpleMessage("Content"),
         "component_continue": MessageLookupByLibrary.simpleMessage("Continuar"),
         "component_delete": MessageLookupByLibrary.simpleMessage("Esborrar"),
+        "component_device": MessageLookupByLibrary.simpleMessage("Device"),
         "component_dismiss": MessageLookupByLibrary.simpleMessage("Descarta"),
         "component_done": MessageLookupByLibrary.simpleMessage("Fet"),
         "component_dontShowAgain":
             MessageLookupByLibrary.simpleMessage("No ho tornis a mostrar"),
         "component_filter": MessageLookupByLibrary.simpleMessage("Filtra"),
+        "component_filter_button_all":
+            MessageLookupByLibrary.simpleMessage("All"),
         "component_learnMore":
             MessageLookupByLibrary.simpleMessage("Més informació"),
         "component_minishield_buy": MessageLookupByLibrary.simpleMessage("Buy"),
@@ -454,8 +466,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Torna-ho a provar"),
         "component_save": MessageLookupByLibrary.simpleMessage("Guardar"),
         "component_skip": MessageLookupByLibrary.simpleMessage("Saltar"),
+        "component_sortBy": MessageLookupByLibrary.simpleMessage("Sort by"),
         "component_tryAgain":
             MessageLookupByLibrary.simpleMessage("Torna-ho a Provar"),
+        "component_update": MessageLookupByLibrary.simpleMessage("Update"),
         "component_warning":
             MessageLookupByLibrary.simpleMessage("ADVERTÈNCIA"),
         "component_yes": MessageLookupByLibrary.simpleMessage("Sí"),
@@ -784,6 +798,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "launch_screen_lockedout_wait_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Autenticació biomètrica desactivada temporalment. Espereu 30 segons i torneu-ho a provar."),
+        "learning_center_device_defender":
+            MessageLookupByLibrary.simpleMessage("Defender"),
+        "learning_center_device_envoy":
+            MessageLookupByLibrary.simpleMessage("Envoy"),
+        "learning_center_device_passport":
+            MessageLookupByLibrary.simpleMessage("Passport"),
+        "learning_center_device_passportPrime":
+            MessageLookupByLibrary.simpleMessage("Passport Prime"),
+        "learning_center_filterEmpty_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Applied filters are hiding all search results.\nUpdate or reset filters to view more results."),
         "learning_center_filter_all":
             MessageLookupByLibrary.simpleMessage("Totes"),
         "learning_center_results_title":
@@ -1368,6 +1393,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Torneu a connectar Passport"),
         "taproot_passport_dialog_subheading": MessageLookupByLibrary.simpleMessage(
             "Per habilitar un compte de Passport Taproot, assegureu-vos que esteu executant el firmware 2.3.0 o posterior i torneu a connectar el vostre Passport."),
+        "toast_foundationServersDown": MessageLookupByLibrary.simpleMessage(
+            "Foundation servers are not reachable"),
+        "toast_newEnvoyUpdateAvailable":
+            MessageLookupByLibrary.simpleMessage("New Envoy update available"),
         "torToast_learnMore_retryTorConnection":
             MessageLookupByLibrary.simpleMessage("Reintentar Tor"),
         "torToast_learnMore_temporarilyDisableTor":

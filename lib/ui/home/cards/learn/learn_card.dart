@@ -42,9 +42,16 @@ class _LearnCardState extends ConsumerState<LearnCard> {
         learnFilterState.contains(LearnFilters.all) &&
             learnSortState == LearnSortTypes.newestFirst;
 
-    final bool isEverythingEmpty = videos.isEmpty &&
-        blogs.isEmpty &&
-        !learnFilterState.contains(LearnFilters.faqs);
+    var faqs = ref.watch(faqsProvider);
+    if (widget.controller.text != "") {
+      faqs = faqs
+          .where((entry) => entry.question
+              .toLowerCase()
+              .contains(widget.controller.text.toLowerCase()))
+          .toList();
+    }
+
+    final bool isSearchEmpty = videos.isEmpty && blogs.isEmpty && faqs.isEmpty;
 
     return Padding(
       padding: const EdgeInsets.all(EnvoySpacing.medium1),
@@ -64,6 +71,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
         },
         blendMode: BlendMode.dstOut,
         child: CustomScrollView(
+          physics: isSearchEmpty ? const NeverScrollableScrollPhysics() : null,
           slivers: [
             const SliverPadding(
                 padding: EdgeInsets.symmetric(vertical: EnvoySpacing.xs / 2)),
@@ -123,9 +131,11 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                 ],
               ),
             ),
-            const SliverPadding(
-                padding:
-                    EdgeInsets.symmetric(vertical: EnvoySpacing.medium2 / 2)),
+            isSearchEmpty
+                ? const SliverPadding(padding: EdgeInsets.all(0))
+                : const SliverPadding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.medium2 / 2)),
             if (learnFilterState.contains(LearnFilters.videos) &&
                 videos.isNotEmpty)
               SliverToBoxAdapter(
@@ -158,9 +168,11 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                           })),
                 ],
               )),
-            const SliverPadding(
-                padding:
-                    EdgeInsets.symmetric(vertical: EnvoySpacing.medium2 / 2)),
+            isSearchEmpty
+                ? const SliverPadding(padding: EdgeInsets.all(0))
+                : const SliverPadding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.medium2 / 2)),
             if (learnFilterState.contains(LearnFilters.blogs) &&
                 blogs.isNotEmpty)
               SliverToBoxAdapter(
@@ -196,31 +208,29 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                           })),
                 ],
               )),
-            const SliverPadding(
-                padding:
-                    EdgeInsets.symmetric(vertical: EnvoySpacing.medium2 / 2)),
-            if (learnFilterState.contains(LearnFilters.faqs))
+            isSearchEmpty
+                ? const SliverPadding(padding: EdgeInsets.all(0))
+                : const SliverPadding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.medium2 / 2)),
+            if (learnFilterState.contains(LearnFilters.faqs) && !isSearchEmpty)
               SliverToBoxAdapter(
                 child: Faq(searchText: widget.controller.text),
               ),
-            // Adding SliverPadding for empty state
-            if (isEverythingEmpty)
-              SliverPadding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: EnvoySpacing.medium2),
-                sliver: SliverToBoxAdapter(
-                  child: Center(
-                    child: Text(
-                      "Applied filters are hiding all content. Please update or reset filters.",
-                      style: EnvoyTypography.body
-                          .copyWith(color: EnvoyColors.textPrimary),
-                      textAlign: TextAlign.center,
+            isSearchEmpty
+                ? SliverFillRemaining(
+                    child: Center(
+                      child: Text(
+                        S().learning_center_filterEmpty_subheading,
+                        style: EnvoyTypography.body
+                            .copyWith(color: EnvoyColors.textTertiary),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                  ),
-                ),
-              ),
-            const SliverPadding(
-                padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium2)),
+                  )
+                : const SliverPadding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: EnvoySpacing.medium2)),
           ],
         ),
       ),

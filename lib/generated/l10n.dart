@@ -52,10 +52,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `TAPROOT`
+  /// `Passport`
   String get _ {
     return Intl.message(
-      'TAPROOT',
+      'Passport',
       name: '_',
       desc: '',
       args: [],
@@ -192,6 +192,36 @@ class S {
     );
   }
 
+  /// `Update Envoy`
+  String get accounts_forceUpdate_cta {
+    return Intl.message(
+      'Update Envoy',
+      name: 'accounts_forceUpdate_cta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy Update Required`
+  String get accounts_forceUpdate_heading {
+    return Intl.message(
+      'Envoy Update Required',
+      name: 'accounts_forceUpdate_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A new Envoy update is available that contains important upgrades and fixes. \n\nTo continue using Envoy, please update to the latest version. Thank you.`
+  String get accounts_forceUpdate_subheading {
+    return Intl.message(
+      'A new Envoy update is available that contains important upgrades and fixes. \n\nTo continue using Envoy, please update to the latest version. Thank you.',
+      name: 'accounts_forceUpdate_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Envoy`
   String get accounts_screen_walletType_Envoy {
     return Intl.message(
@@ -257,6 +287,16 @@ class S {
     return Intl.message(
       'Envoy App Updated',
       name: 'activity_envoyUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy update available`
+  String get activity_envoyUpdateAvailable {
+    return Intl.message(
+      'Envoy update available',
+      name: 'activity_envoyUpdateAvailable',
       desc: '',
       args: [],
     );
@@ -1936,6 +1976,16 @@ class S {
     );
   }
 
+  /// `Content`
+  String get component_content {
+    return Intl.message(
+      'Content',
+      name: 'component_content',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Continue`
   String get component_continue {
     return Intl.message(
@@ -1951,6 +2001,16 @@ class S {
     return Intl.message(
       'Delete',
       name: 'component_delete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Device`
+  String get component_device {
+    return Intl.message(
+      'Device',
+      name: 'component_device',
       desc: '',
       args: [],
     );
@@ -1991,6 +2051,16 @@ class S {
     return Intl.message(
       'Filter',
       name: 'component_filter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All`
+  String get component_filter_button_all {
+    return Intl.message(
+      'All',
+      name: 'component_filter_button_all',
       desc: '',
       args: [],
     );
@@ -2096,11 +2166,31 @@ class S {
     );
   }
 
+  /// `Sort by`
+  String get component_sortBy {
+    return Intl.message(
+      'Sort by',
+      name: 'component_sortBy',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Try Again`
   String get component_tryAgain {
     return Intl.message(
       'Try Again',
       name: 'component_tryAgain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update`
+  String get component_update {
+    return Intl.message(
+      'Update',
+      name: 'component_update',
       desc: '',
       args: [],
     );
@@ -2428,10 +2518,10 @@ class S {
     );
   }
 
-  /// `Envoy is designed to offer the easiest to use experience of any Bitcoin wallet, without compromising on your privacy. With Envoy Magic Backups, set up a self custodied Bitcoin mobile wallet in 60 seconds, without seed words!Passport users can connect their devices to Envoy for easy setup, firmware updates, and a simple Bitcoin wallet experience.`
+  /// `Envoy is designed to offer the easiest to use experience of any Bitcoin wallet, without compromising on your privacy. With Envoy Magic Backups, set up a self custodied Bitcoin mobile wallet in 60 seconds, without seed words! Passport users can connect their devices to Envoy for easy setup, firmware updates, and a simple Bitcoin wallet experience.`
   String get envoy_faq_answer_2 {
     return Intl.message(
-      'Envoy is designed to offer the easiest to use experience of any Bitcoin wallet, without compromising on your privacy. With Envoy Magic Backups, set up a self custodied Bitcoin mobile wallet in 60 seconds, without seed words!Passport users can connect their devices to Envoy for easy setup, firmware updates, and a simple Bitcoin wallet experience.',
+      'Envoy is designed to offer the easiest to use experience of any Bitcoin wallet, without compromising on your privacy. With Envoy Magic Backups, set up a self custodied Bitcoin mobile wallet in 60 seconds, without seed words! Passport users can connect their devices to Envoy for easy setup, firmware updates, and a simple Bitcoin wallet experience.',
       name: 'envoy_faq_answer_2',
       desc: '',
       args: [],
@@ -3635,6 +3725,56 @@ class S {
     return Intl.message(
       'Biometric authentication temporarily disabled. Please close Envoy, wait 30 seconds and try again.',
       name: 'launch_screen_lockedout_wait_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Defender`
+  String get learning_center_device_defender {
+    return Intl.message(
+      'Defender',
+      name: 'learning_center_device_defender',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy`
+  String get learning_center_device_envoy {
+    return Intl.message(
+      'Envoy',
+      name: 'learning_center_device_envoy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passport`
+  String get learning_center_device_passport {
+    return Intl.message(
+      'Passport',
+      name: 'learning_center_device_passport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passport Prime`
+  String get learning_center_device_passportPrime {
+    return Intl.message(
+      'Passport Prime',
+      name: 'learning_center_device_passportPrime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Applied filters are hiding all search results.\nUpdate or reset filters to view more results.`
+  String get learning_center_filterEmpty_subheading {
+    return Intl.message(
+      'Applied filters are hiding all search results.\nUpdate or reset filters to view more results.',
+      name: 'learning_center_filterEmpty_subheading',
       desc: '',
       args: [],
     );
@@ -6133,6 +6273,26 @@ class S {
     return Intl.message(
       'To enable a Passport Taproot account, ensure you are running firmware 2.3.0 or later and reconnect your Passport.',
       name: 'taproot_passport_dialog_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Foundation servers are not reachable`
+  String get toast_foundationServersDown {
+    return Intl.message(
+      'Foundation servers are not reachable',
+      name: 'toast_foundationServersDown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Envoy update available`
+  String get toast_newEnvoyUpdateAvailable {
+    return Intl.message(
+      'New Envoy update available',
+      name: 'toast_newEnvoyUpdateAvailable',
       desc: '',
       args: [],
     );
