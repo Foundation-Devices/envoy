@@ -63,33 +63,7 @@ class _CoinTagSwitchState extends State<CoinTagSwitch> {
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () {
-        if (widget.triState) {
-          switch (widget.value) {
-            case CoinTagSwitchState.on:
-              widget.onChanged(CoinTagSwitchState.off);
-              break;
-            case CoinTagSwitchState.partial:
-              widget.onChanged(CoinTagSwitchState.on);
-              break;
-            case CoinTagSwitchState.off:
-              widget.onChanged(CoinTagSwitchState.partial);
-              break;
-          }
-        } else {
-          switch (widget.value) {
-            case CoinTagSwitchState.on:
-              widget.onChanged(CoinTagSwitchState.off);
-              break;
-            case CoinTagSwitchState.off:
-              widget.onChanged(CoinTagSwitchState.on);
-              break;
-            case CoinTagSwitchState.partial:
-              break;
-          }
-        }
-        Haptics.buttonPress();
-      },
+      onTap: _handlePress,
       child: Container(
         padding: const EdgeInsets.only(right: 5),
         height: 45,
@@ -141,5 +115,34 @@ class _CoinTagSwitchState extends State<CoinTagSwitch> {
         ),
       ),
     );
+  }
+
+  void _handlePress() {
+    if (widget.triState) {
+      switch (widget.value) {
+        case CoinTagSwitchState.on:
+          widget.onChanged(CoinTagSwitchState.off);
+          break;
+        case CoinTagSwitchState.partial:
+          widget.onChanged(CoinTagSwitchState.on);
+          break;
+        case CoinTagSwitchState.off:
+          widget.onChanged(CoinTagSwitchState.partial);
+          break;
+      }
+    } else {
+      switch (widget.value) {
+        case CoinTagSwitchState.on:
+          widget.onChanged(CoinTagSwitchState.off);
+          break;
+        case CoinTagSwitchState.off:
+          widget.onChanged(CoinTagSwitchState.on);
+          break;
+        case CoinTagSwitchState.partial:
+          break;
+      }
+    }
+    Haptics.buttonPress();
+    return;
   }
 }

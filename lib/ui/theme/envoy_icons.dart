@@ -8,7 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-enum EnvoyIconSize { normal, small, big, extraSmall, superSmall }
+enum EnvoyIconSize { normal, small, big, extraSmall, superSmall, mediumLarge }
 
 enum EnvoyIcons {
   chevron_left,
@@ -55,7 +55,26 @@ enum EnvoyIcons {
   clock,
   compass,
   edit,
-  tag
+  tag,
+  plus,
+  minus,
+  location,
+  checked_circle,
+  close_circle,
+  unknown_circle,
+  location_tab,
+  agora,
+  azteco,
+  bisq,
+  hodlHodl,
+  peach,
+  ramp,
+  robosats,
+  externalLink,
+  verifyAddress,
+  ramp_without_name,
+  calendar,
+  activity,
 }
 
 class EnvoyIcon extends StatelessWidget {
@@ -125,6 +144,8 @@ extension FloatSize on EnvoyIconSize {
         return 18.0;
       case EnvoyIconSize.normal:
         return 24.0; // Default
+      case EnvoyIconSize.mediumLarge:
+        return 48.0;
       case EnvoyIconSize.big:
         return 64.0;
       default:

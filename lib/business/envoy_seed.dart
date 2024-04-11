@@ -429,8 +429,11 @@ class EnvoySeed {
     final backupBytes = File(encryptedBackupFilePath).readAsBytesSync();
 
     try {
-      FileSaver.instance.saveAs(encryptedBackupFileName, backupBytes,
-          encryptedBackupFileExtension, MimeType.TEXT);
+      FileSaver.instance.saveAs(
+          name: encryptedBackupFileName,
+          bytes: backupBytes,
+          ext: encryptedBackupFileExtension,
+          mimeType: MimeType.text);
     } catch (e) {
       kPrint(e);
     }

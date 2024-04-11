@@ -20,10 +20,14 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/widgets/expandable_page_view.dart';
 
 class EraseWalletsAndBackupsWarning extends StatefulWidget {
   const EraseWalletsAndBackupsWarning({super.key});
@@ -42,15 +46,15 @@ class _EraseWalletsAndBackupsWarningState
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
             Align(
-              alignment: Alignment.centerRight,
+              alignment: Alignment.topRight,
               child: Padding(
-                padding: const EdgeInsets.only(top: 12),
+                padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
                 child: IconButton(
                   icon: const Icon(Icons.close),
                   onPressed: () {
@@ -59,36 +63,36 @@ class _EraseWalletsAndBackupsWarningState
                 ),
               ),
             ),
-            const Padding(padding: EdgeInsets.all(8)),
+            const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
             Column(
               children: [
-                Image.asset(
-                  "assets/exclamation_triangle.png",
-                  height: 80,
-                  width: 80,
-                ),
-                const Padding(padding: EdgeInsets.all(4)),
+                const EnvoyIcon(EnvoyIcons.alert,
+                    color: EnvoyColors.accentSecondary,
+                    size: EnvoyIconSize.big),
+                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.small,
+                        horizontal: EnvoySpacing.xs),
                     child: Text(
                       S().component_warning,
                       textAlign: TextAlign.center,
                       style: EnvoyTypography.info,
                     )),
                 Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                    child: SizedBox(
-                      height: 130,
-                      child: PageView(
-                        onPageChanged: (int page) {
-                          setState(() {});
-                        },
-                        controller: _pageController,
-                        children: [
-                          SingleChildScrollView(
-                            child: Text(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.small,
+                        horizontal: EnvoySpacing.medium1),
+                    child: Container(
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height *
+                            0.6, // max size of PageView
+                      ),
+                      child: SingleChildScrollView(
+                        child: ExpandablePageView(
+                          controller: _pageController,
+                          children: [
+                            Text(
                               Platform.isAndroid
                                   ? S()
                                       .backups_erase_wallets_and_backups_modal_1_2_android_subheading
@@ -97,15 +101,13 @@ class _EraseWalletsAndBackupsWarningState
                               textAlign: TextAlign.center,
                               style: EnvoyTypography.info,
                             ),
-                          ),
-                          SingleChildScrollView(
-                            child: Text(
+                            Text(
                               S().backups_erase_wallets_and_backups_modal_2_2_subheading,
                               textAlign: TextAlign.center,
                               style: EnvoyTypography.info,
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     )),
                 DotsIndicator(
@@ -140,7 +142,7 @@ class _EraseWalletsAndBackupsWarningState
                         curve: Curves.easeInOutCubicEmphasized);
                   }
                 }),
-            const Padding(padding: EdgeInsets.all(12)),
+            const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           ],
         ),
       ),
@@ -242,6 +244,7 @@ class _EraseWalletsBalanceWarningState
 
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
+                  GoRouter.of(context).go(ROUTE_ACCOUNTS_HOME);
                 }),
             const Padding(padding: EdgeInsets.all(12)),
           ],

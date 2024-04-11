@@ -9,15 +9,14 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:tor/tor.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:envoy/business/scheduler.dart';
-import 'dart:io';
 import 'dart:core';
 import 'package:latlng/latlng.dart';
-
-String mapApiKey = Platform.environment['MAP_API_KEY'] ?? "";
 
 const home = LatLng(Angle.degree(34.052235), Angle.degree(-118.243683));
 
 class MapData {
+  static const String mapApiKey =
+      String.fromEnvironment("MAP_API_KEY", defaultValue: '');
   List<Venue> venues = [];
 
   static final MapData _instance = MapData._internal();

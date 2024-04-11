@@ -31,6 +31,7 @@ final settingsProvider = ChangeNotifierProvider((ref) => Settings());
 final showTestnetAccountsProvider = Provider((ref) {
   return ref.watch(settingsProvider).showTestnetAccounts();
 });
+final torEnabledProvider = StateProvider<bool>((ref) => Settings().usingTor);
 
 final showTaprootAccountsProvider = Provider((ref) {
   return ref.watch(settingsProvider).taprootEnabled();
@@ -118,8 +119,6 @@ class Settings extends ChangeNotifier {
   //String _electrumAddress = "ssl://electrum.blockstream.info:60002";
   String selectedElectrumAddress = servers[initialRandomIndex];
 
-  bool allowLANAddressOverClearnet = true;
-
   @JsonKey(defaultValue: true)
   bool usingDefaultElectrumServer = true;
 
@@ -174,8 +173,7 @@ class Settings extends ChangeNotifier {
   }
 
   bool turnOffTorForThisCase(String address) {
-    return !torEnabled() ||
-        (allowLANAddressOverClearnet && isPrivateAddress(address));
+    return !torEnabled() || isPrivateAddress(address);
   }
 
   int getPort(Network network) {
@@ -253,16 +251,6 @@ class Settings extends ChangeNotifier {
           .deriveAndAddWalletsFromCurrentSeed(type: WalletType.taproot);
     }
 
-    notifyListeners();
-    store();
-  }
-
-  bool allowLANOverClearnet() {
-    return allowLANAddressOverClearnet;
-  }
-
-  setLANPermission(bool allowLAN) {
-    allowLANAddressOverClearnet = allowLAN;
     notifyListeners();
     store();
   }

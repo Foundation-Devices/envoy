@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -58,7 +59,12 @@ class AuthenticateApp extends StatelessWidget {
 }
 
 class AuthenticatePage extends StatefulWidget {
-  const AuthenticatePage({super.key});
+  ///[sessionAuthenticate] will show a overlay to prevent user interaction
+  ///if this is set to true, after successful authentication navigator
+  ///will pop the blur overlay
+  final bool sessionAuthenticate;
+
+  const AuthenticatePage({super.key, this.sessionAuthenticate = false});
 
   @override
   State<AuthenticatePage> createState() => _AuthenticatePageState();
@@ -67,6 +73,25 @@ class AuthenticatePage extends StatefulWidget {
 class _AuthenticatePageState extends State<AuthenticatePage> {
   @override
   Widget build(BuildContext context) {
+    if (widget.sessionAuthenticate) {
+      return PopScope(
+        canPop: false,
+        child: TweenAnimationBuilder(
+          duration: const Duration(milliseconds: 400),
+          tween: Tween<double>(begin: 0, end: 14),
+          builder: (context, value, child) {
+            return BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: value, sigmaY: value),
+              child: child,
+            );
+          },
+          child: const DecoratedBox(
+              decoration: BoxDecoration(
+            color: Colors.black12,
+          )),
+        ),
+      );
+    }
     return Container(
       decoration: const BoxDecoration(
         color: EnvoyColors.textPrimaryInverse,
@@ -79,6 +104,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
   }
 
   void initiateAuth() async {
+    final navigator = Navigator.of(context);
     final LocalAuthentication auth = LocalAuthentication();
     final List<BiometricType> availableBiometrics =
         await auth.getAvailableBiometrics();
@@ -96,7 +122,11 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
           if (Platform.isIOS) {
             await Future.delayed(const Duration(milliseconds: 800));
           }
-          runApp(const EnvoyApp());
+          if (widget.sessionAuthenticate && navigator.mounted) {
+            navigator.pop();
+          } else {
+            runApp(const EnvoyApp());
+          }
           return;
         } else {
           showAuthLockedOutDialog(
@@ -168,7 +198,11 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
           ),
           localizedReason: 'Authenticate to Access Envoy');
       if (didAuthenticate) {
-        runApp(const EnvoyApp());
+        if (widget.sessionAuthenticate && navigator.mounted) {
+          navigator.pop();
+        } else {
+          runApp(const EnvoyApp());
+        }
         return;
       } else {
         showAuthLockedOutDialog(

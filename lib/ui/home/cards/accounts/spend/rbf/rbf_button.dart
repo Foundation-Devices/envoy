@@ -46,6 +46,18 @@ class RBFSpendState {
       required this.feeRate,
       required this.originalAmount,
       required this.originalTx});
+
+  RBFSpendState? copyWith(
+      {required Psbt psbt, required int feeRate, required int receiveAmount}) {
+    return RBFSpendState(
+        psbt: psbt,
+        rbfFeeRates: rbfFeeRates,
+        receiveAddress: receiveAddress,
+        receiveAmount: receiveAmount,
+        feeRate: feeRate,
+        originalAmount: originalAmount,
+        originalTx: originalTx);
+  }
 }
 
 class TxRBFButton extends ConsumerStatefulWidget {
@@ -185,7 +197,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
           fasterFeeRate = maxRate;
         } else {
           if (minRate < maxRate) {
-            fasterFeeRate = (maxRate + 1).clamp(minRate, maxRate);
+            fasterFeeRate = (minRate + 1).clamp(minRate, maxRate);
           }
         }
         ref.read(feeChooserStateProvider.notifier).state = FeeChooserState(
@@ -194,11 +206,10 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
           minFeeRate: rates.min_fee_rate.ceil().toInt(),
           maxFeeRate: rates.max_fee_rate.floor().toInt(),
         );
+        ref.read(rbfSpendStateProvider.notifier).state = rbfSpendState;
         navigator.push(MaterialPageRoute(
           builder: (context) {
-            return RBFSpendScreen(
-              rbfSpendState: rbfSpendState,
-            );
+            return const RBFSpendScreen();
           },
         ));
         return;

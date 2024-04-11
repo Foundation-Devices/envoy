@@ -4,7 +4,6 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/video.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -40,7 +39,7 @@ class FeedManager {
     _addVideosFromVimeo();
 
     HttpTor(Tor.instance, EnvoyScheduler().parallel)
-        .get("https://foundationdevices.com/feed/")
+        .get("https://foundation.xyz/feed")
         .then((response) {
       RssFeed feed = RssFeed.parse(response.body);
       _addBlogPostsFromRssFeed(feed);
@@ -140,7 +139,7 @@ class FeedManager {
     List<BlogPost> currentBlogPosts = [];
 
     for (RssItem item in feed.items!) {
-      var thumbnailUrl = item.content?.images.first;
+      String? thumbnailUrl = item.content?.images.firstOrNull;
       String htmlContent = item.content!.value;
 
       currentBlogPosts.add(BlogPost(
@@ -190,23 +189,12 @@ class FeedManager {
         }
       }
 
-      final thumbnail = await video.thumbnail;
-      if (thumbnail == null || thumbnail.isEmpty) {
-        _getVideoThumbnail(video);
-      }
+      // This will fetch the thumbnail before we enter the Learn tab
+      video.thumbnail;
     }
 
     videos = currentVideos;
     storeVideos();
-  }
-
-  void _getVideoThumbnail(Video video) {
-    HttpTor(Tor.instance, EnvoyScheduler().parallel)
-        .get(video.thumbnailUrl!)
-        .then((response) async {
-      await LocalStorage()
-          .saveFileBytes(video.thumbnailHash!, response.bodyBytes);
-    });
   }
 
   updateBlogPosts(List<BlogPost> currentBlogPosts) async {
@@ -218,23 +206,12 @@ class FeedManager {
         }
       }
 
-      final thumbnail = await blog.thumbnail;
-      if (thumbnail == null || thumbnail.isEmpty) {
-        _getBlogThumbnail(blog);
-      }
+      // This will fetch the thumbnail before we enter the Learn tab
+      blog.thumbnail;
     }
 
     blogs = currentBlogPosts;
     storeBlogPosts();
-  }
-
-  void _getBlogThumbnail(BlogPost blog) {
-    HttpTor(Tor.instance, EnvoyScheduler().parallel)
-        .get(blog.thumbnailUrl!)
-        .then((response) async {
-      await LocalStorage()
-          .saveFileBytes(blog.thumbnailHash!, response.bodyBytes);
-    });
   }
 
   storeVideos() {

@@ -59,7 +59,7 @@ class ScannerPage extends StatefulWidget {
   final Function(String)? onTxParsed;
   final Function(String)? onSeedValidated;
   final Function(String)? onNodeUrlParsed;
-  final Function(String, int)? onAddressValidated;
+  final Function(String, int, String?)? onAddressValidated;
 
   ScannerPage(this._acceptableTypes,
       {super.key,
@@ -70,7 +70,8 @@ class ScannerPage extends StatefulWidget {
       this.onNodeUrlParsed,
       this.onAddressValidated});
 
-  ScannerPage.address(Function(String, int) onAddressValidated, Account account)
+  ScannerPage.address(
+      Function(String, int, String?) onAddressValidated, Account account)
       : this([ScannerType.address],
             onAddressValidated: onAddressValidated, account: account);
 
@@ -269,12 +270,14 @@ class ScannerPageState extends State<ScannerPage> {
     if (widget._acceptableTypes.contains(ScannerType.address)) {
       String address = code;
       int amount = 0;
+      String? message;
 
       // Try to decode with BIP21
       try {
         var bip21 = Bip21.decode(address);
 
         address = bip21.address;
+        message = bip21.message;
 
         // BIP-21 amounts are in BTC
         amount = (bip21.amount * 100000000.0).toInt();
@@ -290,7 +293,7 @@ class ScannerPageState extends State<ScannerPage> {
       if (!await widget.account!.wallet.validateAddress(address)) {
         showSnackbar(invalidAddressSnackbar);
       } else {
-        widget.onAddressValidated!(address, amount);
+        widget.onAddressValidated!(address, amount, message);
         navigator.pop();
         return;
       }

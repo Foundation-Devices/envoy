@@ -105,12 +105,13 @@ class BalanceWidget extends ConsumerWidget {
 class CoinBalanceWidget extends ConsumerStatefulWidget {
   final Coin coin;
   final bool showLock;
+  final CoinTag coinTag;
 
-  const CoinBalanceWidget({
-    super.key,
-    required this.coin,
-    this.showLock = true,
-  });
+  const CoinBalanceWidget(
+      {super.key,
+      required this.coin,
+      this.showLock = true,
+      required this.coinTag});
 
   @override
   ConsumerState<CoinBalanceWidget> createState() => _CoinBalanceWidgetState();
@@ -120,6 +121,8 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
   @override
   Widget build(BuildContext context) {
     final coin = widget.coin;
+
+    bool allCoinsLocked = widget.coinTag.isAllCoinsLocked;
 
     return BalanceWidget(
       locked: widget.coin.locked,
@@ -185,18 +188,23 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
       switchWidget: Consumer(
         builder: (context, ref, child) {
           final isSelected = ref.watch(isCoinSelectedProvider(coin.id));
-          return CoinTagSwitch(
-            value: isSelected ? CoinTagSwitchState.on : CoinTagSwitchState.off,
-            onChanged: (value) {
-              final selectionState =
-                  ref.read(coinSelectionStateProvider.notifier);
-              if (value == CoinTagSwitchState.on) {
-                selectionState.add(coin.id);
-              } else {
-                selectionState.remove(coin.id);
-              }
-            },
-          );
+
+          return allCoinsLocked
+              ? const SizedBox.shrink()
+              : CoinTagSwitch(
+                  value: isSelected
+                      ? CoinTagSwitchState.on
+                      : CoinTagSwitchState.off,
+                  onChanged: (value) {
+                    final selectionState =
+                        ref.read(coinSelectionStateProvider.notifier);
+                    if (value == CoinTagSwitchState.on) {
+                      selectionState.add(coin.id);
+                    } else {
+                      selectionState.remove(coin.id);
+                    }
+                  },
+                );
         },
       ),
     );
@@ -217,18 +225,15 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
 
 class CoinTagBalanceWidget extends ConsumerWidget {
   final CoinTag coinTag;
-  final bool isListScreen;
 
-  const CoinTagBalanceWidget(
-      {super.key, required this.coinTag, this.isListScreen = false});
+  const CoinTagBalanceWidget({super.key, required this.coinTag});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     bool locked = ref.watch(coinTagLockStateProvider(coinTag));
 
     /// hide switch if the tag is empty or all coins are locked
-    bool hideSwitch = (coinTag.isAllCoinsLocked && isListScreen) ||
-        (coinTag.totalAmount == 0);
+    bool hideSwitch = coinTag.isAllCoinsLocked || coinTag.totalAmount == 0;
 
     const cardRadius = 26.0;
     return Container(
@@ -300,7 +305,7 @@ class CoinTagBalanceWidget extends ConsumerWidget {
           }
         },
         switchWidget: hideSwitch
-            ? null
+            ? const SizedBox.shrink()
             : Consumer(
                 builder: (context, ref, child) {
                   final coins = coinTag.coinsId;

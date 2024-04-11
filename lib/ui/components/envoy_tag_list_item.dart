@@ -14,7 +14,7 @@ class EnvoyInfoCardListItem extends StatelessWidget {
   final Widget icon;
   final Widget trailing;
   final FlexAlignment flexAlignment;
-  final Color? color;
+  final Color? textColor;
 
   const EnvoyInfoCardListItem({
     super.key,
@@ -22,7 +22,7 @@ class EnvoyInfoCardListItem extends StatelessWidget {
     required this.icon,
     required this.trailing,
     this.flexAlignment = FlexAlignment.noFlex,
-    this.color,
+    this.textColor,
   });
 
   @override
@@ -53,8 +53,8 @@ class EnvoyInfoCardListItem extends StatelessWidget {
                     ),
                     child: Text(
                       title,
-                      style: EnvoyTypography.body
-                          .copyWith(color: color ?? EnvoyColors.textPrimary),
+                      style: EnvoyTypography.body.copyWith(
+                          color: textColor ?? EnvoyColors.textPrimary),
                     ),
                   ),
                 ),

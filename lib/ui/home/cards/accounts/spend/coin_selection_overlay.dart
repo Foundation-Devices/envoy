@@ -19,6 +19,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -35,106 +36,92 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
-bool _overlayIsInViewTree = false;
-AnimationController? _spendOverlayAnimationController;
-
-///overlay is visible in the viewport
-Alignment _endAlignment = const Alignment(0.0, 1.01);
-
-///overlay is minimized
-Alignment _minimizedAlignment = const Alignment(0.0, 1.3);
-
-///hidden from the viewport
-Alignment _startAlignment = const Alignment(0.0, 1.99);
-
-Alignment? _currentOverlyAlignment = const Alignment(0.0, 1.99);
-
 OverlayEntry? overlayEntry;
-Animation<Alignment>? _appearAnimation;
 
-Future showSpendRequirementOverlay(
-    BuildContext context, Account account) async {
-  if (_overlayIsInViewTree) {
-    /// if the view is in progress of hiding the overlay. wait and check if the view is disposed
-    /// this is useful when user is moving really fast through the screens
-    await Future.delayed(const Duration(milliseconds: 300));
-    if (_overlayIsInViewTree) {
-      /// if the view still in the view tree return.
-      return;
-    }
+class CoinSelectionOverlay extends ConsumerStatefulWidget {
+  final Widget child;
+
+  const CoinSelectionOverlay({super.key, required this.child});
+
+  static CoinSelectionOverlayState? of(BuildContext context) {
+    return context.findAncestorStateOfType<CoinSelectionOverlayState>();
   }
 
-  /// already visible, and exiting overlay. so we reverse the animation
-  if (_spendOverlayAnimationController?.isAnimating == true &&
-      (_spendOverlayAnimationController?.status == AnimationStatus.completed)) {
-    _spendOverlayAnimationController?.reverse();
-    return;
-  }
-
-  ///entry still exist if animation finished then remove or do leave it in open state
-  if (overlayEntry != null) {
-    if (_spendOverlayAnimationController?.status == AnimationStatus.completed) {
-      overlayEntry?.remove();
-      overlayEntry?.dispose();
-      await Future.delayed(const Duration(milliseconds: 100));
-    }
-  }
-
-  overlayEntry = OverlayEntry(builder: (context) {
-    return SpendRequirementOverlay(account: account);
-  });
-  if (context.mounted) {
-    Overlay.of(context, rootOverlay: true).insert(overlayEntry!);
-  }
+  @override
+  ConsumerState<CoinSelectionOverlay> createState() =>
+      CoinSelectionOverlayState();
 }
 
-Future hideSpendRequirementOverlay({bool noAnimation = false}) async {
-  if (noAnimation) {
-    overlayEntry?.remove();
-    overlayEntry?.dispose();
-    _spendOverlayAnimationController = null;
-    overlayEntry = null;
-  } else {
-    if (overlayEntry != null &&
-        _spendOverlayAnimationController != null &&
-        _spendOverlayAnimationController?.isAnimating == false) {
-      _runAnimation(_currentOverlyAlignment!, _startAlignment)
-          .then((value) => Future.delayed(const Duration(milliseconds: 250)))
-          .then((value) {
-        if (_spendOverlayAnimationController?.status ==
-            AnimationStatus.completed) {
-          overlayEntry?.remove();
-          overlayEntry?.dispose();
-          overlayEntry = null;
-          _spendOverlayAnimationController?.reset();
-          _spendOverlayAnimationController = null;
+class CoinSelectionOverlayState extends ConsumerState<CoinSelectionOverlay> {
+  @override
+  Widget build(BuildContext context) {
+    ///shows/hide spend overlay for account detail page, overlay is only needed within account detail page..
+    /// any other navigation should hide the overlay (except coin tag screens)
+    ref.listen(
+      routePathProvider,
+      (previous, nextPath) {
+        ///shows/hide spend overlay for account detail page, ovelay is only needed within account detail page..
+        /// any other navigation should hide the overlay (except coin tag screens)
+        if (nextPath == ROUTE_ACCOUNT_DETAIL) {
+          if (ref.read(showSpendRequirementOverlayProvider) ||
+              ref.read(coinSelectionStateProvider).isNotEmpty) {
+            final account = ref.read(selectedAccountProvider);
+            if (account != null) show(SpendOverlayContext.preselectCoins);
+          } else {
+            if (ref.read(spendEditModeProvider) != SpendOverlayContext.hidden) {
+              hide();
+            }
+          }
         }
-      }).catchError((ero) {
-        overlayEntry?.remove();
-        overlayEntry?.dispose();
-        overlayEntry = null;
-        _spendOverlayAnimationController = null;
-      });
+      },
+    );
+
+    ///show spend overlay for account detail page
+    ref.listen(showSpendRequirementOverlayProvider, (previous, next) {
+      if (next) {
+        if (ref.read(spendEditModeProvider) ==
+            SpendOverlayContext.rbfSelection) {
+        } else {
+          final requiredAmount = ref.watch(spendAmountProvider);
+          final account = ref.read(selectedAccountProvider);
+          if (account != null) {
+            show(requiredAmount != 0
+                ? SpendOverlayContext.editCoins
+                : SpendOverlayContext.preselectCoins);
+          }
+        }
+      } else {
+        if (ref.read(spendEditModeProvider) ==
+            SpendOverlayContext.preselectCoins) {
+          ref.read(coinSelectionStateProvider.notifier).reset();
+          ref.read(hideBottomNavProvider.notifier).state = false;
+          ref.read(spendEditModeProvider.notifier).state =
+              SpendOverlayContext.hidden;
+        }
+      }
+    });
+    return widget.child;
+  }
+
+  Future show(SpendOverlayContext overlayContext) async {
+    ref.read(spendEditModeProvider.notifier).state = overlayContext;
+    final account = ref.read(selectedAccountProvider);
+    if (account == null || overlayEntry != null) return;
+    overlayEntry = OverlayEntry(
+        builder: (context) {
+          return SpendRequirementOverlay(account: account);
+        },
+        maintainState: true,
+        opaque: false);
+    if (context.mounted) {
+      Overlay.of(context, rootOverlay: true).insert(overlayEntry!);
     }
   }
-}
 
-Future _runAnimation(Alignment startAlign, Alignment endAlign) {
-  _appearAnimation = _spendOverlayAnimationController!.drive(
-    AlignmentTween(
-      begin: startAlign,
-      end: endAlign,
-    ),
-  );
-
-  SpringDescription spring = SpringDescription.withDampingRatio(
-    mass: 1.5,
-    stiffness: 300.0,
-    ratio: 0.4,
-  );
-
-  final simulation = SpringSimulation(spring, 0, 1, -3.39068);
-  return _spendOverlayAnimationController!.animateWith(simulation);
+  void hide() {
+    ref.read(spendEditModeProvider.notifier).state = SpendOverlayContext.hidden;
+    ref.read(hideBottomNavProvider.notifier).state = false;
+  }
 }
 
 class SpendRequirementOverlay extends ConsumerStatefulWidget {
@@ -149,16 +136,27 @@ class SpendRequirementOverlay extends ConsumerStatefulWidget {
 class SpendRequirementOverlayState
     extends ConsumerState<SpendRequirementOverlay>
     with SingleTickerProviderStateMixin {
-  Alignment _dragAlignment = _startAlignment;
+  ///overlay is visible in the viewport
+  final Alignment _endAlignment = const Alignment(0.0, 1.01);
+
+  ///overlay is minimized
+  final Alignment _minimizedAlignment = const Alignment(0.0, 1.3);
+
+  ///hidden from the viewport
+  final Alignment _startAlignment = const Alignment(0.0, 1.99);
+
+  late Alignment _dragAlignment = _startAlignment;
+
+  AnimationController? _animationController;
+  Animation<Alignment>? _appearAnimation;
 
   @override
   void initState() {
-    _overlayIsInViewTree = true;
-    if (_spendOverlayAnimationController != null) {
-      _spendOverlayAnimationController?.dispose();
-      _spendOverlayAnimationController = null;
+    if (_animationController != null) {
+      _animationController?.dispose();
+      _animationController = null;
     }
-    _spendOverlayAnimationController = AnimationController(
+    _animationController = AnimationController(
       vsync: this,
       reverseDuration: const Duration(milliseconds: 300),
     );
@@ -167,18 +165,18 @@ class SpendRequirementOverlayState
       end: _endAlignment,
     ).animate(
       CurvedAnimation(
-        parent: _spendOverlayAnimationController!,
+        parent: _animationController!,
         curve: EnvoyEasing.easeInOut,
       ),
     );
-    _spendOverlayAnimationController?.addListener(() {
+    _animationController?.addListener(() {
       setState(() {
         _dragAlignment = _appearAnimation!.value;
       });
     });
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _spendOverlayAnimationController?.animateTo(1,
+      _animationController?.animateTo(1,
           duration: const Duration(milliseconds: 250),
           curve: EnvoyEasing.easeInOut);
     });
@@ -186,9 +184,9 @@ class SpendRequirementOverlayState
 
   /// run physics simulation to animate overlay,
   /// parameter alignment will be used as end state of the animation
-  void _runSpringSimulation(
+  TickerFuture _runSpringSimulation(
       Offset pixelsPerSecond, Alignment alignment, Size size) {
-    _appearAnimation = _spendOverlayAnimationController!.drive(
+    _appearAnimation = _animationController!.drive(
       AlignmentTween(
         begin: _dragAlignment,
         end: alignment,
@@ -207,7 +205,7 @@ class SpendRequirementOverlayState
 
     final simulation = SpringSimulation(spring, 0, 1, -unitVelocity);
 
-    _spendOverlayAnimationController!.animateWith(simulation);
+    return _animationController!.animateWith(simulation);
   }
 
   ///hide overlay to show dialogs
@@ -216,16 +214,45 @@ class SpendRequirementOverlayState
 
   @override
   void dispose() {
-    // _spendOverlayAnimationController?.dispose();
-    _spendOverlayAnimationController = null;
+    _animationController?.dispose();
     super.dispose();
-    _overlayIsInViewTree = false;
+  }
+
+  void _removeOverlay() {
+    overlayEntry?.remove();
+    overlayEntry?.dispose();
+    overlayEntry = null;
+  }
+
+  void _dismiss() {
+    final size = MediaQuery.of(context).size;
+
+    if (_isInMinimizedState) {
+      _runSpringSimulation(const Offset(0, 0), _startAlignment, size)
+          .then((value) {
+        ref.read(hideBottomNavProvider.notifier).state = false;
+        _removeOverlay();
+      });
+    } else {
+      _animationController?.reverse().then((value) {
+        ref.read(hideBottomNavProvider.notifier).state = false;
+        _removeOverlay();
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final totalSelectedAmount =
         ref.watch(getTotalSelectedAmount(widget.account.id!));
+    final size = MediaQuery.of(context).size;
+
+    ref.listen(spendEditModeProvider, (previous, next) {
+      if (next == SpendOverlayContext.hidden && overlayEntry != null) {
+        _dismiss();
+        //always show bottom nav when overlay is hidden
+      }
+    });
 
     ref.listen(coinSelectionStateProvider, (previous, next) {
       if (!setEquals(previous, next)) {
@@ -233,16 +260,19 @@ class SpendRequirementOverlayState
       }
     });
 
+    final spendEditMode = ref.watch(spendEditModeProvider);
     final requiredAmount = ref.watch(spendAmountProvider);
-
     bool inTagSelectionMode = requiredAmount == 0;
+
+    bool showRequiredAmount = !inTagSelectionMode;
 
     bool valid =
         (totalSelectedAmount != 0 && totalSelectedAmount >= requiredAmount);
 
-    _currentOverlyAlignment = _appearAnimation!.value;
-
-    final size = MediaQuery.of(context).size;
+    if (spendEditMode == SpendOverlayContext.rbfSelection) {
+      showRequiredAmount = false;
+      valid = totalSelectedAmount != 0;
+    }
 
     //hide when dialog is shown, we dont want to remove overlay from the widget tree
     //if the user chose to stay in the coin selection screen and we need to show the overlay again
@@ -252,9 +282,8 @@ class SpendRequirementOverlayState
       duration: const Duration(milliseconds: 120),
       child: GestureDetector(
         onPanDown: (details) {
-          _spendOverlayAnimationController!.stop();
+          _animationController!.stop();
         },
-        // TODO: implement dismiss
         onPanUpdate: (details) {
           setState(() {
             Alignment update = _dragAlignment;
@@ -361,7 +390,7 @@ class SpendRequirementOverlayState
                                     const Padding(
                                         padding: EdgeInsets.symmetric(
                                             horizontal: EnvoySpacing.xs)),
-                                    !inTagSelectionMode
+                                    showRequiredAmount
                                         ? Padding(
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: EnvoySpacing.small),
@@ -507,37 +536,50 @@ class SpendRequirementOverlayState
     final router = GoRouter.of(context);
     final navigator = Navigator.of(context);
     final mode = ref.read(spendEditModeProvider);
+    final account = ref.read(selectedAccountProvider);
+    Set<String> walletSelection = ref.read(coinSelectionFromWallet);
+    Set<String> coinSelection = ref.read(coinSelectionStateProvider);
+    bool selectionChanged =
+        walletSelection.difference(coinSelection).isNotEmpty;
 
     if (mode == SpendOverlayContext.editCoins) {
-      ref.read(spendEditModeProvider.notifier).state =
-          SpendOverlayContext.hidden;
       if (ref.read(coinDetailsActiveProvider)) {
         navigator.pop();
         //wait for coin details screen to animate out
         await Future.delayed(const Duration(milliseconds: 320));
       }
-      hideSpendRequirementOverlay();
       await Future.delayed(const Duration(milliseconds: 120));
-      if (navigator.canPop()) {
-        navigator.popUntil((route) {
-          return route.settings is MaterialPage;
-        });
-      }
-      Set<String> walletSelection = ref.read(coinSelectionFromWallet);
-      Set<String> coinSelection = ref.read(coinSelectionStateProvider);
-      Set diff = coinSelection.difference(walletSelection);
 
       ///if the user changed the selection, validate the transaction
-      if (diff.isNotEmpty) {
+      if (selectionChanged) {
         ///reset fees if coin selection changed
-        final account = ref.read(selectedAccountProvider);
         ref.read(spendFeeRateProvider.notifier).state =
             Fees().slowRate(account!.wallet.network) * 100000;
         ref.read(spendTransactionProvider.notifier).validate(scope);
       }
+      ref.read(spendEditModeProvider.notifier).state =
+          SpendOverlayContext.hidden;
+      await Future.delayed(const Duration(milliseconds: 120));
+      //pop coin selection screen, specifically for edit coins for spend screen
+      navigator.pop();
       return;
+    } else if (mode == SpendOverlayContext.rbfSelection) {
+      if (ref.read(coinDetailsActiveProvider)) {
+        navigator.pop();
+        //wait for coin details screen to animate out
+        await Future.delayed(const Duration(milliseconds: 320));
+      }
+      navigator.pop(selectionChanged);
     } else {
-      hideSpendRequirementOverlay();
+      if (ref.read(coinDetailsActiveProvider)) {
+        navigator.pop();
+        //wait for coin details screen to animate out
+        await Future.delayed(const Duration(milliseconds: 320));
+      }
+      ref.read(spendEditModeProvider.notifier).state =
+          SpendOverlayContext.hidden;
+      ref.read(hideBottomNavProvider.notifier).state = false;
+      _dismiss();
       router.push(ROUTE_ACCOUNT_SEND);
       return;
     }
@@ -575,8 +617,10 @@ class SpendRequirementOverlayState
               //wait for coin details screen to animate out
               await Future.delayed(const Duration(milliseconds: 320));
             }
-            hideSpendRequirementOverlay();
-            if (navigator.canPop()) {
+            if (ref.read(spendEditModeProvider) ==
+                SpendOverlayContext.rbfSelection) {
+              navigator.pop();
+            } else if (navigator.canPop()) {
               navigator.popUntil((route) {
                 return route.settings is MaterialPage;
               });
@@ -706,7 +750,6 @@ class SpendRequirementOverlayState
     ProviderContainer container = ProviderScope.containerOf(context);
     if (await EnvoyStorage()
         .checkPromptDismissed(DismissiblePrompt.txDiscardWarning)) {
-      hideSpendRequirementOverlay();
       ref.read(coinSelectionStateProvider.notifier).reset();
       ref.read(spendEditModeProvider.notifier).state =
           SpendOverlayContext.hidden;
@@ -731,7 +774,6 @@ class SpendRequirementOverlayState
         ref.read(spendEditModeProvider.notifier).state =
             SpendOverlayContext.hidden;
         clearSpendState(container);
-        hideSpendRequirementOverlay();
       }
     }
   }

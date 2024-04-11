@@ -12,7 +12,7 @@ class BitcoinRequest {
 
   String get label => options["label"];
 
-  String get message => options["message"];
+  String? get message => options["message"];
 
   double get amount => options["amount"] is int
       ? options["amount"].toDouble()
@@ -22,7 +22,7 @@ class BitcoinRequest {
 
   set label(String newLabel) => options["label"] = newLabel;
 
-  set message(String newMessage) => options["message"] = newMessage;
+  set message(String? newMessage) => options["message"] = newMessage;
 
   set amount(dynamic newAmount) => options["amount"] = newAmount;
 

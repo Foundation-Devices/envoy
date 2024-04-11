@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
 import 'package:wallet/exceptions.dart';
@@ -17,28 +18,41 @@ import 'package:envoy/business/settings.dart';
 
 enum ElectrumServerEntryState { pending, valid, invalid }
 
-class ElectrumServerEntry extends StatefulWidget {
+class ElectrumServerEntry extends ConsumerStatefulWidget {
   final Function(String) setter;
   final String Function() getter;
 
   const ElectrumServerEntry(this.getter, this.setter, {super.key});
 
   @override
-  State<ElectrumServerEntry> createState() => _ElectrumServerEntryState();
+  ConsumerState<ElectrumServerEntry> createState() =>
+      _ElectrumServerEntryState();
 }
 
-class _ElectrumServerEntryState extends State<ElectrumServerEntry> {
+class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
   var _state = ElectrumServerEntryState.valid;
   final TextEditingController _controller = TextEditingController();
   String _textBelow = S().privacy_node_configure;
   Timer? _typingTimer;
   bool _isError = false;
+  bool _torEnabled = false;
 
   @override
   void initState() {
     super.initState();
     _controller.text = widget.getter();
     if (_controller.text.isNotEmpty) {
+      _onAddressChanged(_controller.text);
+    }
+    Future.delayed(Duration.zero).then((value) {
+      _updateTorEnabledStatus();
+    });
+  }
+
+  void _updateTorEnabledStatus() {
+    final newTorEnabled = ref.watch(torEnabledProvider);
+    if (_torEnabled != newTorEnabled && _controller.text.isNotEmpty) {
+      _torEnabled = newTorEnabled;
       _onAddressChanged(_controller.text);
     }
   }
@@ -50,6 +64,12 @@ class _ElectrumServerEntryState extends State<ElectrumServerEntry> {
     }
 
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(ElectrumServerEntry oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _updateTorEnabledStatus();
   }
 
   @override
@@ -101,6 +121,10 @@ class _ElectrumServerEntryState extends State<ElectrumServerEntry> {
                 });
               }));
             },
+            infoContent: (isPrivateAddress(_controller.text) &&
+                    ConnectivityManager().torEnabled)
+                ? S().privacy_node_connection_localAddress_warning
+                : null,
           ),
         ),
       ],
