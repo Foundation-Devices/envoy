@@ -37,7 +37,10 @@ class _LearnCardState extends ConsumerState<LearnCard> {
     List<BlogPost> blogs =
         ref.watch(learnBlogsProvider(widget.controller.text));
     final learnFilterState = ref.watch(learnFilterStateProvider);
-    ref.watch(learnSortStateProvider);
+    final learnSortState = ref.watch(learnSortStateProvider);
+    final bool isDefaultFilterAndSorting =
+        learnFilterState.contains(LearnFilters.all) &&
+            learnSortState == LearnSortTypes.newestFirst;
 
     return Padding(
       padding: const EdgeInsets.all(EnvoySpacing.medium1),
@@ -100,16 +103,14 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                     child: Container(
                         height: EnvoySpacing.medium3,
                         width: EnvoySpacing.medium3,
-                        decoration: BoxDecoration(
-                            color: learnFilterState.contains(LearnFilters.all)
-                                ? EnvoyColors.surface2
-                                : EnvoyColors.accentPrimary,
+                        decoration: const BoxDecoration(
+                            color: EnvoyColors.surface2,
                             shape: BoxShape.circle),
                         child: Padding(
                           padding: const EdgeInsets.all(EnvoySpacing.xs),
                           child: EnvoyIcon(
                             EnvoyIcons.filter,
-                            color: learnFilterState.contains(LearnFilters.all)
+                            color: isDefaultFilterAndSorting
                                 ? EnvoyColors.textTertiary
                                 : EnvoyColors.accentPrimary,
                           ),

@@ -268,7 +268,7 @@ Future prunePendingTransactions(
         .forEach((actualRampTx) {
       kPrint("Pruning Ramp tx: ${actualRampTx.txId}");
       EnvoyStorage()
-          .addTxNote("Ramp transaction", actualRampTx.txId); // TODO: FIGMA
+          .addTxNote("Ramp Purchase", actualRampTx.txId); // TODO: FIGMA
       EnvoyStorage().deleteTxNote(pendingTx.address!);
       EnvoyStorage().deletePendingTx(pendingTx.address!);
     });

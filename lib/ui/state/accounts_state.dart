@@ -31,6 +31,25 @@ final accountsProvider = Provider<List<Account>>((ref) {
   }).toList();
 });
 
+final nonTestnetAccountsProvider =
+    Provider.family<List<Account>, Account?>((ref, selectedAccount) {
+  final accounts = ref.watch(accountsProvider);
+
+  final filteredAccounts = accounts
+      .where((account) => account.wallet.network != Network.Testnet)
+      .toList();
+
+  if (selectedAccount != null) {
+    final indexOfSelected = filteredAccounts
+        .indexWhere((account) => account.id == selectedAccount.id);
+    if (indexOfSelected != -1) {
+      final selectedAccountToMove = filteredAccounts.removeAt(indexOfSelected);
+      filteredAccounts.add(selectedAccountToMove);
+    }
+  }
+  return filteredAccounts;
+});
+
 final accountStateProvider = Provider.family<Account?, String?>((ref, id) {
   final accountManager = ref.watch(accountManagerProvider);
   return accountManager.accounts

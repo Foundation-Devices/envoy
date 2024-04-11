@@ -22,6 +22,7 @@ class EnvoyDropdown extends StatefulWidget {
   final bool isDropdownActive;
   final Function(EnvoyDropdownOption?)? onOptionChanged;
   final int initialIndex;
+  final GlobalKey<EnvoyDropdownState>? dropdownKey;
 
   const EnvoyDropdown({
     super.key,
@@ -29,10 +30,17 @@ class EnvoyDropdown extends StatefulWidget {
     this.isDropdownActive = true,
     this.onOptionChanged,
     this.initialIndex = 0,
+    this.dropdownKey,
   });
 
   @override
   EnvoyDropdownState createState() => EnvoyDropdownState();
+
+  void setSelectedIndex(int index) {
+    if (dropdownKey?.currentState != null) {
+      dropdownKey?.currentState?.setSelectedIndex(index);
+    }
+  }
 }
 
 class EnvoyDropdownState extends State<EnvoyDropdown> {
@@ -43,6 +51,13 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
 
   EnvoyDropdownState() {
     _focusNode = FocusNode();
+  }
+
+  void setSelectedIndex(int index) {
+    setState(() {
+      _selectedIndex = index;
+      _selectedOption = widget.options[_selectedIndex];
+    });
   }
 
   @override
@@ -91,14 +106,7 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
                 ? (EnvoyDropdownOption? newValue) {
                     setState(() {
                       _selectedOption = newValue;
-
-                      for (final (int index, EnvoyDropdownOption option)
-                          in widget.options.indexed) {
-                        if (option.type == newValue!.type) {
-                          _selectedIndex = index;
-                        }
-                      }
-
+                      _selectedIndex = widget.options.indexOf(newValue!);
                       if (widget.onOptionChanged != null) {
                         widget.onOptionChanged!(newValue);
                       }
@@ -113,6 +121,7 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
                     option.label,
                     style: EnvoyTypography.body.copyWith(
                       color: EnvoyColors.textPrimary,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 );
@@ -150,6 +159,7 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
                                       ? EnvoyColors.textPrimaryInverse
                                       : EnvoyColors.textPrimary,
                                 ),
+                                overflow: TextOverflow.ellipsis,
                               ),
                               if (_isTapped)
                                 Padding(

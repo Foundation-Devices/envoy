@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 import 'dart:core';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -19,8 +18,8 @@ import 'package:envoy/business/map_data.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/generated/l10n.dart';
 
-String mapApiKey = Platform.environment['MAP_API_KEY'] ?? "";
 const String mapType = "positron";
 
 const home = LatLng(Angle.degree(34.052235), Angle.degree(-118.243683));
@@ -121,12 +120,14 @@ class MarkersPageState extends State<MarkersPage> {
 
   String _openStreetMap(int z, int x, int y) {
     final url =
-        "https://maps.geoapify.com/v1/tile/$mapType/$z/$x/$y.png?&apiKey=$mapApiKey";
+        "https://maps.geoapify.com/v1/tile/$mapType/$z/$x/$y.png?&apiKey=${MapData.mapApiKey}";
     return url;
   }
 
-  Widget _buildVenueMarkerWidget(Venue venue, MapTransformer transformer,
-      [IconData icon = Icons.location_pin]) {
+  Widget _buildVenueMarkerWidget(
+    Venue venue,
+    MapTransformer transformer,
+  ) {
     var pos = transformer.toOffset(LatLng.degree(venue.lat, venue.lon));
     return Positioned(
       left: pos.dx - 24,
@@ -134,15 +135,17 @@ class MarkersPageState extends State<MarkersPage> {
       width: 48,
       height: 48,
       child: GestureDetector(
-        child: Icon(
-          icon,
-          color: Colors.redAccent,
-          size: 48,
-          shadows: const [
-            Shadow(
-                color: Colors.black,
-                blurRadius: 20.0,
-                offset: Offset(-2.0, 24.0)),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const EnvoyIcon(
+              EnvoyIcons.location,
+              color: EnvoyColors.copper500,
+            ),
+            CustomPaint(
+              size: const Size(EnvoySpacing.medium2, EnvoySpacing.small),
+              painter: TriangleShadow(),
+            )
           ],
         ),
         onTap: () async {
@@ -167,9 +170,8 @@ class MarkersPageState extends State<MarkersPage> {
             final data = json.decode(response.body);
             final venueInfo = data["venue"];
             String? name = venueInfo["name"];
-            //final String? email = venueInfo["email"];
             final String? description = venueInfo["description"];
-            //final String? phone = venueInfo["phone"];
+            final String? openingHours = venueInfo["opening_hours"];
             final String? website = venueInfo["website"];
             final String? street = venueInfo["street"];
             if (mounted) {
@@ -178,11 +180,16 @@ class MarkersPageState extends State<MarkersPage> {
                 context: context,
                 blurColor: Colors.black,
                 linearGradient: true,
-                dialog: AtmDialogInfo(
+                dialog: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  child: AtmDialogInfo(
                     name: name,
                     street: street,
                     website: website,
-                    description: description),
+                    description: description,
+                    openingHours: openingHours,
+                  ),
+                ),
               );
             }
           } catch (error) {
@@ -195,7 +202,7 @@ class MarkersPageState extends State<MarkersPage> {
 
   @override
   Widget build(BuildContext context) {
-    //_showLocallyVenues(); if want constantly refresh map
+    _showLocallyVenues();
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -276,21 +283,15 @@ class MarkersPageState extends State<MarkersPage> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             MapButton(
-                icon: EnvoyIcons.spend, //TODO: change icon
+                icon: EnvoyIcons.plus,
                 onTap: () {
                   _zoomIn(localTransformer!);
                 }),
-            const SizedBox(height: 16),
+            const SizedBox(height: EnvoySpacing.small),
             MapButton(
-                icon: EnvoyIcons.receive, //TODO: change icon
+                icon: EnvoyIcons.minus,
                 onTap: () {
                   _zoomOut(localTransformer!);
-                }),
-            const SizedBox(height: 16),
-            MapButton(
-                icon: EnvoyIcons.search, //TODO: change icon
-                onTap: () {
-                  _showLocallyVenues();
                 }),
           ],
         ),
@@ -306,42 +307,78 @@ class AtmDialogInfo extends StatelessWidget {
     this.street,
     this.website,
     this.description,
+    this.openingHours,
   });
 
   final String? name;
   final String? street;
   final String? website;
   final String? description;
+  final String? openingHours;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-          vertical: EnvoySpacing.medium3, horizontal: EnvoySpacing.medium2),
+      padding: const EdgeInsets.all(EnvoySpacing.medium2),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: GestureDetector(
+              child: const EnvoyIcon(EnvoyIcons.close),
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium2),
+            child: EnvoyIcon(
+              EnvoyIcons.location,
+              size: EnvoyIconSize.big,
+            ),
+          ),
           Text(
             name ?? "No name info",
             textAlign: TextAlign.center,
+            style: EnvoyTypography.subheading,
           ),
           if (description != null)
-            Text(
-              description!,
-              textAlign: TextAlign.center,
-            ),
-          if (street != null) Text(street!, textAlign: TextAlign.center),
-          if (website != null)
-            GestureDetector(
+            Padding(
+              padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
               child: Text(
-                website!,
+                description!,
                 textAlign: TextAlign.center,
-                style: EnvoyTypography.button
-                    .copyWith(color: EnvoyColors.accentPrimary),
+                style: EnvoyTypography.info,
               ),
-              onTap: () {
-                launchUrl(Uri.parse(website!));
-              },
+            ),
+          if (street != null)
+            Padding(
+              padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+              child: Text(street!, textAlign: TextAlign.center),
+            ),
+          if (openingHours != null)
+            Padding(
+              padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+              child: Text(
+                  "${S().buy_bitcoin_buyOptions_atms_map_modal_openingHours}\n $openingHours",
+                  textAlign: TextAlign.center),
+            ),
+          if (website != null)
+            Padding(
+              padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+              child: GestureDetector(
+                child: Text(
+                  website!,
+                  textAlign: TextAlign.center,
+                  style: EnvoyTypography.button
+                      .copyWith(color: EnvoyColors.accentPrimary),
+                ),
+                onTap: () {
+                  launchUrl(Uri.parse(website!));
+                },
+              ),
             ),
           if (street == null && description == null && website == null)
             const Text("No extra details available for this atm."),
@@ -380,5 +417,32 @@ class MapButton extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class TriangleShadow extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..shader = const RadialGradient(
+        center: Alignment.topCenter,
+        focalRadius: 0.5,
+        radius: 0.8,
+        stops: [0.0, 0.9],
+        colors: [Colors.grey, Colors.transparent], // Adjust colors as needed
+      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+
+    Path path = Path();
+    path.moveTo(size.width / 2, size.height); // Bottom point
+    path.lineTo(size.width, 0); // Top-right point
+    path.lineTo(0, 0); // Top-left point
+    path.close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
   }
 }

@@ -14,17 +14,15 @@ import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/choose_coins_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_requirement_overlay.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_details.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/transaction_review_card.dart';
-import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/transactions_note_state.dart';
@@ -508,13 +506,17 @@ class _TransactionReviewScreenState
                 children: [
                   if (!transactionModel.isPSBTFinalized)
                     EnvoyButton(
+                      readOnly: transactionModel.loading,
                       S().coincontrol_tx_detail_cta2,
                       type: EnvoyButtonTypes.secondary,
-                      onTap: () {
-                        ref.read(userHasChangedFeesProvider.notifier).state =
-                            false;
-                        editTransaction(context, ref);
-                      },
+                      onTap: transactionModel.loading
+                          ? null
+                          : () {
+                              ref
+                                  .read(userHasChangedFeesProvider.notifier)
+                                  .state = false;
+                              editTransaction(context, ref);
+                            },
                     ),
                   const Padding(padding: EdgeInsets.all(6)),
                   EnvoyButton(
@@ -687,9 +689,6 @@ class _TransactionReviewScreenState
 void editTransaction(BuildContext context, WidgetRef ref) async {
   final router = Navigator.of(context, rootNavigator: true);
 
-  ///indicating that we are in edit mode
-  ref.read(hideBottomNavProvider.notifier).state = false;
-
   /// The user has is in edit mode and if the psbt
   /// has inputs then use them to populate the coin selection state
   if (ref.read(rawTransactionProvider) != null) {
@@ -707,13 +706,8 @@ void editTransaction(BuildContext context, WidgetRef ref) async {
     ref.read(coinSelectionFromWallet.notifier).addAll(inputs);
   }
 
-  ///toggle to coins view for coin control
-  ref.read(accountToggleStateProvider.notifier).state =
-      AccountToggleState.coins;
-  ref.read(spendEditModeProvider.notifier).state =
-      SpendOverlayContext.editCoins;
   if (ref.read(selectedAccountProvider) != null) {
-    showSpendRequirementOverlay(context, ref.read(selectedAccountProvider)!);
+    CoinSelectionOverlay.of(context)?.show(SpendOverlayContext.editCoins);
   }
   router
       .push(CupertinoPageRoute(

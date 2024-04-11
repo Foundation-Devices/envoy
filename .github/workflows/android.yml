@@ -25,6 +25,8 @@ jobs:
           KEY_JKS: ${{ secrets.KEY_JKS }}
           KEY_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
           ALIAS_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          MAP_API_KEY: ${{ secrets.MAP_API_KEY }}
+          RAMP_API_KEY: ${{ secrets.RAMP_API_KEY }}
         run: echo -n $KEY_JKS | base64 -di > android/key.jks && just docker-build-android-sign
 
       - uses: actions/upload-artifact@v2

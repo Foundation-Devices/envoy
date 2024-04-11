@@ -4844,18 +4844,6 @@ class S {
     );
   }
 
-  /// `Pending backup to Foundation servers`
-  String
-      get manual_toggle_on_seed_not_backedup_pending_android_data_pending_backup {
-    return Intl.message(
-      'Pending backup to Foundation servers',
-      name:
-          'manual_toggle_on_seed_not_backedup_pending_android_data_pending_backup',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Pending Android Auto Backup (once daily)`
   String
       get manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup {

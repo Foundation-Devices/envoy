@@ -98,7 +98,8 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     var unit = ref.watch(sendScreenUnitProvider);
 
     Numpad numpad = Numpad(unit,
-        isAmountZero: _enteredAmount.isEmpty || _enteredAmount == "0");
+        isAmountZero: _enteredAmount.isEmpty || _enteredAmount == "0",
+        isDecimalSeparator: _enteredAmount.contains(fiatDecimalSeparator));
     numpad.events.stream.listen((event) async {
       switch (event) {
         case NumpadEvents.backspace:
@@ -126,7 +127,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
             }
           }
           break;
-        case NumpadEvents.dot:
+        case NumpadEvents.separator:
           {
             if (unit == AmountDisplayUnit.sat) {
               break;
@@ -181,7 +182,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
           (unit != AmountDisplayUnit.sat) &&
           (_enteredAmount.contains(fiatDecimalSeparator));
 
-      bool addDot = (event == NumpadEvents.dot) &&
+      bool addDot = (event == NumpadEvents.separator) &&
           (unit == AmountDisplayUnit.fiat &&
                   !_enteredAmount.contains(fiatDecimalSeparator) ||
               unit == AmountDisplayUnit.btc &&
@@ -288,7 +289,7 @@ class SpendableAmountWidget extends ConsumerWidget {
   }
 }
 
-enum NumpadEvents { dot, ok, backspace, clearAll, clipboard }
+enum NumpadEvents { separator, ok, backspace, clearAll, clipboard }
 
 class Numpad extends StatefulWidget {
   // Dart linter is reporting a false positive here
@@ -298,20 +299,18 @@ class Numpad extends StatefulWidget {
   final StreamController events = StreamController();
   late final AmountDisplayUnit amountDisplayUnit;
   final bool isAmountZero;
+  final bool isDecimalSeparator;
 
-  Numpad(this.amountDisplayUnit, {super.key, required this.isAmountZero});
+  Numpad(this.amountDisplayUnit,
+      {super.key,
+      required this.isAmountZero,
+      required this.isDecimalSeparator});
 
   @override
   State<Numpad> createState() => _NumpadState();
 }
 
 class _NumpadState extends State<Numpad> {
-  @override
-  void dispose() {
-    widget.events.close();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return GridView.count(
@@ -338,8 +337,10 @@ class _NumpadState extends State<Numpad> {
                 NumpadButtonType.text,
                 text: fiatDecimalSeparator,
                 onTap: () {
-                  Haptics.lightImpact();
-                  widget.events.sink.add(NumpadEvents.dot);
+                  if (!widget.isDecimalSeparator) {
+                    Haptics.lightImpact();
+                    widget.events.sink.add(NumpadEvents.separator);
+                  }
                 },
               )
             : const SizedBox.shrink(),

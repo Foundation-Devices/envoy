@@ -51,8 +51,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:wallet/wallet.dart';
-import 'package:envoy/ui/components/ramp_widget_test.dart';
-import 'package:envoy/ui/components/map_test.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget {
@@ -144,195 +142,179 @@ class _AccountCardState extends ConsumerState<AccountCard>
     bool txFiltersEnabled = ref.watch(isTransactionFiltersEnabled);
     bool isMenuOpen = ref.watch(homePageOptionsVisibilityProvider);
 
-    return Scaffold(
-      body: PopScope(
-        canPop: !isMenuOpen,
-        onPopInvoked: (bool didPop) async {
-          if (!didPop) {
-            HomePageState.of(context)?.toggleOptions();
-          }
-        },
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 20,
-                bottom: 0,
-                left: 20,
-                right: 20,
-              ),
-              child: AccountListTile(account, onTap: () {
-                Navigator.pop(context);
-                ref.read(homePageAccountsProvider.notifier).state =
-                    HomePageAccountsState(HomePageAccountsNavigationState.list);
-              }),
-            ),
-            if (account.wallet.network != Network.Testnet && rampApiKey != "")
+    return MediaQuery.removePadding(
+      context: context,
+      removeTop: true,
+      removeBottom: true,
+      removeLeft: true,
+      removeRight: true,
+      child: Scaffold(
+        body: PopScope(
+          canPop: !isMenuOpen,
+          onPopInvoked: (bool didPop) async {
+            if (!didPop) {
+              HomePageState.of(context)?.toggleOptions();
+            }
+          },
+          child: Column(
+            children: [
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
-                child: ElevatedButton(
-                    onPressed: () async {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => runRamp(account)),
-                      );
-                    },
-                    child: const Text("Buy Bitcoin via Ramp")),
-              ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-              child: ElevatedButton(
-                  onPressed: () async {
-                    Navigator.of(context, rootNavigator: true).push(
-                      MaterialPageRoute(builder: (context) {
-                        return MediaQuery.removePadding(
-                            context: context,
-                            child: fullScreenShield(const MarkersPage()));
-                      }),
-                    );
-                  },
-                  child: const Text("Where can I find Bitcoin ATMs?")),
-            ),
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              child: (transactions.isNotEmpty || txFiltersEnabled)
-                  ? Container(
-                      padding: const EdgeInsets.only(
-                          top: EnvoySpacing.medium2,
-                          bottom: EnvoySpacing.small),
-                      child: const FilterOptions(),
-                    )
-                  : const SizedBox.shrink(),
-            ),
-            Expanded(
-              child: Padding(
                 padding: const EdgeInsets.only(
-
-                    ///proper padding to align with top sections, based on UI design
-                    left: 20,
-                    right: 20,
-                    top: EnvoySpacing.small),
-                child: account.dateSynced == null
-                    ? ListView.builder(
-                        padding: EdgeInsets.zero,
-                        itemCount: 4,
-                        itemBuilder: (BuildContext context, int index) {
-                          return const GhostListTile();
-                        },
-                      )
-                    : _getMainWidget(context, transactions, txFiltersEnabled),
+                  top: 20,
+                  bottom: 0,
+                  left: 20,
+                  right: 20,
+                ),
+                child: AccountListTile(account, onTap: () {
+                  Navigator.pop(context);
+                  ref.read(homePageAccountsProvider.notifier).state =
+                      HomePageAccountsState(
+                          HomePageAccountsNavigationState.list);
+                }),
               ),
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: Consumer(
-        builder: (context, ref, child) {
-          bool hide = ref.watch(showSpendRequirementOverlayProvider);
-          bool isInEditMode =
-              ref.watch(spendEditModeProvider) != SpendOverlayContext.hidden;
-          return IgnorePointer(
-            ignoring: (hide || isInEditMode),
-            child: AnimatedOpacity(
+              AnimatedSwitcher(
                 duration: const Duration(milliseconds: 200),
-                opacity: (hide || isInEditMode) ? 0 : 1,
-                child: child),
-          );
-        },
-        child: Container(
-          height: 100,
-          decoration: const BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: EnvoyColors.white100,
-                spreadRadius: 0,
-                blurRadius: 24,
-                offset: Offset(0, -8), // changes position of shadow
+                child: (transactions.isNotEmpty || txFiltersEnabled)
+                    ? Container(
+                        padding: const EdgeInsets.only(
+                            top: EnvoySpacing.medium2,
+                            bottom: EnvoySpacing.small),
+                        child: const FilterOptions(),
+                      )
+                    : const SizedBox.shrink(),
               ),
-              BoxShadow(
-                color: EnvoyColors.white100,
-                spreadRadius: 12,
-                blurRadius: 24,
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+
+                      ///proper padding to align with top sections, based on UI design
+                      left: 20,
+                      right: 20,
+                      top: EnvoySpacing.small),
+                  child: account.dateSynced == null
+                      ? ListView.builder(
+                          padding: EdgeInsets.zero,
+                          itemCount: 4,
+                          itemBuilder: (BuildContext context, int index) {
+                            return const GhostListTile();
+                          },
+                        )
+                      : _getMainWidget(context, transactions, txFiltersEnabled),
+                ),
               ),
             ],
           ),
-          padding: const EdgeInsets.only(
-              left: EnvoySpacing.large1,
-              right: EnvoySpacing.large1,
-              bottom: EnvoySpacing.medium3),
-          child: Row(
-            children: [
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: EnvoyTextButton(
-                      label: S().receive_tx_list_receive,
-                      onTap: () {
-                        EnvoyStorage().addPromptState(
-                            DismissiblePrompt.userInteractedWithReceive);
-                        context.go(ROUTE_ACCOUNT_RECEIVE, extra: account);
-                      }),
+        ),
+        bottomNavigationBar: Consumer(
+          builder: (context, ref, child) {
+            bool hide = ref.watch(showSpendRequirementOverlayProvider);
+            bool isInEditMode =
+                ref.watch(spendEditModeProvider) != SpendOverlayContext.hidden;
+            return IgnorePointer(
+              ignoring: (hide || isInEditMode),
+              child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 200),
+                  opacity: (hide || isInEditMode) ? 0 : 1,
+                  child: child),
+            );
+          },
+          child: Container(
+            height: 100,
+            decoration: const BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: EnvoyColors.white100,
+                  spreadRadius: 0,
+                  blurRadius: 24,
+                  offset: Offset(0, -8), // changes position of shadow
                 ),
-              ),
-              QrShield(
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: IconButton(
-                    padding: EdgeInsets.zero,
-                    icon: const Icon(
-                      old_icons.EnvoyIcons.qrScan,
-                      size: 30,
-                      color: EnvoyColors.darkTeal,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context, rootNavigator: true).push(
-                        MaterialPageRoute(builder: (context) {
-                          return MediaQuery.removePadding(
-                            context: context,
-                            child: ScannerPage(
-                              const [
-                                ScannerType.address,
-                                ScannerType.azteco,
-                                ScannerType.btcPay
-                              ],
-                              account: account,
-                              onAddressValidated: (address, amount) {
-                                // Navigator.pop(context);
-                                ref.read(spendAddressProvider.notifier).state =
-                                    address;
-                                ref.read(spendAmountProvider.notifier).state =
-                                    amount;
-                                context.go(ROUTE_ACCOUNT_SEND, extra: {
-                                  "account": account,
-                                  "address": address,
-                                  "amount": amount
-                                });
-                              },
-                            ),
-                          );
+                BoxShadow(
+                  color: EnvoyColors.white100,
+                  spreadRadius: 12,
+                  blurRadius: 24,
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.only(
+                left: EnvoySpacing.large1,
+                right: EnvoySpacing.large1,
+                bottom: EnvoySpacing.medium3),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: EnvoyTextButton(
+                        label: S().receive_tx_list_receive,
+                        onTap: () {
+                          EnvoyStorage().addPromptState(
+                              DismissiblePrompt.userInteractedWithReceive);
+                          context.go(ROUTE_ACCOUNT_RECEIVE, extra: account);
                         }),
-                      );
-                    },
                   ),
                 ),
-              ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: EnvoyTextButton(
-                    onTap: () {
-                      context.go(ROUTE_ACCOUNT_SEND);
-                      return;
-                      // widget.navigator!.push(
-                      //     SendCard(widget.account, navigator: widget.navigator));
-                    },
-                    label: S().receive_tx_list_send,
+                QrShield(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: IconButton(
+                      padding: EdgeInsets.zero,
+                      icon: const Icon(
+                        old_icons.EnvoyIcons.qrScan,
+                        size: 30,
+                        color: EnvoyColors.darkTeal,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).push(
+                          MaterialPageRoute(builder: (context) {
+                            return MediaQuery.removePadding(
+                              context: context,
+                              child: ScannerPage(
+                                const [
+                                  ScannerType.address,
+                                  ScannerType.azteco,
+                                  ScannerType.btcPay
+                                ],
+                                account: account,
+                                onAddressValidated: (address, amount, message) {
+                                  // Navigator.pop(context);
+                                  ref
+                                      .read(spendAddressProvider.notifier)
+                                      .state = address;
+                                  ref.read(spendAmountProvider.notifier).state =
+                                      amount;
+                                  ref
+                                      .read(stagingTxNoteProvider.notifier)
+                                      .state = message;
+                                  context.go(ROUTE_ACCOUNT_SEND, extra: {
+                                    "account": account,
+                                    "address": address,
+                                    "amount": amount
+                                  });
+                                },
+                              ),
+                            );
+                          }),
+                        );
+                      },
+                    ),
                   ),
                 ),
-              ),
-            ],
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: EnvoyTextButton(
+                      onTap: () {
+                        context.go(ROUTE_ACCOUNT_SEND);
+                        return;
+                        // widget.navigator!.push(
+                        //     SendCard(widget.account, navigator: widget.navigator));
+                      },
+                      label: S().receive_tx_list_send,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -478,6 +460,11 @@ class TransactionListTile extends StatelessWidget {
     color: new_color_scheme.EnvoyColors.txInfo,
   );
 
+  final Color _detailsColor = new_color_scheme.EnvoyColors.textPrimaryInverse;
+
+  final TextStyle _detailsHeadingStyle = EnvoyTypography.subheading
+      .copyWith(color: new_color_scheme.EnvoyColors.textPrimaryInverse);
+
   @override
   Widget build(BuildContext context) {
     final Locale activeLocale = Localizations.localeOf(context);
@@ -597,9 +584,13 @@ class TransactionListTile extends StatelessWidget {
       },
       openBuilder: (context, action) {
         return TransactionsDetailsWidget(
-          account: account,
-          tx: transaction,
-        );
+            account: account,
+            tx: transaction,
+            iconTitleWidget: transactionIcon(context, iconColor: _detailsColor),
+            titleWidget: transactionTitle(
+              context,
+              txTitleStyle: _detailsHeadingStyle,
+            ));
       },
     );
   }
@@ -620,7 +611,7 @@ class TransactionListTile extends StatelessWidget {
     }
     if (transaction.type == TransactionType.ramp) {
       return Text(
-        "Pending Ramp transaction", // TODO: Figma
+        S().activity_pending,
         style: _transactionTextStyleInfo,
       );
     }
@@ -643,7 +634,10 @@ class TransactionListTile extends StatelessWidget {
     }
   }
 
-  Widget transactionIcon(BuildContext context) {
+  Widget transactionIcon(
+    BuildContext context, {
+    Color iconColor = new_color_scheme.EnvoyColors.textTertiary,
+  }) {
     return FittedBox(
       alignment: Alignment.centerLeft,
       fit: BoxFit.scaleDown,
@@ -656,7 +650,7 @@ class TransactionListTile extends StatelessWidget {
               transaction.amount < 0 ? EnvoyIcons.spend : EnvoyIcons.receive;
           if (cancelState != null) {
             if (!transaction.isConfirmed) {
-              txIcon = EnvoyIcons.close;
+              txIcon = EnvoyIcons.alert;
             } else if (cancelState.newTxId == transaction.txId) {
               txIcon = EnvoyIcons.close;
             } else {
@@ -678,7 +672,7 @@ class TransactionListTile extends StatelessWidget {
               scale: 1.1,
               child: EnvoyIcon(
                 txIcon,
-                color: new_color_scheme.EnvoyColors.textTertiary,
+                color: iconColor,
                 size: EnvoyIconSize.normal,
               ),
             ),
@@ -688,8 +682,8 @@ class TransactionListTile extends StatelessWidget {
     );
   }
 
-  Widget transactionTitle(BuildContext context) {
-    final txTitleStyle = Theme.of(context)
+  Widget transactionTitle(BuildContext context, {TextStyle? txTitleStyle}) {
+    final TextStyle? defaultStyle = Theme.of(context)
         .textTheme
         .bodyLarge
         ?.copyWith(fontWeight: FontWeight.w500, fontSize: 14);
@@ -700,9 +694,11 @@ class TransactionListTile extends StatelessWidget {
       child: Consumer(
         builder: (context, ref, child) {
           bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
-          String txTitle = transaction.amount < 0
-              ? S().activity_sent
-              : S().activity_received;
+          String txTitle = transaction.type == TransactionType.ramp
+              ? S().activity_incomingPurchase
+              : (transaction.amount < 0
+                  ? S().activity_sent
+                  : S().activity_received);
           RBFState? cancelState =
               ref.watch(cancelTxStateProvider(transaction.txId));
           if (cancelState != null) {
@@ -728,7 +724,7 @@ class TransactionListTile extends StatelessWidget {
           }
           return Text(
             txTitle,
-            style: txTitleStyle,
+            style: txTitleStyle ?? defaultStyle,
           );
         },
       ),
