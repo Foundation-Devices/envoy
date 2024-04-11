@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ui/pages/scanner_page.dart';
+import 'package:envoy/business/seed_qr_extract.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
