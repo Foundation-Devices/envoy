@@ -1215,7 +1215,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Tria La Teva Privacitat"),
         "privacy_setting_perfomance_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Com t\'agradaria que Envoy es connectés a Internet?"),
+                "Com voleu que Envoy es connecti a Internet?"),
         "receive_QR_code_receive_QR_code_taproot_on_taproot_toggle":
             MessageLookupByLibrary.simpleMessage(
                 "Utilitzeu una Adreça Taproot"),
@@ -1263,12 +1263,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "No s\'ha pogut cancel·lar la teva transacció"),
         "replaceByFee_cancel_overlay_modal_cancelationFees":
-            MessageLookupByLibrary.simpleMessage("Quota de cancel·lació"),
+            MessageLookupByLibrary.simpleMessage("Quota de Cancel·lació"),
         "replaceByFee_cancel_overlay_modal_proceedWithCancelation":
             MessageLookupByLibrary.simpleMessage(
-                "Continueu amb la cancel·lació"),
+                "Continueu amb la Cancel·lació"),
         "replaceByFee_cancel_overlay_modal_receivingAmount":
-            MessageLookupByLibrary.simpleMessage("Import de recepció"),
+            MessageLookupByLibrary.simpleMessage("Import de Recepció"),
         "replaceByFee_cancel_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Substituïu la transacció no confirmada per una que contingui una tarifa més alta i que torni els fons a la vostra cartera."),

@@ -16,6 +16,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/home/top_bar_home.dart';
+import 'package:envoy/ui/lock/session_manager.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -28,7 +29,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/business/notifications.dart';
 
 final _fullScreenProvider = Provider((ref) {
   bool fullScreen = ref.watch(hideBottomNavProvider);
@@ -159,6 +162,33 @@ class HomePageState extends ConsumerState<HomePage>
         _resetBackupWarningTimer();
       }
     });
+    isNewAppVersionAvailable.stream.listen((String newVersion) {
+      _notifyAboutNewAppVersion(newVersion);
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final router = Navigator.of(context);
+      SessionManager().bind(router);
+    });
+  }
+
+  _notifyAboutNewAppVersion(String newVersion) {
+    EnvoyToast(
+      backgroundColor: Colors.lightBlue,
+      replaceExisting: true,
+      message: S().toast_newEnvoyUpdateAvailable,
+      icon: const EnvoyIcon(
+        EnvoyIcons.info,
+        color: EnvoyColors.accentPrimary,
+      ),
+      actionButtonText: S().component_update,
+      onActionTap: () {
+        EnvoyToast.dismissPreviousToasts(context);
+        launchUrlString(
+            "https://github.com/Foundation-Devices/envoy/releases/tag/$newVersion");
+      },
+    ).show(context);
+    isNewAppVersionAvailable.close();
   }
 
   _notifyAboutTor() {
@@ -236,6 +266,7 @@ class HomePageState extends ConsumerState<HomePage>
 
   @override
   void dispose() {
+    SessionManager().remove();
     _torWarningTimer?.cancel();
     _backupWarningTimer?.cancel();
     backButtonDispatcher.removeCallback(_handleHomePageBackPress);
