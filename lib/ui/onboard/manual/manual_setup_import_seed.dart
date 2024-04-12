@@ -252,7 +252,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                                   decoration: TextDecoration.underline),
                               onTap: () {
                                 launchUrl(Uri.parse(
-                                    "https://foundationdevices.com/2021/10/passphrases-what-why-how"));
+                                    "https://foundation.xyz/2021/10/passphrases-what-why-how"));
                               }),
                           const Padding(padding: EdgeInsets.all(8)),
                           Text(

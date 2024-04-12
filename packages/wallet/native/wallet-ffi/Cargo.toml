@@ -5,7 +5,7 @@
 [package]
 name = "wallet-ffi"
 version = "0.1.0"
-authors = ["Igor Cota <igor@foundationdevices.com>"]
+authors = ["Igor Cota <igor@foundation.xyz>"]
 edition = "2021"
 
 [lib]

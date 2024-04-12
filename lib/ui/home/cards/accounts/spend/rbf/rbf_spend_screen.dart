@@ -506,7 +506,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                     GestureDetector(
                         onTap: () async {
                           const link =
-                              "https://docs.foundationdevices.com/en/troubleshooting#why-is-envoy-adding-more-coins-to-my-boost-or-cancel-transaction";
+                              "https://docs.foundation.xyz/en/troubleshooting#why-is-envoy-adding-more-coins-to-my-boost-or-cancel-transaction";
                           launchUrl(Uri.parse(link));
                         },
                         child: Padding(

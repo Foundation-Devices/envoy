@@ -29,7 +29,7 @@ class SingleWalletAddressVerifyConfirmPage extends StatelessWidget {
         OnboardingButton(
           label: S().pair_new_device_address_cta2,
           onTap: () {
-            launchUrl(Uri.parse("mailto:hello@foundationdevices.com"));
+            launchUrl(Uri.parse("mailto:hello@foundation.xyz"));
           },
           type: EnvoyButtonTypes.secondary,
         ),

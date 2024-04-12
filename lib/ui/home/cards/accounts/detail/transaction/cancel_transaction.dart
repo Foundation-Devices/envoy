@@ -384,7 +384,7 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
               child: TextButton(
                 onPressed: () {
                   launchUrl(Uri.parse(
-                      "https://docs.foundationdevices.com/en/envoy/accounts#boost-or-cancel-a-transaction"));
+                      "https://docs.foundation.xyz/en/envoy/accounts#boost-or-cancel-a-transaction"));
                 },
                 child: Text(
                   S().component_learnMore,

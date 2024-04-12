@@ -27,7 +27,7 @@ class SupportPage extends StatelessWidget {
                     label: S().envoy_support_documentation,
                     onTap: () {
                       launchUrl(
-                          Uri.parse("https://docs.foundationdevices.com"));
+                          Uri.parse("https://docs.foundation.xyz"));
                     },
                   ),
                   const SizedBox(height: 50),
@@ -45,7 +45,7 @@ class SupportPage extends StatelessWidget {
                     onTap: () {
                       final Uri emailUri = Uri(
                         scheme: 'mailto',
-                        path: 'hello@foundationdevices.com',
+                        path: 'hello@foundation.xyz',
                       );
                       launchUrl(emailUri);
                     },

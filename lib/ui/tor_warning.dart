@@ -61,7 +61,7 @@ class _TorWarningState extends State<TorWarning> {
                       onTap: () {
                         launchUrl(
                             Uri.parse(
-                                "https://docs.foundationdevices.com/envoy/tor"),
+                                "https://docs.foundation.xyz/envoy/tor"),
                             mode: LaunchMode.externalApplication);
                       },
                     )),
