@@ -77,7 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "activity_emptyState_label": MessageLookupByLibrary.simpleMessage(
             "No hi ha cap activitat per mostrar."),
         "activity_envoyUpdate": MessageLookupByLibrary.simpleMessage(
-            "S\'ha actualitzat l\'Aplicació Envoy"),
+            "S\'ha actualitzat l\'aplicació Envoy"),
         "activity_envoyUpdateAvailable":
             MessageLookupByLibrary.simpleMessage("Envoy update available"),
         "activity_firmwareUpdate": MessageLookupByLibrary.simpleMessage(
