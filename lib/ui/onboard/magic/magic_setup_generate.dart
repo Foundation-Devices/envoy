@@ -259,11 +259,16 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: EnvoySpacing.large3),
-                  child: Image.asset(
-                    "assets/exclamation_icon.png",
-                    height: 180,
-                    width: 180,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: EnvoySpacing.large3),
+                  child: Container(
+                    constraints:
+                        BoxConstraints.tight(const Size.fromHeight(150)),
+                    child: Image.asset(
+                      "assets/exclamation_icon.png",
+                      height: 150,
+                      width: 150,
+                    ),
                   ),
                 ),
                 Flexible(
@@ -271,6 +276,30 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                       child: isAndroid
                           ? _androidBackUPInfo(context)
                           : _recoverStepsInfo(context)),
+                ),
+                OnboardingButton(
+                  label: S().component_continue,
+                  onTap: () {
+                    if (!isAndroid) {
+                      if (widget.onContinue != null) {
+                        widget.onContinue!.call();
+                        return;
+                      }
+                      if (widget.skipSuccessScreen) {
+                        //clear on-boarding routes and go to home
+                        OnboardingPage.popUntilHome(context);
+                      } else {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return const WalletSetupSuccess();
+                        }));
+                      }
+                    } else {
+                      setState(() {
+                        _androidBackupInfoPage = 1;
+                      });
+                    }
+                  },
                 )
               ],
             )),
@@ -395,28 +424,6 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
             ],
           ),
         ),
-        const Padding(
-            padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium3)),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
-          child: OnboardingButton(
-            label: S().component_continue,
-            onTap: () {
-              if (widget.onContinue != null) {
-                widget.onContinue!.call();
-                return;
-              }
-              if (widget.skipSuccessScreen) {
-                //clear on-boarding routes and go to home
-                OnboardingPage.popUntilHome(context);
-              } else {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return const WalletSetupSuccess();
-                }));
-              }
-            },
-          ),
-        ),
       ],
     );
   }
@@ -440,10 +447,11 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
       },
       child: _androidBackupInfoPage == 0
           ? Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
               children: [
                 Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       S().android_backup_info_heading,
@@ -470,22 +478,6 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                       ),
                     ),
                   ],
-                ),
-                const Padding(
-                    padding:
-                        EdgeInsets.symmetric(vertical: EnvoySpacing.medium3)),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.small,
-                  ),
-                  child: OnboardingButton(
-                    label: S().component_continue,
-                    onTap: () {
-                      setState(() {
-                        _androidBackupInfoPage = 1;
-                      });
-                    },
-                  ),
                 ),
               ],
             )

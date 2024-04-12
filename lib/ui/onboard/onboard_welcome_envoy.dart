@@ -140,7 +140,7 @@ class _OnboardEnvoyWelcomeScreenState
                         left: EnvoySpacing.medium1,
                         right: EnvoySpacing.medium1,
                         top: EnvoySpacing.medium1,
-                        bottom: EnvoySpacing.large2),
+                        bottom: EnvoySpacing.xl),
                     child: Column(
                       children: [
                         const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),

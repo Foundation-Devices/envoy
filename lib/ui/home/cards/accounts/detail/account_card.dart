@@ -547,18 +547,10 @@ class TransactionListTile extends StatelessWidget {
                           bool hide = ref.watch(
                               balanceHideStateStatusProvider(account.id));
                           if (hide) {
-                            return SizedBox(
+                            return const LoaderGhost(
                               width: 100,
                               height: 15,
-                              child: Container(
-                                width: double.infinity,
-                                height: double.infinity,
-                                decoration: const BoxDecoration(
-                                  color: Color(0xffEEEEEE),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20)),
-                                ),
-                              ),
+                              animate: false,
                             );
                           } else {
                             return child ?? Container();

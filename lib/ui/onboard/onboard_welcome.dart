@@ -91,7 +91,11 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
           ),
         ),
         shield: Padding(
-          padding: const EdgeInsets.all(EnvoySpacing.medium1),
+          padding: const EdgeInsets.only(
+            right: EnvoySpacing.medium1,
+            left: EnvoySpacing.medium1,
+            top: EnvoySpacing.medium1,
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -195,6 +199,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                           },
                         ));
                       },
+                    ),
+                    const SizedBox(
+                      height: EnvoySpacing.medium2,
                     )
                   ],
                 ),
