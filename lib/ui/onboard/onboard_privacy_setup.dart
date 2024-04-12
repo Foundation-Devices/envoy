@@ -318,7 +318,7 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                                       ),
                                   onTap: () {
                                     bool isServerInList =
-                                        Settings.servers.any((server) {
+                                        Settings.defaultServers.any((server) {
                                       return _nodeTextEditingController.text ==
                                           server;
                                     });

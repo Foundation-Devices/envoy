@@ -123,7 +123,7 @@ class ConnectivityManager {
         if (failedFoundationServerAttempts >= 3) {
           events.add(ConnectivityManagerEvent.foundationServerDown);
         } else {
-          s.switchToNextServer();
+          s.switchToNextDefaultServer();
         }
       }
     }

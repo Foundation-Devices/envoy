@@ -212,7 +212,7 @@ class HomePageState extends ConsumerState<HomePage>
       actionButtonText: S().component_retry,
       onActionTap: () {
         EnvoyToast.dismissPreviousToasts(context);
-        Settings().switchToNextServer();
+        Settings().switchToNextDefaultServer();
       },
     ).show(context);
   }

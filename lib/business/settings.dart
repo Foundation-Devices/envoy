@@ -41,26 +41,22 @@ final showTaprootAccountsProvider = Provider((ref) {
 class Settings extends ChangeNotifier {
   static const String SETTINGS_PREFS = "settings";
 
-  static final List<String> servers = getDefaultFulcrumServers();
-  static final int initialRandomIndex = Random().nextInt(servers.length);
-  String currentServer = servers[initialRandomIndex];
+  static final List<String> defaultServers = getDefaultFulcrumServers();
+  static String currentDefaultServer = selectRandomDefaultServer();
 
-  String selectRandomServer() {
-    return servers[Random().nextInt(servers.length)];
+  static String selectRandomDefaultServer() {
+    return defaultServers[Random().nextInt(defaultServers.length)];
   }
 
-  void switchToNextServer() {
-    final currentIndex = servers.indexOf(currentServer);
-    currentServer = servers[(currentIndex + 1) % servers.length];
+  void switchToNextDefaultServer() {
+    final currentIndex = defaultServers.indexOf(currentDefaultServer);
+    currentDefaultServer =
+        defaultServers[(currentIndex + 1) % defaultServers.length];
     store();
     notifyListeners();
   }
 
-  String getCurrentServer() {
-    return currentServer;
-  }
-
-  static List<String> getDefaultFulcrumServers({bool ssl = false}) {
+  static List<String> getDefaultFulcrumServers({bool ssl = true}) {
     List<String> servers = [
       "mainnet-0.foundation.xyz",
       "mainnet-1.foundation.xyz",
@@ -70,14 +66,14 @@ class Settings extends ChangeNotifier {
     String protocol = ssl ? "ssl://" : "tcp://";
     String port = ssl ? ":50002" : ":50001";
 
-    List<String> modifiedServers = [];
+    List<String> fullPaths = [];
 
     for (String server in servers) {
       String modifiedServer = protocol + server + port;
-      modifiedServers.add(modifiedServer);
+      fullPaths.add(modifiedServer);
     }
 
-    return modifiedServers;
+    return fullPaths;
   }
 
   // FD testnet server
@@ -117,7 +113,8 @@ class Settings extends ChangeNotifier {
   // Electrum and Tor require additional setter logic
   // Because at this point wallets on the Rust side are most likely already initialised
   //String _electrumAddress = "ssl://electrum.blockstream.info:60002";
-  String selectedElectrumAddress = servers[initialRandomIndex];
+  String selectedElectrumAddress =
+      currentDefaultServer; //servers[initialRandomIndex];
 
   @JsonKey(defaultValue: true)
   bool usingDefaultElectrumServer = true;
@@ -128,7 +125,7 @@ class Settings extends ChangeNotifier {
     }
 
     if (usingDefaultElectrumServer) {
-      return getCurrentServer();
+      return currentDefaultServer;
     } else {
       return parseNodeUrl(selectedElectrumAddress);
     }
@@ -145,7 +142,7 @@ class Settings extends ChangeNotifier {
   }
 
   useDefaultElectrumServer(bool enabled) {
-    currentServer = selectRandomServer();
+    currentDefaultServer = selectRandomDefaultServer();
     usingDefaultElectrumServer = enabled;
     notifyListeners();
     store();
