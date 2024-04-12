@@ -51,7 +51,7 @@ class Settings extends ChangeNotifier {
   void switchToNextDefaultServer() {
     final currentIndex = defaultServers.indexOf(currentDefaultServer);
     currentDefaultServer =
-    defaultServers[(currentIndex + 1) % defaultServers.length];
+        defaultServers[(currentIndex + 1) % defaultServers.length];
     store();
     notifyListeners();
   }
