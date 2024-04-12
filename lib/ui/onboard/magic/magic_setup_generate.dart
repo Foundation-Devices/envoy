@@ -406,9 +406,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                             ?.copyWith(color: Colors.white)),
                   ),
                   title: Text(
-                    Platform.isAndroid
-                        ? S().recovery_scenario_Android_instruction1
-                        : S().recovery_scenario_ios_instruction3,
+                    S().recovery_scenario_ios_instruction3,
                     textAlign: TextAlign.start,
                     style: Theme.of(context)
                         .textTheme
