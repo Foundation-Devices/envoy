@@ -25,6 +25,8 @@ enum EnvoyNotificationType { firmware, transaction, security, envoyUpdate }
 
 const String updateAppId = "updateApp";
 
+StreamController<String> isNewAppVersionAvailable = StreamController();
+
 @JsonSerializable()
 class EnvoyNotification {
   final String title;
@@ -76,6 +78,7 @@ class Notifications {
   int unread = 0;
   late DateTime lastUpdated = DateTime.now();
   Timer? _syncTimer;
+  bool _githubVersionChecked = false;
 
   StreamController<List<EnvoyNotification>> streamController =
       StreamController();
@@ -109,7 +112,11 @@ class Notifications {
 
   _checkForNotificationsToAdd() async {
     bool notificationsAdded = false;
-    bool newEnvoyVersionAvailable = await isThereNewEnvoyVersion();
+    bool newEnvoyVersionAvailable = false;
+    if (!_githubVersionChecked) {
+      newEnvoyVersionAvailable = await isThereNewEnvoyVersion();
+      _githubVersionChecked = true;
+    }
 
     for (var account in AccountManager().accounts) {
       for (var tx in account.wallet.transactions) {
@@ -183,6 +190,9 @@ class Notifications {
           EnvoyNotificationType.envoyUpdate.name,
         ));
         notificationsAdded = true;
+        if (!isNewAppVersionAvailable.isClosed) {
+          isNewAppVersionAvailable.add(latestEnvoyVersion);
+        }
       }
     }
 

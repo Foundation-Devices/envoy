@@ -28,6 +28,7 @@ import 'package:envoy/ui/home/cards/accounts/azteco/azteco_dialog.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/business/account.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/business/seed_qr_extract.dart';
 
 enum ScannerType {
   generic,
@@ -106,6 +107,7 @@ class ScannerPageState extends State<ScannerPage> {
   final GlobalKey qrViewKey = GlobalKey(debugLabel: "qr_view");
 
   String _lastCodeDetected = "";
+  List<int>? _lastRawBytesDetected = [];
 
   Timer? _snackbarTimer;
 
@@ -180,9 +182,12 @@ class ScannerPageState extends State<ScannerPage> {
   void _onQRViewCreated(QRViewController controller, BuildContext context) {
     this.controller = controller;
     controller.scannedDataStream.listen((barcode) {
-      if (barcode.code != null && barcode.code != _lastCodeDetected) {
+      if ((barcode.code != null && barcode.code != _lastCodeDetected) ||
+          (barcode.rawBytes != null &&
+              barcode.rawBytes != _lastRawBytesDetected)) {
         _lastCodeDetected = barcode.code!;
-        _onDetect(barcode.code!, context);
+        _lastRawBytesDetected = barcode.rawBytes;
+        _onDetect(barcode.code!, barcode.rawBytes, context);
       }
     });
 
@@ -232,7 +237,7 @@ class ScannerPageState extends State<ScannerPage> {
     );
   }
 
-  _onDetect(String code, BuildContext context) async {
+  _onDetect(String code, List<int>? rawBytes, BuildContext context) async {
     final NavigatorState navigator = Navigator.of(context);
     final scaffold = ScaffoldMessenger.of(context);
     if (widget._acceptableTypes.contains(ScannerType.azteco)) {
@@ -256,9 +261,9 @@ class ScannerPageState extends State<ScannerPage> {
 
     // Seed recovery flow
     if (widget._acceptableTypes.contains(ScannerType.seed)) {
-      final seedLength = code.split(" ").length;
+      code = extractSeedFromQRCode(code, rawBytes: rawBytes);
       // TODO: account for passphrases (when we reenable that feature)
-      if ((seedLength == 12 || seedLength == 24) && Wallet.validateSeed(code)) {
+      if (isValidSeedLength(code) && Wallet.validateSeed(code)) {
         widget.onSeedValidated!(code);
         navigator.pop();
         return;

@@ -75,6 +75,7 @@ enum EnvoyIcons {
   ramp_without_name,
   calendar,
   activity,
+  download,
 }
 
 class EnvoyIcon extends StatelessWidget {
