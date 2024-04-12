@@ -272,24 +272,24 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                 OnboardingButton(
                   label: S().component_continue,
                   onTap: () {
-                    if (!isAndroid) {
-                      if (widget.onContinue != null) {
-                        widget.onContinue!.call();
-                        return;
-                      }
-                      if (widget.skipSuccessScreen) {
-                        //clear on-boarding routes and go to home
-                        OnboardingPage.popUntilHome(context);
-                      } else {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return WalletSetupSuccess();
-                        }));
-                      }
-                    } else {
+                    if (isAndroid && _androidBackupInfoPage == 0) {
                       setState(() {
                         _androidBackupInfoPage = 1;
                       });
+                      return;
+                    }
+                    if (widget.onContinue != null) {
+                      widget.onContinue!.call();
+                      return;
+                    }
+                    if (widget.skipSuccessScreen) {
+                      //clear on-boarding routes and go to home
+                      OnboardingPage.popUntilHome(context);
+                    } else {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return WalletSetupSuccess();
+                      }));
                     }
                   },
                 )
