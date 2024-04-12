@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("TAPROOT"),
+        "_": MessageLookupByLibrary.simpleMessage("Passport"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences":
             MessageLookupByLibrary.simpleMessage("Open Source Licences"),
@@ -58,6 +58,12 @@ class MessageLookup extends MessageLookupByLibrary {
             "Create a mobile wallet with Magic Backups."),
         "accounts_empty_text_learn_more":
             MessageLookupByLibrary.simpleMessage("Get Started"),
+        "accounts_forceUpdate_cta":
+            MessageLookupByLibrary.simpleMessage("Update Envoy"),
+        "accounts_forceUpdate_heading":
+            MessageLookupByLibrary.simpleMessage("Envoy Update Required"),
+        "accounts_forceUpdate_subheading": MessageLookupByLibrary.simpleMessage(
+            "A new Envoy update is available that contains important upgrades and fixes. \n\nTo continue using Envoy, please update to the latest version. Thank you."),
         "accounts_screen_walletType_Envoy":
             MessageLookupByLibrary.simpleMessage("Envoy"),
         "accounts_screen_walletType_Passport":
@@ -70,6 +76,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "There is no activity to display."),
         "activity_envoyUpdate":
             MessageLookupByLibrary.simpleMessage("Envoy App Updated"),
+        "activity_envoyUpdateAvailable":
+            MessageLookupByLibrary.simpleMessage("Envoy update available"),
         "activity_firmwareUpdate":
             MessageLookupByLibrary.simpleMessage("Firmware update available"),
         "activity_incomingPurchase":
@@ -427,13 +435,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_Apply": MessageLookupByLibrary.simpleMessage("Apply"),
         "component_back": MessageLookupByLibrary.simpleMessage("Back"),
         "component_cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "component_content": MessageLookupByLibrary.simpleMessage("Content"),
         "component_continue": MessageLookupByLibrary.simpleMessage("Continue"),
         "component_delete": MessageLookupByLibrary.simpleMessage("Delete"),
+        "component_device": MessageLookupByLibrary.simpleMessage("Device"),
         "component_dismiss": MessageLookupByLibrary.simpleMessage("Dismiss"),
         "component_done": MessageLookupByLibrary.simpleMessage("Done"),
         "component_dontShowAgain":
             MessageLookupByLibrary.simpleMessage("Don’t show again"),
         "component_filter": MessageLookupByLibrary.simpleMessage("Filter"),
+        "component_filter_button_all":
+            MessageLookupByLibrary.simpleMessage("All"),
         "component_learnMore":
             MessageLookupByLibrary.simpleMessage("Learn more"),
         "component_minishield_buy": MessageLookupByLibrary.simpleMessage("Buy"),
@@ -445,7 +457,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_retry": MessageLookupByLibrary.simpleMessage("Retry"),
         "component_save": MessageLookupByLibrary.simpleMessage("Save"),
         "component_skip": MessageLookupByLibrary.simpleMessage("Skip"),
+        "component_sortBy": MessageLookupByLibrary.simpleMessage("Sort by"),
         "component_tryAgain": MessageLookupByLibrary.simpleMessage("Try Again"),
+        "component_update": MessageLookupByLibrary.simpleMessage("Update"),
         "component_warning": MessageLookupByLibrary.simpleMessage("WARNING"),
         "component_yes": MessageLookupByLibrary.simpleMessage("Yes"),
         "create_first_tag_modal_1_2_subheading":
@@ -513,7 +527,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_faq_answer_19": MessageLookupByLibrary.simpleMessage(
             "Yes, Envoy connects using the Electrum server protocol. To connect to your own Electrum Server, scan the QR or enter the URL provided into the network settings on Envoy."),
         "envoy_faq_answer_2": MessageLookupByLibrary.simpleMessage(
-            "Envoy is designed to offer the easiest to use experience of any Bitcoin wallet, without compromising on your privacy. With Envoy Magic Backups, set up a self custodied Bitcoin mobile wallet in 60 seconds, without seed words!Passport users can connect their devices to Envoy for easy setup, firmware updates, and a simple Bitcoin wallet experience."),
+            "Envoy is designed to offer the easiest to use experience of any Bitcoin wallet, without compromising on your privacy. With Envoy Magic Backups, set up a self custodied Bitcoin mobile wallet in 60 seconds, without seed words! Passport users can connect their devices to Envoy for easy setup, firmware updates, and a simple Bitcoin wallet experience."),
         "envoy_faq_answer_20": MessageLookupByLibrary.simpleMessage(
             "Downloading and installing Envoy requires zero personal information and Envoy can connect to the internet via Tor, a privacy preserving protocol. This means that Foundation has no way of knowing who you are. Envoy also allows more advanced users the ability to connect to their own Bitcoin node to remove any reliance on the Foundation servers completely."),
         "envoy_faq_answer_21": MessageLookupByLibrary.simpleMessage(
@@ -768,6 +782,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "launch_screen_lockedout_wait_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Biometric authentication temporarily disabled. Please close Envoy, wait 30 seconds and try again."),
+        "learning_center_device_defender":
+            MessageLookupByLibrary.simpleMessage("Defender"),
+        "learning_center_device_envoy":
+            MessageLookupByLibrary.simpleMessage("Envoy"),
+        "learning_center_device_passport":
+            MessageLookupByLibrary.simpleMessage("Passport"),
+        "learning_center_device_passportPrime":
+            MessageLookupByLibrary.simpleMessage("Passport Prime"),
+        "learning_center_filterEmpty_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Applied filters are hiding all search results.\nUpdate or reset filters to view more results."),
         "learning_center_filter_all":
             MessageLookupByLibrary.simpleMessage("All"),
         "learning_center_results_title":
@@ -1328,6 +1353,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Reconnect Passport"),
         "taproot_passport_dialog_subheading": MessageLookupByLibrary.simpleMessage(
             "To enable a Passport Taproot account, ensure you are running firmware 2.3.0 or later and reconnect your Passport."),
+        "toast_foundationServersDown": MessageLookupByLibrary.simpleMessage(
+            "Foundation servers are not reachable"),
+        "toast_newEnvoyUpdateAvailable":
+            MessageLookupByLibrary.simpleMessage("New Envoy update available"),
         "torToast_learnMore_retryTorConnection":
             MessageLookupByLibrary.simpleMessage("Retry Tor Connection"),
         "torToast_learnMore_temporarilyDisableTor":
