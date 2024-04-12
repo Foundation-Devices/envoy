@@ -3,8 +3,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'package:envoy/business/feed_manager.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
+import 'package:http_tor/http_tor.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/settings.dart';
 
@@ -12,7 +14,8 @@ enum ConnectivityManagerEvent {
   torStatusChange,
   torConnectedDoesntWork,
   electrumUnreachable,
-  electrumReachable
+  electrumReachable,
+  foundationServerDown,
 }
 
 const Duration _tempDisablementTimeout = Duration(hours: 24);
@@ -28,7 +31,10 @@ class ConnectivityManager {
 
   bool get torCircuitEstablished => Tor.instance.bootstrapped;
 
-  bool get usingDefaultServer => Settings().usingDefaultElectrumServer;
+  bool get usingDefaultServer => s.usingDefaultElectrumServer;
+
+  var s = Settings();
+  int failedFoundationServerAttempts = 0;
 
   bool electrumConnected = true;
   bool nguConnected = false;
@@ -78,6 +84,7 @@ class ConnectivityManager {
   }
 
   electrumSuccess() {
+    failedFoundationServerAttempts = 0;
     electrumConnected = true;
     events.add(ConnectivityManagerEvent.electrumReachable);
     checkTor();
@@ -87,6 +94,7 @@ class ConnectivityManager {
     electrumConnected = false;
     events.add(ConnectivityManagerEvent.electrumUnreachable);
     checkTor();
+    checkFoundationServer();
   }
 
   nguSuccess() {
@@ -104,6 +112,20 @@ class ConnectivityManager {
       restartTor();
       EnvoyReport().log("tor", "Both Electrum and NGU unreachable through Tor");
       events.add(ConnectivityManagerEvent.torConnectedDoesntWork);
+    }
+  }
+
+  Future<void> checkFoundationServer() async {
+    if (usingDefaultServer) {
+      Response response = await FeedManager().getVimeoData();
+      if (response.code == 200) {
+        failedFoundationServerAttempts++;
+        if (failedFoundationServerAttempts >= 3) {
+          events.add(ConnectivityManagerEvent.foundationServerDown);
+        } else {
+          s.switchToNextDefaultServer();
+        }
+      }
     }
   }
 
