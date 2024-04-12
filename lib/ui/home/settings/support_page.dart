@@ -26,8 +26,7 @@ class SupportPage extends StatelessWidget {
                   MenuOption(
                     label: S().envoy_support_documentation,
                     onTap: () {
-                      launchUrl(
-                          Uri.parse("https://docs.foundation.xyz"));
+                      launchUrl(Uri.parse("https://docs.foundation.xyz"));
                     },
                   ),
                   const SizedBox(height: 50),

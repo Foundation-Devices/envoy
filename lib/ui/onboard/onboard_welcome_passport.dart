@@ -68,8 +68,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                     linkStyle: EnvoyTypography.button
                         .copyWith(color: EnvoyColors.accentPrimary),
                     onTap: () {
-                      launchUrl(
-                          Uri.parse("https://foundation.xyz/passport"));
+                      launchUrl(Uri.parse("https://foundation.xyz/passport"));
                     },
                   ),
                   const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
@@ -232,8 +231,8 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                           linkStyle: EnvoyTypography.button
                               .copyWith(color: EnvoyColors.accentPrimary),
                           onTap: () {
-                            launchUrl(Uri.parse(
-                                "https://foundation.xyz/passport"));
+                            launchUrl(
+                                Uri.parse("https://foundation.xyz/passport"));
                           },
                         ),
                         const Padding(
