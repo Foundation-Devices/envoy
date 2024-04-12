@@ -29,7 +29,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/business/notifications.dart';
 
 final _fullScreenProvider = Provider((ref) {
   bool fullScreen = ref.watch(hideBottomNavProvider);
@@ -160,11 +162,33 @@ class HomePageState extends ConsumerState<HomePage>
         _resetBackupWarningTimer();
       }
     });
+    isNewAppVersionAvailable.stream.listen((String newVersion) {
+      _notifyAboutNewAppVersion(newVersion);
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final router = Navigator.of(context);
       SessionManager().bind(router);
     });
+  }
+
+  _notifyAboutNewAppVersion(String newVersion) {
+    EnvoyToast(
+      backgroundColor: Colors.lightBlue,
+      replaceExisting: true,
+      message: S().toast_newEnvoyUpdateAvailable,
+      icon: const EnvoyIcon(
+        EnvoyIcons.info,
+        color: EnvoyColors.accentPrimary,
+      ),
+      actionButtonText: S().component_update,
+      onActionTap: () {
+        EnvoyToast.dismissPreviousToasts(context);
+        launchUrlString(
+            "https://github.com/Foundation-Devices/envoy/releases/tag/$newVersion");
+      },
+    ).show(context);
+    isNewAppVersionAvailable.close();
   }
 
   _notifyAboutTor() {
