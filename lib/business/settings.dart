@@ -188,7 +188,7 @@ class Settings extends ChangeNotifier {
       case Environment.staging:
         return "https://staging.envoy.foundation.xyz";
       case Environment.production:
-        return "https://production.envoy.foundationdevices.com";
+        return "https://envoy.foundation.xyz";
     }
   }
 
