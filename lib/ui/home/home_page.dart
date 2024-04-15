@@ -92,12 +92,21 @@ class HomePageState extends ConsumerState<HomePage>
   Timer? _torWarningTimer;
   bool _torWarningDisplayedMoreThan5minAgo = true;
 
+  Timer? _serverDownWarningTimer;
+  bool _serverDownWarningDisplayedMoreThan5minAgo = true;
   Timer? _backupWarningTimer;
   bool _backupWarningDisplayedMoreThan2minAgo = true;
 
   void _resetTorWarningTimer() {
     _torWarningTimer = Timer.periodic(const Duration(minutes: 5), (_) async {
       _torWarningDisplayedMoreThan5minAgo = true;
+    });
+  }
+
+  void _resetServerDownWarningTimer() {
+    _serverDownWarningTimer =
+        Timer.periodic(const Duration(minutes: 5), (_) async {
+      _serverDownWarningDisplayedMoreThan5minAgo = true;
     });
   }
 
@@ -111,6 +120,7 @@ class HomePageState extends ConsumerState<HomePage>
   void initState() {
     super.initState();
     _resetTorWarningTimer();
+    _resetServerDownWarningTimer();
     _resetBackupWarningTimer();
 
     Future.delayed(const Duration(milliseconds: 10), () {
@@ -127,6 +137,12 @@ class HomePageState extends ConsumerState<HomePage>
           _torWarningDisplayedMoreThan5minAgo = false;
           _resetTorWarningTimer();
         }
+      }
+      if (event == ConnectivityManagerEvent.foundationServerDown &&
+          _serverDownWarningDisplayedMoreThan5minAgo) {
+        _notifyAboutFoundationServerDown();
+        _serverDownWarningDisplayedMoreThan5minAgo = false;
+        _resetServerDownWarningTimer();
       }
     });
 
@@ -208,6 +224,23 @@ class HomePageState extends ConsumerState<HomePage>
     ).show(context);
   }
 
+  _notifyAboutFoundationServerDown() {
+    EnvoyToast(
+      backgroundColor: Colors.lightBlue,
+      replaceExisting: true,
+      message: S().toast_foundationServersDown,
+      icon: const EnvoyIcon(
+        EnvoyIcons.info,
+        color: EnvoyColors.accentPrimary,
+      ),
+      actionButtonText: S().component_retry,
+      onActionTap: () {
+        EnvoyToast.dismissPreviousToasts(context);
+        Settings().switchToNextDefaultServer();
+      },
+    ).show(context);
+  }
+
   _displayBackupToast(bool success) {
     EnvoyToast(
       backgroundColor: Colors.lightBlue,
@@ -268,6 +301,7 @@ class HomePageState extends ConsumerState<HomePage>
   void dispose() {
     SessionManager().remove();
     _torWarningTimer?.cancel();
+    _serverDownWarningTimer?.cancel();
     _backupWarningTimer?.cancel();
     backButtonDispatcher.removeCallback(_handleHomePageBackPress);
     super.dispose();

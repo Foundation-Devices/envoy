@@ -317,8 +317,12 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                                         fontWeight: FontWeight.bold,
                                       ),
                                   onTap: () {
-                                    if (_nodeTextEditingController.text ==
-                                            Settings.DEFAULT_ELECTRUM_SERVER ||
+                                    bool isServerInList =
+                                        Settings.defaultServers.any((server) {
+                                      return _nodeTextEditingController.text ==
+                                          server;
+                                    });
+                                    if (isServerInList ||
                                         _nodeTextEditingController.text ==
                                             Settings.TESTNET_ELECTRUM_SERVER) {
                                       _nodeTextEditingController.text = "";
