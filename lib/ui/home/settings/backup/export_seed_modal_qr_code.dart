@@ -41,103 +41,105 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
           fontWeight: FontWeight.w500,
         );
 
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.80,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: IconButton(
-                icon: Icon(Icons.close),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+    return SingleChildScrollView(
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.80,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 68),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                FutureBuilder<String?>(
-                    future: EnvoySeed().get(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        String seed = snapshot.data!;
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 68),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  FutureBuilder<String?>(
+                      future: EnvoySeed().get(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          String seed = snapshot.data!;
 
-                        // Add a note to query the user for passphrase on other device
-                        if (hasPassphrase) {
-                          seed = seed + (" passphrase"); // TODO: FIGMA
+                          // Add a note to query the user for passphrase on other device
+                          if (hasPassphrase) {
+                            seed = seed + (" passphrase"); // TODO: FIGMA
+                          }
+
+                          return EnvoyQR(
+                            data: seed,
+                            dimension: 150,
+                          );
+                        } else {
+                          return SizedBox.shrink();
                         }
-
-                        return EnvoyQR(
-                          data: seed,
-                          dimension: 150,
-                        );
-                      } else {
-                        return SizedBox.shrink();
-                      }
-                    }),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Text(
-                    S().export_seed_modal_QR_code_subheading,
-                    textAlign: TextAlign.center,
-                    style: textStyle,
-                  ),
-                ),
-                if (hasPassphrase)
+                      }),
                   Padding(
                     padding: const EdgeInsets.only(top: 10.0),
                     child: Text(
-                      S().export_seed_modal_QR_code_subheading_passphrase,
+                      S().export_seed_modal_QR_code_subheading,
                       textAlign: TextAlign.center,
-                      style: textStyle?.copyWith(color: EnvoyColors.grey),
+                      style: textStyle,
                     ),
                   ),
-              ],
+                  if (hasPassphrase)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: Text(
+                        S().export_seed_modal_QR_code_subheading_passphrase,
+                        textAlign: TextAlign.center,
+                        style: textStyle?.copyWith(color: EnvoyColors.grey),
+                      ),
+                    ),
+                ],
+              ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 48, vertical: 18),
-            child: Column(
-              children: [
-                EnvoyButton(
-                  S().export_seed_modal_QR_code_CTA2,
-                  type: EnvoyButtonTypes.secondary,
-                  onTap: () {
-                    EnvoySeed().get().then((value) async {
-                      enableSecureScreen();
-                      List<String> seed = value!.split(" ");
-
-                      await showEnvoyDialog(
-                          context: context,
-                          dialog: ExportSeedModalWords(
-                            seed: seed,
-                            hasPassphrase: hasPassphrase,
-                          ));
-                    });
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: EnvoyButton(
-                    S().component_done,
-                    type: EnvoyButtonTypes.primaryModal,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 48, vertical: 18),
+              child: Column(
+                children: [
+                  EnvoyButton(
+                    S().export_seed_modal_QR_code_CTA2,
+                    type: EnvoyButtonTypes.secondary,
                     onTap: () {
-                      Navigator.of(context).pop();
+                      EnvoySeed().get().then((value) async {
+                        enableSecureScreen();
+                        List<String> seed = value!.split(" ");
+
+                        await showEnvoyDialog(
+                            context: context,
+                            dialog: ExportSeedModalWords(
+                              seed: seed,
+                              hasPassphrase: hasPassphrase,
+                            ));
+                      });
                     },
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: EnvoyButton(
+                      S().component_done,
+                      type: EnvoyButtonTypes.primaryModal,
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

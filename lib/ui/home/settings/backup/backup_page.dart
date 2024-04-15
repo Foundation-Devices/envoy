@@ -7,6 +7,7 @@ import 'dart:io' show Platform;
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/settings/backup/erase_warning.dart';
@@ -89,8 +90,8 @@ class _BackupPageState extends ConsumerState<BackupPage>
     final _bottomOffset = MediaQuery.of(context).padding.bottom;
     final Locale activeLocale = Localizations.localeOf(context);
 
-    return Container(
-        color: Colors.black,
+    return EnvoyScaffold(
+        hasScrollBody: false,
         child: Padding(
             padding: const EdgeInsets.only(top: 14, left: 40, right: 40),
             child: Column(
@@ -98,58 +99,6 @@ class _BackupPageState extends ConsumerState<BackupPage>
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // SettingToggle(
-                    //   () => s.syncToCloud,
-                    //   (enabled) {
-                    //     if (!enabled) {
-                    //       setState(() {
-                    //         s.syncToCloud = enabled;
-                    //         s.store();
-                    //
-                    //         // Remove file from reach of OS backup mechanism
-                    //         // Note this doesn't mean seed that's already backed up will be immediately removed
-                    //         EnvoySeed().removeSeedFromNonSecure();
-                    //       });
-                    //     }
-                    //
-                    //     if (enabled) {
-                    //       showEnvoyDialog(
-                    //           context: context,
-                    //           dialog: WalletSecurityModal(
-                    //             confirmationStep: true,
-                    //             onLastStep: () => {},
-                    //             onConfirmBackup: () async {
-                    //               setState(() {
-                    //                 s.syncToCloud = enabled;
-                    //                 s.store();
-                    //               });
-                    //               // Once we copy to non-secure OS backup mechanisms can start working on it
-                    //               EnvoySeed().copySeedToNonSecure();
-                    //               Navigator.pop(context);
-                    //               await Navigator.of(context).push(
-                    //                   MaterialPageRoute(builder: (context) {
-                    //                 return MagicSetupGenerate();
-                    //               }));
-                    //               setState(() {});
-                    //             },
-                    //             onDenyBackup: () {
-                    //               //TODO: disable auto-backup
-                    //               setState(() {
-                    //                 s.syncToCloud = false;
-                    //                 s.store();
-                    //               });
-                    //               Navigator.pop(context);
-                    //             },
-                    //           ));
-                    //     }
-                    //   },
-                    //   enabled: false,
-                    // ),
-                  ],
-                ),
                 AnimatedContainer(
                   duration: Duration(milliseconds: 200),
                   height: !s.syncToCloud ? 0 : 16,
@@ -336,66 +285,63 @@ class _BackupPageState extends ConsumerState<BackupPage>
     showEnvoyDialog(
         context: context,
         dismissible: false,
-        dialog: Container(
-          width: MediaQuery.of(context).size.width * 0.8,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Align(
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+        dialog: SingleChildScrollView(
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
                   ),
                 ),
-              ),
-              Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-              Image.asset(
-                "assets/exclamation_icon.png",
-                height: 64,
-                width: 64,
-              ),
-              Padding(padding: EdgeInsets.all(8)),
-              Container(
-                constraints: BoxConstraints(maxWidth: 200),
-                padding: const EdgeInsets.all(EnvoySpacing.small),
-                child: Text(S().manual_toggle_on_seed_backup_now_modal_heading,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleLarge),
-              ),
-              Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-              Flexible(
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(EnvoySpacing.small),
-                      child: Text(
-                        S().manual_toggle_on_seed_backup_now_modal_subheading,
-                        style: Theme.of(context).textTheme.bodySmall,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                  ],
+                Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+                Image.asset(
+                  "assets/exclamation_icon.png",
+                  height: 64,
+                  width: 64,
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: OnboardingButton(
-                    type: EnvoyButtonTypes.primaryModal,
-                    label: S().component_continue,
-                    onTap: () {
-                      Navigator.pop(context);
-                      createBackup();
-                    }),
-              ),
-            ],
+                Padding(padding: EdgeInsets.all(8)),
+                Container(
+                  constraints: BoxConstraints(maxWidth: 200),
+                  padding: const EdgeInsets.all(EnvoySpacing.small),
+                  child: Text(
+                      S().manual_toggle_on_seed_backup_now_modal_heading,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleLarge),
+                ),
+                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.all(EnvoySpacing.medium1),
+                    child: Text(
+                      S().manual_toggle_on_seed_backup_now_modal_subheading,
+                      style: Theme.of(context).textTheme.bodySmall,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: OnboardingButton(
+                      type: EnvoyButtonTypes.primaryModal,
+                      label: S().component_continue,
+                      onTap: () {
+                        Navigator.pop(context);
+                        createBackup();
+                      }),
+                ),
+              ],
+            ),
           ),
         ));
   }
