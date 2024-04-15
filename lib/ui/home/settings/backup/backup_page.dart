@@ -16,6 +16,7 @@ import 'package:envoy/ui/home/settings/backup/export_seed_modal.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/state/global_state.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/string_utils.dart';
 import 'package:flutter/material.dart';
@@ -295,7 +296,10 @@ class _BackupPageState extends ConsumerState<BackupPage>
                 Align(
                   alignment: Alignment.centerRight,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.small,
+                      vertical: EnvoySpacing.small,
+                    ),
                     child: IconButton(
                       icon: Icon(Icons.close),
                       onPressed: () {
@@ -321,12 +325,20 @@ class _BackupPageState extends ConsumerState<BackupPage>
                 ),
                 Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.all(EnvoySpacing.medium1),
-                    child: Text(
-                      S().manual_toggle_on_seed_backup_now_modal_subheading,
-                      style: Theme.of(context).textTheme.bodySmall,
-                      textAlign: TextAlign.center,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: 300,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.medium3,
+                        vertical: EnvoySpacing.small,
+                      ),
+                      child: Text(
+                        S().manual_toggle_on_seed_backup_now_modal_subheading,
+                        style: EnvoyTypography.info,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                 ),
