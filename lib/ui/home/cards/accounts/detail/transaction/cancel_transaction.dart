@@ -302,7 +302,8 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Transform.translate(
-                        offset: Offset(-EnvoySpacing.small, -EnvoySpacing.small),
+                        offset:
+                            Offset(-EnvoySpacing.small, -EnvoySpacing.small),
                         child: IconButton(
                           icon: Icon(Icons.chevron_left,
                               color: EnvoyColors.textPrimary),
@@ -397,12 +398,13 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                   label: S()
                       .replaceByFee_cancel_overlay_modal_proceedWithCancelation,
                   type: ButtonType.danger,
-          
+
                   ///wrap to the text and padding...
                   height: 0,
                   state: ButtonState.default_state,
                   onTap: () async {
-                    final navigator = Navigator.of(context, rootNavigator: true);
+                    final navigator =
+                        Navigator.of(context, rootNavigator: true);
                     if (widget.originalTx.isConfirmed) {
                       EnvoyToast(
                         backgroundColor: EnvoyColors.danger,
