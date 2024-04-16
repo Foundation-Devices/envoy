@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:flutter/material.dart';
@@ -36,13 +37,15 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
       },
       child: OnboardPageBackground(
         child: Material(
-            child: Container(
+            child: EnvoyScaffold(
+              hasScrollBody: false,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Transform.scale(
-                    scale: 1.2,
+                    scale: 1.15,
                     child: Container(
                       constraints: BoxConstraints.tight(Size.fromHeight(250)),
                       // margin: EdgeInsets.only(top: 24),

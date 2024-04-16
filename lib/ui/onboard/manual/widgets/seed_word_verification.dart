@@ -66,7 +66,6 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
               SliverToBoxAdapter(
                 child: Text(
                     "${S().manual_setup_generate_seed_verify_seed_quiz_question} ${widget.seed.indexOf(answers[_puzzlePageIndex]) + 1}?",
-                    // TODO: FIGMA
                     style: Theme.of(context).textTheme.titleSmall,
                     textAlign: TextAlign.center),
               ),
