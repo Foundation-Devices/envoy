@@ -20,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/embedded_video.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
-import 'package:flutter/widgets.dart';
 import 'manual_setup_import_backup.dart';
 
 class ManualSetup extends StatefulWidget {

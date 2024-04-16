@@ -11,10 +11,8 @@ import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/state/global_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ManualSetupCreateAndStoreBackup extends ConsumerStatefulWidget {
