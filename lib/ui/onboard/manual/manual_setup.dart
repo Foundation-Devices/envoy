@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/embedded_video.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
+import 'package:flutter/widgets.dart';
 import 'manual_setup_import_backup.dart';
 
 class ManualSetup extends StatefulWidget {
@@ -137,6 +138,7 @@ class SeedIntroScreen extends StatelessWidget {
         child: Material(
       color: Colors.transparent,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             CupertinoNavigationBarBackButton(
@@ -151,161 +153,162 @@ class SeedIntroScreen extends StatelessWidget {
               },
             ),
           ]),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                      child: Container(
-                    padding: const EdgeInsets.only(bottom: 6),
-                    child: mode == SeedIntroScreenType.generate ||
-                            mode == SeedIntroScreenType.verify
-                        ? Image.asset(
-                            "assets/shield_inspect.png",
-                            width: 200,
-                            height: 200,
-                          )
-                        : Image.asset(
-                            "assets/fw_intro.png",
-                            width: 250,
-                            height: 250,
-                          ),
-                  )),
-                  Container(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          mode == SeedIntroScreenType.generate ||
-                                  mode == SeedIntroScreenType.verify
-                              ? S().manual_setup_generate_seed_heading
-                              : S().manual_setup_import_seed_heading,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const Padding(padding: EdgeInsets.only(bottom: 20)),
-                        Text(
-                          mode == SeedIntroScreenType.generate ||
-                                  mode == SeedIntroScreenType.verify
-                              ? S().manual_setup_generate_seed_subheading
-                              : S().manual_setup_import_seed_subheading,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(fontSize: 13),
-                        ),
-                        const Padding(padding: EdgeInsets.only(top: 24)),
-                        if (mode == SeedIntroScreenType.import)
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 24),
-                            child: Text(
-                              S().manual_setup_import_seed_passport_warning,
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(
-                                      fontSize: 13,
-                                      color: EnvoyColors.darkCopper,
-                                      fontWeight: FontWeight.w700),
+          Flexible(
+            child: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                        child: Container(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: mode == SeedIntroScreenType.generate ||
+                              mode == SeedIntroScreenType.verify
+                          ? Image.asset(
+                              "assets/shield_inspect.png",
+                              width: 200,
+                              height: 200,
+                            )
+                          : Image.asset(
+                              "assets/fw_intro.png",
+                              width: 250,
+                              height: 250,
                             ),
+                    )),
+                    Container(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            mode == SeedIntroScreenType.generate ||
+                                    mode == SeedIntroScreenType.verify
+                                ? S().manual_setup_generate_seed_heading
+                                : S().manual_setup_import_seed_heading,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.titleLarge,
                           ),
-                      ],
+                          const Padding(padding: EdgeInsets.only(bottom: 20)),
+                          Text(
+                            mode == SeedIntroScreenType.generate ||
+                                    mode == SeedIntroScreenType.verify
+                                ? S().manual_setup_generate_seed_subheading
+                                : S().manual_setup_import_seed_subheading,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall!
+                                .copyWith(fontSize: 13),
+                          ),
+                          const Padding(padding: EdgeInsets.only(top: 24)),
+                          if (mode == SeedIntroScreenType.import)
+                            Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 24),
+                              child: Text(
+                                S().manual_setup_import_seed_passport_warning,
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .copyWith(
+                                        fontSize: 13,
+                                        color: EnvoyColors.darkCopper,
+                                        fontWeight: FontWeight.w700),
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const Padding(padding: EdgeInsets.only(bottom: 20)),
-                  mode == SeedIntroScreenType.generate ||
-                          mode == SeedIntroScreenType.verify
-                      ? OnboardingButton(
-                          label: mode == SeedIntroScreenType.generate
-                              ? S().manual_setup_generate_seed_CTA
-                              : S()
-                                  .backups_erase_wallets_and_backups_show_seed_CTA,
-                          fontWeight: FontWeight.w600,
-                          onTap: () {
-                            Navigator.of(context)
-                                .push(MaterialPageRoute(builder: (context) {
-                              return Builder(builder: (context) {
-                                return SeedScreen(
-                                    generate:
-                                        mode == SeedIntroScreenType.generate);
-                              });
-                            }));
-                          })
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            OnboardingButton(
-                                type: EnvoyButtonTypes.secondary,
-                                label: S().manual_setup_import_seed_CTA3,
-                                fontWeight: FontWeight.w600,
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) {
-                                    return Builder(builder: (context) {
-                                      return const ManualSetupImportSeed(
-                                        seedLength: SeedLength.mnemonic_12,
-                                      );
-                                    });
-                                  }));
-                                }),
-                            OnboardingButton(
-                                type: EnvoyButtonTypes.secondary,
-                                label: S().manual_setup_import_seed_CTA2,
-                                fontWeight: FontWeight.w600,
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) {
-                                    return Builder(builder: (context) {
-                                      return const ManualSetupImportSeed(
-                                        seedLength: SeedLength.mnemonic_24,
-                                      );
-                                    });
-                                  }));
-                                }),
-                            OnboardingButton(
-                                type: EnvoyButtonTypes.primary,
-                                label: S().manual_setup_import_seed_CTA1,
-                                fontWeight: FontWeight.w600,
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) {
-                                    return ScannerPage(const [ScannerType.seed],
-                                        onSeedValidated: (result) async {
-                                      List<String> seedWords =
-                                          result.split(" ");
-                                      bool isValid = seedWords
-                                          .map((e) => seedEn.contains(e))
-                                          .reduce((value, element) =>
-                                              value && element);
-                                      if (!isValid) {
-                                        showInvalidSeedDialog(
-                                          context: context,
-                                        );
-                                        return;
-                                      }
-
-                                      kPrint("isValid $isValid $seedWords");
-
-                                      //TODO: Passphrase
-
-                                      Future.delayed(Duration.zero, () {
-                                        checkSeed(context, result);
-                                      });
-                                    });
-                                  }));
-                                }),
-                          ],
-                        )
-                ],
+                    const Padding(padding: EdgeInsets.only(bottom: 20)),
+                  ],
+                ),
               ),
             ),
           ),
+          mode == SeedIntroScreenType.generate ||
+                  mode == SeedIntroScreenType.verify
+              ? OnboardingButton(
+                  label: mode == SeedIntroScreenType.generate
+                      ? S().manual_setup_generate_seed_CTA
+                      : S().backups_erase_wallets_and_backups_show_seed_CTA,
+                  fontWeight: FontWeight.w600,
+                  onTap: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return Builder(builder: (context) {
+                        return SeedScreen(
+                            generate: mode == SeedIntroScreenType.generate);
+                      });
+                    }));
+                  })
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    OnboardingButton(
+                        type: EnvoyButtonTypes.secondary,
+                        label: S().manual_setup_import_seed_CTA3,
+                        fontWeight: FontWeight.w600,
+                        onTap: () {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return Builder(builder: (context) {
+                              return const ManualSetupImportSeed(
+                                seedLength: SeedLength.mnemonic_12,
+                              );
+                            });
+                          }));
+                        }),
+                    OnboardingButton(
+                        type: EnvoyButtonTypes.secondary,
+                        label: S().manual_setup_import_seed_CTA2,
+                        fontWeight: FontWeight.w600,
+                        onTap: () {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return Builder(builder: (context) {
+                              return const ManualSetupImportSeed(
+                                seedLength: SeedLength.mnemonic_24,
+                              );
+                            });
+                          }));
+                        }),
+                    OnboardingButton(
+                        type: EnvoyButtonTypes.primary,
+                        label: S().manual_setup_import_seed_CTA1,
+                        fontWeight: FontWeight.w600,
+                        onTap: () {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return ScannerPage(const [ScannerType.seed],
+                                onSeedValidated: (result) async {
+                              List<String> seedWords = result.split(" ");
+                              bool isValid = seedWords
+                                  .map((e) => seedEn.contains(e))
+                                  .reduce((value, element) => value && element);
+                              if (!isValid) {
+                                showInvalidSeedDialog(
+                                  context: context,
+                                );
+                                return;
+                              }
+
+                              kPrint("isValid $isValid $seedWords");
+
+                              //TODO: Passphrase
+
+                              Future.delayed(Duration.zero, () {
+                                checkSeed(context, result);
+                              });
+                            });
+                          }));
+                        }),
+                  ],
+                )
         ],
       ),
     ));

@@ -13,8 +13,10 @@ import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:rive/rive.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as new_color_scheme;
@@ -172,56 +174,62 @@ class OnboardingPage extends StatelessWidget {
     return PopScope(
         child: OnboardPageBackground(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Flexible(
-            child: Column(children: <Widget>[
-              Align(
-                alignment: Alignment.topCenter,
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      leftFunction != null
-                          ? Padding(
-                              padding:
-                                  const EdgeInsets.all(EnvoySpacing.medium1),
-                              child: GestureDetector(
-                                  onTap: () {
-                                    leftFunction!(context);
-                                  },
-                                  child: const Icon(
-                                      Icons.arrow_back_ios_rounded,
-                                      size: 20)),
-                            )
-                          : const SizedBox.shrink(),
-                      rightFunction != null
-                          ? Padding(
-                              padding:
-                                  const EdgeInsets.all(EnvoySpacing.medium1),
-                              child: GestureDetector(
-                                  onTap: () {
-                                    rightFunction!(context);
-                                  },
-                                  child:
-                                      right ?? const Icon(Icons.close_rounded)),
-                            )
-                          : const SizedBox.shrink()
-                    ]),
-              ),
-              if (clipArt != null || _determineQr() != null)
-                Flexible(
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: clipArt != null ? clipArt! : _determineQr(),
-                  ),
-                ),
-              Flexible(
-                child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [...?text]),
-              ),
-            ]),
+            child: SingleChildScrollView(
+              child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            leftFunction != null
+                                ? Padding(
+                                    padding: const EdgeInsets.all(
+                                        EnvoySpacing.medium1),
+                                    child: GestureDetector(
+                                        onTap: () {
+                                          leftFunction!(context);
+                                        },
+                                        child: const Icon(
+                                            Icons.arrow_back_ios_rounded,
+                                            size: 20)),
+                                  )
+                                : const SizedBox.shrink(),
+                            rightFunction != null
+                                ? Padding(
+                                    padding: const EdgeInsets.all(
+                                        EnvoySpacing.medium1),
+                                    child: GestureDetector(
+                                        onTap: () {
+                                          rightFunction!(context);
+                                        },
+                                        child: right ??
+                                            const Icon(Icons.close_rounded)),
+                                  )
+                                : const SizedBox.shrink()
+                          ]),
+                    ),
+                    if (clipArt != null || _determineQr() != null)
+                      Flexible(
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: clipArt != null ? clipArt! : _determineQr(),
+                        ),
+                      ),
+                    Flexible(
+                      child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [...?text]),
+                    ),
+                  ]),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
