@@ -11,6 +11,7 @@ class AddressWidget extends StatelessWidget {
   final bool short;
   final Key? widgetKey;
   final TextAlign? align;
+  final int sideChunks;
 
   final TextStyle textStyleBold =
       EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary);
@@ -20,12 +21,12 @@ class AddressWidget extends StatelessWidget {
       )
       .setWeight(FontWeight.w400);
 
-  AddressWidget({
-    required this.address,
-    this.short = false,
-    this.widgetKey,
-    this.align = TextAlign.left,
-  });
+  AddressWidget(
+      {required this.address,
+      this.short = false,
+      this.widgetKey,
+      this.align = TextAlign.left,
+      this.sideChunks = 2});
 
   @override
   Widget build(BuildContext context) {
@@ -42,14 +43,13 @@ class AddressWidget extends StatelessWidget {
   List<TextSpan> _buildShortAddressTextSpans(String address) {
     List<TextSpan> fullTextSpans = _buildAddressChunks(address);
     List<TextSpan> shortTextSpans = [];
-    final int numOfSideChunks = 2;
 
-    if (fullTextSpans.length <= numOfSideChunks) {
+    if (fullTextSpans.length <= sideChunks * 2 * 2) {
       return fullTextSpans;
     }
 
-    shortTextSpans.addAll(
-        fullTextSpans.getRange(0, 2 * numOfSideChunks)); // "space" included
+    shortTextSpans
+        .addAll(fullTextSpans.getRange(0, 2 * sideChunks)); // "space" included
 
     shortTextSpans.add(
       TextSpan(
@@ -59,7 +59,7 @@ class AddressWidget extends StatelessWidget {
     );
 
     shortTextSpans.addAll(fullTextSpans.getRange(
-        fullTextSpans.length - 2 * numOfSideChunks, fullTextSpans.length));
+        fullTextSpans.length - 2 * sideChunks, fullTextSpans.length));
 
     return shortTextSpans;
   }
