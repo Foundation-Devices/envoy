@@ -74,8 +74,8 @@ class BalanceWidget extends ConsumerWidget {
 
     return Container(
       alignment: Alignment.center,
-      margin: const EdgeInsets.only(left: EnvoySpacing.xs),
-      padding: const EdgeInsets.only(left: EnvoySpacing.xs),
+      margin: const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
+      padding: const EdgeInsets.symmetric(horizontal: 2),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -83,7 +83,14 @@ class BalanceWidget extends ConsumerWidget {
           Flexible(
               child: Container(
             child: hide
-                ? const LoaderGhost(width: 100, height: 20)
+                ? LayoutBuilder(
+                    builder: (context, constraints) {
+                      return LoaderGhost(
+                          animate: false,
+                          width: constraints.maxWidth,
+                          height: 20);
+                    },
+                  )
                 : EnvoyAmount(
                     account: account!,
                     amountSats: amount,
@@ -225,15 +232,18 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
 
 class CoinTagBalanceWidget extends ConsumerWidget {
   final CoinTag coinTag;
+  final bool isListScreen;
 
-  const CoinTagBalanceWidget({super.key, required this.coinTag});
+  const CoinTagBalanceWidget(
+      {super.key, required this.coinTag, this.isListScreen = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     bool locked = ref.watch(coinTagLockStateProvider(coinTag));
 
     /// hide switch if the tag is empty or all coins are locked
-    bool hideSwitch = coinTag.isAllCoinsLocked || coinTag.totalAmount == 0;
+    bool hideSwitch = (coinTag.isAllCoinsLocked && isListScreen) ||
+        (coinTag.totalAmount == 0);
 
     const cardRadius = 26.0;
     return Container(

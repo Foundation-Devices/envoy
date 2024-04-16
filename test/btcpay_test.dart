@@ -8,7 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test("get id from url", () async {
     String qrCode =
-        "https://btcpay.foundationdevices.com/pull-payments/mZqpn42kWsHtKcSp9REAEvKq3RH";
+        "https://btcpay.foundation.xyz/pull-payments/mZqpn42kWsHtKcSp9REAEvKq3RH";
     BtcPayVoucher btcpayVoucher = BtcPayVoucher(qrCode);
 
     expect(btcpayVoucher.id, "mZqpn42kWsHtKcSp9REAEvKq3RH");
@@ -16,7 +16,7 @@ void main() {
 
   test("Test is QR voucher", () {
     String qrCode =
-        "https://btcpay.foundationdevices.com/pull-payments/mZqpn42kWsHtKcSp9REAEvKq3RH";
+        "https://btcpay.foundation.xyz/pull-payments/mZqpn42kWsHtKcSp9REAEvKq3RH";
     expect(BtcPayVoucher.isVoucher(qrCode), true);
   });
   test("Test is not QR Btcpay voucher", () {

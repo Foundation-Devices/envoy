@@ -4,7 +4,7 @@
 
 FROM ubuntu:22.04
 
-MAINTAINER Igor Cota <igor@foundationdevices.com>
+MAINTAINER Igor Cota <igor@foundation.xyz>
 
 WORKDIR /root
 

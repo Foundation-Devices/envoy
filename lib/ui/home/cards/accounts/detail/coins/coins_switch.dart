@@ -67,7 +67,7 @@ class _CoinTagSwitchState extends State<CoinTagSwitch> {
       child: Container(
         padding: const EdgeInsets.only(right: 5),
         height: 45,
-        width: 50,
+        width: 48,
         color: Colors.transparent,
         child: FittedBox(
           fit: BoxFit.fitWidth,

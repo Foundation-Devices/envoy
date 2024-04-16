@@ -9,6 +9,7 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -199,34 +200,16 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          SizedBox(
+                                          LoaderGhost(
                                             width: 200,
-                                            height: 20,
-                                            child: Container(
-                                                width: double.infinity,
-                                                height: double.infinity,
-                                                decoration: const BoxDecoration(
-                                                    color: Color(0xffEEEEEE),
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                22)))),
+                                            height: 22,
+                                            animate: account.dateSynced == null,
                                           ),
-                                          SizedBox(
-                                              width: 50,
-                                              height: 15,
-                                              child: Container(
-                                                  width: double.infinity,
-                                                  height: double.infinity,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                          color:
-                                                              Color(0xffEEEEEE),
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          22)))))
+                                          LoaderGhost(
+                                            width: 50,
+                                            height: 18,
+                                            animate: account.dateSynced == null,
+                                          ),
                                         ],
                                       ),
                                     ),

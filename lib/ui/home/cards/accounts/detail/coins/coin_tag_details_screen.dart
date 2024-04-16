@@ -169,7 +169,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                   fillColor: Colors.transparent,
                   secondaryAnimation: secondaryAnimation,
                   transitionType: SharedAxisTransitionType.scaled,
-                  child: child,
+                  child: Align(alignment: Alignment.topCenter, child: child),
                 );
               },
               child: _selectedCoin != null
@@ -180,7 +180,9 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                         tag: widget.coinTag,
                       ),
                     )
-                  : coinTagDetails(context),
+                  : Align(
+                      alignment: Alignment.topCenter,
+                      child: coinTagDetails(context)),
             ),
           ),
         ),
@@ -210,8 +212,15 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
           duration: const Duration(milliseconds: 300),
           height: _menuVisible ? _menuHeight : 0,
           padding: const EdgeInsets.only(top: EnvoySpacing.small),
-          child: Column(
-            children: _getMenuItems(context, tag),
+          child: AnimatedOpacity(
+            duration: const Duration(milliseconds: 300),
+            opacity: _menuVisible ? 1 : 0,
+            child: SingleChildScrollView(
+              clipBehavior: Clip.none,
+              child: Column(
+                children: _getMenuItems(context, tag),
+              ),
+            ),
           ),
         ),
         Flexible(
@@ -319,33 +328,40 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                       )
                                     : const SizedBox.shrink(),
                                 tag.coins.isEmpty
-                                    ? Flexible(
-                                        child: Container(
-                                          alignment: Alignment.center,
-                                          margin: const EdgeInsets.all(
-                                              EnvoySpacing.xs),
-                                          padding: const EdgeInsets.all(
-                                              EnvoySpacing.medium1),
-                                          decoration: const BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(16))),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              const GhostListTile(
-                                                animate: false,
+                                    ? Container(
+                                        alignment: Alignment.center,
+                                        margin: const EdgeInsets.all(
+                                            EnvoySpacing.xs),
+                                        padding: const EdgeInsets.all(
+                                            EnvoySpacing.medium1),
+                                        decoration: const BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(16))),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const GhostListTile(
+                                              animate: false,
+                                            ),
+                                            const Padding(
+                                                padding: EdgeInsets.only(
+                                                    top: EnvoySpacing.medium1)),
+                                            Text(
+                                              S().tagged_tagDetails_emptyState_explainer,
+                                              style: EnvoyTypography.heading
+                                                  .copyWith(
+                                                fontSize: 11,
+                                                color: new_colors
+                                                    .EnvoyColors.textTertiary,
                                               ),
-                                              Text(
-                                                S().tagged_tagDetails_emptyState_explainer,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodySmall,
-                                              ),
-                                            ],
-                                          ),
+                                            ),
+                                            const Padding(
+                                                padding: EdgeInsets.only(
+                                                    top: EnvoySpacing.medium1))
+                                          ],
                                         ),
                                       )
                                     : const SizedBox.shrink(),

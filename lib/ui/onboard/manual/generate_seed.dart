@@ -7,6 +7,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:rive/rive.dart';
 import 'package:wallet/wallet.dart';
@@ -329,68 +330,69 @@ class _SeedScreenState extends State<SeedScreen> {
 
   _buildSeedVerification(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Container(
-          alignment: Alignment.centerLeft,
-          child: IconButton(
-            icon: const Icon(Icons.chevron_left, color: Colors.black),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ),
-        const Padding(padding: EdgeInsets.all(14)),
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+        Flexible(
+          child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.min,
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.chevron_left,
+                          color: Colors.black, size: EnvoySpacing.medium3),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close,
+                          color: Colors.black, size: EnvoySpacing.medium2),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                ),
                 Flexible(
                     child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Image.asset("assets/shield_ok.png"),
                 )),
-                Flexible(
-                    child: Container(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        S().manual_setup_generate_seed_verify_seed_heading,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      const Padding(padding: EdgeInsets.all(24)),
-                      Text(
-                        S().manual_setup_generate_seed_verify_seed_subheading,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(fontSize: 13),
-                      ),
-                    ],
-                  ),
-                )),
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: SizedBox.shrink(),
+                const SizedBox(
+                  height: EnvoySpacing.medium1,
                 ),
-                OnboardingButton(
-                    label: S().component_continue,
-                    fontWeight: FontWeight.w600,
-                    onTap: () {
-                      _pageController.nextPage(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.ease);
-                    })
+                Text(
+                  S().manual_setup_generate_seed_verify_seed_heading,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(
+                  height: EnvoySpacing.large2,
+                ),
+                Text(
+                  S().manual_setup_generate_seed_verify_seed_subheading,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall!
+                      .copyWith(fontSize: 13),
+                ),
               ],
             ),
           ),
         ),
+        OnboardingButton(
+            label: S().component_continue,
+            fontWeight: FontWeight.w600,
+            onTap: () {
+              _pageController.nextPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.ease);
+            }),
       ],
     );
   }

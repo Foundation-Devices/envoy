@@ -418,7 +418,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_and_solve_challenge() {
-        let server_url = "https://envoy.foundationdevices.com";
+        let server_url = "https://envoy.foundation.xyz";
         let challenge = get_challenge_async(server_url, -1).await.unwrap();
         let (tx, _rx): (Sender<u128>, Receiver<u128>) = tokio::sync::broadcast::channel(4);
 

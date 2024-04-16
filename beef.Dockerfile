@@ -4,7 +4,7 @@
 
 FROM envoy_linux:latest
 
-MAINTAINER Igor Cota <igor@foundationdevices.com>
+MAINTAINER Igor Cota <igor@foundation.xyz>
 
 RUN cargo install just
 
