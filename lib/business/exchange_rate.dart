@@ -188,7 +188,7 @@ class ExchangeRate extends ChangeNotifier {
   }
 
   double getUsdValue(int amountSats) {
-    return _usdRate! * amountSats / 100000000;
+    return (_usdRate ?? 0) * amountSats / 100000000;
   }
 
   // SATS to FIAT
