@@ -11,10 +11,8 @@ import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/util/haptics.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:flutter/widgets.dart';
 
 class VerifySeedPuzzleWidget extends StatefulWidget {
   final List<String> seed;
