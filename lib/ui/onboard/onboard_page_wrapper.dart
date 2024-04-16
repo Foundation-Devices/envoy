@@ -28,7 +28,7 @@ class OnboardPageBackground extends StatelessWidget {
             child: Shield(
               child: Padding(
                   padding: const EdgeInsets.only(
-                      right: 15, left: 15, top: 15, bottom: 50),
+                      right: 15, left: 15, top: 15, bottom: 24),
                   child: SizedBox.expand(
                     child: child,
                   )),

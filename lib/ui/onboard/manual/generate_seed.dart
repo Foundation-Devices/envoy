@@ -9,7 +9,6 @@ import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/tuple.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:rive/rive.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';

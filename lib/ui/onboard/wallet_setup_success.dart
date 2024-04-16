@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:flutter/material.dart';
@@ -35,27 +36,47 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
         OnboardingPage.popUntilHome(context);
       },
       child: OnboardPageBackground(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Flexible(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: EnvoySpacing.xl),
-                      child: Transform.scale(
-                        scale: 1.2,
-                        child: Container(
-                          constraints:
-                              BoxConstraints.tight(Size.fromHeight(250)),
-                          // margin: EdgeInsets.only(top: 24),
-                          child: RiveAnimation.asset(
-                            "assets/envoy_loader.riv",
-                            fit: BoxFit.contain,
-                            animations: ["happy"],
+        child: Material(
+            child: EnvoyScaffold(
+              hasScrollBody: false,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Transform.scale(
+                    scale: 1.15,
+                    child: Container(
+                      constraints: BoxConstraints.tight(Size.fromHeight(250)),
+                      // margin: EdgeInsets.only(top: 24),
+                      child: RiveAnimation.asset(
+                        "assets/envoy_loader.riv",
+                        fit: BoxFit.contain,
+                        animations: ["happy"],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.medium2,
+                        horizontal: EnvoySpacing.medium1),
+                    child: Column(
+                      children: [
+                        Text(
+                          S().wallet_setup_success_heading,
+                          style: Theme.of(context).textTheme.titleLarge,
+                          textAlign: TextAlign.center,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: EnvoySpacing.medium3),
+                          child: Text(
+                            S().wallet_setup_success_subheading,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(fontSize: 12),
+                            textAlign: TextAlign.center,
                           ),
                         ),
                       ),

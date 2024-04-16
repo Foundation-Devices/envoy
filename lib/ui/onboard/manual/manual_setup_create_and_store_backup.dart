@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/settings/backup/erase_warning.dart';
@@ -29,70 +30,70 @@ class _ManualSetupCreateAndStoreBackupState
   Widget build(BuildContext context) {
     final globalState = ref.watch(globalStateProvider);
     return OnboardPageBackground(
-        child: Column(
-      children: [
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: SizedBox.shrink(),
-                ),
-                Flexible(
-                    child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Image.asset("assets/onboarding_lock_icon.png"),
-                )),
-                Container(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(padding: EdgeInsets.all(6)),
-                      Text(
-                        S().manual_setup_create_and_store_backup_heading,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      Padding(padding: EdgeInsets.all(8)),
-                      Text(
-                        S().manual_setup_create_and_store_backup_subheading,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(fontSize: 13),
-                      ),
-                    ],
+        child: EnvoyScaffold(
+      hasScrollBody: false,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24),
+                      child: ConstrainedBox(
+                        constraints:
+                            BoxConstraints(maxWidth: 120, maxHeight: 120),
+                        child: Image.asset("assets/onboarding_lock_icon.png"),
+                      )),
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(padding: EdgeInsets.all(6)),
+                        Text(
+                          S().manual_setup_create_and_store_backup_heading,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        Padding(padding: EdgeInsets.all(8)),
+                        Text(
+                          S().manual_setup_create_and_store_backup_subheading,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall!
+                              .copyWith(fontSize: 13),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: SizedBox.shrink(),
-                ),
-                Flexible(
-                    child: OnboardingButton(
-                        type: EnvoyButtonTypes.primary,
-                        label: S().manual_setup_create_and_store_backup_CTA,
-                        onTap: () async {
-                          await EnvoySeed().saveOfflineData();
+                  Flexible(
+                      child: OnboardingButton(
+                          type: EnvoyButtonTypes.primary,
+                          label: S().manual_setup_create_and_store_backup_CTA,
+                          onTap: () async {
+                            await EnvoySeed().saveOfflineData();
 
-                          if (globalState == GlobalState.nuclearDelete) {
-                            showEnvoyDialog(
-                                context: context,
-                                dialog: EraseWalletsConfirmation());
-                          } else
-                            showWarningModal(context);
-                        }))
-              ],
+                            if (globalState == GlobalState.nuclearDelete) {
+                              showEnvoyDialog(
+                                  context: context,
+                                  dialog: EraseWalletsConfirmation());
+                            } else
+                              showWarningModal(context);
+                          }))
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     ));
   }
 
