@@ -25,9 +25,11 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
   PageController _pageController = PageController();
   @override
   Widget build(BuildContext context) {
+    bool isSmallScreen = MediaQuery.of(context).size.width < 380;
     return Container(
       width: MediaQuery.of(context).size.width * 0.80,
-      //height: MediaQuery.of(context).size.height * 0.70,
+      height: MediaQuery.of(context).size.height * (isSmallScreen ? 0.9 : 0.7),
+      constraints: BoxConstraints(maxHeight: 600, maxWidth: 400),
       child: LayoutBuilder(
         builder: (context, constraints) {
           return Column(mainAxisSize: MainAxisSize.min, children: [
@@ -50,15 +52,56 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                 children: [
                   Flexible(
                     child: CustomScrollView(
-                      shrinkWrap: true,
+                      shrinkWrap: false,
                       slivers: [
                         SliverPadding(
                           padding: EdgeInsets.symmetric(
                               horizontal: constraints.maxWidth < 250 ? 0 : 34),
-                          sliver: SliverToBoxAdapter(
-                            child: Container(
-                              height: 400,
-                              child: PageView.builder(
+                          sliver: SliverFillRemaining(
+                            fillOverscroll: false,
+                            hasScrollBody: true,
+                            child: Builder(builder: (context) {
+                              final TextStyle textTheme = TextStyle(
+                                  overflow: TextOverflow.fade,
+                                  fontSize: 15,
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.bold);
+
+                              if (isSmallScreen) {
+                                return ListView(
+                                  shrinkWrap: true,
+                                  children: widget.seed.map((word) {
+                                    return Container(
+                                      height: 32,
+                                      margin: EdgeInsets.symmetric(
+                                          vertical: 14, horizontal: 8),
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 8),
+                                      constraints: BoxConstraints(
+                                          maxWidth: 200, maxHeight: 80),
+                                      decoration: BoxDecoration(
+                                          color: Colors.grey[300],
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                              "${widget.seed.indexOf(word) + 1}.",
+                                              style: textTheme),
+                                          Flexible(
+                                              child: Text(
+                                            "${word}",
+                                            style: textTheme,
+                                            maxLines: 1,
+                                            softWrap: false,
+                                          )),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
+                                );
+                              }
+                              return PageView.builder(
                                 controller: _pageController,
                                 itemBuilder: (context, pageIndex) {
                                   var seedList = widget.seed;
@@ -112,8 +155,8 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                                   });
                                 },
                                 itemCount: widget.seed.length == 12 ? 1 : 2,
-                              ),
-                            ),
+                              );
+                            }),
                           ),
                         ),
                         SliverToBoxAdapter(
@@ -183,6 +226,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
         color: Colors.black87,
         fontWeight: FontWeight.bold);
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: list.map((word) {
         return Container(
           height: 32,
