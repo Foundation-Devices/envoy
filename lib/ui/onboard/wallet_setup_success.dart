@@ -79,53 +79,26 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                             textAlign: TextAlign.center,
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: EnvoySpacing.medium3,
-                          horizontal: EnvoySpacing.medium1),
-                      child: Column(
-                        children: [
-                          Text(
-                            S().wallet_setup_success_heading,
-                            style: Theme.of(context).textTheme.titleLarge,
-                            textAlign: TextAlign.center,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: EnvoySpacing.medium3),
-                            child: Text(
-                              S().wallet_setup_success_subheading,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(fontSize: 12),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                      ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.medium1),
+                    child: Consumer(
+                      builder: (context, ref, child) {
+                        return OnboardingButton(
+                            label: S().component_continue,
+                            onTap: () async {
+                              OnboardingPage.popUntilHome(context);
+                            });
+                      },
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
-              child: Consumer(
-                builder: (context, ref, child) {
-                  return OnboardingButton(
-                      label: S().component_continue,
-                      onTap: () async {
-                        OnboardingPage.popUntilHome(context);
-                      });
-                },
-              ),
-            ),
-          ],
-        ),
+            color: Colors.transparent),
       ),
     );
   }
