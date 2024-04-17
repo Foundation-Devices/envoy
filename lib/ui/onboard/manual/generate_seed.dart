@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
@@ -156,7 +157,6 @@ class _SeedScreenState extends State<SeedScreen> {
     if (seedList.isEmpty) {
       return Container();
     }
-
     return Column(
       children: [
         Container(
@@ -241,15 +241,32 @@ class _SeedScreenState extends State<SeedScreen> {
       section2WithIndex.add(Tuple(startingIndex + index + 7, element));
     });
 
-    return SingleChildScrollView(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Flexible(child: _buildMnemonicColumn(section1WithIndex)),
-          Flexible(child: _buildMnemonicColumn(section2WithIndex)),
-        ],
+    // If the screen is too small, show the words as a list
+    bool showWordsAsList = MediaQuery.sizeOf(context).width < 380;
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: 420),
+      child: SingleChildScrollView(
+        child: Container(
+          child: showWordsAsList
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Flexible(child: _buildMnemonicColumn(section1WithIndex)),
+                    Flexible(child: _buildMnemonicColumn(section2WithIndex)),
+                  ],
+                )
+              : Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Flexible(child: _buildMnemonicColumn(section1WithIndex)),
+                    Flexible(child: _buildMnemonicColumn(section2WithIndex)),
+                  ],
+                ),
+        ),
       ),
     );
   }
@@ -257,16 +274,20 @@ class _SeedScreenState extends State<SeedScreen> {
   Widget _buildMnemonicColumn(List<Tuple<int, String>> list) {
     final TextStyle textTheme = TextStyle(
         fontSize: 15, color: Colors.black87, fontWeight: FontWeight.bold);
+    double margin = MediaQuery.of(context).devicePixelRatio < 2.5 ? 4 : 14;
+
     return Column(
       children: list.map((word) {
         return Container(
           height: 40,
-          margin: EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+          margin: EdgeInsets.symmetric(vertical: margin, horizontal: 8),
           padding: EdgeInsets.symmetric(horizontal: 8),
-          constraints: BoxConstraints(maxWidth: 200, maxHeight: 80),
+          constraints:
+              BoxConstraints(maxWidth: 220, minWidth: 160, maxHeight: 40),
           decoration: BoxDecoration(
               color: Colors.grey[300], borderRadius: BorderRadius.circular(8)),
           child: Row(
+            mainAxisSize: MainAxisSize.max,
             children: [
               Text("${word.item1}. ", style: textTheme),
               Expanded(child: Text("${word.item2}", style: textTheme)),
@@ -282,43 +303,49 @@ class _SeedScreenState extends State<SeedScreen> {
       context: context,
       dismissible: false,
       builder: Builder(builder: (context) {
+        final heightFactor =
+            MediaQuery.sizeOf(context).width < 380 ? 0.7 : 0.38;
         return Container(
-          height: MediaQuery.of(context).size.height * 0.38,
+          height: MediaQuery.of(context).size.height * heightFactor,
           width: MediaQuery.of(context).size.width * 0.8,
           constraints: BoxConstraints(maxHeight: 400, maxWidth: 400),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(padding: EdgeInsets.all(24)),
-                Expanded(
-                    child: Column(
-                  children: [
-                    Icon(EnvoyIcons.exclamation_warning,
-                        color: EnvoyColors.darkCopper, size: 56),
-                    Padding(padding: EdgeInsets.all(12)),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Text(
-                        S().manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading,
-                        textAlign: TextAlign.center,
+          child: EnvoyScaffold(
+            hasScrollBody: false,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(padding: EdgeInsets.all(24)),
+                  Expanded(
+                      child: Column(
+                    children: [
+                      Icon(EnvoyIcons.exclamation_warning,
+                          color: EnvoyColors.darkCopper, size: 56),
+                      Padding(padding: EdgeInsets.all(12)),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Text(
+                          S().manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading,
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    ),
-                  ],
-                )),
-                OnboardingButton(
-                    type: EnvoyButtonTypes.primaryModal,
-                    label: S().component_back,
-                    onTap: () async {
-                      Navigator.pop(context);
-                      _pageController.animateToPage(1,
-                          duration: Duration(milliseconds: 320),
-                          curve: Curves.ease);
-                    }),
-                Padding(padding: EdgeInsets.all(12)),
-              ],
+                    ],
+                  )),
+                  OnboardingButton(
+                      type: EnvoyButtonTypes.primaryModal,
+                      label: S().component_back,
+                      onTap: () async {
+                        Navigator.pop(context);
+                        _pageController.animateToPage(1,
+                            duration: Duration(milliseconds: 320),
+                            curve: Curves.ease);
+                      }),
+                  Padding(padding: EdgeInsets.all(12)),
+                ],
+              ),
             ),
           ),
         );
@@ -355,29 +382,33 @@ class _SeedScreenState extends State<SeedScreen> {
                     ),
                   ],
                 ),
-                Flexible(
-                    child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Image.asset("assets/shield_ok.png"),
-                )),
-                SizedBox(
-                  height: EnvoySpacing.medium1,
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: EnvoySpacing.medium2),
+                  child: Container(
+                    constraints: BoxConstraints.tight(Size.fromHeight(200)),
+                    child: Image.asset(
+                      "assets/shield_ok.png",
+                      height: 180,
+                      width: 180,
+                    ),
+                  ),
                 ),
                 Text(
                   S().manual_setup_generate_seed_verify_seed_heading,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                SizedBox(
-                  height: EnvoySpacing.large2,
-                ),
-                Text(
-                  S().manual_setup_generate_seed_verify_seed_subheading,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall!
-                      .copyWith(fontSize: 13),
+                Padding(
+                  padding: const EdgeInsets.all(EnvoySpacing.medium2),
+                  child: Text(
+                    S().manual_setup_generate_seed_verify_seed_subheading,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall!
+                        .copyWith(fontSize: 13),
+                  ),
                 ),
               ],
             ),

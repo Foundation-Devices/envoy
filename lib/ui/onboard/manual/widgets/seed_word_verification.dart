@@ -55,6 +55,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
             child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
           child: CustomScrollView(
+            shrinkWrap: true,
             slivers: [
               SliverToBoxAdapter(
                 child: Text(
@@ -84,7 +85,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                         children: _puzzleOptions.map((e) {
                           return Padding(
                             padding: const EdgeInsets.only(
-                                top: EnvoySpacing.medium2),
+                                top: EnvoySpacing.medium1),
                             child: PuzzleWidget(
                               puzzle: e,
                               seedIndex: widget.seed
@@ -222,7 +223,6 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
-            height: 100,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -233,7 +233,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
               ],
             ),
           ),
-          Flexible(
+          Expanded(
             child: GridView.builder(
                 reverse: true,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -241,6 +241,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                   childAspectRatio: 2,
                   crossAxisSpacing: 20.0,
                 ),
+                padding: EdgeInsets.all(0),
                 itemBuilder: (context, index) {
                   final TextStyle textTheme = TextStyle(
                       fontSize: 15,
@@ -260,7 +261,6 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Container(
-                          height: 80,
                           margin: EdgeInsets.symmetric(vertical: 0),
                           padding:
                               EdgeInsets.symmetric(horizontal: 8, vertical: 6),
