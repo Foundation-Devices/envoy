@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
@@ -264,59 +265,64 @@ class _EraseWalletsConfirmationState
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.8,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Align(
-              alignment: Alignment.centerRight,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
-            ),
-            Padding(padding: EdgeInsets.all(8)),
-            Column(
-              children: [
-                Image.asset(
-                  "assets/exclamation_triangle.png",
-                  height: 80,
-                  width: 80,
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  child: Text(
-                    S().delete_wallet_for_good_modal_subheading,
-                    textAlign: TextAlign.center,
-                    style: EnvoyTypography.info,
+      child: EnvoyScaffold(
+        hasScrollBody: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
                   ),
                 ),
-                Padding(padding: EdgeInsets.all(5)),
-              ],
-            ),
-            OnboardingButton(
-                type: EnvoyButtonTypes.tertiary,
-                label: S().delete_wallet_for_good_modal_cta2,
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => EraseProgress()));
-                }),
-            OnboardingButton(
-                type: EnvoyButtonTypes.primaryModal,
-                label: S().component_cancel,
-                onTap: () {
-                  OnboardingPage.popUntilHome(context);
-                }),
-            Padding(padding: EdgeInsets.all(12)),
-          ],
+              ),
+              Padding(padding: EdgeInsets.all(8)),
+              Column(
+                children: [
+                  Image.asset(
+                    "assets/exclamation_triangle.png",
+                    height: 80,
+                    width: 80,
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                    child: Text(
+                      S().delete_wallet_for_good_modal_subheading,
+                      textAlign: TextAlign.center,
+                      style: EnvoyTypography.info,
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(5)),
+                ],
+              ),
+              OnboardingButton(
+                  type: EnvoyButtonTypes.tertiary,
+                  label: S().delete_wallet_for_good_modal_cta2,
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EraseProgress()));
+                  }),
+              OnboardingButton(
+                  type: EnvoyButtonTypes.primaryModal,
+                  label: S().component_cancel,
+                  onTap: () {
+                    OnboardingPage.popUntilHome(context);
+                  }),
+              Padding(padding: EdgeInsets.all(12)),
+            ],
+          ),
         ),
       ),
     );
@@ -457,82 +463,87 @@ class AndroidBackupWarning extends StatelessWidget {
         }));
       },
       child: OnboardPageBackground(
-        child: Material(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  child: Image.asset(
-                    "assets/exclamation_icon.png",
-                    height: 180,
-                    width: 180,
+        child: EnvoyScaffold(
+          hasScrollBody: false,
+          child: Material(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    child: Image.asset(
+                      "assets/exclamation_icon.png",
+                      height: 180,
+                      width: 180,
+                    ),
+                    height: _iphoneSE ? 220 : 250,
                   ),
-                  height: _iphoneSE ? 220 : 250,
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        S().android_backup_info_heading,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      Padding(padding: EdgeInsets.all(12)),
-                      LinkText(
-                        text: S()
-                            .delete_wallet_for_good_instant_android_subheading,
-                        onTap: () {
-                          openAndroidSettings();
-                        },
-                        linkStyle: EnvoyTypography.button
-                            .copyWith(color: EnvoyColors.accentPrimary),
-                        textStyle: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(fontSize: 14),
-                      ),
-                    ],
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          S().android_backup_info_heading,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        Padding(padding: EdgeInsets.all(12)),
+                        LinkText(
+                          text: S()
+                              .delete_wallet_for_good_instant_android_subheading,
+                          onTap: () {
+                            openAndroidSettings();
+                          },
+                          linkStyle: EnvoyTypography.button
+                              .copyWith(color: EnvoyColors.accentPrimary),
+                          textStyle: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(fontSize: 14),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    children: [
-                      Consumer(
-                        builder: (context, ref, child) {
-                          return OnboardingButton(
-                            type: EnvoyButtonTypes.tertiary,
-                            label: S().component_skip,
-                            onTap: () async {
-                              OnboardingPage.popUntilHome(context);
-                              ref
-                                  .read(homePageBackgroundProvider.notifier)
-                                  .state = HomePageBackgroundState.hidden;
-                              ref.read(homePageTabProvider.notifier).state =
-                                  HomePageTabState.accounts;
-                              ref.read(homePageTitleProvider.notifier).state =
-                                  "";
-                              await Future.delayed(Duration(milliseconds: 100));
-                            },
-                          );
-                        },
-                      ),
-                      OnboardingButton(
-                        label: S().delete_wallet_for_good_instant_android_cta1,
-                        onTap: () {
-                          openAndroidSettings();
-                        },
-                      ),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Column(
+                      children: [
+                        Consumer(
+                          builder: (context, ref, child) {
+                            return OnboardingButton(
+                              type: EnvoyButtonTypes.tertiary,
+                              label: S().component_skip,
+                              onTap: () async {
+                                OnboardingPage.popUntilHome(context);
+                                ref
+                                    .read(homePageBackgroundProvider.notifier)
+                                    .state = HomePageBackgroundState.hidden;
+                                ref.read(homePageTabProvider.notifier).state =
+                                    HomePageTabState.accounts;
+                                ref.read(homePageTitleProvider.notifier).state =
+                                    "";
+                                await Future.delayed(
+                                    Duration(milliseconds: 100));
+                              },
+                            );
+                          },
+                        ),
+                        OnboardingButton(
+                          label:
+                              S().delete_wallet_for_good_instant_android_cta1,
+                          onTap: () {
+                            openAndroidSettings();
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            color: Colors.transparent),
+                ],
+              ),
+              color: Colors.transparent),
+        ),
       ),
     );
   }

@@ -200,7 +200,6 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
   }
 
   Future<bool> handleBackPress(BuildContext context) async {
-    print("HANDLE PRESS");
     if (MediaQuery.of(context).viewInsets.bottom != 0) {
       FocusManager.instance.primaryFocus?.unfocus();
       return false;
