@@ -162,89 +162,103 @@ class _EraseWalletsBalanceWarningState
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.8,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Align(
-              alignment: Alignment.centerRight,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
+      constraints: BoxConstraints(maxHeight: 520),
+      child: EnvoyScaffold(
+        hasScrollBody: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
                 ),
               ),
-            ),
-            Padding(padding: EdgeInsets.all(8)),
-            Column(
-              children: [
-                Image.asset(
-                  "assets/exclamation_triangle.png",
-                  height: 80,
-                  width: 80,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Image.asset(
+                      "assets/exclamation_triangle.png",
+                      height: 80,
+                      width: 80,
+                    ),
+                    Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 0, horizontal: 0),
+                      child: Text(
+                        S().component_warning,
+                        textAlign: TextAlign.center,
+                        style: EnvoyTypography.info,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 4),
+                      child: Text(
+                        S().manual_setup_recovery_import_backup_modal_fail_connectivity_subheading,
+                        textAlign: TextAlign.center,
+                        style: EnvoyTypography.info,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 12),
+                      child: Text(
+                        S().erase_wallet_with_balance_modal_subheading,
+                        textAlign: TextAlign.center,
+                        style: EnvoyTypography.info,
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.all(5)),
+                  ],
                 ),
-                Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-                  child: Text(
-                    S().component_warning,
-                    textAlign: TextAlign.center,
-                    style: EnvoyTypography.info,
-                  ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                  child: Text(
-                    S().manual_setup_recovery_import_backup_modal_fail_connectivity_subheading,
-                    textAlign: TextAlign.center,
-                    style: EnvoyTypography.info,
-                  ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  child: Text(
-                    S().erase_wallet_with_balance_modal_subheading,
-                    textAlign: TextAlign.center,
-                    style: EnvoyTypography.info,
-                  ),
-                ),
-                Padding(padding: EdgeInsets.all(5)),
-              ],
-            ),
-            OnboardingButton(
-                type: EnvoyButtonTypes.tertiary,
-                label: S().erase_wallet_with_balance_modal_CTA2,
-                textStyle: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(color: EnvoyColors.danger),
-                onTap: () {
-                  displaySeedBeforeNuke(context);
-                }),
-            OnboardingButton(
-                type: EnvoyButtonTypes.primaryModal,
-                label: S().erase_wallet_with_balance_modal_CTA1,
-                onTap: () {
-                  // Show home page and navigate to accounts
-                  ref.read(homePageBackgroundProvider.notifier).state =
-                      HomePageBackgroundState.hidden;
-                  ref.read(homePageTabProvider.notifier).state =
-                      HomePageTabState.accounts;
-                  ref.read(homePageTitleProvider.notifier).state = "";
+              ),
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    OnboardingButton(
+                        type: EnvoyButtonTypes.tertiary,
+                        label: S().erase_wallet_with_balance_modal_CTA2,
+                        textStyle: Theme.of(context)
+                            .textTheme
+                            .bodyMedium!
+                            .copyWith(color: EnvoyColors.danger),
+                        onTap: () {
+                          displaySeedBeforeNuke(context);
+                        }),
+                    OnboardingButton(
+                        type: EnvoyButtonTypes.primaryModal,
+                        label: S().erase_wallet_with_balance_modal_CTA1,
+                        onTap: () {
+                          // Show home page and navigate to accounts
+                          ref.read(homePageBackgroundProvider.notifier).state =
+                              HomePageBackgroundState.hidden;
+                          ref.read(homePageTabProvider.notifier).state =
+                              HomePageTabState.accounts;
+                          ref.read(homePageTitleProvider.notifier).state = "";
 
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                }),
-            Padding(padding: EdgeInsets.all(12)),
-          ],
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        }),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -265,6 +279,7 @@ class _EraseWalletsConfirmationState
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.8,
+      constraints: BoxConstraints(maxHeight: 380),
       child: EnvoyScaffold(
         hasScrollBody: false,
         child: Padding(
@@ -320,7 +335,7 @@ class _EraseWalletsConfirmationState
                   onTap: () {
                     OnboardingPage.popUntilHome(context);
                   }),
-              Padding(padding: EdgeInsets.all(12)),
+              // Padding(padding: EdgeInsets.all(12)),
             ],
           ),
         ),
@@ -467,7 +482,7 @@ class AndroidBackupWarning extends StatelessWidget {
           hasScrollBody: false,
           child: Material(
               child: Column(
-                mainAxisSize: MainAxisSize.max,
+                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
