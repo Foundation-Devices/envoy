@@ -650,7 +650,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         broadcastProgress = BroadcastProgress.success;
       });
     } catch (e) {
-      EnvoyReport().log("RBF Boost"," $e");
+      EnvoyReport().log("RBF Boost", " $e");
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
       _stateMachineController?.findInput<bool>("happy")?.change(false);
       _stateMachineController?.findInput<bool>("unhappy")?.change(true);

@@ -19,6 +19,7 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class ManualSetupImportBackup extends StatefulWidget {
   const ManualSetupImportBackup({Key? key}) : super(key: key);
@@ -32,79 +33,75 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
   @override
   Widget build(BuildContext context) {
     return OnboardPageBackground(
-        child: Column(
-      children: [
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: SizedBox.shrink(),
-                ),
-                Flexible(
-                    child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Image.asset("assets/fw_intro.png"),
-                )),
-                Container(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(padding: EdgeInsets.all(8)),
-                      Text(
-                        S().manual_setup_import_backup_CTA2,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      Padding(padding: EdgeInsets.all(12)),
-                      Text(
-                        S().manual_setup_import_backup_subheading,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(fontSize: 13),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox.shrink(),
-                ),
-                Flexible(
-                    child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.end,
+        child: Material(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            constraints: BoxConstraints.tight(Size.fromHeight(240)),
+            child: Image.asset("assets/fw_intro.png"),
+          ),
+          Flexible(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: EnvoySpacing.medium3),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    OnboardingButton(
-                        type: EnvoyButtonTypes.secondary,
-                        label: S().manual_setup_import_backup_CTA2,
-                        onTap: () {
-                          openBackupFile(context);
-                        }),
-                    OnboardingButton(
-                        type: EnvoyButtonTypes.primary,
-                        label: S().manual_setup_import_backup_CTA1,
-                        onTap: () {
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return ManualSetupCreateAndStoreBackup();
-                          }));
-                        }),
+                    Text(
+                      S().manual_setup_import_backup_CTA2,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: EnvoySpacing.medium1),
+                    Text(
+                      S().manual_setup_import_backup_subheading,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(fontSize: 13),
+                    ),
                   ],
-                ))
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(EnvoySpacing.small),
+            child: SizedBox.shrink(),
+          ),
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                OnboardingButton(
+                    type: EnvoyButtonTypes.secondary,
+                    label: S().manual_setup_import_backup_CTA2,
+                    onTap: () {
+                      openBackupFile(context);
+                    }),
+                OnboardingButton(
+                    type: EnvoyButtonTypes.primary,
+                    label: S().manual_setup_import_backup_CTA1,
+                    onTap: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return ManualSetupCreateAndStoreBackup();
+                      }));
+                    }),
               ],
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     ));
   }
 }
