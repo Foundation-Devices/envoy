@@ -126,10 +126,10 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
         ),
         color: EnvoyColors.textPrimaryInverse,
       ),
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-              vertical: EnvoySpacing.medium3, horizontal: EnvoySpacing.medium2),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+            vertical: EnvoySpacing.medium3, horizontal: EnvoySpacing.medium2),
+        child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,

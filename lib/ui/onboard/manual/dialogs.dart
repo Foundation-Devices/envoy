@@ -20,58 +20,60 @@ void showRestoreFailedDialog(BuildContext context) {
         width: MediaQuery.of(context).size.width * 0.8,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Align(
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ),
-              ),
-              Padding(padding: EdgeInsets.all(8)),
-              Column(
-                children: [
-                  Image.asset(
-                    "assets/exclamation_triangle.png",
-                    height: 80,
-                    width: 80,
-                  ),
-                  Padding(padding: EdgeInsets.all(4)),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                    child: Text(
-                        S().manual_setup_import_backup_fails_modal_heading,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleLarge),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                    child: Text(
-                      S().manual_setup_import_backup_fails_modal_subheading,
-                      textAlign: TextAlign.center,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
                     ),
                   ),
-                  Padding(padding: EdgeInsets.all(2)),
-                ],
-              ),
-              OnboardingButton(
-                  type: EnvoyButtonTypes.primaryModal,
-                  label: S().component_continue,
-                  onTap: () {
-                    Navigator.pop(context);
-                  }),
-              Padding(padding: EdgeInsets.all(12)),
-            ],
+                ),
+                Padding(padding: EdgeInsets.all(8)),
+                Column(
+                  children: [
+                    Image.asset(
+                      "assets/exclamation_triangle.png",
+                      height: 80,
+                      width: 80,
+                    ),
+                    Padding(padding: EdgeInsets.all(4)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 12),
+                      child: Text(
+                          S().manual_setup_import_backup_fails_modal_heading,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleLarge),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 12),
+                      child: Text(
+                        S().manual_setup_import_backup_fails_modal_subheading,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.all(2)),
+                  ],
+                ),
+                OnboardingButton(
+                    type: EnvoyButtonTypes.primaryModal,
+                    label: S().component_continue,
+                    onTap: () {
+                      Navigator.pop(context);
+                    }),
+                Padding(padding: EdgeInsets.all(12)),
+              ],
+            ),
           ),
         ),
       );
