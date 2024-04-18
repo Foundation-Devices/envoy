@@ -25,7 +25,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
   PageController _pageController = PageController();
   @override
   Widget build(BuildContext context) {
-    bool isSmallScreen = MediaQuery.of(context).size.width < 380;
+    bool isSmallScreen = MediaQuery.of(context).size.width < 360;
 
     return Container(
       width: MediaQuery.of(context).size.width * 0.80,
