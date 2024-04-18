@@ -347,74 +347,77 @@ class TestnetInfoModal extends StatelessWidget {
 
     return Container(
       width: MediaQuery.of(context).size.width * 0.75,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: IconButton(
-                icon: Icon(Icons.close),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 36),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset(
-                  "assets/exclamation_icon.png",
-                  height: 60,
-                  width: 60,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 18.0),
-                  child: Text(
-                    S().settings_advanced_enabled_testnet_modal_subheading,
-                    textAlign: TextAlign.center,
-                    style: textStyle,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 36),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "assets/exclamation_icon.png",
+                    height: 60,
+                    width: 60,
                   ),
-                ),
-                Padding(padding: EdgeInsets.all(4)),
-                Padding(
+                  Padding(
                     padding: const EdgeInsets.only(top: 18.0),
-                    child: LinkText(
-                        text: S().settings_advanced_enabled_testnet_modal_link,
-                        textStyle: textStyle,
-                        linkStyle: EnvoyTypography.button
-                            .copyWith(color: EnvoyColors.accentPrimary),
-                        onTap: () {
-                          launchUrlString(
-                              "https://www.youtube.com/watch?v=nRGFAHlYIeU");
-                        })),
-                Padding(padding: EdgeInsets.all(4)),
-              ],
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 36, vertical: 28),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: EnvoyButton(
-                    S().component_continue,
-                    type: EnvoyButtonTypes.primaryModal,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
+                    child: Text(
+                      S().settings_advanced_enabled_testnet_modal_subheading,
+                      textAlign: TextAlign.center,
+                      style: textStyle,
+                    ),
                   ),
-                ),
-              ],
+                  Padding(padding: EdgeInsets.all(4)),
+                  Padding(
+                      padding: const EdgeInsets.only(top: 18.0),
+                      child: LinkText(
+                          text:
+                              S().settings_advanced_enabled_testnet_modal_link,
+                          textStyle: textStyle,
+                          linkStyle: EnvoyTypography.button
+                              .copyWith(color: EnvoyColors.accentPrimary),
+                          onTap: () {
+                            launchUrlString(
+                                "https://www.youtube.com/watch?v=nRGFAHlYIeU");
+                          })),
+                  Padding(padding: EdgeInsets.all(4)),
+                ],
+              ),
             ),
-          ),
-        ],
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 36, vertical: 28),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: EnvoyButton(
+                      S().component_continue,
+                      type: EnvoyButtonTypes.primaryModal,
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
