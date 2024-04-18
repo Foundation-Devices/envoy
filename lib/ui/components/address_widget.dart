@@ -5,6 +5,7 @@
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AddressWidget extends StatelessWidget {
   final String address;
@@ -30,14 +31,20 @@ class AddressWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        children: short
-            ? _buildShortAddressTextSpans(address)
-            : _buildFullAddressTextSpans(address),
-      ),
-      textAlign: align!,
-    );
+    return GestureDetector(
+        onLongPress: () {
+          Clipboard.setData(ClipboardData(text: address));
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('Address copied to clipboard!'))); //TODO: FIGMA
+        },
+        child: RichText(
+          text: TextSpan(
+            children: short
+                ? _buildShortAddressTextSpans(address)
+                : _buildFullAddressTextSpans(address),
+          ),
+          textAlign: align!,
+        ));
   }
 
   List<TextSpan> _buildShortAddressTextSpans(String address) {
