@@ -11,7 +11,6 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/envoy_icons.dart' as old_icons;
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
@@ -36,7 +35,7 @@ import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart' as new_color_scheme;
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -223,13 +222,13 @@ class _AccountCardState extends ConsumerState<AccountCard>
             decoration: const BoxDecoration(
               boxShadow: [
                 BoxShadow(
-                  color: EnvoyColors.white100,
+                  color: EnvoyColors.textPrimaryInverse,
                   spreadRadius: 0,
                   blurRadius: 24,
                   offset: Offset(0, -8), // changes position of shadow
                 ),
                 BoxShadow(
-                  color: EnvoyColors.white100,
+                  color: EnvoyColors.textPrimaryInverse,
                   spreadRadius: 12,
                   blurRadius: 24,
                 ),
@@ -261,7 +260,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                       icon: const Icon(
                         old_icons.EnvoyIcons.qrScan,
                         size: 30,
-                        color: EnvoyColors.darkTeal,
+                        color: EnvoyColors.accentPrimary,
                       ),
                       onPressed: () {
                         Navigator.of(context, rootNavigator: true).push(
@@ -360,7 +359,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
                 txFiltersEnabled
                     ? S().account_emptyTxHistoryTextExplainer_FilteredView
                     : S().account_empty_tx_history_text_explainer,
-                style: EnvoyTypography.body,
+                style: EnvoyTypography.body
+                    .copyWith(color: EnvoyColors.textTertiary),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -457,13 +457,13 @@ class TransactionListTile extends StatelessWidget {
 
   final TextStyle _transactionTextStyleInfo = EnvoyTypography.body.copyWith(
     fontWeight: FontWeight.w400,
-    color: new_color_scheme.EnvoyColors.txInfo,
+    color: EnvoyColors.txInfo,
   );
 
-  final Color _detailsColor = new_color_scheme.EnvoyColors.textPrimaryInverse;
+  final Color _detailsColor = EnvoyColors.textPrimaryInverse;
 
   final TextStyle _detailsHeadingStyle = EnvoyTypography.subheading
-      .copyWith(color: new_color_scheme.EnvoyColors.textPrimaryInverse);
+      .copyWith(color: EnvoyColors.textPrimaryInverse);
 
   @override
   Widget build(BuildContext context) {
@@ -628,7 +628,7 @@ class TransactionListTile extends StatelessWidget {
 
   Widget transactionIcon(
     BuildContext context, {
-    Color iconColor = new_color_scheme.EnvoyColors.textTertiary,
+    Color iconColor = EnvoyColors.textTertiary,
   }) {
     return FittedBox(
       alignment: Alignment.centerLeft,
@@ -815,7 +815,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
         ),
         GestureDetector(
           child: Text(S().component_delete.toUpperCase(),
-              style: const TextStyle(color: EnvoyColors.lightCopper)),
+              style: const TextStyle(color: EnvoyColors.accentSecondary)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             if (!widget.account.wallet.hot) {
