@@ -76,6 +76,7 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
       return _buildMnemonicView(1, context);
     }
     return Column(
+      mainAxisSize: MainAxisSize.max,
       children: [
         Expanded(
           child: PageView(
@@ -108,31 +109,40 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
     double pixRatio = MediaQuery.of(context).devicePixelRatio;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 11),
+      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
       child: CustomScrollView(
+        shrinkWrap: true,
         controller: page == 1 ? _scrollControllerPage1 : _scrollControllerPage2,
         slivers: [
-          SliverFillRemaining(
-            child: Builder(
-              builder: (context) {
-                int pageIndexOffset = page == 1 ? 1 : 12;
-                List<TextEditingController> seeds = page == 1
-                    ? _controllers.sublist(0, 12)
-                    : _controllers.sublist(12, 24);
-                List<TextEditingController> section1 = seeds.sublist(0, 6);
-                List<TextEditingController> section2 = seeds.sublist(6, 12);
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Flexible(
-                        child: _buildMnemonicColumn(section1, pageIndexOffset)),
-                    Flexible(
-                        child: _buildMnemonicColumn(section2, pageIndexOffset)),
-                  ],
+          SliverFillViewport(
+            padEnds: false,
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                return Builder(
+                  builder: (context) {
+                    int pageIndexOffset = page == 1 ? 1 : 12;
+                    List<TextEditingController> seeds = page == 1
+                        ? _controllers.sublist(0, 12)
+                        : _controllers.sublist(12, 24);
+                    List<TextEditingController> section1 = seeds.sublist(0, 6);
+                    List<TextEditingController> section2 = seeds.sublist(6, 12);
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Flexible(
+                            child: _buildMnemonicColumn(
+                                section1, pageIndexOffset)),
+                        Flexible(
+                            child: _buildMnemonicColumn(
+                                section2, pageIndexOffset)),
+                      ],
+                    );
+                  },
                 );
               },
+              childCount: 1,
             ),
           ),
           SliverPadding(padding: EdgeInsets.all((pixRatio * bottom)))
@@ -143,6 +153,8 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
 
   Widget _buildMnemonicColumn(
       List<TextEditingController> section, int pageIndexOffset) {
+    double margin = MediaQuery.of(context).devicePixelRatio < 2.5 ? 6 : 14;
+
     return FocusTraversalGroup(
       policy: OrderedTraversalPolicy(),
       child: Column(
@@ -155,7 +167,7 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
             child: Container(
               height: 40,
               width: 140,
-              margin: EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+              margin: EdgeInsets.symmetric(vertical: margin, horizontal: 8),
               child: MnemonicInput(
                   controller: _controllers[index],
                   onWordDetected: (focusNode, controller, word) {

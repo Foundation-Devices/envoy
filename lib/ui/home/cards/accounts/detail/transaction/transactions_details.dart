@@ -240,22 +240,29 @@ class _TransactionsDetailsWidgetState
                                           showTxIdExpanded = false;
                                         });
                                       },
-                                      child: SingleChildScrollView(
-                                        child: AnimatedSize(
+                                      child: TweenAnimationBuilder(
+                                          curve: EnvoyEasing.easeInOut,
+                                          tween: Tween<double>(
+                                              begin: 0,
+                                              end: showAddressExpanded ? 1 : 0),
                                           duration: Duration(milliseconds: 200),
-                                          curve: Curves.easeInOut,
-                                          child: addressNotAvailable
-                                              ? Text("Address not available ",
-                                                  // TODO: Figma
-                                                  style: trailingTextStyle)
-                                              : AddressWidget(
-                                                  widgetKey: ValueKey<bool>(
-                                                      showAddressExpanded),
-                                                  address: address,
-                                                  short: !showAddressExpanded,
-                                                ),
-                                        ),
-                                      ),
+                                          builder: (context, value, child) {
+                                            return addressNotAvailable
+                                                ? Text("Address not available ",
+                                                    // TODO: Figma
+                                                    style: trailingTextStyle)
+                                                : AddressWidget(
+                                                    // widgetKey: ValueKey<bool>(
+                                                    //     showAddressExpanded),
+                                                    address: address,
+                                                    short: true,
+                                                    sideChunks: 2 +
+                                                        (value *
+                                                                (address.length /
+                                                                    4))
+                                                            .round(),
+                                                  );
+                                          }),
                                     ),
                                   ),
                                   CoinTagListItem(

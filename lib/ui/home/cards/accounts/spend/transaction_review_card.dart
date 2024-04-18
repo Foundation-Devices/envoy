@@ -15,6 +15,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
+import 'package:envoy/util/easing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/wallet.dart';
@@ -208,23 +209,22 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                       ],
                     ),
                   ),
-                  AnimatedContainer(
-                    duration: Duration(milliseconds: 120),
-                    height: _showFullAddress ? 56 : 44,
-                    child: _whiteContainer(
-                      child: SingleChildScrollView(
-                        child: AnimatedSize(
-                          duration: Duration(milliseconds: 200),
-                          curve: Curves.easeInOut,
-                          child: AddressWidget(
-                            widgetKey: ValueKey<bool>(_showFullAddress),
-                            address: address,
-                            short: !_showFullAddress,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                  TweenAnimationBuilder(
+                      curve: EnvoyEasing.easeInOut,
+                      tween: Tween<double>(
+                          begin: 0, end: _showFullAddress ? 1 : 0),
+                      duration: Duration(milliseconds: 200),
+                      builder: (context, value, child) {
+                        return AnimatedContainer(
+                            duration: Duration(milliseconds: 120),
+                            child: _whiteContainer(
+                                child: AddressWidget(
+                              address: address,
+                              short: true,
+                              sideChunks:
+                                  2 + (value * (address.length / 4)).round(),
+                            )));
+                      }),
                   Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                   Padding(
                     padding: const EdgeInsets.symmetric(
