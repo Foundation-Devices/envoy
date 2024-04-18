@@ -26,6 +26,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
   @override
   Widget build(BuildContext context) {
     bool isSmallScreen = MediaQuery.of(context).size.width < 380;
+
     return Container(
       width: MediaQuery.of(context).size.width * 0.80,
       height: MediaQuery.of(context).size.height * (isSmallScreen ? 0.9 : 0.7),
@@ -66,7 +67,6 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                                   fontSize: 15,
                                   color: Colors.black87,
                                   fontWeight: FontWeight.bold);
-
                               if (isSmallScreen) {
                                 return ListView(
                                   shrinkWrap: true,
@@ -87,12 +87,22 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                                         children: [
                                           Text(
                                               "${widget.seed.indexOf(word) + 1}.",
+                                              textScaler: MediaQuery.of(context)
+                                                  .textScaler
+                                                  .clamp(
+                                                      maxScaleFactor: 1.5,
+                                                      minScaleFactor: .8),
                                               style: textTheme),
                                           Flexible(
                                               child: Text(
                                             "${word}",
                                             style: textTheme,
                                             maxLines: 1,
+                                            textScaler: MediaQuery.of(context)
+                                                .textScaler
+                                                .clamp(
+                                                    maxScaleFactor: 1.5,
+                                                    minScaleFactor: .8),
                                             softWrap: false,
                                           )),
                                         ],
