@@ -137,6 +137,7 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
                   } else {
                     return FwIntroPage(
                       deviceId: widget.deviceId,
+                      onboarding: widget.onboarding,
                     );
                   }
                 }));
