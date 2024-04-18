@@ -353,6 +353,7 @@ class _SeedScreenState extends State<SeedScreen> {
                           color: Colors.black, size: EnvoySpacing.medium2),
                       onPressed: () {
                         Navigator.pop(context);
+                        Navigator.pop(context);
                       },
                     ),
                   ],
