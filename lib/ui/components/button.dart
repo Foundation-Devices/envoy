@@ -129,6 +129,7 @@ class _EnvoyButtonState extends State<EnvoyButton> {
                                 vertical: EnvoySpacing.xs),
                             child: Text(
                               widget.label,
+                              overflow: TextOverflow.ellipsis,
                               style: EnvoyTypography.button.copyWith(
                                 color: _getMainColor(),
                               ),
