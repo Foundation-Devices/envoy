@@ -279,13 +279,14 @@ class _EraseWalletsConfirmationState
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.8,
-      constraints: BoxConstraints(maxHeight: 380),
+      constraints: BoxConstraints(maxHeight: 360, maxWidth: 320),
       child: EnvoyScaffold(
         hasScrollBody: false,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.min,
             children: [
               Align(
@@ -300,7 +301,6 @@ class _EraseWalletsConfirmationState
                   ),
                 ),
               ),
-              Padding(padding: EdgeInsets.all(8)),
               Column(
                 children: [
                   Image.asset(
@@ -320,21 +320,26 @@ class _EraseWalletsConfirmationState
                   Padding(padding: EdgeInsets.all(5)),
                 ],
               ),
-              OnboardingButton(
-                  type: EnvoyButtonTypes.tertiary,
-                  label: S().delete_wallet_for_good_modal_cta2,
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => EraseProgress()));
-                  }),
-              OnboardingButton(
-                  type: EnvoyButtonTypes.primaryModal,
-                  label: S().component_cancel,
-                  onTap: () {
-                    OnboardingPage.popUntilHome(context);
-                  }),
+              Column(
+                children: [
+                  OnboardingButton(
+                      type: EnvoyButtonTypes.tertiary,
+                      label: S().delete_wallet_for_good_modal_cta2,
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EraseProgress()));
+                      }),
+                  OnboardingButton(
+                      type: EnvoyButtonTypes.primaryModal,
+                      label: S().component_cancel,
+                      onTap: () {
+                        OnboardingPage.popUntilHome(context);
+                      }),
+                  Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+                ],
+              )
               // Padding(padding: EdgeInsets.all(12)),
             ],
           ),

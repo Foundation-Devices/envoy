@@ -11,6 +11,7 @@ import 'package:envoy/ui/home/settings/backup/erase_warning.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/state/global_state.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
@@ -75,19 +76,22 @@ class _ManualSetupCreateAndStoreBackupState
                     ),
                   ),
                   Flexible(
-                      child: OnboardingButton(
-                          type: EnvoyButtonTypes.primary,
-                          label: S().manual_setup_create_and_store_backup_CTA,
-                          onTap: () async {
-                            await EnvoySeed().saveOfflineData();
+                      child: Padding(
+                    padding: const EdgeInsets.only(bottom: EnvoySpacing.small),
+                    child: OnboardingButton(
+                        type: EnvoyButtonTypes.primary,
+                        label: S().manual_setup_create_and_store_backup_CTA,
+                        onTap: () async {
+                          await EnvoySeed().saveOfflineData();
 
-                            if (globalState == GlobalState.nuclearDelete) {
-                              showEnvoyDialog(
-                                  context: context,
-                                  dialog: EraseWalletsConfirmation());
-                            } else
-                              showWarningModal(context);
-                          }))
+                          if (globalState == GlobalState.nuclearDelete) {
+                            showEnvoyDialog(
+                                context: context,
+                                dialog: EraseWalletsConfirmation());
+                          } else
+                            showWarningModal(context);
+                        }),
+                  ))
                 ],
               ),
             ),
