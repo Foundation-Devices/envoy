@@ -527,7 +527,10 @@ class AndroidBackupWarning extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    padding: const EdgeInsets.only(
+                        right: EnvoySpacing.medium2,
+                        left: EnvoySpacing.medium2,
+                        bottom: EnvoySpacing.medium2),
                     child: Column(
                       children: [
                         Consumer(

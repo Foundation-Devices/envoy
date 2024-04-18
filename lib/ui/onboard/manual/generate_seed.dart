@@ -199,24 +199,27 @@ class _SeedScreenState extends State<SeedScreen> {
                         pageController: _seedDisplayPageController,
                         totalPages: 2),
                   ),
-                OnboardingButton(
-                  onTap: () async {
-                    if (seedList.length == 12 || _onSecondPage) {
-                      await _pageController.nextPage(
-                          duration: Duration(milliseconds: 300),
-                          curve: Curves.ease);
-                    } else {
-                      setState(() {
-                        _onSecondPage = true;
-                      });
-                      await _seedDisplayPageController.nextPage(
-                          duration: Duration(milliseconds: 300),
-                          curve: Curves.ease);
-                    }
-                  },
-                  label: seedList.length == 12 || _onSecondPage
-                      ? S().component_done
-                      : S().component_continue,
+                Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+                  child: OnboardingButton(
+                    onTap: () async {
+                      if (seedList.length == 12 || _onSecondPage) {
+                        await _pageController.nextPage(
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.ease);
+                      } else {
+                        setState(() {
+                          _onSecondPage = true;
+                        });
+                        await _seedDisplayPageController.nextPage(
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.ease);
+                      }
+                    },
+                    label: seedList.length == 12 || _onSecondPage
+                        ? S().component_done
+                        : S().component_continue,
+                  ),
                 )
               ],
             ),
@@ -414,13 +417,16 @@ class _SeedScreenState extends State<SeedScreen> {
             ),
           ),
         ),
-        OnboardingButton(
-            label: S().component_continue,
-            fontWeight: FontWeight.w600,
-            onTap: () {
-              _pageController.nextPage(
-                  duration: Duration(milliseconds: 300), curve: Curves.ease);
-            }),
+        Padding(
+          padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+          child: OnboardingButton(
+              label: S().component_continue,
+              fontWeight: FontWeight.w600,
+              onTap: () {
+                _pageController.nextPage(
+                    duration: Duration(milliseconds: 300), curve: Curves.ease);
+              }),
+        ),
       ],
     );
   }
