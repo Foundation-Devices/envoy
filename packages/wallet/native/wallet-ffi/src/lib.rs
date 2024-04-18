@@ -1236,7 +1236,7 @@ pub unsafe extern "C" fn wallet_cancel_tx(
                 FeeRate::from_sat_per_vb((next_block_fee_rate * 100000.0) as f32).as_sat_per_vb();
 
             if current_fee_rate.as_sat_per_vb() >= target_fee_rate {
-                target_fee_rate = current_fee_rate.as_sat_per_vb() + 1.5;
+                target_fee_rate = current_fee_rate.as_sat_per_vb() + 2.0;
             }
 
             let mut tx_builder = wallet.build_tx();
