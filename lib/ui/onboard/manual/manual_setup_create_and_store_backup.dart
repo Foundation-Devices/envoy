@@ -33,60 +33,61 @@ class _ManualSetupCreateAndStoreBackupState
     final globalState = ref.watch(globalStateProvider);
     return OnboardPageBackground(
         child: Material(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                constraints: BoxConstraints.tight(Size.fromHeight(260)),
-                child: Image.asset("assets/onboarding_lock_icon.png"),
-              ),
-              Flexible(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding:
+      type: MaterialType.transparency,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            constraints: BoxConstraints.tight(Size.fromHeight(260)),
+            child: Image.asset("assets/onboarding_lock_icon.png"),
+          ),
+          Flexible(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding:
                     const EdgeInsets.symmetric(horizontal: EnvoySpacing.large1),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Text(
-                          S().manual_setup_create_and_store_backup_heading,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: EnvoySpacing.medium1),
-                        Text(S().manual_setup_create_and_store_backup_subheading,
-                            textAlign: TextAlign.center,
-                            style: EnvoyTypography.info
-                                .copyWith(color: EnvoyColors.textTertiary)),
-                      ],
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Text(
+                      S().manual_setup_create_and_store_backup_heading,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
-                  ),
+                    const SizedBox(height: EnvoySpacing.medium1),
+                    Text(S().manual_setup_create_and_store_backup_subheading,
+                        textAlign: TextAlign.center,
+                        style: EnvoyTypography.info
+                            .copyWith(color: EnvoyColors.textTertiary)),
+                  ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(EnvoySpacing.xs),
-                child: SizedBox.shrink(),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
-                child: OnboardingButton(
-                    type: EnvoyButtonTypes.primary,
-                    label: S().manual_setup_create_and_store_backup_CTA,
-                    onTap: () async {
-                      await EnvoySeed().saveOfflineData();
-
-                      if (globalState == GlobalState.nuclearDelete) {
-                        showEnvoyDialog(
-                            context: context, dialog: EraseWalletsConfirmation());
-                      } else
-                        showWarningModal(context);
-                    }),
-              )
-            ],
+            ),
           ),
-        ));
+          Padding(
+            padding: const EdgeInsets.all(EnvoySpacing.xs),
+            child: SizedBox.shrink(),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
+            child: OnboardingButton(
+                type: EnvoyButtonTypes.primary,
+                label: S().manual_setup_create_and_store_backup_CTA,
+                onTap: () async {
+                  await EnvoySeed().saveOfflineData();
+
+                  if (globalState == GlobalState.nuclearDelete) {
+                    showEnvoyDialog(
+                        context: context, dialog: EraseWalletsConfirmation());
+                  } else
+                    showWarningModal(context);
+                }),
+          )
+        ],
+      ),
+    ));
   }
 
   void showWarningModal(BuildContext context) {
