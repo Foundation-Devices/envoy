@@ -81,7 +81,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             child: ListTile(
               contentPadding: EdgeInsets.all(0),
               dense: true,
-              leading: SettingText(S().settings_show_fiat),
+              title: Wrap(
+                children: [SettingText(S().settings_show_fiat)],
+              ),
               trailing: SettingToggle(() => s.displayFiat() != null, (enabled) {
                 setState(() {
                   s.setDisplayFiat(enabled ? "USD" : null); // TODO: FIGMA
@@ -100,13 +102,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               duration: _animationsDuration,
               margin: EdgeInsets.only(
                   top: s.selectedFiat != null ? marginBetweenItems : 0),
-              height: s.selectedFiat == null ? 0 : 38,
+              height: s.selectedFiat == null ? 0 : 52,
               child: Padding(
                 padding: EdgeInsets.only(left: nestedMargin),
                 child: ListTile(
                   dense: true,
                   contentPadding: EdgeInsets.all(0),
-                  leading: SettingText(S().settings_currency),
+                  title: SettingText(S().settings_currency),
                   trailing:
                       SettingDropdown(fiatMap, s.displayFiat, s.setDisplayFiat),
                 ),
@@ -118,7 +120,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             child: ListTile(
               dense: true,
               contentPadding: EdgeInsets.all(0),
-              leading: SettingText(S().settings_amount),
+              title: SettingText(S().settings_amount),
               trailing: SettingToggle(s.displayUnitSat, s.setDisplayUnitSat),
             ),
           ),
@@ -202,7 +204,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               ListTile(
                 dense: true,
                 contentPadding: EdgeInsets.all(0),
-                leading: SettingText(S().settings_advanced_testnet),
+                title: Wrap(
+                  children: [SettingText(S().settings_advanced_testnet)],
+                ),
                 trailing: SettingToggle(
                     s.showTestnetAccounts, s.setShowTestnetAccounts,
                     onEnabled: () {
@@ -212,7 +216,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               ListTile(
                 dense: true,
                 contentPadding: EdgeInsets.all(0),
-                leading: SettingText(S().settings_advanced_taproot),
+                title: SettingText(S().settings_advanced_taproot),
                 trailing: SettingToggle(s.taprootEnabled, s.setTaprootEnabled,
                     onEnabled: () async {
                   if (await shouldShowPassportTaprootDialog()) {
@@ -248,7 +252,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       ));
                 },
                 contentPadding: EdgeInsets.all(0),
-                leading: SettingText(S().settings_viewEnvoyLogs, onTap: () {
+                title: SettingText(S().settings_viewEnvoyLogs, onTap: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
