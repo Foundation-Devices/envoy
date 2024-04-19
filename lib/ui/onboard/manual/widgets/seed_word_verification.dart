@@ -262,17 +262,20 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Container(
-                          margin: EdgeInsets.symmetric(vertical: 0),
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                           alignment: Alignment.center,
                           constraints:
-                              BoxConstraints(maxWidth: 200, maxHeight: 40),
+                              BoxConstraints(maxWidth: 300, maxHeight: 40),
                           decoration: BoxDecoration(
                               color: Colors.grey[300],
-                              borderRadius: BorderRadius.circular(8)),
+                              borderRadius: BorderRadius.circular(4)),
                           child: Text("${widget.puzzle[index]}",
-                              style: textTheme, textAlign: TextAlign.center),
+                              overflow: TextOverflow.fade,
+                              textScaler: MediaQuery.of(context)
+                                  .textScaler
+                                  .clamp(
+                                      maxScaleFactor: 1.2, minScaleFactor: .8),
+                              style: textTheme,
+                              textAlign: TextAlign.center),
                         ),
                       ],
                     ),
@@ -352,13 +355,21 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
           borderRadius: BorderRadius.circular(8)),
       child: Row(
         children: [
-          Text(" ${widget.seedIndex + 1}. ", style: textTheme),
+          Text(" ${widget.seedIndex + 1}. ",
+              textScaler: MediaQuery.of(context)
+                  .textScaler
+                  .clamp(maxScaleFactor: 1.2, minScaleFactor: .8),
+              style: textTheme),
           Expanded(
             child: Container(
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Text("${chosenAnswer ?? ""}", style: textTheme),
+                  Text("${chosenAnswer ?? ""}",
+                      textScaler: MediaQuery.of(context)
+                          .textScaler
+                          .clamp(maxScaleFactor: 1.2, minScaleFactor: .8),
+                      style: textTheme),
                   Container(
                     margin: EdgeInsets.only(top: 14),
                     child: Divider(
