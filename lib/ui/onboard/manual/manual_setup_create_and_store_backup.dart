@@ -78,7 +78,7 @@ class _ManualSetupCreateAndStoreBackupState
                   Flexible(
                       child: Padding(
                     padding:
-                        const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+                        const EdgeInsets.only(bottom: EnvoySpacing.medium3),
                     child: OnboardingButton(
                         type: EnvoyButtonTypes.primary,
                         label: S().manual_setup_create_and_store_backup_CTA,

@@ -93,8 +93,10 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
               ),
             ),
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
+              padding: const EdgeInsets.only(
+                  left: EnvoySpacing.medium1,
+                  right: EnvoySpacing.medium1,
+                  bottom: EnvoySpacing.medium3),
               child: Consumer(
                 builder: (context, ref, child) {
                   return OnboardingButton(

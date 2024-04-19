@@ -138,8 +138,9 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                                       .bodySmall
                                       ?.copyWith(fontWeight: FontWeight.w400))
                               : Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: EnvoySpacing.xs),
+                                  padding: EdgeInsets.only(
+                                      top: EnvoySpacing.xs,
+                                      bottom: EnvoySpacing.medium2),
                                   child: OnboardingButton(
                                       label: S().component_continue,
                                       onTap: () {
