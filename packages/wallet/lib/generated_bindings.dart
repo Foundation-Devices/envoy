@@ -352,13 +352,11 @@ class NativeLibrary {
   Psbt wallet_cancel_tx(
     ffi.Pointer<ffi.Char> wallet,
     ffi.Pointer<ffi.Char> txid,
-    double next_block_fee_rate,
     ffi.Pointer<UtxoList> dont_spend,
   ) {
     return _wallet_cancel_tx(
       wallet,
       txid,
-      next_block_fee_rate,
       dont_spend,
     );
   }
@@ -366,9 +364,9 @@ class NativeLibrary {
   late final _wallet_cancel_txPtr = _lookup<
       ffi.NativeFunction<
           Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
-              ffi.Double, ffi.Pointer<UtxoList>)>>('wallet_cancel_tx');
+              ffi.Pointer<UtxoList>)>>('wallet_cancel_tx');
   late final _wallet_cancel_tx = _wallet_cancel_txPtr.asFunction<
-      Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, double,
+      Psbt Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
           ffi.Pointer<UtxoList>)>();
 
   ffi.Pointer<ffi.Char> wallet_get_raw_tx_from_txid(

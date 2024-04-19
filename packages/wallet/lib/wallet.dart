@@ -1116,7 +1116,7 @@ class Wallet {
       rust.Psbt psbt = native.wallet_cancel_tx(
           Pointer.fromAddress(walletAddress),
           txId.toNativeUtf8() as Pointer<Char>,
-          feeRate,
+          // feeRate,
           doNotSpendPointer);
 
       if (psbt.base64 == nullptr) {
