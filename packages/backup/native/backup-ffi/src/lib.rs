@@ -414,6 +414,8 @@ fn get_reqwest_client(proxy_port: i32) -> reqwest::Client {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::fs::File;
+    use std::path::PathBuf;
     use tokio::sync::broadcast::{Receiver, Sender};
 
     #[tokio::test]
@@ -463,6 +465,35 @@ mod tests {
             hash,
             "fbf05d44bf48541e2fb0ab36e86611d1236368ec3a223135c2aeb2c9bd2fa66a"
         );
+    }
+
+    #[test]
+    fn test_decrypt_backup() {
+        let mnemonic = Mnemonic::parse(
+            "typical old announce muscle lazy enhance exotic assist rotate install skull rely",
+        )
+        .unwrap();
+        let entropy = mnemonic.to_entropy_array().0;
+        let entropy_32: [u8; 32] = entropy[0..32].try_into().unwrap();
+
+        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        path.push("resources/test/backup.mla");
+
+        // Open the file
+        let mut file = match File::open(&path) {
+            Err(why) => panic!("couldn't open {}: {}", path.display(), why),
+            Ok(file) => file,
+        };
+
+        // Read the file contents into a string
+        let mut contents = vec![];
+        match file.read_to_end(&mut contents) {
+            Err(why) => panic!("couldn't read {}: {}", path.display(), why),
+            Ok(_) => {}
+        }
+
+        let decrypted = decrypt_backup(contents, StaticSecret::from(entropy_32));
+        println!("{:?}", decrypted.unwrap());
     }
 }
 

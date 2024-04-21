@@ -559,6 +559,16 @@ class AccountManager extends ChangeNotifier {
     return false;
   }
 
+  bool hotAccountsExist({WalletType type = WalletType.witnessPublicKeyHash}) {
+    for (var account in accounts) {
+      if (account.wallet.hot && account.wallet.type == type) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   deleteHotWalletAccounts() {
     List<Account> accountsToDelete = [];
     for (var account in accounts) {

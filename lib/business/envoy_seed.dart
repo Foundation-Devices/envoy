@@ -23,8 +23,6 @@ import 'package:envoy/business/blog_post.dart';
 import 'package:envoy/business/notifications.dart';
 
 const String SEED_KEY = "seed";
-const String WALLET_DERIVED_PREFS = "wallet_derived";
-const String TAPROOT_WALLET_DERIVED_PREFS = "taproot_wallet_derived";
 
 const String LAST_BACKUP_PREFS = "last_backup";
 const String LOCAL_SECRET_FILE_NAME = "local.secret";
@@ -58,11 +56,6 @@ class EnvoySeed {
       encryptedBackupFileName +
       "." +
       encryptedBackupFileExtension;
-
-  static Map<WalletType, String> hotWalletDerivedPrefsString = {
-    WalletType.witnessPublicKeyHash: WALLET_DERIVED_PREFS,
-    WalletType.taproot: TAPROOT_WALLET_DERIVED_PREFS,
-  };
 
   static Map<WalletType, Map<Network, String>> hotWalletDerivationPaths = {
     WalletType.witnessPublicKeyHash: {
@@ -132,8 +125,6 @@ class EnvoySeed {
       AccountManager().addHotWalletAccount(mainnet);
       AccountManager().addHotWalletAccount(testnet);
 
-      LocalStorage().prefs.setBool(hotWalletDerivedPrefsString[type]!, true);
-
       return true;
     } on Exception catch (_) {
       return false;
@@ -141,8 +132,7 @@ class EnvoySeed {
   }
 
   bool walletDerived({WalletType type = WalletType.witnessPublicKeyHash}) {
-    return LocalStorage().prefs.getBool(hotWalletDerivedPrefsString[type]!) ??
-        false;
+    return AccountManager().hotAccountsExist(type: type);
   }
 
   Future<void> store(String seed) async {
@@ -248,7 +238,6 @@ class EnvoySeed {
     final seed = await get();
 
     AccountManager().deleteHotWalletAccounts();
-    LocalStorage().prefs.setBool(WALLET_DERIVED_PREFS, false);
     Settings().syncToCloud = false;
 
     try {
@@ -402,8 +391,6 @@ class EnvoySeed {
   }
 
   _restoreSingletons() {
-    LocalStorage().prefs.setBool(WALLET_DERIVED_PREFS, true);
-
     Settings.restore(fromBackup: true);
     Settings().store();
 
