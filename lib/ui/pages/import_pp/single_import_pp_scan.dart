@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/pages/scanner_page.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -22,14 +24,20 @@ class SingleImportPpScanPage extends OnboardingPage {
         navigationDots: 2,
         navigationDotsIndex: 1,
         buttons: [
-          OnboardingButton(
-              label: S().component_continue,
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return ScannerPage([ScannerType.pair]);
-                }));
-              }),
+          Padding(
+            padding: EdgeInsets.only(
+                bottom: context.isSmallScreen
+                    ? EnvoySpacing.medium1
+                    : EnvoySpacing.medium3),
+            child: OnboardingButton(
+                label: S().component_continue,
+                onTap: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return ScannerPage([ScannerType.pair]);
+                  }));
+                }),
+          ),
         ],
       ),
     );

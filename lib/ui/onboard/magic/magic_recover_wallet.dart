@@ -19,6 +19,7 @@ import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -272,15 +273,23 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
     if (_magicRecoverWalletState == MagicRecoveryWalletState.success) {
       return Consumer(
         builder: (context, ref, child) {
-          return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: OnboardingButton(
-                label: S().component_continue,
-                onTap: () async {
-                  await Future.delayed(Duration(milliseconds: 200));
-                  OnboardingPage.popUntilHome(context);
-                },
-              ));
+          return Column(
+            children: [
+              Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: OnboardingButton(
+                    label: S().component_continue,
+                    onTap: () async {
+                      await Future.delayed(Duration(milliseconds: 200));
+                      OnboardingPage.popUntilHome(context);
+                    },
+                  )),
+              SizedBox(
+                  height: context.isSmallScreen
+                      ? EnvoySpacing.medium1
+                      : EnvoySpacing.medium3),
+            ],
+          );
         },
       );
     }
@@ -315,6 +324,10 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                 _tryAutomaticRecovery();
               },
             ),
+            SizedBox(
+                height: context.isSmallScreen
+                    ? EnvoySpacing.medium1
+                    : EnvoySpacing.medium3),
           ],
         ),
       );
@@ -437,6 +450,10 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                 );
               },
             ),
+            SizedBox(
+                height: context.isSmallScreen
+                    ? EnvoySpacing.medium1
+                    : EnvoySpacing.medium3),
           ],
         ),
       );
@@ -477,6 +494,10 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                 _tryAutomaticRecovery();
               },
             ),
+            SizedBox(
+                height: context.isSmallScreen
+                    ? EnvoySpacing.medium1
+                    : EnvoySpacing.medium3),
           ],
         ),
       );

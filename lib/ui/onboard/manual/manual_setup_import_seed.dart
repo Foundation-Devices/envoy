@@ -11,8 +11,10 @@ import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -105,7 +107,11 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                             checkSeed(context, result);
                           }),
                     ),
-                  ))
+                  )),
+              SizedBox(
+                  height: context.isSmallScreen
+                      ? EnvoySpacing.medium1
+                      : EnvoySpacing.medium3),
               // SFT-1749: disable passphrases for beta
               // Column(
               //   children: [
