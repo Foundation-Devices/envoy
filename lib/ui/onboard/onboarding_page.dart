@@ -13,6 +13,7 @@ import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
+import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
@@ -245,7 +246,11 @@ class OnboardingPage extends StatelessWidget {
                   child: helperTextAbove ?? SizedBox.shrink(),
                 ),
                 ...?buttons,
-                helperTextBelow ?? SizedBox.shrink()
+                helperTextBelow ?? SizedBox.shrink(),
+                SizedBox(
+                    height: context.isSmallScreen
+                        ? EnvoySpacing.medium1
+                        : EnvoySpacing.medium3),
               ],
             ),
           ),
