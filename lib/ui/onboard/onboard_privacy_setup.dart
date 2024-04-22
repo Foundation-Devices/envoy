@@ -188,7 +188,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                 top: EnvoySpacing.xs,
                 bottom: context.isSmallScreen
                     ? EnvoySpacing.xs
-                    : EnvoySpacing.medium2),
+                    : EnvoySpacing.medium1),
             child: Container(
               constraints: BoxConstraints(
                 maxWidth: 320,
