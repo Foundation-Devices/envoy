@@ -17,6 +17,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/state/onboarding_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
@@ -181,54 +182,61 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(
+            padding: EdgeInsets.only(
                 left: EnvoySpacing.medium1,
                 right: EnvoySpacing.medium1,
                 top: EnvoySpacing.xs,
-                bottom: EnvoySpacing.xs),
-            child: EnvoyButton(
-              S().component_continue,
-              onTap: () async {
-                //tor is necessary if user selects onion node
-                bool torRequire = ref.read(isNodeRequiredTorProvider);
-                //tor is not required if user selects better performance
-                bool betterPerformance =
-                    ref.read(privacyOnboardSelectionProvider);
-                //based on both conditions, set tor enabled or disabled. before entering to the main screen
-                Settings().setTorEnabled(torRequire || !betterPerformance);
-                LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
-                if (!widget.setUpEnvoyWallet) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => OnboardPassportWelcomeScreen(),
-                      ));
-                } else {
-                  //if there is magic recovery seed, go to recover wallet screen else go to welcome screen
-                  try {
-                    if (await EnvoySeed().get() != null) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MagicRecoverWallet()));
-                    } else {
+                bottom: context.isSmallScreen
+                    ? EnvoySpacing.xs
+                    : EnvoySpacing.medium2),
+            child: Container(
+              constraints: BoxConstraints(
+                maxWidth: 320,
+              ),
+              child: EnvoyButton(
+                S().component_continue,
+                onTap: () async {
+                  //tor is necessary if user selects onion node
+                  bool torRequire = ref.read(isNodeRequiredTorProvider);
+                  //tor is not required if user selects better performance
+                  bool betterPerformance =
+                      ref.read(privacyOnboardSelectionProvider);
+                  //based on both conditions, set tor enabled or disabled. before entering to the main screen
+                  Settings().setTorEnabled(torRequire || !betterPerformance);
+                  LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
+                  if (!widget.setUpEnvoyWallet) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => OnboardPassportWelcomeScreen(),
+                        ));
+                  } else {
+                    //if there is magic recovery seed, go to recover wallet screen else go to welcome screen
+                    try {
+                      if (await EnvoySeed().get() != null) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MagicRecoverWallet()));
+                      } else {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => OnboardEnvoyWelcomeScreen(),
+                            ));
+                      }
+                    } catch (e) {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => OnboardEnvoyWelcomeScreen(),
                           ));
                     }
-                  } catch (e) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => OnboardEnvoyWelcomeScreen(),
-                        ));
                   }
-                }
-              },
+                },
+              ),
             ),
-          )
+          ),
         ],
       ),
     );

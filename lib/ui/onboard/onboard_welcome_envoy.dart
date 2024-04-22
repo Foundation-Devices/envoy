@@ -12,6 +12,7 @@ import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
 import 'package:envoy/ui/onboard/magic/magic_setup_tutorial.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,6 +36,7 @@ class _OnboardEnvoyWelcomeScreenState
     extends ConsumerState<OnboardEnvoyWelcomeScreen> {
   @override
   Widget build(BuildContext context) {
+    print("MediaQuery.sizeOf(context).width  ${MediaQuery.sizeOf(context)}");
     return EnvoyPatternScaffold(
       gradientHeight: 1.8,
       shield: Container(
@@ -140,11 +142,13 @@ class _OnboardEnvoyWelcomeScreenState
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(
+                    padding: EdgeInsets.only(
                         left: EnvoySpacing.medium1,
                         right: EnvoySpacing.medium1,
                         top: EnvoySpacing.medium1,
-                        bottom: EnvoySpacing.xl),
+                        bottom: context.isSmallScreen
+                            ? EnvoySpacing.medium1
+                            : EnvoySpacing.large1),
                     child: Column(
                       children: [
                         Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),

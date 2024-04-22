@@ -13,7 +13,9 @@ import 'package:envoy/ui/onboard/magic/magic_setup_generate.dart';
 import 'package:envoy/ui/onboard/magic/wallet_security/wallet_security_modal.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -105,6 +107,10 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                       }));
                       // showCreateWarning(context);
                     }),
+                SizedBox(
+                    height: context.isSmallScreen
+                        ? EnvoySpacing.medium1
+                        : EnvoySpacing.medium3),
               ],
             )
           ],
