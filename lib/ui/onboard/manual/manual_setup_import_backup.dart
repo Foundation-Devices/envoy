@@ -10,6 +10,7 @@ import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/manual/dialogs.dart';
 import 'package:tor/tor.dart';
@@ -34,6 +35,7 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
   Widget build(BuildContext context) {
     return OnboardPageBackground(
         child: Material(
+      color: Colors.transparent,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -97,6 +99,10 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                         return ManualSetupCreateAndStoreBackup();
                       }));
                     }),
+                SizedBox(
+                    height: context.isSmallScreen
+                        ? EnvoySpacing.medium1
+                        : EnvoySpacing.medium3),
               ],
             ),
           ),

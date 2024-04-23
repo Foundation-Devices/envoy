@@ -82,6 +82,7 @@ class TouPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(
                   top: EnvoySpacing.small,
+                  bottom: EnvoySpacing.medium1,
                   left: EnvoySpacing.small,
                   right: EnvoySpacing.small),
               child: OnboardingButton(
