@@ -49,6 +49,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
         ?.copyWith(fontSize: 11, fontWeight: FontWeight.w500);
     return EnvoyPatternScaffold(
       appBar: AppBar(
+        elevation: 0,
         backgroundColor: Colors.transparent,
         leading: CupertinoNavigationBarBackButton(
           color: Colors.white,
@@ -176,6 +177,9 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                         },
                       ),
                     ),
+                    SizedBox(
+                      height: EnvoySpacing.medium1,
+                    ),
                   ],
                 ),
               ),
@@ -185,10 +189,9 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
             padding: EdgeInsets.only(
                 left: EnvoySpacing.medium1,
                 right: EnvoySpacing.medium1,
-                top: EnvoySpacing.xs,
                 bottom: context.isSmallScreen
                     ? EnvoySpacing.xs
-                    : EnvoySpacing.medium1),
+                    : EnvoySpacing.small),
             child: Container(
               constraints: BoxConstraints(
                 maxWidth: 320,

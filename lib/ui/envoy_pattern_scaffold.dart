@@ -38,7 +38,7 @@ class EnvoyPatternScaffold extends StatefulWidget {
       this.appBar,
       this.shield,
       this.header,
-      this.gradientHeight = 1.5})
+      this.gradientHeight = 1.6})
       : super(key: key);
 
   @override
@@ -111,7 +111,7 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
                 ),
                 bottomNavigationBar: Container(
                   width: double.infinity,
-                  height: (MediaQuery.of(context).size.height * 0.5)
+                  height: (MediaQuery.of(context).size.height * 0.54)
                       .clamp(350, 580),
                   child: Container(
                     padding: EdgeInsets.only(bottom: _shieldBottom),
