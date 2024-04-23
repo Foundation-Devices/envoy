@@ -8,13 +8,16 @@ import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/business/bip21.dart';
 import 'package:envoy/business/updates_manager.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/scv/scv_result_fail.dart';
 import 'package:envoy/ui/pages/scv/scv_result_ok.dart';
 import 'package:envoy/ui/pages/wallet/single_wallet_pair_success.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:envoy/business/uniform_resource.dart';
@@ -113,12 +116,12 @@ class _ScannerPageState extends State<ScannerPage> {
         if (status.isDenied) {
           Permission.camera.request().then((status) {
             if (status.isPermanentlyDenied) {
-              openAppSettings();
+              openSettingsDialog();
             }
             _permissionsCompleter.complete();
           });
         } else if (status.isPermanentlyDenied) {
-          openAppSettings();
+          openSettingsDialog();
           _permissionsCompleter.complete();
         } else {
           _permissionsCompleter.complete();
@@ -127,6 +130,23 @@ class _ScannerPageState extends State<ScannerPage> {
     } else {
       _permissionsCompleter.complete();
     }
+  }
+
+  void openSettingsDialog() async {
+    showEnvoyPopUp(
+        context,
+        "Envoy requires camera access to scan QR codes. Please go to settings and grant camera permissions.",
+        "Go to Settings",
+        (BuildContext context) {
+          openAppSettings();
+          context.pop();
+        },
+        secondaryButtonLabel: "Cancel",
+        onSecondaryButtonTap: (BuildContext context) {
+          context.pop();
+          context.pop();
+        },
+        icon: EnvoyIcons.alert);
   }
 
   @override
