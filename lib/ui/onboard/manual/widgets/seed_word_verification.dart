@@ -5,11 +5,12 @@
 import 'dart:math';
 
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -56,6 +57,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
             child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
           child: CustomScrollView(
+            //shrinkWrap: true,
             slivers: [
               SliverToBoxAdapter(
                 child: Text(
@@ -84,7 +86,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                         children: _puzzleOptions.map((e) {
                           return Padding(
                             padding: const EdgeInsets.symmetric(
-                                vertical: EnvoySpacing.small),
+                                vertical: EnvoySpacing.medium1),
                             child: PuzzleWidget(
                               puzzle: e,
                               seedIndex: _seedIndexes[_puzzlePageIndex],
@@ -123,12 +125,12 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                     const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                     !_finishedAnswers
                         ? Text(
-                            S()
-                                .manual_setup_generate_seed_verify_seed_again_quiz_infotext,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(fontWeight: FontWeight.w400))
+                            S().manual_setup_generate_seed_verify_seed_again_quiz_infotext,
+                            style: EnvoyTypography.button.copyWith(
+                              color: EnvoyColors.textInactive,
+                            ),
+                            textAlign: TextAlign.center,
+                          )
                         : Padding(
                             padding: const EdgeInsets.symmetric(
                                 vertical: EnvoySpacing.xs),
@@ -252,7 +254,6 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                   child: Column(
                     children: [
                       Container(
-                        height: 80,
                         margin: const EdgeInsets.symmetric(vertical: 0),
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 6),
@@ -287,7 +288,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
               const Icon(
                 Icons.check,
                 size: 14,
-                color: EnvoyColors.teal,
+                color: EnvoyColors.accentPrimary,
               ),
               const Padding(padding: EdgeInsets.all(4)),
               Text(
@@ -295,7 +296,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium
-                    ?.copyWith(color: EnvoyColors.teal),
+                    ?.copyWith(color: EnvoyColors.accentPrimary),
               )
             ],
           )
@@ -304,14 +305,14 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Icon(EnvoyIcons.exclamationWarning,
-                  color: EnvoyColors.brown, size: 14),
+                  color: EnvoyColors.accentSecondary, size: 14),
               const Padding(padding: EdgeInsets.all(4)),
               Text(
                 S().manual_setup_generate_seed_verify_seed_quiz_fail_invalid,
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium
-                    ?.copyWith(color: EnvoyColors.darkCopper),
+                    ?.copyWith(color: EnvoyColors.accentSecondary),
               )
             ],
           );
@@ -324,9 +325,9 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
       borderColor = Colors.transparent;
     } else {
       if (chosenAnswer != widget.correctAnswer) {
-        borderColor = EnvoyColors.brown;
+        borderColor = EnvoyColors.accentSecondary;
       } else {
-        borderColor = EnvoyColors.teal;
+        borderColor = EnvoyColors.textTertiary;
       }
     }
 

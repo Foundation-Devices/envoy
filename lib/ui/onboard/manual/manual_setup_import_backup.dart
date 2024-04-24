@@ -10,15 +10,17 @@ import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/manual/dialogs.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
-import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class ManualSetupImportBackup extends StatefulWidget {
   const ManualSetupImportBackup({super.key});
@@ -33,75 +35,62 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
   Widget build(BuildContext context) {
     return OnboardPageBackground(
         child: Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+        const SizedBox(height: EnvoySpacing.small),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.large3),
+          child: Image.asset("assets/fw_intro.png"),
+        ),
+        const SizedBox(height: EnvoySpacing.medium1),
+        Flexible(
+          child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: SizedBox.shrink(),
-                ),
-                Flexible(
-                    child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Image.asset("assets/fw_intro.png"),
-                )),
-                Container(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Padding(padding: EdgeInsets.all(8)),
-                      Text(
-                        S().manual_setup_import_backup_CTA2,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      const Padding(padding: EdgeInsets.all(12)),
-                      Text(
-                        S().manual_setup_import_backup_subheading,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(fontSize: 13),
-                      ),
-                    ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.medium1),
+                  child: Text(
+                    S().manual_setup_import_backup_CTA2,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: SizedBox.shrink(),
+                const SizedBox(height: EnvoySpacing.medium3),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.large3),
+                  child: Text(S().manual_setup_import_backup_subheading,
+                      textAlign: TextAlign.center,
+                      style: EnvoyTypography.info
+                          .copyWith(color: EnvoyColors.textTertiary)),
                 ),
-                Flexible(
-                    child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    OnboardingButton(
-                        type: EnvoyButtonTypes.secondary,
-                        label: S().manual_setup_import_backup_CTA2,
-                        onTap: () {
-                          openBackupFile(context);
-                        }),
-                    OnboardingButton(
-                        type: EnvoyButtonTypes.primary,
-                        label: S().manual_setup_import_backup_CTA1,
-                        onTap: () {
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return const ManualSetupCreateAndStoreBackup();
-                          }));
-                        }),
-                  ],
-                ))
               ],
             ),
+          ),
+        ),
+        const SizedBox(height: EnvoySpacing.medium1),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: EnvoySpacing.medium1, vertical: EnvoySpacing.medium1),
+          child: Column(
+            children: [
+              OnboardingButton(
+                  type: EnvoyButtonTypes.secondary,
+                  label: S().manual_setup_import_backup_CTA2,
+                  onTap: () {
+                    openBackupFile(context);
+                  }),
+              OnboardingButton(
+                  type: EnvoyButtonTypes.primary,
+                  label: S().manual_setup_import_backup_CTA1,
+                  onTap: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return const ManualSetupCreateAndStoreBackup();
+                    }));
+                  }),
+            ],
           ),
         ),
       ],
@@ -175,8 +164,8 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
                 height: 60,
                 width: 60,
                 child: CircularProgressIndicator(
-                  color: EnvoyColors.teal,
-                  backgroundColor: EnvoyColors.greyLoadingSpinner,
+                  color: EnvoyColors.accentPrimary,
+                  backgroundColor: EnvoyColors.textTertiary,
                   strokeWidth: 4.71,
                 ),
               ),

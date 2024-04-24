@@ -155,6 +155,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
 
   @override
   Widget build(BuildContext context) {
+    bool isThereBottomButtons = getBottomButtons() != null;
     return PopScope(
       onPopInvoked: (_) {
         _handleBackPress();
@@ -165,7 +166,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           return OnboardPageBackground(
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: isThereBottomButtons
+                  ? MainAxisAlignment.spaceBetween
+                  : MainAxisAlignment.start,
               children: [
                 Column(
                   mainAxisSize: MainAxisSize.min,
@@ -230,9 +233,15 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 800),
-                            child: getMainWidget()),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: isThereBottomButtons
+                                  ? 0
+                                  : EnvoySpacing.large3),
+                          child: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 800),
+                              child: getMainWidget()),
+                        ),
                       ],
                     ),
                   ),

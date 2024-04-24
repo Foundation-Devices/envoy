@@ -14,6 +14,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class ManualSetupCreateAndStoreBackup extends ConsumerStatefulWidget {
   const ManualSetupCreateAndStoreBackup({super.key});
@@ -30,72 +31,63 @@ class _ManualSetupCreateAndStoreBackupState
     final globalState = ref.watch(globalStateProvider);
     return OnboardPageBackground(
         child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(12.0),
-                  child: SizedBox.shrink(),
-                ),
-                Flexible(
-                    child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Image.asset("assets/onboarding_lock_icon.png"),
-                )),
-                Container(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Padding(padding: EdgeInsets.all(6)),
-                      Text(
-                        S().manual_setup_create_and_store_backup_heading,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      const Padding(padding: EdgeInsets.all(8)),
-                      Text(
-                        S().manual_setup_create_and_store_backup_subheading,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(fontSize: 13),
-                      ),
-                    ],
+        const SizedBox(height: EnvoySpacing.small),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Image.asset("assets/onboarding_lock_icon.png"),
+        ),
+        const SizedBox(height: EnvoySpacing.medium1),
+        Flexible(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium3),
+              child: Column(
+                children: [
+                  Text(
+                    S().manual_setup_create_and_store_backup_heading,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.all(4.0),
-                  child: SizedBox.shrink(),
-                ),
-                Flexible(
-                    child: OnboardingButton(
-                        type: EnvoyButtonTypes.primary,
-                        label: S().manual_setup_create_and_store_backup_CTA,
-                        onTap: () async {
-                          await EnvoySeed().saveOfflineData();
-
-                          if (globalState == GlobalState.nuclearDelete &&
-                              context.mounted) {
-                            showEnvoyDialog(
-                                context: context,
-                                dialog: const EraseWalletsConfirmation());
-                          } else {
-                            if (context.mounted) {
-                              showWarningModal(context);
-                            }
-                          }
-                        }))
-              ],
+                  const SizedBox(height: EnvoySpacing.medium1),
+                  Text(
+                    S().manual_setup_create_and_store_backup_subheading,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall!
+                        .copyWith(fontSize: 13),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
+        const SizedBox(height: EnvoySpacing.medium1),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: EnvoySpacing.medium1, vertical: EnvoySpacing.medium1),
+          child: OnboardingButton(
+              type: EnvoyButtonTypes.primary,
+              label: S().manual_setup_create_and_store_backup_CTA,
+              onTap: () async {
+                await EnvoySeed().saveOfflineData();
+
+                if (globalState == GlobalState.nuclearDelete &&
+                    context.mounted) {
+                  showEnvoyDialog(
+                      context: context,
+                      dialog: const EraseWalletsConfirmation());
+                } else {
+                  if (context.mounted) {
+                    showWarningModal(context);
+                  }
+                }
+              }),
+        )
       ],
     ));
   }
@@ -123,7 +115,7 @@ class BackupWarningModal extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Padding(padding: EdgeInsets.all(8)),
+            const SizedBox(height: EnvoySpacing.medium3),
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [

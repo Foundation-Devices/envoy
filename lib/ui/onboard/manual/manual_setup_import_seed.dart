@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class ManualSetupImportSeed extends ConsumerStatefulWidget {
   final SeedLength seedLength;
@@ -45,111 +46,128 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
       },
       child: OnboardPageBackground(
         child: Material(
-            color: Colors.transparent,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                    child: Column(
-                  children: [
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: IconButton(
-                        icon:
-                            const Icon(Icons.chevron_left, color: Colors.black),
-                        onPressed: () async {
-                          if (await handleBackPress(context) &&
-                              context.mounted) {
-                            Navigator.pop(context);
-                          }
-                        },
-                      ),
+          type: MaterialType.transparency,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      icon: const Icon(Icons.chevron_left, color: Colors.black),
+                      onPressed: () async {
+                        if (await handleBackPress(context) && context.mounted) {
+                          Navigator.pop(context);
+                        }
+                      },
                     ),
-                    Container(
-                        alignment: Alignment.center,
-                        child: Text(
-                          S().manual_setup_import_seed_12_words_heading,
-                          style: Theme.of(context).textTheme.titleLarge,
-                        )),
-                    Expanded(
-                        child: Container(
-                      margin: const EdgeInsets.only(top: 8),
-                      height: MediaQuery.of(context).size.height * 0.59,
-                      child: MnemonicEntryGrid(
-                          key: _mnemonicEntryGridKey,
-                          seedLength: widget.seedLength,
-                          onSeedWordAdded: (List<String> words) {
-                            currentWords = words;
-                            bool isValid = currentWords
-                                .map((e) => seedEn.contains(e))
-                                .reduce((value, element) => value && element);
-                            setState(() {
-                              finishSeedEntries = isValid;
-                            });
+                  ),
+                  Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        S().manual_setup_import_seed_12_words_heading,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      )),
+                ],
+              ),
+              Expanded(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 420),
+                  child: NestedScrollView(
+                    headerSliverBuilder: (context, innerBoxIsScrolled) => [],
+                    body: MnemonicEntryGrid(
+                        key: _mnemonicEntryGridKey,
+                        seedLength: widget.seedLength,
+                        onSeedWordAdded: (List<String> words) {
+                          currentWords = words;
+                          bool isValid = currentWords
+                              .map((e) => seedEn.contains(e))
+                              .reduce((value, element) => value && element);
+                          setState(() {
+                            finishSeedEntries = isValid;
+                          });
+                        }),
+                  ),
+                ),
+              ),
+              Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.medium2,
+                      vertical: EnvoySpacing.medium1),
+                  child: IgnorePointer(
+                    ignoring: finishSeedEntries == false,
+                    child: Opacity(
+                      opacity: finishSeedEntries ? 1 : 0.5,
+                      child: OnboardingButton(
+                          label: S().component_done,
+                          onTap: () {
+                            String result = currentWords.join(' ');
+                            checkSeed(context, result);
                           }),
-                    ))
-                  ],
-                )),
-                Column(
-                  children: [
-                    const Padding(padding: EdgeInsets.all(2)),
-                    // SFT-1749: disable passphrases for beta
-                    // InkWell(
-                    //   onTap: () {
-                    //     setState(() {
-                    //       hasPassphrase = !hasPassphrase;
-                    //       if (hasPassphrase == true) {
-                    //         showPassphraseWarningDialog(context);
-                    //       } else {
-                    //         passPhrase = "";
-                    //       }
-                    //     });
-                    //   },
-                    //   child: Row(
-                    //     crossAxisAlignment: CrossAxisAlignment.center,
-                    //     mainAxisAlignment: MainAxisAlignment.center,
-                    //     children: [
-                    //       Checkbox(
-                    //         checkColor: EnvoyColors.white100,
-                    //         activeColor: EnvoyColors.darkTeal,
-                    //         value: hasPassphrase,
-                    //         onChanged: (value) {
-                    //           setState(() {
-                    //             hasPassphrase = value ?? false;
-                    //           });
-                    //           if (value == true) {
-                    //             showPassphraseWarningDialog(context);
-                    //           } else {
-                    //             passPhrase = "";
-                    //           }
-                    //         },
-                    //       ),
-                    //       Text(
-                    //         S().manual_setup_import_seed_12_words_checkbox,
-                    //         style: Theme.of(context).textTheme.labelLarge,
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
-                    Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: IgnorePointer(
-                          ignoring: finishSeedEntries == false,
-                          child: Opacity(
-                            opacity: finishSeedEntries ? 1 : 0.5,
-                            child: OnboardingButton(
-                                label: S().component_done,
-                                onTap: () {
-                                  String result = currentWords.join(' ');
-                                  checkSeed(context, result);
-                                }),
-                          ),
-                        ))
-                  ],
-                )
-              ],
-            )),
+                    ),
+                  ))
+              // SFT-1749: disable passphrases for beta
+              // Column(
+              //   children: [
+              //     Padding(padding: EdgeInsets.all(2)),
+              //     InkWell(
+              //       onTap: () {
+              //         setState(() {
+              //           hasPassphrase = !hasPassphrase;
+              //           if (hasPassphrase == true) {
+              //             showPassphraseWarningDialog(context);
+              //           } else {
+              //             passPhrase = "";
+              //           }
+              //         });
+              //       },
+              //       child: Row(
+              //         crossAxisAlignment: CrossAxisAlignment.center,
+              //         mainAxisAlignment: MainAxisAlignment.center,
+              //         children: [
+              //           Checkbox(
+              //             checkColor: EnvoyColors.white100,
+              //             activeColor: EnvoyColors.darkTeal,
+              //             value: hasPassphrase,
+              //             onChanged: (value) {
+              //               setState(() {
+              //                 hasPassphrase = value ?? false;
+              //               });
+              //               if (value == true) {
+              //                 showPassphraseWarningDialog(context);
+              //               } else {
+              //                 passPhrase = "";
+              //               }
+              //             },
+              //           ),
+              //           Text(
+              //             S().manual_setup_import_seed_12_words_checkbox,
+              //             style: Theme.of(context).textTheme.labelLarge,
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //     Padding(
+              //         padding: EdgeInsets.symmetric(horizontal: 24),
+              //         child: IgnorePointer(
+              //           ignoring: finishSeedEntries == false,
+              //           child: Opacity(
+              //             opacity: finishSeedEntries ? 1 : 0.5,
+              //             child: OnboardingButton(
+              //                 label: S().component_done,
+              //                 onTap: () {
+              //                   String result = currentWords.join(' ');
+              //                   checkSeed(context, result);
+              //                 }),
+              //           ),
+              //         )),
+              //   ],
+              // )
+            ],
+          ),
+        ),
       ),
     );
   }

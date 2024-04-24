@@ -280,24 +280,24 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                 OnboardingButton(
                   label: S().component_continue,
                   onTap: () {
-                    if (!isAndroid) {
-                      if (widget.onContinue != null) {
-                        widget.onContinue!.call();
-                        return;
-                      }
-                      if (widget.skipSuccessScreen) {
-                        //clear on-boarding routes and go to home
-                        OnboardingPage.popUntilHome(context);
-                      } else {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return const WalletSetupSuccess();
-                        }));
-                      }
-                    } else {
+                    if (isAndroid && _androidBackupInfoPage == 0) {
                       setState(() {
                         _androidBackupInfoPage = 1;
                       });
+                      return;
+                    }
+                    if (widget.onContinue != null) {
+                      widget.onContinue!.call();
+                      return;
+                    }
+                    if (widget.skipSuccessScreen) {
+                      //clear on-boarding routes and go to home
+                      OnboardingPage.popUntilHome(context);
+                    } else {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return const WalletSetupSuccess();
+                      }));
                     }
                   },
                 )
@@ -411,9 +411,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                           ?.copyWith(color: Colors.white)),
                 ),
                 title: Text(
-                  Platform.isAndroid
-                      ? S().recovery_scenario_Android_instruction1
-                      : S().recovery_scenario_ios_instruction3,
+                  S().recovery_scenario_ios_instruction3,
                   textAlign: TextAlign.start,
                   style: Theme.of(context)
                       .textTheme

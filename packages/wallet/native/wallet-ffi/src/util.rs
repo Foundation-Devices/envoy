@@ -37,7 +37,7 @@ fn get_electrum_blockchain_config(
             url: electrum_address.parse().unwrap(),
             socks5: Some("127.0.0.1:".to_owned() + &tor_port.to_string()),
             retry: 0,
-            timeout: None,
+            timeout: Some(30),
             stop_gap: 50,
             validate_domain: false,
         }
