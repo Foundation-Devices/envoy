@@ -19,7 +19,6 @@ class TouPage extends StatefulWidget {
 }
 
 class _TouPageState extends State<TouPage> {
-
   ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
@@ -72,12 +71,13 @@ class _TouPageState extends State<TouPage> {
                 scrollController: _scrollController,
                 child: StatefulBuilder(
                   builder: (context, setState) {
-                    return  SingleChildScrollView(
+                    return SingleChildScrollView(
                       controller: _scrollController,
                       padding: EdgeInsets.all(4.0),
                       scrollDirection: Axis.vertical,
                       child: FutureBuilder<String>(
-                        future: rootBundle.loadString('assets/passport_tou.html'),
+                        future:
+                            rootBundle.loadString('assets/passport_tou.html'),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             return DefaultTextStyle(
@@ -97,8 +97,10 @@ class _TouPageState extends State<TouPage> {
               ),
             ),
             Padding(
-              padding:  EdgeInsets.only(
-                  top: context.isSmallScreen ? EnvoySpacing.medium1 : EnvoySpacing.medium3,
+              padding: EdgeInsets.only(
+                  top: context.isSmallScreen
+                      ? EnvoySpacing.medium1
+                      : EnvoySpacing.medium3,
                   bottom: EnvoySpacing.medium1,
                   left: EnvoySpacing.small,
                   right: EnvoySpacing.small),
