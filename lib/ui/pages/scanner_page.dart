@@ -86,12 +86,13 @@ class ScannerPage extends StatefulWidget {
   State<StatefulWidget> createState() => _ScannerPageState(_urDecoder);
 }
 
-class _ScannerPageState extends State<ScannerPage> {
+class _ScannerPageState extends State<ScannerPage> with WidgetsBindingObserver {
   late UniformResourceReader _urDecoder;
   bool _processing = false;
 
   double _progress = 0.0;
 
+  bool _currentlyAskingPermission = false;
   Completer<void> _permissionsCompleter = Completer();
   late Future<void> _permissionsGranted;
 
@@ -107,29 +108,58 @@ class _ScannerPageState extends State<ScannerPage> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // This is in case user returns from settings and grants/forbids the camera
+    if (state == AppLifecycleState.resumed) {
+      // Avoid looping back into here when OS dialog
+      // returns the focus back onto Envoy
+      if (!_currentlyAskingPermission) {
+        _getPermission();
+      }
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
-
     _permissionsGranted = _permissionsCompleter.future;
+    _getPermission();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  void _getPermission() {
     if (Platform.isAndroid || Platform.isIOS) {
-      Permission.camera.status.then((status) {
-        if (status.isDenied) {
-          Permission.camera.request().then((status) {
-            if (status.isPermanentlyDenied) {
-              openSettingsDialog();
-            }
-            _permissionsCompleter.complete();
-          });
-        } else if (status.isPermanentlyDenied) {
-          openSettingsDialog();
-          _permissionsCompleter.complete();
-        } else {
-          _permissionsCompleter.complete();
-        }
-      });
+      _getPermissionOnMobile();
     } else {
       _permissionsCompleter.complete();
     }
+  }
+
+  void _getPermissionOnMobile() async {
+    final permissionStatus = await Permission.camera.status;
+    if (permissionStatus.isDenied || permissionStatus.isPermanentlyDenied) {
+      PermissionStatus? postRequestPermissionStatus;
+
+      try {
+        _currentlyAskingPermission = true;
+        postRequestPermissionStatus = await Permission.camera.request();
+        Future.delayed(Duration(seconds: 1), () {
+          _currentlyAskingPermission = false;
+        });
+      } on Exception catch (_) {
+        // On Android the OS sometimes wrongly (!) thinks there are ongoing reqs
+        postRequestPermissionStatus = null;
+      }
+
+      if (postRequestPermissionStatus == null ||
+          postRequestPermissionStatus.isDenied ||
+          postRequestPermissionStatus.isPermanentlyDenied) {
+        openSettingsDialog();
+        return;
+      }
+    }
+
+    if (!_permissionsCompleter.isCompleted) _permissionsCompleter.complete();
   }
 
   void openSettingsDialog() async {
@@ -141,12 +171,13 @@ class _ScannerPageState extends State<ScannerPage> {
           openAppSettings();
           context.pop();
         },
+        title: "Permission Required",
         secondaryButtonLabel: "Cancel",
         onSecondaryButtonTap: (BuildContext context) {
           context.pop();
           context.pop();
         },
-        icon: EnvoyIcons.alert);
+        icon: EnvoyIcons.info);
   }
 
   @override
