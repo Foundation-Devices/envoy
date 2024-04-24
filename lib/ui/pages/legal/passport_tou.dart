@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ui/fading_edge_scroll_view.dart';
+import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -11,7 +13,13 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 
-class TouPage extends StatelessWidget {
+class TouPage extends StatefulWidget {
+  @override
+  State<TouPage> createState() => _TouPageState();
+}
+
+class _TouPageState extends State<TouPage> {
+  ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     //ignore:unused_local_variable
@@ -59,29 +67,40 @@ class TouPage extends StatelessWidget {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             Flexible(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(4.0),
-                scrollDirection: Axis.vertical,
-                child: FutureBuilder<String>(
-                  future: rootBundle.loadString('assets/passport_tou.html'),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return DefaultTextStyle(
-                        style: Theme.of(context).textTheme.bodySmall!,
-                        child: Html(
-                          data: snapshot.data,
-                        ),
-                      );
-                    } else {
-                      return SizedBox.shrink();
-                    }
+              child: FadingEdgeScrollView.fromScrollView(
+                scrollController: _scrollController,
+                child: StatefulBuilder(
+                  builder: (context, setState) {
+                    return SingleChildScrollView(
+                      controller: _scrollController,
+                      padding: EdgeInsets.all(4.0),
+                      scrollDirection: Axis.vertical,
+                      child: FutureBuilder<String>(
+                        future:
+                            rootBundle.loadString('assets/passport_tou.html'),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return DefaultTextStyle(
+                              style: Theme.of(context).textTheme.bodySmall!,
+                              child: Html(
+                                data: snapshot.data,
+                              ),
+                            );
+                          } else {
+                            return SizedBox.shrink();
+                          }
+                        },
+                      ),
+                    );
                   },
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(
-                  top: EnvoySpacing.small,
+              padding: EdgeInsets.only(
+                  top: context.isSmallScreen
+                      ? EnvoySpacing.medium1
+                      : EnvoySpacing.medium3,
                   bottom: EnvoySpacing.medium1,
                   left: EnvoySpacing.small,
                   right: EnvoySpacing.small),
