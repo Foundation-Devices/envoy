@@ -4,6 +4,8 @@
 
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/material.dart';
 
 enum SeedLength {
@@ -88,7 +90,11 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
           ),
         ),
         Container(
-          margin: EdgeInsets.only(top: 8),
+          margin: EdgeInsets.symmetric(
+            vertical: context.isSmallScreen
+                ? EnvoySpacing.medium1
+                : EnvoySpacing.medium3,
+          ),
           child: DotsIndicator(
             totalPages: 2,
             pageController: _pageController,
