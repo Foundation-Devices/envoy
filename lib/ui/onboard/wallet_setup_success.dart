@@ -79,9 +79,11 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
               ),
               const SizedBox(height: EnvoySpacing.medium1),
               Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.medium1,
-                    vertical: EnvoySpacing.medium1),
+                padding: const EdgeInsets.only(
+                    left: EnvoySpacing.medium1,
+                    right: EnvoySpacing.medium1,
+                    bottom: EnvoySpacing.medium2,
+                    top: EnvoySpacing.small),
                 child: Consumer(
                   builder: (context, ref, child) {
                     return OnboardingButton(

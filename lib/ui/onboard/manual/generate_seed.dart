@@ -205,7 +205,7 @@ class _SeedScreenState extends State<SeedScreen> {
                   ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      vertical: EnvoySpacing.medium1),
+                      vertical: EnvoySpacing.medium2),
                   child: OnboardingButton(
                     onTap: () async {
                       if (seedList.length == 12 || _onSecondPage) {

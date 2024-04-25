@@ -10,6 +10,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 void showRestoreFailedDialog(BuildContext context) {
   showEnvoyDialog(
@@ -19,59 +20,64 @@ void showRestoreFailedDialog(BuildContext context) {
       return SizedBox(
         width: MediaQuery.of(context).size.width * 0.8,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Align(
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ),
-              ),
-              const Padding(padding: EdgeInsets.all(8)),
-              Column(
-                children: [
-                  Image.asset(
-                    "assets/exclamation_triangle.png",
-                    height: 80,
-                    width: 80,
-                  ),
-                  const Padding(padding: EdgeInsets.all(4)),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                    child: Text(
-                        S().manual_setup_import_backup_fails_modal_heading,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleLarge),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                    child: Text(
-                      S().manual_setup_import_backup_fails_modal_subheading,
-                      textAlign: TextAlign.center,
+          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+                    child: IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
                     ),
                   ),
-                  const Padding(padding: EdgeInsets.all(2)),
-                ],
-              ),
-              OnboardingButton(
-                  type: EnvoyButtonTypes.primaryModal,
-                  label: S().component_continue,
-                  onTap: () {
-                    Navigator.pop(context);
-                  }),
-              const Padding(padding: EdgeInsets.all(12)),
-            ],
+                ),
+                const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+                Column(
+                  children: [
+                    Image.asset(
+                      "assets/exclamation_triangle.png",
+                      height: 80,
+                      width: 80,
+                    ),
+                    const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: EnvoySpacing.small,
+                          horizontal: EnvoySpacing.medium1),
+                      child: Text(
+                          S().manual_setup_import_backup_fails_modal_heading,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleLarge),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: EnvoySpacing.small,
+                          horizontal: EnvoySpacing.medium1),
+                      child: Text(
+                        S().manual_setup_import_backup_fails_modal_subheading,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+                OnboardingButton(
+                    type: EnvoyButtonTypes.primaryModal,
+                    label: S().component_continue,
+                    onTap: () {
+                      Navigator.pop(context);
+                    }),
+                const SizedBox(
+                  height: EnvoySpacing.medium1,
+                ),
+              ],
+            ),
           ),
         ),
       );

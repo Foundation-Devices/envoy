@@ -83,6 +83,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
       header: const PrivacyShieldAnimated(),
       shield: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Flexible(
             child: SingleChildScrollView(
@@ -180,7 +181,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
           ),
           Padding(
             padding: const EdgeInsets.only(
-                bottom: EnvoySpacing.medium1,
+                bottom: EnvoySpacing.xs,
                 left: EnvoySpacing.medium1,
                 right: EnvoySpacing.medium1,
                 top: EnvoySpacing.xs),
@@ -599,7 +600,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium
-                          ?.copyWith(fontSize: 10.5),
+                          ?.copyWith(fontSize: 8.5),
                       textAlign: TextAlign.center,
                       maxLines: 2,
                     ),
@@ -645,6 +646,10 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                         .bodyMedium
                         ?.copyWith(fontSize: 10.5),
                     textAlign: TextAlign.center,
+                    textScaler: MediaQuery.of(context).textScaler.clamp(
+                          minScaleFactor: 0.8,
+                          maxScaleFactor: 1.6,
+                        ),
                     maxLines: 2,
                   )
                 ],
@@ -687,6 +692,10 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                           .textTheme
                           .bodyMedium
                           ?.copyWith(fontSize: 10.5),
+                      textScaler: MediaQuery.of(context).textScaler.clamp(
+                            minScaleFactor: 0.8,
+                            maxScaleFactor: 1.5,
+                          ),
                       textAlign: TextAlign.center,
                     ),
                   )
@@ -703,7 +712,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
       opacity: active ? 1 : 0.6,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 340),
-        constraints: const BoxConstraints.tightFor(width: 100, height: 100),
+        constraints: BoxConstraints.loose(const Size(100, 110)),
         alignment: Alignment.center,
         decoration: BoxDecoration(
             borderRadius: const RoundedRectangleBorder(

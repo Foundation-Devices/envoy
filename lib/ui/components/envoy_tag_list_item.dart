@@ -62,7 +62,7 @@ class EnvoyInfoCardListItem extends StatelessWidget {
             ),
           ),
           Flexible(
-              flex: flexAlignment == FlexAlignment.flexLeft ? 8 : 5,
+              flex: flexAlignment == FlexAlignment.flexLeft ? 8 : 4,
               child: trailing),
         ],
       ),

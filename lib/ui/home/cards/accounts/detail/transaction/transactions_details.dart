@@ -171,7 +171,7 @@ class _TransactionsDetailsWidgetState
                   amountWidgetStyle: AmountWidgetStyle.singleLine),
           bottomWidgets: [
             EnvoyInfoCardListItem(
-              flexAlignment: FlexAlignment.noFlex,
+              flexAlignment: FlexAlignment.flexLeft,
               title: S().coindetails_overlay_address,
               icon: const EnvoyIcon(EnvoyIcons.send,
                   color: EnvoyColors.textPrimary,
@@ -193,12 +193,15 @@ class _TransactionsDetailsWidgetState
                           ? Text("Address not available ",
                               // TODO: Figma
                               style: trailingTextStyle)
-                          : AddressWidget(
-                              widgetKey: ValueKey<bool>(showAddressExpanded),
-                              address: address,
-                              short: true,
-                              sideChunks:
-                                  2 + (value * (address.length / 4)).round(),
+                          : Container(
+                              constraints: const BoxConstraints(maxWidth: 155),
+                              child: AddressWidget(
+                                widgetKey: ValueKey<bool>(showAddressExpanded),
+                                address: address,
+                                short: true,
+                                sideChunks:
+                                    2 + (value * (address.length / 4)).round(),
+                              ),
                             );
                     }),
               ),

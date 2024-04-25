@@ -39,113 +39,118 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
 
   @override
   Widget build(BuildContext context) {
+    final isSmallScreen = MediaQuery.sizeOf(context).width < 360;
     if (answers.isEmpty) {
       return Container();
     }
-    return Column(
-      children: [
-        Container(
-          alignment: Alignment.centerLeft,
-          child: IconButton(
-            icon: const Icon(Icons.chevron_left, color: Colors.black),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Container(
+            alignment: Alignment.centerLeft,
+            child: IconButton(
+              icon: const Icon(Icons.chevron_left, color: Colors.black),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
           ),
         ),
-        Expanded(
-            child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
-          child: CustomScrollView(
-            //shrinkWrap: true,
-            slivers: [
-              SliverToBoxAdapter(
-                child: Text(
-                    S().manual_setup_generate_seed_verify_seed_quiz_1_4_heading,
-                    style: Theme.of(context).textTheme.titleLarge,
-                    textAlign: TextAlign.center),
-              ),
-              const SliverPadding(padding: EdgeInsets.all(EnvoySpacing.small)),
-              SliverToBoxAdapter(
-                child: Text(
-                    "${S().manual_setup_generate_seed_verify_seed_quiz_question} ${_seedIndexes[_puzzlePageIndex] + 1}?",
-                    style: Theme.of(context).textTheme.titleSmall,
-                    textAlign: TextAlign.center),
-              ),
-              const SliverPadding(padding: EdgeInsets.all(EnvoySpacing.small)),
-              SliverFillRemaining(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Expanded(
-                      child: PageView(
-                        physics: const NeverScrollableScrollPhysics(),
-                        controller: _pageController,
-                        children: _puzzleOptions.map((e) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: EnvoySpacing.medium1),
-                            child: PuzzleWidget(
-                              puzzle: e,
-                              seedIndex: _seedIndexes[_puzzlePageIndex],
-                              correctAnswer: answers[_puzzleOptions.indexOf(e)],
-                              onCorrectAnswer: (answers) async {
-                                bool isLastQuestion =
-                                    (_puzzleOptions.indexOf(e) + 1) ==
-                                        _puzzleOptions.length;
-                                if (isLastQuestion) {
-                                  setState(() {
-                                    _finishedAnswers = true;
-                                  });
-                                  return;
-                                }
-                                await Future.delayed(
-                                    const Duration(milliseconds: 600));
-                                _pageController.animateToPage(
-                                    _puzzleOptions.indexOf(e) + 1,
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.ease);
-                              },
-                              onWrongAnswer: (answers) {
-                                widget.onVerificationFinished(false);
-                              },
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                    Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: EnvoySpacing.small),
-                        child: DotsIndicator(
-                            pageController: _pageController,
-                            totalPages: _puzzleOptions.length)),
-                    const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                    !_finishedAnswers
-                        ? Text(
-                            S().manual_setup_generate_seed_verify_seed_again_quiz_infotext,
-                            style: EnvoyTypography.button.copyWith(
-                              color: EnvoyColors.textInactive,
-                            ),
-                            textAlign: TextAlign.center,
-                          )
-                        : Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: EnvoySpacing.xs),
-                            child: OnboardingButton(
-                                label: S().component_continue,
-                                onTap: () {
-                                  widget.onVerificationFinished(true);
-                                })),
-                    const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                  ],
+        SliverToBoxAdapter(
+          child: Text(
+              S().manual_setup_generate_seed_verify_seed_quiz_1_4_heading,
+              style: Theme.of(context).textTheme.titleLarge,
+              textAlign: TextAlign.center),
+        ),
+        const SliverPadding(padding: EdgeInsets.all(EnvoySpacing.small)),
+        SliverToBoxAdapter(
+          child: Text(
+              "${S().manual_setup_generate_seed_verify_seed_quiz_question} ${widget.seed.indexOf(answers[_puzzlePageIndex]) + 1}?",
+              style: Theme.of(context).textTheme.titleSmall,
+              textAlign: TextAlign.center),
+        ),
+        const SliverPadding(padding: EdgeInsets.all(EnvoySpacing.small)),
+        SliverToBoxAdapter(
+          child: Container(
+            height: isSmallScreen ? 280 : 400,
+            padding:
+                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: PageView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    controller: _pageController,
+                    children: _puzzleOptions.map((e) {
+                      return Padding(
+                        padding:
+                            const EdgeInsets.only(top: EnvoySpacing.medium1),
+                        child: PuzzleWidget(
+                          puzzle: e,
+                          seedIndex: _seedIndexes[_puzzlePageIndex],
+                          correctAnswer: answers[_puzzleOptions.indexOf(e)],
+                          onCorrectAnswer: (answers) async {
+                            bool isLastQuestion =
+                                (_puzzleOptions.indexOf(e) + 1) ==
+                                    _puzzleOptions.length;
+                            if (isLastQuestion) {
+                              setState(() {
+                                _finishedAnswers = true;
+                              });
+                              return;
+                            }
+                            await Future.delayed(
+                                const Duration(milliseconds: 600));
+                            _pageController.animateToPage(
+                                _puzzleOptions.indexOf(e) + 1,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.ease);
+                          },
+                          onWrongAnswer: (answers) {
+                            widget.onVerificationFinished(false);
+                          },
+                        ),
+                      );
+                    }).toList(),
+                  ),
                 ),
-              )
+                Padding(
+                    padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
+                    child: DotsIndicator(
+                        pageController: _pageController,
+                        totalPages: _puzzleOptions.length)),
+              ],
+            ),
+          ),
+        ),
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              const Padding(
+                  padding: EdgeInsets.only(bottom: EnvoySpacing.medium1)),
+              !_finishedAnswers
+                  ? Text(
+                      S().manual_setup_generate_seed_verify_seed_again_quiz_infotext,
+                      style: EnvoyTypography.button.copyWith(
+                        color: EnvoyColors.textInactive,
+                      ),
+                      textAlign: TextAlign.center,
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.only(
+                          top: EnvoySpacing.xs, bottom: EnvoySpacing.medium2),
+                      child: OnboardingButton(
+                          label: S().component_continue,
+                          onTap: () {
+                            widget.onVerificationFinished(true);
+                          })),
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
             ],
           ),
-        ))
+        ),
       ],
     );
   }
@@ -229,6 +234,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
         ),
         Flexible(
           child: GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 childAspectRatio: 2,
@@ -259,12 +265,17 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                             horizontal: 8, vertical: 6),
                         alignment: Alignment.center,
                         constraints:
-                            const BoxConstraints(maxWidth: 200, maxHeight: 40),
+                            const BoxConstraints(maxWidth: 300, maxHeight: 40),
                         decoration: BoxDecoration(
                             color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(8)),
+                            borderRadius: BorderRadius.circular(4)),
                         child: Text(widget.puzzle[index],
-                            style: textTheme, textAlign: TextAlign.center),
+                            overflow: TextOverflow.fade,
+                            textScaler: MediaQuery.of(context)
+                                .textScaler
+                                .clamp(maxScaleFactor: 1.2, minScaleFactor: .8),
+                            style: textTheme,
+                            textAlign: TextAlign.center),
                       ),
                     ],
                   ),
@@ -343,12 +354,20 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
           borderRadius: BorderRadius.circular(8)),
       child: Row(
         children: [
-          Text(" ${widget.seedIndex + 1}. ", style: textTheme),
+          Text(" ${widget.seedIndex + 1}. ",
+              textScaler: MediaQuery.of(context)
+                  .textScaler
+                  .clamp(maxScaleFactor: 1.2, minScaleFactor: .8),
+              style: textTheme),
           Expanded(
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Text(chosenAnswer ?? "", style: textTheme),
+                Text(chosenAnswer ?? "",
+                    textScaler: MediaQuery.of(context)
+                        .textScaler
+                        .clamp(maxScaleFactor: 1.2, minScaleFactor: .8),
+                    style: textTheme),
                 Container(
                   margin: const EdgeInsets.only(top: 14),
                   child: Divider(

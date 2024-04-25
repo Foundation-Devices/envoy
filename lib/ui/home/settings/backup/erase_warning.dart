@@ -269,65 +269,67 @@ class _EraseWalletsConfirmationState
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.8,
-      constraints: const BoxConstraints(maxHeight: 380),
-      child: EnvoyScaffold(
-        hasScrollBody: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Align(
-                alignment: Alignment.centerRight,
+      constraints: const BoxConstraints(maxHeight: 360, maxWidth: 320),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+            ),
+            //const Padding(padding: EdgeInsets.all(8)),
+            Image.asset(
+              "assets/exclamation_triangle.png",
+              height: 80,
+              width: 80,
+            ),
+            Flexible(
+              child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+                  padding: const EdgeInsets.only(
+                      top: EnvoySpacing.medium2,
+                      bottom: EnvoySpacing.medium3,
+                      left: EnvoySpacing.medium3,
+                      right: EnvoySpacing.medium3),
+                  child: Text(
+                    S().delete_wallet_for_good_modal_subheading,
+                    textAlign: TextAlign.center,
+                    style: EnvoyTypography.info,
                   ),
                 ),
               ),
-              const Padding(padding: EdgeInsets.all(8)),
-              Column(
-                children: [
-                  Image.asset(
-                    "assets/exclamation_triangle.png",
-                    height: 80,
-                    width: 80,
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                    child: Text(
-                      S().delete_wallet_for_good_modal_subheading,
-                      textAlign: TextAlign.center,
-                      style: EnvoyTypography.info,
-                    ),
-                  ),
-                  const Padding(padding: EdgeInsets.all(5)),
-                ],
-              ),
-              OnboardingButton(
-                  type: EnvoyButtonTypes.tertiary,
-                  label: S().delete_wallet_for_good_modal_cta2,
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const EraseProgress()));
-                  }),
-              OnboardingButton(
-                  type: EnvoyButtonTypes.primaryModal,
-                  label: S().component_cancel,
-                  onTap: () {
-                    OnboardingPage.popUntilHome(context);
-                  }),
-              //const Padding(padding: EdgeInsets.all(12)),
-            ],
-          ),
+            ),
+            OnboardingButton(
+                type: EnvoyButtonTypes.tertiary,
+                label: S().delete_wallet_for_good_modal_cta2,
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const EraseProgress()));
+                }),
+            OnboardingButton(
+                type: EnvoyButtonTypes.primaryModal,
+                label: S().component_cancel,
+                onTap: () {
+                  OnboardingPage.popUntilHome(context);
+                }),
+            const SizedBox(
+              height: EnvoySpacing.medium3,
+            )
+          ],
         ),
       ),
     );
@@ -519,7 +521,10 @@ class AndroidBackupWarning extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    padding: const EdgeInsets.only(
+                        right: EnvoySpacing.medium2,
+                        left: EnvoySpacing.medium2,
+                        bottom: EnvoySpacing.medium2),
                     child: Column(
                       children: [
                         Consumer(

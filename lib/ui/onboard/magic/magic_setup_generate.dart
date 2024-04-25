@@ -277,29 +277,35 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                           ? _androidBackUPInfo(context)
                           : _recoverStepsInfo(context)),
                 ),
-                OnboardingButton(
-                  label: S().component_continue,
-                  onTap: () {
-                    if (isAndroid && _androidBackupInfoPage == 0) {
-                      setState(() {
-                        _androidBackupInfoPage = 1;
-                      });
-                      return;
-                    }
-                    if (widget.onContinue != null) {
-                      widget.onContinue!.call();
-                      return;
-                    }
-                    if (widget.skipSuccessScreen) {
-                      //clear on-boarding routes and go to home
-                      OnboardingPage.popUntilHome(context);
-                    } else {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return const WalletSetupSuccess();
-                      }));
-                    }
-                  },
+                Padding(
+                  padding: const EdgeInsets.only(
+                      bottom: EnvoySpacing.medium2,
+                      left: EnvoySpacing.small,
+                      right: EnvoySpacing.small),
+                  child: OnboardingButton(
+                    label: S().component_continue,
+                    onTap: () {
+                      if (isAndroid && _androidBackupInfoPage == 0) {
+                        setState(() {
+                          _androidBackupInfoPage = 1;
+                        });
+                        return;
+                      }
+                      if (widget.onContinue != null) {
+                        widget.onContinue!.call();
+                        return;
+                      }
+                      if (widget.skipSuccessScreen) {
+                        //clear on-boarding routes and go to home
+                        OnboardingPage.popUntilHome(context);
+                      } else {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return const WalletSetupSuccess();
+                        }));
+                      }
+                    },
+                  ),
                 )
               ],
             )),

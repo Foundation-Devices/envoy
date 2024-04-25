@@ -335,7 +335,11 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
     if (_magicRecoverWalletState == MagicRecoveryWalletState.seedNotFound ||
         _magicRecoverWalletState == MagicRecoveryWalletState.failure) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.only(
+            top: EnvoySpacing.xs,
+            left: EnvoySpacing.medium1,
+            right: EnvoySpacing.medium1,
+            bottom: EnvoySpacing.medium2),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

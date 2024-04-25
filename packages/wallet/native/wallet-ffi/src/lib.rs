@@ -775,13 +775,9 @@ pub unsafe extern "C" fn wallet_get_max_feerate(
                 // Always try signing
                 wallet.sign(&mut psbt, sign_options).unwrap_or(false);
 
-                match psbt.fee_rate() {
-                    None => {
-                        return error_return;
-                    }
-                    Some(r) => {
-                        return r.as_sat_per_vb() as f64;
-                    }
+                return match psbt.fee_rate() {
+                    None => error_return,
+                    Some(r) => r.as_sat_per_vb() as f64,
                 };
             }
             Err(e) => match e {
@@ -1225,19 +1221,30 @@ pub unsafe extern "C" fn wallet_cancel_tx(
             let transaction = raw_transaction.transaction.unwrap();
 
             let current_fee = raw_transaction.fee.unwrap();
-            let current_fee_rate = FeeRate::from_wu(current_fee, transaction.weight());
+            // let current_fee_rate = FeeRate::from_wu(current_fee, transaction.weight());
 
             let address = wallet
                 .get_internal_address(AddressIndex::New)
                 .unwrap()
                 .address;
 
-            let mut target_fee_rate =
-                FeeRate::from_sat_per_vb((next_block_fee_rate * 100000.0) as f32).as_sat_per_vb();
+            /*   let mut target_fee_rate =
+                            FeeRate::from_sat_per_vb((next_block_fee_rate * 100000.0) as f32).as_sat_per_vb();
+            */
+            // if current_fee_rate.as_sat_per_vb() >= target_fee_rate {
+            //     #[cfg(debug_assertions)]
+            //     println!("Incrementing Target Fee  {:?} >= {:?}", current_fee_rate.as_sat_per_vb() , target_fee_rate);
+            //     target_fee_rate = current_fee_rate.as_sat_per_vb() + 1.0;
+            // }
 
-            if current_fee_rate.as_sat_per_vb() >= target_fee_rate {
-                target_fee_rate = current_fee_rate.as_sat_per_vb() + 1.5;
-            }
+            #[cfg(debug_assertions)]
+            println!("Current Fee  {:?}", current_fee);
+            #[cfg(debug_assertions)]
+            println!(
+                "Current Fee Rate {:?}",
+                FeeRate::from_wu(current_fee, transaction.weight())
+            );
+            // println!("Target Fee Rate {:?}", target_fee_rate);
 
             let mut tx_builder = wallet.build_tx();
 
@@ -1260,11 +1267,26 @@ pub unsafe extern "C" fn wallet_cancel_tx(
                     // drain all inputs into wallet internal address,
                     // draining will only create one output
                     tx_builder.drain_to(address.script_pubkey());
-                    tx_builder.fee_rate(FeeRate::from_sat_per_vb(target_fee_rate));
+                    tx_builder.fee_absolute(current_fee + 1000);
 
                     let psbt = tx_builder.finish();
                     match psbt {
                         Ok((mut psbt, _)) => {
+                            match psbt.fee_rate() {
+                                None => {}
+                                Some(_fee_rate) => {
+                                    #[cfg(debug_assertions)]
+                                    println!("Cancel Tx Fee Rate: {:?}", _fee_rate.as_sat_per_vb());
+                                }
+                            }
+                            match psbt.fee_amount() {
+                                None => {}
+                                Some(_fee_amount) => {
+                                    #[cfg(debug_assertions)]
+                                    println!("Cancel Tx Fee Amount: {:?}", _fee_amount);
+                                }
+                            }
+
                             let sign_options = SignOptions {
                                 trust_witness_utxo: true,
                                 ..Default::default()
@@ -1274,6 +1296,86 @@ pub unsafe extern "C" fn wallet_cancel_tx(
                             wallet.sign(&mut psbt, sign_options).unwrap_or(false);
 
                             util::psbt_extract_details(&wallet, &psbt)
+                            // match psbt.fee_amount() {
+                            //     None => {
+                            //         util::psbt_extract_details(&wallet, &psbt)
+                            //     }
+                            //     Some(fee_amount) => {
+                            //
+                            //         if fee_amount <= current_fee {
+                            //
+                            //             println!("Fee Amount is less than current fee, draing method wont work");
+                            //
+                            //             //building new tx with all inputs and outputs
+                            //             //output that doesnt belong to wallet will be replaced with internal address
+                            //             let mut tx_builder = wallet.build_tx();
+                            //
+                            //             for outpoint in dont_spend {
+                            //                 tx_builder.add_unspendable(outpoint);
+                            //             }
+                            //
+                            //             for local_utxo in unconfirmed_utxos {
+                            //                 tx_builder.add_unspendable(local_utxo.outpoint);
+                            //             }
+                            //
+                            //             // drain all inputs into wallet internal address,
+                            //             // draining will only create one output
+                            //             let address = wallet
+                            //                 .get_internal_address(AddressIndex::New)
+                            //                 .unwrap();
+                            //
+                            //             for out in transaction.output {
+                            //                 match util::get_output_path_type(&out.script_pubkey.clone(), &wallet) {
+                            //                     OutputPath::External => {
+                            //                         tx_builder.add_recipient(out.script_pubkey, out.value);
+                            //                     }
+                            //                     OutputPath::Internal => {
+                            //                         tx_builder.add_recipient(out.script_pubkey, out.value);
+                            //                     }
+                            //                     OutputPath::NotMine => {
+                            //                         println!("Replacing output with internal address");
+                            //                         tx_builder.add_recipient(address.script_pubkey(), out.value);
+                            //                     }
+                            //                 }
+                            //             }
+                            //
+                            //             tx_builder.fee_rate(FeeRate::from_sat_per_vb(target_fee_rate));
+                            //             let finalized_psbt = tx_builder.finish();
+                            //
+                            //             match finalized_psbt {
+                            //                 Ok((mut psbt,_)) => {
+                            //                     match psbt.fee_rate() {
+                            //                         None => {}
+                            //                         Some(_fee_rate) => {
+                            //                             #[cfg(debug_assertions)]
+                            //                             println!("Replace outs Fee Rate: {:?}", _fee_rate.as_sat_per_vb());
+                            //                         }
+                            //                     }
+                            //                     match psbt.fee_amount() {
+                            //                         None => {}
+                            //                         Some(_fee_amount) => {
+                            //                             #[cfg(debug_assertions)]
+                            //                             println!("Replace outs fee_amount: {:?}", _fee_amount);
+                            //                         }
+                            //                     }
+                            //                     let sign_options = SignOptions {
+                            //                         trust_witness_utxo: true,
+                            //                         ..Default::default()
+                            //                     };
+                            //                     // Always try signing
+                            //                     wallet.sign(&mut psbt, sign_options).unwrap_or(false);
+                            //                     util::psbt_extract_details(&wallet, &psbt)
+                            //                 }
+                            //                 Err(e) => {
+                            //                     update_last_error(e);
+                            //                     return error_return;
+                            //                 }
+                            //             }
+                            //         } else {
+                            //             util::psbt_extract_details(&wallet, &psbt)
+                            //         }
+                            //     }
+                            // }
                         }
                         Err(e) => {
                             update_last_error(e);
