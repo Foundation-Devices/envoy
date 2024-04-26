@@ -548,8 +548,7 @@ class AndroidBackupWarning extends StatelessWidget {
                           },
                         ),
                         OnboardingButton(
-                          label:
-                              S().delete_wallet_for_good_instant_android_cta1,
+                          label: S().component_goToSettings,
                           onTap: () {
                             openAndroidSettings();
                           },
