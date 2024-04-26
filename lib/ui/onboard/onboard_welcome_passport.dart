@@ -162,52 +162,57 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Flexible(
-                    child: SingleChildScrollView(
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(
-                          vertical: EnvoySpacing.large1,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const SizedBox(height: EnvoySpacing.small),
-                            Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: EnvoySpacing.medium1),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Text(
-                                        S().passport_welcome_screen_heading,
-                                        textAlign: TextAlign.center,
-                                        style: EnvoyTypography.body.copyWith(
-                                          fontSize: 20,
-                                          color: EnvoyColors.gray1000,
-                                          decoration: TextDecoration.none,
+                    child: Container(
+                      constraints: const BoxConstraints(
+                        minHeight: 300,
+                      ),
+                      child: SingleChildScrollView(
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(
+                            vertical: EnvoySpacing.large1,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const SizedBox(height: EnvoySpacing.small),
+                              Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: EnvoySpacing.medium1),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Text(
+                                          S().passport_welcome_screen_heading,
+                                          textAlign: TextAlign.center,
+                                          style: EnvoyTypography.body.copyWith(
+                                            fontSize: 20,
+                                            color: EnvoyColors.gray1000,
+                                            decoration: TextDecoration.none,
+                                          ),
                                         ),
-                                      ),
-                                      const Padding(
-                                          padding: EdgeInsets.all(
-                                              EnvoySpacing.small)),
-                                      Text(
-                                        S().passport_welcome_screen_subheading,
-                                        style: EnvoyTypography.info.copyWith(
-                                          color: EnvoyColors.inactiveDark,
-                                          decoration: TextDecoration.none,
+                                        const Padding(
+                                            padding: EdgeInsets.all(
+                                                EnvoySpacing.small)),
+                                        Text(
+                                          S().passport_welcome_screen_subheading,
+                                          style: EnvoyTypography.info.copyWith(
+                                            color: EnvoyColors.inactiveDark,
+                                            decoration: TextDecoration.none,
+                                          ),
+                                          textAlign: TextAlign.center,
                                         ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

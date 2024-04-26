@@ -1191,7 +1191,7 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
 pub unsafe extern "C" fn wallet_cancel_tx(
     wallet: *mut Mutex<bdk::Wallet<Tree>>,
     txid: *const c_char,
-    next_block_fee_rate: f64,
+    //next_block_fee_rate: f64,
     dont_spend: *const UtxoList,
 ) -> Psbt {
     let error_return = Psbt {
@@ -1409,7 +1409,7 @@ pub unsafe extern "C" fn wallet_get_raw_tx_from_txid(
             Some(transaction_details) => match transaction_details.transaction {
                 None => error_return,
                 Some(details) => {
-                    let hex = bdk::bitcoin::consensus::serialize(&details).to_hex();
+                    let hex = serialize(&details).to_hex();
                     unwrap_or_return!(CString::new(hex), error_return).into_raw()
                 }
             },

@@ -12,6 +12,7 @@ import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
 import 'package:envoy/ui/onboard/magic/magic_setup_tutorial.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -136,11 +137,13 @@ class _OnboardEnvoyWelcomeScreenState
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(
+                    padding: EdgeInsets.only(
                         left: EnvoySpacing.medium1,
                         right: EnvoySpacing.medium1,
                         top: EnvoySpacing.medium1,
-                        bottom: EnvoySpacing.xl),
+                        bottom: context.isSmallScreen
+                            ? EnvoySpacing.medium1
+                            : EnvoySpacing.large1),
                     child: Column(
                       children: [
                         const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
