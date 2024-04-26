@@ -22,75 +22,77 @@ class ExportSeedModal extends StatefulWidget {
 class _ExportSeedModalState extends State<ExportSeedModal> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.80,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+    return SingleChildScrollView(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.80,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 48),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const EnvoyIcon(
-                  EnvoyIcons.alert,
-                  size: EnvoyIconSize.big,
-                  color: EnvoyColors.copper,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
-                  child: Text(
-                    S().component_warning,
-                    textAlign: TextAlign.center,
-                    style: EnvoyTypography.heading,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 48),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const EnvoyIcon(
+                    EnvoyIcons.alert,
+                    size: EnvoyIconSize.big,
+                    color: EnvoyColors.copper,
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
-                  child: Text(
-                    S().export_seed_modal_subheading,
-                    textAlign: TextAlign.center,
-                    style: EnvoyTypography.info,
+                  Padding(
+                    padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
+                    child: Text(
+                      S().component_warning,
+                      textAlign: TextAlign.center,
+                      style: EnvoyTypography.heading,
+                    ),
                   ),
-                ),
-                const Padding(padding: EdgeInsets.all(4)),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
+                    child: Text(
+                      S().export_seed_modal_subheading,
+                      textAlign: TextAlign.center,
+                      style: EnvoyTypography.info,
+                    ),
+                  ),
+                  const Padding(padding: EdgeInsets.all(4)),
+                ],
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 28),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: EnvoyButton(
-                    S().component_continue,
-                    type: EnvoyButtonTypes.primaryModal,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      showEnvoyDialog(
-                          context: context,
-                          dialog: const ExportSeedModalQrCode());
-                    },
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 28),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: EnvoyButton(
+                      S().component_continue,
+                      type: EnvoyButtonTypes.primaryModal,
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        showEnvoyDialog(
+                            context: context,
+                            dialog: const ExportSeedModalQrCode());
+                      },
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

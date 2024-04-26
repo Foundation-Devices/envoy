@@ -17,6 +17,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/state/onboarding_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
@@ -83,6 +84,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
       header: const PrivacyShieldAnimated(),
       shield: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Flexible(
             child: SingleChildScrollView(
@@ -147,9 +149,9 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                             vertical: EnvoySpacing.small),
                         child: const PrivacyOptionSelect()),
                     Padding(
-                      padding: const EdgeInsets.all(
-                        EnvoySpacing.xs,
-                      ),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: EnvoySpacing.xs,
+                          horizontal: EnvoySpacing.medium3),
                       child: Consumer(
                         builder: (context, ref, child) {
                           bool betterPerformance0 =
@@ -179,50 +181,58 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(
-                bottom: EnvoySpacing.medium1,
+            padding: EdgeInsets.only(
                 left: EnvoySpacing.medium1,
                 right: EnvoySpacing.medium1,
-                top: EnvoySpacing.xs),
-            child: EnvoyButton(
-              S().component_continue,
-              onTap: () async {
-                final navigator = Navigator.of(context);
-                //tor is necessary if user selects onion node
-                bool torRequire = ref.read(isNodeRequiredTorProvider);
-                //tor is not required if user selects better performance
-                bool betterPerformance =
-                    ref.read(privacyOnboardSelectionProvider);
-                //based on both conditions, set tor enabled or disabled. before entering to the main screen
-                Settings().setTorEnabled(torRequire || !betterPerformance);
-                LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
-                if (!widget.setUpEnvoyWallet) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            const OnboardPassportWelcomeScreen(),
-                      ));
-                } else {
-                  //if there is magic recovery seed, go to recover wallet screen else go to welcome screen
-                  try {
-                    if (await EnvoySeed().get() != null) {
-                      navigator.push(MaterialPageRoute(
-                          builder: (context) => const MagicRecoverWallet()));
-                    } else {
+                top: EnvoySpacing.xs,
+                bottom: context.isSmallScreen
+                    ? EnvoySpacing.xs
+                    : EnvoySpacing.medium2),
+            child: Container(
+              constraints: const BoxConstraints(
+                maxWidth: 320,
+              ),
+              child: EnvoyButton(
+                S().component_continue,
+                onTap: () async {
+                  final navigator = Navigator.of(context);
+                  //tor is necessary if user selects onion node
+                  bool torRequire = ref.read(isNodeRequiredTorProvider);
+                  //tor is not required if user selects better performance
+                  bool betterPerformance =
+                      ref.read(privacyOnboardSelectionProvider);
+                  //based on both conditions, set tor enabled or disabled. before entering to the main screen
+                  Settings().setTorEnabled(torRequire || !betterPerformance);
+                  LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
+                  if (!widget.setUpEnvoyWallet) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const OnboardPassportWelcomeScreen(),
+                        ));
+                  } else {
+                    //if there is magic recovery seed, go to recover wallet screen else go to welcome screen
+                    try {
+                      if (await EnvoySeed().get() != null) {
+                        navigator.push(MaterialPageRoute(
+                            builder: (context) => const MagicRecoverWallet()));
+                      } else {
+                        navigator.push(MaterialPageRoute(
+                          builder: (context) =>
+                              const OnboardEnvoyWelcomeScreen(),
+                        ));
+                      }
+                    } catch (e) {
                       navigator.push(MaterialPageRoute(
                         builder: (context) => const OnboardEnvoyWelcomeScreen(),
                       ));
                     }
-                  } catch (e) {
-                    navigator.push(MaterialPageRoute(
-                      builder: (context) => const OnboardEnvoyWelcomeScreen(),
-                    ));
                   }
-                }
-              },
+                },
+              ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -599,7 +609,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium
-                          ?.copyWith(fontSize: 10.5),
+                          ?.copyWith(fontSize: 8.5),
                       textAlign: TextAlign.center,
                       maxLines: 2,
                     ),
@@ -645,6 +655,10 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                         .bodyMedium
                         ?.copyWith(fontSize: 10.5),
                     textAlign: TextAlign.center,
+                    textScaler: MediaQuery.of(context).textScaler.clamp(
+                          minScaleFactor: 0.8,
+                          maxScaleFactor: 1.6,
+                        ),
                     maxLines: 2,
                   )
                 ],
@@ -687,6 +701,10 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                           .textTheme
                           .bodyMedium
                           ?.copyWith(fontSize: 10.5),
+                      textScaler: MediaQuery.of(context).textScaler.clamp(
+                            minScaleFactor: 0.8,
+                            maxScaleFactor: 1.5,
+                          ),
                       textAlign: TextAlign.center,
                     ),
                   )
@@ -703,7 +721,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
       opacity: active ? 1 : 0.6,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 340),
-        constraints: const BoxConstraints.tightFor(width: 100, height: 100),
+        constraints: BoxConstraints.loose(const Size(100, 110)),
         alignment: Alignment.center,
         decoration: BoxDecoration(
             borderRadius: const RoundedRectangleBorder(

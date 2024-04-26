@@ -277,10 +277,20 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                           ? _androidBackUPInfo(context)
                           : _recoverStepsInfo(context)),
                 ),
-                OnboardingButton(
-                  label: S().component_continue,
-                  onTap: () {
-                    if (!isAndroid) {
+                Padding(
+                  padding: const EdgeInsets.only(
+                      bottom: EnvoySpacing.medium2,
+                      left: EnvoySpacing.small,
+                      right: EnvoySpacing.small),
+                  child: OnboardingButton(
+                    label: S().component_continue,
+                    onTap: () {
+                      if (isAndroid && _androidBackupInfoPage == 0) {
+                        setState(() {
+                          _androidBackupInfoPage = 1;
+                        });
+                        return;
+                      }
                       if (widget.onContinue != null) {
                         widget.onContinue!.call();
                         return;
@@ -294,12 +304,8 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                           return const WalletSetupSuccess();
                         }));
                       }
-                    } else {
-                      setState(() {
-                        _androidBackupInfoPage = 1;
-                      });
-                    }
-                  },
+                    },
+                  ),
                 )
               ],
             )),
@@ -411,9 +417,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                           ?.copyWith(color: Colors.white)),
                 ),
                 title: Text(
-                  Platform.isAndroid
-                      ? S().recovery_scenario_Android_instruction1
-                      : S().recovery_scenario_ios_instruction3,
+                  S().recovery_scenario_ios_instruction3,
                   textAlign: TextAlign.start,
                   style: Theme.of(context)
                       .textTheme

@@ -59,11 +59,6 @@ class EnvoySeed {
   static String encryptedBackupFilePath =
       "${LocalStorage().appDocumentsDir.path}/$encryptedBackupFileName.$encryptedBackupFileExtension";
 
-  static Map<WalletType, String> hotWalletDerivedPrefsString = {
-    WalletType.witnessPublicKeyHash: WALLET_DERIVED_PREFS,
-    WalletType.taproot: TAPROOT_WALLET_DERIVED_PREFS,
-  };
-
   static Map<WalletType, Map<Network, String>> hotWalletDerivationPaths = {
     WalletType.witnessPublicKeyHash: {
       Network.Mainnet: "m/84'/0'/0'",
@@ -132,8 +127,6 @@ class EnvoySeed {
       AccountManager().addHotWalletAccount(mainnet);
       AccountManager().addHotWalletAccount(testnet);
 
-      LocalStorage().prefs.setBool(hotWalletDerivedPrefsString[type]!, true);
-
       return true;
     } on Exception catch (_) {
       return false;
@@ -141,8 +134,7 @@ class EnvoySeed {
   }
 
   bool walletDerived({WalletType type = WalletType.witnessPublicKeyHash}) {
-    return LocalStorage().prefs.getBool(hotWalletDerivedPrefsString[type]!) ??
-        false;
+    return AccountManager().hotAccountsExist(type: type);
   }
 
   Future<void> store(String seed) async {
@@ -250,7 +242,6 @@ class EnvoySeed {
     final seed = await get();
 
     AccountManager().deleteHotWalletAccounts();
-    LocalStorage().prefs.setBool(WALLET_DERIVED_PREFS, false);
     Settings().syncToCloud = false;
 
     try {
@@ -404,8 +395,6 @@ class EnvoySeed {
   }
 
   _restoreSingletons() {
-    LocalStorage().prefs.setBool(WALLET_DERIVED_PREFS, true);
-
     Settings.restore(fromBackup: true);
     Settings().store();
 

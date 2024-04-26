@@ -148,49 +148,51 @@ void showInvalidSeedDialog({required BuildContext context}) {
     dismissible: true,
     builder: Builder(builder: (context) {
       return SizedBox(
-        width: 300,
-        height: 344,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: const Icon(Icons.close))),
-                ),
-                const Icon(EnvoyIcons.exclamationWarning,
-                    color: EnvoyColors.darkCopper, size: 58),
-                const Padding(padding: EdgeInsets.all(8)),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 38),
-                  child: Text(
-                    S().manual_setup_import_seed_12_words_fail_modal_subheading,
-                    textAlign: TextAlign.center,
-                    style: EnvoyTypography.body,
+        width: MediaQuery.of(context).size.width * 0.75,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Align(
+                        alignment: Alignment.topRight,
+                        child: IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: const Icon(Icons.close))),
                   ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-              child: OnboardingButton(
-                  type: EnvoyButtonTypes.primaryModal,
-                  label: S().component_back,
-                  onTap: () async {
-                    Navigator.pop(context);
-                  }),
-            ),
-          ],
+                  const Icon(EnvoyIcons.exclamationWarning,
+                      color: EnvoyColors.darkCopper, size: 58),
+                  const Padding(padding: EdgeInsets.all(8)),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 38),
+                    child: Text(
+                      S().manual_setup_import_seed_12_words_fail_modal_subheading,
+                      textAlign: TextAlign.center,
+                      style: EnvoyTypography.body,
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                child: OnboardingButton(
+                    type: EnvoyButtonTypes.primaryModal,
+                    label: S().component_back,
+                    onTap: () async {
+                      Navigator.pop(context);
+                    }),
+              ),
+            ],
+          ),
         ),
       );
     }),
