@@ -16,6 +16,7 @@ import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/home/settings/setting_toggle.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -67,7 +68,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Widget build(BuildContext context) {
     var s = Settings();
     double nestedMargin = 8;
-    double marginBetweenItems = 8;
+    double marginBetweenItems = 6;
 
     Map<String, String?> fiatMap = {
       for (var fiat in supportedFiat) fiat.code: fiat.code
@@ -75,53 +76,55 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
     return Container(
       // color: Colors.black,
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 34),
+      padding: const EdgeInsets.symmetric(
+          vertical: EnvoySpacing.small, horizontal: EnvoySpacing.medium3),
       child: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SettingText(S().settings_show_fiat),
-                SettingToggle(() => s.displayFiat() != null, (enabled) {
-                  setState(() {
-                    s.setDisplayFiat(enabled ? "USD" : null); // TODO: FIGMA
-                    if (!enabled) {
-                      ref.read(sendScreenUnitProvider.notifier).state =
-                          s.displayUnitSat()
-                              ? AmountDisplayUnit.sat
-                              : AmountDisplayUnit.btc;
-                    }
-                  });
-                }),
-              ],
+            child: ListTile(
+              contentPadding: const EdgeInsets.all(0),
+              dense: true,
+              title: Wrap(
+                children: [SettingText(S().settings_show_fiat)],
+              ),
+              trailing: SettingToggle(() => s.displayFiat() != null, (enabled) {
+                setState(() {
+                  s.setDisplayFiat(enabled ? "USD" : null); // TODO: FIGMA
+                  if (!enabled) {
+                    ref.read(sendScreenUnitProvider.notifier).state =
+                        s.displayUnitSat()
+                            ? AmountDisplayUnit.sat
+                            : AmountDisplayUnit.btc;
+                  }
+                });
+              }),
             ),
           ),
           SliverToBoxAdapter(
             child: AnimatedContainer(
-                duration: _animationsDuration,
-                margin: EdgeInsets.only(
-                    top: s.selectedFiat != null ? marginBetweenItems : 0),
-                height: s.selectedFiat == null ? 0 : 38,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: nestedMargin),
-                      child: SettingText(S().settings_currency),
-                    ),
-                    SettingDropdown(fiatMap, s.displayFiat, s.setDisplayFiat),
-                  ],
-                )),
+              duration: _animationsDuration,
+              margin: EdgeInsets.only(
+                  top: s.selectedFiat != null ? marginBetweenItems : 0),
+              height: s.selectedFiat == null ? 0 : 52,
+              child: Padding(
+                padding: EdgeInsets.only(left: nestedMargin),
+                child: ListTile(
+                  dense: true,
+                  contentPadding: const EdgeInsets.all(0),
+                  title: SettingText(S().settings_currency),
+                  trailing:
+                      SettingDropdown(fiatMap, s.displayFiat, s.setDisplayFiat),
+                ),
+              ),
+            ),
           ),
           SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),
           SliverToBoxAdapter(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SettingText(S().settings_amount),
-                SettingToggle(s.displayUnitSat, s.setDisplayUnitSat),
-              ],
+            child: ListTile(
+              dense: true,
+              contentPadding: const EdgeInsets.all(0),
+              title: SettingText(S().settings_amount),
+              trailing: SettingToggle(s.displayUnitSat, s.setDisplayUnitSat),
             ),
           ),
           // SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),
@@ -139,11 +142,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             child: kDebugMode
                 ? GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const EnvoyLogsScreen(),
-                          ));
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return const _DevOptions();
+                        },
+                      );
                     },
                     child: Container(
                       color: Colors.transparent,
@@ -200,61 +204,66 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             controlAffinity: ListTileControlAffinity.platform,
             childrenPadding: const EdgeInsets.only(left: 8),
             children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SettingText(S().settings_advanced_testnet),
-                  SettingToggle(s.showTestnetAccounts, s.setShowTestnetAccounts,
-                      onEnabled: () {
-                    showEnvoyDialog(
-                        context: context, dialog: const TestnetInfoModal());
-                  }),
-                ],
+              ListTile(
+                dense: true,
+                contentPadding: const EdgeInsets.all(0),
+                title: Wrap(
+                  children: [SettingText(S().settings_advanced_testnet)],
+                ),
+                trailing: SettingToggle(
+                    s.showTestnetAccounts, s.setShowTestnetAccounts,
+                    onEnabled: () {
+                  showEnvoyDialog(
+                      context: context, dialog: const TestnetInfoModal());
+                }),
               ),
-              Padding(padding: EdgeInsets.all(marginBetweenItems)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SettingText(S().settings_advanced_taproot),
-                  SettingToggle(s.taprootEnabled, s.setTaprootEnabled,
-                      onEnabled: () async {
-                    if (await shouldShowPassportTaprootDialog() &&
-                        context.mounted) {
-                      showEnvoyPopUp(
-                        context,
-                        title: S().taproot_passport_dialog_heading,
-                        S().taproot_passport_dialog_subheading,
-                        S().taproot_passport_dialog_reconnect,
-                        (BuildContext context) {
-                          Navigator.pop(context);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const SingleImportPpIntroPage()));
-                        },
-                        icon: EnvoyIcons.info,
-                        secondaryButtonLabel: S().taproot_passport_dialog_later,
-                        onSecondaryButtonTap: (BuildContext context) {
-                          Navigator.pop(context);
-                        },
-                      );
-                    }
-                  }),
-                ],
+              ListTile(
+                dense: true,
+                contentPadding: const EdgeInsets.all(0),
+                title: SettingText(S().settings_advanced_taproot),
+                trailing: SettingToggle(s.taprootEnabled, s.setTaprootEnabled,
+                    onEnabled: () async {
+                  if (await shouldShowPassportTaprootDialog() &&
+                      context.mounted) {
+                    showEnvoyPopUp(
+                      context,
+                      title: S().taproot_passport_dialog_heading,
+                      S().taproot_passport_dialog_subheading,
+                      S().taproot_passport_dialog_reconnect,
+                      (BuildContext context) {
+                        Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const SingleImportPpIntroPage()));
+                      },
+                      icon: EnvoyIcons.info,
+                      secondaryButtonLabel: S().taproot_passport_dialog_later,
+                      onSecondaryButtonTap: (BuildContext context) {
+                        Navigator.pop(context);
+                      },
+                    );
+                  }
+                }),
               ),
-              Padding(padding: EdgeInsets.all(marginBetweenItems)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SettingText(S().settings_viewEnvoyLogs, onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const EnvoyLogsScreen(),
-                        ));
-                  }),
-                ],
+              ListTile(
+                dense: true,
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const EnvoyLogsScreen(),
+                      ));
+                },
+                contentPadding: const EdgeInsets.all(0),
+                title: SettingText(S().settings_viewEnvoyLogs, onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const EnvoyLogsScreen(),
+                      ));
+                }),
               ),
             ],
           )),

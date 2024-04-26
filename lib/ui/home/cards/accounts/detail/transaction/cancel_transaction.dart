@@ -32,6 +32,7 @@ import 'package:rive/rive.dart' as rive;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 
 class RBFState {
   final String originalTxId;
@@ -291,172 +292,175 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
       child: Padding(
         padding: const EdgeInsets.symmetric(
             vertical: EnvoySpacing.medium2, horizontal: EnvoySpacing.medium2),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Padding(
-                padding: const EdgeInsets.only(bottom: EnvoySpacing.small),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Transform.translate(
-                      offset: const Offset(
-                          -EnvoySpacing.small, -EnvoySpacing.small),
-                      child: IconButton(
-                        icon: const Icon(Icons.chevron_left,
-                            color: EnvoyColors.textPrimary),
-                        iconSize: 32,
-                        padding: EdgeInsets.zero,
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ),
-                  ],
-                )),
-            const Padding(
-              padding: EdgeInsets.only(bottom: EnvoySpacing.medium3),
-              child: EnvoyIcon(
-                EnvoyIcons.alert,
-                size: EnvoyIconSize.big,
-                color: EnvoyColors.danger,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-              child: Text(
-                S().coincontrol_tx_detail_passport_cta2,
-                style: EnvoyTypography.subheading,
-                textAlign: TextAlign.center,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
-              child: Text(
-                S().replaceByFee_cancel_overlay_modal_subheading,
-                style: EnvoyTypography.info,
-                textAlign: TextAlign.center,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: EnvoySpacing.small),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.small),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        S().replaceByFee_cancel_overlay_modal_cancelationFees,
-                        style: EnvoyTypography.body,
+                      Transform.translate(
+                        offset: const Offset(
+                            -EnvoySpacing.small, -EnvoySpacing.small),
+                        child: IconButton(
+                          icon: const Icon(Icons.chevron_left,
+                              color: EnvoyColors.textPrimary),
+                          iconSize: 32,
+                          padding: EdgeInsets.zero,
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
                       ),
-                      EnvoyAmount(
-                          account: account,
-                          amountSats: _totalFeeAmount,
-                          amountWidgetStyle: AmountWidgetStyle.normal),
                     ],
-                  ),
-                  const SizedBox(height: EnvoySpacing.medium1),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        S().replaceByFee_cancel_overlay_modal_receivingAmount,
-                        style: EnvoyTypography.body,
-                      ),
-                      EnvoyAmount(
-                        account: account,
-                        amountSats: _totalReturnAmount,
-                        amountWidgetStyle: AmountWidgetStyle.normal,
-                      )
-                    ],
-                  ),
-                  const SizedBox(height: EnvoySpacing.medium1),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
-              child: TextButton(
-                onPressed: () {
-                  launchUrl(Uri.parse(
-                      "https://docs.foundation.xyz/en/envoy/accounts#boost-or-cancel-a-transaction"));
-                },
-                child: Text(
-                  S().component_learnMore,
-                  style: EnvoyTypography.button
-                      .copyWith(color: EnvoyColors.accentPrimary),
+                  )),
+              const Padding(
+                padding: EdgeInsets.only(bottom: EnvoySpacing.medium3),
+                child: EnvoyIcon(
+                  EnvoyIcons.alert,
+                  size: EnvoyIconSize.big,
+                  color: EnvoyColors.danger,
                 ),
               ),
-            ),
-            EnvoyButton(
-                label: S()
-                    .replaceByFee_cancel_overlay_modal_proceedWithCancelation,
-                type: ButtonType.danger,
+              Padding(
+                padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                child: Text(
+                  S().coincontrol_tx_detail_passport_cta2,
+                  style: EnvoyTypography.subheading,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
+                child: Text(
+                  S().replaceByFee_cancel_overlay_modal_subheading,
+                  style: EnvoyTypography.info,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: EnvoySpacing.small),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          S().replaceByFee_cancel_overlay_modal_cancelationFees,
+                          style: EnvoyTypography.body,
+                        ),
+                        EnvoyAmount(
+                            account: account,
+                            amountSats: _totalFeeAmount,
+                            amountWidgetStyle: AmountWidgetStyle.normal),
+                      ],
+                    ),
+                    const SizedBox(height: EnvoySpacing.medium1),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          S().replaceByFee_cancel_overlay_modal_receivingAmount,
+                          style: EnvoyTypography.body,
+                        ),
+                        EnvoyAmount(
+                          account: account,
+                          amountSats: _totalReturnAmount,
+                          amountWidgetStyle: AmountWidgetStyle.normal,
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: EnvoySpacing.medium1),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+                child: TextButton(
+                  onPressed: () {
+                    launchUrl(Uri.parse(
+                        "https://docs.foundation.xyz/en/envoy/accounts#boost-or-cancel-a-transaction"));
+                  },
+                  child: Text(
+                    S().component_learnMore,
+                    style: EnvoyTypography.button
+                        .copyWith(color: EnvoyColors.accentPrimary),
+                  ),
+                ),
+              ),
+              EnvoyButton(
+                  label: S()
+                      .replaceByFee_cancel_overlay_modal_proceedWithCancelation,
+                  type: ButtonType.danger,
 
-                ///wrap to the text and padding...
-                height: 0,
-                state: ButtonState.defaultState,
-                onTap: () async {
-                  final navigator = Navigator.of(context, rootNavigator: true);
-                  if (widget.originalTx.isConfirmed) {
-                    EnvoyToast(
-                      backgroundColor: EnvoyColors.danger,
-                      replaceExisting: true,
-                      duration: const Duration(seconds: 4),
-                      message: "Error: Transaction Confirmed",
-                      // TODO: Figma
-                      icon: const Icon(
-                        Icons.info_outline,
-                        color: EnvoyColors.solidWhite,
-                      ),
-                    ).show(context);
-                    return;
-                  } else {
-                    if (account.wallet.hot == false) {
-                      await navigator.push(MaterialPageRoute(
-                          builder: (context) => Builder(builder: (context) {
-                                return background(
-                                    child: PsbtCard(
-                                      widget.cancelTx,
-                                      account,
-                                      onSignedPsbtScanned: (psbt) async {
-                                        navigator.pop();
-                                        navigator.pop();
-                                        //wait for route to pop
-                                        await Future.delayed(
-                                            const Duration(milliseconds: 100));
-                                        navigator.push(MaterialPageRoute(
-                                          builder: (context) =>
-                                              CancelTransactionProgress(
-                                            cancelTx: psbt,
-                                            cancelRawTx: widget.cancelRawTx,
-                                            originalTx: widget.originalTx,
-                                          ),
-                                        ));
-                                      },
-                                    ),
-                                    context: context);
-                              })));
+                  ///wrap to the text and padding...
+                  height: 0,
+                  state: ButtonState.defaultState,
+                  onTap: () async {
+                    final navigator =
+                        Navigator.of(context, rootNavigator: true);
+                    if (widget.originalTx.isConfirmed) {
+                      EnvoyToast(
+                        backgroundColor: EnvoyColors.danger,
+                        replaceExisting: true,
+                        duration: const Duration(seconds: 4),
+                        message: "Error: Transaction Confirmed",
+                        // TODO: Figma
+                        icon: const Icon(
+                          Icons.info_outline,
+                          color: EnvoyColors.solidWhite,
+                        ),
+                      ).show(context);
+                      return;
                     } else {
-                      Navigator.pop(context);
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) {
-                          return CancelTransactionProgress(
-                            cancelTx: widget.cancelTx,
-                            cancelRawTx: widget.cancelRawTx,
-                            originalTx: widget.originalTx,
-                          );
-                        },
-                      ));
+                      if (account.wallet.hot == false) {
+                        await navigator.push(MaterialPageRoute(
+                            builder: (context) => Builder(builder: (context) {
+                                  return background(
+                                      child: PsbtCard(
+                                        widget.cancelTx,
+                                        account,
+                                        onSignedPsbtScanned: (psbt) async {
+                                          navigator.pop();
+                                          navigator.pop();
+                                          //wait for route to pop
+                                          await Future.delayed(const Duration(
+                                              milliseconds: 100));
+                                          navigator.push(MaterialPageRoute(
+                                            builder: (context) =>
+                                                CancelTransactionProgress(
+                                              cancelTx: psbt,
+                                              cancelRawTx: widget.cancelRawTx,
+                                              originalTx: widget.originalTx,
+                                            ),
+                                          ));
+                                        },
+                                      ),
+                                      context: context);
+                                })));
+                      } else {
+                        Navigator.pop(context);
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) {
+                            return CancelTransactionProgress(
+                              cancelTx: widget.cancelTx,
+                              cancelRawTx: widget.cancelRawTx,
+                              originalTx: widget.originalTx,
+                            );
+                          },
+                        ));
+                      }
                     }
-                  }
-                }),
-          ],
+                  }),
+            ],
+          ),
         ),
       ),
     );
@@ -554,6 +558,7 @@ class _CancelTransactionProgressState
         broadcastProgress = BroadcastProgress.success;
       });
     } catch (e) {
+      EnvoyReport().log("RBF:Cancel", e.toString());
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
       _stateMachineController?.findInput<bool>("happy")?.change(false);
       _stateMachineController?.findInput<bool>("unhappy")?.change(true);

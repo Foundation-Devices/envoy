@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
@@ -172,7 +173,7 @@ class _SeedScreenState extends State<SeedScreen> {
         ),
         Expanded(
             child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
           child: Scaffold(
             backgroundColor: Colors.transparent,
             body: Column(
@@ -184,7 +185,7 @@ class _SeedScreenState extends State<SeedScreen> {
                         : S().manual_setup_generate_seed_write_words_heading,
                     style: Theme.of(context).textTheme.titleLarge,
                     textAlign: TextAlign.center),
-                const Padding(padding: EdgeInsets.all(18)),
+                const Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
                 Expanded(
                   child: PageView(
                       controller: _seedDisplayPageController,
@@ -196,29 +197,34 @@ class _SeedScreenState extends State<SeedScreen> {
                 ),
                 if (seedList.length > 12)
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.small),
                     child: DotsIndicator(
                         pageController: _seedDisplayPageController,
                         totalPages: 2),
                   ),
-                OnboardingButton(
-                  onTap: () async {
-                    if (seedList.length == 12 || _onSecondPage) {
-                      await _pageController.nextPage(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.ease);
-                    } else {
-                      setState(() {
-                        _onSecondPage = true;
-                      });
-                      await _seedDisplayPageController.nextPage(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.ease);
-                    }
-                  },
-                  label: seedList.length == 12 || _onSecondPage
-                      ? S().component_done
-                      : S().component_continue,
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: EnvoySpacing.medium2),
+                  child: OnboardingButton(
+                    onTap: () async {
+                      if (seedList.length == 12 || _onSecondPage) {
+                        await _pageController.nextPage(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.ease);
+                      } else {
+                        setState(() {
+                          _onSecondPage = true;
+                        });
+                        await _seedDisplayPageController.nextPage(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.ease);
+                      }
+                    },
+                    label: seedList.length == 12 || _onSecondPage
+                        ? S().component_done
+                        : S().component_continue,
+                  ),
                 )
               ],
             ),
@@ -243,15 +249,32 @@ class _SeedScreenState extends State<SeedScreen> {
       section2WithIndex.add(Tuple(startingIndex + index + 7, element));
     });
 
-    return SingleChildScrollView(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Flexible(child: _buildMnemonicColumn(section1WithIndex)),
-          Flexible(child: _buildMnemonicColumn(section2WithIndex)),
-        ],
+    // If the screen is too small, show the words as a list
+    bool showWordsAsList = MediaQuery.sizeOf(context).width < 380;
+
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 420),
+      child: SingleChildScrollView(
+        child: Container(
+          child: showWordsAsList
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Flexible(child: _buildMnemonicColumn(section1WithIndex)),
+                    Flexible(child: _buildMnemonicColumn(section2WithIndex)),
+                  ],
+                )
+              : Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Flexible(child: _buildMnemonicColumn(section1WithIndex)),
+                    Flexible(child: _buildMnemonicColumn(section2WithIndex)),
+                  ],
+                ),
+        ),
       ),
     );
   }
@@ -259,13 +282,16 @@ class _SeedScreenState extends State<SeedScreen> {
   Widget _buildMnemonicColumn(List<Tuple<int, String>> list) {
     const TextStyle textTheme = TextStyle(
         fontSize: 15, color: Colors.black87, fontWeight: FontWeight.bold);
+    double margin = MediaQuery.of(context).devicePixelRatio < 2.5 ? 4 : 14;
+
     return Column(
       children: list.map((word) {
         return Container(
           height: 40,
-          margin: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+          margin: EdgeInsets.symmetric(vertical: margin, horizontal: 8),
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          constraints: const BoxConstraints(maxWidth: 200, maxHeight: 80),
+          constraints:
+              const BoxConstraints(maxWidth: 220, minWidth: 160, maxHeight: 40),
           decoration: BoxDecoration(
               color: Colors.grey[300], borderRadius: BorderRadius.circular(8)),
           child: Row(
@@ -284,43 +310,49 @@ class _SeedScreenState extends State<SeedScreen> {
       context: context,
       dismissible: false,
       builder: Builder(builder: (context) {
+        final heightFactor =
+            MediaQuery.sizeOf(context).width < 380 ? 0.7 : 0.38;
         return Container(
-          height: MediaQuery.of(context).size.height * 0.38,
+          height: MediaQuery.of(context).size.height * heightFactor,
           width: MediaQuery.of(context).size.width * 0.8,
           constraints: const BoxConstraints(maxHeight: 400, maxWidth: 400),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Padding(padding: EdgeInsets.all(24)),
-                Expanded(
-                    child: Column(
-                  children: [
-                    const Icon(EnvoyIcons.exclamationWarning,
-                        color: EnvoyColors.darkCopper, size: 56),
-                    const Padding(padding: EdgeInsets.all(12)),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Text(
-                        S().manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading,
-                        textAlign: TextAlign.center,
+          child: EnvoyScaffold(
+            hasScrollBody: false,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Padding(padding: EdgeInsets.all(24)),
+                  Expanded(
+                      child: Column(
+                    children: [
+                      const Icon(EnvoyIcons.exclamationWarning,
+                          color: EnvoyColors.darkCopper, size: 56),
+                      const Padding(padding: EdgeInsets.all(12)),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Text(
+                          S().manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading,
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    ),
-                  ],
-                )),
-                OnboardingButton(
-                    type: EnvoyButtonTypes.primaryModal,
-                    label: S().component_back,
-                    onTap: () async {
-                      Navigator.pop(context);
-                      _pageController.animateToPage(1,
-                          duration: const Duration(milliseconds: 320),
-                          curve: Curves.ease);
-                    }),
-                const Padding(padding: EdgeInsets.all(12)),
-              ],
+                    ],
+                  )),
+                  OnboardingButton(
+                      type: EnvoyButtonTypes.primaryModal,
+                      label: S().component_back,
+                      onTap: () async {
+                        Navigator.pop(context);
+                        _pageController.animateToPage(1,
+                            duration: const Duration(milliseconds: 320),
+                            curve: Curves.ease);
+                      }),
+                  const Padding(padding: EdgeInsets.all(12)),
+                ],
+              ),
             ),
           ),
         );
@@ -332,68 +364,73 @@ class _SeedScreenState extends State<SeedScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.chevron_left,
+                  color: Colors.black, size: EnvoySpacing.medium3),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.close,
+                  color: Colors.black, size: EnvoySpacing.medium2),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+        Image.asset(
+          "assets/shield_ok.png",
+          height: 250,
+          width: 250,
+        ),
+        const SizedBox(
+          height: EnvoySpacing.medium2,
+        ),
         Flexible(
           child: SingleChildScrollView(
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.chevron_left,
-                          color: Colors.black, size: EnvoySpacing.medium3),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close,
-                          color: Colors.black, size: EnvoySpacing.medium2),
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ],
-                ),
-                Flexible(
-                    child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Image.asset("assets/shield_ok.png"),
-                )),
-                const SizedBox(
-                  height: EnvoySpacing.medium1,
-                ),
                 Text(
                   S().manual_setup_generate_seed_verify_seed_heading,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                const SizedBox(
-                  height: EnvoySpacing.large2,
-                ),
-                Text(
-                  S().manual_setup_generate_seed_verify_seed_subheading,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall!
-                      .copyWith(fontSize: 13),
+                Padding(
+                  padding: const EdgeInsets.all(EnvoySpacing.medium2),
+                  child: Text(
+                    S().manual_setup_generate_seed_verify_seed_subheading,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall!
+                        .copyWith(fontSize: 13),
+                  ),
                 ),
               ],
             ),
           ),
         ),
-        OnboardingButton(
-            label: S().component_continue,
-            fontWeight: FontWeight.w600,
-            onTap: () {
-              _pageController.nextPage(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.ease);
-            }),
+        const SizedBox(
+          height: EnvoySpacing.large2,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: EnvoySpacing.medium1, vertical: EnvoySpacing.medium1),
+          child: OnboardingButton(
+              label: S().component_continue,
+              fontWeight: FontWeight.w600,
+              onTap: () {
+                _pageController.nextPage(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.ease);
+              }),
+        ),
       ],
     );
   }

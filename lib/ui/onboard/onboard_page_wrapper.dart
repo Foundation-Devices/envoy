@@ -5,6 +5,7 @@
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:flutter/material.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class OnboardPageBackground extends StatelessWidget {
   final Widget child;
@@ -27,7 +28,10 @@ class OnboardPageBackground extends StatelessWidget {
             child: Shield(
               child: Padding(
                   padding: const EdgeInsets.only(
-                      right: 15, left: 15, top: 15, bottom: 50),
+                      right: EnvoySpacing.medium1,
+                      left: EnvoySpacing.medium1,
+                      top: EnvoySpacing.medium1,
+                      bottom: EnvoySpacing.medium2),
                   child: SizedBox.expand(
                     child: child,
                   )),
