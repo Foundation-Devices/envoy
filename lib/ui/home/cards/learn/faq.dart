@@ -4,7 +4,6 @@
 
 import 'package:envoy/business/locale.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/components/brandmark.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -119,16 +118,6 @@ class Faq extends ConsumerWidget {
                     ))
                 .toList(),
           ),
-        ),
-        const Padding(padding: EdgeInsets.only(top: EnvoySpacing.medium2)),
-        const Padding(
-          padding: EdgeInsets.only(
-            top: EnvoySpacing.large2,
-            bottom: EnvoySpacing.small,
-            left: EnvoySpacing.small,
-            right: EnvoySpacing.small,
-          ),
-          child: Brandmark(logoSize: 32, style: BrandmarkStyle.endMark),
         ),
       ],
     );

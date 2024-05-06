@@ -5,7 +5,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 -->
 
 # Envoy
-Envoy is a companion app for the Passport hardware wallet. To learn more visit [foundationdevices.com/envoy](https://foundationdevices.com/envoy/)
+Envoy is a companion app for the Passport hardware wallet. To learn more visit [foundation.xyz/envoy](https://foundation.xyz/envoy/)
 
 ## Building
 

@@ -91,52 +91,42 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
           ),
         ),
         shield: Padding(
-          padding: const EdgeInsets.all(EnvoySpacing.medium1),
+          padding: const EdgeInsets.symmetric(
+              vertical: EnvoySpacing.medium1, horizontal: EnvoySpacing.medium2),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Flexible(
                 child: SingleChildScrollView(
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(
-                      vertical: EnvoySpacing.small,
-                    ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.medium1,
+                        vertical: EnvoySpacing.xs),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const SizedBox(height: EnvoySpacing.small),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: EnvoySpacing.medium1),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                S().welcome_screen_heading,
-                                style: Theme.of(context).textTheme.titleLarge,
-                                textAlign: TextAlign.center,
-                              ),
-                              const Padding(
-                                  padding:
-                                      EdgeInsets.all(EnvoySpacing.medium1)),
-                              GestureDetector(
-                                onTap: () {
-                                  registerEscapeTap(EscapeHatchTap.text);
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: EnvoySpacing.xs),
-                                  child: Text(
-                                    S().welcome_screen_subheading,
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                            ],
+                        Text(
+                          S().welcome_screen_heading,
+                          style: Theme.of(context).textTheme.titleLarge,
+                          textAlign: TextAlign.center,
+                        ),
+                        const Padding(
+                            padding: EdgeInsets.all(EnvoySpacing.medium1)),
+                        GestureDetector(
+                          onTap: () {
+                            registerEscapeTap(EscapeHatchTap.text);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: EnvoySpacing.xs),
+                            child: Text(
+                              S().welcome_screen_subheading,
+                              style: Theme.of(context).textTheme.bodySmall,
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                         ),
                         const SizedBox(height: EnvoySpacing.medium3),
@@ -145,59 +135,51 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.medium1),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    EnvoyButton(
-                      S().welcome_screen_cta2,
-                      type: EnvoyButtonTypes.secondary,
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) {
-                            // Don't set up privacy if previously onboarded
-                            if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) ==
-                                null) {
-                              return const OnboardPrivacySetup(
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  EnvoyButton(
+                    S().welcome_screen_cta2,
+                    type: EnvoyButtonTypes.secondary,
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          // Don't set up privacy if previously onboarded
+                          if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) ==
+                              null) {
+                            return const OnboardPrivacySetup(
+                                setUpEnvoyWallet: false);
+                          }
+                          return LocalStorage().prefs.getBool(PREFS_ONBOARDED)!
+                              ? const OnboardPassportWelcomeScreen()
+                              : const OnboardPrivacySetup(
                                   setUpEnvoyWallet: false);
-                            }
-                            return LocalStorage()
-                                    .prefs
-                                    .getBool(PREFS_ONBOARDED)!
-                                ? const OnboardPassportWelcomeScreen()
-                                : const OnboardPrivacySetup(
-                                    setUpEnvoyWallet: false);
-                          },
-                        ));
-                      },
-                    ),
-                    const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-                    EnvoyButton(
-                      S().welcome_screen_ctA1,
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) {
-                            // Don't set up privacy if previously onboarded
-                            if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) ==
-                                null) {
-                              return const OnboardPrivacySetup(
+                        },
+                      ));
+                    },
+                  ),
+                  const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+                  EnvoyButton(
+                    S().welcome_screen_ctA1,
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          // Don't set up privacy if previously onboarded
+                          if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) ==
+                              null) {
+                            return const OnboardPrivacySetup(
+                                setUpEnvoyWallet: true);
+                          }
+                          return LocalStorage().prefs.getBool(PREFS_ONBOARDED)!
+                              ? const OnboardEnvoyWelcomeScreen()
+                              : const OnboardPrivacySetup(
                                   setUpEnvoyWallet: true);
-                            }
-                            return LocalStorage()
-                                    .prefs
-                                    .getBool(PREFS_ONBOARDED)!
-                                ? const OnboardEnvoyWelcomeScreen()
-                                : const OnboardPrivacySetup(
-                                    setUpEnvoyWallet: true);
-                          },
-                        ));
-                      },
-                    )
-                  ],
-                ),
+                        },
+                      ));
+                    },
+                  ),
+                ],
               )
             ],
           ),

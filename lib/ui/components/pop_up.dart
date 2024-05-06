@@ -129,72 +129,76 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
       child: Padding(
         padding: const EdgeInsets.symmetric(
             vertical: EnvoySpacing.medium3, horizontal: EnvoySpacing.medium2),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            if (widget.icon != null)
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              if (widget.icon != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
+                  child: EnvoyIcon(
+                    widget.icon!,
+                    size: EnvoyIconSize.big,
+                    color: _color,
+                  ),
+                ),
+              if (widget.title != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                  child: Text(
+                    widget.title!,
+                    overflow: TextOverflow.ellipsis,
+                    style: EnvoyTypography.subheading,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               Padding(
                 padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
-                child: EnvoyIcon(
-                  widget.icon!,
-                  size: EnvoyIconSize.big,
-                  color: _color,
-                ),
-              ),
-            if (widget.title != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
                 child: Text(
-                  widget.title!,
-                  style: EnvoyTypography.subheading,
+                  widget.content,
+                  style: EnvoyTypography.body,
                   textAlign: TextAlign.center,
                 ),
               ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
-              child: Text(
-                widget.content,
-                style: EnvoyTypography.body,
-                textAlign: TextAlign.center,
-              ),
-            ),
-            if (widget.checkBoxText != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
-                child: DialogCheckBox(
-                  label: widget.checkBoxText!,
-                  isChecked:
-                      widget.checkedValue == null ? true : widget.checkedValue!,
-                  onChanged: (isChecked) {
-                    setState(() {
-                      widget.checkedValue = !widget.checkedValue!;
-                      widget.onCheckBoxChanged(isChecked);
-                    });
-                  },
+              if (widget.checkBoxText != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
+                  child: DialogCheckBox(
+                    label: widget.checkBoxText!,
+                    isChecked: widget.checkedValue == null
+                        ? true
+                        : widget.checkedValue!,
+                    onChanged: (isChecked) {
+                      setState(() {
+                        widget.checkedValue = !widget.checkedValue!;
+                        widget.onCheckBoxChanged(isChecked);
+                      });
+                    },
+                  ),
                 ),
-              ),
-            if (widget.secondaryButtonLabel != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-                child: EnvoyButton(
-                    label: widget.secondaryButtonLabel!,
-                    type: ButtonType.secondary,
-                    state: ButtonState.defaultState,
-                    onTap: () {
-                      if (widget.onSecondaryButtonTap != null) {
-                        widget.onSecondaryButtonTap!(context);
-                      }
-                    }),
-              ),
-            EnvoyButton(
-                label: widget.primaryButtonLabel,
-                type: ButtonType.primary,
-                state: ButtonState.defaultState,
-                onTap: () {
-                  widget.onPrimaryButtonTap?.call(context);
-                }),
-          ],
+              if (widget.secondaryButtonLabel != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                  child: EnvoyButton(
+                      label: widget.secondaryButtonLabel!,
+                      type: ButtonType.secondary,
+                      state: ButtonState.defaultState,
+                      onTap: () {
+                        if (widget.onSecondaryButtonTap != null) {
+                          widget.onSecondaryButtonTap!(context);
+                        }
+                      }),
+                ),
+              EnvoyButton(
+                  label: widget.primaryButtonLabel,
+                  type: ButtonType.primary,
+                  state: ButtonState.defaultState,
+                  onTap: () {
+                    widget.onPrimaryButtonTap?.call(context);
+                  }),
+            ],
+          ),
         ),
       ),
     );

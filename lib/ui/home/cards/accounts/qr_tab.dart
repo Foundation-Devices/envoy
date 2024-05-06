@@ -81,22 +81,30 @@ class QrTab extends StatelessWidget {
                             ),
                           ),
                         ),
-                        title: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              title,
-                              style: EnvoyTypography.body.copyWith(
-                                  color: design_system.EnvoyColors.solidWhite),
+                        title: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            maxHeight: 200,
+                          ),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  title,
+                                  style: EnvoyTypography.body.copyWith(
+                                      color:
+                                          design_system.EnvoyColors.solidWhite),
+                                ),
+                                Text(
+                                  subtitle,
+                                  style: EnvoyTypography.label
+                                      .copyWith(color: Colors.white),
+                                ),
+                              ],
                             ),
-                            Text(
-                              subtitle,
-                              style: EnvoyTypography.label
-                                  .copyWith(color: Colors.white),
-                            )
-                          ],
+                          ),
                         ),
                       ),
                     ),

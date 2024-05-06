@@ -383,7 +383,7 @@ class _RBFWarningState extends State<RBFWarning> {
           ),
           onTap: () {
             launchUrl(Uri.parse(
-                "https://docs.foundationdevices.com/en/envoy/accounts#boost-or-cancel-a-transaction"));
+                "https://docs.foundation.xyz/en/envoy/accounts#boost-or-cancel-a-transaction"));
           },
         ),
         const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
@@ -488,7 +488,7 @@ void showNoBoostNoFundsDialog(BuildContext context) {
                   ),
                   onTap: () {
                     launchUrl(Uri.parse(
-                        "https://docs.foundationdevices.com/en/troubleshooting#why-cant-envoy-boost-or-cancel-my-transaction"));
+                        "https://docs.foundation.xyz/en/troubleshooting#why-cant-envoy-boost-or-cancel-my-transaction"));
                   },
                 ),
                 Padding(

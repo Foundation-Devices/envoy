@@ -56,9 +56,11 @@ class ExchangeRate extends ChangeNotifier {
   final String CURRENCY_KEY = "currency";
 
   double? _selectedCurrencyRate;
+
   double? get selectedCurrencyRate => _selectedCurrencyRate;
 
   double? _usdRate;
+
   double? get usdRate => _usdRate;
   FiatCurrency? _currency;
 
@@ -99,7 +101,8 @@ class ExchangeRate extends ChangeNotifier {
   _restoreRate() async {
     final storedExchangeRate = await EnvoyStorage().getExchangeRate();
 
-    if (storedExchangeRate != null) {
+    if (storedExchangeRate != null &&
+        storedExchangeRate["currency"] == Settings().selectedFiat) {
       _selectedCurrencyRate = storedExchangeRate[RATE_KEY] ?? 0;
       _usdRate = storedExchangeRate[USD_RATE_KEY];
     }
@@ -185,7 +188,7 @@ class ExchangeRate extends ChangeNotifier {
   }
 
   double getUsdValue(int amountSats) {
-    return _usdRate! * amountSats / 100000000;
+    return (_usdRate ?? 0) * amountSats / 100000000;
   }
 
   // SATS to FIAT

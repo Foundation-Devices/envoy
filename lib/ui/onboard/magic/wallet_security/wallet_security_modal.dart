@@ -126,10 +126,6 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    SizedBox(
-                                      height: 180,
-                                      child: stepIllustration[i],
-                                    ),
                                     Flexible(
                                       child: SingleChildScrollView(
                                         child: Column(
@@ -137,6 +133,10 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
+                                            SizedBox(
+                                              height: 180,
+                                              child: stepIllustration[i],
+                                            ),
                                             const Padding(
                                                 padding: EdgeInsets.symmetric(
                                                     vertical:
@@ -182,72 +182,64 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                                 ),
                                               ),
                                             ),
-                                            const Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical:
-                                                        EnvoySpacing.medium2)),
-                                            DotsIndicator(
-                                              totalPages: stepHeadings.length,
-                                              pageController: _pageController,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal:
-                                                          EnvoySpacing.medium1,
-                                                      vertical:
-                                                          EnvoySpacing.medium2),
-                                              child: Column(
-                                                children: [
-                                                  AnimatedCrossFade(
-                                                      firstChild: EnvoyButton(
-                                                        (_pageController.hasClients
-                                                                    ? _pageController
-                                                                        .page
-                                                                        ?.toInt()
-                                                                    : 0) ==
-                                                                stepHeadings
-                                                                    .length
-                                                            ? S()
-                                                                .manual_setup_create_and_store_backup_modal_CTA
-                                                            : S()
-                                                                .component_continue,
-                                                        type: EnvoyButtonTypes
-                                                            .primaryModal,
-                                                        onTap: () {
-                                                          int currentPage =
-                                                              _pageController
-                                                                      .page
-                                                                      ?.toInt() ??
-                                                                  0;
-                                                          if (stepHeadings
-                                                                  .length ==
-                                                              currentPage + 1) {
-                                                            widget.onLastStep();
-                                                          } else {
-                                                            _pageController.nextPage(
-                                                                duration:
-                                                                    const Duration(
-                                                                        milliseconds:
-                                                                            600),
-                                                                curve: Curves
-                                                                    .easeInOut);
-                                                          }
-                                                        },
-                                                      ),
-                                                      secondChild:
-                                                          const SizedBox(),
-                                                      crossFadeState:
-                                                          CrossFadeState
-                                                              .showFirst,
-                                                      duration: const Duration(
-                                                          milliseconds: 400))
-                                                ],
-                                              ),
-                                            ),
                                           ],
                                         ),
                                       ),
+                                    ),
+                                    Column(
+                                      children: [
+                                        DotsIndicator(
+                                          totalPages: stepHeadings.length,
+                                          pageController: _pageController,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: EnvoySpacing.medium1,
+                                              vertical: EnvoySpacing.medium2),
+                                          child: Column(
+                                            children: [
+                                              AnimatedCrossFade(
+                                                  firstChild: EnvoyButton(
+                                                    (_pageController.hasClients
+                                                                ? _pageController
+                                                                    .page
+                                                                    ?.toInt()
+                                                                : 0) ==
+                                                            stepHeadings.length
+                                                        ? S()
+                                                            .manual_setup_create_and_store_backup_modal_CTA
+                                                        : S()
+                                                            .component_continue,
+                                                    type: EnvoyButtonTypes
+                                                        .primaryModal,
+                                                    onTap: () {
+                                                      int currentPage =
+                                                          _pageController.page
+                                                                  ?.toInt() ??
+                                                              0;
+                                                      if (stepHeadings.length ==
+                                                          currentPage + 1) {
+                                                        widget.onLastStep();
+                                                      } else {
+                                                        _pageController.nextPage(
+                                                            duration:
+                                                                const Duration(
+                                                                    milliseconds:
+                                                                        600),
+                                                            curve: Curves
+                                                                .easeInOut);
+                                                      }
+                                                    },
+                                                  ),
+                                                  secondChild: const SizedBox(),
+                                                  crossFadeState:
+                                                      CrossFadeState.showFirst,
+                                                  duration: const Duration(
+                                                      milliseconds: 400))
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),

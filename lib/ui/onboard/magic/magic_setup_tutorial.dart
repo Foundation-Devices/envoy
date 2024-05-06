@@ -14,10 +14,12 @@ import 'package:envoy/ui/onboard/magic/wallet_security/wallet_security_modal.dar
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class MagicSetupTutorial extends StatefulWidget {
   const MagicSetupTutorial({super.key});
@@ -91,39 +93,51 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                     ));
               },
             ),
-            Column(
-              children: [
-                OnboardingButton(
-                    fontWeight: FontWeight.w600,
-                    type: EnvoyButtonTypes.secondary,
-                    label: S().magic_setup_tutorial_ios_CTA2,
-                    textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: EnvoyColors.accentPrimary,
-                        fontWeight: FontWeight.w600),
-                    onTap: () {
-                      _playerKey.currentState?.pause();
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return const MagicRecoverWallet(
-                          tryManualRecovery: true,
-                        );
-                      }));
-                    }),
-                OnboardingButton(
-                    fontWeight: FontWeight.w600,
-                    textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: EnvoyColors.surface2,
-                        fontWeight: FontWeight.w600),
-                    label: S().magic_setup_tutorial_ios_CTA1,
-                    onTap: () {
-                      _playerKey.currentState?.pause();
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return const MagicSetupGenerate();
-                      }));
-                      // showCreateWarning(context);
-                    }),
-              ],
+            Padding(
+              padding: const EdgeInsets.only(
+                  top: EnvoySpacing.xs, bottom: EnvoySpacing.medium2),
+              child: Column(
+                children: [
+                  OnboardingButton(
+                      fontWeight: FontWeight.w600,
+                      type: EnvoyButtonTypes.secondary,
+                      label: S().magic_setup_tutorial_ios_CTA2,
+                      textStyle: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(
+                              color: EnvoyColors.accentPrimary,
+                              fontWeight: FontWeight.w600),
+                      onTap: () {
+                        _playerKey.currentState?.pause();
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return const MagicRecoverWallet();
+                        }));
+                      }),
+                  OnboardingButton(
+                      fontWeight: FontWeight.w600,
+                      textStyle: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(
+                              color: EnvoyColors.surface2,
+                              fontWeight: FontWeight.w600),
+                      label: S().magic_setup_tutorial_ios_CTA1,
+                      onTap: () {
+                        _playerKey.currentState?.pause();
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return const MagicSetupGenerate();
+                        }));
+                        // showCreateWarning(context);
+                      }),
+                  SizedBox(
+                      height: context.isSmallScreen
+                          ? EnvoySpacing.medium1
+                          : EnvoySpacing.medium3),
+                ],
+              ),
             )
           ],
         ),

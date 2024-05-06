@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Envoy
-Upstream-Contact: Igor Cota <hello@foundationdevices.com>
+Upstream-Contact: Igor Cota <hello@foundation.xyz>
 Source: https://github.com/Foundation-Devices/envoy
 
 Files: assets/*

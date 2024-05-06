@@ -184,16 +184,16 @@ class Settings extends ChangeNotifier {
       case Environment.local:
         return "http://127.0.0.1:8000";
       case Environment.development:
-        return "https://development.envoy.foundationdevices.com";
+        return "https://development.envoy.foundation.xyz";
       case Environment.staging:
-        return "https://staging.envoy.foundationdevices.com";
+        return "https://staging.envoy.foundation.xyz";
       case Environment.production:
         return "https://envoy.foundation.xyz";
     }
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  String nguServerAddress = "https://ngu.foundationdevices.com";
+  String nguServerAddress = "https://ngu.foundation.xyz";
 
   @JsonKey(defaultValue: false)
   bool syncToCloudSetting = false;

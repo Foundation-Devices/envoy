@@ -48,6 +48,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/generated_bindings.dart' as rust;
 import 'package:wallet/wallet.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 
 final rbfSpendStateProvider = StateProvider<RBFSpendState?>((ref) => null);
 
@@ -506,7 +507,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                     GestureDetector(
                         onTap: () async {
                           const link =
-                              "https://docs.foundationdevices.com/en/troubleshooting#why-is-envoy-adding-more-coins-to-my-boost-or-cancel-transaction";
+                              "https://docs.foundation.xyz/en/troubleshooting#why-is-envoy-adding-more-coins-to-my-boost-or-cancel-transaction";
                           launchUrl(Uri.parse(link));
                         },
                         child: Padding(
@@ -724,6 +725,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         _broadcastProgress = BroadcastProgress.success;
       });
     } catch (e) {
+      EnvoyReport().log("RBF Boost", " $e");
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
       _stateMachineController?.findInput<bool>("happy")?.change(false);
       _stateMachineController?.findInput<bool>("unhappy")?.change(true);
