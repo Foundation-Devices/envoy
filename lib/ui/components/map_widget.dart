@@ -38,6 +38,7 @@ class MarkersPageState extends State<MarkersPage> {
 
   final List<Venue> venueMarkers = [];
   MapTransformer? localTransformer;
+  bool areMapTilesLoaded = true;
 
   @override
   void initState() {
@@ -267,10 +268,31 @@ class MarkersPageState extends State<MarkersPage> {
                       return CachedNetworkImage(
                         imageUrl: _openStreetMap(z, x, y),
                         fit: BoxFit.cover,
+                        errorListener: (e) {
+                          setState(() {
+                            areMapTilesLoaded = false;
+                          });
+                        },
+                        errorWidget: (context, url, error) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const EnvoyIcon(
+                                EnvoyIcons.alert,
+                                color: Colors.red,
+                              ),
+                              Text(
+                                error.toString(),
+                                style: EnvoyTypography.explainer
+                                    .copyWith(color: Colors.red),
+                              ),
+                            ],
+                          );
+                        },
                       );
                     },
                   ),
-                  ...markerVenueWidgets,
+                  if (areMapTilesLoaded) ...markerVenueWidgets,
                 ],
               ),
             ),
