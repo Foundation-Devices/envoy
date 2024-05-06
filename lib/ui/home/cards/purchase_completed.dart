@@ -69,7 +69,7 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: EnvoySpacing.medium3),
+                            vertical: EnvoySpacing.large1),
                         child: Text(
                           S().buy_bitcoin_purchaseComplete_subheading,
                           style: EnvoyTypography.info

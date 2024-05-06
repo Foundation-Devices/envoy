@@ -174,7 +174,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                       ),
                     Padding(
                       padding:
-                          const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+                          const EdgeInsets.only(bottom: EnvoySpacing.large1),
                       child: EnvoyButton(
                         label: S().component_continue,
                         type: ButtonType.primary,
