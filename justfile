@@ -92,7 +92,7 @@ passport: passport-deps
 
 
 beef: passport
-    flutter test integration_test -d linux
+    flutter test integration_test/envoy_test.dart -d linux
 
 docker-beef: docker-build-linux
     docker build -t {{docker_image_beefbench}} . -f beef.Dockerfile
