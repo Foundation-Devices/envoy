@@ -261,6 +261,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "buy_bitcoin_defineLocation_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Select your region so Envoy can display the purchase options available to you.  This info will never leave Envoy."),
+        "buy_bitcoin_details_menu_editRegion":
+            MessageLookupByLibrary.simpleMessage("EDIT REGION"),
         "buy_bitcoin_exit_modal_heading":
             MessageLookupByLibrary.simpleMessage("Cancel Buying Process"),
         "buy_bitcoin_exit_modal_subheading":
@@ -1227,6 +1229,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Boost Fee"),
         "replaceByFee_boost_tx_heading": MessageLookupByLibrary.simpleMessage(
             "Your transaction is ready \nto be boosted"),
+        "replaceByFee_cancelAmountNone_None":
+            MessageLookupByLibrary.simpleMessage("None"),
+        "replaceByFee_cancelAmountNone_overlay_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "The network fee for cancelling this transaction means no funds will be sent back to your wallet.\n\nAre you sure you want to cancel?"),
         "replaceByFee_cancel_confirm_heading":
             MessageLookupByLibrary.simpleMessage("Canceling transaction"),
         "replaceByFee_cancel_fail_heading":

@@ -63,6 +63,7 @@ const String preferencesStoreName = "preferences";
 const String blogPostsStoreName = "blog_posts";
 const String exchangeRateStoreName = "exchange_rate";
 const String locationsStoreName = "locations";
+const String isRegionSelectedStoreName = "isCountrySelected";
 
 ///keeps track of spend input tags, this would be handy to show previously used tags
 ///for example when user trying RBF.
@@ -84,6 +85,16 @@ class EnvoyStorage {
       StoreRef<String, bool>(dismissedPromptsStoreName);
   StoreRef<String, Map> rbfBoostStore =
       StoreRef<String, Map>(rbfBoostStoreName);
+
+  Future<void> setRegion(bool value) async {
+    await preferencesStore.record(isRegionSelectedStoreName).put(_db, value);
+  }
+
+  Future<bool> isRegionSelected() async {
+    return (await preferencesStore.record(isRegionSelectedStoreName).get(_db))
+            as bool? ??
+        false;
+  }
 
   StoreRef<int, Map> canceledTxStore =
       intMapStoreFactory.store(canceledTxStoreName);

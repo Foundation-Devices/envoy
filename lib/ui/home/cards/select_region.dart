@@ -14,6 +14,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/components/select_dropdown.dart';
+import 'package:envoy/util/envoy_storage.dart';
 
 GlobalKey<EnvoyDropdownState> dropdownDivisionKey =
     GlobalKey<EnvoyDropdownState>();
@@ -185,10 +186,13 @@ class _SelectRegionState extends State<SelectRegion> {
               state: _divisionSelected
                   ? ButtonState.defaultState
                   : ButtonState.disabled,
-              onTap: () {
-                context.go(
-                  ROUTE_BUY_BITCOIN,
-                );
+              onTap: () async {
+                await EnvoyStorage().setRegion(true);
+                if (mounted) {
+                  context.go(
+                    ROUTE_BUY_BITCOIN,
+                  );
+                }
               },
             ),
           )

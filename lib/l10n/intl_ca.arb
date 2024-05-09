@@ -108,6 +108,7 @@
   "buy_bitcoin_buyOptions_vouchers_subheading": "Purchase Bitcoin vouchers online or in person. Redeem using the scanner inside any account.",
   "buy_bitcoin_defineLocation_heading": "Your Region",
   "buy_bitcoin_defineLocation_subheading": "Select your region so Envoy can display the purchase options available to you.  This info will never leave Envoy.",
+  "buy_bitcoin_details_menu_editRegion": "EDIT REGION",
   "buy_bitcoin_exit_modal_heading": "Cancel Buying Process",
   "buy_bitcoin_exit_modal_subheading": "You are about to cancel the buying process. Are you sure?",
   "buy_bitcoin_purchaseComplete_heading": "Purchase Complete",
@@ -566,6 +567,8 @@
   "replaceByFee_boost_success_header": "La teva transacció s'ha acelerat",
   "replaceByFee_boost_tx_boostFee": "Tarifa d'Augment",
   "replaceByFee_boost_tx_heading": "La vostra transacció està a punt per ser impulsada",
+  "replaceByFee_cancelAmountNone_None": "None",
+  "replaceByFee_cancelAmountNone_overlay_modal_subheading": "The network fee for cancelling this transaction means no funds will be sent back to your wallet.\n\nAre you sure you want to cancel?",
   "replaceByFee_cancel_confirm_heading": "S'està cancel·lant la transacció",
   "replaceByFee_cancel_fail_heading": "No s'ha pogut cancel·lar la teva transacció",
   "replaceByFee_cancel_overlay_modal_cancelationFees": "Quota de Cancel·lació",

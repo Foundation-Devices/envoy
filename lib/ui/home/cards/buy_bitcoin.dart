@@ -16,18 +16,68 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:envoy/ui/home/home_page.dart';
+import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/ui/routes/route_state.dart';
 
 enum BuyBitcoinCardState { buyInEnvoy, peerToPeer, vouchers, atms, none }
 
-class BuyBitcoinCard extends StatefulWidget {
+class BuyBitcoinCard extends ConsumerStatefulWidget {
   const BuyBitcoinCard({super.key});
 
   @override
-  State<BuyBitcoinCard> createState() => _BuyBitcoinCardState();
+  ConsumerState<BuyBitcoinCard> createState() => _BuyBitcoinCardState();
 }
 
-class _BuyBitcoinCardState extends State<BuyBitcoinCard> {
+class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
+    with SingleTickerProviderStateMixin {
   BuyBitcoinCardState currentState = BuyBitcoinCardState.none;
+  late AnimationController animationController;
+  late Animation<Alignment> animation;
+
+  @override
+  void initState() {
+    super.initState();
+    animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 200));
+    animation =
+        Tween(begin: const Alignment(0.0, 1.0), end: const Alignment(0.0, 0.65))
+            .animate(CurvedAnimation(
+                parent: animationController, curve: Curves.easeInOut));
+
+    Future.delayed(const Duration()).then((value) {
+      ref.read(homePageTitleProvider.notifier).state = "";
+
+      ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
+          optionsWidget: const CountryOptions(),
+          rightAction: Consumer(
+            builder: (context, ref, child) {
+              bool menuVisible = ref.watch(homePageOptionsVisibilityProvider);
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  HomePageState.of(context)?.toggleOptions();
+                },
+                child: Container(
+                  height: 55,
+                  width: 55,
+                  color: Colors.transparent,
+                  child: Icon(
+                    menuVisible ? Icons.close : Icons.more_horiz_outlined,
+                  ),
+                ),
+              );
+            },
+          ));
+      String path = ref.read(routePathProvider);
+
+      if (path == ROUTE_BUY_BITCOIN) {
+        ref.read(buyBTCPageProvider.notifier).state = true;
+      }
+    });
+  }
 
   void _updateState(BuyBitcoinCardState newState) {
     setState(() {
@@ -448,6 +498,40 @@ class InfoRequired extends StatelessWidget {
         ),
         const SizedBox(width: EnvoySpacing.xs),
         Text(info, style: textStyle),
+      ],
+    );
+  }
+}
+
+class CountryOptions extends ConsumerStatefulWidget {
+  const CountryOptions({super.key});
+
+  @override
+  ConsumerState<CountryOptions> createState() => _CountryOptionsState();
+}
+
+class _CountryOptionsState extends ConsumerState<CountryOptions> {
+  @override
+  Widget build(context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        const Divider(),
+        const SizedBox(
+          height: 10,
+        ),
+        GestureDetector(
+          child: Text(
+            S().buy_bitcoin_details_menu_editRegion,
+            style: const TextStyle(color: Colors.white),
+          ),
+          onTap: () {
+            HomePageState.of(context)?.toggleOptions();
+            context.go(
+              ROUTE_SELECT_REGION,
+            );
+          },
+        ),
       ],
     );
   }
