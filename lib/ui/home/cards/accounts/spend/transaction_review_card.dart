@@ -55,6 +55,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
   @override
   Widget build(BuildContext context) {
     String address = widget.address;
+    const double cardRadius = EnvoySpacing.medium2;
 
     TextStyle? titleStyle = Theme.of(context).textTheme.titleSmall?.copyWith(
         color: EnvoyColors.textPrimaryInverse, fontWeight: FontWeight.w700);
@@ -90,14 +91,15 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(24)),
+        borderRadius: const BorderRadius.all(Radius.circular(cardRadius)),
         color: account.color,
         border:
             Border.all(color: Colors.black, width: 2, style: BorderStyle.solid),
       ),
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(22)),
+            borderRadius:
+                const BorderRadius.all(Radius.circular(cardRadius - 3)),
             gradient: LinearGradient(
               begin: const Alignment(0.00, 1.00),
               end: const Alignment(0, -1),
@@ -111,15 +113,14 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
             border: Border.all(
                 width: 2, color: account.color, style: BorderStyle.solid)),
         child: ClipRRect(
-          borderRadius: const BorderRadius.all(Radius.circular(20)),
+          borderRadius: const BorderRadius.all(Radius.circular(cardRadius - 2)),
           child: CustomPaint(
             isComplex: true,
             willChange: false,
             painter: LinesPainter(
                 lineDistance: 2.5, color: EnvoyColors.gray1000, opacity: 0.4),
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  vertical: EnvoySpacing.small, horizontal: EnvoySpacing.xs),
+              padding: const EdgeInsets.all(EnvoySpacing.xs),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
@@ -327,13 +328,13 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
     return LayoutBuilder(builder: (context, constraints) {
       return Container(
         constraints: const BoxConstraints(
-          minHeight: 44,
+          minHeight: 36,
         ),
         alignment: Alignment.centerLeft,
         width: double.infinity,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
             borderRadius:
-                BorderRadius.all(Radius.circular(constraints.maxWidth)),
+                BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
             color: EnvoyColors.textPrimaryInverse),
         padding: const EdgeInsets.symmetric(
             vertical: 6, horizontal: EnvoySpacing.small),
