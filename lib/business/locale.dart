@@ -30,6 +30,10 @@ String? getTranslationByKey(String key) {
       return messages_ca.MessageLookup();
     }
 
+    if (currentLocale.startsWith("pt")) {
+      return messages_ca.MessageLookup();
+    }
+
     return messages_en.MessageLookup();
   }();
 
