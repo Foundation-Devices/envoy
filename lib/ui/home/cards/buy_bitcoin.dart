@@ -140,7 +140,7 @@ class _BuyBitcoinCardState extends State<BuyBitcoinCard> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+            padding: const EdgeInsets.only(bottom: EnvoySpacing.large1),
             child: EnvoyButton(
               label: S().component_continue,
               type: ButtonType.primary,

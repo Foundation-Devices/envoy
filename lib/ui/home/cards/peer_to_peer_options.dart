@@ -122,7 +122,7 @@ class _PeerToPeerCardState extends State<PeerToPeerCard> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+            padding: const EdgeInsets.only(bottom: EnvoySpacing.large1),
             child: EnvoyButton(
               label: "Open",
               //TODO: figma
