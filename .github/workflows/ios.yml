@@ -70,6 +70,9 @@ jobs:
         run: ./build_ffi_ios.sh
 
       - name: Build iOS App Store Package
+        env:
+          MAP_API_KEY: ${{ secrets.MAP_API_KEY }}
+          RAMP_API_KEY: ${{ secrets.RAMP_API_KEY }}
         run: |
           flutter build ipa --dart-define='MAP_API_KEY=$MAP_API_KEY' --dart-define='RAMP_API_KEY=$RAMP_API_KEY' --release --export-options-plist=ios/ExportOptions.plist
 
@@ -82,7 +85,5 @@ jobs:
         env:
           APP_STORE_CONNECT_USERNAME: ${{ secrets.APP_STORE_CONNECT_USERNAME }}
           APP_STORE_CONNECT_PASSWORD: ${{ secrets.APP_STORE_CONNECT_PASSWORD }}
-          MAP_API_KEY: ${{ secrets.MAP_API_KEY }}
-          RAMP_API_KEY: ${{ secrets.RAMP_API_KEY }}
         run: |
           xcrun altool --upload-app -t ios -f build/ios/ipa/envoy.ipa -u "$APP_STORE_CONNECT_USERNAME" -p "$APP_STORE_CONNECT_PASSWORD"
