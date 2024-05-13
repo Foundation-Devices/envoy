@@ -265,10 +265,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "buy_bitcoin_defineLocation_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Selecciona tu región para que Envoy pueda mostrar las opciones de compra disponibles para ti.  Esta información nunca saldrá de Envoy."),
+        "buy_bitcoin_details_menu_editRegion":
+            MessageLookupByLibrary.simpleMessage("EDITAR REGIÓN"),
         "buy_bitcoin_exit_modal_heading":
             MessageLookupByLibrary.simpleMessage("Cancelar Proceso de Compra"),
         "buy_bitcoin_exit_modal_subheading": MessageLookupByLibrary.simpleMessage(
             "Estás a punto de cancelar el proceso de compra. ¿Estás seguro?"),
+        "buy_bitcoin_mapLoadingError_header":
+            MessageLookupByLibrary.simpleMessage("Error al cargar el mapa"),
+        "buy_bitcoin_mapLoadingError_subheader":
+            MessageLookupByLibrary.simpleMessage(
+                "En este momento Envoy no puede cargar los datos del mapa. Comprueba la conexión o vuelve a intentarlo más tarde."),
         "buy_bitcoin_purchaseComplete_heading":
             MessageLookupByLibrary.simpleMessage("Compra Realizada"),
         "buy_bitcoin_purchaseComplete_subheading":
@@ -1257,6 +1264,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Tasa de Impulso"),
         "replaceByFee_boost_tx_heading": MessageLookupByLibrary.simpleMessage(
             "Tu transacción está lista para ser impulsada"),
+        "replaceByFee_cancelAmountNone_None":
+            MessageLookupByLibrary.simpleMessage("Nada"),
+        "replaceByFee_cancelAmountNone_overlay_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "La tasa por cancelar esta transacción es tan grande que no se enviarán fondos de vuelta a tu cartera.\n\n¿Cancelar de todos modos?"),
         "replaceByFee_cancel_confirm_heading":
             MessageLookupByLibrary.simpleMessage("Cancelando transacción"),
         "replaceByFee_cancel_fail_heading":

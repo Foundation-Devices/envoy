@@ -52,10 +52,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `Informational text`
+  /// `atms`
   String get _ {
     return Intl.message(
-      'Informational text',
+      'atms',
       name: '_',
       desc: '',
       args: [],
@@ -1134,6 +1134,16 @@ class S {
     );
   }
 
+  /// `EDIT REGION`
+  String get buy_bitcoin_details_menu_editRegion {
+    return Intl.message(
+      'EDIT REGION',
+      name: 'buy_bitcoin_details_menu_editRegion',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Cancel Buying Process`
   String get buy_bitcoin_exit_modal_heading {
     return Intl.message(
@@ -1149,6 +1159,26 @@ class S {
     return Intl.message(
       'You are about to cancel the buying process. Are you sure?',
       name: 'buy_bitcoin_exit_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't load map`
+  String get buy_bitcoin_mapLoadingError_header {
+    return Intl.message(
+      'Couldn\'t load map',
+      name: 'buy_bitcoin_mapLoadingError_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is currently unable to load map data. Check your connection or try again later.`
+  String get buy_bitcoin_mapLoadingError_subheader {
+    return Intl.message(
+      'Envoy is currently unable to load map data. Check your connection or try again later.',
+      name: 'buy_bitcoin_mapLoadingError_subheader',
       desc: '',
       args: [],
     );
@@ -5713,6 +5743,26 @@ class S {
     return Intl.message(
       'Your transaction is ready \nto be boosted',
       name: 'replaceByFee_boost_tx_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `None`
+  String get replaceByFee_cancelAmountNone_None {
+    return Intl.message(
+      'None',
+      name: 'replaceByFee_cancelAmountNone_None',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The network fee for cancelling this transaction means no funds will be sent back to your wallet.\n\nAre you sure you want to cancel?`
+  String get replaceByFee_cancelAmountNone_overlay_modal_subheading {
+    return Intl.message(
+      'The network fee for cancelling this transaction means no funds will be sent back to your wallet.\n\nAre you sure you want to cancel?',
+      name: 'replaceByFee_cancelAmountNone_overlay_modal_subheading',
       desc: '',
       args: [],
     );

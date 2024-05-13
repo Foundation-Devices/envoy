@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("Informational text"),
+        "_": MessageLookupByLibrary.simpleMessage("atms"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versió de l\'aplicació"),
         "about_openSourceLicences":
@@ -266,11 +266,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "buy_bitcoin_defineLocation_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Select your region so Envoy can display the purchase options available to you.  This info will never leave Envoy."),
+        "buy_bitcoin_details_menu_editRegion":
+            MessageLookupByLibrary.simpleMessage("EDIT REGION"),
         "buy_bitcoin_exit_modal_heading":
             MessageLookupByLibrary.simpleMessage("Cancel Buying Process"),
         "buy_bitcoin_exit_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "You are about to cancel the buying process. Are you sure?"),
+        "buy_bitcoin_mapLoadingError_header":
+            MessageLookupByLibrary.simpleMessage("Couldn\'t load map"),
+        "buy_bitcoin_mapLoadingError_subheader":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy is currently unable to load map data. Check your connection or try again later."),
         "buy_bitcoin_purchaseComplete_heading":
             MessageLookupByLibrary.simpleMessage("Purchase Complete"),
         "buy_bitcoin_purchaseComplete_subheading":
@@ -1263,6 +1270,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Tarifa d\'Augment"),
         "replaceByFee_boost_tx_heading": MessageLookupByLibrary.simpleMessage(
             "La vostra transacció està a punt per ser impulsada"),
+        "replaceByFee_cancelAmountNone_None":
+            MessageLookupByLibrary.simpleMessage("None"),
+        "replaceByFee_cancelAmountNone_overlay_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "The network fee for cancelling this transaction means no funds will be sent back to your wallet.\n\nAre you sure you want to cancel?"),
         "replaceByFee_cancel_confirm_heading":
             MessageLookupByLibrary.simpleMessage(
                 "S\'està cancel·lant la transacció"),
