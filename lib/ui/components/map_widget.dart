@@ -276,16 +276,14 @@ class MarkersPageState extends State<MarkersPage> {
                           if (!errorModalShown) {
                             showEnvoyPopUp(
                                 context,
-                                "Envoy is currently unable to load map data. Check your connection or try again later.",
-                                //TODO: Figma
+                                S().buy_bitcoin_mapLoadingError_subheader,
                                 S().component_ok,
                                 (BuildContext context) {
                                   Navigator.pop(context);
                                 },
                                 icon: EnvoyIcons.alert,
                                 typeOfMessage: PopUpState.danger,
-                                title: "Couldn't load map",
-                                //TODO: Figma
+                                title: S().buy_bitcoin_mapLoadingError_header,
                                 secondaryButtonLabel: S().component_retry,
                                 onSecondaryButtonTap: (BuildContext context) {
                                   Navigator.pop(context);
@@ -309,7 +307,7 @@ class MarkersPageState extends State<MarkersPage> {
                                 color: Colors.red,
                               ),
                               Text(
-                                "Couldn't load map", // For example
+                                S().buy_bitcoin_mapLoadingError_header,
                                 style: EnvoyTypography.explainer
                                     .copyWith(color: Colors.red),
                               ),
