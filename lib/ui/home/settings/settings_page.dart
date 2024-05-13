@@ -249,17 +249,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               ),
               ListTile(
                 dense: true,
-                onLongPress: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return const AlertDialog(
-                        content: Text(
-                            "MAP_API_KEY : ${const String.fromEnvironment('MAP_API_KEY')} \n\n RAMP_API_KEY ${const String.fromEnvironment('RAMP_API_KEY')}"),
-                      );
-                    },
-                  );
-                },
                 onTap: () {
                   Navigator.push(
                       context,
