@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:core';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -38,6 +39,8 @@ class MarkersPageState extends State<MarkersPage> {
 
   final List<Venue> venueMarkers = [];
   MapTransformer? localTransformer;
+  bool areMapTilesLoaded = true;
+  bool errorModalShown = false;
 
   @override
   void initState() {
@@ -230,7 +233,6 @@ class MarkersPageState extends State<MarkersPage> {
             var venueMarker = _buildVenueMarkerWidget(venue, transformer);
             markerVenueWidgets.add(venueMarker);
           }
-
           return GestureDetector(
             behavior: HitTestBehavior.opaque,
             onDoubleTapDown: (details) => _onDoubleTap(
@@ -267,10 +269,57 @@ class MarkersPageState extends State<MarkersPage> {
                       return CachedNetworkImage(
                         imageUrl: _openStreetMap(z, x, y),
                         fit: BoxFit.cover,
+                        errorListener: (e) {
+                          setState(() {
+                            areMapTilesLoaded = false;
+                          });
+                          if (!errorModalShown) {
+                            showEnvoyPopUp(
+                                context,
+                                "Envoy is currently unable to load map data. Check your connection or try again later.",
+                                //TODO: Figma
+                                S().component_ok,
+                                (BuildContext context) {
+                                  Navigator.pop(context);
+                                },
+                                icon: EnvoyIcons.alert,
+                                typeOfMessage: PopUpState.danger,
+                                title: "Couldn't load map",
+                                //TODO: Figma
+                                secondaryButtonLabel: S().component_retry,
+                                onSecondaryButtonTap: (BuildContext context) {
+                                  Navigator.pop(context);
+                                  setState(() {
+                                    // trigger build
+                                  });
+                                },
+                                onCheckBoxChanged: (_) {});
+
+                            setState(() {
+                              errorModalShown = true;
+                            });
+                          }
+                        },
+                        errorWidget: (context, url, error) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const EnvoyIcon(
+                                EnvoyIcons.alert,
+                                color: Colors.red,
+                              ),
+                              Text(
+                                "Couldn't load map", // For example
+                                style: EnvoyTypography.explainer
+                                    .copyWith(color: Colors.red),
+                              ),
+                            ],
+                          );
+                        },
                       );
                     },
                   ),
-                  ...markerVenueWidgets,
+                  if (areMapTilesLoaded) ...markerVenueWidgets,
                 ],
               ),
             ),
