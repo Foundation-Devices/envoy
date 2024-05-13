@@ -37,6 +37,14 @@ class FirmwareInfo {
   final String path;
 }
 
+class Region {
+  final String code;
+  final String name;
+  final String division;
+
+  Region(this.code, this.name, this.division);
+}
+
 final pendingTxStreamProvider =
     StreamProvider.family<List<wallet.Transaction>, String?>(
         (ref, account) => EnvoyStorage().getPendingTxsSteam(account));
@@ -63,7 +71,7 @@ const String preferencesStoreName = "preferences";
 const String blogPostsStoreName = "blog_posts";
 const String exchangeRateStoreName = "exchange_rate";
 const String locationsStoreName = "locations";
-const String isRegionSelectedStoreName = "isCountrySelected";
+const String countryRegionStoreName = "countries";
 
 ///keeps track of spend input tags, this would be handy to show previously used tags
 ///for example when user trying RBF.
@@ -77,6 +85,8 @@ class EnvoyStorage {
 
   bool _backupInProgress = false;
 
+  StoreRef<int, Map<String, dynamic>> countryStore =
+      intMapStoreFactory.store(countryRegionStoreName);
   StoreRef<String, String> txNotesStore =
       StoreRef<String, String>(txNotesStoreName);
   StoreRef<String, Map> pendingTxStore =
@@ -85,16 +95,6 @@ class EnvoyStorage {
       StoreRef<String, bool>(dismissedPromptsStoreName);
   StoreRef<String, Map> rbfBoostStore =
       StoreRef<String, Map>(rbfBoostStoreName);
-
-  Future<void> setRegion(bool value) async {
-    await preferencesStore.record(isRegionSelectedStoreName).put(_db, value);
-  }
-
-  Future<bool> isRegionSelected() async {
-    return (await preferencesStore.record(isRegionSelectedStoreName).get(_db))
-            as bool? ??
-        false;
-  }
 
   StoreRef<int, Map> canceledTxStore =
       intMapStoreFactory.store(canceledTxStoreName);
@@ -190,6 +190,31 @@ class EnvoyStorage {
       });
     }
     removeOutstandingAztecoPendingTxs();
+  }
+
+  Future<void> addRegion(String code, String name, String division) async {
+    await removeRegion();
+    await countryStore.record(code.hashCode).put(_db, {
+      'code': code,
+      'name': name,
+      'division': division,
+    });
+  }
+
+  Future<Region?> getRegion() async {
+    final record = await countryStore.findFirst(_db);
+    if (record != null) {
+      return Region(
+        record['code'] as String,
+        record['name'] as String,
+        record['division'] as String,
+      );
+    }
+    return null;
+  }
+
+  Future<void> removeRegion() async {
+    await countryStore.delete(_db);
   }
 
   Future<void> removeOutstandingAztecoPendingTxs() async {

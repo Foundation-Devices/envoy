@@ -1,6 +1,6 @@
 {
   ":": ":",
-  "_": "Informational text",
+  "_": "atms",
   "about_appVersion": "Versão da Aplicação",
   "about_openSourceLicences": "Licenças de Código Aberto",
   "about_privacyPolicy": "Política de Privacidade",
@@ -111,6 +111,8 @@
   "buy_bitcoin_details_menu_editRegion": "EDIT REGION",
   "buy_bitcoin_exit_modal_heading": "Cancelar o Processo de Compra",
   "buy_bitcoin_exit_modal_subheading": "Estás prestes a cancelar o processo de compra. Tens a certeza?",
+  "buy_bitcoin_mapLoadingError_header": "Couldn't load map",
+  "buy_bitcoin_mapLoadingError_subheader": "Envoy is currently unable to load map data. Check your connection or try again later.",
   "buy_bitcoin_purchaseComplete_heading": "Compra Concluída",
   "buy_bitcoin_purchaseComplete_subheading": "O término da compra pode demorar algum tempo dependendo do\nmétodo de pagamento e congestionamento da rede.",
   "buy_bitcoin_purchaseError_contactRamp": "Por favor entra em contacto com a Ramp para assistência técnica.",

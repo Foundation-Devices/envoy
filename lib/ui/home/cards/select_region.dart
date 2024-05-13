@@ -30,13 +30,28 @@ class _SelectRegionState extends State<SelectRegion> {
   Country? selectedCountry;
   List<Country> countries = [];
   bool _dataLoaded = false;
-  int _initialIndex = 0;
+  int _initialCountryIndex = 0;
   bool _divisionSelected = false;
+  String? selectedRegion;
+  int _initialRegionIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    readJson();
+    readJson().then((_) async {
+      var region = await EnvoyStorage().getRegion();
+      if (region != null) {
+        selectedCountry = getCountryByCode(region.code);
+        selectedRegion = region.division;
+        _initialRegionIndex =
+            getDivisionIndex(selectedCountry!.divisions, selectedRegion!);
+        dropdownDivisionKey.currentState?.setSelectedIndex(_initialRegionIndex);
+      }
+
+      setState(() {
+        _dataLoaded = true;
+      });
+    });
   }
 
   void _updateState(Country newCountry) {
@@ -45,6 +60,14 @@ class _SelectRegionState extends State<SelectRegion> {
       _divisionSelected = false;
     });
     dropdownDivisionKey.currentState?.setSelectedIndex(0);
+  }
+
+  int getDivisionIndex(List<String> divisions, String divisionName) {
+    try {
+      return divisions.indexOf(divisionName);
+    } catch (e) {
+      return 0;
+    }
   }
 
   Future<void> readJson() async {
@@ -84,7 +107,7 @@ class _SelectRegionState extends State<SelectRegion> {
     foundIndex != -1 ? foundIndex : 0;
     Country foundCountry = countries[foundIndex];
     setState(() {
-      _initialIndex = foundIndex;
+      _initialCountryIndex = foundIndex;
     });
     return foundCountry;
   }
@@ -150,7 +173,7 @@ class _SelectRegionState extends State<SelectRegion> {
                     height: EnvoySpacing.medium2,
                   ),
                   EnvoyDropdown(
-                    initialIndex: _initialIndex,
+                    initialIndex: _initialCountryIndex,
                     options: [
                       ...dropdownCountryOptions,
                     ],
@@ -163,14 +186,16 @@ class _SelectRegionState extends State<SelectRegion> {
                   ),
                   EnvoyDropdown(
                     key: dropdownDivisionKey,
-                    initialIndex: 0,
+                    initialIndex:
+                        selectedRegion != null ? _initialRegionIndex + 1 : 0,
                     options: [
                       ...divisionDropdownOptions,
                     ],
                     onOptionChanged: (selectedOption) {
                       setState(() {
-                        _divisionSelected = selectedOption?.label !=
-                            "Select State"; //TODO:Figma
+                        selectedRegion = selectedOption!.label;
+                        _divisionSelected =
+                            selectedOption.label != "Select State"; //TODO:Figma
                       });
                     },
                   ),
@@ -187,7 +212,12 @@ class _SelectRegionState extends State<SelectRegion> {
                   ? ButtonState.defaultState
                   : ButtonState.disabled,
               onTap: () async {
-                await EnvoyStorage().setRegion(true);
+                await EnvoyStorage().addRegion(
+                  selectedCountry!.code,
+                  selectedCountry!.name,
+                  selectedRegion!,
+                );
+
                 if (mounted) {
                   context.go(
                     ROUTE_BUY_BITCOIN,

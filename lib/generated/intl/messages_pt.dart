@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("Informational text"),
+        "_": MessageLookupByLibrary.simpleMessage("atms"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versão da Aplicação"),
         "about_openSourceLicences":
@@ -276,6 +276,11 @@ class MessageLookup extends MessageLookupByLibrary {
             "Cancelar o Processo de Compra"),
         "buy_bitcoin_exit_modal_subheading": MessageLookupByLibrary.simpleMessage(
             "Estás prestes a cancelar o processo de compra. Tens a certeza?"),
+        "buy_bitcoin_mapLoadingError_header":
+            MessageLookupByLibrary.simpleMessage("Couldn\'t load map"),
+        "buy_bitcoin_mapLoadingError_subheader":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy is currently unable to load map data. Check your connection or try again later."),
         "buy_bitcoin_purchaseComplete_heading":
             MessageLookupByLibrary.simpleMessage("Compra Concluída"),
         "buy_bitcoin_purchaseComplete_subheading":

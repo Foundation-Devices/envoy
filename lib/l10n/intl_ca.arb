@@ -1,6 +1,6 @@
 {
   ":": ":",
-  "_": "Informational text",
+  "_": "atms",
   "about_appVersion": "Versió de l'aplicació",
   "about_openSourceLicences": "Llicències de Codi Obert",
   "about_privacyPolicy": "Política de Privacitat",
@@ -111,6 +111,8 @@
   "buy_bitcoin_details_menu_editRegion": "EDIT REGION",
   "buy_bitcoin_exit_modal_heading": "Cancel Buying Process",
   "buy_bitcoin_exit_modal_subheading": "You are about to cancel the buying process. Are you sure?",
+  "buy_bitcoin_mapLoadingError_header": "Couldn't load map",
+  "buy_bitcoin_mapLoadingError_subheader": "Envoy is currently unable to load map data. Check your connection or try again later.",
   "buy_bitcoin_purchaseComplete_heading": "Purchase Complete",
   "buy_bitcoin_purchaseComplete_subheading": "Finalization may take some time depending on\npayment method and network congestion.",
   "buy_bitcoin_purchaseError_contactRamp": "Please contact Ramp for support.",

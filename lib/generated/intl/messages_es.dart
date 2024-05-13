@@ -266,11 +266,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Selecciona tu región para que Envoy pueda mostrar las opciones de compra disponibles para ti.  Esta información nunca saldrá de Envoy."),
         "buy_bitcoin_details_menu_editRegion":
-            MessageLookupByLibrary.simpleMessage("EDIT REGION"),
+            MessageLookupByLibrary.simpleMessage("EDITAR REGIÓN"),
         "buy_bitcoin_exit_modal_heading":
             MessageLookupByLibrary.simpleMessage("Cancelar Proceso de Compra"),
         "buy_bitcoin_exit_modal_subheading": MessageLookupByLibrary.simpleMessage(
             "Estás a punto de cancelar el proceso de compra. ¿Estás seguro?"),
+        "buy_bitcoin_mapLoadingError_header":
+            MessageLookupByLibrary.simpleMessage("Error al cargar el mapa"),
+        "buy_bitcoin_mapLoadingError_subheader":
+            MessageLookupByLibrary.simpleMessage(
+                "En este momento Envoy no puede cargar los datos del mapa. Comprueba la conexión o vuelve a intentarlo más tarde."),
         "buy_bitcoin_purchaseComplete_heading":
             MessageLookupByLibrary.simpleMessage("Compra Realizada"),
         "buy_bitcoin_purchaseComplete_subheading":

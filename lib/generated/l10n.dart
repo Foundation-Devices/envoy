@@ -52,10 +52,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `Informational text`
+  /// `atms`
   String get _ {
     return Intl.message(
-      'Informational text',
+      'atms',
       name: '_',
       desc: '',
       args: [],
@@ -1159,6 +1159,26 @@ class S {
     return Intl.message(
       'You are about to cancel the buying process. Are you sure?',
       name: 'buy_bitcoin_exit_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't load map`
+  String get buy_bitcoin_mapLoadingError_header {
+    return Intl.message(
+      'Couldn\'t load map',
+      name: 'buy_bitcoin_mapLoadingError_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is currently unable to load map data. Check your connection or try again later.`
+  String get buy_bitcoin_mapLoadingError_subheader {
+    return Intl.message(
+      'Envoy is currently unable to load map data. Check your connection or try again later.',
+      name: 'buy_bitcoin_mapLoadingError_subheader',
       desc: '',
       args: [],
     );
