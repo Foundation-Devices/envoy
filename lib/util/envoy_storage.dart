@@ -209,14 +209,9 @@ class EnvoyStorage {
   }
 
   Future<void> updateCountry(String code, String name, String division) async {
-    final record = await countryStore.findFirst(_db);
-    if (record != null) {
-      await countryStore
-          .record(record.key)
-          .update(_db, Country(code, name, division).toJson());
-    } else {
-      await countryStore.add(_db, Country(code, name, division).toJson());
-    }
+    await countryStore
+        .record(code.hashCode)
+        .put(_db, Country(code, name, division).toJson());
   }
 
   Future<Country?> getCountry() async {
