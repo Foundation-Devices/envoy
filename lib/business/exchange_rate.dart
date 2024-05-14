@@ -207,6 +207,10 @@ class ExchangeRate extends ChangeNotifier {
     NumberFormat currencyFormatter =
         NumberFormat.currency(locale: currentLocale, symbol: "");
 
+    if (_selectedCurrencyRate == null) {
+      return "";
+    }
+
     String formattedAmount = currencyFormatter
         .format(_selectedCurrencyRate! * amountSats / 100000000);
 
