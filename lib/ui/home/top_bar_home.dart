@@ -10,6 +10,7 @@ import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/routes/home_router.dart';
@@ -50,6 +51,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     HomeShellOptions? homeShellState = ref.watch(homeShellOptionsProvider);
     bool modalShown = ref.watch(hideBottomNavProvider);
     bool optionsShown = ref.watch(homePageOptionsVisibilityProvider);
+    bool buyBTCRightAction = ref.watch(buyBTCPageProvider);
     bool inEditMode =
         ref.watch(spendEditModeProvider) != SpendOverlayContext.hidden;
 
@@ -74,6 +76,9 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         }
         if (modalModeRoutes.contains(nextPath)) {
           ref.read(hideBottomNavProvider.notifier).state = true;
+          if (nextPath == ROUTE_BUY_BITCOIN) {
+            ref.read(buyBTCPageProvider.notifier).state = true;
+          }
         } else {
           ref.read(hideBottomNavProvider.notifier).state = false;
         }
@@ -132,7 +137,11 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                 ref.read(homePageTitleProvider.notifier).state =
                     S().menu_heading.toUpperCase();
               } else if (state == HamburgerState.back) {
-                GoRouter.of(context).pop();
+                if (buyBTCRightAction) {
+                  OnboardingPage.popUntilHome(context);
+                } else {
+                  GoRouter.of(context).pop();
+                }
               }
             }
           },
@@ -166,9 +175,13 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
           child: AnimatedSwitcher(
               duration: _animationsDuration,
               child: AbsorbPointer(
-                  absorbing: backDropEnabled || modalShown,
+                  absorbing:
+                      (backDropEnabled || modalShown) && !buyBTCRightAction,
                   child: AnimatedOpacity(
-                      opacity: backDropEnabled || modalShown ? 0.0 : 1.0,
+                      opacity:
+                          (backDropEnabled || modalShown) && !buyBTCRightAction
+                              ? 0.0
+                              : 1.0,
                       duration: _animationsDuration,
                       child: AnimatedSwitcher(
                           duration: _animationsDuration,
@@ -221,6 +234,9 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       return true;
     }
     if (path.contains(ROUTE_SELECT_REGION)) {
+      return true;
+    }
+    if (path.contains(ROUTE_BUY_BITCOIN)) {
       return true;
     }
     return false;
@@ -406,23 +422,26 @@ class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
     /// 0 for idle
     /// 1 for upward icon
     /// -1 for back icon
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: widget.onPressed,
-        child: Center(
-          child: SizedBox.fromSize(
-            size: const Size.square(24),
-            child: _menuArtBoard != null
-                ? Rive(
-                    artboard: _menuArtBoard!,
-                    fit: BoxFit.contain,
-                  )
-                : const SizedBox.square(),
-          ),
-        ),
-      ),
-    );
+    bool optionsShown = ref.watch(homePageOptionsVisibilityProvider);
+    return optionsShown
+        ? const SizedBox.square()
+        : MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: widget.onPressed,
+              child: Center(
+                child: SizedBox.fromSize(
+                  size: const Size.square(24),
+                  child: _menuArtBoard != null
+                      ? Rive(
+                          artboard: _menuArtBoard!,
+                          fit: BoxFit.contain,
+                        )
+                      : const SizedBox.square(),
+                ),
+              ),
+            ),
+          );
   }
 }

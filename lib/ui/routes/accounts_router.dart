@@ -232,6 +232,12 @@ final accountsRouter = StatefulShellBranch(
                 routes: [
                   GoRoute(
                       path: _BUY_BITCOIN,
+                      onExit: (context) {
+                        ProviderScope.containerOf(context)
+                            .read(buyBTCPageProvider.notifier)
+                            .state = false;
+                        return true;
+                      },
                       pageBuilder: (context, state) {
                         return wrapWithVerticalAxisAnimation(
                             const BuyBitcoinCard());

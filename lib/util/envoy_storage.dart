@@ -24,6 +24,7 @@ import 'package:sembast/src/type.dart';
 import 'package:sembast/utils/sembast_import_export.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wallet/wallet.dart' as wallet;
+import 'package:envoy/business/country.dart';
 
 class FirmwareInfo {
   FirmwareInfo({
@@ -63,6 +64,7 @@ const String preferencesStoreName = "preferences";
 const String blogPostsStoreName = "blog_posts";
 const String exchangeRateStoreName = "exchange_rate";
 const String locationsStoreName = "locations";
+const String selectedCountryStoreName = "countries";
 
 ///keeps track of spend input tags, this would be handy to show previously used tags
 ///for example when user trying RBF.
@@ -76,6 +78,8 @@ class EnvoyStorage {
 
   bool _backupInProgress = false;
 
+  StoreRef<int, Map<String, dynamic>> countryStore =
+      intMapStoreFactory.store(selectedCountryStoreName);
   StoreRef<String, String> txNotesStore =
       StoreRef<String, String>(txNotesStoreName);
   StoreRef<String, Map> pendingTxStore =
@@ -179,6 +183,20 @@ class EnvoyStorage {
       });
     }
     removeOutstandingAztecoPendingTxs();
+  }
+
+  Future<void> updateCountry(String code, String name, String division) async {
+    await countryStore
+        .record(code.hashCode)
+        .put(_db, Country(code, name, division).toJson());
+  }
+
+  Future<Country?> getCountry() async {
+    final record = await countryStore.findFirst(_db);
+    if (record != null) {
+      return Country.fromJson(record.value);
+    }
+    return null;
   }
 
   Future<void> removeOutstandingAztecoPendingTxs() async {

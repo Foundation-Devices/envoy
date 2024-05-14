@@ -56,9 +56,11 @@ class AccountsCardState extends State<AccountsCard>
         Padding(
           padding: const EdgeInsets.only(bottom: 10),
           child: GestureDetector(
-            onTap: () {
+            onTap: () async {
               context.go(
-                ROUTE_SELECT_REGION,
+                await EnvoyStorage().getCountry() != null
+                    ? ROUTE_BUY_BITCOIN
+                    : ROUTE_SELECT_REGION,
               );
             },
             child: QrShield(
