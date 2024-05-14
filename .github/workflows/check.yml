@@ -58,9 +58,12 @@ jobs:
       - name: Run Dart tests
         run: flutter test
 
-  QA-test:
-    runs-on: [linux, x64]
-    steps:
-      - uses: extractions/setup-just@v1
-      - uses: actions/checkout@v2
-      - run: just run-QA
+      - name: QA map flow
+        run: flutter test integration_test/flow_to_map_and_p2p_test.dart -d linux
+
+#  QA-test:
+#    runs-on: [linux, x64]
+#    steps:
+#      - uses: extractions/setup-just@v1
+#      - uses: actions/checkout@v2
+#      - run: just run-QA
