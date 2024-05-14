@@ -74,7 +74,7 @@ jobs:
           MAP_API_KEY: ${{ secrets.MAP_API_KEY }}
           RAMP_API_KEY: ${{ secrets.RAMP_API_KEY }}
         run: |
-          flutter build ipa --dart-define='MAP_API_KEY=$MAP_API_KEY' --dart-define='RAMP_API_KEY=$RAMP_API_KEY' --release --export-options-plist=ios/ExportOptions.plist
+          flutter build ipa --dart-define=MAP_API_KEY=$MAP_API_KEY --dart-define=RAMP_API_KEY=$RAMP_API_KEY --release --export-options-plist=ios/ExportOptions.plist
 
       - uses: actions/upload-artifact@v2
         with:
