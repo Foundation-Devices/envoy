@@ -37,12 +37,28 @@ class FirmwareInfo {
   final String path;
 }
 
-class Region {
+class Country {
   final String code;
   final String name;
   final String division;
 
-  Region(this.code, this.name, this.division);
+  Country(this.code, this.name, this.division);
+
+  Map<String, dynamic> toJson() {
+    return {
+      'code': code,
+      'name': name,
+      'division': division,
+    };
+  }
+
+  factory Country.fromJson(Map<String, dynamic> json) {
+    return Country(
+      json['code'] as String,
+      json['name'] as String,
+      json['division'] as String,
+    );
+  }
 }
 
 final pendingTxStreamProvider =
@@ -71,7 +87,7 @@ const String preferencesStoreName = "preferences";
 const String blogPostsStoreName = "blog_posts";
 const String exchangeRateStoreName = "exchange_rate";
 const String locationsStoreName = "locations";
-const String countryRegionStoreName = "countries";
+const String selectedCountryStoreName = "countries";
 
 ///keeps track of spend input tags, this would be handy to show previously used tags
 ///for example when user trying RBF.
@@ -86,7 +102,7 @@ class EnvoyStorage {
   bool _backupInProgress = false;
 
   StoreRef<int, Map<String, dynamic>> countryStore =
-      intMapStoreFactory.store(countryRegionStoreName);
+      intMapStoreFactory.store(selectedCountryStoreName);
   StoreRef<String, String> txNotesStore =
       StoreRef<String, String>(txNotesStoreName);
   StoreRef<String, Map> pendingTxStore =
@@ -192,29 +208,23 @@ class EnvoyStorage {
     removeOutstandingAztecoPendingTxs();
   }
 
-  Future<void> addRegion(String code, String name, String division) async {
-    await removeRegion();
-    await countryStore.record(code.hashCode).put(_db, {
-      'code': code,
-      'name': name,
-      'division': division,
-    });
-  }
-
-  Future<Region?> getRegion() async {
+  Future<void> updateCountry(String code, String name, String division) async {
     final record = await countryStore.findFirst(_db);
     if (record != null) {
-      return Region(
-        record['code'] as String,
-        record['name'] as String,
-        record['division'] as String,
-      );
+      await countryStore
+          .record(record.key)
+          .update(_db, Country(code, name, division).toJson());
+    } else {
+      await countryStore.add(_db, Country(code, name, division).toJson());
     }
-    return null;
   }
 
-  Future<void> removeRegion() async {
-    await countryStore.delete(_db);
+  Future<Country?> getCountry() async {
+    final record = await countryStore.findFirst(_db);
+    if (record != null) {
+      return Country.fromJson(record.value);
+    }
+    return null;
   }
 
   Future<void> removeOutstandingAztecoPendingTxs() async {

@@ -39,7 +39,7 @@ class _SelectRegionState extends State<SelectRegion> {
   void initState() {
     super.initState();
     readJson().then((_) async {
-      var region = await EnvoyStorage().getRegion();
+      var region = await EnvoyStorage().getCountry();
       if (region != null) {
         selectedCountry = getCountryByCode(region.code);
         selectedRegion = region.division;
@@ -206,25 +206,22 @@ class _SelectRegionState extends State<SelectRegion> {
           Padding(
             padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
             child: EnvoyButton(
-              label: S().component_continue,
-              type: ButtonType.primary,
-              state: _divisionSelected
-                  ? ButtonState.defaultState
-                  : ButtonState.disabled,
-              onTap: () async {
-                await EnvoyStorage().addRegion(
-                  selectedCountry!.code,
-                  selectedCountry!.name,
-                  selectedRegion!,
-                );
-
-                if (mounted) {
-                  context.go(
-                    ROUTE_BUY_BITCOIN,
+                label: S().component_continue,
+                type: ButtonType.primary,
+                state: _divisionSelected
+                    ? ButtonState.defaultState
+                    : ButtonState.disabled,
+                onTap: () async {
+                  await EnvoyStorage().updateCountry(
+                    selectedCountry!.code,
+                    selectedCountry!.name,
+                    selectedRegion!,
                   );
-                }
-              },
-            ),
+
+                  if (mounted) {
+                    context.go(ROUTE_BUY_BITCOIN);
+                  }
+                }),
           )
         ],
       ),

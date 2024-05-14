@@ -58,7 +58,7 @@ class AccountsCardState extends State<AccountsCard>
           child: GestureDetector(
             onTap: () async {
               context.go(
-                await EnvoyStorage().getRegion() != null
+                await EnvoyStorage().getCountry() != null
                     ? ROUTE_BUY_BITCOIN
                     : ROUTE_SELECT_REGION,
               );
