@@ -28,7 +28,7 @@ jobs:
         run: sudo apt-get install -y libgtk-3-dev
 
       - name: Install ZBar
-        run: sudo apt-get install -y libzbar0
+        run: sudo apt-get install -y libzbar-dev
 
       - name: REUSE Compliance Check
         uses: fsfe/reuse-action@v1
