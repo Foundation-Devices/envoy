@@ -13,11 +13,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:path/path.dart';
 
-// Note: Do not run main; run each test separately.
 void main() {
-  testWidgets('flow to map', (tester) async {
+  testWidgets('flow to map and P2P', (tester) async {
     // Uncomment the line below if you want to reset Envoy data and go through the onboarding flow.
-    //await resetEnvoyData();
+    // await resetEnvoyData();
 
     ScreenshotController envoyScreenshotController = ScreenshotController();
     await initSingletons();
@@ -25,7 +24,7 @@ void main() {
         controller: envoyScreenshotController, child: const EnvoyApp()));
 
     // Uncomment the line below if you want to reset Envoy data and go through the onboarding flow.
-    //await setUpAppFromStart(tester);
+    // await setUpAppFromStart(tester);
 
     await fromHomeToBuyOptions(tester);
 
@@ -43,28 +42,21 @@ void main() {
       (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.location,
     );
     expect(iconFinder, findsAny);
-  });
 
-  testWidgets('flow to peer to peer', (tester) async {
-    // Uncomment the line below if you want to reset Envoy data and go through the onboarding flow.
-    //await resetEnvoyData();
+    // close the map, back to buy option menu
+    final iconClose = find.byWidgetPredicate(
+      (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.close,
+    );
+    await tester.tap(iconClose);
+    await tester.pump(Durations.long2);
 
-    await initSingletons();
-    ScreenshotController envoyScreenshotController = ScreenshotController();
-    await tester.pumpWidget(Screenshot(
-        controller: envoyScreenshotController, child: const EnvoyApp()));
-
-    // Uncomment the line below if you want to reset Envoy data and go through the onboarding flow.
-    //await setUpAppFromStart(tester);
-
-    await fromHomeToBuyOptions(tester);
+    // test "peer to peer" flow
 
     final peerTab = find.text('Peer to Peer');
     expect(peerTab, findsOneWidget);
     await tester.tap(peerTab);
     await tester.pump(Durations.long2);
 
-    final continueButtonFinder = find.text('Continue');
     expect(continueButtonFinder, findsOneWidget);
     await tester.tap(continueButtonFinder);
     await tester.pump(Durations.long2);
@@ -72,50 +64,37 @@ void main() {
     final title = find.text("Select an option");
     expect(title, findsOneWidget);
   });
-
-  testWidgets('flow to ramp', (tester) async {
-    // Uncomment the line below if you want to reset Envoy data and go through the onboarding flow.
-    //await resetEnvoyData();
-
-    await initSingletons();
-    ScreenshotController envoyScreenshotController = ScreenshotController();
-    await tester.pumpWidget(Screenshot(
-        controller: envoyScreenshotController, child: const EnvoyApp()));
-
-    // Uncomment the line below if you want to reset Envoy data and go through the onboarding flow.
-    //await setUpAppFromStart(tester);
-
-    await fromHomeToBuyOptions(tester);
-    final rampTab = find.text('Buy in Envoy');
-    expect(rampTab, findsOneWidget);
-    await tester.tap(rampTab);
-    await tester.pump(Durations.long2);
-
-    final continueButtonFinder = find.text('Continue');
-    expect(continueButtonFinder, findsOneWidget);
-    await tester.tap(continueButtonFinder);
-    await tester.pump(Durations.long2);
-
-    final title = find.text("Where should the Bitcoin be sent?");
-    expect(title, findsOneWidget);
-    await tester.tap(continueButtonFinder);
-    await tester.pump(Durations.long2);
-
-    final titleModalDialog = find.text("Leaving Envoy");
-    expect(titleModalDialog, findsOneWidget);
-
-    // Note: The "ramp" widget is only supported on Android and iOS platforms,
-    // so there is no reliable way to verify its functionality in this test.
-  });
 }
 
 Future<void> fromHomeToBuyOptions(WidgetTester tester) async {
   await tester.pump();
+  //
+  // final devices = find.text('Devices');
+  // await tester.tap(devices);
+  // await tester.pumpAndSettle();
+  // final learn=find.text("Learn");
+  // await tester.tap(learn);
+  // await tester.pumpAndSettle();
+  // await Future.delayed(const Duration(
+  //     seconds: 2));
+  // for (int i = 0; i < 100; i++) {
+  //   await tester.pump(Durations.medium2);
+  // }
   final buyBitcoinButton = find.text('Buy');
   expect(buyBitcoinButton, findsOneWidget);
+  // for (int i = 0; i < 100; i++) {
+  //   await tester.pump(Durations.long2);
+  // }
   await tester.tap(buyBitcoinButton);
 
-  await tester.pump(Durations.long2);
+  // for (int i = 0; i < 100; i++) {
+  //   await tester.pump(Durations.long2);
+  // }
+  //
+  //
+  // await tester.pumpAndSettle();
+  //
+
   await Future.delayed(const Duration(
       seconds: 5)); // Ensure enough time for reading JSON data for countries.
   await tester.pump(Durations.long2);

@@ -57,3 +57,6 @@ jobs:
 
       - name: Run Dart tests
         run: flutter test
+
+      - name: Run QA tests
+        run: just run-QA
