@@ -15,7 +15,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/checkout@v2
+      - name: Install Ninja
+        run: sudo apt-get install -y ninja-build
+
+      - name: Install CMake
+        run: sudo apt-get install -y cmake
+
       - name: REUSE Compliance Check
         uses: fsfe/reuse-action@v1
 
