@@ -133,21 +133,6 @@ class _SelectRegionState extends State<SelectRegion> {
                   const SizedBox(
                     height: EnvoySpacing.medium2,
                   ),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Text(
-                      S().component_learnMore,
-                      style: EnvoyTypography.button
-                          .copyWith(color: EnvoyColors.accentPrimary),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: EnvoySpacing.medium2,
-                  ),
-                  const SizedBox(
-                    height: EnvoySpacing.medium2,
-                  ),
                   EnvoyDropdown(
                     initialIndex: _initialIndex,
                     options: [
