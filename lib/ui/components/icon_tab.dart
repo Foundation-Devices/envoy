@@ -74,6 +74,7 @@ class IconTabState extends State<IconTab> {
               ),
               Text(
                 widget.label,
+                textAlign: TextAlign.center,
                 style: titleStyle.copyWith(
                   color: textColor,
                 ),
