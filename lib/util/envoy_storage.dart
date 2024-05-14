@@ -24,6 +24,7 @@ import 'package:sembast/src/type.dart';
 import 'package:sembast/utils/sembast_import_export.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wallet/wallet.dart' as wallet;
+import 'package:envoy/business/country.dart';
 
 class FirmwareInfo {
   FirmwareInfo({
@@ -35,30 +36,6 @@ class FirmwareInfo {
   final int deviceID;
   final String storedVersion;
   final String path;
-}
-
-class Country {
-  final String code;
-  final String name;
-  final String division;
-
-  Country(this.code, this.name, this.division);
-
-  Map<String, dynamic> toJson() {
-    return {
-      'code': code,
-      'name': name,
-      'division': division,
-    };
-  }
-
-  factory Country.fromJson(Map<String, dynamic> json) {
-    return Country(
-      json['code'] as String,
-      json['name'] as String,
-      json['division'] as String,
-    );
-  }
 }
 
 final pendingTxStreamProvider =

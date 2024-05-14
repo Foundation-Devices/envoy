@@ -12,7 +12,7 @@ _$AccountImpl _$$AccountImplFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String? ?? 'Account',
       deviceSerial: json['deviceSerial'] as String,
       dateAdded: DateTime.parse(json['dateAdded'] as String),
-      number: json['number'] as int,
+      number: (json['number'] as num).toInt(),
       id: json['id'] as String? ?? Account.generateNewId(),
       dateSynced: json['dateSynced'] == null
           ? null
