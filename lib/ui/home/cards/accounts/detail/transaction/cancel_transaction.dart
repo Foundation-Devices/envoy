@@ -336,7 +336,10 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
               Padding(
                 padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
                 child: Text(
-                  S().replaceByFee_cancel_overlay_modal_subheading,
+                  _totalReturnAmount.isNegative
+                      ? S()
+                          .replaceByFee_cancelAmountNone_overlay_modal_subheading
+                      : S().replaceByFee_cancel_overlay_modal_subheading,
                   style: EnvoyTypography.info,
                   textAlign: TextAlign.center,
                 ),
@@ -370,11 +373,15 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                           S().replaceByFee_cancel_overlay_modal_receivingAmount,
                           style: EnvoyTypography.body,
                         ),
-                        EnvoyAmount(
-                          account: account,
-                          amountSats: _totalReturnAmount,
-                          amountWidgetStyle: AmountWidgetStyle.normal,
-                        )
+                        _totalReturnAmount.isNegative
+                            ? Text(S().replaceByFee_cancelAmountNone_None,
+                                style: EnvoyTypography.body
+                                    .copyWith(color: EnvoyColors.danger))
+                            : EnvoyAmount(
+                                account: account,
+                                amountSats: _totalReturnAmount,
+                                amountWidgetStyle: AmountWidgetStyle.normal,
+                              )
                       ],
                     ),
                     const SizedBox(height: EnvoySpacing.medium1),
