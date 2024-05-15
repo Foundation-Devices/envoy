@@ -315,7 +315,10 @@ class EnvoyStorage {
 
   // key is usually the txid
   // except for pending Azteco tx where it's the receive address
-  Future addTxNote(String note, String key) async {
+  Future addTxNote({
+    required String key,
+    required String note,
+  }) async {
     txNotesStore.record(key).put(_db, note);
     return true;
   }
