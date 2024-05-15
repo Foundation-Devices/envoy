@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+name: QA on simulator
+
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  ios:
+    # Creates a build matrix for your jobs. You can define different variations of an environment to run each job
+    strategy:
+      matrix:
+        device:
+          # The available simulators are listed by the "xcrun xctrace list devices" command
+          - "iPhone 11 Simulator (15.2)" # the name of the simulator could be different depending on the macos version you are using
+      # if one of the jobs in the matrix expansion fails, the rest of the jobs will be cancelled
+      fail-fast: true
+    runs-on: macos-11 # or macos-latest if you prefer, but be aware that the available simulators could be different if you run a different version
+    steps:
+      - name: "List all simulators"
+        run: "xcrun xctrace list devices"
+      - name: "Start Simulator"
+        run: |
+          UDID=$(xcrun xctrace list devices | grep "^${{ matrix.device }}" | awk '{gsub(/[()]/,""); print $NF}')
+          echo $UDID
+          xcrun simctl boot "${UDID:?No Simulator with this name found}"
+      - uses: actions/checkout@v3
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Install Flutter dependencies
+        run: flutter pub get
+      - name: Run integration tests
+        run: flutter test integration_test/onboarding_flow_test.dart --verbose
