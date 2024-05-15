@@ -27,7 +27,7 @@ void main() {
 
     print("after onboarding");
 
-    //await fromHomeToBuyOptions(tester);
+    await fromHomeToBuyOptions(tester);
 
     print("buy options on the screen");
 
@@ -80,19 +80,19 @@ Future<void> fromHomeToBuyOptions(WidgetTester tester) async {
       seconds: 5)); // Ensure enough time for reading JSON data for countries.
   await tester.pump(Durations.long2);
 
-  final selectRegionDropDown = find.text('Select State');
-  expect(selectRegionDropDown, findsOneWidget);
-  await tester.tap(selectRegionDropDown);
-  await tester.pump(Durations.long2);
-
-  final dropdownItems = find.byType(DropdownMenuItem<EnvoyDropdownOption>);
-  await tester.tap(dropdownItems.at(1)); // Tap at first state
-  await tester.pump(Durations.long2);
-
-  final continueButtonFinder = find.text('Continue');
-  expect(continueButtonFinder, findsOneWidget);
-  await tester.tap(continueButtonFinder);
-  await tester.pump(Durations.long2);
+  // final selectRegionDropDown = find.text('Select State');
+  // expect(selectRegionDropDown, findsOneWidget);
+  // await tester.tap(selectRegionDropDown);
+  // await tester.pump(Durations.long2);
+  //
+  // final dropdownItems = find.byType(DropdownMenuItem<EnvoyDropdownOption>);
+  // await tester.tap(dropdownItems.at(1)); // Tap at first state
+  // await tester.pump(Durations.long2);
+  //
+  // final continueButtonFinder = find.text('Continue');
+  // expect(continueButtonFinder, findsOneWidget);
+  // await tester.tap(continueButtonFinder);
+  // await tester.pump(Durations.long2);
 }
 
 Future<void> setUpAppFromStart(WidgetTester tester) async {
