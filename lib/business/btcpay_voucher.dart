@@ -174,7 +174,7 @@ class BtcPayVoucher {
 void addPendingTx(String pullPaymentId, String address, Account account) {
   EnvoyStorage().addPendingTx(pullPaymentId, account.id ?? "", DateTime.now(),
       TransactionType.btcPay, 0, 0, address);
-  EnvoyStorage().addTxNote("BTCPay voucher", address); // TODO: FIGMA
+  EnvoyStorage().addTxNote(note: "BTCPay voucher", key: address); // TODO: FIGMA
 }
 
 DateTime? convertUnixTimestampToDateTime(int? unixTimestamp) {

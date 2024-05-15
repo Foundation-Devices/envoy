@@ -56,7 +56,7 @@ class RampWidget {
 
     await EnvoyStorage().addPendingTx(txID, account.id ?? "", DateTime.now(),
         TransactionType.ramp, amount, 0, address);
-    EnvoyStorage().addTxNote("Ramp Purchase", address); //TODO: figma
+    EnvoyStorage().addTxNote(note: "Ramp Purchase", key: address); //TODO: figma
     if (context.mounted) {
       Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(builder: (context) {

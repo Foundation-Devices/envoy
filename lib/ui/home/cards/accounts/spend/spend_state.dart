@@ -328,7 +328,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       RawTransaction? transaction = ref.read(rawTransactionProvider);
 
       if (note != null) {
-        await EnvoyStorage().addTxNote(note, psbt.txid);
+        await EnvoyStorage().addTxNote(key: psbt.txid, note: note);
       }
 
       try {

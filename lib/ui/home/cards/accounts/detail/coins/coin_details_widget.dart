@@ -172,7 +172,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                     noteHintText: S().add_note_modal_ie_text_field,
                     noteSubTitle: S().add_note_modal_subheading,
                     onAdd: (note) async {
-                      await EnvoyStorage().addTxNote(note, tx.txId);
+                      await EnvoyStorage().addTxNote(key: tx.txId, note: note);
                       navigator.pop();
                     },
                   ),

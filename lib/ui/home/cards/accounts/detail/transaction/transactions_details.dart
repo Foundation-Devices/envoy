@@ -291,7 +291,7 @@ class _TransactionsDetailsWidgetState
                       noteHintText: S().add_note_modal_ie_text_field,
                       noteSubTitle: S().add_note_modal_subheading,
                       onAdd: (note) {
-                        EnvoyStorage().addTxNote(note, tx.txId);
+                        EnvoyStorage().addTxNote(note: note, key: tx.txId);
                         Navigator.pop(context);
                       },
                     ),

@@ -83,5 +83,5 @@ class AztecoVoucher {
 void addPendingTx(String address, Account account) {
   EnvoyStorage().addPendingTx(address, account.id ?? "", DateTime.now(),
       TransactionType.azteco, 0, 0, address);
-  EnvoyStorage().addTxNote("Azteco voucher", address); // TODO: FIGMA
+  EnvoyStorage().addTxNote(note: "Azteco voucher", key: address); // TODO: FIGMA
 }

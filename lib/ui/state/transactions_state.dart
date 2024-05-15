@@ -243,8 +243,8 @@ Future prunePendingTransactions(
         .where((tx) => tx.outputs!.contains(pendingTx.address))
         .forEach((actualAztecoTx) {
       kPrint("Pruning Azteco tx: ${actualAztecoTx.txId}");
-      EnvoyStorage()
-          .addTxNote("Azteco voucher", actualAztecoTx.txId); // TODO: FIGMA
+      EnvoyStorage().addTxNote(
+          note: "Azteco voucher", key: actualAztecoTx.txId); // TODO: FIGMA
       EnvoyStorage().deleteTxNote(pendingTx.address!);
       EnvoyStorage().deletePendingTx(pendingTx.address!);
     });
@@ -255,8 +255,8 @@ Future prunePendingTransactions(
         .where((tx) => tx.outputs!.contains(pendingTx.address))
         .forEach((actualBtcPayTx) {
       kPrint("Pruning BtcPay tx: ${actualBtcPayTx.txId}");
-      EnvoyStorage()
-          .addTxNote("BTCPay voucher", actualBtcPayTx.txId); // TODO: FIGMA
+      EnvoyStorage().addTxNote(
+          note: "BTCPay voucher", key: actualBtcPayTx.txId); // TODO: FIGMA
       EnvoyStorage().deleteTxNote(pendingTx.address!);
       EnvoyStorage().deletePendingTx(pendingTx.address!);
       actualBtcPayTx.setPullPaymentId(pendingTx.pullPaymentId);
@@ -267,8 +267,8 @@ Future prunePendingTransactions(
         .where((tx) => tx.outputs!.contains(pendingTx.address))
         .forEach((actualRampTx) {
       kPrint("Pruning Ramp tx: ${actualRampTx.txId}");
-      EnvoyStorage()
-          .addTxNote("Ramp Purchase", actualRampTx.txId); // TODO: FIGMA
+      EnvoyStorage().addTxNote(
+          note: "Ramp Purchase", key: actualRampTx.txId); // TODO: FIGMA
       EnvoyStorage().deleteTxNote(pendingTx.address!);
       EnvoyStorage().deletePendingTx(pendingTx.address!);
     });

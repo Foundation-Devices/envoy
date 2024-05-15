@@ -647,7 +647,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         ///Copy existing or updated note to the new transaction id
         final updatedNote = ref.read(stagingTxNoteProvider);
         if (updatedNote != null) {
-          await EnvoyStorage().addTxNote(updatedNote, txid);
+          await EnvoyStorage().addTxNote(note: updatedNote, key: txid);
         }
 
         /// get all the tags for searching change output tag in the original transaction
