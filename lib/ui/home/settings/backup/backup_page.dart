@@ -23,6 +23,7 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart' as new_colors;
 
 class BackupPage extends ConsumerStatefulWidget {
   const BackupPage({super.key});
@@ -336,7 +337,8 @@ class _BackupPageState extends ConsumerState<BackupPage>
                         ),
                         child: Text(
                           S().manual_toggle_on_seed_backup_now_modal_subheading,
-                          style: EnvoyTypography.info,
+                          style: EnvoyTypography.info.copyWith(
+                              color: new_colors.EnvoyColors.textTertiary),
                           textAlign: TextAlign.center,
                         ),
                       ),
