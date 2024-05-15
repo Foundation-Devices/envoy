@@ -290,7 +290,7 @@ class OnboardingText extends StatelessWidget {
                                 decoration: TextDecoration.none)
                             .setWeight(FontWeight.w500)))
                 : const SizedBox.shrink(),
-            const SizedBox(height: EnvoySpacing.medium2),
+            const SizedBox(height: EnvoySpacing.medium1),
             text != null
                 ? Padding(
                     padding: const EdgeInsets.only(top: EnvoySpacing.medium3),

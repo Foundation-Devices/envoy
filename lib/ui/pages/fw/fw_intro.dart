@@ -9,6 +9,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 //ignore: must_be_immutable
 class FwIntroPage extends StatelessWidget {
@@ -26,40 +27,53 @@ class FwIntroPage extends StatelessWidget {
             ? OnboardingPage.popUntilHome(context)
             : OnboardingPage.popUntilGoRoute(context);
       },
-      clipArt: Image.asset("assets/fw_intro.png"),
+      clipArt: Image.asset("assets/fw_intro.png", height: 300),
       text: [
-        Flexible(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                OnboardingText(header: S().envoy_fw_intro_heading),
-                LinkText(
-                    text: S().envoy_fw_intro_subheading,
-                    linkStyle: EnvoyTypography.button
-                        .copyWith(color: EnvoyColors.accentPrimary),
-                    onTap: () {
-                      launchUrlString(
-                          "https://github.com/Foundation-Devices/passport2/releases");
-                    }),
-              ],
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    OnboardingText(header: S().envoy_fw_intro_heading),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium2),
+                      child: LinkText(
+                          text: S().envoy_fw_intro_subheading,
+                          linkStyle: EnvoyTypography.button
+                              .copyWith(color: EnvoyColors.accentPrimary),
+                          onTap: () {
+                            launchUrlString(
+                                "https://github.com/Foundation-Devices/passport2/releases");
+                          }),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
+          ],
         )
       ],
       navigationDots: 6,
       navigationDotsIndex: 0,
       buttons: [
-        OnboardingButton(
-            label: S().envoy_fw_intro_cta,
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return FwMicrosdPage(
-                  onboarding: onboarding,
-                  deviceId: deviceId,
-                );
-              }));
-            }),
+        Padding(
+          padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+          child: OnboardingButton(
+              label: S().envoy_fw_intro_cta,
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return FwMicrosdPage(
+                    onboarding: onboarding,
+                    deviceId: deviceId,
+                  );
+                }));
+              }),
+        ),
       ],
     );
   }

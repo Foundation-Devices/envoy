@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/pages/pp/pp_setup_intro.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -24,32 +25,43 @@ class FwPassportPage extends StatelessWidget {
             : OnboardingPage.popUntilGoRoute(context);
       },
       text: [
-        Flexible(
-          child: SingleChildScrollView(
-            child: OnboardingText(
-              header: S().envoy_fw_passport_heading,
-              text: onboarding
-                  ? S().envoy_fw_passport_subheading
-                  : S().envoy_fw_passport_onboarded_subheading,
-            ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: SingleChildScrollView(
+                  child: OnboardingText(
+                    header: S().envoy_fw_passport_heading,
+                    text: onboarding
+                        ? S().envoy_fw_passport_subheading
+                        : S().envoy_fw_passport_onboarded_subheading,
+                  ),
+                ),
+              ),
+            ],
           ),
         )
       ],
       navigationDots: 6,
       navigationDotsIndex: 5,
       buttons: [
-        OnboardingButton(
-            label: S().component_continue,
-            onTap: () {
-              if (!onboarding) {
-                OnboardingPage.popUntilGoRoute(context);
-              } else {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return const PpSetupIntroPage();
-                }));
-              }
-            }),
+        Padding(
+          padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+          child: OnboardingButton(
+              label: S().component_continue,
+              onTap: () {
+                if (!onboarding) {
+                  OnboardingPage.popUntilGoRoute(context);
+                } else {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return const PpSetupIntroPage();
+                  }));
+                }
+              }),
+        ),
       ],
     );
   }

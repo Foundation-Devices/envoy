@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
+
 import 'package:envoy/business/fw_uploader.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/pages/fw/fw_microsd.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/pages/fw/fw_ios_success.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 //ignore: must_be_immutable
 class FwIosInstructionsPage extends ConsumerWidget {
@@ -32,42 +34,51 @@ class FwIosInstructionsPage extends ConsumerWidget {
             : OnboardingPage.popUntilGoRoute(context);
       },
       text: [
-        Flexible(
-          child: SingleChildScrollView(
-            child: OnboardingText(
-              header: S().envoy_fw_ios_instructions_heading,
-              text: S().envoy_fw_ios_instructions_subheading,
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: SingleChildScrollView(
+                child: OnboardingText(
+                  header: S().envoy_fw_ios_instructions_heading,
+                  text: S().envoy_fw_ios_instructions_subheading,
+                ),
+              ),
             ),
-          ),
+          ],
         )
       ],
       navigationDots: 6,
       navigationDotsIndex: 2,
       buttons: [
-        OnboardingButton(
-            label: S().component_continue,
-            onTap: () async {
-              final navigator = Navigator.of(context);
-              final firmwareFile = await UpdatesManager().getStoredFw(deviceId);
-              final uploader = FwUploader(firmwareFile);
-              final folderPath = await uploader.promptUserForFolderAccess();
+        Padding(
+          padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+          child: OnboardingButton(
+              label: S().component_continue,
+              onTap: () async {
+                final navigator = Navigator.of(context);
+                final firmwareFile =
+                    await UpdatesManager().getStoredFw(deviceId);
+                final uploader = FwUploader(firmwareFile);
+                final folderPath = await uploader.promptUserForFolderAccess();
 
-              if (folderPath != null) {
-                await uploader.upload();
-                Devices()
-                    .markDeviceUpdated(deviceId, fwInfo.value!.storedVersion);
+                if (folderPath != null) {
+                  await uploader.upload();
+                  Devices()
+                      .markDeviceUpdated(deviceId, fwInfo.value!.storedVersion);
 
-                navigator.push(MaterialPageRoute(builder: (context) {
-                  return FwIosSuccessPage(
-                    onboarding: onboarding,
-                  );
-                }));
-              } else {
-                navigator.push(MaterialPageRoute(builder: (context) {
-                  return FwMicrosdPage(onboarding: onboarding);
-                }));
-              }
-            }),
+                  navigator.push(MaterialPageRoute(builder: (context) {
+                    return FwIosSuccessPage(
+                      onboarding: onboarding,
+                    );
+                  }));
+                } else {
+                  navigator.push(MaterialPageRoute(builder: (context) {
+                    return FwMicrosdPage(onboarding: onboarding);
+                  }));
+                }
+              }),
+        ),
       ],
     );
   }

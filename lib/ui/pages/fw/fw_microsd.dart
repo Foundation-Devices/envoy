@@ -17,6 +17,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/ui/pages/fw/fw_ios_success.dart';
 import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class FwMicrosdPage extends ConsumerWidget {
   final bool onboarding;
@@ -35,75 +36,83 @@ class FwMicrosdPage extends ConsumerWidget {
             : OnboardingPage.popUntilGoRoute(context);
       },
       key: const Key("fw_microsd"),
-      clipArt: Image.asset("assets/fw_microsd.png"),
+      clipArt: Image.asset("assets/fw_microsd.png", height: 312, width: 129),
       text: [
-        Flexible(
-          child: SingleChildScrollView(
-            child: OnboardingText(
-              header: S().envoy_fw_microsd_heading,
-              text: S().envoy_fw_microsd_subheading,
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: SingleChildScrollView(
+                child: OnboardingText(
+                  header: S().envoy_fw_microsd_heading,
+                  text: S().envoy_fw_microsd_subheading,
+                ),
+              ),
             ),
-          ),
+          ],
         )
       ],
       navigationDots: 6,
       navigationDotsIndex: 1,
       buttons: [
-        OnboardingButton(
-            enabled: fwInfo.hasValue,
-            label: S().component_continue,
-            onTap: () async {
-              try {
-                File firmwareFile =
-                    await UpdatesManager().getStoredFw(deviceId);
-                await FwUploader(firmwareFile).upload();
+        Padding(
+          padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+          child: OnboardingButton(
+              enabled: fwInfo.hasValue,
+              label: S().component_continue,
+              onTap: () async {
+                try {
+                  File firmwareFile =
+                      await UpdatesManager().getStoredFw(deviceId);
+                  await FwUploader(firmwareFile).upload();
 
-                Devices()
-                    .markDeviceUpdated(deviceId, fwInfo.value!.storedVersion);
+                  Devices()
+                      .markDeviceUpdated(deviceId, fwInfo.value!.storedVersion);
 
-                if (Platform.isIOS && context.mounted) {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return FwIosSuccessPage(
-                      onboarding: onboarding,
-                    );
-                  }));
-                }
-
-                if (Platform.isAndroid) {
-                  await Future.delayed(const Duration(milliseconds: 500));
-                  if (context.mounted) {
+                  if (Platform.isIOS && context.mounted) {
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) {
-                      return FwAndroidProgressPage(deviceId,
-                          onboarding: onboarding);
+                      return FwIosSuccessPage(
+                        onboarding: onboarding,
+                      );
+                    }));
+                  }
+
+                  if (Platform.isAndroid) {
+                    await Future.delayed(const Duration(milliseconds: 500));
+                    if (context.mounted) {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return FwAndroidProgressPage(deviceId,
+                            onboarding: onboarding);
+                      }));
+                    }
+                  }
+                } catch (e) {
+                  kPrint("SD: error $e");
+                  EnvoyReport().log("uploading",
+                      "Couldn't upload file to SD card: ${e.toString()}");
+                  if (Platform.isIOS &&
+                      context.mounted) // TODO: this needs to be smarter
+                    // ignore: curly_braces_in_flow_control_structures
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return FwIosInstructionsPage(
+                        onboarding: onboarding,
+                        deviceId: deviceId,
+                      );
+                    }));
+
+                  if (Platform.isAndroid && context.mounted) {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return FwAndroidInstructionsPage(
+                          onboarding: onboarding, deviceId: deviceId);
                     }));
                   }
                 }
-              } catch (e) {
-                kPrint("SD: error $e");
-                EnvoyReport().log("uploading",
-                    "Couldn't upload file to SD card: ${e.toString()}");
-                if (Platform.isIOS &&
-                    context.mounted) // TODO: this needs to be smarter
-                  // ignore: curly_braces_in_flow_control_structures
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return FwIosInstructionsPage(
-                      onboarding: onboarding,
-                      deviceId: deviceId,
-                    );
-                  }));
-
-                if (Platform.isAndroid && context.mounted) {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return FwAndroidInstructionsPage(
-                        onboarding: onboarding, deviceId: deviceId);
-                  }));
-                }
-              }
-            }),
+              }),
+        ),
       ],
     );
   }
