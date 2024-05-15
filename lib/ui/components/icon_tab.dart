@@ -58,7 +58,8 @@ class IconTabState extends State<IconTab> {
           borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(EnvoySpacing.medium1),
+          padding: const EdgeInsets.symmetric(
+              vertical: EnvoySpacing.medium1, horizontal: EnvoySpacing.small),
           child: Column(
             children: [
               EnvoyIcon(
@@ -75,6 +76,8 @@ class IconTabState extends State<IconTab> {
               Text(
                 widget.label,
                 textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: titleStyle.copyWith(
                   color: textColor,
                 ),
