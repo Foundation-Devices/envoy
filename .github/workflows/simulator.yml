@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 name: QA on simulator
 
-
 on:
   pull_request:
     branches: [ main ]
@@ -22,9 +21,10 @@ jobs:
       - name: "List all simulators"
         run: "xcrun xctrace list devices"
       - name: "Start Simulator"
+        id: boot-simulator
         run: |
           UDID=$(xcrun xctrace list devices | grep "^${{ matrix.device }}" | awk '{gsub(/[()]/,""); print $NF}')
-          echo $UDID
+          echo "UDID=$UDID" >> $GITHUB_ENV
           xcrun simctl boot "${UDID:?No Simulator with this name found}"
 
       - name: "Ensure simulator is booted"
@@ -47,4 +47,4 @@ jobs:
         run: flutter devices
 
       - name: Run integration tests
-        run: flutter test integration_test/onboarding_flow_test.dart --verbose
+        run: flutter test integration_test/onboarding_flow_test.dart --verbose -d ${{ env.UDID }}
