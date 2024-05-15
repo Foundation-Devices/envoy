@@ -10,7 +10,6 @@ on:
 
 jobs:
   ios:
-    # Creates a build matrix for your jobs. You can define different variations of an environment to run each job
     strategy:
       matrix:
         device:
@@ -27,6 +26,11 @@ jobs:
           UDID=$(xcrun xctrace list devices | grep "^${{ matrix.device }}" | awk '{gsub(/[()]/,""); print $NF}')
           echo $UDID
           xcrun simctl boot "${UDID:?No Simulator with this name found}"
+
+      - name: "Ensure simulator is booted"
+        run: |
+          xcrun simctl list devices | grep "${UDID}" | grep -q "(Booted)"
+
       - uses: actions/checkout@v3
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
@@ -35,5 +39,12 @@ jobs:
           flutter-version: '3.19.5'
       - name: Install Flutter dependencies
         run: flutter pub get
+
+      - name: Run flutter doctor
+        run: flutter doctor -v
+
+      - name: List connected devices
+        run: flutter devices
+
       - name: Run integration tests
         run: flutter test integration_test/onboarding_flow_test.dart --verbose
