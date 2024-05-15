@@ -17,19 +17,6 @@ jobs:
           # You can add more API levels if you want to run your tests on different APIs.
       fail-fast: true
     steps:
-      - name: "List all simulators"
-        run: "xcrun xctrace list devices"
-      - name: "Start Simulator"
-        id: boot-simulator
-        run: |
-          UDID=$(xcrun xctrace list devices | grep "^${{ matrix.device }}" | awk '{gsub(/[()]/,""); print $NF}')
-          echo "UDID=$UDID" >> $GITHUB_ENV
-          xcrun simctl boot "${UDID:?No Simulator with this name found}"
-
-      - name: "Ensure simulator is booted"
-        run: |
-          xcrun simctl list devices | grep "${UDID}" | grep -q "(Booted)"
-
       - uses: actions/checkout@v3
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
@@ -44,6 +31,10 @@ jobs:
 
       - name: List connected devices
         run: flutter devices
-
       - name: Run integration tests
-        run: flutter test integration_test/onboarding_flow_test.dart --verbose -d ${{ env.UDID }}
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          arch: x86_64
+          profile: Nexus 6
+          script: flutter test integration_test/onboarding_flow_test.dart --verbose
