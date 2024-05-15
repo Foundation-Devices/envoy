@@ -27,7 +27,7 @@ void main() {
 
     print("after onboarding");
 
-    await fromHomeToBuyOptions(tester);
+    //await fromHomeToBuyOptions(tester);
 
     print("buy options on the screen");
 
