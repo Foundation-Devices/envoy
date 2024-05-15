@@ -64,7 +64,7 @@ jobs:
         run: cargo build
 
       - name: QA map flow
-        run: flutter test integration_test/flow_to_map_and_p2p_test.dart -d linux --verbose
+        run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/flow_to_map_and_p2p_test.dart -d linux --verbose
 
       - name: QA ramp flow
-        run: flutter test integration_test/flow_to_ramp_test.dart -d linux
+        run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX flutter test integration_test/flow_to_ramp_test.dart -d linux
