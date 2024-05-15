@@ -8,13 +8,16 @@ import 'package:screenshot/screenshot.dart';
 
 void main() {
   testWidgets('onboarding flow just for test', (tester) async {
+    print("before initSingletons");
     await initSingletons();
+    print("before envoyScreenshotController");
     ScreenshotController envoyScreenshotController = ScreenshotController();
+    print("before run app");
     await tester.pumpWidget(Screenshot(
         controller: envoyScreenshotController, child: const EnvoyApp()));
 
     await tester.pump();
-
+    print("after pump");
     final setUpButtonFinder = find.text('Set Up Envoy Wallet');
     expect(setUpButtonFinder, findsOneWidget);
     await tester.tap(setUpButtonFinder);
