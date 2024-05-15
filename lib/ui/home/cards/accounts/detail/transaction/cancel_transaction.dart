@@ -546,6 +546,15 @@ class _CancelTransactionProgressState
           receiverAddress = element.address;
         }
       }
+      final note = await EnvoyStorage().getTxNote(widget.originalTx.txId);
+      if (note != null) {
+        try {
+          await EnvoyStorage().addTxNote(note: note, key: psbt.txid);
+        } catch (e) {
+          kPrint("Error adding note to new tx $e");
+          EnvoyReport().log("RBF:cancel", e.toString());
+        }
+      }
 
       await EnvoyStorage().addPendingTx(
         psbt.txid,
