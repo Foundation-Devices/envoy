@@ -25,5 +25,21 @@ void main() {
 
     final continueButtonFinder = find.text('Continue');
     expect(continueButtonFinder, findsOneWidget);
+    await tester.tap(continueButtonFinder);
+    await tester.pump(const Duration(milliseconds: 500));
+
+    print("open magic backup");
+    final enableMagicButtonFinder = find.text('Enable Magic Backups');
+    expect(enableMagicButtonFinder, findsOneWidget);
+    await tester.tap(enableMagicButtonFinder);
+    await tester.pump(const Duration(milliseconds: 500));
+
+    print("open screen with video");
+    // video
+    final createMagicButtonFinder = find.text('Create Magic Backup');
+    expect(createMagicButtonFinder, findsOneWidget);
+    await tester.tap(createMagicButtonFinder);
+    await tester.pump(const Duration(milliseconds: 1500));
+    print("after screen with video");
   });
 }
