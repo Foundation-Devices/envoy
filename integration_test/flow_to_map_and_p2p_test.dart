@@ -23,10 +23,13 @@ void main() {
     await tester.pumpWidget(Screenshot(
         controller: envoyScreenshotController, child: const EnvoyApp()));
 
-    // Uncomment the line below if you want to reset Envoy data and go through the onboarding flow.
-    // await setUpAppFromStart(tester);
+    await setUpAppFromStart(tester);
+
+    print("after onboarding");
 
     await fromHomeToBuyOptions(tester);
+
+    print("buy options on the screen");
 
     final atmTab = find.text('ATMs');
     expect(atmTab, findsOneWidget);
@@ -68,32 +71,10 @@ void main() {
 
 Future<void> fromHomeToBuyOptions(WidgetTester tester) async {
   await tester.pump();
-  //
-  // final devices = find.text('Devices');
-  // await tester.tap(devices);
-  // await tester.pumpAndSettle();
-  // final learn=find.text("Learn");
-  // await tester.tap(learn);
-  // await tester.pumpAndSettle();
-  // await Future.delayed(const Duration(
-  //     seconds: 2));
-  // for (int i = 0; i < 100; i++) {
-  //   await tester.pump(Durations.medium2);
-  // }
   final buyBitcoinButton = find.text('Buy');
   expect(buyBitcoinButton, findsOneWidget);
-  // for (int i = 0; i < 100; i++) {
-  //   await tester.pump(Durations.long2);
-  // }
-  await tester.tap(buyBitcoinButton);
 
-  // for (int i = 0; i < 100; i++) {
-  //   await tester.pump(Durations.long2);
-  // }
-  //
-  //
-  // await tester.pumpAndSettle();
-  //
+  await tester.tap(buyBitcoinButton);
 
   await Future.delayed(const Duration(
       seconds: 5)); // Ensure enough time for reading JSON data for countries.
