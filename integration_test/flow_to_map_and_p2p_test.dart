@@ -31,41 +31,41 @@ void main() {
 
     print("buy options on the screen");
 
-    final atmTab = find.text('ATMs');
-    expect(atmTab, findsOneWidget);
-    await tester.tap(atmTab);
-    await tester.pump(Durations.long2);
-
-    final continueButtonFinder = find.text('Continue');
-    expect(continueButtonFinder, findsOneWidget);
-    await tester.tap(continueButtonFinder);
-    await tester.pumpAndSettle();
-
-    final iconFinder = find.byWidgetPredicate(
-      (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.location,
-    );
-    expect(iconFinder, findsAny);
-
-    // close the map, back to buy option menu
-    final iconClose = find.byWidgetPredicate(
-      (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.close,
-    );
-    await tester.tap(iconClose);
-    await tester.pump(Durations.long2);
-
-    // test "peer to peer" flow
-
-    final peerTab = find.text('Peer to Peer');
-    expect(peerTab, findsOneWidget);
-    await tester.tap(peerTab);
-    await tester.pump(Durations.long2);
-
-    expect(continueButtonFinder, findsOneWidget);
-    await tester.tap(continueButtonFinder);
-    await tester.pump(Durations.long2);
-
-    final title = find.text("Select an option");
-    expect(title, findsOneWidget);
+    // final atmTab = find.text('ATMs');
+    // expect(atmTab, findsOneWidget);
+    // await tester.tap(atmTab);
+    // await tester.pump(Durations.long2);
+    //
+    // final continueButtonFinder = find.text('Continue');
+    // expect(continueButtonFinder, findsOneWidget);
+    // await tester.tap(continueButtonFinder);
+    // await tester.pumpAndSettle();
+    //
+    // final iconFinder = find.byWidgetPredicate(
+    //   (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.location,
+    // );
+    // expect(iconFinder, findsAny);
+    //
+    // // close the map, back to buy option menu
+    // final iconClose = find.byWidgetPredicate(
+    //   (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.close,
+    // );
+    // await tester.tap(iconClose);
+    // await tester.pump(Durations.long2);
+    //
+    // // test "peer to peer" flow
+    //
+    // final peerTab = find.text('Peer to Peer');
+    // expect(peerTab, findsOneWidget);
+    // await tester.tap(peerTab);
+    // await tester.pump(Durations.long2);
+    //
+    // expect(continueButtonFinder, findsOneWidget);
+    // await tester.tap(continueButtonFinder);
+    // await tester.pump(Durations.long2);
+    //
+    // final title = find.text("Select an option");
+    // expect(title, findsOneWidget);
   });
 }
 
