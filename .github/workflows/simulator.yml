@@ -8,15 +8,14 @@ on:
     branches: [ main ]
 
 jobs:
-  ios:
+  android:
+    runs-on: ubuntu-latest  # or any other Linux-based runner
     strategy:
       matrix:
-        device:
-          # The available simulators are listed by the "xcrun xctrace list devices" command
-          - "iPhone 11 Simulator (15.2)" # the name of the simulator could be different depending on the macos version you are using
-      # if one of the jobs in the matrix expansion fails, the rest of the jobs will be cancelled
+        api-level:
+          - 29
+          # You can add more API levels if you want to run your tests on different APIs.
       fail-fast: true
-    runs-on: macos-11 # or macos-latest if you prefer, but be aware that the available simulators could be different if you run a different version
     steps:
       - name: "List all simulators"
         run: "xcrun xctrace list devices"
