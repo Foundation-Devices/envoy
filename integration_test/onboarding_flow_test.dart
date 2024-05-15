@@ -41,5 +41,17 @@ void main() {
     await tester.tap(createMagicButtonFinder);
     await tester.pump(const Duration(milliseconds: 1500));
     print("after screen with video");
+
+    await tester.pumpAndSettle();
+    print("after pump and settle");
+
+    // animations
+    expect(continueButtonFinder, findsOneWidget);
+    await tester.tap(continueButtonFinder);
+    await tester.pump(const Duration(milliseconds: 500));
+
+    expect(continueButtonFinder, findsOneWidget);
+    await tester.tap(continueButtonFinder);
+    await tester.pump(const Duration(milliseconds: 500));
   });
 }
