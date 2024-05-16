@@ -114,83 +114,54 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) {},
-      child: OnboardPageBackground(
-        child: Material(
-            color: Colors.transparent,
-            child: CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(
-                  child: Container(
-                    alignment: Alignment.topCenter,
-                    height: 280,
-                    width: 280,
-                    child: RiveAnimation.asset(
-                      'assets/envoy_magic_setup.riv',
-                      stateMachines: const ["STM"],
-                      onInit: _onRiveInit,
-                      fit: BoxFit.contain,
-                      alignment: Alignment.center,
-                    ),
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: 340,
-                    child: PageView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      controller: _pageController,
-                      children: [
-                        ...stepsHeadings.map((heading) {
-                          return Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: EnvoySpacing.xs,
-                                horizontal: EnvoySpacing.small),
-                            child: Flexible(
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      heading,
-                                      textAlign: TextAlign.center,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                        top: EnvoySpacing.medium1,
-                                        left: EnvoySpacing.medium1,
-                                        right: EnvoySpacing.medium1,
-                                      ),
-                                      child: Text(
-                                        stepSubHeadings[
-                                            stepsHeadings.indexOf(heading)],
-                                        key: ValueKey<String>(
-                                          stepSubHeadings[
-                                              stepsHeadings.indexOf(heading)],
-                                        ),
-                                        textAlign: TextAlign.center,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall
-                                            ?.copyWith(fontSize: 14),
-                                      ),
-                                    )
-                                  ],
+      child: OnboardingPage(
+          clipArt: Container(
+            alignment: Alignment.topCenter,
+            height: 280,
+            width: 280,
+            child: RiveAnimation.asset(
+              'assets/envoy_magic_setup.riv',
+              stateMachines: const ["STM"],
+              onInit: _onRiveInit,
+              fit: BoxFit.contain,
+              alignment: Alignment.center,
+            ),
+          ),
+          text: [
+            Expanded(
+              child: PageView(
+                physics: const NeverScrollableScrollPhysics(),
+                controller: _pageController,
+                children: [
+                  ...stepsHeadings.map((heading) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: EnvoySpacing.xs,
+                          horizontal: EnvoySpacing.small),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Flexible(
+                            child: SingleChildScrollView(
+                              child: OnboardingText(
+                                header: heading,
+                                text: stepSubHeadings[
+                                    stepsHeadings.indexOf(heading)],
+                                key: ValueKey<String>(
+                                  stepSubHeadings[
+                                      stepsHeadings.indexOf(heading)],
                                 ),
                               ),
                             ),
-                          );
-                        })
-                      ],
-                    ),
-                  ),
-                )
-              ],
-            )),
-      ),
+                          ),
+                        ],
+                      ),
+                    );
+                  })
+                ],
+              ),
+            )
+          ]),
     );
   }
 
@@ -314,121 +285,101 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
   }
 
   _recoverStepsInfo(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                S().recovery_scenario_heading,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            S().recovery_scenario_heading,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: EnvoySpacing.medium2),
+          Text(
+            S().recovery_scenario_subheading,
+            textAlign: TextAlign.center,
+            style:
+                Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 13),
+          ),
+          const SizedBox(height: EnvoySpacing.medium3),
+          ListTile(
+            minLeadingWidth: 20,
+            dense: true,
+            leading: Container(
+              padding: const EdgeInsets.symmetric(
+                  vertical: EnvoySpacing.xs, horizontal: EnvoySpacing.small),
+              decoration: BoxDecoration(
+                color: EnvoyColors.accentPrimary,
+                borderRadius: BorderRadius.circular(EnvoySpacing.xs),
               ),
-              const Padding(
-                  padding:
-                      EdgeInsets.symmetric(vertical: EnvoySpacing.medium2)),
-              Text(
-                S().recovery_scenario_subheading,
-                textAlign: TextAlign.center,
+              child: Text(
+                "1",
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.white,
+                    ),
+              ),
+            ),
+            title: Text(
+              Platform.isAndroid
+                  ? S().recovery_scenario_Android_instruction1
+                  : S().recovery_scenario_ios_instruction1,
+              textAlign: TextAlign.start,
+              style:
+                  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14),
+            ),
+          ),
+          ListTile(
+            minLeadingWidth: 20,
+            dense: true,
+            leading: Container(
+              padding: const EdgeInsets.symmetric(
+                  vertical: EnvoySpacing.xs, horizontal: EnvoySpacing.small),
+              decoration: BoxDecoration(
+                color: EnvoyColors.accentPrimary,
+                borderRadius: BorderRadius.circular(EnvoySpacing.xs),
+              ),
+              child: Text(
+                "2",
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall
-                    ?.copyWith(fontSize: 13),
+                    ?.copyWith(color: Colors.white),
               ),
-              const Padding(
-                  padding:
-                      EdgeInsets.symmetric(vertical: EnvoySpacing.medium3)),
-              ListTile(
-                minLeadingWidth: 20,
-                dense: true,
-                leading: Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: EnvoySpacing.xs,
-                      horizontal: EnvoySpacing.small),
-                  decoration: BoxDecoration(
-                    color: EnvoyColors.accentPrimary,
-                    borderRadius: BorderRadius.circular(EnvoySpacing.xs),
-                  ),
-                  child: Text(
-                    "1",
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.white,
-                        ),
-                  ),
-                ),
-                title: Text(
-                  Platform.isAndroid
-                      ? S().recovery_scenario_Android_instruction1
-                      : S().recovery_scenario_ios_instruction1,
-                  textAlign: TextAlign.start,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall
-                      ?.copyWith(fontSize: 14),
-                ),
-              ),
-              ListTile(
-                minLeadingWidth: 20,
-                dense: true,
-                leading: Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: EnvoySpacing.xs,
-                      horizontal: EnvoySpacing.small),
-                  decoration: BoxDecoration(
-                    color: EnvoyColors.accentPrimary,
-                    borderRadius: BorderRadius.circular(EnvoySpacing.xs),
-                  ),
-                  child: Text(
-                    "2",
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color: Colors.white),
-                  ),
-                ),
-                title: Text(
-                  S().recovery_scenario_instruction2,
-                  textAlign: TextAlign.start,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall
-                      ?.copyWith(fontSize: 14),
-                ),
-              ),
-              ListTile(
-                minLeadingWidth: 20,
-                dense: true,
-                leading: Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: EnvoySpacing.xs,
-                      horizontal: EnvoySpacing.small),
-                  decoration: BoxDecoration(
-                    color: EnvoyColors.accentPrimary,
-                    borderRadius: BorderRadius.circular(EnvoySpacing.xs),
-                  ),
-                  child: Text("3",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall
-                          ?.copyWith(color: Colors.white)),
-                ),
-                title: Text(
-                  S().recovery_scenario_ios_instruction3,
-                  textAlign: TextAlign.start,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall
-                      ?.copyWith(fontSize: 14),
-                ),
-              ),
-            ],
+            ),
+            title: Text(
+              S().recovery_scenario_instruction2,
+              textAlign: TextAlign.start,
+              style:
+                  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14),
+            ),
           ),
-        ),
-      ],
+          ListTile(
+            minLeadingWidth: 20,
+            dense: true,
+            leading: Container(
+              padding: const EdgeInsets.symmetric(
+                  vertical: EnvoySpacing.xs, horizontal: EnvoySpacing.small),
+              decoration: BoxDecoration(
+                color: EnvoyColors.accentPrimary,
+                borderRadius: BorderRadius.circular(EnvoySpacing.xs),
+              ),
+              child: Text("3",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(color: Colors.white)),
+            ),
+            title: Text(
+              S().recovery_scenario_ios_instruction3,
+              textAlign: TextAlign.start,
+              style:
+                  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
