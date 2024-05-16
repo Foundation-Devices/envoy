@@ -34,7 +34,7 @@ void main() {
       await tester.pumpWidget(Screenshot(
           controller: envoyScreenshotController, child: const EnvoyApp()));
 
-      //await setUpAppFromStart(tester);
+      await setUpAppFromStart(tester);
 
       print("after onboarding");
 
