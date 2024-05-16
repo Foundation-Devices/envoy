@@ -36,10 +36,6 @@ void main() {
 
       await fromHomeToBuyOptions(tester);
 
-      await tester.pump(Durations.long2);
-      await Future.delayed(const Duration(seconds: 5));
-      await tester.pump();
-
       final atmTab = find.byWidgetPredicate(
         (widget) =>
             widget is EnvoyIcon && widget.icon == EnvoyIcons.location_tab,
