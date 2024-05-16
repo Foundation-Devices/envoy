@@ -75,58 +75,53 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
       },
       key: const Key("fw_progress"),
       text: [
-        SizedBox(
-          height: 260,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
-            child: PageView(
-                physics: const NeverScrollableScrollPhysics(),
-                controller: _instructionPageController,
-                onPageChanged: (index) {
-                  setState(() {
-                    currentDotIndex = index == 3 ? 3 : 4;
-                    navigationDots = index == 2 ? 0 : 6;
-                  });
-                },
-                children: [
-                  SingleChildScrollView(
-                    child: OnboardingText(
-                      header: S().envoy_fw_progress_heading,
-                      text: S().envoy_fw_progress_subheading,
+        Expanded(
+          child: PageView(
+              physics: const NeverScrollableScrollPhysics(),
+              controller: _instructionPageController,
+              onPageChanged: (index) {
+                setState(() {
+                  currentDotIndex = index == 3 ? 3 : 4;
+                  navigationDots = index == 2 ? 0 : 6;
+                });
+              },
+              children: [
+                SingleChildScrollView(
+                  child: OnboardingText(
+                    header: S().envoy_fw_progress_heading,
+                    text: S().envoy_fw_progress_subheading,
+                  ),
+                ),
+                SingleChildScrollView(
+                  child: OnboardingText(
+                    header: S().envoy_fw_success_heading,
+                    text: S().envoy_fw_success_subheading,
+                  ),
+                ),
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        OnboardingText(
+                          header: S().envoy_fw_fail_heading,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                          child: LinkText(
+                              text: S().envoy_fw_fail_subheading,
+                              linkStyle: EnvoyTypography.button
+                                  .copyWith(color: EnvoyColors.accentPrimary),
+                              onTap: () {
+                                launchUrlString(
+                                    "https://github.com/Foundation-Devices/passport2/releases/tag/${fwInfo.value!.storedVersion}");
+                              }),
+                        ),
+                      ],
                     ),
                   ),
-                  SingleChildScrollView(
-                    child: OnboardingText(
-                      header: S().envoy_fw_success_heading,
-                      text: S().envoy_fw_success_subheading,
-                    ),
-                  ),
-                  Flexible(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          OnboardingText(
-                            header: S().envoy_fw_fail_heading,
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 32.0),
-                            child: LinkText(
-                                text: S().envoy_fw_fail_subheading,
-                                linkStyle: EnvoyTypography.button
-                                    .copyWith(color: EnvoyColors.accentPrimary),
-                                onTap: () {
-                                  launchUrlString(
-                                      "https://github.com/Foundation-Devices/passport2/releases/tag/${fwInfo.value!.storedVersion}");
-                                }),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ]),
-          ),
+                ),
+              ]),
         ),
       ],
       clipArt: const SdCardSpinner(),

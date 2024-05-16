@@ -20,9 +20,17 @@ class ScvScanQrPage extends StatelessWidget {
       key: const Key("scv_scan_qr"),
       clipArt: Image.asset("assets/scv_scan_qr.png"),
       text: [
-        OnboardingText(
-            header: S().pair_new_device_scan_heading,
-            text: S().pair_new_device_scan_subheading)
+        Expanded(
+          child: PageView(
+            children: [
+              SingleChildScrollView(
+                child: OnboardingText(
+                    header: S().pair_new_device_scan_heading,
+                    text: S().pair_new_device_scan_subheading),
+              ),
+            ],
+          ),
+        )
       ],
       navigationDots: 3,
       navigationDotsIndex: 2,
