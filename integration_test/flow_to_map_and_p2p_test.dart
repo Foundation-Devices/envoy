@@ -71,7 +71,7 @@ void main() {
       // test "peer to peer" flow
 
       final peerTab = find.byWidgetPredicate(
-            (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.privacy,
+        (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.privacy,
       );
       expect(peerTab, findsOneWidget);
       await tester.tap(peerTab);
