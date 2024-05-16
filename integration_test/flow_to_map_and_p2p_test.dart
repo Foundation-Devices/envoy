@@ -15,18 +15,16 @@ import 'package:screenshot/screenshot.dart';
 import 'package:path/path.dart';
 
 void main() {
-  testWidgets('flow to map and P2P', (tester) async {
+  testWidgets('flow to map', (tester) async {
     final FlutterExceptionHandler? originalOnError = FlutterError.onError;
-    // Override FlutterError.onError to handle errors in the test.
     FlutterError.onError = (FlutterErrorDetails details) {
-      print('FlutterError caught: ${details.exceptionAsString()}');
-      // Forward the error to the original handler if necessary.
+      kPrint('FlutterError caught: ${details.exceptionAsString()}');
       if (originalOnError != null) {
         originalOnError(details);
       }
     };
     try {
-      // Uncomment the line below if you want to reset Envoy data and go through the onboarding flow.
+      // Uncomment the line below if testing on local machine.
       // await resetEnvoyData();
 
       ScreenshotController envoyScreenshotController = ScreenshotController();
@@ -36,20 +34,11 @@ void main() {
 
       await setUpAppFromStart(tester);
 
-      print("after onboarding");
-
       await fromHomeToBuyOptions(tester);
 
-      print("buy options on the screen");
-
-      // see if this fix issue on GH actions
       await tester.pump(Durations.long2);
+      await Future.delayed(const Duration(seconds: 5));
       await tester.pump();
-      // //check screen
-      // final currentPath = Directory.current.path;
-      // const screenshotFileName = "buyBitcoinScreenTest.png";
-      // envoyScreenshotController.captureAndSave(currentPath,
-      //     fileName: screenshotFileName);
 
       final atmTab = find.byWidgetPredicate(
         (widget) =>
@@ -68,34 +57,7 @@ void main() {
         (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.location,
       );
       expect(iconFinder, findsAny);
-
-      // final errorMessage=find.text("Invalid");
-      // expect(errorMessage, findsNothing);
-
-      // close the map, back to buy option menu
-      // final iconClose = find.byWidgetPredicate(
-      //   (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.close,
-      // );
-      // await tester.tap(iconClose);
-      // await tester.pump(Durations.long2);
-      //
-      // // test "peer to peer" flow
-      //
-      // final peerTab = find.byWidgetPredicate(
-      //   (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.privacy,
-      // );
-      // expect(peerTab, findsOneWidget);
-      // await tester.tap(peerTab);
-      // await tester.pump(Durations.long2);
-      //
-      // expect(continueButtonFinder, findsOneWidget);
-      // await tester.tap(continueButtonFinder);
-      // await tester.pump(Durations.long2);
-      //
-      // final title = find.text("Select an option");
-      // expect(title, findsOneWidget);
     } finally {
-      // Restore the original FlutterError.onError handler after the test.
       FlutterError.onError = originalOnError;
     }
   });
