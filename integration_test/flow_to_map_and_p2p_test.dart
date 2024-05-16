@@ -44,7 +44,12 @@ void main() {
 
       // see if this fix issue on GH actions
       await tester.pump(Durations.long2);
-      await tester.pump;
+      await tester.pump();
+      //check screen
+      final currentPath = Directory.current.path;
+      const screenshotFileName = "buyBitcoinScreenTest.png";
+      envoyScreenshotController.captureAndSave(currentPath,
+          fileName: screenshotFileName);
 
       final atmTab = find.byWidgetPredicate(
         (widget) =>
