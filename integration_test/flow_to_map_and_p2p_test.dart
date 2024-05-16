@@ -46,7 +46,10 @@ void main() {
       await tester.pump(Durations.long2);
       await tester.pump;
 
-      final atmTab = find.text('ATMs');
+      final atmTab = find.byWidgetPredicate(
+        (widget) =>
+            widget is EnvoyIcon && widget.icon == EnvoyIcons.location_tab,
+      );
       expect(atmTab, findsOneWidget);
       await tester.tap(atmTab);
       await tester.pump(Durations.long2);
