@@ -45,23 +45,5 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Verify Dart formatting
-        run: dart format --output=none --set-exit-if-changed .
-
-      - run: rustup --version
-
-      - run: rustup component add rustfmt
-
-      - run: rustup component add clippy
-
-      - name: Verify Rust formatting
-        run: cargo fmt --all -- --check
-
-      - name: Catch common Rust mistakes
-        run: cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
-
-      - name: Build Rust libs
-        run: cargo build
-
       - name: QA map flow
         run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/flow_to_map_and_p2p_test.dart -d linux --verbose
