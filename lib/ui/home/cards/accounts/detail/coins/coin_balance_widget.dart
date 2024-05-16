@@ -276,13 +276,17 @@ class CoinTagBalanceWidget extends ConsumerWidget {
                           //wait for dialog to close so that the lock icon animation is not interrupted
                           await Future.delayed(
                               const Duration(milliseconds: 250));
-                          coinTag.updateLockState(true);
+                          if (context.mounted) {
+                            lockAllCoins(context, coinTag, ref);
+                          }
                         },
                       );
                     },
                   ));
             } else {
-              coinTag.updateLockState(true);
+              if (context.mounted) {
+                lockAllCoins(context, coinTag, ref);
+              }
             }
           } else {
             bool dismissed = await EnvoyStorage()
@@ -370,6 +374,17 @@ class CoinTagBalanceWidget extends ConsumerWidget {
               ),
       ),
     );
+  }
+
+  void lockAllCoins(
+      BuildContext context, CoinTag coinTag, WidgetRef ref) async {
+    //Check if the user tried to lock coins that are already in a staging transaction.
+    ref.read(coinSelectionStateProvider).forEach((element) {
+      if (coinTag.coinsId.contains(element)) {
+        ref.read(coinSelectionStateProvider.notifier).remove(element);
+      }
+    });
+    coinTag.updateLockState(true);
   }
 }
 
