@@ -172,62 +172,56 @@ class OnboardingPage extends StatelessWidget {
     return PopScope(
         child: OnboardPageBackground(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Flexible(
-            child: SingleChildScrollView(
-              child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            leftFunction != null
-                                ? Padding(
-                                    padding: const EdgeInsets.all(
-                                        EnvoySpacing.medium1),
-                                    child: GestureDetector(
-                                        onTap: () {
-                                          leftFunction!(context);
-                                        },
-                                        child: const Icon(
-                                            Icons.arrow_back_ios_rounded,
-                                            size: 20)),
-                                  )
-                                : const SizedBox.shrink(),
-                            rightFunction != null
-                                ? Padding(
-                                    padding: const EdgeInsets.all(
-                                        EnvoySpacing.medium1),
-                                    child: GestureDetector(
-                                        onTap: () {
-                                          rightFunction!(context);
-                                        },
-                                        child: right ??
-                                            const Icon(Icons.close_rounded)),
-                                  )
-                                : const SizedBox.shrink()
-                          ]),
-                    ),
-                    if (clipArt != null || _determineQr() != null)
-                      Flexible(
-                        child: Align(
-                          alignment: Alignment.topCenter,
-                          child: clipArt != null ? clipArt! : _determineQr(),
-                        ),
-                      ),
-                    Flexible(
-                      child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [...?text]),
-                    ),
-                  ]),
-            ),
+            child: Column(children: <Widget>[
+              Align(
+                alignment: Alignment.topCenter,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      leftFunction != null
+                          ? Padding(
+                              padding:
+                                  const EdgeInsets.all(EnvoySpacing.medium1),
+                              child: GestureDetector(
+                                  onTap: () {
+                                    leftFunction!(context);
+                                  },
+                                  child: const Icon(
+                                      Icons.arrow_back_ios_rounded,
+                                      size: 20)),
+                            )
+                          : const SizedBox.shrink(),
+                      rightFunction != null
+                          ? Padding(
+                              padding:
+                                  const EdgeInsets.all(EnvoySpacing.medium1),
+                              child: GestureDetector(
+                                  onTap: () {
+                                    rightFunction!(context);
+                                  },
+                                  child:
+                                      right ?? const Icon(Icons.close_rounded)),
+                            )
+                          : const SizedBox.shrink()
+                    ]),
+              ),
+              if (clipArt != null || _determineQr() != null)
+                Flexible(
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: clipArt != null ? clipArt! : _determineQr(),
+                  ),
+                ),
+              Flexible(
+                child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [...?text]),
+              ),
+            ]),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -290,7 +284,7 @@ class OnboardingText extends StatelessWidget {
                                 decoration: TextDecoration.none)
                             .setWeight(FontWeight.w500)))
                 : const SizedBox.shrink(),
-            const SizedBox(height: EnvoySpacing.medium2),
+            const SizedBox(height: EnvoySpacing.medium1),
             text != null
                 ? Padding(
                     padding: const EdgeInsets.only(top: EnvoySpacing.medium3),

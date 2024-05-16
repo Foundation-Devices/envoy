@@ -28,9 +28,17 @@ class SingleWalletPairSuccessPage extends StatelessWidget {
         ),
       ),
       text: [
-        OnboardingText(
-            header: S().pair_new_device_success_heading,
-            text: S().pair_new_device_success_subheading),
+        Expanded(
+          child: PageView(
+            children: [
+              SingleChildScrollView(
+                child: OnboardingText(
+                    header: S().pair_new_device_success_heading,
+                    text: S().pair_new_device_success_subheading),
+              ),
+            ],
+          ),
+        ),
       ],
       buttons: [
         OnboardingButton(

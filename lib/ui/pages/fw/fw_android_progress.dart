@@ -14,6 +14,7 @@ import 'package:envoy/business/devices.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'fw_intro.dart';
 
 class FwAndroidProgressPage extends ConsumerStatefulWidget {
@@ -97,25 +98,28 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
                     text: S().envoy_fw_success_subheading,
                   ),
                 ),
-                Column(
-                  children: [
-                    SingleChildScrollView(
-                      child: OnboardingText(
-                        header: S().envoy_fw_fail_heading,
-                      ),
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        OnboardingText(
+                          header: S().envoy_fw_fail_heading,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                          child: LinkText(
+                              text: S().envoy_fw_fail_subheading,
+                              linkStyle: EnvoyTypography.button
+                                  .copyWith(color: EnvoyColors.accentPrimary),
+                              onTap: () {
+                                launchUrlString(
+                                    "https://github.com/Foundation-Devices/passport2/releases/tag/${fwInfo.value!.storedVersion}");
+                              }),
+                        ),
+                      ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                      child: LinkText(
-                          text: S().envoy_fw_fail_subheading,
-                          linkStyle: EnvoyTypography.button
-                              .copyWith(color: EnvoyColors.accentPrimary),
-                          onTap: () {
-                            launchUrlString(
-                                "https://github.com/Foundation-Devices/passport2/releases/tag/${fwInfo.value!.storedVersion}");
-                          }),
-                    ),
-                  ],
+                  ),
                 ),
               ]),
         ),
@@ -125,23 +129,26 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
       navigationDotsIndex: currentDotIndex,
       buttons: [
         if (done != null)
-          OnboardingButton(
-              label: done! ? S().component_continue : S().component_tryAgain,
-              onTap: () {
-                Navigator.of(context)
-                    .pushReplacement(MaterialPageRoute(builder: (context) {
-                  if (done!) {
-                    return FwPassportPage(
-                      onboarding: widget.onboarding,
-                    );
-                  } else {
-                    return FwIntroPage(
-                      deviceId: widget.deviceId,
-                      onboarding: widget.onboarding,
-                    );
-                  }
-                }));
-              })
+          Padding(
+            padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+            child: OnboardingButton(
+                label: done! ? S().component_continue : S().component_tryAgain,
+                onTap: () {
+                  Navigator.of(context)
+                      .pushReplacement(MaterialPageRoute(builder: (context) {
+                    if (done!) {
+                      return FwPassportPage(
+                        onboarding: widget.onboarding,
+                      );
+                    } else {
+                      return FwIntroPage(
+                        deviceId: widget.deviceId,
+                        onboarding: widget.onboarding,
+                      );
+                    }
+                  }));
+                }),
+          )
       ],
     );
   }

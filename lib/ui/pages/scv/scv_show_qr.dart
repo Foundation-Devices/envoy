@@ -29,9 +29,17 @@ class ScvShowQrPage extends StatelessWidget {
       key: const Key("scv_show_qr"),
       qrCodeUrCryptoRequest: cryptoRequest,
       text: [
-        OnboardingText(
-            header: S().envoy_scv_show_qr_heading,
-            text: S().envoy_scv_show_qr_subheading)
+        Expanded(
+          child: PageView(
+            children: [
+              SingleChildScrollView(
+                child: OnboardingText(
+                    header: S().envoy_scv_show_qr_heading,
+                    text: S().envoy_scv_show_qr_subheading),
+              ),
+            ],
+          ),
+        )
       ],
       navigationDots: 3,
       navigationDotsIndex: 1,

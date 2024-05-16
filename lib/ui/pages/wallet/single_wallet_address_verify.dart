@@ -20,9 +20,17 @@ class SingleWalletAddressVerifyPage extends StatelessWidget {
       key: const Key("single_wallet_address_verify"),
       qrCode: pairedWallet.getAddress(),
       text: [
-        OnboardingText(
-            header: S().pair_new_device_QR_code_heading,
-            text: S().pair_new_device_QR_code_subheading),
+        Expanded(
+          child: PageView(
+            children: [
+              SingleChildScrollView(
+                child: OnboardingText(
+                    header: S().pair_new_device_QR_code_heading,
+                    text: S().pair_new_device_QR_code_subheading),
+              ),
+            ],
+          ),
+        ),
       ],
       buttons: [
         OnboardingButton(

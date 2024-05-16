@@ -8,6 +8,7 @@ import 'package:envoy/ui/pages/fw/fw_microsd.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'dart:io';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 //ignore: must_be_immutable
 class FwAndroidInstructionsPage extends StatelessWidget {
@@ -27,25 +28,39 @@ class FwAndroidInstructionsPage extends StatelessWidget {
             : OnboardingPage.popUntilGoRoute(context);
       },
       text: const [
-        OnboardingText(
-          header: "Allow phone to access the microSD card", // TODO: FIGMA
-          text:
-              "Grant phone access to copy files to the microSD card with the name PASSPORT-SD.", // TODO: FIGMA
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: SingleChildScrollView(
+                child: OnboardingText(
+                  header:
+                      "Allow phone to access the microSD card", // TODO: FIGMA
+                  text:
+                      "Grant phone access to copy files to the microSD card with the name PASSPORT-SD.", // TODO: FIGMA
+                ),
+              ),
+            ),
+          ],
         )
       ],
       navigationDots: 6,
       navigationDotsIndex: 2,
       buttons: [
-        OnboardingButton(
-            label: "Continue", // TODO: FIGMA
-            onTap: () {
-              UpdatesManager().getStoredFw(deviceId).then((File file) {
-                FwUploader(file).getDirectoryContentPermission();
-              });
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return FwMicrosdPage(onboarding: onboarding);
-              }));
-            }),
+        Padding(
+          padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+          child: OnboardingButton(
+              label: "Continue", // TODO: FIGMA
+              onTap: () {
+                UpdatesManager().getStoredFw(deviceId).then((File file) {
+                  FwUploader(file).getDirectoryContentPermission();
+                });
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return FwMicrosdPage(onboarding: onboarding);
+                }));
+              }),
+        ),
       ],
     );
   }
