@@ -42,6 +42,10 @@ void main() {
 
       print("buy options on the screen");
 
+      // see if this fix issue on GH actions
+      await tester.pump(Durations.long2);
+      await tester.pump;
+
       final atmTab = find.text('ATMs');
       expect(atmTab, findsOneWidget);
       await tester.tap(atmTab);
