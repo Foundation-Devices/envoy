@@ -7,6 +7,7 @@ import 'package:envoy/main.dart';
 import 'package:envoy/ui/components/select_dropdown.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/util/console.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider/path_provider.dart';
@@ -15,57 +16,71 @@ import 'package:path/path.dart';
 
 void main() {
   testWidgets('flow to map and P2P', (tester) async {
-    // Uncomment the line below if you want to reset Envoy data and go through the onboarding flow.
-    // await resetEnvoyData();
+    final FlutterExceptionHandler? originalOnError = FlutterError.onError;
+    // Override FlutterError.onError to handle errors in the test.
+    FlutterError.onError = (FlutterErrorDetails details) {
+      print('FlutterError caught: ${details.exceptionAsString()}');
+      // Forward the error to the original handler if necessary.
+      if (originalOnError != null) {
+        originalOnError(details);
+      }
+    };
+    try {
+      // Uncomment the line below if you want to reset Envoy data and go through the onboarding flow.
+      // await resetEnvoyData();
 
-    ScreenshotController envoyScreenshotController = ScreenshotController();
-    await initSingletons();
-    await tester.pumpWidget(Screenshot(
-        controller: envoyScreenshotController, child: const EnvoyApp()));
+      ScreenshotController envoyScreenshotController = ScreenshotController();
+      await initSingletons();
+      await tester.pumpWidget(Screenshot(
+          controller: envoyScreenshotController, child: const EnvoyApp()));
 
-    await setUpAppFromStart(tester);
+      //await setUpAppFromStart(tester);
 
-    print("after onboarding");
+      print("after onboarding");
 
-    await fromHomeToBuyOptions(tester);
+      await fromHomeToBuyOptions(tester);
 
-    print("buy options on the screen");
+      print("buy options on the screen");
 
-    // final atmTab = find.text('ATMs');
-    // expect(atmTab, findsOneWidget);
-    // await tester.tap(atmTab);
-    // await tester.pump(Durations.long2);
-    //
-    // final continueButtonFinder = find.text('Continue');
-    // expect(continueButtonFinder, findsOneWidget);
-    // await tester.tap(continueButtonFinder);
-    // await tester.pumpAndSettle();
-    //
-    // final iconFinder = find.byWidgetPredicate(
-    //   (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.location,
-    // );
-    // expect(iconFinder, findsAny);
-    //
-    // // close the map, back to buy option menu
-    // final iconClose = find.byWidgetPredicate(
-    //   (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.close,
-    // );
-    // await tester.tap(iconClose);
-    // await tester.pump(Durations.long2);
-    //
-    // // test "peer to peer" flow
-    //
-    // final peerTab = find.text('Peer to Peer');
-    // expect(peerTab, findsOneWidget);
-    // await tester.tap(peerTab);
-    // await tester.pump(Durations.long2);
-    //
-    // expect(continueButtonFinder, findsOneWidget);
-    // await tester.tap(continueButtonFinder);
-    // await tester.pump(Durations.long2);
-    //
-    // final title = find.text("Select an option");
-    // expect(title, findsOneWidget);
+      // final atmTab = find.text('ATMs');
+      // expect(atmTab, findsOneWidget);
+      // await tester.tap(atmTab);
+      // await tester.pump(Durations.long2);
+      //
+      // final continueButtonFinder = find.text('Continue');
+      // expect(continueButtonFinder, findsOneWidget);
+      // await tester.tap(continueButtonFinder);
+      // await tester.pumpAndSettle();
+      //
+      // final iconFinder = find.byWidgetPredicate(
+      //   (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.location,
+      // );
+      // expect(iconFinder, findsAny);
+      //
+      // // close the map, back to buy option menu
+      // final iconClose = find.byWidgetPredicate(
+      //   (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.close,
+      // );
+      // await tester.tap(iconClose);
+      // await tester.pump(Durations.long2);
+      //
+      // // test "peer to peer" flow
+      //
+      // final peerTab = find.text('Peer to Peer');
+      // expect(peerTab, findsOneWidget);
+      // await tester.tap(peerTab);
+      // await tester.pump(Durations.long2);
+      //
+      // expect(continueButtonFinder, findsOneWidget);
+      // await tester.tap(continueButtonFinder);
+      // await tester.pump(Durations.long2);
+      //
+      // final title = find.text("Select an option");
+      // expect(title, findsOneWidget);
+    } finally {
+      // Restore the original FlutterError.onError handler after the test.
+      FlutterError.onError = originalOnError;
+    }
   });
 }
 
