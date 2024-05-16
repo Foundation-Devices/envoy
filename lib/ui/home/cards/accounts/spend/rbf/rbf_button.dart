@@ -72,7 +72,6 @@ class TxRBFButton extends ConsumerStatefulWidget {
 class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
   bool _isPressed = false;
   bool _isLoading = false;
-  bool _canBoost = false;
 
   @override
   void initState() {
@@ -83,63 +82,14 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
 
   Future<void> _checkIfCanBoost() async {
     try {
+      ref.watch(rbfSpendStateProvider.notifier).state = null;
       final account = ref.read(selectedAccountProvider);
       if (account == null) {
         return;
       }
-      final lockedUtxos = ref.read(lockedUtxosProvider(account.id!));
-
-      rust.RBFfeeRates? rates = await account.wallet
-          .getBumpedPSBTMaxFeeRate(widget.tx.txId, lockedUtxos);
-
-      if (rates.min_fee_rate > 0) {
-        setState(() {
-          _canBoost = true;
-        });
-        return;
-      } else {
-        setState(() {
-          _canBoost = false;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
       setState(() {
-        _canBoost = false;
-        _isLoading = false;
+        _isLoading = true;
       });
-      kPrint(e);
-    }
-  }
-
-  Future _checkRBF(BuildContext context) async {
-    final navigator = Navigator.of(context);
-    setState(() {
-      _isLoading = true;
-    });
-    if (ref.read(getTransactionProvider(widget.tx.txId))?.isConfirmed == true) {
-      EnvoyToast(
-        backgroundColor: EnvoyColors.danger,
-        replaceExisting: true,
-        duration: const Duration(seconds: 4),
-        message: "Error: Transaction Confirmed",
-        // TODO: Figma
-        icon: const Icon(
-          Icons.info_outline,
-          color: EnvoyColors.solidWhite,
-        ),
-      ).show(context);
-      setState(() {
-        _isLoading = false;
-      });
-      return;
-    }
-
-    try {
-      final account = ref.read(selectedAccountProvider);
-      if (account == null) {
-        return;
-      }
       final lockedUtxos = ref.read(lockedUtxosProvider(account.id!));
 
       final originalTx = widget.tx;
@@ -207,18 +157,23 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
           maxFeeRate: rates.max_fee_rate.floor().toInt(),
         );
         ref.read(rbfSpendStateProvider.notifier).state = rbfSpendState;
-        navigator.push(MaterialPageRoute(
-          builder: (context) {
-            return const RBFSpendScreen();
-          },
-        ));
+        setState(() {
+          _isLoading = false;
+        });
         return;
       }
-    } catch (e, stackTrace) {
-      kPrint(stackTrace);
-      if (context.mounted) {
-        showNoBoostNoFundsDialog(context);
+
+      if (rates.min_fee_rate > 0) {
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
       }
+    } catch (e) {
       setState(() {
         _isLoading = false;
       });
@@ -227,6 +182,37 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
       setState(() {
         _isLoading = false;
       });
+    }
+  }
+
+  Future _checkRBF(BuildContext context) async {
+    final navigator = Navigator.of(context);
+    if (ref.read(getTransactionProvider(widget.tx.txId))?.isConfirmed == true) {
+      EnvoyToast(
+        backgroundColor: EnvoyColors.danger,
+        replaceExisting: true,
+        duration: const Duration(seconds: 4),
+        message: "Error: Transaction Confirmed",
+        // TODO: Figma
+        icon: const Icon(
+          Icons.info_outline,
+          color: EnvoyColors.solidWhite,
+        ),
+      ).show(context);
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+    if (ref.read(rbfSpendStateProvider) != null) {
+      navigator.push(MaterialPageRoute(
+        builder: (context) {
+          return const RBFSpendScreen();
+        },
+      ));
+      return;
+    } else {
+      showNoBoostNoFundsDialog(context);
     }
   }
 
@@ -239,7 +225,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         });
       },
       onTap: () {
-        if (_isLoading || !_canBoost) return;
+        if (_isLoading) return;
         _showRBFDialog(context);
       },
       onTapCancel: () {
@@ -248,7 +234,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         });
       },
       child: _buildButtonContainer(
-          active: _canBoost,
+          active: ref.watch(rbfSpendStateProvider) != null || _isLoading,
           child: _isLoading
               ? const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -309,6 +295,13 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
   }
 
   void _showRBFDialog(BuildContext context) async {
+    if (_isLoading) {
+      return;
+    }
+    if (ref.read(rbfSpendStateProvider) == null) {
+      showNoBoostNoFundsDialog(context);
+      return;
+    }
     if (!(await EnvoyStorage()
             .checkPromptDismissed(DismissiblePrompt.rbfWarning)) &&
         context.mounted) {
