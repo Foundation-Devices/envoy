@@ -37,16 +37,9 @@ void main() {
       await fromHomeToBuyOptions(tester);
 
       await tester.pump(Durations.long2);
-      await tester.pump();
-      final currentPath = Directory.current.path;
-      const screenshotFileName = "buyBitcoinScreenTest.png";
-      envoyScreenshotController.captureAndSave(currentPath,
-          fileName: screenshotFileName);
 
-      final atmTab = find.byWidgetPredicate(
-        (widget) =>
-            widget is EnvoyIcon && widget.icon == EnvoyIcons.location_tab,
-      );
+      final atmTab = find.text("ATMs");
+
       expect(atmTab, findsOneWidget);
       await tester.tap(atmTab);
       await tester.pump(Durations.long2);
