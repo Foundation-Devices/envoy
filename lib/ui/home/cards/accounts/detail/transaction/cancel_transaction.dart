@@ -96,7 +96,7 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
+      padding: const EdgeInsets.all(EnvoySpacing.xs),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
