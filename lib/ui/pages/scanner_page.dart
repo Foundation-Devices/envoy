@@ -179,6 +179,8 @@ class ScannerPageState extends State<ScannerPage> {
     );
   }
 
+  //stores last scan data,to prevent unnecessary re-validation
+  String _lastScan = "";
   void _onQRViewCreated(QRViewController controller, BuildContext context) {
     this.controller = controller;
     controller.scannedDataStream.listen((barcode) {
@@ -187,7 +189,12 @@ class ScannerPageState extends State<ScannerPage> {
               barcode.rawBytes != _lastRawBytesDetected)) {
         _lastCodeDetected = barcode.code!;
         _lastRawBytesDetected = barcode.rawBytes;
+        //if the code is the same no need to re-validate
+        if (_lastScan == barcode.code) {
+          return;
+        }
         _onDetect(barcode.code!, barcode.rawBytes, context);
+        _lastScan = barcode.code ?? '';
       }
     });
 
@@ -287,9 +294,7 @@ class ScannerPageState extends State<ScannerPage> {
         // BIP-21 amounts are in BTC
         amount = (bip21.amount * 100000000.0).toInt();
       } catch (e, s) {
-        kPrint(e);
-        debugPrintStack(stackTrace: s);
-        // TODO
+        kPrint(e, stackTrace: s);
       }
 
       // Remove bitcoin: prefix in case BIP-21 parsing failed
@@ -300,6 +305,8 @@ class ScannerPageState extends State<ScannerPage> {
       } else {
         widget.onAddressValidated!(address, amount, message);
         navigator.pop();
+        await Future.delayed(const Duration(milliseconds: 500));
+        controller?.stopCamera();
         return;
       }
     }
