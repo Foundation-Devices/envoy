@@ -60,7 +60,7 @@ class _EnvoySearchState extends State<EnvoySearch> {
           Radius.circular(EnvoySpacing.medium3),
         ),
       ),
-      child: TextFormField(
+      child: TextField(
         onChanged: (text) {
           widget.filterSearchResults(text);
         },
@@ -77,7 +77,6 @@ class _EnvoySearchState extends State<EnvoySearch> {
             floatingLabelBehavior: FloatingLabelBehavior.never,
             alignLabelWithHint: true,
             isDense: true,
-            contentPadding: const EdgeInsets.only(bottom: 14),
             border: InputBorder.none,
             focusedBorder: InputBorder.none,
             enabledBorder: InputBorder.none,
