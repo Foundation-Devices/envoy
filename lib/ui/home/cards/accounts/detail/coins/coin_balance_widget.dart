@@ -232,18 +232,15 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
 
 class CoinTagBalanceWidget extends ConsumerWidget {
   final CoinTag coinTag;
-  final bool isListScreen;
 
-  const CoinTagBalanceWidget(
-      {super.key, required this.coinTag, this.isListScreen = false});
+  const CoinTagBalanceWidget({super.key, required this.coinTag});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     bool locked = ref.watch(coinTagLockStateProvider(coinTag));
 
     /// hide switch if the tag is empty or all coins are locked
-    bool hideSwitch = (coinTag.isAllCoinsLocked && isListScreen) ||
-        (coinTag.totalAmount == 0);
+    bool hideSwitch = coinTag.isAllCoinsLocked || (coinTag.totalAmount == 0);
 
     const cardRadius = 26.0;
     return Container(
