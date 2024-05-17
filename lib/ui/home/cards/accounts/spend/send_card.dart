@@ -202,6 +202,9 @@ class _SendCardState extends ConsumerState<SendCard>
                           }
                           return EnvoyTextButton(
                               onTap: () async {
+                                if (tx.loading) {
+                                  return;
+                                }
                                 final router = GoRouter.of(context);
                                 if (formValidation) {
                                   try {
