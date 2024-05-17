@@ -38,8 +38,8 @@ void main() {
 
       await tester.pump(Durations.long2);
 
+      await Future.delayed(const Duration(seconds: 1));
       final atmTab = find.text("ATMs");
-
       expect(atmTab, findsOneWidget);
       await tester.tap(atmTab);
       await tester.pump(Durations.long2);
