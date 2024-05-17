@@ -40,13 +40,14 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
   Widget build(BuildContext context) {
     var fwShouldUpdate = ref.refresh(shouldUpdateProvider(widget.device));
     var fwInfo = ref.watch(firmwareStreamProvider(widget.device.type.index));
+    const double cardRadius = 20;
 
     return GestureDetector(
       onTap: widget.onTap,
       child: Container(
           height: 250,
           decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(20)),
+            borderRadius: const BorderRadius.all(Radius.circular(cardRadius)),
             border: Border.all(
                 color: Colors.black, width: 2, style: BorderStyle.solid),
             gradient: LinearGradient(
@@ -63,15 +64,15 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
           ),
           child: Container(
             decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(
-                    Radius.circular(EnvoySpacing.medium1)),
+                borderRadius:
+                    const BorderRadius.all(Radius.circular(cardRadius - 3)),
                 border: Border.all(
                     color: widget.device.color,
                     width: 2,
                     style: BorderStyle.solid)),
             child: ClipRRect(
-                borderRadius: const BorderRadius.all(
-                    Radius.circular(EnvoySpacing.medium1)),
+                borderRadius:
+                    const BorderRadius.all(Radius.circular(cardRadius - 5)),
                 child: Stack(
                   children: [
                     Positioned.fill(
