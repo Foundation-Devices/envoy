@@ -99,6 +99,6 @@ docker-beef: docker-build-linux
     mkdir -p release
     docker run --mount type=bind,source="$(pwd)"/release,target=/root/release {{docker_v4l2}} {{docker_image_beefbench}}
 
-run-QA:
+qa:
     flutter test integration_test/flow_to_map_and_p2p_test.dart -d linux
     flutter test integration_test/flow_to_ramp_test.dart -d linux
