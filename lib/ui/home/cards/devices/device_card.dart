@@ -80,26 +80,32 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
           HomePageState.of(context)?.toggleOptions();
         }
       },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 20.0, top: 20.0, right: 20.0),
-            child: DeviceListTile(widget.device, onTap: () {
-              GoRouter.of(context).pop();
-            }),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 18.0, left: 35.0),
-            child: Text(
-                "${S().manage_device_details_deviceSerial}: ${widget.device.serial}"),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10.0, left: 35.0),
-            child: Text(
-                "${S().manage_device_details_devicePaired} ${timeago.format(widget.device.datePaired, locale: activeLocale.languageCode)}"),
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: EnvoySpacing.medium2,
+                  top: EnvoySpacing.medium2,
+                  right: EnvoySpacing.medium2),
+              child: DeviceListTile(widget.device, onTap: () {
+                GoRouter.of(context).pop();
+              }),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 18.0, left: 35.0),
+              child: Text(
+                  "${S().manage_device_details_deviceSerial}: ${widget.device.serial}"),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 10.0, left: 35.0),
+              child: Text(
+                  "${S().manage_device_details_devicePaired} ${timeago.format(widget.device.datePaired, locale: activeLocale.languageCode)}"),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -115,7 +115,7 @@ class _DevicesListState extends State<DevicesList> {
             ],
           )
         : Padding(
-            padding: const EdgeInsets.all(EnvoySpacing.medium1),
+            padding: const EdgeInsets.all(EnvoySpacing.medium2),
             child: ShaderMask(
               shaderCallback: (Rect rect) {
                 return const LinearGradient(
