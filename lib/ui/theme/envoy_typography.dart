@@ -38,7 +38,7 @@ class EnvoyTypography {
       )
       .setWeight(FontWeight.w600);
 
-  static TextStyle subheadingM20 = baseFont
+  static TextStyle subheading20 = baseFont
       .copyWith(
         fontSize: 20,
       )
