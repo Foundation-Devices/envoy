@@ -500,8 +500,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Eliminar Etiqueta"),
         "delete_tag_modal_subheading": MessageLookupByLibrary.simpleMessage(
             "Al eliminar esta etiqueta, las monedas se marcarán automáticamente como Sin etiquetar."),
-        "delete_wallet_for_good_instant_android_cta1":
-            MessageLookupByLibrary.simpleMessage("Ir a Ajustes"),
         "delete_wallet_for_good_instant_android_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Android realiza automáticamente una copia de seguridad de tus datos de Envoy cada 24 horas.\n\nPara eliminar tu Semilla Envoy de la Copia de Seguridad de Android de manera inmediata, puedes realizar una copia de seguridad manual en los [[Ajustes]] de tu dispositivo."),
@@ -1300,7 +1298,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Requerido para Impulsar"),
         "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "La tarifa elegida solo se puede lograr añadiendo más monedas. Envoy lo hace automáticamente y nunca incluirá monedas bloqueadas."),
+                "La tarifa elegida solo se puede lograr añadiendo más monedas. Envoy lo hace automáticamente y nunca incluirá monedas bloqueadas.\n\nEsta selección se podrá editar en la siguiente pantalla."),
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirmar"),
         "send_keyboard_address_loading":

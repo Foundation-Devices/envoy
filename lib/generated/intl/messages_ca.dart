@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("atms"),
+        "_": MessageLookupByLibrary.simpleMessage("Android Backs Up Every 24h"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versió de l\'aplicació"),
         "about_openSourceLicences":
@@ -462,7 +462,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_filter_button_all":
             MessageLookupByLibrary.simpleMessage("All"),
         "component_goToSettings":
-            MessageLookupByLibrary.simpleMessage("Go To Settings"),
+            MessageLookupByLibrary.simpleMessage("Go to Settings"),
         "component_learnMore":
             MessageLookupByLibrary.simpleMessage("Més informació"),
         "component_minishield_buy": MessageLookupByLibrary.simpleMessage("Buy"),
@@ -500,8 +500,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Suprimeix L\'etiqueta"),
         "delete_tag_modal_subheading": MessageLookupByLibrary.simpleMessage(
             "En suprimir aquesta etiqueta, aquestes monedes es marcaran automàticament com a sense etiquetar."),
-        "delete_wallet_for_good_instant_android_cta1":
-            MessageLookupByLibrary.simpleMessage("Vés a Configuració"),
         "delete_wallet_for_good_instant_android_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Android fa una còpia de seguretat automàtica de les teves dades d\'Envoy cada 24 hores.\n\nPer eliminar immediatament el vostre Envoy Seed de les còpies de seguretat d\'Android Auto, podeu fer una còpia de seguretat manual al vostre dispositiu [[Configuració.]]"),
