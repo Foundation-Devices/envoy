@@ -9,7 +9,8 @@ import 'package:envoy/generated/intl/messages_es.dart' as messages_es;
 import 'package:envoy/generated/intl/messages_ca.dart' as messages_ca;
 import 'package:envoy/generated/intl/messages_pt.dart' as messages_pt;
 
-final String currentLocale = Platform.localeName;
+final String currentLocale =
+    Platform.localeName == "C" ? "en" : Platform.localeName; // No C locale pls
 NumberFormat numberFormat = NumberFormat.simpleCurrency(locale: currentLocale);
 
 String get fiatDecimalSeparator {
