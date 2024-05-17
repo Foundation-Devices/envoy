@@ -616,7 +616,6 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
         blurColor: Colors.black,
         dialog: EnvoyDialog(
           title: S().tagDetails_EditTagName,
-          titleTextTile: EnvoyTypography.subheading,
           content: textEntry,
           actions: [
             EnvoyButton(
