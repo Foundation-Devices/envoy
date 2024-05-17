@@ -379,6 +379,8 @@ class _SeedScreenState extends State<SeedScreen> {
               icon: const Icon(Icons.close,
                   color: Colors.black, size: EnvoySpacing.medium2),
               onPressed: () {
+                // Tap on "x" should exit the flow, so pop twice to navigate back two levels
+                Navigator.pop(context);
                 Navigator.pop(context);
               },
             ),
