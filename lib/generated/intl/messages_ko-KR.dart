@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("atms"),
+        "_": MessageLookupByLibrary.simpleMessage("Android Backs Up Every 24h"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences":
             MessageLookupByLibrary.simpleMessage("Open Source Licences"),
@@ -454,7 +454,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_filter_button_all":
             MessageLookupByLibrary.simpleMessage("All"),
         "component_goToSettings":
-            MessageLookupByLibrary.simpleMessage("Go To Settings"),
+            MessageLookupByLibrary.simpleMessage("Go to Settings"),
         "component_learnMore":
             MessageLookupByLibrary.simpleMessage("Learn more"),
         "component_minishield_buy": MessageLookupByLibrary.simpleMessage("Buy"),
@@ -489,8 +489,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Delete Tag"),
         "delete_tag_modal_subheading": MessageLookupByLibrary.simpleMessage(
             "Deleting this tag will automatically mark these coins as untagged."),
-        "delete_wallet_for_good_instant_android_cta1":
-            MessageLookupByLibrary.simpleMessage("Go to Settings"),
         "delete_wallet_for_good_instant_android_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Android automatically backs up your Envoy data every 24 hours.\n\nTo immediately remove your Envoy Seed from Android Auto Backups, you can perform a manual backup in your device [[Settings.]]"),
@@ -1270,7 +1268,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Required to Boost"),
         "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. "),
+                "The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. \n\nThis selection can be reviewed or edited in the following screen."),
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirm"),
         "send_keyboard_address_loading":

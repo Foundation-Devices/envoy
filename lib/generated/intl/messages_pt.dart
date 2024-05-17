@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("atms"),
+        "_": MessageLookupByLibrary.simpleMessage("Android Backs Up Every 24h"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versão da Aplicação"),
         "about_openSourceLicences":
@@ -464,7 +464,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_filter_button_all":
             MessageLookupByLibrary.simpleMessage("All"),
         "component_goToSettings":
-            MessageLookupByLibrary.simpleMessage("Go To Settings"),
+            MessageLookupByLibrary.simpleMessage("Go to Settings"),
         "component_learnMore":
             MessageLookupByLibrary.simpleMessage("Mais informações"),
         "component_minishield_buy":
@@ -502,8 +502,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Eliminar Etiqueta"),
         "delete_tag_modal_subheading": MessageLookupByLibrary.simpleMessage(
             "A eliminação desta etiqueta marcará automaticamente estas moedas como sem etiqueta."),
-        "delete_wallet_for_good_instant_android_cta1":
-            MessageLookupByLibrary.simpleMessage("Ir para as Definições"),
         "delete_wallet_for_good_instant_android_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "O Android faz uma cópia de segurança automática dos dados da Envoy a cada 24 horas.\n\nPara removeres imediatamente a tua Semente Envoy da Cópia de Segurança do Android, podes fazer uma cópia de segurança manual nas [[Definições]] do teu dispositivo."),

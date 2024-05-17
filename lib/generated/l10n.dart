@@ -52,10 +52,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `atms`
+  /// `Android Backs Up Every 24h`
   String get _ {
     return Intl.message(
-      'atms',
+      'Android Backs Up Every 24h',
       name: '_',
       desc: '',
       args: [],
@@ -2096,10 +2096,10 @@ class S {
     );
   }
 
-  /// `Go To Settings`
+  /// `Go to Settings`
   String get component_goToSettings {
     return Intl.message(
-      'Go To Settings',
+      'Go to Settings',
       name: 'component_goToSettings',
       desc: '',
       args: [],
@@ -2333,16 +2333,6 @@ class S {
     return Intl.message(
       'Deleting this tag will automatically mark these coins as untagged.',
       name: 'delete_tag_modal_subheading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Go to Settings`
-  String get delete_wallet_for_good_instant_android_cta1 {
-    return Intl.message(
-      'Go to Settings',
-      name: 'delete_wallet_for_good_instant_android_cta1',
       desc: '',
       args: [],
     );
@@ -5888,10 +5878,10 @@ class S {
     );
   }
 
-  /// `The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. `
+  /// `The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. \n\nThis selection can be reviewed or edited in the following screen.`
   String get replaceByFee_warning_extraUTXO_overlay_modal_subheading {
     return Intl.message(
-      'The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. ',
+      'The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. \n\nThis selection can be reviewed or edited in the following screen.',
       name: 'replaceByFee_warning_extraUTXO_overlay_modal_subheading',
       desc: '',
       args: [],

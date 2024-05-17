@@ -612,7 +612,7 @@ class _TransactionReviewScreenState
                             Padding(
                               padding: const EdgeInsets.only(
                                   top: EnvoySpacing.small),
-                              child: feeOverSpendWarning(feePercentage),
+                              child: feeOverSpendWarning(),
                             ),
                         ]),
 
@@ -650,7 +650,7 @@ class _TransactionReviewScreenState
     );
   }
 
-  Widget feeOverSpendWarning(int feePercentage) {
+  Widget feeOverSpendWarning() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -659,8 +659,7 @@ class _TransactionReviewScreenState
           child: EnvoyIcon(EnvoyIcons.alert,
               size: EnvoyIconSize.extraSmall, color: EnvoyColors.copper500),
         ),
-        Text("Over $feePercentage%",
-            // TODO: Figma
+        Text(S().coincontrol_tx_detail_custom_fee_insufficients_funds_25_cta,
             style:
                 EnvoyTypography.button.copyWith(color: EnvoyColors.copper500)),
       ],
