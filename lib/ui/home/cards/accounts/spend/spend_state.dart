@@ -654,8 +654,9 @@ final showSpendRequirementOverlayProvider = Provider<bool>(
 void clearSpendState(ProviderContainer ref) {
   ref.read(spendAddressProvider.notifier).state = "";
   ref.read(spendAmountProvider.notifier).state = 0;
+  //reset fee to default
   ref.read(spendFeeRateProvider.notifier).state =
-      ((ref.read(selectedAccountProvider)?.wallet.feeRateFast) ?? 0.00001) *
+      ((ref.read(selectedAccountProvider)?.wallet.feeRateSlow) ?? 0.00001) *
           100000;
   ref.read(stagingTxChangeOutPutTagProvider.notifier).state = null;
   ref.read(stagingTxNoteProvider.notifier).state = null;
