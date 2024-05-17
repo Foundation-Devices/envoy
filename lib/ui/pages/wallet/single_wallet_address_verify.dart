@@ -23,10 +23,13 @@ class SingleWalletAddressVerifyPage extends StatelessWidget {
         Expanded(
           child: PageView(
             children: [
-              SingleChildScrollView(
-                child: OnboardingText(
-                    header: S().pair_new_device_QR_code_heading,
-                    text: S().pair_new_device_QR_code_subheading),
+              Align(
+                alignment: Alignment.center,
+                child: SingleChildScrollView(
+                  child: OnboardingText(
+                      header: S().pair_new_device_QR_code_heading,
+                      text: S().pair_new_device_QR_code_subheading),
+                ),
               ),
             ],
           ),
