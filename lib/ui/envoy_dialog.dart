@@ -51,12 +51,7 @@ class EnvoyDialog extends StatelessWidget {
             title != null
                 ? Text(title ?? '',
                     textAlign: TextAlign.center,
-                    style: titleTextTile ??
-                        Theme.of(context)
-                            .textTheme
-                            .bodyLarge
-                            ?.copyWith(fontSize: 24)
-                            .setWeight(FontWeight.w500))
+                    style: titleTextTile ?? EnvoyTypography.subheadingM20)
                 : const SizedBox(),
             Padding(padding: EdgeInsets.all(title != null ? 8 : 0)),
             content ?? Container(),
