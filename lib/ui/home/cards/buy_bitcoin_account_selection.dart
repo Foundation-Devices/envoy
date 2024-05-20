@@ -50,9 +50,13 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
   }
 
   void updateSelectedAccount(Account account) async {
-    String? address = await account.wallet.getAddress();
     setState(() {
       selectedAccount = account;
+      this.address = null;
+    });
+    String? address = await account.wallet.getAddress();
+    // Separate setState call to avoid UI lag during the async operation
+    setState(() {
       this.address = address;
     });
   }
