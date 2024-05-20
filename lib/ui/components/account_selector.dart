@@ -22,12 +22,13 @@ class StackedAccountTile extends StatelessWidget {
       height: 130,
       child: Stack(
         children: List.generate(layerNumber, (index) {
+          int accountIndex = filteredAccounts.length - layerNumber + index;
           return Positioned(
             top: index * 10.0,
             left: 0,
             right: 0,
             child: AccountListTile(
-              filteredAccounts[index],
+              filteredAccounts[accountIndex],
               onTap: () {},
             ),
           );
