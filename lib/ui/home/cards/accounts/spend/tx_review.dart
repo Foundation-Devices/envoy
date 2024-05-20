@@ -400,6 +400,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
   }
 
   bool hapticCalled = false;
+
   void addHapticFeedback() async {
     if (hapticCalled) return;
     hapticCalled = true;
@@ -612,7 +613,7 @@ class _TransactionReviewScreenState
                             Padding(
                               padding: const EdgeInsets.only(
                                   top: EnvoySpacing.small),
-                              child: feeOverSpendWarning(),
+                              child: feeOverSpendWarning(feePercentage),
                             ),
                         ]),
 
@@ -650,7 +651,7 @@ class _TransactionReviewScreenState
     );
   }
 
-  Widget feeOverSpendWarning() {
+  Widget feeOverSpendWarning(int feePercentage) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -659,7 +660,7 @@ class _TransactionReviewScreenState
           child: EnvoyIcon(EnvoyIcons.alert,
               size: EnvoyIconSize.extraSmall, color: EnvoyColors.copper500),
         ),
-        Text(S().coincontrol_tx_detail_custom_fee_insufficients_funds_25_cta,
+        Text("Fee is $feePercentage% of total amount", // TODO: Figma
             style:
                 EnvoyTypography.button.copyWith(color: EnvoyColors.copper500)),
       ],
