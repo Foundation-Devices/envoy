@@ -230,6 +230,7 @@ class _EraseWalletsBalanceWarningState
                     .bodyMedium!
                     .copyWith(color: EnvoyColors.danger),
                 onTap: () {
+                  Navigator.pop(context);
                   displaySeedBeforeNuke(context);
                 }),
             OnboardingButton(
