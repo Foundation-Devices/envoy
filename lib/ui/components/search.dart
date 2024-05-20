@@ -77,6 +77,7 @@ class _EnvoySearchState extends State<EnvoySearch> {
             floatingLabelBehavior: FloatingLabelBehavior.never,
             alignLabelWithHint: true,
             isDense: true,
+            contentPadding: const EdgeInsets.only(bottom: 10),
             border: InputBorder.none,
             focusedBorder: InputBorder.none,
             enabledBorder: InputBorder.none,
