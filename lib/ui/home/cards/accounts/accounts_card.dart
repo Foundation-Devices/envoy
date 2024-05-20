@@ -29,24 +29,26 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/shield.dart';
 
-//ignore: must_be_immutable
-class AccountsCard extends StatefulWidget {
+class AccountsCard extends ConsumerStatefulWidget {
   const AccountsCard({
     super.key,
   });
 
   @override
-  State<AccountsCard> createState() => AccountsCardState();
+  ConsumerState<AccountsCard> createState() => _AccountsCardState();
 }
 
 // The keep alive mixin is necessary to maintain state when widget is not visible
 // Unfortunately it seems to only work with TabView
-class AccountsCardState extends State<AccountsCard>
+class _AccountsCardState extends ConsumerState<AccountsCard>
     with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
     // ignore: unused_local_variable
+
+    final accounts = ref.watch(accountsProvider);
+    final bool noAccounts = accounts.isEmpty;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -57,6 +59,9 @@ class AccountsCardState extends State<AccountsCard>
           padding: const EdgeInsets.only(bottom: 10),
           child: GestureDetector(
             onTap: () async {
+              if (noAccounts) {
+                return;
+              }
               context.go(
                 await EnvoyStorage().getCountry() != null
                     ? ROUTE_BUY_BITCOIN
@@ -72,16 +77,21 @@ class AccountsCardState extends State<AccountsCard>
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const EnvoyIcon(
+                    EnvoyIcon(
                       EnvoyIcons.btc,
-                      color: EnvoyColors.accentPrimary,
+                      color: noAccounts
+                          ? EnvoyColors.textTertiary
+                          : EnvoyColors.accentPrimary,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
                       child: Text(
                         S().component_minishield_buy,
-                        style: EnvoyTypography.label
-                            .copyWith(color: EnvoyColors.accentPrimary),
+                        style: EnvoyTypography.label.copyWith(
+                          color: noAccounts
+                              ? EnvoyColors.textTertiary
+                              : EnvoyColors.accentPrimary,
+                        ),
                       ),
                     ),
                   ],
