@@ -41,7 +41,7 @@ class AccountsCard extends ConsumerStatefulWidget {
 // The keep alive mixin is necessary to maintain state when widget is not visible
 // Unfortunately it seems to only work with TabView
 class _AccountsCardState extends ConsumerState<AccountsCard>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin<AccountsCard> {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -54,7 +54,7 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Flexible(child: AccountsList()),
+        const Flexible(child: AccountsList()),
         Padding(
           padding: const EdgeInsets.only(bottom: 10),
           child: GestureDetector(
@@ -132,33 +132,33 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
   }
 
   @override
-  bool get wantKeepAlive => false;
+  bool get wantKeepAlive => true;
 }
 
 //ignore: must_be_immutable
 class AccountsList extends ConsumerStatefulWidget {
-  final Widget? child;
-
-  AccountsList({this.child}) : super(key: UniqueKey());
-
-  final GlobalKey _listKey = GlobalKey();
+  const AccountsList({super.key});
 
   @override
   ConsumerState<AccountsList> createState() => _AccountsListState();
 }
 
 class _AccountsListState extends ConsumerState<AccountsList> {
-  late FadingEdgeScrollView _scrollView;
   final ScrollController _scrollController = ScrollController();
   final double _accountHeight = 124;
   bool _onReOrderStart = false;
   double _listWidgetHeight = 0;
 
   @override
-  void didChangeDependencies() {
-    super
-        .didChangeDependencies(); //  _screenListHeight will only be accurate once the layout is complete,
+  void initState() {
+    super.initState();
     WidgetsBinding.instance.addPostFrameCallback(_afterLayout);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   void _afterLayout(_) {
@@ -170,12 +170,11 @@ class _AccountsListState extends ConsumerState<AccountsList> {
   }
 
   double _getListHeight() {
-    if (widget._listKey.currentContext == null) {
+    if (context.findRenderObject() == null) {
       return 0.0;
     }
 
-    final RenderBox listRenderBox =
-        widget._listKey.currentContext!.findRenderObject() as RenderBox;
+    final RenderBox listRenderBox = context.findRenderObject() as RenderBox;
     return listRenderBox.size.height;
   }
 
@@ -208,59 +207,59 @@ class _AccountsListState extends ConsumerState<AccountsList> {
       }
     });
 
-    _scrollView = FadingEdgeScrollView.fromScrollView(
+    final scrollView = FadingEdgeScrollView.fromScrollView(
       scrollController: _scrollController,
       gradientFractionOnStart: isFadingEnabled ? 0.03 : 0.0,
       gradientFractionOnEnd: isFadingEnabled ? 0.06 : 0.0,
       child: ReorderableListView(
-          key: widget._listKey,
-          footer: Opacity(
-            opacity: _onReOrderStart ? 0.0 : 1.0,
-            child: const AccountPrompts(),
-          ),
-          shrinkWrap: true,
-          scrollController: _scrollController,
-          //proxyDecorator is the widget that is shown when dragging
-          proxyDecorator: (widget, index, animation) {
-            return FadeTransition(
-              opacity: animation.drive(Tween<double>(begin: 1.0, end: 0.5)),
-              child: ScaleTransition(
-                scale: animation.drive(Tween<double>(begin: 0.95, end: 1.02)),
-                child: widget,
+        footer: Opacity(
+          opacity: _onReOrderStart ? 0.0 : 1.0,
+          child: const AccountPrompts(),
+        ),
+        shrinkWrap: true,
+        scrollController: _scrollController,
+        //proxyDecorator is the widget that is shown when dragging
+        proxyDecorator: (widget, index, animation) {
+          return FadeTransition(
+            opacity: animation.drive(Tween<double>(begin: 1.0, end: 0.5)),
+            child: ScaleTransition(
+              scale: animation.drive(Tween<double>(begin: 0.95, end: 1.02)),
+              child: widget,
+            ),
+          );
+        },
+        onReorderEnd: (index) {
+          setState(() {
+            _onReOrderStart = false;
+          });
+        },
+        onReorderStart: (index) {
+          setState(() {
+            _onReOrderStart = true;
+          });
+        },
+        onReorder: (oldIndex, newIndex) async {
+          // SFT-2488: dismiss the drag and drop prompt after dragging
+          EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
+          await AccountManager().moveAccount(oldIndex, newIndex, accounts);
+        },
+        children: [
+          for (final account in accounts)
+            SizedBox(
+              key: ValueKey(account.id),
+              height: _accountHeight,
+              child: AccountListTile(
+                account,
+                onTap: () async {
+                  clearFilterState(ref);
+                  ref.read(selectedAccountProvider.notifier).state = account;
+                  context.go(ROUTE_ACCOUNT_DETAIL, extra: account);
+                  return;
+                },
               ),
-            );
-          },
-          onReorderEnd: (index) {
-            setState(() {
-              _onReOrderStart = false;
-            });
-          },
-          onReorderStart: (index) {
-            setState(() {
-              _onReOrderStart = true;
-            });
-          },
-          onReorder: (oldIndex, newIndex) async {
-            // SFT-2488: dismiss the drag and drop prompt after dragging
-            EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
-            await AccountManager().moveAccount(oldIndex, newIndex, accounts);
-          },
-          children: [
-            for (final account in accounts)
-              SizedBox(
-                  key: ValueKey(account.id),
-                  height: _accountHeight,
-                  child: AccountListTile(
-                    account,
-                    onTap: () async {
-                      clearFilterState(ref);
-                      ref.read(selectedAccountProvider.notifier).state =
-                          account;
-                      context.go(ROUTE_ACCOUNT_DETAIL, extra: account);
-                      return;
-                    },
-                  ))
-          ]),
+            )
+        ],
+      ),
     );
 
     return accounts.isEmpty
@@ -268,7 +267,7 @@ class _AccountsListState extends ConsumerState<AccountsList> {
             padding: const EdgeInsets.all(EnvoySpacing.medium2),
             child: EmptyAccountsCard(),
           )
-        : Padding(padding: const EdgeInsets.all(20), child: _scrollView);
+        : Padding(padding: const EdgeInsets.all(20), child: scrollView);
   }
 }
 
