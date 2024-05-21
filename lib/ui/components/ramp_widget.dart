@@ -24,6 +24,7 @@ class RampWidget {
     configuration.url = "https://app.ramp.network";
     configuration.hostApiKey = rampApiKey;
     configuration.userAddress = address;
+    configuration.swapAsset = "BTC_BTC";
     ramp.onOnrampPurchaseCreated = (purchase, purchaseViewToken, apiUrl) =>
         onOnrampPurchaseCreated(
             purchase, purchaseViewToken, apiUrl, account, context);
