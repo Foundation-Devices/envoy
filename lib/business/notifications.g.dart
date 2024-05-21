@@ -13,7 +13,7 @@ EnvoyNotification _$EnvoyNotificationFromJson(Map<String, dynamic> json) =>
       $enumDecode(_$EnvoyNotificationTypeEnumMap, json['type']),
       json['body'] as String,
       json['id'] as String,
-      amount: json['amount'] as int?,
+      amount: (json['amount'] as num?)?.toInt(),
       accountId: json['accountId'] as String?,
     );
 

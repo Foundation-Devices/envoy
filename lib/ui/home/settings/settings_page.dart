@@ -220,6 +220,17 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               ListTile(
                 dense: true,
                 contentPadding: const EdgeInsets.all(0),
+                title: const Wrap(
+                  children: [SettingText("Signet")],
+                ),
+                trailing: SettingToggle(
+                  s.showSignetAccounts,
+                  s.setShowSignetAccounts,
+                ),
+              ),
+              ListTile(
+                dense: true,
+                contentPadding: const EdgeInsets.all(0),
                 title: SettingText(S().settings_advanced_taproot),
                 trailing: SettingToggle(s.taprootEnabled, s.setTaprootEnabled,
                     onEnabled: () async {

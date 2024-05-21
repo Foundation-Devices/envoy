@@ -7,7 +7,11 @@ use crate::{
     Socks5Config, Txid, UtxoList,
 };
 use bdk::bitcoin::{Network, Script};
-use bdk::blockchain::{ConfigurableBlockchain, ElectrumBlockchain, ElectrumBlockchainConfig};
+use bdk::blockchain::esplora::EsploraBlockchainConfig;
+use bdk::blockchain::{
+    ConfigurableBlockchain, ElectrumBlockchain, ElectrumBlockchainConfig, EsploraBlockchain,
+    GetHeight, WalletSync,
+};
 use bdk::database::BatchDatabase;
 use bdk::electrum_client::ConfigBuilder;
 use bdk::wallet::tx_builder::TxOrdering;
@@ -53,12 +57,40 @@ fn get_electrum_blockchain_config(
     }
 }
 
+fn get_esplora_blockchain_config(tor_port: i32, esplora_address: &str) -> EsploraBlockchainConfig {
+    if tor_port > 0 {
+        EsploraBlockchainConfig {
+            base_url: esplora_address.parse().unwrap(),
+            proxy: Some("127.0.0.1:".to_owned() + &tor_port.to_string()),
+            timeout: Some(30),
+            stop_gap: 50,
+            concurrency: None,
+        }
+    } else {
+        EsploraBlockchainConfig {
+            base_url: esplora_address.parse().unwrap(),
+            proxy: None,
+            timeout: Some(5),
+            stop_gap: 50,
+            concurrency: None,
+        }
+    }
+}
+
 pub fn get_electrum_blockchain(
     tor_port: i32,
     electrum_address: &str,
 ) -> Result<ElectrumBlockchain, bdk::Error> {
     let config = get_electrum_blockchain_config(tor_port, electrum_address);
     ElectrumBlockchain::from_config(&config)
+}
+
+pub fn get_esplora_blockchain(
+    tor_port: i32,
+    esplora_address: &str,
+) -> Result<EsploraBlockchain, bdk::Error> {
+    let config = get_esplora_blockchain_config(tor_port, esplora_address);
+    EsploraBlockchain::from_config(&config)
 }
 
 pub fn get_electrum_client(

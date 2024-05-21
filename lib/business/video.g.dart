@@ -9,7 +9,7 @@ part of 'video.dart';
 Video _$VideoFromJson(Map<String, dynamic> json) => Video(
       json['title'] as String,
       json['description'] as String?,
-      json['duration'] as int,
+      (json['duration'] as num).toInt(),
       DateTime.parse(json['publicationDate'] as String),
       (json['resolutionLinkMap'] as Map<String, dynamic>).map(
         (k, e) => MapEntry(int.parse(k), e as String),
@@ -17,7 +17,7 @@ Video _$VideoFromJson(Map<String, dynamic> json) => Video(
       json['url'] as String,
       json['id'] as String,
       json['watched'] as bool?,
-      json['order'] as int?,
+      (json['order'] as num?)?.toInt(),
       (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
       thumbnailUrl: json['thumbnailUrl'] as String?,
     );

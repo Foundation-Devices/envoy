@@ -13,8 +13,8 @@ Passport _$PassportFromJson(Map<String, dynamic> json) => Passport(
       json['datePaired'] == null
           ? null
           : DateTime.parse(json['datePaired'] as String),
-      json['model'] as int,
-      json['fwVersion'] as int,
+      (json['model'] as num).toInt(),
+      (json['fwVersion'] as num).toInt(),
     );
 
 Map<String, dynamic> _$PassportToJson(Passport instance) => <String, dynamic>{

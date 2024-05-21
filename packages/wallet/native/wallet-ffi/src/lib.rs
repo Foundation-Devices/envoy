@@ -40,6 +40,7 @@ use bdk::bitcoin::hashes::hex::ToHex;
 use bdk::bitcoin::secp256k1::Secp256k1;
 use bdk::bitcoin::util::bip32::{DerivationPath, ExtendedPrivKey, KeySource};
 use bdk::bitcoin::util::psbt::PartiallySignedTransaction;
+use bdk::blockchain::{AnyBlockchain, AnyBlockchainConfig, Blockchain, GetHeight, WalletSync};
 use bdk::keys::bip39::MnemonicWithPassphrase;
 use bdk::keys::DescriptorKey::Secret;
 use bdk::keys::{
@@ -448,10 +449,19 @@ pub unsafe extern "C" fn wallet_sync(
 
     let electrum_address = unwrap_or_return!(CStr::from_ptr(electrum_address).to_str(), false);
 
-    let blockchain = unwrap_or_return!(
-        util::get_electrum_blockchain(tor_port, electrum_address),
-        false
-    );
+    let blockchain = {
+        if wallet.network() == Network::Signet {
+            AnyBlockchain::Esplora(Box::new(unwrap_or_return!(
+                util::get_esplora_blockchain(tor_port, electrum_address),
+                false
+            )))
+        } else {
+            AnyBlockchain::Electrum(Box::new(unwrap_or_return!(
+                util::get_electrum_blockchain(tor_port, electrum_address),
+                false
+            )))
+        }
+    };
     unwrap_or_return!(
         wallet.sync(&blockchain, SyncOptions { progress: None }),
         false

@@ -62,11 +62,13 @@ class EnvoySeed {
   static Map<WalletType, Map<Network, String>> hotWalletDerivationPaths = {
     WalletType.witnessPublicKeyHash: {
       Network.Mainnet: "m/84'/0'/0'",
-      Network.Testnet: "m/84'/1'/0'"
+      Network.Testnet: "m/84'/1'/0'",
+      Network.Signet: "m/84'/2'/0'"
     },
     WalletType.taproot: {
       Network.Mainnet: "m/86'/0'/0'",
-      Network.Testnet: "m/86'/1'/0'"
+      Network.Testnet: "m/86'/1'/0'",
+      Network.Signet: "m/86'/2'/0'"
     }
   };
 
@@ -114,7 +116,7 @@ class EnvoySeed {
           passphrase: passphrase,
           type: type);
 
-      // Always derive a testnet wallet too
+      // Always derive testnet and signet wallets too
       var testnet = Wallet.deriveWallet(
           seed,
           hotWalletDerivationPaths[type]![Network.Testnet]!,
@@ -124,8 +126,18 @@ class EnvoySeed {
           passphrase: passphrase,
           type: type);
 
+      final signet = Wallet.deriveWallet(
+          seed,
+          hotWalletDerivationPaths[type]![Network.Signet]!,
+          AccountManager.walletsDirectory,
+          Network.Signet,
+          privateKey: true,
+          passphrase: passphrase,
+          type: type);
+
       AccountManager().addHotWalletAccount(mainnet);
       AccountManager().addHotWalletAccount(testnet);
+      AccountManager().addHotWalletAccount(signet);
 
       return true;
     } on Exception catch (_) {
@@ -457,7 +469,9 @@ class EnvoySeed {
   }
 
   Wallet? getWallet() {
-    return AccountManager().getHotWalletAccount(testnet: false)?.wallet;
+    return AccountManager()
+        .getHotWalletAccount(network: Network.Mainnet)
+        ?.wallet;
   }
 
   Future<String?> _getSecure() async {
