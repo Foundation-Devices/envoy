@@ -235,7 +235,9 @@ Future prunePendingTransactions(
       .where((element) => element.type == TransactionType.ramp)
       .toList();
 
-  if (pending.isEmpty) return;
+  if (pending.isEmpty && azteco.isEmpty && btcPay.isEmpty && ramp.isEmpty) {
+    return;
+  }
 
   //prune azteco transactions
   for (var pendingTx in azteco) {
@@ -270,7 +272,7 @@ Future prunePendingTransactions(
       EnvoyStorage().addTxNote(
           note: "Ramp Purchase", key: actualRampTx.txId); // TODO: FIGMA
       EnvoyStorage().deleteTxNote(pendingTx.address!);
-      EnvoyStorage().deletePendingTx(pendingTx.address!);
+      EnvoyStorage().deletePendingTx(pendingTx.txId);
     });
   }
 
