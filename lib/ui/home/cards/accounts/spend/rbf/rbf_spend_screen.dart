@@ -981,7 +981,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                 backgroundColor: EnvoyColors.danger,
                 replaceExisting: true,
                 duration: const Duration(seconds: 4),
-                message: "Error: unable construct transaction,changes rever",
+                message: "Error: Unable to construct transaction.",
                 // TODO: Figma
                 icon: const Icon(
                   Icons.info_outline,
