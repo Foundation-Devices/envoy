@@ -10,9 +10,6 @@ import 'package:tor/tor.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:envoy/business/scheduler.dart';
 import 'dart:core';
-import 'package:latlng/latlng.dart';
-
-const home = LatLng(Angle.degree(34.052235), Angle.degree(-118.243683));
 
 class MapData {
   static const String mapApiKey =
@@ -108,5 +105,28 @@ class MapData {
     return await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
       "https://coinmap.org/api/v1/venues/$id",
     );
+  }
+
+  Future<void> getHomeLocation() async {
+    var country = await EnvoyStorage().getCountry();
+    if (country != null) {
+      String name = country.name;
+      var response = await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
+        "https://api.geoapify.com/v1/geocode/search?country=$name&format=json&apiKey=$mapApiKey",
+      );
+
+      var data = jsonDecode(response.body);
+      if (data['results'] != null && data['results'].isNotEmpty) {
+        var firstResult = data['results'][0];
+
+        // Extract latitude and longitude
+        double latitude = firstResult['lat'];
+        double longitude = firstResult['lon'];
+
+        await EnvoyStorage().updateCountry(
+            country.code, country.name, country.division,
+            lat: latitude, lon: longitude);
+      }
+    }
   }
 }
