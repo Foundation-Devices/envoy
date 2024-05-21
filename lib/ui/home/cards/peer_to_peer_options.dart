@@ -13,7 +13,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-enum PeerToPeerState { none, hodl, agora, bisq, robosats, peach }
+enum PeerToPeerState { none, hodl, bisq, robosats, peach }
 
 class PeerToPeerCard extends StatefulWidget {
   const PeerToPeerCard({super.key});
@@ -61,20 +61,6 @@ class _PeerToPeerCardState extends State<PeerToPeerCard> {
                     isSelected: currentState == PeerToPeerState.hodl,
                     onSelect: (selected) {
                       _updateState(PeerToPeerState.hodl);
-                    },
-                  ),
-                  const SizedBox(
-                    height: EnvoySpacing.medium1,
-                  ),
-                  BuyOptionCard(
-                    icon: EnvoyIcons.agora,
-                    label:
-                        S().buy_bitcoin_buyOptions_peerToPeer_options_agoraDesk,
-                    description: S()
-                        .buy_bitcoin_buyOptions_peerToPeer_options_agoraDesk_subheading,
-                    isSelected: currentState == PeerToPeerState.agora,
-                    onSelect: (selected) {
-                      _updateState(PeerToPeerState.agora);
                     },
                   ),
                   const SizedBox(
@@ -150,9 +136,6 @@ void launchPeerToPeerPage(PeerToPeerState state) {
       break;
     case PeerToPeerState.hodl:
       url = "https://hodlhodl.com";
-      break;
-    case PeerToPeerState.agora:
-      url = "https://agoradesk.com/";
       break;
     case PeerToPeerState.bisq:
       url = "https://bisq.network/";
