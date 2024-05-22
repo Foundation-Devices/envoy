@@ -114,6 +114,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         return PopScope(
           canPop: canPop,
           onPopInvoked: (didPop) {
+            //clear coins selection when exiting RBF screen
+            ref.read(coinSelectionFromWallet.notifier).reset();
+            ref.read(coinSelectionStateProvider.notifier).reset();
             clearSpendState(scope);
             kPrint("RBF Spend Screen Pop Invoked: $didPop");
           },
@@ -895,7 +898,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                 lockedUtxos);
             final rawTxx = await account.wallet
                 .decodeWalletRawTx(psbt.rawTx, account.wallet.network);
-
+            _rawTransaction = rawTxx;
             RawTransactionOutput receiveOutPut =
                 rawTxx.outputs.firstWhere((element) {
               return (element.path == TxOutputPath.NotMine ||
