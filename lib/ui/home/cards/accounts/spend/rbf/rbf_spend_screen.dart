@@ -167,7 +167,10 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       Opacity(
-                                        opacity: _inputsChanged ? 1 : 0,
+                                        opacity: (_inputsChanged &&
+                                                finalizedPsbt != null)
+                                            ? 1
+                                            : 0,
                                         child: EnvoyButton(
                                           label: S().coincontrol_tx_detail_cta2,
                                           state: ButtonState.defaultState,
@@ -786,7 +789,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         Navigator.of(context, rootNavigator: false).pop();
       }
       _checkInputsChanged();
-    } catch (e) {
+    } catch (e, stack) {
       String message = "$e";
       if (e is InsufficientFunds) {
         message = S().send_keyboard_amount_insufficient_funds_info;
@@ -805,6 +808,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       if (existingFeeRate != null) {
         ref.read(spendFeeRateProvider.notifier).state = existingFeeRate;
       }
+      EnvoyReport().log("RBF", "Rbf set-fee failed : ${stack.toString()}");
     } finally {
       setState(() {
         _rebuildingTx = false;
@@ -979,6 +983,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
             ).show(context);
             return;
           } else {
+            EnvoyReport().log("RBF", "Rbf edit failed : $e");
             if (context.mounted) {
               EnvoyToast(
                 backgroundColor: EnvoyColors.danger,
