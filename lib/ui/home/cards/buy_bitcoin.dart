@@ -21,6 +21,8 @@ import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/routes/route_state.dart';
+import 'package:envoy/business/country_manager.dart';
+import 'package:envoy/util/envoy_storage.dart';
 
 enum BuyBitcoinCardState { buyInEnvoy, peerToPeer, vouchers, atms, none }
 
@@ -36,6 +38,7 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
   BuyBitcoinCardState currentState = BuyBitcoinCardState.none;
   late AnimationController animationController;
   late Animation<Alignment> animation;
+  bool isSelectedCountry = false;
 
   @override
   void initState() {
@@ -76,6 +79,7 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
       if (path == ROUTE_BUY_BITCOIN) {
         ref.read(buyBTCPageProvider.notifier).state = true;
       }
+      _checkSelectedCountry();
     });
   }
 
@@ -83,6 +87,14 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
     setState(() {
       currentState = newState;
     });
+  }
+
+  Future<void> _checkSelectedCountry() async {
+    var region = await EnvoyStorage().getCountry();
+    if (region != null) {
+      isSelectedCountry =
+          AllowedCountries.isRegionAllowed(region.name, region.division);
+    }
   }
 
   @override
@@ -115,7 +127,9 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
                     description:
                         S().buy_bitcoin_buyOptions_card_inEnvoy_subheading,
                     onSelect: (selected) {
-                      _updateState(BuyBitcoinCardState.buyInEnvoy);
+                      if (isSelectedCountry) {
+                        _updateState(BuyBitcoinCardState.buyInEnvoy);
+                      }
                     },
                   ),
                   const SizedBox(

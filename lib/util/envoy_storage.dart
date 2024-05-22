@@ -187,7 +187,7 @@ class EnvoyStorage {
 
   Future<void> updateCountry(String code, String name, String division) async {
     await countryStore
-        .record(code.hashCode)
+        .record(0)
         .put(_db, Country(code, name, division).toJson());
   }
 
