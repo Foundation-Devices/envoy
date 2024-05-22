@@ -65,6 +65,7 @@ class Transaction extends Comparable {
   final String? address;
   final int? vsize;
   String? pullPaymentId;
+  String? purchaseViewToken;
 
   get isConfirmed {
     /// if the tx is a pending transaction, the date will be based on the time the tx was created
@@ -92,6 +93,7 @@ class Transaction extends Comparable {
     this.inputs,
     this.vsize,
     this.pullPaymentId,
+    this.purchaseViewToken,
   });
 
   // Serialisation

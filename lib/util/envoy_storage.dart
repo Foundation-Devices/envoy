@@ -259,7 +259,8 @@ class EnvoyStorage {
   }
 
   Future addPendingTx(String key, String accountId, DateTime timestamp,
-      wallet.TransactionType type, int amount, int fee, String address) async {
+      wallet.TransactionType type, int amount, int fee, String address,
+      {String? purchaseViewToken}) async {
     await pendingTxStore.record(key).put(_db, {
       'account': accountId,
       'timestamp': timestamp.millisecondsSinceEpoch,
@@ -267,6 +268,7 @@ class EnvoyStorage {
       'amount': amount,
       'fee': fee,
       'address': address,
+      'purchaseViewToken': purchaseViewToken,
     });
     return true;
   }
@@ -310,6 +312,7 @@ class EnvoyStorage {
           0,
           e["address"] as String,
           type: type,
+          purchaseViewToken: e['purchaseViewToken'] as String?,
         );
       },
     ).toList();

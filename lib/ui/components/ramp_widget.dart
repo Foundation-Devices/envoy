@@ -2,21 +2,26 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http_tor/http_tor.dart';
 import 'package:ramp_flutter/configuration.dart';
 import 'package:ramp_flutter/offramp_sale.dart';
 import 'package:ramp_flutter/onramp_purchase.dart';
 import 'package:ramp_flutter/ramp_flutter.dart';
 import 'package:ramp_flutter/send_crypto_payload.dart';
+import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/home/cards/purchase_completed.dart';
 import 'package:envoy/ui/shield.dart';
+import 'package:envoy/business/scheduler.dart';
 
 class RampWidget {
   static const String rampApiKey =
       String.fromEnvironment("RAMP_API_KEY", defaultValue: '');
+
   static void showRamp(BuildContext context, Account account, String address) {
     final ramp = RampFlutter();
     final Configuration configuration = Configuration();
@@ -55,7 +60,8 @@ class RampWidget {
     String txID = purchase.id!;
 
     await EnvoyStorage().addPendingTx(txID, account.id ?? "", DateTime.now(),
-        TransactionType.ramp, amount, 0, address);
+        TransactionType.ramp, amount, 0, address,
+        purchaseViewToken: purchaseViewToken);
     EnvoyStorage().addTxNote(note: "Ramp Purchase", key: address); //TODO: figma
     if (context.mounted) {
       Navigator.of(context, rootNavigator: true).push(
@@ -83,4 +89,17 @@ class RampWidget {
   static void onRampClosed(BuildContext context) {
     // Handle ramp closed
   }
+}
+
+Future<String?> checkPurchase(String id, String purchaseViewToken) async {
+  var response = await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
+    "https://api.ramp.network/api/host-api/purchase/$id?secret=$purchaseViewToken",
+  );
+  var data = jsonDecode(response.body);
+
+  if (data != null && data.containsKey('status')) {
+    return data['status'];
+  }
+
+  return null;
 }
