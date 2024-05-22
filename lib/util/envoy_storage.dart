@@ -185,10 +185,11 @@ class EnvoyStorage {
     removeOutstandingAztecoPendingTxs();
   }
 
-  Future<void> updateCountry(String code, String name, String division) async {
+  Future<void> updateCountry(String code, String name, String division,
+      {double? lat, double? lon}) async {
     await countryStore
-        .record(code.hashCode)
-        .put(_db, Country(code, name, division).toJson());
+        .record(0)
+        .put(_db, Country(code, name, division, lat: lat, lon: lon).toJson());
   }
 
   Future<Country?> getCountry() async {

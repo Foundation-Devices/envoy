@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:envoy/business/map_data.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -202,6 +203,7 @@ class _SelectRegionState extends State<SelectRegion> {
                     selectedCountry!.name,
                     selectedRegion!,
                   );
+                  MapData().updateHomeLocation();
 
                   if (mounted) {
                     context.go(ROUTE_BUY_BITCOIN);

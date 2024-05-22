@@ -11,8 +11,10 @@ class Country {
   final String code;
   final String name;
   final String division;
+  double? lat;
+  double? lon;
 
-  Country(this.code, this.name, this.division);
+  Country(this.code, this.name, this.division, {this.lat, this.lon});
 
   factory Country.fromJson(Map<String, dynamic> json) =>
       _$CountryFromJson(json);
