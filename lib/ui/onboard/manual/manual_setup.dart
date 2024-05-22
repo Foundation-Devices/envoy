@@ -144,14 +144,16 @@ class SeedIntroScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 6, left: 3),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: CupertinoNavigationBarBackButton(
-                      color: Colors.black,
-                      onPressed: () => Navigator.pop(context),
-                    ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.all(EnvoySpacing.medium1),
+                    child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Icon(Icons.arrow_back_ios_rounded,
+                            size: EnvoySpacing.medium2)),
                   ),
                 ),
                 Container(

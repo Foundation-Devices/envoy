@@ -14,7 +14,6 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/build_context_extension.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,14 +54,16 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 6, left: 3),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: CupertinoNavigationBarBackButton(
-                        color: Colors.black,
-                        onPressed: () => Navigator.pop(context),
-                      ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(EnvoySpacing.medium1),
+                      child: GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Icon(Icons.arrow_back_ios_rounded,
+                              size: EnvoySpacing.medium2)),
                     ),
                   ),
                   Container(
