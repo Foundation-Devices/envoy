@@ -63,7 +63,6 @@ enum EnvoyIcons {
   close_circle,
   unknown_circle,
   location_tab,
-  agora,
   azteco,
   bisq,
   hodlHodl,
