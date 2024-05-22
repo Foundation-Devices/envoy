@@ -45,7 +45,7 @@ class MarkersPageState extends State<MarkersPage> {
 
   @override
   void initState() {
-    getHomeLocation();
+    goToHome();
     _showLocallyVenues();
     super.initState();
   }
@@ -84,18 +84,13 @@ class MarkersPageState extends State<MarkersPage> {
     _scaleStart = 1.0;
   }
 
-  Future<void> getHomeLocation() async {
+  Future<void> goToHome() async {
     try {
       var timeoutDuration = const Duration(seconds: 5);
       var country = await EnvoyStorage().getCountry().timeout(timeoutDuration);
 
       if (country?.lat != null && country?.lon != null) {
-        setState(() {
-          controller = MapController(
-              location: LatLng(
-                  Angle.degree(country!.lat!), Angle.degree(country.lon!)));
-          _dataLoaded = true;
-        });
+        goTo(country!.lat!, country.lon!);
       } else {
         setState(() {
           _dataLoaded = true;
@@ -110,6 +105,15 @@ class MarkersPageState extends State<MarkersPage> {
         _dataLoaded = true;
       });
     }
+  }
+
+  void goTo(double latitude, double longitude) {
+    setState(() {
+      controller = MapController(
+        location: LatLng(Angle.degree(latitude), Angle.degree(longitude)),
+      );
+      _dataLoaded = true;
+    });
   }
 
   void _showLocallyVenues() {

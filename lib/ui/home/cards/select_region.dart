@@ -203,7 +203,7 @@ class _SelectRegionState extends State<SelectRegion> {
                     selectedCountry!.name,
                     selectedRegion!,
                   );
-                  MapData().getHomeLocation();
+                  MapData().updateHomeLocation();
 
                   if (mounted) {
                     context.go(ROUTE_BUY_BITCOIN);
