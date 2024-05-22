@@ -6,6 +6,7 @@ import 'package:envoy/ui/pages/pp/pp_new_seed_backup.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class PpNewSeedPage extends StatelessWidget {
   const PpNewSeedPage({super.key});
@@ -23,13 +24,17 @@ class PpNewSeedPage extends StatelessWidget {
       navigationDots: 3,
       navigationDotsIndex: 0,
       buttons: [
-        OnboardingButton(
-            label: S().component_continue,
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return const PpNewSeedBackupPage();
-              }));
-            }),
+        Padding(
+          padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+          child: OnboardingButton(
+              label: S().component_continue,
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return const PpNewSeedBackupPage();
+                }));
+              }),
+        ),
       ],
     );
   }

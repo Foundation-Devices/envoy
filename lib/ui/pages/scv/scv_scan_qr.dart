@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/business/scv_server.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class ScvScanQrPage extends StatelessWidget {
   final Challenge challenge;
@@ -23,10 +24,13 @@ class ScvScanQrPage extends StatelessWidget {
         Expanded(
           child: PageView(
             children: [
-              SingleChildScrollView(
-                child: OnboardingText(
-                    header: S().pair_new_device_scan_heading,
-                    text: S().pair_new_device_scan_subheading),
+              Padding(
+                padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
+                child: SingleChildScrollView(
+                  child: OnboardingText(
+                      header: S().pair_new_device_scan_heading,
+                      text: S().pair_new_device_scan_subheading),
+                ),
               ),
             ],
           ),
@@ -42,13 +46,19 @@ class ScvScanQrPage extends StatelessWidget {
         }));
       },
       buttons: [
-        OnboardingButton(
-            label: S().component_continue,
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return ScannerPage.scv(challenge);
-              }));
-            }),
+        Padding(
+          padding: const EdgeInsets.only(
+            bottom: EnvoySpacing.medium2,
+          ),
+          child: OnboardingButton(
+              label: S().component_continue,
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return ScannerPage.scv(challenge);
+                }));
+              }),
+        ),
       ],
     );
   }

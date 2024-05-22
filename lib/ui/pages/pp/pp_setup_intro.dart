@@ -6,6 +6,8 @@ import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/pages/pp/pp_new_seed.dart';
 import 'package:envoy/ui/pages/pp/pp_restore_backup.dart';
 import 'package:envoy/ui/pages/pp/pp_restore_seed.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
@@ -64,6 +66,7 @@ class PpSetupIntroPage extends StatelessWidget {
                   horizontal: EnvoySpacing.medium1,
                   vertical: EnvoySpacing.large2),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Flexible(
                     //TODO: wrap this guy in a column
@@ -73,7 +76,7 @@ class PpSetupIntroPage extends StatelessWidget {
                         children: [
                           Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: EnvoySpacing.medium1),
+                                horizontal: EnvoySpacing.medium2),
                             child: Column(
                               children: [
                                 const Padding(
@@ -82,14 +85,15 @@ class PpSetupIntroPage extends StatelessWidget {
                                 Text(
                                   S().envoy_pp_setup_intro_heading,
                                   textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.titleLarge,
+                                  style: EnvoyTypography.subheading20,
                                 ),
                                 const Padding(
                                     padding:
                                         EdgeInsets.all(EnvoySpacing.small)),
                                 Text(
                                   S().envoy_pp_setup_intro_subheading,
-                                  style: Theme.of(context).textTheme.bodySmall,
+                                  style: EnvoyTypography.info.copyWith(
+                                      color: EnvoyColors.textTertiary),
                                   textAlign: TextAlign.center,
                                 ),
                               ],
@@ -101,7 +105,8 @@ class PpSetupIntroPage extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.medium1),
+                        horizontal: EnvoySpacing.medium2,
+                        vertical: EnvoySpacing.medium1),
                     child: Column(
                       children: [
                         EnvoyButton(
