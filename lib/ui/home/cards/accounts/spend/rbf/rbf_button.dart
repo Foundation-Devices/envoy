@@ -180,7 +180,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
           _isLoading = false;
         });
       }
-      EnvoyReport().log("RBF-button", "Error ${e}");
+      EnvoyReport().log("RBF-button", "Error $e");
       kPrint(e);
     } finally {
       if (mounted) {

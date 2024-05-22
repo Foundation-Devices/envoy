@@ -79,9 +79,11 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       EnvoyStorage().getTxNote(rbfSpendState.originalTx.txId).then(
           (value) => ref.read(stagingTxNoteProvider.notifier).state = value);
       _checkInputsChanged();
+      //Since the BDK will give the spend amount as a negative value,
+      //we need to show the amount in the transaction review card with the absolute value.
       ref
           .read(spendTransactionProvider.notifier)
-          .setAmount(rbfSpendState.originalAmount);
+          .setAmount(rbfSpendState.originalAmount.abs());
     });
   }
 
