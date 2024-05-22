@@ -267,7 +267,6 @@ void showAdditionalInfoDialog(BuyBitcoinCardState state, BuildContext context) {
       identificationRequired = InfoState.notRequired;
       poweredByIcons = [
         EnvoyIcons.hodlHodl,
-        EnvoyIcons.agora,
         EnvoyIcons.bisq,
         EnvoyIcons.robosats,
         EnvoyIcons.peach
