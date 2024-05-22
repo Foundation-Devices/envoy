@@ -120,14 +120,21 @@ class SingleImportPpIntroPage extends StatelessWidget {
                             position: 0.toDouble(),
                           ),
                         ),
-                        EnvoyButton(
-                          S().accounts_empty_text_learn_more,
-                          onTap: () {
-                            Navigator.of(context)
-                                .push(MaterialPageRoute(builder: (context) {
-                              return const SingleImportPpScanPage();
-                            }));
-                          },
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: EnvoySpacing.medium1,
+                            left: EnvoySpacing.small,
+                            right: EnvoySpacing.small,
+                          ),
+                          child: EnvoyButton(
+                            S().accounts_empty_text_learn_more,
+                            onTap: () {
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(builder: (context) {
+                                return const SingleImportPpScanPage();
+                              }));
+                            },
+                          ),
                         )
                       ],
                     ),

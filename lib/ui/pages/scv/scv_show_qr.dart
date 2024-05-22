@@ -8,6 +8,7 @@ import 'package:envoy/ui/pages/scv/scv_scan_qr.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 //ignore:must_be_immutable
 class ScvShowQrPage extends StatelessWidget {
@@ -32,10 +33,13 @@ class ScvShowQrPage extends StatelessWidget {
         Expanded(
           child: PageView(
             children: [
-              SingleChildScrollView(
-                child: OnboardingText(
-                    header: S().envoy_scv_show_qr_heading,
-                    text: S().envoy_scv_show_qr_subheading),
+              Align(
+                alignment: Alignment.center,
+                child: SingleChildScrollView(
+                  child: OnboardingText(
+                      header: S().envoy_scv_show_qr_heading,
+                      text: S().envoy_scv_show_qr_subheading),
+                ),
               ),
             ],
           ),
@@ -44,17 +48,20 @@ class ScvShowQrPage extends StatelessWidget {
       navigationDots: 3,
       navigationDotsIndex: 1,
       buttons: [
-        OnboardingButton(
-            label: S().component_next,
-            onTap: () {
-              if (_challenge != null) {
-                // ENV-216: remove ScvShowQrPage off navigation stack so it doesn't animate in background
-                Navigator.of(context)
-                    .pushReplacement(MaterialPageRoute(builder: (context) {
-                  return ScvScanQrPage(_challenge!);
-                }));
-              }
-            }),
+        Padding(
+          padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+          child: OnboardingButton(
+              label: S().component_next,
+              onTap: () {
+                if (_challenge != null) {
+                  // ENV-216: remove ScvShowQrPage off navigation stack so it doesn't animate in background
+                  Navigator.of(context)
+                      .pushReplacement(MaterialPageRoute(builder: (context) {
+                    return ScvScanQrPage(_challenge!);
+                  }));
+                }
+              }),
+        ),
       ],
     );
   }
