@@ -4,7 +4,6 @@
 
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/button.dart';
-import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +36,12 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
       onPopInvoked: (_) async {
         Navigator.of(context).pop();
       },
-      child: OnboardPageBackground(
+      child: Padding(
+        padding: const EdgeInsets.only(
+            right: EnvoySpacing.medium1,
+            left: EnvoySpacing.medium1,
+            top: EnvoySpacing.medium1,
+            bottom: EnvoySpacing.large3),
         child: Material(
             color: Colors.transparent,
             child: Column(

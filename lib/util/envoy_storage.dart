@@ -260,7 +260,8 @@ class EnvoyStorage {
   }
 
   Future addPendingTx(String key, String accountId, DateTime timestamp,
-      wallet.TransactionType type, int amount, int fee, String address) async {
+      wallet.TransactionType type, int amount, int fee, String address,
+      {String? purchaseViewToken}) async {
     await pendingTxStore.record(key).put(_db, {
       'account': accountId,
       'timestamp': timestamp.millisecondsSinceEpoch,
@@ -268,6 +269,7 @@ class EnvoyStorage {
       'amount': amount,
       'fee': fee,
       'address': address,
+      'purchaseViewToken': purchaseViewToken,
     });
     return true;
   }
@@ -297,16 +299,21 @@ class EnvoyStorage {
             break;
           }
         }
+        int received =
+            type == wallet.TransactionType.ramp ? (e["amount"] as int) : 0;
+        int sent =
+            type == wallet.TransactionType.ramp ? 0 : (e["amount"] as int);
         return wallet.Transaction(
           e.key as String,
           e.key as String,
           DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
           e["fee"] as int,
-          0,
-          e["amount"] as int,
+          received,
+          sent,
           0,
           e["address"] as String,
           type: type,
+          purchaseViewToken: e['purchaseViewToken'] as String?,
         );
       },
     ).toList();
