@@ -263,7 +263,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
     if (_magicRecoverWalletState == MagicRecoveryWalletState.success) {
       return _successMessage(context);
     }
-    if (_magicRecoverWalletState == MagicRecoveryWalletState.backupNotFound) {
+    if (_magicRecoverWalletState == MagicRecoveryWalletState.backupNotFound ||
+        _magicRecoverWalletState ==
+            MagicRecoveryWalletState.unableToDecryptBackup) {
       return _backupNotFound(context);
     }
     if (_magicRecoverWalletState ==
@@ -346,7 +348,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
       );
     }
     if (_magicRecoverWalletState == MagicRecoveryWalletState.seedNotFound ||
-        _magicRecoverWalletState == MagicRecoveryWalletState.failure) {
+        _magicRecoverWalletState == MagicRecoveryWalletState.failure ||
+        _magicRecoverWalletState ==
+            MagicRecoveryWalletState.unableToDecryptBackup) {
       return Padding(
         padding: const EdgeInsets.only(
             top: EnvoySpacing.xs,
