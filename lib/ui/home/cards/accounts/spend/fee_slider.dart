@@ -60,6 +60,13 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
     }
   }
 
+  TextStyle? get _labelStyle {
+    return Theme.of(context)
+        .textTheme
+        .bodySmall
+        ?.copyWith(fontSize: 11, fontWeight: FontWeight.w600);
+  }
+
   @override
   Widget build(BuildContext context) {
     ref.listen(feeChooserStateProvider, (previous, feeChooserState) {
@@ -171,10 +178,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
               indicatorWeight: 1,
               tabAlignment: TabAlignment.fill,
               indicatorSize: TabBarIndicatorSize.label,
-              labelStyle: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(fontSize: 11, fontWeight: FontWeight.w600),
+              labelStyle: _labelStyle,
               tabs: [
                 Tab(
                   child: Text(
@@ -227,9 +231,13 @@ class FeeSlider extends ConsumerStatefulWidget {
   ConsumerState createState() => _FeeSliderState();
 }
 
+//local state notifier to keep track of selected index,
+//this is used to animate the selected item,
+//by using provider we can avoid unnecessary rebuilds on scroll-wheel widget
+final _selectedFeeStateProvider = StateProvider.autoDispose<int>((ref) => 0);
+
 class _FeeSliderState extends ConsumerState<FeeSlider> {
   double yOffset = 0.0;
-  int selectedItem = 0;
   int? _lastHapticIndex;
 
   bool _disableHaptic = false;
@@ -241,19 +249,21 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      //cache textStyle to avoid creating new instances
       initializeSelectedRate();
     });
   }
 
-  void initializeSelectedRate() {
+  void initializeSelectedRate() async {
     num feeRate = ref.read(spendFeeRateProvider);
+    final num selectedItem = ref.read(_selectedFeeStateProvider);
     if (feeRate != selectedItem) {
       setState(() {
-        selectedItem = feeRate.toInt();
+        ref.read(_selectedFeeStateProvider.notifier).state = feeRate.toInt();
         //since we are setting the initial item, we need to disable haptic feedback
         _disableHaptic = true;
       });
-      int jumpIndex = widget.fees.indexOf(selectedItem);
+      int jumpIndex = widget.fees.indexOf(feeRate.toInt());
       if (jumpIndex < 0) {
         jumpIndex = widget.fees.length - 1;
       }
@@ -268,10 +278,75 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     }
   }
 
+  TextStyle? get _unselectedTextStyle {
+    return Theme.of(context).textTheme.titleSmall?.copyWith(
+          fontSize: 12,
+          color: EnvoyColors.gray600,
+        );
+  }
+
+  TextStyle? get _selectedTextStyle {
+    return Theme.of(context).textTheme.titleSmall?.copyWith(
+          fontSize: 12,
+          color: EnvoyColors.teal500,
+        );
+  }
+
+  TextStyle? get _satPerVbStyle {
+    return Theme.of(context).textTheme.bodySmall?.copyWith(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: EnvoyColors.accentPrimary,
+        );
+  }
+
+  //builds the indicator widget
+  Widget _buildIndicatorWidget(num feeRate) {
+    //consumer to listen to selected index changes, to animate the selected item
+    return Consumer(
+      builder: (context, ref, child) {
+        final selectedItem = ref.watch(_selectedFeeStateProvider);
+        return RotatedBox(
+          quarterTurns: 3,
+          child: SizedBox(
+            height: 68,
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AnimatedScale(
+                  duration: const Duration(milliseconds: 200),
+                  scale: selectedItem == feeRate ? 1.2 : 1,
+                  child: Text(
+                    "$feeRate",
+                    style: selectedItem == feeRate
+                        ? _selectedTextStyle
+                        : _unselectedTextStyle,
+                  ),
+                ),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 120),
+                  height: selectedItem == feeRate ? 34 : 32,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(2),
+                    color: selectedItem == feeRate
+                        ? EnvoyColors.teal500
+                        : EnvoyColors.gray600,
+                  ),
+                  margin: EdgeInsets.only(top: selectedItem == feeRate ? 4 : 0),
+                  width: selectedItem == feeRate ? 3 : 2,
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Color gradientOverlayColor = Colors.white54;
-
     bool processingFee = ref.watch(spendFeeProcessing);
     return Consumer(
       builder: (context, ref, child) {
@@ -306,69 +381,13 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                             itemExtent: 48,
                             squeeze: widget.fees.length > 1000 ? 1.0 : 1.3,
                             onSelectedItemChanged: _handleItemChanged,
-                            childDelegate: ListWheelChildListDelegate(
-                                children: widget.fees
-                                    .map((feeRate) => RotatedBox(
-                                          quarterTurns: 3,
-                                          child: SizedBox(
-                                            height: 68,
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.max,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                AnimatedScale(
-                                                  duration: const Duration(
-                                                      milliseconds: 200),
-                                                  scale: selectedItem == feeRate
-                                                      ? 1.2
-                                                      : 1,
-                                                  child: Text(
-                                                    "$feeRate",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .titleSmall
-                                                        ?.copyWith(
-                                                          fontSize: 12,
-                                                          color: selectedItem ==
-                                                                  feeRate
-                                                              ? EnvoyColors
-                                                                  .teal500
-                                                              : EnvoyColors
-                                                                  .gray600,
-                                                        ),
-                                                  ),
-                                                ),
-                                                AnimatedContainer(
-                                                  duration: const Duration(
-                                                      milliseconds: 120),
-                                                  height:
-                                                      selectedItem == feeRate
-                                                          ? 34
-                                                          : 32,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            2),
-                                                    color: selectedItem ==
-                                                            feeRate
-                                                        ? EnvoyColors.teal500
-                                                        : EnvoyColors.gray600,
-                                                  ),
-                                                  margin: EdgeInsets.only(
-                                                      top: selectedItem ==
-                                                              feeRate
-                                                          ? 4
-                                                          : 0),
-                                                  width: selectedItem == feeRate
-                                                      ? 3
-                                                      : 2,
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ))
-                                    .toList()),
+                            childDelegate: ListWheelChildBuilderDelegate(
+                              childCount: widget.fees.length,
+                              builder: (context, index) {
+                                return _buildIndicatorWidget(
+                                    widget.fees[index]);
+                              },
+                            ),
                           ),
                         ),
                         Center(
@@ -379,14 +398,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                                 margin: const EdgeInsets.only(top: 4),
                                 child: Text(
                                   "sats/Vb",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall
-                                      ?.copyWith(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600,
-                                        color: EnvoyColors.accentPrimary,
-                                      ),
+                                  style: _satPerVbStyle,
                                 )),
                           ),
                         ),
@@ -427,7 +439,8 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                       label: S().coincontrol_tx_detail_custom_fee_cta,
                       onTap: () {
                         if (!processingFee) {
-                          widget.onFeeSelect(selectedItem);
+                          widget
+                              .onFeeSelect(ref.read(_selectedFeeStateProvider));
                         }
                       },
                       type: ButtonType.primary,
@@ -447,12 +460,11 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
       _lastHapticIndex = index;
       if (!_disableHaptic) HapticFeedback.selectionClick();
     }
-    setState(() {
-      selectedItem = widget.fees[index].toInt();
-    });
+    ref.read(_selectedFeeStateProvider.notifier).state =
+        widget.fees[index].toInt();
     if (_initializationFinished) {
       ref.read(spendFeeRateBlockEstimationProvider.notifier).state =
-          selectedItem;
+          widget.fees[index].toInt();
     }
   }
 }
