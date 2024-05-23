@@ -376,8 +376,8 @@ class AccountManager extends ChangeNotifier {
         accounts.add(restoredAccount);
         try {
           restoredAccount.wallet.init(walletsDirectory);
-        } on Exception catch (_) {
-          kPrint("Error with initializing wallet");
+        } on Exception catch (e) {
+          EnvoyReport().log("recovery", e.toString());
         }
       }
     }
