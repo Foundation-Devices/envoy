@@ -79,9 +79,11 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       EnvoyStorage().getTxNote(rbfSpendState.originalTx.txId).then(
           (value) => ref.read(stagingTxNoteProvider.notifier).state = value);
       _checkInputsChanged();
+      //Since the BDK will give the spend amount as a negative value,
+      //we need to show the amount in the transaction review card with the absolute value.
       ref
           .read(spendTransactionProvider.notifier)
-          .setAmount(rbfSpendState.originalAmount);
+          .setAmount(rbfSpendState.originalAmount.abs());
     });
   }
 
@@ -114,6 +116,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         return PopScope(
           canPop: canPop,
           onPopInvoked: (didPop) {
+            //clear coins selection when exiting RBF screen
+            ref.read(coinSelectionFromWallet.notifier).reset();
+            ref.read(coinSelectionStateProvider.notifier).reset();
             clearSpendState(scope);
             kPrint("RBF Spend Screen Pop Invoked: $didPop");
           },
@@ -164,7 +169,10 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       Opacity(
-                                        opacity: _inputsChanged ? 1 : 0,
+                                        opacity: (_inputsChanged &&
+                                                finalizedPsbt != null)
+                                            ? 1
+                                            : 0,
                                         child: EnvoyButton(
                                           label: S().coincontrol_tx_detail_cta2,
                                           state: ButtonState.defaultState,
@@ -783,7 +791,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         Navigator.of(context, rootNavigator: false).pop();
       }
       _checkInputsChanged();
-    } catch (e) {
+    } catch (e, stack) {
       String message = "$e";
       if (e is InsufficientFunds) {
         message = S().send_keyboard_amount_insufficient_funds_info;
@@ -802,6 +810,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       if (existingFeeRate != null) {
         ref.read(spendFeeRateProvider.notifier).state = existingFeeRate;
       }
+      EnvoyReport().log("RBF", "Rbf set-fee failed : ${stack.toString()}");
     } finally {
       setState(() {
         _rebuildingTx = false;
@@ -895,7 +904,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                 lockedUtxos);
             final rawTxx = await account.wallet
                 .decodeWalletRawTx(psbt.rawTx, account.wallet.network);
-
+            _rawTransaction = rawTxx;
             RawTransactionOutput receiveOutPut =
                 rawTxx.outputs.firstWhere((element) {
               return (element.path == TxOutputPath.NotMine ||
@@ -976,6 +985,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
             ).show(context);
             return;
           } else {
+            EnvoyReport().log("RBF", "Rbf edit failed : $e");
             if (context.mounted) {
               EnvoyToast(
                 backgroundColor: EnvoyColors.danger,
