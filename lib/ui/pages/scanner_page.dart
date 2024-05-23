@@ -416,6 +416,10 @@ class ScannerPageState extends State<ScannerPage> {
       scaffold.showSnackBar(const SnackBar(
         content: Text("Account already connected"), // TODO: FIGMA
       ));
+      await Future.delayed(const Duration(seconds: 2));
+      if (mounted) {
+        OnboardingPage.popUntilGoRoute(context);
+      }
       return;
     }
 
