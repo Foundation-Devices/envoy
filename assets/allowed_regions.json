@@ -1,0 +1,623 @@
+{
+  "AL": {
+    "name": "Albania",
+    "divisions": {}
+  },
+  "AD": {
+    "name": "Andorra",
+    "divisions": {}
+  },
+  "AO": {
+    "name": "Angola",
+    "divisions": {}
+  },
+  "AG": {
+    "name": "Antigua & Barbuda",
+    "divisions": {}
+  },
+  "AR": {
+    "name": "Argentina",
+    "divisions": {}
+  },
+  "AU": {
+    "name": "Australia",
+    "divisions": {}
+  },
+  "AT": {
+    "name": "Austria",
+    "divisions": {}
+  },
+  "BE": {
+    "name": "Belgium",
+    "divisions": {}
+  },
+  "BZ": {
+    "name": "Belize",
+    "divisions": {}
+  },
+  "BM": {
+    "name": "Bermuda",
+    "divisions": {}
+  },
+  "BT": {
+    "name": "Bhutan",
+    "divisions": {}
+  },
+  "BQ": {
+    "name": "Bonaire, St. Estatius & Saba",
+    "divisions": {}
+  },
+  "BA": {
+    "name": "Bosnia & Herzegovina",
+    "divisions": {}
+  },
+  "BW": {
+    "name": "Botswana",
+    "divisions": {}
+  },
+  "BR": {
+    "name": "Brazil",
+    "divisions": {}
+  },
+  "BN": {
+    "name": "Brunei",
+    "divisions": {}
+  },
+  "BG": {
+    "name": "Bulgaria",
+    "divisions": {}
+  },
+  "CA": {
+    "name": "Canada",
+    "divisions": {}
+  },
+  "CV": {
+    "name": "Cape Verde",
+    "divisions": {}
+  },
+  "TD": {
+    "name": "Chad",
+    "divisions": {}
+  },
+  "CL": {
+    "name": "Chile",
+    "divisions": {}
+  },
+  "CX": {
+    "name": "Christmas Island",
+    "divisions": {}
+  },
+  "CC": {
+    "name": "Cocos (Keeling) Islands",
+    "divisions": {}
+  },
+  "CO": {
+    "name": "Colombia",
+    "divisions": {}
+  },
+  "KM": {
+    "name": "Comoros",
+    "divisions": {}
+  },
+  "CG": {
+    "name": "Congo",
+    "divisions": {}
+  },
+  "CK": {
+    "name": "Cook Islands",
+    "divisions": {}
+  },
+  "CR": {
+    "name": "Costa Rica",
+    "divisions": {}
+  },
+  "HR": {
+    "name": "Croatia",
+    "divisions": {}
+  },
+  "CY": {
+    "name": "Cyprus",
+    "divisions": {}
+  },
+  "CZ": {
+    "name": "Czech Republic",
+    "divisions": {}
+  },
+  "DK": {
+    "name": "Denmark",
+    "divisions": {}
+  },
+  "DJ": {
+    "name": "Djibouti",
+    "divisions": {}
+  },
+  "DM": {
+    "name": "Dominica",
+    "divisions": {}
+  },
+  "DO": {
+    "name": "Dominican Republic",
+    "divisions": {}
+  },
+  "SV": {
+    "name": "El Salvador",
+    "divisions": {}
+  },
+  "GQ": {
+    "name": "Equatorial Guinea",
+    "divisions": {}
+  },
+  "EE": {
+    "name": "Estonia",
+    "divisions": {}
+  },
+  "SZ": {
+    "name": "Swaziland",
+    "divisions": {}
+  },
+  "ET": {
+    "name": "Ethiopia",
+    "divisions": {}
+  },
+  "FK": {
+    "name": "Falkland Islands (Malvinas)",
+    "divisions": {}
+  },
+  "FO": {
+    "name": "Faroe Islands",
+    "divisions": {}
+  },
+  "FM": {
+    "name": "Micronesia",
+    "divisions": {}
+  },
+  "FI": {
+    "name": "Finland",
+    "divisions": {}
+  },
+  "FR": {
+    "name": "France",
+    "divisions": {}
+  },
+  "GF": {
+    "name": "French Guiana",
+    "divisions": {}
+  },
+  "PF": {
+    "name": "French Polynesia",
+    "divisions": {}
+  },
+  "GM": {
+    "name": "Gambia",
+    "divisions": {}
+  },
+  "GE": {
+    "name": "Georgia",
+    "divisions": {}
+  },
+  "DE": {
+    "name": "Germany",
+    "divisions": {}
+  },
+  "GH": {
+    "name": "Ghana",
+    "divisions": {}
+  },
+  "GI": {
+    "name": "Gibraltar",
+    "divisions": {}
+  },
+  "GR": {
+    "name": "Greece",
+    "divisions": {}
+  },
+  "GL": {
+    "name": "Greenland",
+    "divisions": {}
+  },
+  "GD": {
+    "name": "Grenada",
+    "divisions": {}
+  },
+  "GP": {
+    "name": "Guadeloupe",
+    "divisions": {}
+  },
+  "GU": {
+    "name": "Guam",
+    "divisions": {}
+  },
+  "GT": {
+    "name": "Guatemala",
+    "divisions": {}
+  },
+  "GG": {
+    "name": "Guernsey",
+    "divisions": {}
+  },
+  "GN": {
+    "name": "Guinea",
+    "divisions": {}
+  },
+  "HN": {
+    "name": "Honduras",
+    "divisions": {}
+  },
+  "HK": {
+    "name": "Hong Kong",
+    "divisions": {}
+  },
+  "HU": {
+    "name": "Hungary",
+    "divisions": {}
+  },
+  "IS": {
+    "name": "Iceland",
+    "divisions": {}
+  },
+  "IN": {
+    "name": "India",
+    "divisions": {}
+  },
+  "IE": {
+    "name": "Ireland",
+    "divisions": {}
+  },
+  "IL": {
+    "name": "Israel",
+    "divisions": {}
+  },
+  "IT": {
+    "name": "Italy",
+    "divisions": {}
+  },
+  "JE": {
+    "name": "Jersey",
+    "divisions": {}
+  },
+  "KZ": {
+    "name": "Kazakhstan",
+    "divisions": {}
+  },
+  "KE": {
+    "name": "Kenya",
+    "divisions": {}
+  },
+  "KI": {
+    "name": "Kiribati",
+    "divisions": {}
+  },
+  "KW": {
+    "name": "Kuwait",
+    "divisions": {}
+  },
+  "LA": {
+    "name": "Laos",
+    "divisions": {}
+  },
+  "LV": {
+    "name": "Latvia",
+    "divisions": {}
+  },
+  "LI": {
+    "name": "Liechtenstein",
+    "divisions": {}
+  },
+  "LT": {
+    "name": "Lithuania",
+    "divisions": {}
+  },
+  "LU": {
+    "name": "Luxembourg",
+    "divisions": {}
+  },
+  "MK": {
+    "name": "Macedonia",
+    "divisions": {}
+  },
+  "MG": {
+    "name": "Madagascar",
+    "divisions": {}
+  },
+  "MW": {
+    "name": "Malawi",
+    "divisions": {}
+  },
+  "MY": {
+    "name": "Malaysia",
+    "divisions": {}
+  },
+  "MT": {
+    "name": "Malta",
+    "divisions": {}
+  },
+  "MH": {
+    "name": "Marshall Islands",
+    "divisions": {}
+  },
+  "MQ": {
+    "name": "Martinique",
+    "divisions": {}
+  },
+  "MR": {
+    "name": "Mauritania",
+    "divisions": {}
+  },
+  "YT": {
+    "name": "Mayotte",
+    "divisions": {}
+  },
+  "MX": {
+    "name": "Mexico",
+    "divisions": {}
+  },
+  "MD": {
+    "name": "Moldova",
+    "divisions": {}
+  },
+  "MC": {
+    "name": "Monaco",
+    "divisions": {}
+  },
+  "ME": {
+    "name": "Montenegro",
+    "divisions": {}
+  },
+  "MZ": {
+    "name": "Mozambique",
+    "divisions": {}
+  },
+  "NR": {
+    "name": "Nauru",
+    "divisions": {}
+  },
+  "NL": {
+    "name": "Netherlands",
+    "divisions": {}
+  },
+  "NC": {
+    "name": "New Caledonia",
+    "divisions": {}
+  },
+  "NZ": {
+    "name": "New Zealand",
+    "divisions": {}
+  },
+  "NU": {
+    "name": "Niue",
+    "divisions": {}
+  },
+  "NF": {
+    "name": "Norfolk Island",
+    "divisions": {}
+  },
+  "MP": {
+    "name": "Northern Mariana Islands",
+    "divisions": {}
+  },
+  "NO": {
+    "name": "Norway",
+    "divisions": {}
+  },
+  "PG": {
+    "name": "Papua New Guinea",
+    "divisions": {}
+  },
+  "PY": {
+    "name": "Paraguay",
+    "divisions": {}
+  },
+  "PE": {
+    "name": "Peru",
+    "divisions": {}
+  },
+  "PH": {
+    "name": "Philippines",
+    "divisions": {}
+  },
+  "PL": {
+    "name": "Poland",
+    "divisions": {}
+  },
+  "PT": {
+    "name": "Portugal",
+    "divisions": {}
+  },
+  "RO": {
+    "name": "Romania",
+    "divisions": {}
+  },
+  "RW": {
+    "name": "Rwanda",
+    "divisions": {}
+  },
+  "BL": {
+    "name": "Saint Barthélemy",
+    "divisions": {}
+  },
+  "SH": {
+    "name": "St. Helena",
+    "divisions": {}
+  },
+  "LC": {
+    "name": "Saint Lucia",
+    "divisions": {}
+  },
+  "MF": {
+    "name": "St. Martin (France)",
+    "divisions": {}
+  },
+  "PM": {
+    "name": "St. Pierre & Miquelon",
+    "divisions": {}
+  },
+  "VC": {
+    "name": "St. Vincent & the Grenadines",
+    "divisions": {}
+  },
+  "SM": {
+    "name": "San Marino",
+    "divisions": {}
+  },
+  "ST": {
+    "name": "Sao Tome & Principe",
+    "divisions": {}
+  },
+  "RS": {
+    "name": "Serbia",
+    "divisions": {}
+  },
+  "SL": {
+    "name": "Sierra Leone",
+    "divisions": {}
+  },
+  "SG": {
+    "name": "Singapore",
+    "divisions": {}
+  },
+  "SX": {
+    "name": "Sint Maarten (Netherlands)",
+    "divisions": {}
+  },
+  "SK": {
+    "name": "Slovakia",
+    "divisions": {}
+  },
+  "SI": {
+    "name": "Slovenia",
+    "divisions": {}
+  },
+  "SB": {
+    "name": "Solomon Islands",
+    "divisions": {}
+  },
+  "ZA": {
+    "name": "South Africa",
+    "divisions": {}
+  },
+  "ES": {
+    "name": "Spain",
+    "divisions": {}
+  },
+  "LK": {
+    "name": "Sri Lanka",
+    "divisions": {}
+  },
+  "SR": {
+    "name": "Suriname",
+    "divisions": {}
+  },
+  "SE": {
+    "name": "Sweden",
+    "divisions": {}
+  },
+  "CH": {
+    "name": "Switzerland",
+    "divisions": {}
+  },
+  "TH": {
+    "name": "Thailand",
+    "divisions": {}
+  },
+  "TL": {
+    "name": "East Timor",
+    "divisions": {}
+  },
+  "TG": {
+    "name": "Togo",
+    "divisions": {}
+  },
+  "TK": {
+    "name": "Tokelau",
+    "divisions": {}
+  },
+  "TO": {
+    "name": "Tonga",
+    "divisions": {}
+  },
+  "TR": {
+    "name": "Turkey",
+    "divisions": {}
+  },
+  "TM": {
+    "name": "Turkmenistan",
+    "divisions": {}
+  },
+  "TC": {
+    "name": "Turks & Caicos Islands",
+    "divisions": {}
+  },
+  "TV": {
+    "name": "Tuvalu",
+    "divisions": {}
+  },
+  "UA": {
+    "name": "Ukraine",
+    "divisions": {}
+  },
+  "AE": {
+    "name": "United Arab Emirates",
+    "divisions": {}
+  },
+  "US": {
+    "name": "United States",
+    "divisions": {
+      "US-AZ": "Arizona",
+      "US-AR": "Arkansas",
+      "US-CA": "California",
+      "US-CO": "Colorado",
+      "US-CT": "Connecticut",
+      "US-DE": "Delaware",
+      "US-WA": "Washington",
+      "US-GA": "Georgia",
+      "US-ID": "Idaho",
+      "US-IL": "Illinois",
+      "US-IN": "Indiana",
+      "US-IA": "Iowa",
+      "US-KS": "Kansas",
+      "US-ME": "Maine",
+      "US-MA": "Massachusetts",
+      "US-MI": "Michigan",
+      "US-MN": "Minnesota",
+      "US-MS": "Mississippi",
+      "US-MO": "Missouri",
+      "US-MT": "Montana",
+      "US-NE": "Nebraska",
+      "US-NH": "New Hampshire",
+      "US-NC": "North Carolina",
+      "US-ND": "North Dakota",
+      "US-OK": "Oklahoma",
+      "US-PA": "Pennsylvania",
+      "US-RI": "Rhode Island",
+      "US-SC": "South Carolina",
+      "US-SD": "South Dakota",
+      "US-TN": "Tennessee",
+      "US-TX": "Texas",
+      "US-UT": "Utah",
+      "US-VA": "Virginia",
+      "US-WV": "West Virginia",
+      "US-WI": "Wisconsin",
+      "US-WY": "Wyoming"
+    }
+  },
+  "UY": {
+    "name": "Uruguay",
+    "divisions": {}
+  },
+  "UZ": {
+    "name": "Uzbekistan",
+    "divisions": {}
+  },
+  "VA": {
+    "name": "Vatican City (Holy See)",
+    "divisions": {}
+  },
+  "WF": {
+    "name": "Wallis & Futuna Islands",
+    "divisions": {}
+  },
+  "ZM": {
+    "name": "Zambia",
+    "divisions": {}
+  }
+}

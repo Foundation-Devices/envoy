@@ -12,20 +12,21 @@ class IconTab extends StatefulWidget {
   final String label;
   final EnvoyIcons icon;
   final bool isSelected;
+  final bool isDisabled;
   final ValueChanged<bool?>? onSelect;
 
   final bool bigTab;
   final String? description;
 
-  const IconTab({
-    super.key,
-    required this.label,
-    required this.icon,
-    this.isSelected = true,
-    this.onSelect,
-    this.bigTab = false,
-    this.description,
-  });
+  const IconTab(
+      {super.key,
+      required this.label,
+      required this.icon,
+      this.isSelected = true,
+      this.onSelect,
+      this.bigTab = false,
+      this.description,
+      this.isDisabled = false});
 
   @override
   IconTabState createState() => IconTabState();
@@ -34,15 +35,25 @@ class IconTab extends StatefulWidget {
 class IconTabState extends State<IconTab> {
   @override
   Widget build(BuildContext context) {
-    Color textColor =
-        widget.isSelected ? EnvoyColors.accentPrimary : EnvoyColors.textPrimary;
+    Color titleColor = widget.isDisabled
+        ? EnvoyColors.textTertiary
+        : (widget.isSelected
+            ? EnvoyColors.accentPrimary
+            : EnvoyColors.textSecondary);
+
     Color borderColor =
         widget.isSelected ? EnvoyColors.accentPrimary : EnvoyColors.gray200;
     TextStyle titleStyle =
         widget.bigTab ? EnvoyTypography.subheading : EnvoyTypography.label;
 
-    TextStyle descriptionStyle =
-        EnvoyTypography.info.copyWith(color: EnvoyColors.textPrimary);
+    TextStyle descriptionStyle = EnvoyTypography.info.copyWith(
+        color: widget.isDisabled
+            ? EnvoyColors.textTertiary
+            : EnvoyColors.textSecondary);
+
+    Color iconColor = widget.isDisabled
+        ? EnvoyColors.textTertiary
+        : EnvoyColors.textSecondary;
 
     return GestureDetector(
       onTap: () {
@@ -58,8 +69,11 @@ class IconTabState extends State<IconTab> {
           borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-              vertical: EnvoySpacing.medium1, horizontal: EnvoySpacing.small),
+          padding: EdgeInsets.symmetric(
+              vertical:
+                  widget.bigTab ? EnvoySpacing.medium2 : EnvoySpacing.medium1,
+              horizontal:
+                  widget.bigTab ? EnvoySpacing.medium2 : EnvoySpacing.small),
           child: Column(
             children: [
               EnvoyIcon(
@@ -67,7 +81,7 @@ class IconTabState extends State<IconTab> {
                 size: widget.bigTab
                     ? EnvoyIconSize.big
                     : EnvoyIconSize.mediumLarge,
-                color: EnvoyColors.textSecondary,
+                color: iconColor,
               ),
               SizedBox(
                 width:
@@ -79,7 +93,7 @@ class IconTabState extends State<IconTab> {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: titleStyle.copyWith(
-                  color: textColor,
+                  color: titleColor,
                 ),
               ),
               if (widget.description != null)

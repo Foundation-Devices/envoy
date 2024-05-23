@@ -21,7 +21,7 @@ import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/routes/route_state.dart';
-import 'package:envoy/business/country_manager.dart';
+import 'package:envoy/business/region_manager.dart';
 import 'package:envoy/util/envoy_storage.dart';
 
 enum BuyBitcoinCardState { buyInEnvoy, peerToPeer, vouchers, atms, none }
@@ -38,7 +38,7 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
   BuyBitcoinCardState currentState = BuyBitcoinCardState.none;
   late AnimationController animationController;
   late Animation<Alignment> animation;
-  bool isSelectedCountry = false;
+  bool regionCanBuy = false;
 
   @override
   void initState() {
@@ -79,7 +79,7 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
       if (path == ROUTE_BUY_BITCOIN) {
         ref.read(buyBTCPageProvider.notifier).state = true;
       }
-      _checkSelectedCountry();
+      _checkSelectedRegion();
     });
   }
 
@@ -89,11 +89,16 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
     });
   }
 
-  Future<void> _checkSelectedCountry() async {
+  Future<void> _checkSelectedRegion() async {
     var region = await EnvoyStorage().getCountry();
     if (region != null) {
-      isSelectedCountry =
-          AllowedCountries.isRegionAllowed(region.name, region.division);
+      bool newRegionCanBuy =
+          AllowedCountries.isRegionAllowed(region.code, region.division);
+      if (newRegionCanBuy != regionCanBuy) {
+        setState(() {
+          regionCanBuy = newRegionCanBuy;
+        });
+      }
     }
   }
 
@@ -121,13 +126,14 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
                   ),
                   IconTab(
                     label: S().buy_bitcoin_buyOptions_card_inEnvoy_heading,
+                    isDisabled: !regionCanBuy,
                     icon: EnvoyIcons.btc,
                     bigTab: true,
                     isSelected: currentState == BuyBitcoinCardState.buyInEnvoy,
                     description:
                         S().buy_bitcoin_buyOptions_card_inEnvoy_subheading,
                     onSelect: (selected) {
-                      if (isSelectedCountry) {
+                      if (regionCanBuy) {
                         _updateState(BuyBitcoinCardState.buyInEnvoy);
                       }
                     },
