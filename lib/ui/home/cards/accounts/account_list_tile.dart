@@ -263,7 +263,9 @@ class AccountBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isTaproot = account?.wallet.type == WalletType.taproot;
     bool isTestnet = account?.wallet.network == Network.Testnet;
-    bool isNotCircular = isTestnet || isTaproot;
+    bool isSignet = account?.wallet.network == Network.Signet;
+
+    bool isNotCircular = isTestnet || isTaproot || isSignet;
     return Container(
         width: (isNotCircular) ? null : containerHeight / 2,
         height: containerHeight / 2.0,
@@ -286,11 +288,14 @@ class AccountBadge extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (isTestnet)
+                    if (isTestnet || isSignet)
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: EnvoySpacing.xs),
-                        child: Text(S().account_type_sublabel_testnet,
+                        child: Text(
+                            isTestnet
+                                ? S().account_type_sublabel_testnet
+                                : "Signet",
                             style: isTaproot
                                 ? EnvoyTypography.label
                                     .copyWith(color: Colors.white)

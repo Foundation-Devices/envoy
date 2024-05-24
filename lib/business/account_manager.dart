@@ -78,6 +78,11 @@ class AccountManager extends ChangeNotifier {
             return false;
           }
 
+          if (!Settings().showSignetAccounts() &&
+              account.wallet.network == Network.Signet) {
+            return false;
+          }
+
           if (!Settings().taprootEnabled() &&
               account.wallet.type == WalletType.taproot) {
             return false;
@@ -517,17 +522,11 @@ class AccountManager extends ChangeNotifier {
     }
   }
 
-  // There is only one hot wallet for now (mainnet/testnet pair)
-  Account? getHotWalletAccount({testnet = false}) {
+  // There is only one hot wallet for now (mainnet/testnet/signet triplet)
+  Account? getHotWalletAccount({network = Network.Mainnet}) {
     for (var account in accounts) {
-      if (account.wallet.hot) {
-        if (account.wallet.network == Network.Testnet && testnet) {
-          return account;
-        }
-
-        if (account.wallet.network == Network.Mainnet && !testnet) {
-          return account;
-        }
+      if (account.wallet.hot && account.wallet.network == network) {
+        return account;
       }
     }
 
@@ -569,6 +568,16 @@ class AccountManager extends ChangeNotifier {
   bool passportTaprootAccountsExist() {
     for (var account in accounts) {
       if (!account.wallet.hot && account.wallet.type == WalletType.taproot) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  bool hotSignetAccountExist() {
+    for (var account in accounts) {
+      if (account.wallet.hot && account.wallet.network == Network.Signet) {
         return true;
       }
     }

@@ -18,6 +18,8 @@ Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings()
   ..allowScreenshotsSetting = json['allowScreenshotsSetting'] as bool? ?? false
   ..showTestnetAccountsSetting =
       json['showTestnetAccountsSetting'] as bool? ?? false
+  ..showSignetAccountsSetting =
+      json['showSignetAccountsSetting'] as bool? ?? false
   ..enableTaprootSetting = json['enableTaprootSetting'] as bool? ?? false;
 
 Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
@@ -30,6 +32,7 @@ Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'syncToCloudSetting': instance.syncToCloudSetting,
       'allowScreenshotsSetting': instance.allowScreenshotsSetting,
       'showTestnetAccountsSetting': instance.showTestnetAccountsSetting,
+      'showSignetAccountsSetting': instance.showSignetAccountsSetting,
       'enableTaprootSetting': instance.enableTaprootSetting,
     };
 

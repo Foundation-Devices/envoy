@@ -1886,10 +1886,10 @@ class S {
     );
   }
 
-  /// `This is because there are not enough confirmed or unlocked coins to choose from. \n\nAllow pending coins to confirm or unlock some coins and try again.`
+  /// `This is because there are not enough confirmed or unlocked coins to choose from. \n\nWhere possible, allow pending coins to confirm or unlock some coins and try again.`
   String get coindetails_overlay_noBoostNoFunds_subheading {
     return Intl.message(
-      'This is because there are not enough confirmed or unlocked coins to choose from. \n\nAllow pending coins to confirm or unlock some coins and try again.',
+      'This is because there are not enough confirmed or unlocked coins to choose from. \n\nWhere possible, allow pending coins to confirm or unlock some coins and try again.',
       name: 'coindetails_overlay_noBoostNoFunds_subheading',
       desc: '',
       args: [],
@@ -6008,6 +6008,26 @@ class S {
     );
   }
 
+  /// `Learn more about Signet [[here]].`
+  String get settings_advanced_enabled_signet_modal_link {
+    return Intl.message(
+      'Learn more about Signet [[here]].',
+      name: 'settings_advanced_enabled_signet_modal_link',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enabling Signet adds a Signet version of your Envoy Wallet. This feature is primarily used by developers or testers and has zero value.`
+  String get settings_advanced_enabled_signet_modal_subheading {
+    return Intl.message(
+      'Enabling Signet adds a Signet version of your Envoy Wallet. This feature is primarily used by developers or testers and has zero value.',
+      name: 'settings_advanced_enabled_signet_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Learn how to do that [[here]].`
   String get settings_advanced_enabled_testnet_modal_link {
     return Intl.message(
@@ -6023,6 +6043,16 @@ class S {
     return Intl.message(
       'Enabling Testnet adds a Testnet version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport.',
       name: 'settings_advanced_enabled_testnet_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Signet`
+  String get settings_advanced_signet {
+    return Intl.message(
+      'Signet',
+      name: 'settings_advanced_signet',
       desc: '',
       args: [],
     );

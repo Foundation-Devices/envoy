@@ -5,6 +5,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:math';
+import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/node_url.dart';
@@ -28,9 +29,15 @@ enum Environment { local, development, staging, production }
 enum DisplayUnit { btc, sat }
 
 final settingsProvider = ChangeNotifierProvider((ref) => Settings());
+
 final showTestnetAccountsProvider = Provider((ref) {
   return ref.watch(settingsProvider).showTestnetAccounts();
 });
+
+final showSignetAccountsProvider = Provider((ref) {
+  return ref.watch(settingsProvider).showSignetAccounts();
+});
+
 final torEnabledProvider = StateProvider<bool>((ref) => Settings().usingTor);
 
 final showTaprootAccountsProvider = Provider((ref) {
@@ -80,6 +87,9 @@ class Settings extends ChangeNotifier {
   static const String TESTNET_ELECTRUM_SERVER =
       "ssl://testnet.foundation.xyz:50002";
 
+  // MutinyNet Esplora
+  static const String MUTINYNET_ESPLORA_SERVER = "https://mutinynet.com/api";
+
   DisplayUnit displayUnit = DisplayUnit.btc;
 
   bool displayUnitSat() {
@@ -122,6 +132,10 @@ class Settings extends ChangeNotifier {
   String electrumAddress(Network network) {
     if (network == Network.Testnet) {
       return TESTNET_ELECTRUM_SERVER;
+    }
+
+    if (network == Network.Signet) {
+      return MUTINYNET_ESPLORA_SERVER;
     }
 
     if (usingDefaultElectrumServer) {
@@ -226,6 +240,27 @@ class Settings extends ChangeNotifier {
 
   setShowTestnetAccounts(bool showTestnetAccounts) {
     showTestnetAccountsSetting = showTestnetAccounts;
+    notifyListeners();
+    store();
+  }
+
+  @JsonKey(defaultValue: false)
+  bool showSignetAccountsSetting = false;
+
+  bool showSignetAccounts() {
+    return showSignetAccountsSetting;
+  }
+
+  setShowSignetAccounts(bool showSignetAccounts) async {
+    showSignetAccountsSetting = showSignetAccounts;
+
+    // if a other hot wallet exists and no signet then add one
+    if (AccountManager().hotAccountsExist() &&
+        !AccountManager().hotSignetAccountExist()) {
+      await EnvoySeed()
+          .deriveAndAddWalletsFromCurrentSeed(network: Network.Signet);
+    }
+
     notifyListeners();
     store();
   }

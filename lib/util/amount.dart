@@ -130,10 +130,11 @@ Widget getSatsIcon(Account account, {EnvoyIconSize? iconSize}) {
       size: iconSize ?? EnvoyIconSize.normal,
     );
   } else {
-    return TestnetIcon(
+    return NonMainnetIcon(
       EnvoyIcons.sats,
       badgeColor: account.color,
       size: iconSize ?? EnvoyIconSize.normal,
+      network: account.wallet.network,
     );
   }
 }
@@ -145,10 +146,11 @@ Widget getBtcIcon(Account account, {EnvoyIconSize? iconSize}) {
       size: iconSize ?? EnvoyIconSize.normal,
     );
   } else {
-    return TestnetIcon(
+    return NonMainnetIcon(
       EnvoyIcons.btc,
       badgeColor: account.color,
       size: iconSize ?? EnvoyIconSize.normal,
+      network: account.wallet.network,
     );
   }
 }

@@ -423,7 +423,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Cannot Boost Transaction"),
         "coindetails_overlay_noBoostNoFunds_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "This is because there are not enough confirmed or unlocked coins to choose from. \n\nAllow pending coins to confirm or unlock some coins and try again."),
+                "This is because there are not enough confirmed or unlocked coins to choose from. \n\nWhere possible, allow pending coins to confirm or unlock some coins and try again."),
         "coindetails_overlay_notes":
             MessageLookupByLibrary.simpleMessage("Note"),
         "coindetails_overlay_paymentID":
@@ -1292,12 +1292,20 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Sending Max: \nFees are deducted from amount being sent."),
         "settings_advanced": MessageLookupByLibrary.simpleMessage("Advanced"),
+        "settings_advanced_enabled_signet_modal_link":
+            MessageLookupByLibrary.simpleMessage(
+                "Learn more about Signet [[here]]."),
+        "settings_advanced_enabled_signet_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Enabling Signet adds a Signet version of your Envoy Wallet. This feature is primarily used by developers or testers and has zero value."),
         "settings_advanced_enabled_testnet_modal_link":
             MessageLookupByLibrary.simpleMessage(
                 "Learn how to do that [[here]]."),
         "settings_advanced_enabled_testnet_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Enabling Testnet adds a Testnet version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport."),
+        "settings_advanced_signet":
+            MessageLookupByLibrary.simpleMessage("Signet"),
         "settings_advanced_taproot":
             MessageLookupByLibrary.simpleMessage("Taproot"),
         "settings_advanced_taproot_modal_cta1":

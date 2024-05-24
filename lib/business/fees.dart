@@ -62,7 +62,11 @@ class Fees {
   }
 
   static _defaultFees() {
-    return {Network.Mainnet: FeeRates(), Network.Testnet: FeeRates()};
+    return {
+      Network.Mainnet: FeeRates(),
+      Network.Testnet: FeeRates(),
+      Network.Signet: FeeRates()
+    };
   }
 
   static _feesToJson(Map<Network, FeeRates> fees) {
@@ -125,12 +129,13 @@ class Fees {
   }
 
   void _getRates() {
-    // Just mainnet and testnet for now
     _getMempoolRecommendedRates(Network.Mainnet);
     _getMempoolRecommendedRates(Network.Testnet);
+    _getMempoolRecommendedRates(Network.Signet);
 
     _getMempoolBlocksFees(Network.Mainnet);
     _getMempoolBlocksFees(Network.Testnet);
+    _getMempoolBlocksFees(Network.Signet);
   }
 
   static restore() {

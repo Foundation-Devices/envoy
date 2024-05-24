@@ -35,7 +35,7 @@ use std::ptr::null_mut;
 
 use crate::electrum_client::Client;
 use crate::miniscript::Segwitv0;
-use crate::util::get_address_string;
+use crate::util::{get_address_string, get_blockchain};
 use bdk::bitcoin::hashes::hex::ToHex;
 use bdk::bitcoin::secp256k1::Secp256k1;
 use bdk::bitcoin::util::bip32::{DerivationPath, ExtendedPrivKey, KeySource};
@@ -441,17 +441,13 @@ pub unsafe extern "C" fn wallet_get_change_address(
 #[no_mangle]
 pub unsafe extern "C" fn wallet_sync(
     wallet: *mut Mutex<bdk::Wallet<Tree>>,
-    electrum_address: *const c_char,
+    server_address: *const c_char,
     tor_port: i32,
 ) -> bool {
     let wallet = unwrap_or_return!(util::get_wallet_mutex(wallet).lock(), false);
+    let server_address = unwrap_or_return!(CStr::from_ptr(server_address).to_str(), false);
+    let blockchain = unwrap_or_return!(get_blockchain(tor_port, server_address), false);
 
-    let electrum_address = unwrap_or_return!(CStr::from_ptr(electrum_address).to_str(), false);
-
-    let blockchain = unwrap_or_return!(
-        util::get_electrum_blockchain(tor_port, electrum_address),
-        false
-    );
     unwrap_or_return!(
         wallet.sync(&blockchain, SyncOptions { progress: None }),
         false
@@ -502,12 +498,12 @@ pub unsafe extern "C" fn wallet_get_utxos(wallet: *mut Mutex<bdk::Wallet<Tree>>)
 
 #[no_mangle]
 pub unsafe extern "C" fn wallet_get_fee_rate(
-    electrum_address: *const c_char,
+    server_address: *const c_char,
     tor_port: i32,
     target: u16,
 ) -> f64 {
-    let electrum_address = CStr::from_ptr(electrum_address).to_str().unwrap();
-    let client = match util::get_electrum_client(tor_port, electrum_address) {
+    let server_address = CStr::from_ptr(server_address).to_str().unwrap();
+    let client = match util::get_electrum_client(tor_port, server_address) {
         Ok(c) => c,
         Err(e) => {
             update_last_error(e);
@@ -521,7 +517,7 @@ pub unsafe extern "C" fn wallet_get_fee_rate(
 
 #[no_mangle]
 pub unsafe extern "C" fn wallet_get_server_features(
-    electrum_address: *const c_char,
+    server_address: *const c_char,
     tor_port: i32,
 ) -> ServerFeatures {
     let error_return = ServerFeatures {
@@ -532,9 +528,10 @@ pub unsafe extern "C" fn wallet_get_server_features(
         genesis_hash: ptr::null(),
     };
 
-    let electrum_address = CStr::from_ptr(electrum_address).to_str().unwrap();
+    let server_address = CStr::from_ptr(server_address).to_str().unwrap();
+
     let client = unwrap_or_return!(
-        util::get_electrum_client(tor_port, electrum_address),
+        util::get_electrum_client(tor_port, server_address),
         error_return
     );
 
@@ -1543,26 +1540,35 @@ pub unsafe extern "C" fn wallet_decode_raw_tx(
 
 #[no_mangle]
 pub unsafe extern "C" fn wallet_broadcast_tx(
-    electrum_address: *const c_char,
+    server_address: *const c_char,
     tor_port: i32,
     tx: *const c_char,
 ) -> *const c_char {
     let error_return = CString::new("").unwrap().into_raw();
 
-    let electrum_address =
-        unwrap_or_return!(CStr::from_ptr(electrum_address).to_str(), error_return);
-    let client = unwrap_or_return!(
-        util::get_electrum_client(tor_port, electrum_address),
-        error_return
-    );
+    let server_address = unwrap_or_return!(CStr::from_ptr(server_address).to_str(), error_return);
 
     let hex_tx = unwrap_or_return!(CStr::from_ptr(tx).to_str(), error_return);
     let raw_tx = unwrap_or_return!(hex::decode(hex_tx), error_return);
 
     let tx: bdk::bitcoin::Transaction = unwrap_or_return!(deserialize(&raw_tx), error_return);
-    let txid = unwrap_or_return!(client.transaction_broadcast(&tx), error_return);
 
-    unwrap_or_return!(CString::new(txid.to_string()), error_return).into_raw()
+    if server_address.starts_with("http") {
+        let client = unwrap_or_return!(
+            util::get_esplora_client(tor_port, server_address),
+            error_return
+        );
+        unwrap_or_return!(client.broadcast(&tx), error_return);
+    } else {
+        let client = unwrap_or_return!(
+            util::get_electrum_client(tor_port, server_address),
+            error_return
+        );
+
+        unwrap_or_return!(client.transaction_broadcast(&tx), error_return);
+    }
+
+    unwrap_or_return!(CString::new(tx.txid().to_string()), error_return).into_raw()
 }
 
 #[no_mangle]

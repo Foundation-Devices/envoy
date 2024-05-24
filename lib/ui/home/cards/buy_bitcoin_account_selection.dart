@@ -39,7 +39,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
     super.initState();
     Future.delayed(Duration.zero).then((_) {
       setState(() {
-        selectedAccount = ref.read(nonTestnetAccountsProvider(null)).first;
+        selectedAccount = ref.read(mainnetAccountsProvider(null)).first;
       });
       selectedAccount?.wallet.getAddress().then((value) {
         setState(() {
@@ -65,7 +65,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
   Widget build(BuildContext context) {
     List<Account> filteredAccounts = [];
     if (selectedAccount != null) {
-      filteredAccounts = ref.watch(nonTestnetAccountsProvider(selectedAccount));
+      filteredAccounts = ref.watch(mainnetAccountsProvider(selectedAccount));
     }
     return (selectedAccount == null)
         ? const Center(child: CircularProgressIndicator())

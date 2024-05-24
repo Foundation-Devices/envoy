@@ -7,6 +7,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:wallet/wallet.dart';
 
 enum EnvoyIconSize { normal, small, big, extraSmall, superSmall, mediumLarge }
 
@@ -96,24 +97,39 @@ class EnvoyIcon extends StatelessWidget {
   }
 }
 
-/// Testnet icons have a coloured 'T' badge
-class TestnetIcon extends StatelessWidget {
+/// Non-mainnet icons have a coloured badge
+class NonMainnetIcon extends StatelessWidget {
   final EnvoyIcons icon;
   final EnvoyIconSize size;
   final Color? badgeColor;
   final Color? iconColor;
+  final Network network;
 
-  const TestnetIcon(this.icon,
+  const NonMainnetIcon(this.icon,
       {super.key,
       this.badgeColor,
       this.size = EnvoyIconSize.normal,
-      this.iconColor});
+      this.iconColor,
+      required this.network});
 
   @override
   Widget build(BuildContext context) {
+    String badgeAssetName = () {
+      switch (network) {
+        case Network.Mainnet:
+          return "";
+        case Network.Testnet:
+          return "assets/components/icons/testnet_badge.svg";
+        case Network.Signet:
+          return "assets/components/icons/signet_badge.svg";
+        case Network.Regtest:
+          return "";
+      }
+    }();
+
     return Stack(children: [
       SvgPicture.asset(
-        "assets/components/icons/testnet_badge.svg",
+        badgeAssetName,
         width: size.toDouble / 2,
         height: size.toDouble / 2,
         color: badgeColor,

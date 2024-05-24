@@ -62,11 +62,13 @@ class EnvoySeed {
   static Map<WalletType, Map<Network, String>> hotWalletDerivationPaths = {
     WalletType.witnessPublicKeyHash: {
       Network.Mainnet: "m/84'/0'/0'",
-      Network.Testnet: "m/84'/1'/0'"
+      Network.Testnet: "m/84'/1'/0'",
+      Network.Signet: "m/84'/2'/0'"
     },
     WalletType.taproot: {
       Network.Mainnet: "m/86'/0'/0'",
-      Network.Testnet: "m/86'/1'/0'"
+      Network.Testnet: "m/86'/1'/0'",
+      Network.Signet: "m/86'/2'/0'"
     }
   };
 
@@ -84,19 +86,22 @@ class EnvoySeed {
 
   Future<bool> deriveAndAddWalletsFromCurrentSeed(
       {String? passphrase,
-      WalletType type = WalletType.witnessPublicKeyHash}) async {
+      WalletType type = WalletType.witnessPublicKeyHash,
+      Network? network}) async {
     String? seed = await get();
 
     if (seed == null) {
       return false;
     }
 
-    return deriveAndAddWallets(seed, passphrase: passphrase, type: type);
+    return deriveAndAddWallets(seed,
+        passphrase: passphrase, type: type, network: network);
   }
 
   Future<bool> deriveAndAddWallets(String seed,
       {String? passphrase,
-      WalletType type = WalletType.witnessPublicKeyHash}) async {
+      WalletType type = WalletType.witnessPublicKeyHash,
+      Network? network}) async {
     if (AccountManager().checkIfWalletFromSeedExists(seed,
         passphrase: passphrase, type: type)) {
       return true;
@@ -105,32 +110,33 @@ class EnvoySeed {
     await store(seed);
 
     try {
-      var mainnet = Wallet.deriveWallet(
-          seed,
-          hotWalletDerivationPaths[type]![Network.Mainnet]!,
-          AccountManager.walletsDirectory,
-          Network.Mainnet,
-          privateKey: true,
-          passphrase: passphrase,
-          type: type);
+      if (network == null) {
+        addEnvoyAccount(seed, Network.Mainnet, type, passphrase);
 
-      // Always derive a testnet wallet too
-      var testnet = Wallet.deriveWallet(
-          seed,
-          hotWalletDerivationPaths[type]![Network.Testnet]!,
-          AccountManager.walletsDirectory,
-          Network.Testnet,
-          privateKey: true,
-          passphrase: passphrase,
-          type: type);
-
-      AccountManager().addHotWalletAccount(mainnet);
-      AccountManager().addHotWalletAccount(testnet);
+        // Always derive testnet and signet wallets too
+        addEnvoyAccount(seed, Network.Testnet, type, passphrase);
+        addEnvoyAccount(seed, Network.Signet, type, passphrase);
+      } else {
+        addEnvoyAccount(seed, network, type, passphrase);
+      }
 
       return true;
     } on Exception catch (_) {
       return false;
     }
+  }
+
+  void addEnvoyAccount(
+      String seed, Network network, WalletType type, String? passphrase) {
+    var wallet = Wallet.deriveWallet(
+        seed,
+        hotWalletDerivationPaths[type]![network]!,
+        AccountManager.walletsDirectory,
+        network,
+        privateKey: true,
+        passphrase: passphrase,
+        type: type);
+    AccountManager().addHotWalletAccount(wallet);
   }
 
   bool walletDerived({WalletType type = WalletType.witnessPublicKeyHash}) {
@@ -457,7 +463,9 @@ class EnvoySeed {
   }
 
   Wallet? getWallet() {
-    return AccountManager().getHotWalletAccount(testnet: false)?.wallet;
+    return AccountManager()
+        .getHotWalletAccount(network: Network.Mainnet)
+        ?.wallet;
   }
 
   Future<String?> _getSecure() async {

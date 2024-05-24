@@ -428,7 +428,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Error al Impuslar Transacción"),
         "coindetails_overlay_noBoostNoFunds_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Esto se debe a que no hay suficientes monedas confirmadas o desbloqueadas de donde elegir. \n\nDeja que las monedas pendientes se confirmen o desbloquea algunas monedas e inténtalo de nuevo."),
+                "Esto se debe a que no hay suficientes monedas confirmadas o desbloqueadas de donde elegir. \n\nSi es posible, deja que las monedas pendientes se confirmen o desbloquea algunas monedas e inténtalo de nuevo."),
         "coindetails_overlay_notes":
             MessageLookupByLibrary.simpleMessage("Nota"),
         "coindetails_overlay_paymentID":
@@ -1322,11 +1322,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "send_reviewScreen_sendMaxWarning": MessageLookupByLibrary.simpleMessage(
             "Envío máximo: \nLas tasas se deducen de la cantidad que se envía."),
         "settings_advanced": MessageLookupByLibrary.simpleMessage("Avanzado"),
+        "settings_advanced_enabled_signet_modal_link":
+            MessageLookupByLibrary.simpleMessage(
+                "Más información sobre Signet [[aquí]]."),
+        "settings_advanced_enabled_signet_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Activar Signet añade una versión Signet de tu Cartera Envoy. Esta función es utilizada principalmente por desarrolladores y testers y no tiene ningún valor."),
         "settings_advanced_enabled_testnet_modal_link":
             MessageLookupByLibrary.simpleMessage("Aprende a hacerlo [[aquí]]."),
         "settings_advanced_enabled_testnet_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Al habilitar Testnet, se añade una versión de Testnet de tu Cartera Envoy y te permite conectar cuentas de Testnet de tu Passport."),
+        "settings_advanced_signet":
+            MessageLookupByLibrary.simpleMessage("Signet"),
         "settings_advanced_taproot":
             MessageLookupByLibrary.simpleMessage("Taproot"),
         "settings_advanced_taproot_modal_cta1":
