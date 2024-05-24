@@ -379,7 +379,11 @@ class AccountManager extends ChangeNotifier {
       for (var account in storedAccounts) {
         Account restoredAccount = Account.fromJson(account);
         accounts.add(restoredAccount);
-        restoredAccount.wallet.init(walletsDirectory);
+        try {
+          restoredAccount.wallet.init(walletsDirectory);
+        } on Exception catch (e) {
+          EnvoyReport().log("recovery", e.toString());
+        }
       }
     }
 
