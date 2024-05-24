@@ -53,6 +53,12 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
     });
   }
 
+  @override
+  void dispose() {
+    accountAddressCache.clear();
+    super.dispose();
+  }
+
   void updateSelectedAccount(Account account) async {
     setState(() {
       selectedAccount = account;
