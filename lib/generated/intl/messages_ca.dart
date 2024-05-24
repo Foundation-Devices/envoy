@@ -1331,11 +1331,19 @@ class MessageLookup extends MessageLookupByLibrary {
             "Enviar el Màxim:\nLes tarifes es dedueixen de l\'import enviat."),
         "settings_advanced":
             MessageLookupByLibrary.simpleMessage("Opcions Avançades"),
+        "settings_advanced_enabled_signet_modal_link":
+            MessageLookupByLibrary.simpleMessage(
+                "Learn more about Signet [[here]]."),
+        "settings_advanced_enabled_signet_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Enabling Signet adds a Signet version of your Envoy Wallet. This feature is primarily used by developers or testers and has zero value."),
         "settings_advanced_enabled_testnet_modal_link":
             MessageLookupByLibrary.simpleMessage("Apreneu a fer-ho [[aqui]] ."),
         "settings_advanced_enabled_testnet_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Si activeu Testnet, s\'afegeix una versió de Testnet del vostre Envoy Wallet i us permet connectar comptes de Testnet des del vostre Passport."),
+        "settings_advanced_signet":
+            MessageLookupByLibrary.simpleMessage("Signet"),
         "settings_advanced_taproot":
             MessageLookupByLibrary.simpleMessage("Taproot"),
         "settings_advanced_taproot_modal_cta1":

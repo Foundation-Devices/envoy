@@ -15,11 +15,16 @@ final accountManagerProvider =
 
 final accountsProvider = Provider<List<Account>>((ref) {
   var testnetEnabled = ref.watch(showTestnetAccountsProvider);
+  var signetEnabled = ref.watch(showSignetAccountsProvider);
   var taprootEnabled = ref.watch(showTaprootAccountsProvider);
   var accountManager = ref.watch(accountManagerProvider);
 
   return accountManager.accounts.where((account) {
     if (!testnetEnabled && account.wallet.network == Network.Testnet) {
+      return false;
+    }
+
+    if (!signetEnabled && account.wallet.network == Network.Signet) {
       return false;
     }
 
@@ -31,12 +36,13 @@ final accountsProvider = Provider<List<Account>>((ref) {
   }).toList();
 });
 
-final nonTestnetAccountsProvider =
+final mainnetAccountsProvider =
     Provider.family<List<Account>, Account?>((ref, selectedAccount) {
   final accounts = ref.watch(accountsProvider);
 
+  // We filter everything but mainnet
   final filteredAccounts = accounts
-      .where((account) => account.wallet.network != Network.Testnet)
+      .where((account) => account.wallet.network == Network.Mainnet)
       .toList();
 
   if (selectedAccount != null) {

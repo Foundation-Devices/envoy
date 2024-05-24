@@ -28,9 +28,15 @@ enum Environment { local, development, staging, production }
 enum DisplayUnit { btc, sat }
 
 final settingsProvider = ChangeNotifierProvider((ref) => Settings());
+
 final showTestnetAccountsProvider = Provider((ref) {
   return ref.watch(settingsProvider).showTestnetAccounts();
 });
+
+final showSignetAccountsProvider = Provider((ref) {
+  return ref.watch(settingsProvider).showSignetAccounts();
+});
+
 final torEnabledProvider = StateProvider<bool>((ref) => Settings().usingTor);
 
 final showTaprootAccountsProvider = Provider((ref) {

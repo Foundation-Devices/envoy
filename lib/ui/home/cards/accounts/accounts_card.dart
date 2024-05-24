@@ -47,8 +47,8 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
     super.build(context);
     // ignore: unused_local_variable
 
-    final primaryAccounts = ref.watch(nonTestnetAccountsProvider(null));
-    final bool noPrimaryAccounts = primaryAccounts.isEmpty;
+    final mainnetAccounts = ref.watch(mainnetAccountsProvider(null));
+    final bool noMainnetAccounts = mainnetAccounts.isEmpty;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -59,7 +59,7 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
           padding: const EdgeInsets.only(bottom: 10),
           child: GestureDetector(
             onTap: () async {
-              if (noPrimaryAccounts) {
+              if (noMainnetAccounts) {
                 return;
               }
               context.go(
@@ -79,7 +79,7 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
                   children: [
                     EnvoyIcon(
                       EnvoyIcons.btc,
-                      color: noPrimaryAccounts
+                      color: noMainnetAccounts
                           ? EnvoyColors.textTertiary
                           : EnvoyColors.accentPrimary,
                     ),
@@ -88,7 +88,7 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
                       child: Text(
                         S().component_minishield_buy,
                         style: EnvoyTypography.label.copyWith(
-                          color: noPrimaryAccounts
+                          color: noMainnetAccounts
                               ? EnvoyColors.textTertiary
                               : EnvoyColors.accentPrimary,
                         ),

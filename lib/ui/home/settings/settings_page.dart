@@ -220,12 +220,16 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               ListTile(
                 dense: true,
                 contentPadding: const EdgeInsets.all(0),
-                title: const Wrap(
-                  children: [SettingText("Signet")],
+                title: Wrap(
+                  children: [SettingText(S().settings_advanced_signet)],
                 ),
                 trailing: SettingToggle(
                   s.showSignetAccounts,
                   s.setShowSignetAccounts,
+                  onEnabled: () {
+                    showEnvoyDialog(
+                        context: context, dialog: const SignetInfoModal());
+                  },
                 ),
               ),
               ListTile(
@@ -413,6 +417,90 @@ class TestnetInfoModal extends StatelessWidget {
                         onTap: () {
                           launchUrlString(
                               "https://www.youtube.com/watch?v=nRGFAHlYIeU");
+                        })),
+                const Padding(padding: EdgeInsets.all(4)),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 28),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: EnvoyButton(
+                    S().component_continue,
+                    type: EnvoyButtonTypes.primaryModal,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SignetInfoModal extends StatelessWidget {
+  const SignetInfoModal({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
+          fontSize: 13,
+        );
+
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.75,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 36),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets/exclamation_icon.png",
+                  height: 60,
+                  width: 60,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 18.0),
+                  child: Text(
+                    S().settings_advanced_enabled_signet_modal_subheading,
+                    textAlign: TextAlign.center,
+                    style: textStyle,
+                  ),
+                ),
+                const Padding(padding: EdgeInsets.all(4)),
+                Padding(
+                    padding: const EdgeInsets.only(top: 18.0),
+                    child: LinkText(
+                        text: S().settings_advanced_enabled_signet_modal_link,
+                        textStyle: textStyle,
+                        linkStyle: EnvoyTypography.button
+                            .copyWith(color: EnvoyColors.accentPrimary),
+                        onTap: () {
+                          launchUrlString(
+                              "https://blog.mutinywallet.com/mutinynet");
                         })),
                 const Padding(padding: EdgeInsets.all(4)),
               ],
