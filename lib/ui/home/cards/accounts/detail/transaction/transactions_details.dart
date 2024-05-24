@@ -258,6 +258,13 @@ class _TransactionsDetailsWidgetState
               trailing: Text(getTransactionStatusString(tx),
                   style: trailingTextStyle),
             ),
+            if (tx.pullPaymentId != null)
+              EnvoyInfoCardListItem(
+                title: S().coindetails_overlay_paymentID,
+                icon: const EnvoyIcon(EnvoyIcons.btcPay,
+                    color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
+                trailing: Text(tx.pullPaymentId!, style: trailingTextStyle),
+              ),
             if (tx.type == TransactionType.ramp)
               EnvoyInfoCardListItem(
                 title: S().coindetails_overlay_rampID,

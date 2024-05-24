@@ -260,9 +260,9 @@ Future prunePendingTransactions(
       kPrint("Pruning BtcPay tx: ${actualBtcPayTx.txId}");
       EnvoyStorage().addTxNote(
           note: "BTCPay voucher", key: actualBtcPayTx.txId); // TODO: FIGMA
-      EnvoyStorage().deleteTxNote(pendingTx.address!);
-      EnvoyStorage().deletePendingTx(pendingTx.address!);
       actualBtcPayTx.setPullPaymentId(pendingTx.pullPaymentId);
+      EnvoyStorage().deleteTxNote(pendingTx.address!);
+      EnvoyStorage().deletePendingTx(pendingTx.txId);
     });
   }
   for (var pendingTx in ramp) {
