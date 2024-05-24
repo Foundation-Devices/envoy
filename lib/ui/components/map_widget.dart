@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'dart:core';
@@ -20,10 +21,9 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/util/envoy_storage.dart';
 
 const String mapType = "positron";
-
-const home = LatLng(Angle.degree(34.052235), Angle.degree(-118.243683));
 
 class MarkersPage extends StatefulWidget {
   const MarkersPage({super.key});
@@ -33,17 +33,19 @@ class MarkersPage extends StatefulWidget {
 }
 
 class MarkersPageState extends State<MarkersPage> {
-  final controller = MapController(
-    location: home,
-  );
+  MapController controller = MapController(
+      location:
+          const LatLng(Angle.degree(34.052235), Angle.degree(-118.243683)));
 
   final List<Venue> venueMarkers = [];
   MapTransformer? localTransformer;
   bool areMapTilesLoaded = true;
   bool errorModalShown = false;
+  bool _dataLoaded = false;
 
   @override
   void initState() {
+    goToHome();
     _showLocallyVenues();
     super.initState();
   }
@@ -80,6 +82,38 @@ class MarkersPageState extends State<MarkersPage> {
   void _onScaleStart(ScaleStartDetails details) {
     _dragStart = details.focalPoint;
     _scaleStart = 1.0;
+  }
+
+  Future<void> goToHome() async {
+    try {
+      var timeoutDuration = const Duration(seconds: 5);
+      var country = await EnvoyStorage().getCountry().timeout(timeoutDuration);
+
+      if (country?.lat != null && country?.lon != null) {
+        goTo(country!.lat!, country.lon!);
+      } else {
+        setState(() {
+          _dataLoaded = true;
+        });
+      }
+    } on TimeoutException catch (_) {
+      setState(() {
+        _dataLoaded = true;
+      });
+    } catch (_) {
+      setState(() {
+        _dataLoaded = true;
+      });
+    }
+  }
+
+  void goTo(double latitude, double longitude) {
+    setState(() {
+      controller = MapController(
+        location: LatLng(Angle.degree(latitude), Angle.degree(longitude)),
+      );
+      _dataLoaded = true;
+    });
   }
 
   void _showLocallyVenues() {
@@ -206,144 +240,149 @@ class MarkersPageState extends State<MarkersPage> {
   @override
   Widget build(BuildContext context) {
     _showLocallyVenues();
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(
-                right: EnvoySpacing.medium2, top: EnvoySpacing.medium2),
-            child: MapButton(
-                icon: EnvoyIcons.close,
-                onTap: () {
-                  Navigator.of(context).pop();
-                }),
-          ),
-        ],
-      ),
-      body: MapLayout(
-        controller: controller,
-        builder: (context, transformer) {
-          final markerVenueWidgets = [];
-          localTransformer = transformer;
-          for (var venue in venueMarkers) {
-            var venueMarker = _buildVenueMarkerWidget(venue, transformer);
-            markerVenueWidgets.add(venueMarker);
-          }
-          return GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onDoubleTapDown: (details) => _onDoubleTap(
-              transformer,
-              details.localPosition,
+    return _dataLoaded
+        ? Scaffold(
+            extendBodyBehindAppBar: true,
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                      right: EnvoySpacing.medium2, top: EnvoySpacing.medium2),
+                  child: MapButton(
+                      icon: EnvoyIcons.close,
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      }),
+                ),
+              ],
             ),
-            onScaleStart: _onScaleStart,
-            onScaleUpdate: (details) => _onScaleUpdate(details, transformer),
-            child: Listener(
-              behavior: HitTestBehavior.opaque,
-              onPointerSignal: (event) {
-                if (event is PointerScrollEvent) {
-                  final delta = event.scrollDelta.dy / -1000.0;
-                  final zoom =
-                      (controller.zoom + delta).clamp(2, 18).toDouble();
-
-                  transformer.setZoomInPlace(zoom, event.localPosition);
-                  setState(() {});
+            body: MapLayout(
+              controller: controller,
+              builder: (context, transformer) {
+                final markerVenueWidgets = [];
+                localTransformer = transformer;
+                for (var venue in venueMarkers) {
+                  var venueMarker = _buildVenueMarkerWidget(venue, transformer);
+                  markerVenueWidgets.add(venueMarker);
                 }
-              },
-              child: Stack(
-                children: [
-                  TileLayer(
-                    builder: (context, x, y, z) {
-                      final tilesInZoom = pow(2.0, z).floor();
-                      while (x < 0) {
-                        x += tilesInZoom;
-                      }
-                      while (y < 0) {
-                        y += tilesInZoom;
-                      }
-                      x %= tilesInZoom;
-                      y %= tilesInZoom;
-                      return CachedNetworkImage(
-                        imageUrl: _openStreetMap(z, x, y),
-                        fit: BoxFit.cover,
-                        errorListener: (e) {
-                          setState(() {
-                            areMapTilesLoaded = false;
-                          });
-                          if (!errorModalShown) {
-                            showEnvoyPopUp(
-                                context,
-                                S().buy_bitcoin_mapLoadingError_subheader,
-                                S().component_ok,
-                                (BuildContext context) {
-                                  Navigator.pop(context);
-                                },
-                                icon: EnvoyIcons.alert,
-                                typeOfMessage: PopUpState.danger,
-                                title: S().buy_bitcoin_mapLoadingError_header,
-                                secondaryButtonLabel: S().component_retry,
-                                onSecondaryButtonTap: (BuildContext context) {
-                                  Navigator.pop(context);
-                                  setState(() {
-                                    // trigger build
-                                  });
-                                },
-                                onCheckBoxChanged: (_) {});
-
-                            setState(() {
-                              errorModalShown = true;
-                            });
-                          }
-                        },
-                        errorWidget: (context, url, error) {
-                          return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const EnvoyIcon(
-                                EnvoyIcons.alert,
-                                color: Colors.red,
-                              ),
-                              Text(
-                                S().buy_bitcoin_mapLoadingError_header,
-                                style: EnvoyTypography.explainer
-                                    .copyWith(color: Colors.red),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
+                return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onDoubleTapDown: (details) => _onDoubleTap(
+                    transformer,
+                    details.localPosition,
                   ),
-                  if (areMapTilesLoaded) ...markerVenueWidgets,
+                  onScaleStart: _onScaleStart,
+                  onScaleUpdate: (details) =>
+                      _onScaleUpdate(details, transformer),
+                  child: Listener(
+                    behavior: HitTestBehavior.opaque,
+                    onPointerSignal: (event) {
+                      if (event is PointerScrollEvent) {
+                        final delta = event.scrollDelta.dy / -1000.0;
+                        final zoom =
+                            (controller.zoom + delta).clamp(2, 18).toDouble();
+
+                        transformer.setZoomInPlace(zoom, event.localPosition);
+                        setState(() {});
+                      }
+                    },
+                    child: Stack(
+                      children: [
+                        TileLayer(
+                          builder: (context, x, y, z) {
+                            final tilesInZoom = pow(2.0, z).floor();
+                            while (x < 0) {
+                              x += tilesInZoom;
+                            }
+                            while (y < 0) {
+                              y += tilesInZoom;
+                            }
+                            x %= tilesInZoom;
+                            y %= tilesInZoom;
+                            return CachedNetworkImage(
+                              imageUrl: _openStreetMap(z, x, y),
+                              fit: BoxFit.cover,
+                              errorListener: (e) {
+                                setState(() {
+                                  areMapTilesLoaded = false;
+                                });
+                                if (!errorModalShown) {
+                                  showEnvoyPopUp(
+                                      context,
+                                      S().buy_bitcoin_mapLoadingError_subheader,
+                                      S().component_ok,
+                                      (BuildContext context) {
+                                        Navigator.pop(context);
+                                      },
+                                      icon: EnvoyIcons.alert,
+                                      typeOfMessage: PopUpState.danger,
+                                      title: S()
+                                          .buy_bitcoin_mapLoadingError_header,
+                                      secondaryButtonLabel: S().component_retry,
+                                      onSecondaryButtonTap:
+                                          (BuildContext context) {
+                                        Navigator.pop(context);
+                                        setState(() {
+                                          // trigger build
+                                        });
+                                      },
+                                      onCheckBoxChanged: (_) {});
+
+                                  setState(() {
+                                    errorModalShown = true;
+                                  });
+                                }
+                              },
+                              errorWidget: (context, url, error) {
+                                return Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const EnvoyIcon(
+                                      EnvoyIcons.alert,
+                                      color: Colors.red,
+                                    ),
+                                    Text(
+                                      S().buy_bitcoin_mapLoadingError_header,
+                                      style: EnvoyTypography.explainer
+                                          .copyWith(color: Colors.red),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        ),
+                        if (areMapTilesLoaded) ...markerVenueWidgets,
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+            floatingActionButton: Padding(
+              padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  MapButton(
+                      icon: EnvoyIcons.plus,
+                      onTap: () {
+                        _zoomIn(localTransformer!);
+                      }),
+                  const SizedBox(height: EnvoySpacing.small),
+                  MapButton(
+                      icon: EnvoyIcons.minus,
+                      onTap: () {
+                        _zoomOut(localTransformer!);
+                      }),
                 ],
               ),
             ),
-          );
-        },
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            MapButton(
-                icon: EnvoyIcons.plus,
-                onTap: () {
-                  _zoomIn(localTransformer!);
-                }),
-            const SizedBox(height: EnvoySpacing.small),
-            MapButton(
-                icon: EnvoyIcons.minus,
-                onTap: () {
-                  _zoomOut(localTransformer!);
-                }),
-          ],
-        ),
-      ),
-    );
+          )
+        : const Center(child: CircularProgressIndicator());
   }
 }
 

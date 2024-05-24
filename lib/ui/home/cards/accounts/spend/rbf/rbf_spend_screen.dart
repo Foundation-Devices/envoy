@@ -65,6 +65,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
   bool _warningShown = false;
   bool _inputsChanged = false;
   RawTransaction? _rawTransaction;
+  Psbt? finalizedPsbt;
 
   @override
   void initState() {
@@ -179,8 +180,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                       Opacity(
                                         opacity: _rebuildingTx ? 0.3 : 1,
                                         child: EnvoyButton(
-                                          label: S()
-                                              .replaceByFee_coindetails_overlay_modal_heading,
+                                          label: getButtonText(context),
                                           state: ButtonState.defaultState,
                                           onTap: !_rebuildingTx
                                               ? () => _boostTx(context)
@@ -566,6 +566,10 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     if (account.wallet.hot) {
       broadcastTx(account, psbt, context);
     } else {
+      if (finalizedPsbt != null) {
+        broadcastTx(account, psbt, context);
+        return;
+      }
       await Navigator.of(context, rootNavigator: false).push(MaterialPageRoute(
           builder: (context) => background(
               child: PsbtCard(
@@ -573,7 +577,11 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                 account,
                 onSignedPsbtScanned: (psbt) {
                   Navigator.pop(context);
-                  broadcastTx(account, psbt, context);
+                  if (mounted) {
+                    setState(() {
+                      finalizedPsbt = psbt;
+                    });
+                  }
                 },
               ),
               context: context)));
@@ -967,9 +975,33 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
               ),
             ).show(context);
             return;
+          } else {
+            if (context.mounted) {
+              EnvoyToast(
+                backgroundColor: EnvoyColors.danger,
+                replaceExisting: true,
+                duration: const Duration(seconds: 4),
+                message: "Error: Unable to construct transaction.",
+                // TODO: Figma
+                icon: const Icon(
+                  Icons.info_outline,
+                  color: EnvoyColors.solidWhite,
+                ),
+              ).show(context);
+            }
           }
         }
       }
     }
+  }
+
+  String getButtonText(BuildContext context) {
+    Account? account = ref.read(selectedAccountProvider);
+    if (account != null && !account.wallet.hot) {
+      if (finalizedPsbt == null) {
+        return S().coincontrol_txDetail_cta1_passport;
+      }
+    }
+    return S().replaceByFee_coindetails_overlay_modal_heading;
   }
 }

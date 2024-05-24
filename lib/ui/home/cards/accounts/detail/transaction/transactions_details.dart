@@ -223,9 +223,12 @@ class _TransactionsDetailsWidgetState
                         Tween<double>(begin: 0, end: showTxIdExpanded ? 1 : 0),
                     duration: const Duration(milliseconds: 200),
                     builder: (context, value, child) {
+                      String txId = tx.type == TransactionType.ramp
+                          ? "loading"
+                          : tx.txId; // TODO: Figma
                       return SelectableText(
-                        truncateWithEllipsisInCenter(tx.txId,
-                            lerpDouble(16, tx.txId.length, value)!.toInt()),
+                        truncateWithEllipsisInCenter(
+                            txId, lerpDouble(16, txId.length, value)!.toInt()),
                         style:
                             EnvoyTypography.info.copyWith(color: Colors.black),
                         textAlign: TextAlign.end,

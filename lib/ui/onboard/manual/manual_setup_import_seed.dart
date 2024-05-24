@@ -54,15 +54,16 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
+                  Align(
                     alignment: Alignment.centerLeft,
-                    child: IconButton(
-                      icon: const Icon(Icons.chevron_left, color: Colors.black),
-                      onPressed: () async {
-                        if (await handleBackPress(context) && context.mounted) {
-                          Navigator.pop(context);
-                        }
-                      },
+                    child: Padding(
+                      padding: const EdgeInsets.all(EnvoySpacing.medium1),
+                      child: GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Icon(Icons.arrow_back_ios_rounded,
+                              size: EnvoySpacing.medium2)),
                     ),
                   ),
                   Container(
@@ -70,6 +71,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                       child: Text(
                         S().manual_setup_import_seed_12_words_heading,
                         style: Theme.of(context).textTheme.titleLarge,
+                        textAlign: TextAlign.center,
                       )),
                 ],
               ),

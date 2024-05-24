@@ -144,18 +144,19 @@ class SeedIntroScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
+                Align(
                   alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    icon: const Icon(Icons.chevron_left, color: Colors.black),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                  child: Padding(
+                    padding: const EdgeInsets.all(EnvoySpacing.medium1),
+                    child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Icon(Icons.arrow_back_ios_rounded,
+                            size: EnvoySpacing.medium2)),
                   ),
                 ),
                 Container(
-                  // padding: const EdgeInsets.symmetric(
-                  //     vertical: EnvoySpacing.small),
                   child: mode == SeedIntroScreenType.generate ||
                           mode == SeedIntroScreenType.verify
                       ? Image.asset(
@@ -186,7 +187,7 @@ class SeedIntroScreen extends StatelessWidget {
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                           const SizedBox(
-                            height: EnvoySpacing.medium3,
+                            height: EnvoySpacing.medium2,
                           ),
                           Text(
                             mode == SeedIntroScreenType.generate ||
@@ -200,7 +201,7 @@ class SeedIntroScreen extends StatelessWidget {
                                 .copyWith(fontSize: 13),
                           ),
                           const SizedBox(
-                            height: EnvoySpacing.medium3,
+                            height: EnvoySpacing.medium2,
                           ),
                           if (mode == SeedIntroScreenType.import)
                             Padding(
@@ -223,9 +224,6 @@ class SeedIntroScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(
-                  height: EnvoySpacing.medium2,
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(

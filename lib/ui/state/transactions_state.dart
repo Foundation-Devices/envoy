@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ui/components/ramp_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
@@ -235,7 +236,9 @@ Future prunePendingTransactions(
       .where((element) => element.type == TransactionType.ramp)
       .toList();
 
-  if (pending.isEmpty) return;
+  if (pending.isEmpty && azteco.isEmpty && btcPay.isEmpty && ramp.isEmpty) {
+    return;
+  }
 
   //prune azteco transactions
   for (var pendingTx in azteco) {
@@ -263,6 +266,15 @@ Future prunePendingTransactions(
     });
   }
   for (var pendingTx in ramp) {
+    if (pendingTx.purchaseViewToken != null) {
+      String? state =
+          await checkPurchase(pendingTx.txId, pendingTx.purchaseViewToken!);
+      if (state == "EXPIRED" || state == "CANCELLED") {
+        EnvoyStorage().deleteTxNote(pendingTx.address!);
+        EnvoyStorage().deletePendingTx(pendingTx.txId);
+      }
+    }
+
     transactions
         .where((tx) => tx.outputs!.contains(pendingTx.address))
         .forEach((actualRampTx) {
@@ -270,7 +282,7 @@ Future prunePendingTransactions(
       EnvoyStorage().addTxNote(
           note: "Ramp Purchase", key: actualRampTx.txId); // TODO: FIGMA
       EnvoyStorage().deleteTxNote(pendingTx.address!);
-      EnvoyStorage().deletePendingTx(pendingTx.address!);
+      EnvoyStorage().deletePendingTx(pendingTx.txId);
     });
   }
 
