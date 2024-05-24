@@ -5,6 +5,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:math';
+import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/node_url.dart';
@@ -250,8 +251,16 @@ class Settings extends ChangeNotifier {
     return showSignetAccountsSetting;
   }
 
-  setShowSignetAccounts(bool showSignetAccounts) {
+  setShowSignetAccounts(bool showSignetAccounts) async {
     showSignetAccountsSetting = showSignetAccounts;
+
+    // if a other hot wallet exists and no signet then add one
+    if (AccountManager().hotAccountsExist() &&
+        !AccountManager().hotSignetAccountExist()) {
+      await EnvoySeed()
+          .deriveAndAddWalletsFromCurrentSeed(network: Network.Signet);
+    }
+
     notifyListeners();
     store();
   }

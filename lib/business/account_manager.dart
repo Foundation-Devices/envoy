@@ -575,6 +575,16 @@ class AccountManager extends ChangeNotifier {
     return false;
   }
 
+  bool hotSignetAccountExist() {
+    for (var account in accounts) {
+      if (account.wallet.hot && account.wallet.network == Network.Signet) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   deleteHotWalletAccounts() {
     List<Account> accountsToDelete = [];
     for (var account in accounts) {
