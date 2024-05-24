@@ -12,11 +12,11 @@ class IconTab extends StatefulWidget {
   final String label;
   final EnvoyIcons icon;
   final bool isSelected;
-  final bool isDisabled;
+  final bool isLocked;
   final ValueChanged<bool?>? onSelect;
-
   final bool bigTab;
   final String? description;
+  final String? lockedInfoText;
 
   const IconTab(
       {super.key,
@@ -26,7 +26,8 @@ class IconTab extends StatefulWidget {
       this.onSelect,
       this.bigTab = false,
       this.description,
-      this.isDisabled = false});
+      this.isLocked = false,
+      this.lockedInfoText});
 
   @override
   IconTabState createState() => IconTabState();
@@ -35,7 +36,7 @@ class IconTab extends StatefulWidget {
 class IconTabState extends State<IconTab> {
   @override
   Widget build(BuildContext context) {
-    Color titleColor = widget.isDisabled
+    Color titleColor = widget.isLocked
         ? EnvoyColors.textTertiary
         : (widget.isSelected
             ? EnvoyColors.accentPrimary
@@ -47,13 +48,15 @@ class IconTabState extends State<IconTab> {
         widget.bigTab ? EnvoyTypography.subheading : EnvoyTypography.label;
 
     TextStyle descriptionStyle = EnvoyTypography.info.copyWith(
-        color: widget.isDisabled
+        color: widget.isLocked
             ? EnvoyColors.textTertiary
             : EnvoyColors.textSecondary);
 
-    Color iconColor = widget.isDisabled
-        ? EnvoyColors.textTertiary
-        : EnvoyColors.textSecondary;
+    TextStyle disabledTextStyle =
+        EnvoyTypography.info.copyWith(color: EnvoyColors.accentPrimary);
+
+    Color iconColor =
+        widget.isLocked ? EnvoyColors.textTertiary : EnvoyColors.textSecondary;
 
     return GestureDetector(
       onTap: () {
@@ -87,6 +90,7 @@ class IconTabState extends State<IconTab> {
                 width:
                     widget.bigTab ? EnvoySpacing.medium1 : EnvoySpacing.small,
               ),
+              const SizedBox(height: EnvoySpacing.xs),
               Text(
                 widget.label,
                 textAlign: TextAlign.center,
@@ -96,11 +100,23 @@ class IconTabState extends State<IconTab> {
                   color: titleColor,
                 ),
               ),
+              const SizedBox(height: EnvoySpacing.xs),
               if (widget.description != null)
                 Text(
                   widget.description!,
                   textAlign: TextAlign.center,
                   style: descriptionStyle,
+                ),
+              if (widget.isLocked)
+                Column(
+                  children: [
+                    const SizedBox(height: EnvoySpacing.xs),
+                    Text(
+                      widget.lockedInfoText!,
+                      textAlign: TextAlign.center,
+                      style: disabledTextStyle,
+                    ),
+                  ],
                 ),
             ],
           ),

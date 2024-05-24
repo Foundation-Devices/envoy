@@ -5,13 +5,12 @@
 import 'dart:convert';
 import 'dart:io';
 
-class AllowedCountries {
+class AllowedRegions {
   static final Map<String, Map<String, dynamic>> allowedCountriesWithRegions =
-      loadAllowedCountries();
+      loadAllowedRegions();
 
-  static Map<String, Map<String, dynamic>> loadAllowedCountries() {
-    String jsonString =
-        File('assets/allowed_countries.json').readAsStringSync();
+  static Map<String, Map<String, dynamic>> loadAllowedRegions() {
+    String jsonString = File('assets/allowed_regions.json').readAsStringSync();
     Map<String, dynamic> decodedJson = json.decode(jsonString);
 
     return Map<String, Map<String, dynamic>>.from(decodedJson);

@@ -93,7 +93,7 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
     var region = await EnvoyStorage().getCountry();
     if (region != null) {
       bool newRegionCanBuy =
-          AllowedCountries.isRegionAllowed(region.code, region.division);
+          AllowedRegions.isRegionAllowed(region.code, region.division);
       if (newRegionCanBuy != regionCanBuy) {
         setState(() {
           regionCanBuy = newRegionCanBuy;
@@ -126,12 +126,13 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
                   ),
                   IconTab(
                     label: S().buy_bitcoin_buyOptions_card_inEnvoy_heading,
-                    isDisabled: !regionCanBuy,
+                    isLocked: !regionCanBuy,
                     icon: EnvoyIcons.btc,
                     bigTab: true,
                     isSelected: currentState == BuyBitcoinCardState.buyInEnvoy,
                     description:
                         S().buy_bitcoin_buyOptions_card_inEnvoy_subheading,
+                    lockedInfoText: S().buy_bitcoin_buyOptions_card_commingSoon,
                     onSelect: (selected) {
                       if (regionCanBuy) {
                         _updateState(BuyBitcoinCardState.buyInEnvoy);
