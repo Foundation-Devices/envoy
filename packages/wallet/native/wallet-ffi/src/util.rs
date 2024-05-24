@@ -9,14 +9,14 @@ use crate::{
 use bdk::bitcoin::{Network, Script};
 use bdk::blockchain::esplora::EsploraBlockchainConfig;
 use bdk::blockchain::{
-    ConfigurableBlockchain, ElectrumBlockchain, ElectrumBlockchainConfig, EsploraBlockchain,
-    GetHeight, WalletSync,
+    AnyBlockchain, ConfigurableBlockchain, ElectrumBlockchain, ElectrumBlockchainConfig,
+    EsploraBlockchain,
 };
 use bdk::database::BatchDatabase;
-use bdk::electrum_client::ConfigBuilder;
+use bdk::esplora_client::Builder;
 use bdk::wallet::tx_builder::TxOrdering;
 use bdk::wallet::AddressIndex;
-use bdk::{electrum_client, KeychainKind, LocalUtxo};
+use bdk::{electrum_client, esplora_client, KeychainKind, LocalUtxo};
 use bdk::{FeeRate, TransactionDetails};
 use bip39::{Language, Mnemonic};
 use bitcoin_hashes::hex::ToHex;
@@ -32,13 +32,22 @@ pub unsafe fn get_wallet_mutex(
     &mut *wallet
 }
 
-fn get_electrum_blockchain_config(
-    tor_port: i32,
-    electrum_address: &str,
-) -> ElectrumBlockchainConfig {
+pub fn get_blockchain(tor_port: i32, server_address: &str) -> Result<AnyBlockchain, bdk::Error> {
+    if server_address.starts_with("http") {
+        let config = get_esplora_blockchain_config(tor_port, server_address);
+        let blockchain = EsploraBlockchain::from_config(&config)?;
+        Ok(AnyBlockchain::Esplora(Box::new(blockchain)))
+    } else {
+        let config = get_electrum_blockchain_config(tor_port, server_address);
+        let blockchain = ElectrumBlockchain::from_config(&config)?;
+        Ok(AnyBlockchain::Electrum(Box::new(blockchain)))
+    }
+}
+
+fn get_electrum_blockchain_config(tor_port: i32, server_address: &str) -> ElectrumBlockchainConfig {
     if tor_port > 0 {
         ElectrumBlockchainConfig {
-            url: electrum_address.parse().unwrap(),
+            url: server_address.parse().unwrap(),
             socks5: Some("127.0.0.1:".to_owned() + &tor_port.to_string()),
             retry: 0,
             timeout: Some(30),
@@ -47,7 +56,7 @@ fn get_electrum_blockchain_config(
         }
     } else {
         ElectrumBlockchainConfig {
-            url: electrum_address.parse().unwrap(),
+            url: server_address.parse().unwrap(),
             socks5: None,
             retry: 0,
             timeout: Some(5),
@@ -77,38 +86,22 @@ fn get_esplora_blockchain_config(tor_port: i32, esplora_address: &str) -> Esplor
     }
 }
 
-pub fn get_electrum_blockchain(
-    tor_port: i32,
-    electrum_address: &str,
-) -> Result<ElectrumBlockchain, bdk::Error> {
-    let config = get_electrum_blockchain_config(tor_port, electrum_address);
-    ElectrumBlockchain::from_config(&config)
-}
-
-pub fn get_esplora_blockchain(
-    tor_port: i32,
-    esplora_address: &str,
-) -> Result<EsploraBlockchain, bdk::Error> {
-    let config = get_esplora_blockchain_config(tor_port, esplora_address);
-    EsploraBlockchain::from_config(&config)
-}
-
 pub fn get_electrum_client(
     tor_port: i32,
-    electrum_address: &str,
-) -> Result<Client, electrum_client::Error> {
+    server_address: &str,
+) -> Result<electrum_client::Client, electrum_client::Error> {
     let config: electrum_client::Config = if tor_port > 0 {
         let tor_config = Socks5Config {
             addr: "127.0.0.1:".to_owned() + &tor_port.to_string(),
             credentials: None,
         };
-        ConfigBuilder::new()
+        electrum_client::ConfigBuilder::new()
             .validate_domain(false)
             .socks5(Some(tor_config))
             .unwrap()
             .build()
     } else {
-        ConfigBuilder::new()
+        electrum_client::ConfigBuilder::new()
             .validate_domain(false)
             .socks5(None)
             .unwrap()
@@ -117,7 +110,23 @@ pub fn get_electrum_client(
             .build()
     };
 
-    Client::from_config(electrum_address, config)
+    Client::from_config(server_address, config)
+}
+
+#[allow(clippy::result_large_err)] // Esplora error is huge but it's outside our control
+pub fn get_esplora_client(
+    tor_port: i32,
+    server_address: &str,
+) -> Result<esplora_client::BlockingClient, esplora_client::Error> {
+    let builder = Builder::new(server_address);
+    if tor_port > 0 {
+        builder
+            .proxy(&("127.0.0.1:".to_owned() + &tor_port.to_string()))
+            .timeout(30)
+            .build_blocking()
+    } else {
+        builder.timeout(5).build_blocking()
+    }
 }
 
 pub fn psbt_extract_details<T: BatchDatabase>(
