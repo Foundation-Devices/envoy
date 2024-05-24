@@ -150,12 +150,12 @@ class NativeLibrary {
 
   bool wallet_sync(
     ffi.Pointer<ffi.Char> wallet,
-    ffi.Pointer<ffi.Char> electrum_address,
+    ffi.Pointer<ffi.Char> server_address,
     int tor_port,
   ) {
     return _wallet_sync(
       wallet,
-      electrum_address,
+      server_address,
       tor_port,
     );
   }
@@ -196,12 +196,12 @@ class NativeLibrary {
       .asFunction<UtxoList Function(ffi.Pointer<ffi.Char>)>();
 
   double wallet_get_fee_rate(
-    ffi.Pointer<ffi.Char> electrum_address,
+    ffi.Pointer<ffi.Char> server_address,
     int tor_port,
     int target,
   ) {
     return _wallet_get_fee_rate(
-      electrum_address,
+      server_address,
       tor_port,
       target,
     );
@@ -215,11 +215,11 @@ class NativeLibrary {
       .asFunction<double Function(ffi.Pointer<ffi.Char>, int, int)>();
 
   ServerFeatures wallet_get_server_features(
-    ffi.Pointer<ffi.Char> electrum_address,
+    ffi.Pointer<ffi.Char> server_address,
     int tor_port,
   ) {
     return _wallet_get_server_features(
-      electrum_address,
+      server_address,
       tor_port,
     );
   }
@@ -426,12 +426,12 @@ class NativeLibrary {
           ffi.Pointer<ffi.Char>, int, ffi.Pointer<ffi.Char>)>();
 
   ffi.Pointer<ffi.Char> wallet_broadcast_tx(
-    ffi.Pointer<ffi.Char> electrum_address,
+    ffi.Pointer<ffi.Char> server_address,
     int tor_port,
     ffi.Pointer<ffi.Char> tx,
   ) {
     return _wallet_broadcast_tx(
-      electrum_address,
+      server_address,
       tor_port,
       tx,
     );

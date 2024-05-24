@@ -461,7 +461,7 @@ class Wallet {
     DynamicLibrary lib = load(_libName);
 
     int walletPtr = args["wallet_pointer"];
-    String electrumAddress = args["electrum_address"];
+    String electrumAddress = args["server_address"];
     int torPort = args["tor_port"];
 
     final rustFunction =
@@ -580,7 +580,7 @@ class Wallet {
     // Unfortunately we need to pass maps onto computes if there is more than one arg
     Map map = Map();
     map['wallet_pointer'] = _self.address;
-    map['electrum_address'] = electrumAddress;
+    map['server_address'] = electrumAddress;
     map['tor_port'] = torPort;
 
     return compute(_sync, map).then((var walletState) {
@@ -842,7 +842,7 @@ class Wallet {
   static Future<ElectrumServerFeatures> getServerFeatures(
       String electrumAddress, int torPort) async {
     Map map = Map();
-    map['electrum_address'] = electrumAddress;
+    map['server_address'] = electrumAddress;
     map['tor_port'] = torPort;
 
     return compute(_getServerFeatures, map).then((var features) => features,
@@ -854,7 +854,7 @@ class Wallet {
   static Future<ElectrumServerFeatures> _getServerFeatures(Map args) async {
     DynamicLibrary lib = load(_libName);
 
-    String electrumAddress = args["electrum_address"];
+    String electrumAddress = args["server_address"];
     int torPort = args["tor_port"];
 
     final rustFunction =
