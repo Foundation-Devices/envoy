@@ -85,26 +85,40 @@ class MarkersPageState extends State<MarkersPage> {
   }
 
   Future<void> goToHome() async {
-    try {
-      var timeoutDuration = const Duration(seconds: 5);
-      var country = await EnvoyStorage().getCountry().timeout(timeoutDuration);
+    const int maxAttempts = 2;
+    const Duration retryDelay = Duration(seconds: 5);
 
-      if (country?.lat != null && country?.lon != null) {
-        goTo(country!.lat!, country.lon!);
-      } else {
+    for (int attempts = 0; attempts < maxAttempts; attempts++) {
+      try {
+        var timeoutDuration = const Duration(seconds: 5);
+        var country =
+            await EnvoyStorage().getCountry().timeout(timeoutDuration);
+
+        if (country?.lat != null && country?.lon != null) {
+          goTo(country!.lat!, country.lon!);
+          return;
+        } else {
+          if (attempts + 1 < maxAttempts) {
+            await Future.delayed(
+                retryDelay); // Wait for fetching location data and try again
+          }
+        }
+      } on TimeoutException catch (_) {
+        if (attempts + 1 < maxAttempts) {
+          await Future.delayed(retryDelay);
+        }
+      } catch (_) {
         setState(() {
           _dataLoaded = true;
         });
+        return;
       }
-    } on TimeoutException catch (_) {
-      setState(() {
-        _dataLoaded = true;
-      });
-    } catch (_) {
-      setState(() {
-        _dataLoaded = true;
-      });
     }
+
+    // Set _dataLoaded to true if the maximum number of attempts is reached
+    setState(() {
+      _dataLoaded = true;
+    });
   }
 
   void goTo(double latitude, double longitude) {
