@@ -98,28 +98,33 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
                     text: S().envoy_fw_success_subheading,
                   ),
                 ),
-                Flexible(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        OnboardingText(
-                          header: S().envoy_fw_fail_heading,
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            OnboardingText(
+                              header: S().envoy_fw_fail_heading,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 32.0),
+                              child: LinkText(
+                                  text: S().envoy_fw_fail_subheading,
+                                  linkStyle: EnvoyTypography.button.copyWith(
+                                      color: EnvoyColors.accentPrimary),
+                                  onTap: () {
+                                    launchUrlString(
+                                        "https://github.com/Foundation-Devices/passport2/releases/tag/${fwInfo.value!.storedVersion}");
+                                  }),
+                            ),
+                          ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                          child: LinkText(
-                              text: S().envoy_fw_fail_subheading,
-                              linkStyle: EnvoyTypography.button
-                                  .copyWith(color: EnvoyColors.accentPrimary),
-                              onTap: () {
-                                launchUrlString(
-                                    "https://github.com/Foundation-Devices/passport2/releases/tag/${fwInfo.value!.storedVersion}");
-                              }),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ]),
         ),
