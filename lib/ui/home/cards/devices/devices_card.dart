@@ -231,7 +231,7 @@ class GhostDevice extends StatelessWidget {
     return Column(
       children: [
         ClipRRect(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24),
           child: ColorFiltered(
             colorFilter: const ColorFilter.mode(
               Color.fromRGBO(255, 255, 255, 0.75),

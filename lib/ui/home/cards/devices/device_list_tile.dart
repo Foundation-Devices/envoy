@@ -16,6 +16,9 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 final shouldUpdateProvider =
     FutureProvider.family<bool, Device>((ref, device) async {
   final version = Devices().getDeviceFirmwareVersion(device.serial);
+  if (version == null) {
+    return false;
+  }
   return UpdatesManager().shouldUpdate(version, device.type);
 });
 
@@ -38,7 +41,7 @@ class DeviceListTile extends ConsumerStatefulWidget {
 class _DeviceListTileState extends ConsumerState<DeviceListTile> {
   @override
   Widget build(BuildContext context) {
-    var fwShouldUpdate = ref.refresh(shouldUpdateProvider(widget.device));
+    var fwShouldUpdate = ref.watch(shouldUpdateProvider(widget.device));
     var fwInfo = ref.watch(firmwareStreamProvider(widget.device.type.index));
     const double cardRadius = EnvoySpacing.medium2;
 
