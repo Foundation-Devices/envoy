@@ -147,27 +147,30 @@ class Notifications {
 
     for (var device in Devices().devices) {
       final version = Devices().getDeviceFirmwareVersion(device.serial);
-      bool fwUpdateAvailable =
-          await UpdatesManager().shouldUpdate(version, device.type);
-      final newVersion =
-          await UpdatesManager().getStoredFwVersionString(device.type.index);
-      for (var notification in notifications) {
-        if (notification.id == device.type.toString().split('.').last) {
-          if (notification.body == newVersion!) {
-            fwUpdateAvailable = false;
+
+      if (version != null) {
+        bool fwUpdateAvailable =
+            await UpdatesManager().shouldUpdate(version, device.type);
+        final newVersion =
+            await UpdatesManager().getStoredFwVersionString(device.type.index);
+        for (var notification in notifications) {
+          if (notification.id == device.type.toString().split('.').last) {
+            if (notification.body == newVersion!) {
+              fwUpdateAvailable = false;
+            }
           }
         }
-      }
 
-      if (fwUpdateAvailable) {
-        add(EnvoyNotification(
-          "Firmware", // TODO: FIGMA
-          DateTime.now(),
-          EnvoyNotificationType.firmware,
-          newVersion!,
-          device.type.toString().split('.').last,
-        ));
-        notificationsAdded = true;
+        if (fwUpdateAvailable) {
+          add(EnvoyNotification(
+            "Firmware", // TODO: FIGMA
+            DateTime.now(),
+            EnvoyNotificationType.firmware,
+            newVersion!,
+            device.type.toString().split('.').last,
+          ));
+          notificationsAdded = true;
+        }
       }
     }
 

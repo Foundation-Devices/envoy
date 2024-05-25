@@ -4,6 +4,7 @@
 // ignore_for_file: constant_identifier_names
 import 'dart:ui';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:envoy/business/local_storage.dart';
@@ -130,7 +131,10 @@ class Devices extends ChangeNotifier {
     return devices.firstWhere((d) => d.serial == serialNumber).name;
   }
 
-  getDeviceFirmwareVersion(String serialNumber) {
-    return devices.firstWhere((d) => d.serial == serialNumber).firmwareVersion;
+  String? getDeviceFirmwareVersion(String serialNumber) {
+    return devices
+            .firstWhereOrNull((d) => d.serial == serialNumber)
+            ?.firmwareVersion ??
+        "";
   }
 }
