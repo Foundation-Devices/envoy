@@ -33,6 +33,7 @@ class SelectAccount extends ConsumerStatefulWidget {
 class _SelectAccountState extends ConsumerState<SelectAccount> {
   Account? selectedAccount;
   String? address;
+  final Map<String, String?> accountAddressCache = {};
 
   @override
   void initState() {
@@ -44,21 +45,38 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
       selectedAccount?.wallet.getAddress().then((value) {
         setState(() {
           address = value;
+          if (selectedAccount != null && selectedAccount?.id != null) {
+            accountAddressCache[selectedAccount!.id!] = address;
+          }
         });
       }).catchError((error) {});
     });
   }
 
+  @override
+  void dispose() {
+    accountAddressCache.clear();
+    super.dispose();
+  }
+
   void updateSelectedAccount(Account account) async {
     setState(() {
       selectedAccount = account;
-      this.address = null;
+      address = null;
     });
-    String? address = await account.wallet.getAddress();
-    // Separate setState call to avoid UI lag during the async operation
-    setState(() {
-      this.address = address;
-    });
+    if (accountAddressCache.containsKey(selectedAccount?.id!) &&
+        accountAddressCache[selectedAccount?.id!] != null) {
+      setState(() {
+        address = accountAddressCache[selectedAccount?.id!];
+      });
+    } else {
+      String? address = await account.wallet.getAddress();
+      // Separate setState call to avoid UI lag during the async operation
+      setState(() {
+        this.address = address;
+        accountAddressCache[selectedAccount!.id!] = address;
+      });
+    }
   }
 
   @override
