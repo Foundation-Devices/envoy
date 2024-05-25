@@ -139,7 +139,6 @@ class BtcPayVoucher {
     } on TimeoutException {
       return BtcPayVoucherRedeemResult.voucherInvalid;
     }
-
     switch (response.statusCode) {
       case 200:
         {
@@ -149,9 +148,9 @@ class BtcPayVoucher {
       case 400 || 422:
         {
           final json = jsonDecode(response.body);
-          errorMessage = json[0]['message'] ?? "";
-          errorMessage = errorMessage.toLowerCase();
-          if (errorMessage.contains("onchain")) {
+          errorMessage = json['message'] ?? "";
+          String errorCode = json['code'] ?? "";
+          if (errorCode == "payment-method-not-supported") {
             errorType = BtcPayVoucherErrorType.onChain;
           }
 
@@ -171,9 +170,11 @@ class BtcPayVoucher {
   }
 }
 
-void addPendingTx(String pullPaymentId, String address, Account account) {
+void addPendingTx(
+    String pullPaymentId, String address, Account account, int? amountSats) {
   EnvoyStorage().addPendingTx(pullPaymentId, account.id ?? "", DateTime.now(),
-      TransactionType.btcPay, 0, 0, address);
+      TransactionType.btcPay, amountSats ?? 0, 0, address,
+      pullPaymentId: pullPaymentId);
   EnvoyStorage().addTxNote(note: "BTCPay voucher", key: address); // TODO: FIGMA
 }
 

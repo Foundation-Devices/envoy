@@ -55,9 +55,11 @@ class BtcPayInfo extends StatelessWidget {
         ),
         if (voucher.amountSats != null)
           EnvoyAmount(
-              amountSats: voucher.amountSats!,
-              amountWidgetStyle: AmountWidgetStyle.normal,
-              account: account),
+            amountSats: voucher.amountSats!,
+            amountWidgetStyle: AmountWidgetStyle.normal,
+            account: account,
+            alignToEnd: false,
+          ),
         if (voucher.amountSats ==
             null) // TODO: what if amount is in strange currency
           Text("${voucher.amount!} ${voucher.currency!}",

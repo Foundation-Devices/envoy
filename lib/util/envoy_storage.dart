@@ -259,9 +259,17 @@ class EnvoyStorage {
         .then((event) => event.isNotEmpty);
   }
 
-  Future addPendingTx(String key, String accountId, DateTime timestamp,
-      wallet.TransactionType type, int amount, int fee, String address,
-      {String? purchaseViewToken}) async {
+  Future addPendingTx(
+    String key,
+    String accountId,
+    DateTime timestamp,
+    wallet.TransactionType type,
+    int amount,
+    int fee,
+    String address, {
+    String? purchaseViewToken,
+    String? pullPaymentId,
+  }) async {
     await pendingTxStore.record(key).put(_db, {
       'account': accountId,
       'timestamp': timestamp.millisecondsSinceEpoch,
@@ -270,6 +278,7 @@ class EnvoyStorage {
       'fee': fee,
       'address': address,
       'purchaseViewToken': purchaseViewToken,
+      'pullPaymentId': pullPaymentId,
     });
     return true;
   }
@@ -314,6 +323,7 @@ class EnvoyStorage {
           e["address"] as String,
           type: type,
           purchaseViewToken: e['purchaseViewToken'] as String?,
+          pullPaymentId: e['pullPaymentId'] as String?,
         );
       },
     ).toList();
