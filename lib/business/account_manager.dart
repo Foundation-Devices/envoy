@@ -136,19 +136,21 @@ class AccountManager extends ChangeNotifier {
     bool? changed;
     int port = Settings().getPort(account.wallet.network);
     String server;
-    String network;
+    String network = account.wallet.network.toString();
 
-    if (account.wallet.network == Network.Mainnet) {
-      server = Settings.currentDefaultServer;
-      network = "Mainnet";
-    } else if (account.wallet.network == Network.Testnet) {
-      server = Settings.TESTNET_ELECTRUM_SERVER;
-      network = "Testnet";
-    } else if (account.wallet.network == Network.Signet) {
-      server = Settings.MUTINYNET_ESPLORA_SERVER;
-      network = "Signet";
-    } else {
-      throw Exception("Unknown server");
+    switch (account.wallet.network) {
+      case Network.Mainnet:
+        server = Settings.currentDefaultServer;
+        break;
+      case Network.Testnet:
+        server = Settings.TESTNET_ELECTRUM_SERVER;
+        break;
+      case Network.Signet:
+        server = Settings.MUTINYNET_ESPLORA_SERVER;
+        break;
+      default:
+        server = "Unknown server";
+        break;
     }
 
     try {
