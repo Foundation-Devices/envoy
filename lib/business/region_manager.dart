@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 
 class AllowedRegions {
-  static Future<Map<String, Map<String, dynamic>>> loadAllowedRegions() async {
+  static Future<Map<String, Map<String, dynamic>>> allowedRegions() async {
     String jsonString =
         await rootBundle.loadString('assets/allowed_regions.json');
     Map<String, dynamic> decodedJson = json.decode(jsonString);
@@ -16,7 +16,7 @@ class AllowedRegions {
 
   static Future<bool> isRegionAllowed(String countryCode, String region) async {
     Map<String, Map<String, dynamic>> allowedCountriesWithRegions =
-        await loadAllowedRegions();
+        await allowedRegions();
 
     if (allowedCountriesWithRegions.containsKey(countryCode)) {
       Map<String, dynamic>? countryInfo =
