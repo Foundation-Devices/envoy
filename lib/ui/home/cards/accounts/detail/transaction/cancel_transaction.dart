@@ -211,9 +211,11 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
         ).show(context);
       }
     } finally {
-      setState(() {
-        _loading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _loading = false;
+        });
+      }
     }
   }
 }
