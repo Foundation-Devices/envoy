@@ -22,7 +22,6 @@ import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/components/ramp_widget.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
-import 'package:go_router/go_router.dart';
 
 class SelectAccount extends ConsumerStatefulWidget {
   const SelectAccount({super.key});
@@ -199,7 +198,6 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                                   Navigator.pop(context);
                                   RampWidget.showRamp(
                                       context, selectedAccount!, address!);
-                                  navigateHome(context);
                                 },
                                 icon: EnvoyIcons.info,
                                 checkBoxText: S().component_dontShowAgain,
@@ -217,7 +215,6 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                             if (context.mounted) {
                               RampWidget.showRamp(
                                   context, selectedAccount!, address!);
-                              navigateHome(context);
                             }
                           }
                         },
@@ -228,11 +225,6 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
               ],
             ),
           );
-  }
-
-  void navigateHome(BuildContext context) {
-    GoRouter router = GoRouter.of(context);
-    router.go("/");
   }
 }
 

@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:ramp_flutter/configuration.dart';
 import 'package:ramp_flutter/offramp_sale.dart';
@@ -40,6 +41,9 @@ class RampWidget {
     configuration.enabledFlows = ['ONRAMP'];
     configuration.hostLogoUrl =
         "https://storage.googleapis.com/cdn-foundation/envoy/foundationLogo.png";
+
+    GoRouter router = GoRouter.of(context);
+    router.go("/");
 
     ramp.showRamp(configuration);
   }
