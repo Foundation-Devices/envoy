@@ -135,6 +135,23 @@ class AccountManager extends ChangeNotifier {
   Future<Account> _syncAccount(Account account) async {
     bool? changed;
     int port = Settings().getPort(account.wallet.network);
+    String server;
+    String network = account.wallet.network.toString();
+
+    switch (account.wallet.network) {
+      case Network.Mainnet:
+        server = Settings.currentDefaultServer;
+        break;
+      case Network.Testnet:
+        server = Settings.TESTNET_ELECTRUM_SERVER;
+        break;
+      case Network.Signet:
+        server = Settings.MUTINYNET_ESPLORA_SERVER;
+        break;
+      default:
+        server = "Unknown server";
+        break;
+    }
 
     try {
       changed = await account.wallet
@@ -145,7 +162,7 @@ class AccountManager extends ChangeNotifier {
         ConnectivityManager().electrumFailure();
       }
 
-      EnvoyReport().log("wallet", "Couldn't sync: $e");
+      EnvoyReport().log("wallet", "Couldn't sync: $e to: $network ($server)");
     }
 
     if (changed != null) {
