@@ -107,9 +107,9 @@ class MapData {
     );
   }
 
-  Future<Map<String, double>?> getCoordinates(String countryName) async {
+  Future<Map<String, double>?> getCoordinates(String divisionName) async {
     var response = await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
-      "https://api.geoapify.com/v1/geocode/search?country=$countryName&format=json&apiKey=$mapApiKey",
+      "https://api.geoapify.com/v1/geocode/search?text=$divisionName&format=json&apiKey=$mapApiKey",
     );
 
     var data = jsonDecode(response.body);
@@ -129,8 +129,8 @@ class MapData {
   Future<void> updateHomeLocation() async {
     var country = await EnvoyStorage().getCountry();
     if (country != null) {
-      String name = country.name;
-      var coordinates = await getCoordinates(name);
+      String divisionName = country.division;
+      var coordinates = await getCoordinates(divisionName);
 
       if (coordinates != null) {
         await EnvoyStorage().updateCountry(
