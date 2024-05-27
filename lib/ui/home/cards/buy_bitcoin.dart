@@ -93,7 +93,7 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
     var region = await EnvoyStorage().getCountry();
     if (region != null) {
       bool newRegionCanBuy =
-          AllowedRegions.isRegionAllowed(region.code, region.division);
+          await AllowedRegions.isRegionAllowed(region.code, region.division);
       if (newRegionCanBuy != regionCanBuy) {
         setState(() {
           regionCanBuy = newRegionCanBuy;
