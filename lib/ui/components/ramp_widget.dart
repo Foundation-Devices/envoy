@@ -42,6 +42,7 @@ class RampWidget {
     configuration.hostLogoUrl =
         "https://storage.googleapis.com/cdn-foundation/envoy/foundationLogo.png";
 
+    // ENV-1111: Ensure the user is at the home route ("/") after exiting Ramp
     GoRouter router = GoRouter.of(context);
     router.go("/");
 
