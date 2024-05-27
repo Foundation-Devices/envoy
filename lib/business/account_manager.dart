@@ -145,7 +145,8 @@ class AccountManager extends ChangeNotifier {
         ConnectivityManager().electrumFailure();
       }
 
-      EnvoyReport().log("wallet", "Couldn't sync: $e");
+      EnvoyReport().log("wallet",
+          "Couldn't sync: $e to: ${account.wallet.network == Network.Mainnet ? Settings.currentDefaultServer : Settings.TESTNET_ELECTRUM_SERVER}");
     }
 
     if (changed != null) {

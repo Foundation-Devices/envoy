@@ -135,14 +135,12 @@ class HomePageState extends ConsumerState<HomePage>
         if (_torWarningDisplayedMoreThan5minAgo && Settings().usingTor) {
           _notifyAboutTor();
           _torWarningDisplayedMoreThan5minAgo = false;
-          _resetTorWarningTimer();
         }
       }
       if (event == ConnectivityManagerEvent.foundationServerDown &&
           _serverDownWarningDisplayedMoreThan5minAgo) {
         _notifyAboutFoundationServerDown();
         _serverDownWarningDisplayedMoreThan5minAgo = false;
-        _resetServerDownWarningTimer();
       }
     });
 
@@ -175,7 +173,6 @@ class HomePageState extends ConsumerState<HomePage>
       if (_backupWarningDisplayedMoreThan2minAgo) {
         _displayBackupToast(success);
         _backupWarningDisplayedMoreThan2minAgo = false;
-        _resetBackupWarningTimer();
       }
     });
     isNewAppVersionAvailable.stream.listen((String newVersion) {
