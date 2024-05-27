@@ -170,16 +170,21 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                     children: [
                                       Opacity(
                                         opacity: (_inputsChanged &&
-                                                finalizedPsbt != null)
+                                                finalizedPsbt == null)
                                             ? 1
                                             : 0,
-                                        child: EnvoyButton(
-                                          label: S().coincontrol_tx_detail_cta2,
-                                          state: ButtonState.defaultState,
-                                          onTap: _inputsChanged
-                                              ? () => _editCoins(context)
-                                              : null,
-                                          type: ButtonType.secondary,
+                                        child: IgnorePointer(
+                                          ignoring: !(_inputsChanged &&
+                                              finalizedPsbt == null),
+                                          child: EnvoyButton(
+                                            label:
+                                                S().coincontrol_tx_detail_cta2,
+                                            state: ButtonState.defaultState,
+                                            onTap: _inputsChanged
+                                                ? () => _editCoins(context)
+                                                : null,
+                                            type: ButtonType.secondary,
+                                          ),
                                         ),
                                       ),
                                       const Padding(
@@ -452,6 +457,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     if (_broadcastProgress != BroadcastProgress.staging) {
       return;
     }
+    setState(() {
+      _rebuildingTx = true;
+    });
     Psbt psbt = rbfSpendState.psbt;
     Transaction originalTx = rbfSpendState.originalTx;
 
@@ -463,6 +471,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         mounted) {
       setState(() {
         _inputsChanged = true;
+        _rebuildingTx = false;
         _rawTransaction = rawTx;
       });
       if (_warningShown) {
@@ -559,6 +568,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     } else {
       setState(() {
         _inputsChanged = false;
+        _rebuildingTx = false;
       });
     }
   }
