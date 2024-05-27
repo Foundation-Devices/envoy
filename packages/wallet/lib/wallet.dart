@@ -787,6 +787,9 @@ class Wallet {
         if (feeRates.min_fee_rate == -1.1) {
           throw Exception("Transaction cannot be boosted");
         }
+        if (feeRates.min_fee_rate == -1.6) {
+          throw Exception("Unlock coin to boost transaction");
+        }
         if (feeRates.min_fee_rate == -1.2) {
           throw Exception("Insufficient balance to boost transaction");
         }
@@ -1136,6 +1139,9 @@ class Wallet {
           doNotSpendPointer);
 
       if (psbt.base64 == nullptr) {
+        if (psbt.sent == 1) {
+          throw Exception("Unlock coins to cancel transaction");
+        }
         throwRustException(lib);
       }
       return Psbt.fromNative(psbt);

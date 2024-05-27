@@ -926,6 +926,16 @@ pub unsafe extern "C" fn wallet_get_max_bumped_fee_rate(
     );
     let dont_spend = util::extract_utxo_list(dont_spend);
 
+    //if dont_spend contains the txid, this means user locked changeoutput that belongs to this tx
+    for out in dont_spend.iter() {
+        if out.txid == tx_id {
+            return RBFfeeRates {
+                //inidcate tx cannot be RBF with locked change output
+                min_fee_rate: -1.6,
+                max_fee_rate: 0.0,
+            };
+        }
+    }
     match unwrap_or_return!(wallet.get_tx(&tx_id, true), error_return) {
         //tx not found in the database
         None => RBFfeeRates {
@@ -1211,6 +1221,20 @@ pub unsafe extern "C" fn wallet_cancel_tx(
         unconfirmed_utxos = utxos;
     }
 
+    //if dont_spend contains the txid, this means user locked change-output that belongs to this tx
+    for out in dont_spend.iter() {
+        if out.txid == txid {
+            return Psbt {
+                //indicate that user locked utxos
+                sent: 1,
+                received: 0,
+                fee: 0,
+                base64: ptr::null(),
+                txid: ptr::null(),
+                raw_tx: ptr::null(),
+            };
+        }
+    }
     return match unwrap_or_return!(wallet.get_tx(&txid, true), error_return) {
         //tx not found in the database
         None => error_return,
