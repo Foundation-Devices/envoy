@@ -131,6 +131,7 @@ class _SendCardState extends ConsumerState<SendCard>
                         horizontal: EnvoySpacing.medium1),
                     child: _amountEntry,
                   ),
+                  const SizedBox(height: EnvoySpacing.medium1),
                   Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: EnvoySpacing.medium1),

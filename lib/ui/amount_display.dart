@@ -3,13 +3,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/state/send_screen_state.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/ui/amount_entry.dart';
-import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/business/account.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/locale.dart';
@@ -96,6 +97,12 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
                     1))
         : "";
 
+    bool isFormattedAmountEmpty = ExchangeRate().getFormattedAmount(
+          widget.amountSats ?? 0,
+          wallet: widget.account?.wallet,
+        ) ==
+        "";
+
     return TextButton(
       child: Column(
         children: [
@@ -108,46 +115,47 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
               ),
               Text(
                   widget.displayedAmount.isEmpty ? "0" : widget.displayedAmount,
-                  style: Theme.of(context).textTheme.headlineMedium),
+                  style: EnvoyTypography.largeAmount
+                      .copyWith(color: EnvoyColors.textPrimary)),
               if (renderGhostZeros)
                 Text(ghostDigits,
                     style: widget.inputMode
                         ? Theme.of(context)
                             .textTheme
                             .headlineMedium
-                            ?.copyWith(color: EnvoyColors.grey85)
+                            ?.copyWith(color: EnvoyColors.textInactive)
                         : Theme.of(context).textTheme.headlineMedium),
             ],
           ),
-          RichText(
-              text: TextSpan(
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleSmall!
-                      .copyWith(color: EnvoyColors.darkTeal, fontSize: 16),
-                  children: [
-                if (unit == AmountDisplayUnit.fiat)
-                  WidgetSpan(
-                    alignment: PlaceholderAlignment.middle,
-                    child: SizedBox(
-                        height: 20, child: getUnitIcon(widget.account!)),
-                  ),
-                TextSpan(
-                  text: unit != AmountDisplayUnit.fiat
-                      ? ExchangeRate().getFormattedAmount(
-                          widget.amountSats ?? 0,
-                          wallet: widget.account?.wallet)
-                      : (Settings().displayUnit == DisplayUnit.btc
-                          ? getDisplayAmount(
-                              widget.amountSats ?? 0,
-                              AmountDisplayUnit.btc,
-                            )
-                          : getDisplayAmount(
-                              widget.amountSats ?? 0,
-                              AmountDisplayUnit.sat,
-                            )),
-                ),
-              ])),
+          isFormattedAmountEmpty
+              ? const SizedBox.shrink()
+              : RichText(
+                  text: TextSpan(
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                          color: EnvoyColors.accentPrimary, fontSize: 16),
+                      children: [
+                      if (unit == AmountDisplayUnit.fiat)
+                        WidgetSpan(
+                          alignment: PlaceholderAlignment.middle,
+                          child: SizedBox(
+                              height: 20, child: getUnitIcon(widget.account!)),
+                        ),
+                      TextSpan(
+                        text: unit != AmountDisplayUnit.fiat
+                            ? ExchangeRate().getFormattedAmount(
+                                widget.amountSats ?? 0,
+                                wallet: widget.account?.wallet)
+                            : (Settings().displayUnit == DisplayUnit.btc
+                                ? getDisplayAmount(
+                                    widget.amountSats ?? 0,
+                                    AmountDisplayUnit.btc,
+                                  )
+                                : getDisplayAmount(
+                                    widget.amountSats ?? 0,
+                                    AmountDisplayUnit.sat,
+                                  )),
+                      ),
+                    ])),
         ],
       ),
       onPressed: () {
