@@ -59,7 +59,7 @@ fn get_electrum_blockchain_config(tor_port: i32, server_address: &str) -> Electr
             url: server_address.parse().unwrap(),
             socks5: None,
             retry: 0,
-            timeout: Some(5),
+            timeout: Some(10),
             stop_gap: 50,
             validate_domain: false,
         }
@@ -79,7 +79,7 @@ fn get_esplora_blockchain_config(tor_port: i32, esplora_address: &str) -> Esplor
         EsploraBlockchainConfig {
             base_url: esplora_address.parse().unwrap(),
             proxy: None,
-            timeout: Some(5),
+            timeout: Some(10),
             stop_gap: 50,
             concurrency: None,
         }
@@ -99,13 +99,15 @@ pub fn get_electrum_client(
             .validate_domain(false)
             .socks5(Some(tor_config))
             .unwrap()
+            .timeout(Some(30))
+            .unwrap()
             .build()
     } else {
         electrum_client::ConfigBuilder::new()
             .validate_domain(false)
             .socks5(None)
             .unwrap()
-            .timeout(Some(5))
+            .timeout(Some(10))
             .unwrap()
             .build()
     };
