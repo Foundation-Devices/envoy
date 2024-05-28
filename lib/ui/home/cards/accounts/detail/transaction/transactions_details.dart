@@ -371,7 +371,7 @@ class _TransactionsDetailsWidgetState
         : SvgPicture.asset(
             "assets/icons/ic_bitcoin_straight_circle.svg",
             color: Colors.black,
-            height: 14,
+            height: 18,
           );
 
     if (cancelState?.newTxId == tx.txId) {
