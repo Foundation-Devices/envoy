@@ -40,6 +40,7 @@ use bdk::bitcoin::hashes::hex::ToHex;
 use bdk::bitcoin::secp256k1::Secp256k1;
 use bdk::bitcoin::util::bip32::{DerivationPath, ExtendedPrivKey, KeySource};
 use bdk::bitcoin::util::psbt::PartiallySignedTransaction;
+use bdk::bitcoin::Network::{Signet, Testnet};
 use bdk::keys::bip39::MnemonicWithPassphrase;
 use bdk::keys::DescriptorKey::Secret;
 use bdk::keys::{
@@ -1603,7 +1604,13 @@ pub unsafe extern "C" fn wallet_validate_address(
     let wallet = unwrap_or_return!(util::get_wallet_mutex(wallet).lock(), false);
 
     match Address::from_str(CStr::from_ptr(address).to_str().unwrap()) {
-        Ok(a) => wallet.network() == a.network, // Only valid if it's on same network
+        Ok(a) => {
+            if a.network == Testnet && wallet.network() == Signet {
+                true // Signet addresses parse as testnet
+            } else {
+                wallet.network() == a.network
+            }
+        } // Only valid if it's on same network
         Err(_) => false,
     }
 }
