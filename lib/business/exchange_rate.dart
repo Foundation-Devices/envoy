@@ -197,8 +197,7 @@ class ExchangeRate extends ChangeNotifier {
     /// dont hide testnet fiat values on debug builds
     if (!kDebugMode) {
       /// hide testnet fiat values on production builds
-      if (wallet?.network == Network.Testnet ||
-          wallet?.network == Network.Signet ||
+      if (wallet?.network != Network.Mainnet ||
           _currency == null ||
           _selectedCurrencyRate == null) {
         return "";
