@@ -255,7 +255,8 @@ class Settings extends ChangeNotifier {
     showSignetAccountsSetting = showSignetAccounts;
 
     // if a other hot wallet exists and no signet then add one
-    if (AccountManager().hotAccountsExist() &&
+    if (showSignetAccounts &&
+        AccountManager().hotAccountsExist() &&
         !AccountManager().hotSignetAccountExist()) {
       await EnvoySeed()
           .deriveAndAddWalletsFromCurrentSeed(network: Network.Signet);
