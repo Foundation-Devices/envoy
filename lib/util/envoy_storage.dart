@@ -308,10 +308,10 @@ class EnvoyStorage {
             break;
           }
         }
-        int received =
-            type == wallet.TransactionType.ramp ? (e["amount"] as int) : 0;
-        int sent =
-            type == wallet.TransactionType.ramp ? 0 : (e["amount"] as int);
+        bool isReceived = type == wallet.TransactionType.ramp ||
+            type == wallet.TransactionType.btcPay;
+        int received = isReceived ? (e["amount"] as int) : 0;
+        int sent = isReceived ? 0 : (e["amount"] as int);
         return wallet.Transaction(
           e.key as String,
           e.key as String,

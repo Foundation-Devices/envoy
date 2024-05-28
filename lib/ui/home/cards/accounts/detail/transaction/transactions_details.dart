@@ -60,6 +60,7 @@ class _TransactionsDetailsWidgetState
     extends ConsumerState<TransactionsDetailsWidget> {
   bool showTxIdExpanded = false;
   bool showAddressExpanded = false;
+  bool showPaymentId = false;
   final GlobalKey _detailWidgetKey = GlobalKey();
 
   String _getConfirmationTimeString(int minutes) {
@@ -181,6 +182,7 @@ class _TransactionsDetailsWidgetState
                   setState(() {
                     showAddressExpanded = !showAddressExpanded;
                     showTxIdExpanded = false;
+                    showPaymentId = false;
                   });
                 },
                 child: TweenAnimationBuilder(
@@ -215,6 +217,7 @@ class _TransactionsDetailsWidgetState
                     setState(() {
                       showTxIdExpanded = !showTxIdExpanded;
                       showAddressExpanded = false;
+                      showPaymentId = false;
                     });
                   },
                   child: TweenAnimationBuilder(
@@ -238,6 +241,7 @@ class _TransactionsDetailsWidgetState
                           setState(() {
                             showTxIdExpanded = !showTxIdExpanded;
                             showAddressExpanded = false;
+                            showPaymentId = false;
                           });
                         },
                       );
@@ -263,7 +267,40 @@ class _TransactionsDetailsWidgetState
                 title: S().coindetails_overlay_paymentID,
                 icon: const EnvoyIcon(EnvoyIcons.btcPay,
                     color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
-                trailing: Text(tx.pullPaymentId!, style: trailingTextStyle),
+                trailing: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        showPaymentId = !showPaymentId;
+                        showTxIdExpanded = false;
+                        showAddressExpanded = false;
+                      });
+                    },
+                    child: TweenAnimationBuilder(
+                      curve: EnvoyEasing.easeInOut,
+                      tween:
+                          Tween<double>(begin: 0, end: showPaymentId ? 1 : 0),
+                      duration: const Duration(milliseconds: 200),
+                      builder: (context, value, child) {
+                        return SelectableText(
+                          truncateWithEllipsisInCenter(
+                              tx.pullPaymentId!,
+                              lerpDouble(16, tx.pullPaymentId!.length, value)!
+                                  .toInt()),
+                          style: EnvoyTypography.info
+                              .copyWith(color: Colors.black),
+                          textAlign: TextAlign.end,
+                          minLines: 1,
+                          maxLines: 4,
+                          onTap: () {
+                            setState(() {
+                              showPaymentId = !showPaymentId;
+                              showTxIdExpanded = false;
+                              showAddressExpanded = false;
+                            });
+                          },
+                        );
+                      },
+                    )),
               ),
             if (tx.type == TransactionType.ramp)
               EnvoyInfoCardListItem(
