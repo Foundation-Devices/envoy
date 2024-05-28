@@ -289,7 +289,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                               opaque: false,
                                               fullscreenDialog: true));
                                     },
-                                    psbtFinalized: false,
+                                    psbtFinalized: finalizedPsbt != null,
                                     hideTxDetailsDialog: true,
                                     loading: _rebuildingTx,
                                     feeTitle:

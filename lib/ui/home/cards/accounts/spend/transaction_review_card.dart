@@ -257,7 +257,10 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                               const Padding(padding: EdgeInsets.all(4)),
                               Opacity(
                                 opacity: widget.psbtFinalized ? 0.0 : 1,
-                                child: widget.feeChooserWidget,
+                                child: IgnorePointer(
+                                  ignoring: widget.psbtFinalized,
+                                  child: widget.feeChooserWidget,
+                                ),
                               ),
                             ],
                           ),
