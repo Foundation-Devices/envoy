@@ -103,7 +103,7 @@ class EnvoySeed {
       WalletType type = WalletType.witnessPublicKeyHash,
       Network? network}) async {
     if (AccountManager().checkIfWalletFromSeedExists(seed,
-        passphrase: passphrase, type: type)) {
+        passphrase: passphrase, type: type, network: network)) {
       return true;
     }
 

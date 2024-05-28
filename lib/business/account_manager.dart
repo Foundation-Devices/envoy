@@ -201,19 +201,22 @@ class AccountManager extends ChangeNotifier {
   }
 
   bool checkIfWalletFromSeedExists(String seed,
-      {String? passphrase, WalletType type = WalletType.witnessPublicKeyHash}) {
+      {String? passphrase,
+      WalletType type = WalletType.witnessPublicKeyHash,
+      Network? network}) {
     try {
-      var mainnet = Wallet.deriveWallet(
+      var wallet = Wallet.deriveWallet(
           seed,
-          EnvoySeed.hotWalletDerivationPaths[type]![Network.Mainnet]!,
+          EnvoySeed
+              .hotWalletDerivationPaths[type]![network ?? Network.Mainnet]!,
           AccountManager.walletsDirectory,
-          Network.Mainnet,
+          network ?? Network.Mainnet,
           privateKey: true,
           passphrase: passphrase,
           initWallet: false,
           type: type);
       for (final account in accounts) {
-        if (account.wallet.externalDescriptor == mainnet.externalDescriptor) {
+        if (account.wallet.externalDescriptor == wallet.externalDescriptor) {
           return true;
         }
       }
