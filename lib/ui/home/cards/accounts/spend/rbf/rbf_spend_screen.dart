@@ -853,6 +853,10 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
   //show edit coins screen,
   //if the user changed coin selection, recalculate the fee boundaries and rebuild the boosted tx
   _editCoins(BuildContext context) async {
+    final selectedAccount = ref.read(selectedAccountProvider);
+    if (selectedAccount == null) {
+      return;
+    }
     final rbfState = ref.read(rbfSpendStateProvider);
     final router = Navigator.of(context, rootNavigator: true);
     if (rbfState == null) {
@@ -890,10 +894,13 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         _rebuildingTx = true;
       });
 
-      final lockedUtxos = ref.read(lockedUtxosProvider(account.id!));
+      final existingLockedUtxos = ref.read(lockedUtxosProvider(account.id!));
       final originalTx = rbfState.originalTx;
       final selected = ref.read(coinSelectionStateProvider);
       final coins = ref.read(coinsProvider(account.id!));
+
+      List<Utxo> lockedUtxos = [];
+      lockedUtxos.addAll(existingLockedUtxos);
 
       if (selected.isNotEmpty) {
         for (var element in coins) {
@@ -995,13 +1002,14 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
             ).show(context);
             return;
           } else {
-            EnvoyReport().log("RBF", "Rbf edit failed : $e");
+            EnvoyReport().log("RBF", "Coin Selection Failure : $e");
             if (context.mounted) {
               EnvoyToast(
                 backgroundColor: EnvoyColors.danger,
                 replaceExisting: true,
                 duration: const Duration(seconds: 4),
-                message: "Error: Unable to construct transaction.",
+                message: e.toString().replaceAll(":Exception", ""),
+                overflow: TextOverflow.visible,
                 // TODO: Figma
                 icon: const Icon(
                   Icons.info_outline,
