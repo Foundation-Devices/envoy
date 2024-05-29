@@ -72,16 +72,16 @@ fn get_esplora_blockchain_config(tor_port: i32, esplora_address: &str) -> Esplor
             base_url: esplora_address.parse().unwrap(),
             proxy: Some("127.0.0.1:".to_owned() + &tor_port.to_string()),
             timeout: Some(30),
-            stop_gap: 50,
-            concurrency: None,
+            stop_gap: 1,
+            concurrency: Some(1),
         }
     } else {
         EsploraBlockchainConfig {
             base_url: esplora_address.parse().unwrap(),
             proxy: None,
             timeout: Some(10),
-            stop_gap: 50,
-            concurrency: None,
+            stop_gap: 1,
+            concurrency: Some(1),
         }
     }
 }
@@ -127,7 +127,7 @@ pub fn get_esplora_client(
             .timeout(30)
             .build_blocking()
     } else {
-        builder.timeout(5).build_blocking()
+        builder.timeout(10).build_blocking()
     }
 }
 
