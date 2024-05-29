@@ -209,18 +209,20 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
   void calculateFeeBoundary() {
     FeeChooserState feeChooserState = ref.read(feeChooserStateProvider);
     setState(() {
-      if(feeChooserState.minFeeRate.abs() >= feeChooserState.maxFeeRate.abs()){
+      if (feeChooserState.minFeeRate.abs() >=
+          feeChooserState.maxFeeRate.abs()) {
         feeList = [feeChooserState.minFeeRate];
         return;
       }
       int totalFeeSuggestion =
           feeChooserState.maxFeeRate - feeChooserState.minFeeRate;
-      kPrint("totalFeeSuggestion $totalFeeSuggestion (${feeChooserState.minFeeRate} to ${feeChooserState.maxFeeRate})");
-      if(totalFeeSuggestion<=1){
+      kPrint(
+          "totalFeeSuggestion $totalFeeSuggestion (${feeChooserState.minFeeRate} to ${feeChooserState.maxFeeRate})");
+      if (totalFeeSuggestion <= 1) {
         feeList.add(feeChooserState.minFeeRate);
-      }else{
+      } else {
         feeList = List.generate(totalFeeSuggestion,
-                (index) => (feeChooserState.minFeeRate) + index).reversed.toList();
+            (index) => (feeChooserState.minFeeRate) + index).reversed.toList();
       }
     });
   }

@@ -783,7 +783,18 @@ class Wallet {
         print(
             "Fee rate min: ${feeRates.min_fee_rate} \n Fee rate max: ${feeRates.max_fee_rate}");
       }
+
       if (feeRates.min_fee_rate <= 1) {
+        final rustFunction = lib.lookup<NativeFunction<LastErrorMessageRust>>(
+            'wallet_last_error_message');
+        final dartFunction = rustFunction.asFunction<LastErrorMessageDart>();
+        final error = dartFunction().cast<Utf8>().toDartString();
+        if (kDebugMode) {
+          print("BumpFee Rate Error: ${error}");
+        }
+        if (error.contains("Insufficient funds")) {
+          throw Exception(error);
+        }
         if (feeRates.min_fee_rate == -1.1) {
           throw Exception("Transaction cannot be boosted");
         }
@@ -799,7 +810,7 @@ class Wallet {
         if (feeRates.max_fee_rate == 0.404) {
           throw Exception("Transaction not found");
         }
-        throwRustException(lib);
+        throw Exception(error);
       }
       return feeRates;
     });
