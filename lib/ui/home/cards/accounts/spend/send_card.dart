@@ -20,6 +20,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:wallet/wallet.dart';
 
 //ignore: must_be_immutable
 class SendCard extends ConsumerStatefulWidget {
@@ -107,11 +108,9 @@ class _SendCardState extends ConsumerState<SendCard>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(
-                        top: EnvoySpacing.medium3,
-                        bottom: EnvoySpacing.medium2,
-                        left: EnvoySpacing.medium2,
-                        right: EnvoySpacing.medium2),
+                    padding: const EdgeInsets.all(
+                      EnvoySpacing.medium2,
+                    ),
                     child: AddressEntry(
                         account: account!,
                         initalAddress: addressText,
@@ -131,7 +130,10 @@ class _SendCardState extends ConsumerState<SendCard>
                         horizontal: EnvoySpacing.medium1),
                     child: _amountEntry,
                   ),
-                  const SizedBox(height: EnvoySpacing.medium1),
+                  SizedBox(
+                      height: account?.wallet.network != Network.Mainnet
+                          ? EnvoySpacing.medium1
+                          : EnvoySpacing.xs),
                   Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: EnvoySpacing.medium1),
