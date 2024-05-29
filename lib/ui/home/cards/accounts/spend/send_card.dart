@@ -20,7 +20,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:wallet/wallet.dart';
 
 //ignore: must_be_immutable
 class SendCard extends ConsumerStatefulWidget {
@@ -101,17 +100,17 @@ class _SendCardState extends ConsumerState<SendCard>
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        return SizedBox(
-          height: constraints.maxHeight,
-          child: SingleChildScrollView(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(
-                      EnvoySpacing.medium2,
-                    ),
-                    child: AddressEntry(
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(EnvoySpacing.medium2),
+                      child: AddressEntry(
                         account: account!,
                         initalAddress: addressText,
                         controller: _controller,
@@ -123,130 +122,122 @@ class _SendCardState extends ConsumerState<SendCard>
                         },
                         onAddressChanged: (text) {
                           ref.read(spendAddressProvider.notifier).state = text;
-                        }),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.medium1),
-                    child: _amountEntry,
-                  ),
-                  SizedBox(
-                      height: account?.wallet.network != Network.Mainnet
-                          ? EnvoySpacing.medium1
-                          : EnvoySpacing.xs),
-                  Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: EnvoySpacing.medium1),
-                      child: Consumer(
-                        builder: (context, ref, child) {
-                          final isCoinSelected =
-                              ref.watch(isCoinsSelectedProvider);
-                          final formValidation =
-                              ref.watch(spendValidationProvider);
-                          int spendAmount = ref.watch(spendAmountProvider);
-                          int spendableBalance =
-                              ref.watch(totalSpendableAmountProvider);
-                          TransactionModel tx =
-                              ref.watch(spendTransactionProvider);
-                          bool txValidation = tx.valid;
-                          bool valid = formValidation;
-
-                          final addressEmpty =
-                              ref.watch(spendAddressProvider).isEmpty;
-                          final validationError =
-                              ref.watch(spendValidationErrorProvider);
-                          String buttonText = "";
-                          bool isFormEmpty = addressEmpty || spendAmount == 0;
-
-                          if (isFormEmpty) {
-                            valid = true;
-                            buttonText = S().send_keyboard_address_confirm;
-                            if (spendAmount == 0) {
-                              if (isCoinSelected) {
-                                buttonText = S().tagged_tagDetails_sheet_cta1;
-                              } else {
-                                buttonText = S().send_keyboard_send_max;
-                              }
-                            }
-                            if (spendAmount != 0 && addressEmpty) {
-                              buttonText = (spendAmount > spendableBalance)
-                                  ? S()
-                                      .send_keyboard_amount_insufficient_funds_info
-                                  : S()
-                                      .send_keyboard_amount_enter_valid_address;
-                              valid = false;
-                            }
-                          } else {
-                            if (addressEmpty) {
-                              if (spendAmount == 0) {
-                                if (isCoinSelected) {
-                                  buttonText = S().tagged_tagDetails_sheet_cta1;
-                                } else {
-                                  buttonText = S().send_keyboard_send_max;
-                                }
-                              }
-                              buttonText = S().send_keyboard_address_confirm;
-                            } else {
-                              if (validationError == null) {
-                                buttonText = S().send_keyboard_address_confirm;
-                              } else {
-                                valid = txValidation && formValidation;
-                                if (valid) {
-                                  buttonText =
-                                      S().send_keyboard_address_confirm;
-                                } else {
-                                  buttonText = validationError;
-                                }
-                              }
-                            }
-                          }
-                          if (tx.loading) {
-                            buttonText = S().send_keyboard_address_loading;
-                          }
-                          return EnvoyTextButton(
-                              onTap: () async {
-                                if (tx.loading) {
-                                  return;
-                                }
-                                final router = GoRouter.of(context);
-                                if (formValidation) {
-                                  try {
-                                    ref
-                                        .read(spendTransactionProvider.notifier)
-                                        .reset();
-                                    bool valid = await ref
-                                        .read(spendTransactionProvider.notifier)
-                                        .validate(
-                                            ProviderScope.containerOf(context));
-                                    if (valid) {
-                                      router.push(ROUTE_ACCOUNT_SEND_CONFIRM);
-                                    }
-                                  } catch (e) {
-                                    kPrint(e);
-                                  }
-                                }
-                                if (spendAmount == 0) {
-                                  ref.read(spendAmountProvider.notifier).state =
-                                      ref.read(totalSpendableAmountProvider);
-                                  setState(() {
-                                    _amountEntry = AmountEntry(
-                                      onAmountChanged: _updateAmount,
-                                      initalSatAmount: ref
-                                          .read(totalSpendableAmountProvider),
-                                      key: UniqueKey(),
-                                      account: account!,
-                                      onPaste: _onPaste,
-                                    );
-                                  });
-                                  return;
-                                }
-                              },
-                              error: !valid,
-                              label: buttonText);
                         },
-                      ))
-                ]),
-          ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium1),
+                      child: _amountEntry,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  bottom: EnvoySpacing.medium3, top: EnvoySpacing.small),
+              child: Consumer(
+                builder: (context, ref, child) {
+                  final isCoinSelected = ref.watch(isCoinsSelectedProvider);
+                  final formValidation = ref.watch(spendValidationProvider);
+                  int spendAmount = ref.watch(spendAmountProvider);
+                  int spendableBalance =
+                      ref.watch(totalSpendableAmountProvider);
+                  TransactionModel tx = ref.watch(spendTransactionProvider);
+                  bool txValidation = tx.valid;
+                  bool valid = formValidation;
+
+                  final addressEmpty = ref.watch(spendAddressProvider).isEmpty;
+                  final validationError =
+                      ref.watch(spendValidationErrorProvider);
+                  String buttonText = "";
+                  bool isFormEmpty = addressEmpty || spendAmount == 0;
+
+                  if (isFormEmpty) {
+                    valid = true;
+                    buttonText = S().send_keyboard_address_confirm;
+                    if (spendAmount == 0) {
+                      if (isCoinSelected) {
+                        buttonText = S().tagged_tagDetails_sheet_cta1;
+                      } else {
+                        buttonText = S().send_keyboard_send_max;
+                      }
+                    }
+                    if (spendAmount != 0 && addressEmpty) {
+                      buttonText = (spendAmount > spendableBalance)
+                          ? S().send_keyboard_amount_insufficient_funds_info
+                          : S().send_keyboard_amount_enter_valid_address;
+                      valid = false;
+                    }
+                  } else {
+                    if (addressEmpty) {
+                      if (spendAmount == 0) {
+                        if (isCoinSelected) {
+                          buttonText = S().tagged_tagDetails_sheet_cta1;
+                        } else {
+                          buttonText = S().send_keyboard_send_max;
+                        }
+                      }
+                      buttonText = S().send_keyboard_address_confirm;
+                    } else {
+                      if (validationError == null) {
+                        buttonText = S().send_keyboard_address_confirm;
+                      } else {
+                        valid = txValidation && formValidation;
+                        if (valid) {
+                          buttonText = S().send_keyboard_address_confirm;
+                        } else {
+                          buttonText = validationError;
+                        }
+                      }
+                    }
+                  }
+                  if (tx.loading) {
+                    buttonText = S().send_keyboard_address_loading;
+                  }
+                  return EnvoyTextButton(
+                    onTap: () async {
+                      if (tx.loading) {
+                        return;
+                      }
+                      final router = GoRouter.of(context);
+                      if (formValidation) {
+                        try {
+                          ref.read(spendTransactionProvider.notifier).reset();
+                          bool valid = await ref
+                              .read(spendTransactionProvider.notifier)
+                              .validate(ProviderScope.containerOf(context));
+                          if (valid) {
+                            router.push(ROUTE_ACCOUNT_SEND_CONFIRM);
+                          }
+                        } catch (e) {
+                          kPrint(e);
+                        }
+                      }
+                      if (spendAmount == 0) {
+                        ref.read(spendAmountProvider.notifier).state =
+                            ref.read(totalSpendableAmountProvider);
+                        setState(() {
+                          _amountEntry = AmountEntry(
+                            onAmountChanged: _updateAmount,
+                            initalSatAmount:
+                                ref.read(totalSpendableAmountProvider),
+                            key: UniqueKey(),
+                            account: account!,
+                            onPaste: _onPaste,
+                          );
+                        });
+                        return;
+                      }
+                    },
+                    error: !valid,
+                    label: buttonText,
+                  );
+                },
+              ),
+            ),
+          ],
         );
       },
     );
