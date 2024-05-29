@@ -78,6 +78,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
       if (mounted) {
         setState(() {
           if (success) {
+            Settings().updateAccountsViewSettings();
             _magicRecoverWalletState = MagicRecoveryWalletState.success;
           } else {
             _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
@@ -293,7 +294,6 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                   child: OnboardingButton(
                     label: S().component_continue,
                     onTap: () async {
-                      Settings().updateAccountsViewSettings();
                       await Future.delayed(const Duration(milliseconds: 200));
                       if (context.mounted) {
                         OnboardingPage.popUntilHome(context);
@@ -408,6 +408,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                         Settings().syncToCloud = true;
                         setState(() {
                           if (success) {
+                            Settings().updateAccountsViewSettings();
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
