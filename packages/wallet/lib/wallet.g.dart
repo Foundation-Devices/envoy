@@ -23,6 +23,9 @@ Transaction _$TransactionFromJson(Map<String, dynamic> json) => Transaction(
           (json['inputs'] as List<dynamic>?)?.map((e) => e as String).toList(),
       vsize: json['vsize'] as int?,
       pullPaymentId: json['pullPaymentId'] as String?,
+      purchaseViewToken: json['purchaseViewToken'] as String?,
+      currencyAmount: json['currencyAmount'] as String?,
+      currency: json['currency'] as String?,
     );
 
 Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
@@ -40,6 +43,9 @@ Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
       'address': instance.address,
       'vsize': instance.vsize,
       'pullPaymentId': instance.pullPaymentId,
+      'purchaseViewToken': instance.purchaseViewToken,
+      'currencyAmount': instance.currencyAmount,
+      'currency': instance.currency,
     };
 
 const _$TransactionTypeEnumMap = {

@@ -166,10 +166,30 @@ class _TransactionsDetailsWidgetState
                     ),
                   ],
                 )
-              : EnvoyAmount(
-                  account: widget.account,
-                  amountSats: tx.amount,
-                  amountWidgetStyle: AmountWidgetStyle.singleLine),
+              : (tx.amount == 0 &&
+                      tx.currency != null &&
+                      tx.currencyAmount != null)
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const LoaderGhost(
+                          width: 110,
+                          height: 20,
+                          animate: false,
+                        ),
+                        // hide placeholder for fiat
+                        Text(
+                          "${tx.currencyAmount!} ${tx.currency!}",
+                          style: EnvoyTypography.body.copyWith(
+                            color: EnvoyColors.textPrimary,
+                          ),
+                        ),
+                      ],
+                    )
+                  : EnvoyAmount(
+                      account: widget.account,
+                      amountSats: tx.amount,
+                      amountWidgetStyle: AmountWidgetStyle.singleLine),
           bottomWidgets: [
             EnvoyInfoCardListItem(
               flexAlignment: FlexAlignment.flexLeft,
