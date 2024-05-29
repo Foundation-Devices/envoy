@@ -64,6 +64,7 @@ class Transaction extends Comparable {
   final TransactionType type;
   final String? address;
   final int? vsize;
+  // Variables below are used for pending Ramp/BtcPay transactions.
   String? pullPaymentId;
   final String? purchaseViewToken;
   final String? currencyAmount;
