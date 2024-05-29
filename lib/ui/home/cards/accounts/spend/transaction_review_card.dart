@@ -27,6 +27,7 @@ class TransactionReviewCard extends ConsumerStatefulWidget {
   final bool psbtFinalized;
   final String address;
   final bool loading;
+  final int? amountToSend;
   final Widget feeChooserWidget;
   final bool hideTxDetailsDialog;
   final GestureTapCallback onTxDetailTap;
@@ -38,6 +39,8 @@ class TransactionReviewCard extends ConsumerStatefulWidget {
     required this.psbtFinalized,
     required this.loading,
     required this.address,
+    //for RBF spend screen
+    this.amountToSend,
     required this.onTxDetailTap,
     required this.feeChooserWidget,
     this.hideTxDetailsDialog = false,
@@ -67,8 +70,10 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
 
     final uneconomicSpends = ref.watch(uneconomicSpendsProvider);
 
-    int amount =
+    // send amount is passed as a prop to the widget, use that if available
+    int amount = widget.amountToSend ??
         ref.watch(spendTransactionProvider.select((value) => value.amount));
+
     Psbt psbt = widget.psbt;
     // total amount to spend including fee
     int totalSpendAmount = amount + psbt.fee;

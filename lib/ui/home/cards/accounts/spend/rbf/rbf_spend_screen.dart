@@ -263,6 +263,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                 child: Consumer(builder: (context, ref, child) {
                                   return TransactionReviewCard(
                                     psbt: psbt,
+                                    amountToSend: rbfState.originalAmount.abs(),
                                     onTxDetailTap: () {
                                       Navigator.of(context, rootNavigator: true)
                                           .push(PageRouteBuilder(
@@ -933,7 +934,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                 rbfFeeRates: rates,
                 receiveAddress: receiveOutPut.address,
                 receiveAmount: 0,
-                originalAmount: rbfState.originalTx.amount,
+                originalAmount: rbfState.originalAmount,
                 feeRate: minFeeRate.toInt(),
                 originalTx: rbfState.originalTx);
 

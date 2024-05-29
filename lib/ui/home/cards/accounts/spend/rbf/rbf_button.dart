@@ -98,15 +98,19 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
 
       rust.RBFfeeRates? rates = await account.wallet
           .getBumpedPSBTMaxFeeRate(originalTx.txId, lockedUtxos);
-
+      final originalRawTx =
+          await account.wallet.getRawTxFromTxId(originalTx.txId);
+      final originalRawTxDecoded = await account.wallet
+          .decodeWalletRawTx(originalRawTx, account.wallet.network);
+      for (var output in originalRawTxDecoded.outputs) {
+        //if the output is external, this will be the original amount
+        if (output.path == TxOutputPath.NotMine) {
+          originalAmount = output.amount;
+        }
+      }
       //if the amount is the same as the fee, this is a self spend
       if (originalTx.amount.abs() == originalTx.fee) {
         //since the transaction object doesn't have the raw the tx we need to get it
-        final originalRawTx =
-            await account.wallet.getRawTxFromTxId(originalTx.txId);
-        final originalRawTxDecoded = await account.wallet
-            .decodeWalletRawTx(originalRawTx, account.wallet.network);
-        //if the original tx is a self spend, we need to find the amount
         for (var output in originalRawTxDecoded.outputs) {
           //if the output is external, this will be the original amount
           if (output.path == TxOutputPath.External) {
@@ -114,6 +118,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
           }
         }
       }
+
       if (rates.min_fee_rate > 0) {
         double minFeeRate = rates.min_fee_rate.ceil().toDouble();
         Psbt? psbt = await account.wallet.getBumpedPSBT(
