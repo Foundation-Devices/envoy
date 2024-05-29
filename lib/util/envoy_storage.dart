@@ -269,6 +269,8 @@ class EnvoyStorage {
     String address, {
     String? purchaseViewToken,
     String? pullPaymentId,
+    String? currency,
+    String? currencyAmount,
   }) async {
     await pendingTxStore.record(key).put(_db, {
       'account': accountId,
@@ -279,6 +281,8 @@ class EnvoyStorage {
       'address': address,
       'purchaseViewToken': purchaseViewToken,
       'pullPaymentId': pullPaymentId,
+      'currencyAmount': currencyAmount,
+      'currency': currency,
     });
     return true;
   }
@@ -324,9 +328,53 @@ class EnvoyStorage {
           type: type,
           purchaseViewToken: e['purchaseViewToken'] as String?,
           pullPaymentId: e['pullPaymentId'] as String?,
+          currencyAmount: e['currencyAmount'] as String?,
+          currency: e['currency'] as String?,
         );
       },
     ).toList();
+  }
+
+  Future updatePendingTx(
+    String key, {
+    String? accountId,
+    DateTime? timestamp,
+    wallet.TransactionType? type,
+    int? amount,
+    int? fee,
+    String? address,
+    String? purchaseViewToken,
+    String? pullPaymentId,
+    String? currency,
+    String? currencyAmount,
+  }) async {
+    // Retrieve the existing record
+    final existingRecord = await pendingTxStore.record(key).get(_db);
+    if (existingRecord == null) {
+      return false;
+    }
+
+    // Create a map of the fields to update
+    final updateData = <String, dynamic>{};
+
+    if (accountId != null) updateData['account'] = accountId;
+    if (timestamp != null) {
+      updateData['timestamp'] = timestamp.millisecondsSinceEpoch;
+    }
+    if (type != null) updateData['type'] = type.toString();
+    if (amount != null) updateData['amount'] = amount;
+    if (fee != null) updateData['fee'] = fee;
+    if (address != null) updateData['address'] = address;
+    if (purchaseViewToken != null) {
+      updateData['purchaseViewToken'] = purchaseViewToken;
+    }
+    if (pullPaymentId != null) updateData['pullPaymentId'] = pullPaymentId;
+    if (currency != null) updateData['currency'] = currency;
+    if (currencyAmount != null) updateData['currencyAmount'] = currencyAmount;
+
+    // Update the record with the new data
+    await pendingTxStore.record(key).update(_db, updateData);
+    return true;
   }
 
   //returns a stream of all pending transactions that stored in the database

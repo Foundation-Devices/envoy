@@ -170,12 +170,22 @@ class BtcPayVoucher {
   }
 }
 
-void addPendingTx(
-    String pullPaymentId, String address, Account account, int? amountSats) {
-  EnvoyStorage().addPendingTx(pullPaymentId, account.id ?? "", DateTime.now(),
-      TransactionType.btcPay, amountSats ?? 0, 0, address,
-      pullPaymentId: pullPaymentId);
-  EnvoyStorage().addTxNote(note: "BTCPay voucher", key: address); // TODO: FIGMA
+void addPendingTx(String pullPaymentId, String address, Account account,
+    int? amountSats, String? currency, String? currencyAmount) {
+  EnvoyStorage().addPendingTx(
+    pullPaymentId,
+    account.id ?? "",
+    DateTime.now(),
+    TransactionType.btcPay,
+    amountSats ?? 0,
+    0,
+    address,
+    pullPaymentId: pullPaymentId,
+    currency: currency,
+    currencyAmount: currencyAmount,
+  );
+  EnvoyStorage()
+      .addTxNote(note: "BTCPay voucher", key: pullPaymentId); // TODO: FIGMA
 }
 
 DateTime? convertUnixTimestampToDateTime(int? unixTimestamp) {

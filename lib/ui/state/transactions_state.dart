@@ -13,6 +13,8 @@ import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/settings.dart';
 
 final pendingTransactionsProvider =
     Provider.family<List<Transaction>, String?>((ref, String? accountId) {
@@ -261,9 +263,21 @@ Future prunePendingTransactions(
       EnvoyStorage().addTxNote(
           note: "BTCPay voucher", key: actualBtcPayTx.txId); // TODO: FIGMA
       actualBtcPayTx.setPullPaymentId(pendingTx.pullPaymentId);
-      EnvoyStorage().deleteTxNote(pendingTx.address!);
+      EnvoyStorage().deleteTxNote(pendingTx.pullPaymentId!);
       EnvoyStorage().deletePendingTx(pendingTx.txId);
     });
+
+    if (pendingTx.currency != null &&
+        pendingTx.amount == 0 &&
+        pendingTx.currency == Settings().selectedFiat) {
+      try {
+        int amountSats =
+            ExchangeRate().convertFiatStringToSats(pendingTx.currencyAmount!);
+        EnvoyStorage().updatePendingTx(pendingTx.txId, amount: amountSats);
+      } catch (e) {
+        return;
+      }
+    }
   }
   for (var pendingTx in ramp) {
     if (pendingTx.purchaseViewToken != null) {

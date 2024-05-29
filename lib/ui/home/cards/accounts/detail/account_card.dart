@@ -348,6 +348,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
   Widget _buildTransactionListWidget(
       List<Transaction> transactions, bool txFiltersEnabled) {
     if (transactions.isEmpty) {
+      /// ovde ima
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -559,10 +560,20 @@ class TransactionListTile extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            EnvoyAmount(
-                                account: account,
-                                amountSats: transaction.amount,
-                                amountWidgetStyle: AmountWidgetStyle.normal),
+                            (transaction.amount == 0 &&
+                                    transaction.currency != null &&
+                                    transaction.currencyAmount != null)
+                                ? Text(
+                                    "${transaction.currencyAmount!} ${transaction.currency!}",
+                                    style: EnvoyTypography.body.copyWith(
+                                      color: EnvoyColors.textPrimary,
+                                    ),
+                                  )
+                                : EnvoyAmount(
+                                    account: account,
+                                    amountSats: transaction.amount,
+                                    amountWidgetStyle:
+                                        AmountWidgetStyle.normal),
                           ],
                         ),
                       ),
