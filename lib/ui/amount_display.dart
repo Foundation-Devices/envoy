@@ -20,7 +20,6 @@ class AmountDisplay extends ConsumerStatefulWidget {
   final bool inputMode;
   final int? amountSats;
   String displayedAmount;
-  final bool testnet;
   final Function? onLongPress;
   final Account? account;
 
@@ -30,7 +29,6 @@ class AmountDisplay extends ConsumerStatefulWidget {
       {this.displayedAmount = "",
       this.amountSats,
       this.onUnitToggled,
-      this.testnet = false,
       this.inputMode = false,
       this.onLongPress,
       required this.account,
@@ -53,7 +51,7 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
 
     // Fiat is always at the end of enum
     if (Settings().selectedFiat == null ||
-        widget.account?.wallet.network == Network.Testnet) {
+        widget.account?.wallet.network != Network.Mainnet) {
       length--;
     }
 
