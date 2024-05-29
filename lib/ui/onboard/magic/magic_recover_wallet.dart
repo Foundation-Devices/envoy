@@ -293,6 +293,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                   child: OnboardingButton(
                     label: S().component_continue,
                     onTap: () async {
+                      Settings().updateAccountsViewSettings();
                       await Future.delayed(const Duration(milliseconds: 200));
                       if (context.mounted) {
                         OnboardingPage.popUntilHome(context);
