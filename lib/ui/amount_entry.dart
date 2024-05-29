@@ -23,7 +23,6 @@ import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:wallet/wallet.dart';
 import 'package:envoy/business/locale.dart';
 
 enum AmountDisplayUnit { btc, sat, fiat }
@@ -220,7 +219,6 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
             inputMode: true,
             displayedAmount: _enteredAmount,
             amountSats: _amountSats,
-            testnet: widget.account?.wallet.network == Network.Testnet,
             onUnitToggled: (enteredAmount) {
               // SFT-2508: special rule for circling through is to pad fiat with last 0
               final unit = ref.watch(sendScreenUnitProvider);
