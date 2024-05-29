@@ -78,6 +78,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
       if (mounted) {
         setState(() {
           if (success) {
+            Settings().updateAccountsViewSettings();
             _magicRecoverWalletState = MagicRecoveryWalletState.success;
           } else {
             _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
@@ -407,6 +408,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                         Settings().syncToCloud = true;
                         setState(() {
                           if (success) {
+                            Settings().updateAccountsViewSettings();
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(

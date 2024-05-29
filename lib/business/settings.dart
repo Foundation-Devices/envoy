@@ -288,6 +288,13 @@ class Settings extends ChangeNotifier {
     store();
   }
 
+  // ENV-989: Trigger settings to show all restored accounts.
+  updateAccountsViewSettings() {
+    setShowTestnetAccounts(showTestnetAccountsSetting);
+    setTaprootEnabled(enableTaprootSetting);
+    setShowSignetAccounts(showSignetAccountsSetting);
+  }
+
   static final Settings _instance = Settings._internal();
 
   factory Settings() {

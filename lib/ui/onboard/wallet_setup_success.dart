@@ -89,7 +89,9 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                     return OnboardingButton(
                         label: S().component_continue,
                         onTap: () async {
-                          OnboardingPage.popUntilHome(context);
+                          if (context.mounted) {
+                            OnboardingPage.popUntilHome(context);
+                          }
                         });
                   },
                 ),
