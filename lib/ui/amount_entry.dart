@@ -16,6 +16,7 @@ import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/haptics.dart';
@@ -271,11 +272,8 @@ class SpendableAmountWidget extends ConsumerWidget {
           isCoinsSelected
               ? S().coincontrol_edit_transaction_selectedAmount
               : S().coincontrol_edit_transaction_available_balance,
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: EnvoyColors.textSecondary,
-                fontSize: 13,
-                fontWeight: FontWeight.w400,
-              ),
+          style:
+              EnvoyTypography.info.copyWith(color: EnvoyColors.textSecondary),
         ),
         EnvoyAmount(
           unit: sendScreenUnit,
@@ -419,13 +417,12 @@ class NumpadButton extends StatelessWidget {
               case NumpadButtonType.text:
                 return Text(
                   text!,
-                  style: TextStyle(
-                    color: Typography.blackHelsinki.headlineMedium!.color,
-                    // TODO: change to EnvoyColors and font
-                    fontFamily: "Montserrat",
-                    fontSize: 25,
-                    fontWeight: FontWeight.w300,
-                  ),
+                  style: EnvoyTypography.body
+                      .copyWith(
+                        fontSize: 24,
+                        color: EnvoyColors.textSecondary,
+                      )
+                      .setWeight(FontWeight.w400),
                 );
               case NumpadButtonType.backspace:
                 return const Padding(
