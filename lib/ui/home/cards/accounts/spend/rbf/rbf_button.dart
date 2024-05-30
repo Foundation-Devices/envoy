@@ -49,7 +49,7 @@ class RBFSpendState {
       required this.originalTx});
 
   RBFSpendState? copyWith(
-      {required Psbt psbt, required int feeRate, required int receiveAmount}) {
+      {required Psbt psbt, required int feeRate, required num receiveAmount}) {
     return RBFSpendState(
         psbt: psbt,
         rbfFeeRates: rbfFeeRates,
