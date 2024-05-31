@@ -596,6 +596,12 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                 account,
                 onSignedPsbtScanned: (psbt) {
                   Navigator.pop(context);
+                  finalizedPsbt = psbt;
+                  ref.read(rbfSpendStateProvider.notifier).state =
+                      rbfSpendState.copyWith(
+                          psbt: psbt,
+                          feeRate: rbfSpendState.feeRate,
+                          receiveAmount: rbfSpendState.receiveAmount);
                   if (mounted) {
                     setState(() {
                       finalizedPsbt = psbt;
@@ -612,7 +618,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     if (rbfState == null) {
       return;
     }
-    Psbt psbt = rbfState.psbt;
+    Psbt psbt = finalizedPsbt ?? rbfState.psbt;
     try {
       setState(() {
         _broadcastProgress = BroadcastProgress.inProgress;
