@@ -21,6 +21,7 @@ class EnvoyToast<T> extends StatefulWidget {
   final Color? backgroundColor;
   final Widget? icon;
   final String? message;
+  final TextOverflow? overflow;
   final bool replaceExisting;
   final String? actionButtonText;
   final WidgetBuilder? builder;
@@ -50,6 +51,7 @@ class EnvoyToast<T> extends StatefulWidget {
     this.icon,
     this.actionButtonText,
     this.message,
+    this.overflow,
     this.animationDuration = const Duration(milliseconds: 430),
     this.forwardAnimationCurve = Curves.easeOutCirc,
     this.reverseAnimationCurve = Curves.easeOutCirc,
@@ -142,7 +144,7 @@ class EnvoyToastState extends State<EnvoyToast> {
                           margin: const EdgeInsets.only(left: 10),
                           child: Text(
                             widget.message ?? "",
-                            overflow: TextOverflow.ellipsis,
+                            overflow: widget.overflow ?? TextOverflow.ellipsis,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall

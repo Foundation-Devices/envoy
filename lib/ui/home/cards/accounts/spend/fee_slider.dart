@@ -8,6 +8,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -208,10 +209,21 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
   void calculateFeeBoundary() {
     FeeChooserState feeChooserState = ref.read(feeChooserStateProvider);
     setState(() {
+      if (feeChooserState.minFeeRate.abs() >=
+          feeChooserState.maxFeeRate.abs()) {
+        feeList = [feeChooserState.minFeeRate];
+        return;
+      }
       int totalFeeSuggestion =
           feeChooserState.maxFeeRate - feeChooserState.minFeeRate;
-      feeList = List.generate(totalFeeSuggestion,
-          (index) => (feeChooserState.minFeeRate) + index).reversed.toList();
+      kPrint(
+          "totalFeeSuggestion $totalFeeSuggestion (${feeChooserState.minFeeRate} to ${feeChooserState.maxFeeRate})");
+      if (totalFeeSuggestion <= 1) {
+        feeList.add(feeChooserState.minFeeRate);
+      } else {
+        feeList = List.generate(totalFeeSuggestion,
+            (index) => (feeChooserState.minFeeRate) + index).reversed.toList();
+      }
     });
   }
 }
