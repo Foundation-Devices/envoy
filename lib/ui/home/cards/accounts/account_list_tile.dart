@@ -25,11 +25,13 @@ import 'package:envoy/ui/components/amount_widget.dart';
 class AccountListTile extends ConsumerStatefulWidget {
   final void Function() onTap;
   final Account account;
+  final bool draggable;
 
   const AccountListTile(
     this.account, {
     super.key,
     required this.onTap,
+    this.draggable = true,
   });
 
   @override
@@ -95,6 +97,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
 
     return CardSwipeWrapper(
       height: containerHeight,
+      draggable: widget.draggable,
       account: account,
       child: Container(
         height: containerHeight,
