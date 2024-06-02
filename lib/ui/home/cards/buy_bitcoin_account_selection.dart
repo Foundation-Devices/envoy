@@ -32,6 +32,7 @@ class SelectAccount extends ConsumerStatefulWidget {
 
 class _SelectAccountState extends ConsumerState<SelectAccount> {
   Account? selectedAccount;
+  GestureTapCallback? onTap;
   String? address;
   final Map<String, String?> accountAddressCache = {};
 
@@ -85,168 +86,169 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
     if (selectedAccount != null) {
       filteredAccounts = ref.watch(mainnetAccountsProvider(selectedAccount));
     }
-    return (selectedAccount == null)
-        ? const Center(child: CircularProgressIndicator())
-        : Padding(
-            padding: const EdgeInsets.symmetric(
-                vertical: EnvoySpacing.medium1,
-                horizontal: EnvoySpacing.medium2),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          S().buy_bitcoin_accountSelection_heading,
-                          style: EnvoyTypography.subheading,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(
-                          height: EnvoySpacing.medium2,
-                        ),
-                        StackedAccountTile(
-                          selectedAccount!,
-                          filteredAccounts: filteredAccounts,
-                        ),
-                        const SizedBox(
-                          height: EnvoySpacing.small,
-                        ),
-                        GestureDetector(
-                          child: Text(
-                            S().buy_bitcoin_accountSelection_chooseAccount,
-                            style: EnvoyTypography.info
-                                .copyWith(color: EnvoyColors.accentPrimary),
-                            textAlign: TextAlign.center,
-                          ),
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return BackdropFilter(
-                                    filter:
-                                        ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                                    child: ChooseAccount(
-                                      accounts: filteredAccounts,
-                                      onSelectAccount: updateSelectedAccount,
-                                    ));
-                              },
-                            );
-                          },
-                        ),
-                        const SizedBox(
-                          height: EnvoySpacing.medium2,
-                        ),
-                        Text(
-                          S().buy_bitcoin_accountSelection_subheading,
-                          style: EnvoyTypography.info
-                              .copyWith(color: EnvoyColors.textTertiary),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(
-                          height: EnvoySpacing.medium1,
-                        ),
-                        if (address != null)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: EnvoySpacing.medium2,
-                            ),
-                            child: AddressWidget(
-                              address: address!,
-                              align: TextAlign.center,
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-                Column(
+    if ((selectedAccount == null)) {
+      return const Center(child: CircularProgressIndicator());
+    } else {
+      return Padding(
+        padding: const EdgeInsets.symmetric(
+            vertical: EnvoySpacing.medium1, horizontal: EnvoySpacing.medium2),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(
+              child: SingleChildScrollView(
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (!selectedAccount!.wallet.hot)
+                    Text(
+                      S().buy_bitcoin_accountSelection_heading,
+                      style: EnvoyTypography.subheading,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(
+                      height: EnvoySpacing.medium2,
+                    ),
+                    StackedAccountTile(
+                      selectedAccount!,
+                      filteredAccounts: filteredAccounts,
+                      onTap: (Account account) {
+                        updateSelectedAccount(account);
+                      },
+                    ),
+                    const SizedBox(
+                      height: EnvoySpacing.small,
+                    ),
+                    GestureDetector(
+                      child: Text(
+                        S().buy_bitcoin_accountSelection_chooseAccount,
+                        style: EnvoyTypography.info
+                            .copyWith(color: EnvoyColors.accentPrimary),
+                        textAlign: TextAlign.center,
+                      ),
+                      onTap: () {
+                        Navigator.of(rootNavigator: true, context).push(
+                            PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) {
+                                  return BackdropFilter(
+                                      filter: ImageFilter.blur(
+                                          sigmaX: 5, sigmaY: 5),
+                                      child: ChooseAccount(
+                                        accounts: filteredAccounts,
+                                        onSelectAccount: updateSelectedAccount,
+                                      ));
+                                },
+                                opaque: false));
+                      },
+                    ),
+                    const SizedBox(
+                      height: EnvoySpacing.medium2,
+                    ),
+                    Text(
+                      S().buy_bitcoin_accountSelection_subheading,
+                      style: EnvoyTypography.info
+                          .copyWith(color: EnvoyColors.textTertiary),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(
+                      height: EnvoySpacing.medium1,
+                    ),
+                    if (address != null)
                       Padding(
-                        padding:
-                            const EdgeInsets.only(bottom: EnvoySpacing.small),
-                        child: EnvoyButton(
-                          label: S().buy_bitcoin_accountSelection_verify,
-                          icon: EnvoyIcons.verifyAddress,
-                          type: ButtonType.secondary,
-                          state: ButtonState.defaultState,
-                          onTap: () {
-                            if (mounted) {
-                              showEnvoyDialog(
-                                context: context,
-                                blurColor: Colors.black,
-                                useRootNavigator: true,
-                                linearGradient: true,
-                                dialog: SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.9,
-                                  child: VerifyAddressDialog(
-                                    address: address!,
-                                    accountName: selectedAccount!.name,
-                                  ),
-                                ),
-                              );
-                            }
-                          },
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium2,
+                        ),
+                        child: AddressWidget(
+                          address: address!,
+                          align: TextAlign.center,
                         ),
                       ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(bottom: EnvoySpacing.large1),
-                      child: EnvoyButton(
-                        label: S().component_continue,
-                        type: ButtonType.primary,
-                        state: ButtonState.defaultState,
-                        onTap: () async {
-                          bool dismissed = await EnvoyStorage()
-                              .checkPromptDismissed(
-                                  DismissiblePrompt.leavingEnvoy);
-                          if (!dismissed && context.mounted) {
-                            showEnvoyPopUp(
-                                context,
-                                title: S()
-                                    .buy_bitcoin_accountSelection_modal_heading,
-                                S().buy_bitcoin_accountSelection_modal_subheading,
-                                S().send_keyboard_address_confirm,
-                                (BuildContext context) {
-                                  Navigator.pop(context);
-                                  RampWidget.showRamp(
-                                      context, selectedAccount!, address!);
-                                },
-                                icon: EnvoyIcons.info,
-                                checkBoxText: S().component_dontShowAgain,
-                                checkedValue: dismissed,
-                                onCheckBoxChanged: (checkedValue) {
-                                  if (!checkedValue) {
-                                    EnvoyStorage().addPromptState(
-                                        DismissiblePrompt.leavingEnvoy);
-                                  } else if (checkedValue) {
-                                    EnvoyStorage().removePromptState(
-                                        DismissiblePrompt.leavingEnvoy);
-                                  }
-                                });
-                          } else {
-                            if (context.mounted) {
+                  ],
+                ),
+              ),
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (!selectedAccount!.wallet.hot)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: EnvoySpacing.small),
+                    child: EnvoyButton(
+                      label: S().buy_bitcoin_accountSelection_verify,
+                      icon: EnvoyIcons.verifyAddress,
+                      type: ButtonType.secondary,
+                      state: ButtonState.defaultState,
+                      onTap: () {
+                        if (mounted) {
+                          showEnvoyDialog(
+                            context: context,
+                            blurColor: Colors.black,
+                            useRootNavigator: true,
+                            linearGradient: true,
+                            dialog: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              child: VerifyAddressDialog(
+                                address: address!,
+                                accountName: selectedAccount!.name,
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.large1),
+                  child: EnvoyButton(
+                    label: S().component_continue,
+                    type: ButtonType.primary,
+                    state: ButtonState.defaultState,
+                    onTap: () async {
+                      bool dismissed = await EnvoyStorage()
+                          .checkPromptDismissed(DismissiblePrompt.leavingEnvoy);
+                      if (!dismissed && context.mounted) {
+                        showEnvoyPopUp(
+                            context,
+                            title:
+                                S().buy_bitcoin_accountSelection_modal_heading,
+                            S().buy_bitcoin_accountSelection_modal_subheading,
+                            S().send_keyboard_address_confirm,
+                            (BuildContext context) {
+                              Navigator.pop(context);
                               RampWidget.showRamp(
                                   context, selectedAccount!, address!);
-                            }
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                )
+                            },
+                            icon: EnvoyIcons.info,
+                            checkBoxText: S().component_dontShowAgain,
+                            checkedValue: dismissed,
+                            onCheckBoxChanged: (checkedValue) {
+                              if (!checkedValue) {
+                                EnvoyStorage().addPromptState(
+                                    DismissiblePrompt.leavingEnvoy);
+                              } else if (checkedValue) {
+                                EnvoyStorage().removePromptState(
+                                    DismissiblePrompt.leavingEnvoy);
+                              }
+                            });
+                      } else {
+                        if (context.mounted) {
+                          RampWidget.showRamp(
+                              context, selectedAccount!, address!);
+                        }
+                      }
+                    },
+                  ),
+                ),
               ],
-            ),
-          );
+            )
+          ],
+        ),
+      );
+    }
   }
 }
 
-class ChooseAccount extends StatelessWidget {
+class ChooseAccount extends StatefulWidget {
   const ChooseAccount({
     super.key,
     required this.accounts,
@@ -257,87 +259,108 @@ class ChooseAccount extends StatelessWidget {
   final Function(Account) onSelectAccount;
 
   @override
+  State<ChooseAccount> createState() => _ChooseAccountState();
+}
+
+class _ChooseAccountState extends State<ChooseAccount> {
+  late List<GlobalKey> keys = widget.accounts.map((e) => GlobalKey()).toList();
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      decoration: const BoxDecoration(
-          gradient: LinearGradient(colors: [
-        Colors.black,
-        Color(0x00000000),
-      ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-      child: Column(
-        children: [
-          SizedBox(
-            height: 100,
-            child: Stack(
-              children: [
-                Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      S().header_chooseAccount,
-                      style:
-                          EnvoyTypography.heading.copyWith(color: Colors.white),
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: IconButton(
-                        color: Colors.white,
-                        icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+    return GestureDetector(
+      onTapDown: (details) {
+        for (var element in keys) {
+          final RenderBox box =
+              element.currentContext?.findRenderObject() as RenderBox;
+          final Offset localOffset = box.globalToLocal(details.globalPosition);
+
+          if (!box.paintBounds.contains(localOffset)) {
+            Navigator.of(context).pop();
+            break;
+          }
+        }
+      },
+      child: TweenAnimationBuilder(
+        duration: const Duration(milliseconds: 300),
+        builder: (context, value, child) {
+          return Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            decoration: BoxDecoration(
+                gradient: LinearGradient(colors: [
+              value ?? Colors.transparent,
+              const Color(0x00000000),
+            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+            child: child,
+          );
+        },
+        tween: ColorTween(begin: Colors.transparent, end: Colors.black),
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            centerTitle: true,
+            title: Text(
+              S().header_chooseAccount,
+              style: EnvoyTypography.heading.copyWith(color: Colors.white),
+            ),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios_new_rounded),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
           ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
-              child: ShaderMask(
-                shaderCallback: (Rect rect) {
-                  return const LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      EnvoyColors.solidWhite,
-                      Colors.transparent,
-                      Colors.transparent,
-                      EnvoyColors.solidWhite,
-                    ],
-                    stops: [0.0, 0.05, 0.95, 1.0],
-                  ).createShader(rect);
-                },
-                blendMode: BlendMode.dstOut,
-                child: ListView.builder(
-                  itemCount: accounts.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
+          body: Padding(
+            padding: const EdgeInsets.symmetric(
+                vertical: EnvoySpacing.medium1,
+                horizontal: EnvoySpacing.medium1),
+            child: ShaderMask(
+              shaderCallback: (Rect rect) {
+                return const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    EnvoyColors.solidWhite,
+                    Colors.transparent,
+                    Colors.transparent,
+                    EnvoyColors.solidWhite,
+                  ],
+                  stops: [0.0, 0.05, 0.95, 1.0],
+                ).createShader(rect);
+              },
+              blendMode: BlendMode.dstOut,
+              child: ListView.builder(
+                itemCount: widget.accounts.length,
+                padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
+                itemBuilder: (context, index) {
+                  return Container(
+                    key: keys[index],
+                    child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: EnvoySpacing.medium2,
+                          vertical: EnvoySpacing.small,
                           horizontal: EnvoySpacing.medium1),
-                      child: AccountListTile(accounts[index], onTap: () {
-                        onSelectAccount(accounts[index]);
-                        Navigator.of(context).pop();
-                      }),
-                    );
-                  },
-                ),
+                      child: Hero(
+                        transitionOnUserGestures: true,
+                        tag: widget.accounts[index].id!,
+                        key: ValueKey(widget.accounts[index].id!),
+                        child: AccountListTile(
+                          widget.accounts[index],
+                          onTap: () async {
+                            final navigator = Navigator.of(context);
+                            widget.onSelectAccount(widget.accounts[index]);
+                            navigator.pop();
+                          },
+                          draggable: false,
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
