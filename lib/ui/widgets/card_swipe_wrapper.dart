@@ -16,12 +16,14 @@ class CardSwipeWrapper extends ConsumerStatefulWidget {
   final Widget child;
   final double height;
   final Account account;
+  final bool draggable;
 
   const CardSwipeWrapper(
       {super.key,
       required this.child,
       required this.height,
-      required this.account});
+      required this.account,
+      required this.draggable});
 
   @override
   ConsumerState<CardSwipeWrapper> createState() => _CardSwipeWrapperState();
@@ -151,11 +153,17 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
         ),
         GestureDetector(
           onHorizontalDragDown: (details) {
+            if (!widget.draggable) {
+              return;
+            }
             thresholdReached = false;
             _controller.stop();
             _iconController.reverse();
           },
           onHorizontalDragUpdate: (details) {
+            if (!widget.draggable) {
+              return;
+            }
             double dragRate = (_offsetX * size.width * .5) / size.width;
             //Limit the drag
             if (dragRate.abs() >= 0.4) {
@@ -180,6 +188,9 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
             }
           },
           onHorizontalDragEnd: (details) {
+            if (!widget.draggable) {
+              return;
+            }
             //return to the original position with spring animation
             _runSpringSimulation(details.velocity.pixelsPerSecond, size);
           },
