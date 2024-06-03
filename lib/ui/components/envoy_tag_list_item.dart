@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:flutter/widgets.dart';
 
 enum FlexAlignment { flexLeft, flexRight, noFlex }
 
@@ -38,13 +39,16 @@ class EnvoyInfoCardListItem extends StatelessWidget {
           Flexible(
             flex: flexAlignment == FlexAlignment.flexRight ? 8 : 5,
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(
-                  width: 26,
-                  child: icon,
+                Padding(
+                  padding: const EdgeInsets.only(top: EnvoySpacing.xs / 2),
+                  child: SizedBox(
+                    width: 26,
+                    child: icon,
+                  ),
                 ),
                 Expanded(
                   child: Padding(

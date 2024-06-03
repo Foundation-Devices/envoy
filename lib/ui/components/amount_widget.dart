@@ -102,16 +102,19 @@ class AmountWidget extends StatelessWidget {
                 network: network,
                 locale: locale),
             if (secondaryUnit != null)
-              SecondaryAmountWidget(
-                  unit: secondaryUnit!,
-                  style: SecondaryAmountWidgetStyle.normal,
-                  amountSats: amountSats,
-                  symbolFiat: symbolFiat,
-                  fxRateFiat: fxRateFiat,
-                  decimalSeparator: decimalSeparator,
-                  groupSeparator: groupSeparator,
-                  network: network,
-                  locale: locale),
+              Padding(
+                padding: const EdgeInsets.only(top: EnvoySpacing.xs),
+                child: SecondaryAmountWidget(
+                    unit: secondaryUnit!,
+                    style: SecondaryAmountWidgetStyle.normal,
+                    amountSats: amountSats,
+                    symbolFiat: symbolFiat,
+                    fxRateFiat: fxRateFiat,
+                    decimalSeparator: decimalSeparator,
+                    groupSeparator: groupSeparator,
+                    network: network,
+                    locale: locale),
+              ),
           ],
         );
       case AmountWidgetStyle.singleLine:
