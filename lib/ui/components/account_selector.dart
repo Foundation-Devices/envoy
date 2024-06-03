@@ -39,8 +39,9 @@ class _StackedAccountTileState extends State<StackedAccountTile> {
   Widget build(BuildContext context) {
     int layerNumber = widget.filteredAccounts.length;
     return SizedBox(
-      height: 130,
+      height: 134,
       child: Flow(
+        clipBehavior: Clip.none,
         delegate: AccountsStackFlowDelegate(),
         children: List.generate(widget.filteredAccounts.length, (index) {
           int accountIndex =
@@ -72,7 +73,8 @@ class AccountsStackFlowDelegate extends FlowDelegate {
 
     //outside the stack, need these to be in the widget tree to be able to animate
     for (int i = 0; i < (childCount > 3 ? childCount - 3 : 0); i++) {
-      context.paintChild(i, transform: Matrix4.translationValues(0, 10, 0));
+      context.paintChild(i,
+          transform: Matrix4.translationValues(0, 24, 0), opacity: 0.0);
     }
 
     //visible card stack

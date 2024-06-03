@@ -332,7 +332,9 @@ class _ChooseAccountState extends State<ChooseAccount> {
               blendMode: BlendMode.dstOut,
               child: ListView.builder(
                 itemCount: widget.accounts.length,
-                padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.only(
+                    top: EnvoySpacing.medium2, bottom: EnvoySpacing.medium2),
                 itemBuilder: (context, index) {
                   return Container(
                     key: keys[index],
