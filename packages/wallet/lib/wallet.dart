@@ -981,20 +981,10 @@ class Wallet {
   }
 
   Future<bool> validateAddress(String address) {
-    int walletPointer = _self.address;
-
+    int networkIndex = network.index;
     return Isolate.run(() async {
-      var lib = load(_libName);
-
-      final rustFunction =
-          lib.lookup<NativeFunction<WalletValidateAddressRust>>(
-              'wallet_validate_address');
-
-      final dartFunction = rustFunction.asFunction<WalletValidateAddressDart>();
-
-      return dartFunction(
-              Pointer.fromAddress(walletPointer), address.toNativeUtf8()) ==
-          1;
+      final lib = rust.NativeLibrary(load(_libName));
+      return lib.wallet_validate_address(networkIndex, address.toNativeUtf8().cast<Char>());
     });
   }
 
