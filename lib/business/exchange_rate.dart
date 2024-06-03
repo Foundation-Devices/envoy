@@ -194,14 +194,13 @@ class ExchangeRate extends ChangeNotifier {
   // SATS to FIAT
   String getFormattedAmount(int amountSats,
       {bool includeSymbol = true, Wallet? wallet}) {
-    /// dont hide testnet fiat values on debug builds
-    if (!kDebugMode) {
-      /// hide testnet fiat values on production builds
-      if (wallet?.network != Network.Mainnet ||
-          _currency == null ||
-          _selectedCurrencyRate == null) {
-        return "";
-      }
+    // Hide test coins on production builds only
+    if (!kDebugMode && wallet != null && wallet.network != Network.Mainnet) {
+      return "";
+    }
+
+    if (_currency == null || _selectedCurrencyRate == null) {
+      return "";
     }
 
     NumberFormat currencyFormatter =
