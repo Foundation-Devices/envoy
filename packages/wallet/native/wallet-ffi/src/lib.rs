@@ -1598,17 +1598,16 @@ pub unsafe extern "C" fn wallet_broadcast_tx(
 
 #[no_mangle]
 pub unsafe extern "C" fn wallet_validate_address(
-    wallet: *mut Mutex<bdk::Wallet<Tree>>,
+    network: NetworkType,
     address: *const c_char,
 ) -> bool {
-    let wallet = unwrap_or_return!(util::get_wallet_mutex(wallet).lock(), false);
-
+    let network: Network = network.into();
     match Address::from_str(CStr::from_ptr(address).to_str().unwrap()) {
         Ok(a) => {
-            if a.network == Testnet && wallet.network() == Signet {
+            if a.network == Testnet && network == Signet {
                 true // Signet addresses parse as testnet
             } else {
-                wallet.network() == a.network
+                a.network == network
             }
         } // Only valid if it's on same network
         Err(_) => false,

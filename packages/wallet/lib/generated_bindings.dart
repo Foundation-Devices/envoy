@@ -446,21 +446,21 @@ class NativeLibrary {
           ffi.Pointer<ffi.Char>, int, ffi.Pointer<ffi.Char>)>();
 
   bool wallet_validate_address(
-    ffi.Pointer<ffi.Char> wallet,
+    int network,
     ffi.Pointer<ffi.Char> address,
   ) {
     return _wallet_validate_address(
-      wallet,
+      network,
       address,
     );
   }
 
   late final _wallet_validate_addressPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Bool Function(ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>)>>('wallet_validate_address');
-  late final _wallet_validate_address = _wallet_validate_addressPtr.asFunction<
-      bool Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
+          ffi
+          .NativeFunction<ffi.Bool Function(ffi.Int32, ffi.Pointer<ffi.Char>)>>(
+      'wallet_validate_address');
+  late final _wallet_validate_address = _wallet_validate_addressPtr
+      .asFunction<bool Function(int, ffi.Pointer<ffi.Char>)>();
 
   Psbt wallet_sign_offline(
     ffi.Pointer<ffi.Char> psbt,
