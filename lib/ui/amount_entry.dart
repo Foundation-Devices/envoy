@@ -242,10 +242,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
           ),
           child: SpendableAmountWidget(widget.account!),
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: EnvoySpacing.small),
-          child: numpad,
-        ),
+        numpad,
       ],
     );
   }
