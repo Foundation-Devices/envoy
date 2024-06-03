@@ -85,15 +85,12 @@ class MarkersPageState extends State<MarkersPage> {
   }
 
   Future<void> goToHome() async {
-    const int maxAttempts = 2;
-    const Duration retryDelay = Duration(seconds: 5);
+    const int maxAttempts = 4;
+    const Duration retryDelay = Duration(seconds: 3);
 
     for (int attempts = 0; attempts < maxAttempts; attempts++) {
       try {
-        var timeoutDuration = const Duration(seconds: 5);
-        var country =
-            await EnvoyStorage().getCountry().timeout(timeoutDuration);
-
+        var country = await EnvoyStorage().getCountry().timeout(retryDelay);
         if (country?.lat != null && country?.lon != null) {
           goTo(country!.lat!, country.lon!);
           return;
