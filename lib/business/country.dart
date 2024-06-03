@@ -13,8 +13,10 @@ class Country {
   final String division;
   double? lat;
   double? lon;
+  bool? coordinatesAvailable;
 
-  Country(this.code, this.name, this.division, {this.lat, this.lon});
+  Country(this.code, this.name, this.division,
+      {this.lat, this.lon, this.coordinatesAvailable});
 
   factory Country.fromJson(Map<String, dynamic> json) =>
       _$CountryFromJson(json);

@@ -107,7 +107,7 @@ class MapData {
     );
   }
 
-  Future<Map<String, double>?> getCoordinates(
+  Future<Map<String, double?>> getCoordinates(
       String divisionName, String countryName) async {
     var response = await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
       "https://api.geoapify.com/v1/geocode/search?text=$divisionName&format=json&apiKey=$mapApiKey",
@@ -118,8 +118,8 @@ class MapData {
       for (var result in data['results']) {
         if (result['country'] == countryName) {
           // Extract latitude and longitude
-          double latitude = result['lat'];
-          double longitude = result['lon'];
+          double latitude = (result['lat'] as num).toDouble();
+          double longitude = (result['lon'] as num).toDouble();
 
           return {'lat': latitude, 'lon': longitude};
         }
@@ -142,23 +142,20 @@ class MapData {
       return {'lat': latitude, 'lon': longitude};
     }
 
-    return null;
+    return {'lat': null, 'lon': null};
   }
 
   Future<void> updateHomeLocation() async {
     var country = await EnvoyStorage().getCountry();
     if (country != null) {
       var coordinates = await getCoordinates(country.division, country.name);
-
-      if (coordinates != null) {
-        await EnvoyStorage().updateCountry(
-          country.code,
-          country.name,
-          country.division,
+      bool coordinatesAvailable =
+          coordinates['lat'] != null && coordinates['lon'] != null;
+      await EnvoyStorage().updateCountry(
+          country.code, country.name, country.division,
           lat: coordinates['lat'],
           lon: coordinates['lon'],
-        );
-      }
+          coordinatesAvailable: coordinatesAvailable);
     }
   }
 }

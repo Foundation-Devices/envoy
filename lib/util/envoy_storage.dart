@@ -186,10 +186,12 @@ class EnvoyStorage {
   }
 
   Future<void> updateCountry(String code, String name, String division,
-      {double? lat, double? lon}) async {
-    await countryStore
-        .record(0)
-        .put(_db, Country(code, name, division, lat: lat, lon: lon).toJson());
+      {double? lat, double? lon, bool? coordinatesAvailable}) async {
+    await countryStore.record(0).put(
+        _db,
+        Country(code, name, division,
+                lat: lat, lon: lon, coordinatesAvailable: coordinatesAvailable)
+            .toJson());
   }
 
   Future<Country?> getCountry() async {
