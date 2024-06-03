@@ -41,7 +41,7 @@ class DeviceListTile extends ConsumerStatefulWidget {
 class _DeviceListTileState extends ConsumerState<DeviceListTile> {
   @override
   Widget build(BuildContext context) {
-    var fwShouldUpdate = ref.watch(shouldUpdateProvider(widget.device));
+    var fwShouldUpdate = ref.refresh(shouldUpdateProvider(widget.device));
     var fwInfo = ref.watch(firmwareStreamProvider(widget.device.type.index));
     const double cardRadius = EnvoySpacing.medium2;
 
