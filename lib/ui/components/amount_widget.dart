@@ -245,6 +245,10 @@ class PrimaryAmountWidget extends StatelessWidget {
             child: unit == AmountDisplayUnit.fiat
                 ? Text(
                     symbolFiat,
+                    textHeightBehavior: const TextHeightBehavior(
+                      applyHeightToFirstAscent: false,
+                      applyHeightToLastDescent: false,
+                    ),
                     style: sendScreen
                         ? EnvoyTypography.body
                             .copyWith(color: EnvoyColors.textSecondary)
@@ -347,6 +351,10 @@ class SecondaryAmountWidget extends StatelessWidget {
                         iconColor: iconColor))
                 : Text(
                     symbolFiat,
+                    textHeightBehavior: const TextHeightBehavior(
+                      applyHeightToFirstAscent: false,
+                      applyHeightToLastDescent: false,
+                    ),
                     style: textStyle,
                   )),
         RichText(
