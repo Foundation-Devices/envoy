@@ -330,7 +330,7 @@ class SecondaryAmountWidget extends StatelessWidget {
         : EnvoyColors.accentPrimary;
 
     return Row(
-      mainAxisSize: MainAxisSize.max,
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Padding(
