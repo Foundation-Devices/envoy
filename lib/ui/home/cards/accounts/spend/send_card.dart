@@ -14,12 +14,11 @@ import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/util/console.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 
 //ignore: must_be_immutable
 class SendCard extends ConsumerStatefulWidget {
@@ -104,33 +103,50 @@ class _SendCardState extends ConsumerState<SendCard>
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(EnvoySpacing.medium2),
-                      child: AddressEntry(
-                        account: account!,
-                        initalAddress: addressText,
-                        controller: _controller,
-                        onPaste: _onPaste,
-                        onAmountChanged: (amount) {
-                          if (amount != 0) {
-                            setAmount(amount);
-                          }
-                        },
-                        onAddressChanged: (text) {
-                          ref.read(spendAddressProvider.notifier).state = text;
-                        },
+              child: ShaderMask(
+                shaderCallback: (Rect rect) {
+                  return const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      EnvoyColors.solidWhite,
+                      Colors.transparent,
+                      Colors.transparent,
+                      EnvoyColors.solidWhite,
+                    ],
+                    stops: [0.0, 0.04, 0.96, 1.0],
+                  ).createShader(rect);
+                },
+                blendMode: BlendMode.dstOut,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(EnvoySpacing.medium2),
+                        child: AddressEntry(
+                          account: account!,
+                          initalAddress: addressText,
+                          controller: _controller,
+                          onPaste: _onPaste,
+                          onAmountChanged: (amount) {
+                            if (amount != 0) {
+                              setAmount(amount);
+                            }
+                          },
+                          onAddressChanged: (text) {
+                            ref.read(spendAddressProvider.notifier).state =
+                                text;
+                          },
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.medium1),
-                      child: _amountEntry,
-                    ),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: EnvoySpacing.medium1),
+                        child: _amountEntry,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
