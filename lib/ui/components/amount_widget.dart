@@ -102,16 +102,19 @@ class AmountWidget extends StatelessWidget {
                 network: network,
                 locale: locale),
             if (secondaryUnit != null)
-              SecondaryAmountWidget(
-                  unit: secondaryUnit!,
-                  style: SecondaryAmountWidgetStyle.normal,
-                  amountSats: amountSats,
-                  symbolFiat: symbolFiat,
-                  fxRateFiat: fxRateFiat,
-                  decimalSeparator: decimalSeparator,
-                  groupSeparator: groupSeparator,
-                  network: network,
-                  locale: locale),
+              Padding(
+                padding: const EdgeInsets.only(top: EnvoySpacing.xs),
+                child: SecondaryAmountWidget(
+                    unit: secondaryUnit!,
+                    style: SecondaryAmountWidgetStyle.normal,
+                    amountSats: amountSats,
+                    symbolFiat: symbolFiat,
+                    fxRateFiat: fxRateFiat,
+                    decimalSeparator: decimalSeparator,
+                    groupSeparator: groupSeparator,
+                    network: network,
+                    locale: locale),
+              ),
           ],
         );
       case AmountWidgetStyle.singleLine:
@@ -245,6 +248,10 @@ class PrimaryAmountWidget extends StatelessWidget {
             child: unit == AmountDisplayUnit.fiat
                 ? Text(
                     symbolFiat,
+                    textHeightBehavior: const TextHeightBehavior(
+                      applyHeightToFirstAscent: false,
+                      applyHeightToLastDescent: false,
+                    ),
                     style: sendScreen
                         ? EnvoyTypography.body
                             .copyWith(color: EnvoyColors.textSecondary)
@@ -330,7 +337,7 @@ class SecondaryAmountWidget extends StatelessWidget {
         : EnvoyColors.accentPrimary;
 
     return Row(
-      mainAxisSize: MainAxisSize.max,
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Padding(
@@ -347,6 +354,10 @@ class SecondaryAmountWidget extends StatelessWidget {
                         iconColor: iconColor))
                 : Text(
                     symbolFiat,
+                    textHeightBehavior: const TextHeightBehavior(
+                      applyHeightToFirstAscent: false,
+                      applyHeightToLastDescent: false,
+                    ),
                     style: textStyle,
                   )),
         RichText(
