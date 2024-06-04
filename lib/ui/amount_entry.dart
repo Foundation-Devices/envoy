@@ -20,8 +20,10 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/haptics.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/locale.dart';
 
@@ -212,28 +214,31 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 
     return Column(
       children: [
-        FittedBox(
-          fit: BoxFit.fitWidth,
-          child: AmountDisplay(
-            account: widget.account,
-            inputMode: true,
-            displayedAmount: _enteredAmount,
-            amountSats: _amountSats,
-            onUnitToggled: (enteredAmount) {
-              // SFT-2508: special rule for circling through is to pad fiat with last 0
-              final unit = ref.watch(sendScreenUnitProvider);
-              if (unit == AmountDisplayUnit.fiat &&
-                  enteredAmount.contains(fiatDecimalSeparator) &&
-                  ((enteredAmount.length -
-                          enteredAmount.indexOf(fiatDecimalSeparator)) ==
-                      2)) {
-                enteredAmount = "${enteredAmount}0";
-              }
-              _enteredAmount = enteredAmount;
-            },
-            onLongPress: () async {
-              pasteAmount();
-            },
+        SizedBox(
+          height: 80,
+          child: FittedBox(
+            fit: BoxFit.fitWidth,
+            child: AmountDisplay(
+              account: widget.account,
+              inputMode: true,
+              displayedAmount: _enteredAmount,
+              amountSats: _amountSats,
+              onUnitToggled: (enteredAmount) {
+                // SFT-2508: special rule for circling through is to pad fiat with last 0
+                final unit = ref.watch(sendScreenUnitProvider);
+                if (unit == AmountDisplayUnit.fiat &&
+                    enteredAmount.contains(fiatDecimalSeparator) &&
+                    ((enteredAmount.length -
+                            enteredAmount.indexOf(fiatDecimalSeparator)) ==
+                        2)) {
+                  enteredAmount = "${enteredAmount}0";
+                }
+                _enteredAmount = enteredAmount;
+              },
+              onLongPress: () async {
+                pasteAmount();
+              },
+            ),
           ),
         ),
         Padding(
