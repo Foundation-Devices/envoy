@@ -93,7 +93,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
         ? 0
         : ref.watch(accountBalanceProvider(account.id));
 
-    double cardRadius = 26;
+    double cardRadius = EnvoySpacing.medium2;
 
     return CardSwipeWrapper(
       height: containerHeight,
@@ -102,7 +102,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
       child: Container(
         height: containerHeight,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
+          borderRadius: BorderRadius.all(Radius.circular(cardRadius - 1)),
           border: Border.all(
               color: Colors.black, width: 2, style: BorderStyle.solid),
           gradient: LinearGradient(
@@ -115,11 +115,11 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
         ),
         child: Container(
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
+              borderRadius: BorderRadius.all(Radius.circular(cardRadius - 3)),
               border: Border.all(
                   color: account.color, width: 2, style: BorderStyle.solid)),
           child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(cardRadius - 2)),
+            borderRadius: BorderRadius.all(Radius.circular(cardRadius - 5)),
             child: GestureDetector(
               onTap: widget.onTap,
               child: Stack(children: [
@@ -180,9 +180,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                         children: [
                           Container(
                             height: 34,
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: EnvoySpacing.xs + 2,
-                                vertical: EnvoySpacing.xs),
+                            margin: const EdgeInsets.all(EnvoySpacing.xs),
                             child: Consumer(
                               builder: (context, ref, child) {
                                 final hide = ref.watch(
@@ -193,7 +191,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                       color: const Color(0xFFF8F8F8),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(
-                                            cardRadius + 8),
+                                            EnvoySpacing.medium1),
                                       ),
                                     ),
                                     child: Padding(
@@ -222,8 +220,8 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                   decoration: ShapeDecoration(
                                     color: const Color(0xFFF8F8F8),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(cardRadius + 8),
+                                      borderRadius: BorderRadius.circular(
+                                          EnvoySpacing.medium1),
                                     ),
                                   ),
                                   child: Padding(
