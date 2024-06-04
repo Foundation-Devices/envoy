@@ -27,6 +27,7 @@ import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -233,40 +234,40 @@ class _TransactionsDetailsWidgetState
               icon: const EnvoyIcon(EnvoyIcons.compass,
                   color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
               trailing: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      showTxIdExpanded = !showTxIdExpanded;
-                      showAddressExpanded = false;
-                      showPaymentId = false;
-                    });
-                  },
-                  child: TweenAnimationBuilder(
-                    curve: EnvoyEasing.easeInOut,
-                    tween:
-                        Tween<double>(begin: 0, end: showTxIdExpanded ? 1 : 0),
-                    duration: const Duration(milliseconds: 200),
-                    builder: (context, value, child) {
-                      String txId = tx.type == TransactionType.ramp
-                          ? "loading"
-                          : tx.txId; // TODO: Figma
-                      return SelectableText(
-                        truncateWithEllipsisInCenter(
-                            txId, lerpDouble(16, txId.length, value)!.toInt()),
-                        style:
-                            EnvoyTypography.info.copyWith(color: Colors.black),
-                        textAlign: TextAlign.end,
-                        minLines: 1,
-                        maxLines: 4,
-                        onTap: () {
-                          setState(() {
-                            showTxIdExpanded = !showTxIdExpanded;
-                            showAddressExpanded = false;
-                            showPaymentId = false;
-                          });
-                        },
-                      );
+                onLongPress: () {
+                  Clipboard.setData(ClipboardData(text: tx.txId));
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content:
+                          Text('Address copied to clipboard!'))); //TODO: FIGMA
+                },
+                child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        showTxIdExpanded = !showTxIdExpanded;
+                        showAddressExpanded = false;
+                        showPaymentId = false;
+                      });
                     },
-                  )),
+                    child: TweenAnimationBuilder(
+                      curve: EnvoyEasing.easeInOut,
+                      tween: Tween<double>(
+                          begin: 0, end: showTxIdExpanded ? 1 : 0),
+                      duration: const Duration(milliseconds: 200),
+                      builder: (context, value, child) {
+                        String txId = tx.type == TransactionType.ramp
+                            ? "loading"
+                            : tx.txId; // TODO: Figma
+                        return Text(
+                          truncateWithEllipsisInCenter(txId,
+                              lerpDouble(16, txId.length, value)!.toInt()),
+                          style: EnvoyTypography.info
+                              .copyWith(color: Colors.black),
+                          textAlign: TextAlign.end,
+                          maxLines: 4,
+                        );
+                      },
+                    )),
+              ),
             ),
             EnvoyInfoCardListItem(
               title: S().coindetails_overlay_date,
