@@ -10,6 +10,7 @@ import 'package:tor/tor.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:envoy/business/scheduler.dart';
 import 'dart:core';
+import 'package:envoy/business/coordinates.dart';
 
 class MapData {
   static const String mapApiKey =
@@ -107,7 +108,7 @@ class MapData {
     );
   }
 
-  Future<Map<String, double?>> getCoordinates(
+  Future<Coordinates> getCoordinates(
       String divisionName, String countryName) async {
     var response = await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
       "https://api.geoapify.com/v1/geocode/search?text=$divisionName&format=json&apiKey=$mapApiKey",
@@ -121,7 +122,7 @@ class MapData {
           double latitude = (result['lat'] as num).toDouble();
           double longitude = (result['lon'] as num).toDouble();
 
-          return {'lat': latitude, 'lon': longitude};
+          return Coordinates(latitude, longitude);
         }
       }
     }
@@ -136,26 +137,23 @@ class MapData {
       var firstResult = data2['results'][0];
 
       // Extract latitude and longitude
-      double latitude = firstResult['lat'];
-      double longitude = firstResult['lon'];
+      double latitude = (firstResult['lat'] as num).toDouble();
+      double longitude = (firstResult['lon'] as num).toDouble();
 
-      return {'lat': latitude, 'lon': longitude};
+      return Coordinates(latitude, longitude);
     }
 
-    return {'lat': null, 'lon': null};
+    return Coordinates(null, null);
   }
 
   Future<void> updateHomeLocation() async {
     var country = await EnvoyStorage().getCountry();
     if (country != null) {
-      var coordinates = await getCoordinates(country.division, country.name);
-      bool coordinatesAvailable =
-          coordinates['lat'] != null && coordinates['lon'] != null;
+      Coordinates coordinates =
+          await getCoordinates(country.division, country.name);
       await EnvoyStorage().updateCountry(
           country.code, country.name, country.division,
-          lat: coordinates['lat'],
-          lon: coordinates['lon'],
-          coordinatesAvailable: coordinatesAvailable);
+          coordinates: coordinates);
     }
   }
 }

@@ -91,10 +91,13 @@ class MarkersPageState extends State<MarkersPage> {
     for (int attempts = 0; attempts < maxAttempts; attempts++) {
       try {
         var country = await EnvoyStorage().getCountry();
-        if (country?.lat != null && country?.lon != null) {
-          goTo(country!.lat!, country.lon!);
+        if (country?.coordinates?.lat != null &&
+            country?.coordinates?.lon != null) {
+          goTo(country!.coordinates!.lat!, country.coordinates!.lon!);
           return;
-        } else if (country?.coordinatesAvailable == false) {
+        } else if (country?.coordinates?.lat == null &&
+            country?.coordinates?.lon == null &&
+            country?.coordinates != null) {
           setState(() {
             _dataLoaded = true;
           });

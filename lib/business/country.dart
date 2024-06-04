@@ -3,20 +3,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:envoy/business/coordinates.dart';
 
 part 'country.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Country {
   final String code;
   final String name;
   final String division;
-  double? lat;
-  double? lon;
-  bool? coordinatesAvailable;
+  Coordinates? coordinates;
 
-  Country(this.code, this.name, this.division,
-      {this.lat, this.lon, this.coordinatesAvailable});
+  Country(this.code, this.name, this.division, {this.coordinates});
 
   factory Country.fromJson(Map<String, dynamic> json) =>
       _$CountryFromJson(json);
