@@ -39,7 +39,7 @@ class _StackedAccountTileState extends State<StackedAccountTile> {
   Widget build(BuildContext context) {
     int layerNumber = widget.filteredAccounts.length;
     return SizedBox(
-      height: 134,
+      height: 144,
       child: Flow(
         clipBehavior: Clip.none,
         delegate: AccountsStackFlowDelegate(),
@@ -71,16 +71,17 @@ class AccountsStackFlowDelegate extends FlowDelegate {
   void paintChildren(FlowPaintingContext context) {
     final childCount = context.childCount;
 
-    //outside the stack, need these to be in the widget tree to be able to animate
+    //outside the stack, need these to be in the widget tree to be able to animate,
+    //accounts that draw in this area will be invisible, but still in the widget tree
     for (int i = 0; i < (childCount > 3 ? childCount - 3 : 0); i++) {
       context.paintChild(i,
-          transform: Matrix4.translationValues(0, 24, 0), opacity: 0.0);
+          transform: Matrix4.translationValues(0, 22, 0), opacity: 0.0);
     }
 
-    //visible card stack
+    //visible card stack, only the top 3 cards will be visible
     for (int i = childCount > 3 ? childCount - 3 : 0; i < childCount; i++) {
       context.paintChild(i,
-          transform: Matrix4.translationValues(0, ((i) * 6.0), 0));
+          transform: Matrix4.translationValues(0, ((i) * 4.0), 0));
     }
   }
 

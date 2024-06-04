@@ -984,7 +984,8 @@ class Wallet {
     int networkIndex = network.index;
     return Isolate.run(() async {
       final lib = rust.NativeLibrary(load(_libName));
-      return lib.wallet_validate_address(networkIndex, address.toNativeUtf8().cast<Char>());
+      return lib.wallet_validate_address(
+          networkIndex, address.toNativeUtf8().cast<Char>());
     });
   }
 

@@ -8,6 +8,7 @@ import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/widgets/material_transparent_router.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -118,29 +119,30 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                     const SizedBox(
                       height: EnvoySpacing.small,
                     ),
-                    GestureDetector(
-                      child: Text(
-                        S().buy_bitcoin_accountSelection_chooseAccount,
-                        style: EnvoyTypography.info
-                            .copyWith(color: EnvoyColors.accentPrimary),
-                        textAlign: TextAlign.center,
-                      ),
-                      onTap: () {
-                        Navigator.of(rootNavigator: true, context).push(
-                            PageRouteBuilder(
-                                pageBuilder:
-                                    (context, animation, secondaryAnimation) {
-                                  return BackdropFilter(
-                                      filter: ImageFilter.blur(
-                                          sigmaX: 5, sigmaY: 5),
-                                      child: ChooseAccount(
-                                        accounts: filteredAccounts,
-                                        onSelectAccount: updateSelectedAccount,
-                                      ));
-                                },
-                                opaque: false));
-                      },
-                    ),
+                    Builder(builder: (context) {
+                      return GestureDetector(
+                        child: Text(
+                          S().buy_bitcoin_accountSelection_chooseAccount,
+                          style: EnvoyTypography.info
+                              .copyWith(color: EnvoyColors.accentPrimary),
+                          textAlign: TextAlign.center,
+                        ),
+                        onTap: () {
+                          Navigator.of(rootNavigator: true, context)
+                              .push(MaterialTransparentRoute(
+                            builder: (context) {
+                              return BackdropFilter(
+                                  filter:
+                                      ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                                  child: ChooseAccount(
+                                    accounts: filteredAccounts,
+                                    onSelectAccount: updateSelectedAccount,
+                                  ));
+                            },
+                          ));
+                        },
+                      );
+                    }),
                     const SizedBox(
                       height: EnvoySpacing.medium2,
                     ),
@@ -267,104 +269,107 @@ class _ChooseAccountState extends State<ChooseAccount> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: (details) {
-        for (var element in keys) {
-          final RenderBox box =
-              element.currentContext?.findRenderObject() as RenderBox;
-          final Offset localOffset = box.globalToLocal(details.globalPosition);
+    return Builder(builder: (context) {
+      return GestureDetector(
+        onTapDown: (details) {
+          for (var element in keys) {
+            final RenderBox box =
+                element.currentContext?.findRenderObject() as RenderBox;
+            final Offset localOffset =
+                box.globalToLocal(details.globalPosition);
 
-          if (!box.paintBounds.contains(localOffset)) {
-            Navigator.of(context).pop();
-            break;
+            if (!box.paintBounds.contains(localOffset)) {
+              Navigator.of(context).pop();
+              break;
+            }
           }
-        }
-      },
-      child: TweenAnimationBuilder(
-        duration: const Duration(milliseconds: 300),
-        builder: (context, value, child) {
-          return Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-              value ?? Colors.transparent,
-              const Color(0x00000000),
-            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-            child: child,
-          );
         },
-        tween: ColorTween(begin: Colors.transparent, end: Colors.black),
-        child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            centerTitle: true,
-            title: Text(
-              S().header_chooseAccount,
-              style: EnvoyTypography.heading.copyWith(color: Colors.white),
+        child: TweenAnimationBuilder(
+          duration: const Duration(milliseconds: 300),
+          builder: (context, value, child) {
+            return Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(colors: [
+                value ?? Colors.transparent,
+                const Color(0x00000000),
+              ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+              child: child,
+            );
+          },
+          tween: ColorTween(begin: Colors.transparent, end: Colors.black),
+          child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              centerTitle: true,
+              title: Text(
+                S().header_chooseAccount,
+                style: EnvoyTypography.heading.copyWith(color: Colors.white),
+              ),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
             ),
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new_rounded),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(
-                vertical: EnvoySpacing.medium1,
-                horizontal: EnvoySpacing.medium1),
-            child: ShaderMask(
-              shaderCallback: (Rect rect) {
-                return const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    EnvoyColors.solidWhite,
-                    Colors.transparent,
-                    Colors.transparent,
-                    EnvoyColors.solidWhite,
-                  ],
-                  stops: [0.0, 0.05, 0.95, 1.0],
-                ).createShader(rect);
-              },
-              blendMode: BlendMode.dstOut,
-              child: ListView.builder(
-                itemCount: widget.accounts.length,
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.only(
-                    top: EnvoySpacing.medium2, bottom: EnvoySpacing.medium2),
-                itemBuilder: (context, index) {
-                  return Container(
-                    key: keys[index],
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: EnvoySpacing.small,
-                          horizontal: EnvoySpacing.medium1),
-                      child: Hero(
-                        transitionOnUserGestures: true,
-                        tag: widget.accounts[index].id!,
-                        key: ValueKey(widget.accounts[index].id!),
-                        child: AccountListTile(
-                          widget.accounts[index],
-                          onTap: () async {
-                            final navigator = Navigator.of(context);
-                            widget.onSelectAccount(widget.accounts[index]);
-                            navigator.pop();
-                          },
-                          draggable: false,
+            body: Padding(
+              padding: const EdgeInsets.symmetric(
+                  vertical: EnvoySpacing.medium1,
+                  horizontal: EnvoySpacing.medium1),
+              child: ShaderMask(
+                shaderCallback: (Rect rect) {
+                  return const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      EnvoyColors.solidWhite,
+                      Colors.transparent,
+                      Colors.transparent,
+                      EnvoyColors.solidWhite,
+                    ],
+                    stops: [0.0, 0.05, 0.95, 1.0],
+                  ).createShader(rect);
+                },
+                blendMode: BlendMode.dstOut,
+                child: ListView.builder(
+                  itemCount: widget.accounts.length,
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.only(
+                      top: EnvoySpacing.medium2, bottom: EnvoySpacing.medium2),
+                  itemBuilder: (context, index) {
+                    return Container(
+                      key: keys[index],
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: EnvoySpacing.small,
+                            horizontal: EnvoySpacing.medium1),
+                        child: Hero(
+                          transitionOnUserGestures: true,
+                          tag: widget.accounts[index].id!,
+                          key: ValueKey(widget.accounts[index].id!),
+                          child: AccountListTile(
+                            widget.accounts[index],
+                            onTap: () async {
+                              final navigator = Navigator.of(context);
+                              widget.onSelectAccount(widget.accounts[index]);
+                              navigator.pop();
+                            },
+                            draggable: false,
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
 
