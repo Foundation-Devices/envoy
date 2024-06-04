@@ -34,8 +34,10 @@ class MarkersPage extends StatefulWidget {
 
 class MarkersPageState extends State<MarkersPage> {
   MapController controller = MapController(
-      location:
-          const LatLng(Angle.degree(34.052235), Angle.degree(-118.243683)));
+      location: const LatLng(
+          Angle.degree(34.543896),
+          Angle.degree(
+              69.160652))); // Default location set to Kabul, Afghanistan
 
   final List<Venue> venueMarkers = [];
   MapTransformer? localTransformer;
