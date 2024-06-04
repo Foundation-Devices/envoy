@@ -7,6 +7,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/generated/l10n.dart';
 
 class IconTab extends StatefulWidget {
   final String label;
@@ -17,17 +18,20 @@ class IconTab extends StatefulWidget {
   final bool bigTab;
   final String? description;
   final String? lockedInfoText;
+  final List<EnvoyIcons>? poweredByIcons;
 
-  const IconTab(
-      {super.key,
-      required this.label,
-      required this.icon,
-      this.isSelected = true,
-      this.onSelect,
-      this.bigTab = false,
-      this.description,
-      this.isLocked = false,
-      this.lockedInfoText});
+  const IconTab({
+    super.key,
+    required this.label,
+    required this.icon,
+    this.isSelected = true,
+    this.onSelect,
+    this.bigTab = false,
+    this.description,
+    this.isLocked = false,
+    this.lockedInfoText,
+    this.poweredByIcons,
+  });
 
   @override
   IconTabState createState() => IconTabState();
@@ -55,8 +59,15 @@ class IconTabState extends State<IconTab> {
     TextStyle disabledTextStyle =
         EnvoyTypography.info.copyWith(color: EnvoyColors.accentPrimary);
 
+    TextStyle poweredByStyle = EnvoyTypography.body.copyWith(
+        color: widget.isLocked
+            ? EnvoyColors.textTertiary
+            : EnvoyColors.textPrimary); // TODO: wait for design
+
     Color iconColor =
         widget.isLocked ? EnvoyColors.textTertiary : EnvoyColors.textSecondary;
+    Color poweredByIconColor =
+        widget.isLocked ? EnvoyColors.textTertiary : EnvoyColors.textPrimary;
 
     return GestureDetector(
       onTap: () {
@@ -73,8 +84,7 @@ class IconTabState extends State<IconTab> {
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(
-              vertical:
-                  widget.bigTab ? EnvoySpacing.medium2 : EnvoySpacing.medium1,
+              vertical: EnvoySpacing.medium1,
               horizontal:
                   widget.bigTab ? EnvoySpacing.medium2 : EnvoySpacing.small),
           child: Column(
@@ -117,6 +127,28 @@ class IconTabState extends State<IconTab> {
                       style: disabledTextStyle,
                     ),
                   ],
+                ),
+              if (widget.poweredByIcons != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        S().buy_bitcoin_buyOptions_modal_poweredBy,
+                        style: poweredByStyle,
+                      ),
+                      ...widget.poweredByIcons!.map((icon) => Padding(
+                            padding:
+                                const EdgeInsets.only(left: EnvoySpacing.xs),
+                            child: EnvoyIcon(
+                              icon,
+                              size: EnvoyIconSize.superSmall,
+                              color: poweredByIconColor,
+                            ),
+                          )),
+                    ],
+                  ),
                 ),
             ],
           ),
