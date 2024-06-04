@@ -35,7 +35,7 @@ class BuyBitcoinCard extends ConsumerStatefulWidget {
 
 class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
     with SingleTickerProviderStateMixin {
-  BuyBitcoinCardState currentState = BuyBitcoinCardState.none;
+  BuyBitcoinCardState currentState = BuyBitcoinCardState.buyInEnvoy;
   late AnimationController animationController;
   late Animation<Alignment> animation;
   bool regionCanBuy = false;
@@ -94,6 +94,11 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
     if (region != null) {
       bool newRegionCanBuy =
           await AllowedRegions.isRegionAllowed(region.code, region.division);
+      if (!newRegionCanBuy) {
+        setState(() {
+          currentState = BuyBitcoinCardState.none;
+        });
+      }
       if (newRegionCanBuy != regionCanBuy) {
         setState(() {
           regionCanBuy = newRegionCanBuy;
