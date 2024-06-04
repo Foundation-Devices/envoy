@@ -49,6 +49,31 @@ class AmountEntry extends ConsumerStatefulWidget {
 class AmountEntryState extends ConsumerState<AmountEntry> {
   String _enteredAmount = "";
   int _amountSats = 0;
+  final GlobalKey _fittedBoxKey = GlobalKey();
+  double? _fittedBoxHeight;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.initalSatAmount > 0) {
+      _amountSats = widget.initalSatAmount;
+      _enteredAmount =
+          getDisplayAmount(_amountSats, ref.read(sendScreenUnitProvider));
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback(_getFittedBoxHeight);
+  }
+
+  void _getFittedBoxHeight(Duration timeStamp) {
+    final context = _fittedBoxKey.currentContext;
+    if (context != null) {
+      final box = context.findRenderObject() as RenderBox;
+      setState(() {
+        _fittedBoxHeight = box.size.height;
+      });
+    }
+  }
 
   int getAmountSats() {
     final unit = ref.read(sendScreenUnitProvider);
@@ -80,17 +105,6 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
       if (widget.onPaste != null) {
         widget.onPaste!(decodedInfo);
       }
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    if (widget.initalSatAmount > 0) {
-      _amountSats = widget.initalSatAmount;
-      _enteredAmount =
-          getDisplayAmount(_amountSats, ref.read(sendScreenUnitProvider));
     }
   }
 
@@ -215,8 +229,9 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     return Column(
       children: [
         SizedBox(
-          height: 80,
+          height: _fittedBoxHeight,
           child: FittedBox(
+            key: _fittedBoxKey,
             fit: BoxFit.fitWidth,
             child: AmountDisplay(
               account: widget.account,
