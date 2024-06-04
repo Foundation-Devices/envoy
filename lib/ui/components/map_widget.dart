@@ -225,6 +225,21 @@ class MarkersPageState extends State<MarkersPage> {
             final String? openingHours = venueInfo["opening_hours"];
             final String? website = venueInfo["website"];
             final String? street = venueInfo["street"];
+            final String? houseNo = venueInfo["houseno"];
+            final String? city = venueInfo["city"];
+            String? address;
+
+            if (street != null || houseNo != null || city != null) {
+              final String houseNoAndStreet = [
+                if (street != null && street.isNotEmpty) street,
+                if (houseNo != null && houseNo.isNotEmpty) houseNo
+              ].join(' ');
+
+              address = [
+                if (houseNoAndStreet.isNotEmpty) houseNoAndStreet,
+                if (city != null && city.isNotEmpty) city
+              ].join(', ');
+            }
             if (mounted) {
               Navigator.pop(context);
               showEnvoyDialog(
@@ -235,7 +250,7 @@ class MarkersPageState extends State<MarkersPage> {
                   width: MediaQuery.of(context).size.width * 0.9,
                   child: AtmDialogInfo(
                     name: name,
-                    street: street,
+                    address: address,
                     website: website,
                     description: description,
                     openingHours: openingHours,
@@ -404,14 +419,14 @@ class AtmDialogInfo extends StatelessWidget {
   const AtmDialogInfo({
     super.key,
     this.name,
-    this.street,
+    this.address,
     this.website,
     this.description,
     this.openingHours,
   });
 
   final String? name;
-  final String? street;
+  final String? address;
   final String? website;
   final String? description;
   final String? openingHours;
@@ -453,10 +468,10 @@ class AtmDialogInfo extends StatelessWidget {
                 style: EnvoyTypography.info,
               ),
             ),
-          if (street != null)
+          if (address != null)
             Padding(
               padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
-              child: Text(street!, textAlign: TextAlign.center),
+              child: Text(address!, textAlign: TextAlign.center),
             ),
           if (openingHours != null)
             Padding(
@@ -480,7 +495,7 @@ class AtmDialogInfo extends StatelessWidget {
                 },
               ),
             ),
-          if (street == null && description == null && website == null)
+          if (address == null && description == null && website == null)
             const Text("No extra details available for this atm."),
         ],
       ),
