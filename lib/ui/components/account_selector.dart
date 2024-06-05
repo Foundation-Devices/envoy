@@ -39,7 +39,7 @@ class _StackedAccountTileState extends State<StackedAccountTile> {
   Widget build(BuildContext context) {
     int layerNumber = widget.filteredAccounts.length;
     return SizedBox(
-      height: 144,
+      height: 132,
       child: Flow(
         clipBehavior: Clip.none,
         delegate: AccountsStackFlowDelegate(),
@@ -78,12 +78,24 @@ class AccountsStackFlowDelegate extends FlowDelegate {
           transform: Matrix4.translationValues(0, 22, 0), opacity: 0.0);
     }
 
+    //tracks stack index 0 to 2 to calculate the offset
+    int stackIndex = 2;
     //visible card stack, only the top 3 cards will be visible
     for (int i = childCount > 3 ? childCount - 3 : 0; i < childCount; i++) {
       context.paintChild(i,
-          transform: Matrix4.translationValues(0, ((i) * 4.0), 0));
+          transform: Matrix4.translationValues(0, getOffset(stackIndex), 0));
+      stackIndex = stackIndex - 1;
     }
   }
+
+  //y axis offsets for the stack cards (3 cards visible, rest are invisible)
+  double getOffset(int pos) =>
+      {
+        0: 15.5,
+        1: 7.5,
+        2: 0.0,
+      }[pos] ??
+      0;
 
   @override
   bool shouldRepaint(covariant FlowDelegate oldDelegate) {
