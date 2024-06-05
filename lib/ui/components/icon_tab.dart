@@ -59,10 +59,10 @@ class IconTabState extends State<IconTab> {
     TextStyle disabledTextStyle =
         EnvoyTypography.info.copyWith(color: EnvoyColors.accentPrimary);
 
-    TextStyle poweredByStyle = EnvoyTypography.body.copyWith(
+    TextStyle poweredByStyle = EnvoyTypography.info.copyWith(
         color: widget.isLocked
             ? EnvoyColors.textTertiary
-            : EnvoyColors.textPrimary); // TODO: wait for design
+            : EnvoyColors.textPrimary);
 
     Color iconColor =
         widget.isLocked ? EnvoyColors.textTertiary : EnvoyColors.textSecondary;
@@ -139,8 +139,8 @@ class IconTabState extends State<IconTab> {
                         style: poweredByStyle,
                       ),
                       ...widget.poweredByIcons!.map((icon) => Padding(
-                            padding:
-                                const EdgeInsets.only(left: EnvoySpacing.xs),
+                            padding: const EdgeInsets.only(
+                                left: EnvoySpacing.xs / 2),
                             child: EnvoyIcon(
                               icon,
                               size: EnvoyIconSize.superSmall,
