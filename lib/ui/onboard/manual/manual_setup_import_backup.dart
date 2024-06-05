@@ -168,12 +168,12 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: const Center(
               child: SizedBox(
-                height: 60,
-                width: 60,
+                height: 150,
+                width: 150,
                 child: CircularProgressIndicator(
-                  color: EnvoyColors.accentPrimary,
-                  backgroundColor: EnvoyColors.textTertiary,
-                  strokeWidth: 4.71,
+                  color: EnvoyColors.tealLight,
+                  backgroundColor: EnvoyColors.textInactive,
+                  strokeWidth: 8,
                 ),
               ),
             ),
