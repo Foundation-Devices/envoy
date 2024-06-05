@@ -85,17 +85,22 @@ class MarkersPageState extends State<MarkersPage> {
   }
 
   Future<void> goToHome() async {
-    const int maxAttempts = 2;
+    const int maxAttempts = 3;
     const Duration retryDelay = Duration(seconds: 5);
-
+    // If no coordinates are found within 10 seconds, display coordinates for Los Angeles (LA)
     for (int attempts = 0; attempts < maxAttempts; attempts++) {
       try {
-        var timeoutDuration = const Duration(seconds: 5);
-        var country =
-            await EnvoyStorage().getCountry().timeout(timeoutDuration);
-
-        if (country?.lat != null && country?.lon != null) {
-          goTo(country!.lat!, country.lon!);
+        var country = await EnvoyStorage().getCountry();
+        if (country?.coordinates?.lat != null &&
+            country?.coordinates?.lon != null) {
+          goTo(country!.coordinates!.lat!, country.coordinates!.lon!);
+          return;
+        } else if (country?.coordinates?.lat == null &&
+            country?.coordinates?.lon == null &&
+            country?.coordinates != null) {
+          setState(() {
+            _dataLoaded = true;
+          });
           return;
         } else {
           if (attempts + 1 < maxAttempts) {
