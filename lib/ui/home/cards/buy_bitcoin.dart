@@ -106,7 +106,7 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-          vertical: EnvoySpacing.medium1, horizontal: EnvoySpacing.medium2),
+          vertical: EnvoySpacing.medium2, horizontal: EnvoySpacing.medium2),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -324,6 +324,7 @@ void showAdditionalInfoDialog(BuyBitcoinCardState state, BuildContext context) {
 
   showEnvoyDialog(
       context: context,
+      useRootNavigator: true,
       dialog: SizedBox(
         width: MediaQuery.of(context).size.width * 0.9,
         child: BuyOptionDialog(
