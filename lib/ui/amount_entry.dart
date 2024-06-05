@@ -65,7 +65,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     WidgetsBinding.instance.addPostFrameCallback(_getFittedBoxHeight);
   }
 
-  void _getFittedBoxHeight(Duration timeStamp) {
+  void _getFittedBoxHeight(Duration _) {
     final context = _fittedBoxKey.currentContext;
     if (context != null) {
       final box = context.findRenderObject() as RenderBox;
