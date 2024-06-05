@@ -550,7 +550,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_faq_answer_18": MessageLookupByLibrary.simpleMessage(
             "Si se utiliza con un Passport, Envoy actúa como una cartera de \'solo lectura\' conectada a tu cartera hardware. Esto significa que Envoy puede preparar transacciones, pero son inútiles sin la autorización relevante, que solo Passport puede proporcionar. Passport es el \'almacenamiento en frío\', ¡y Envoy es simplemente la interfaz conectada a Internet! Si utilizas Envoy para crear una cartera móvil, donde la semilla se almacena de forma segura en tu teléfono, esa cartera móvil no se consideraría almacenamiento en frío. Esto no tiene ningún efecto en la seguridad de las cuentas conectadas a Passport."),
         "envoy_faq_answer_19": MessageLookupByLibrary.simpleMessage(
-            "Sí, Envoy se conecta utilizando el protocolo del servidor Electrum. Para conectarte a tu propio servidor Electrum, escanea el código QR o escribe la URL proporcionada en la configuración de red en Envoy."),
+            "Sí, Envoy se conecta utilizando los protocolos de servidor Electrum o Esplora. Para conectarte a tu propio servidor, escanea el código QR o escribe la URL proporcionada en la configuración de red en Envoy."),
         "envoy_faq_answer_2": MessageLookupByLibrary.simpleMessage(
             "Envoy está diseñada para ser la cartera de Bitcoin más fácil de utilizar, sin comprometer tu privacidad. Con las Copias de Seguridad Mágicas de Envoy, puedes configurar una cartera móvil de Bitcoin en 60 segundos, ¡sin palabras semilla y custodiada por ti! Los usuarios de Passport pueden conectar sus dispositivos a Envoy para una configuración fácil, actualizaciones de firmware y una experiencia sencilla de cartera de Bitcoin."),
         "envoy_faq_answer_20": MessageLookupByLibrary.simpleMessage(
@@ -1296,6 +1296,9 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Aumenta la tasa asociada a tu transacción para acelerar el tiempo de confirmación."),
         "replaceByFee_edit_transaction_requiredAmount":
             MessageLookupByLibrary.simpleMessage("Requerido para Impulsar"),
+        "replaceByFee_ramp_incompleteTransactionAutodeleteWarning":
+            MessageLookupByLibrary.simpleMessage(
+                "Incomplete transactions will disappear from Activity after 5 days."),
         "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "La tarifa elegida solo se puede lograr añadiendo más monedas. Envoy lo hace automáticamente y nunca incluirá monedas bloqueadas.\n\nEsta selección se podrá editar en la siguiente pantalla."),

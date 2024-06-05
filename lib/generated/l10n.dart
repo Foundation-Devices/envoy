@@ -2578,10 +2578,10 @@ class S {
     );
   }
 
-  /// `Yes, Envoy connects using the Electrum server protocol. To connect to your own Electrum Server, scan the QR or enter the URL provided into the network settings on Envoy.`
+  /// `Yes, Envoy can connect to personal nodes via the Electrum or Esplora server protocols. To connect to your own server, scan the QR or enter the URL provided into the network settings on Envoy.`
   String get envoy_faq_answer_19 {
     return Intl.message(
-      'Yes, Envoy connects using the Electrum server protocol. To connect to your own Electrum Server, scan the QR or enter the URL provided into the network settings on Envoy.',
+      'Yes, Envoy can connect to personal nodes via the Electrum or Esplora server protocols. To connect to your own server, scan the QR or enter the URL provided into the network settings on Envoy.',
       name: 'envoy_faq_answer_19',
       desc: '',
       args: [],
@@ -5873,6 +5873,16 @@ class S {
     return Intl.message(
       'Required to Boost',
       name: 'replaceByFee_edit_transaction_requiredAmount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Incomplete transactions will disappear from Activity after 5 days.`
+  String get replaceByFee_ramp_incompleteTransactionAutodeleteWarning {
+    return Intl.message(
+      'Incomplete transactions will disappear from Activity after 5 days.',
+      name: 'replaceByFee_ramp_incompleteTransactionAutodeleteWarning',
       desc: '',
       args: [],
     );

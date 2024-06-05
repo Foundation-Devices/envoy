@@ -1304,6 +1304,9 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Augmenteu la tarifa adjunta a la vostra transacció per accelerar el temps de confirmació."),
         "replaceByFee_edit_transaction_requiredAmount":
             MessageLookupByLibrary.simpleMessage("Necessari per Augmentar"),
+        "replaceByFee_ramp_incompleteTransactionAutodeleteWarning":
+            MessageLookupByLibrary.simpleMessage(
+                "Incomplete transactions will disappear from Activity after 5 days."),
         "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "La tarifa escollida només es pot aconseguir afegint més monedes. Envoy ho fa automàticament i mai inclourà cap moneda bloquejada. "),
