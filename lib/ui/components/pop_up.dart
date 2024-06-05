@@ -28,7 +28,7 @@ void showEnvoyPopUp(
   Function(BuildContext context)? onSecondaryButtonTap,
   PopUpState? typeOfMessage,
   String? checkBoxText,
-  onCheckBoxChanged,
+  Function(bool checked)? onCheckBoxChanged,
   bool? checkedValue,
   bool dismissible = true,
 }) =>
@@ -46,7 +46,7 @@ void showEnvoyPopUp(
             typeOfMessage: typeOfMessage,
             checkBoxText: checkBoxText,
             onCheckBoxChanged: onCheckBoxChanged,
-            checkedValue: checkedValue),
+            checkedValue: checkedValue ?? true),
         dismissible: dismissible);
 
 //ignore: must_be_immutable
@@ -62,7 +62,7 @@ class EnvoyPopUp extends StatefulWidget {
     this.onSecondaryButtonTap,
     this.typeOfMessage = PopUpState.deafult,
     this.checkBoxText,
-    required this.onCheckBoxChanged,
+    this.onCheckBoxChanged,
     this.checkedValue = true,
   });
 
@@ -75,7 +75,7 @@ class EnvoyPopUp extends StatefulWidget {
   final Function(BuildContext context)? onSecondaryButtonTap;
   final PopUpState? typeOfMessage;
   final String? checkBoxText;
-  final Function(bool? checked) onCheckBoxChanged;
+  final Function(bool checked)? onCheckBoxChanged;
   bool? checkedValue;
 
   @override
@@ -172,7 +172,9 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                     onChanged: (isChecked) {
                       setState(() {
                         widget.checkedValue = !widget.checkedValue!;
-                        widget.onCheckBoxChanged(isChecked);
+                        if (widget.onCheckBoxChanged != null) {
+                          widget.onCheckBoxChanged!(isChecked!);
+                        }
                       });
                     },
                   ),

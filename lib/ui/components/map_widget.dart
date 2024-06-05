@@ -85,17 +85,22 @@ class MarkersPageState extends State<MarkersPage> {
   }
 
   Future<void> goToHome() async {
-    const int maxAttempts = 2;
+    const int maxAttempts = 3;
     const Duration retryDelay = Duration(seconds: 5);
-
+    // If no coordinates are found within 10 seconds, display coordinates for Los Angeles (LA)
     for (int attempts = 0; attempts < maxAttempts; attempts++) {
       try {
-        var timeoutDuration = const Duration(seconds: 5);
-        var country =
-            await EnvoyStorage().getCountry().timeout(timeoutDuration);
-
-        if (country?.lat != null && country?.lon != null) {
-          goTo(country!.lat!, country.lon!);
+        var country = await EnvoyStorage().getCountry();
+        if (country?.coordinates?.lat != null &&
+            country?.coordinates?.lon != null) {
+          goTo(country!.coordinates!.lat!, country.coordinates!.lon!);
+          return;
+        } else if (country?.coordinates?.lat == null &&
+            country?.coordinates?.lon == null &&
+            country?.coordinates != null) {
+          setState(() {
+            _dataLoaded = true;
+          });
           return;
         } else {
           if (attempts + 1 < maxAttempts) {
@@ -225,6 +230,21 @@ class MarkersPageState extends State<MarkersPage> {
             final String? openingHours = venueInfo["opening_hours"];
             final String? website = venueInfo["website"];
             final String? street = venueInfo["street"];
+            final String? houseNo = venueInfo["houseno"];
+            final String? city = venueInfo["city"];
+            String? address;
+
+            if (street != null || houseNo != null || city != null) {
+              final String houseNoAndStreet = [
+                if (street != null && street.isNotEmpty) street,
+                if (houseNo != null && houseNo.isNotEmpty) houseNo
+              ].join(' ');
+
+              address = [
+                if (houseNoAndStreet.isNotEmpty) houseNoAndStreet,
+                if (city != null && city.isNotEmpty) city
+              ].join(', ');
+            }
             if (mounted) {
               Navigator.pop(context);
               showEnvoyDialog(
@@ -235,7 +255,7 @@ class MarkersPageState extends State<MarkersPage> {
                   width: MediaQuery.of(context).size.width * 0.9,
                   child: AtmDialogInfo(
                     name: name,
-                    street: street,
+                    address: address,
                     website: website,
                     description: description,
                     openingHours: openingHours,
@@ -404,14 +424,14 @@ class AtmDialogInfo extends StatelessWidget {
   const AtmDialogInfo({
     super.key,
     this.name,
-    this.street,
+    this.address,
     this.website,
     this.description,
     this.openingHours,
   });
 
   final String? name;
-  final String? street;
+  final String? address;
   final String? website;
   final String? description;
   final String? openingHours;
@@ -453,10 +473,10 @@ class AtmDialogInfo extends StatelessWidget {
                 style: EnvoyTypography.info,
               ),
             ),
-          if (street != null)
+          if (address != null)
             Padding(
               padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
-              child: Text(street!, textAlign: TextAlign.center),
+              child: Text(address!, textAlign: TextAlign.center),
             ),
           if (openingHours != null)
             Padding(
@@ -480,7 +500,7 @@ class AtmDialogInfo extends StatelessWidget {
                 },
               ),
             ),
-          if (street == null && description == null && website == null)
+          if (address == null && description == null && website == null)
             const Text("No extra details available for this atm."),
         ],
       ),

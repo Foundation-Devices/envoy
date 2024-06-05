@@ -35,7 +35,7 @@ class BuyBitcoinCard extends ConsumerStatefulWidget {
 
 class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
     with SingleTickerProviderStateMixin {
-  BuyBitcoinCardState currentState = BuyBitcoinCardState.none;
+  BuyBitcoinCardState currentState = BuyBitcoinCardState.buyInEnvoy;
   late AnimationController animationController;
   late Animation<Alignment> animation;
   bool regionCanBuy = false;
@@ -94,6 +94,11 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
     if (region != null) {
       bool newRegionCanBuy =
           await AllowedRegions.isRegionAllowed(region.code, region.division);
+      if (!newRegionCanBuy) {
+        setState(() {
+          currentState = BuyBitcoinCardState.none;
+        });
+      }
       if (newRegionCanBuy != regionCanBuy) {
         setState(() {
           regionCanBuy = newRegionCanBuy;
@@ -138,6 +143,7 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
                         _updateState(BuyBitcoinCardState.buyInEnvoy);
                       }
                     },
+                    poweredByIcons: const [EnvoyIcons.ramp],
                   ),
                   const SizedBox(
                     height: EnvoySpacing.medium2,
@@ -324,6 +330,7 @@ void showAdditionalInfoDialog(BuyBitcoinCardState state, BuildContext context) {
 
   showEnvoyDialog(
       context: context,
+      useRootNavigator: true,
       dialog: SizedBox(
         width: MediaQuery.of(context).size.width * 0.9,
         child: BuyOptionDialog(

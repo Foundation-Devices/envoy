@@ -107,7 +107,7 @@ class ListHeader extends StatelessWidget {
             padding: const EdgeInsets.only(top: EnvoySpacing.small),
             child: Container(
               height: 2,
-              color: EnvoyColors.border1,
+              color: EnvoyColors.border2,
             ),
           )
         ],
