@@ -582,6 +582,7 @@
   "replaceByFee_coindetails_overlay_modal_heading": "Augmenta la Transacció",
   "replaceByFee_coindetails_overlay_modal_subheading": "Augmenteu la tarifa adjunta a la vostra transacció per accelerar el temps de confirmació.",
   "replaceByFee_edit_transaction_requiredAmount": "Necessari per Augmentar",
+  "replaceByFee_ramp_incompleteTransactionAutodeleteWarning": "Incomplete transactions will disappear from Activity after 5 days.",
   "replaceByFee_warning_extraUTXO_overlay_modal_subheading": "La tarifa escollida només es pot aconseguir afegint més monedes. Envoy ho fa automàticament i mai inclourà cap moneda bloquejada. ",
   "send_keyboard_address_confirm": "Confirmar",
   "send_keyboard_address_loading": "Carregant…",

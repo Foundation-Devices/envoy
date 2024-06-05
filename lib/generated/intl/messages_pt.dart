@@ -433,7 +433,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Não é possível Reforçar a Transacção"),
         "coindetails_overlay_noBoostNoFunds_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Isto deve-se ao facto de não existirem moedas confirmadas ou desbloqueadas suficientes para escolher. \n\nPermite que as moedas pendentes sejam confirmadas ou desbloqueia algumas moedas e tenta novamente."),
+                "Isto deve-se ao facto de não existirem moedas confirmadas ou desbloqueadas suficientes para escolher. \n\nSempre que possível permite que as moedas pendentes sejam confirmadas ou deslobqueia algumas moedas e tenta novamente."),
         "coindetails_overlay_notes":
             MessageLookupByLibrary.simpleMessage("Nota"),
         "coindetails_overlay_paymentID":
@@ -554,7 +554,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_faq_answer_18": MessageLookupByLibrary.simpleMessage(
             "Quando usado em conjunto com um Passport, a Envoy actua como uma carteira \'apenas de leitura\' ligada à tua carteira física. Isto significa que a Envoy pode elaborar transacções, mas são inúteis sem a autorização devida, a qual só pode ser fornecida pelo Passport. O Passport é um \'armazenamento frio\' enquanto que a Envoy é simplesmente uma interface ligada à Internet! Se usares a Envoy para criar uma carteira móvel, onde as tuas chaves são armazenadas de forma segura no teu telemóvel, essa carteira não pode ser considerada como um armazenamento frio. A segurança do Passport e das contas associadas não é impactada."),
         "envoy_faq_answer_19": MessageLookupByLibrary.simpleMessage(
-            "Sim, a Envoy liga-se através do protocolo do servidor Electrum. Para te ligares ao teu próprio Servidor Electrum, digitaliza o código QR ou introduz o endereço fornecido nas configurações de rede da Envoy."),
+            "Sim, a Envoy liga-se a nós pessoais através do protocolo de servidor Electrum ou Esplora. Para te ligares ao teu próprio servidor, digitaliza o código QR ou introduz o endereço fornecido nas configurações de rede da Envoy."),
         "envoy_faq_answer_2": MessageLookupByLibrary.simpleMessage(
             "A Envoy foi concebida para oferecer a experiência mais fácil de usar de qualquer carteira Bitcoin, sem comprometer a tua privacidade. Com a Cópia Mágica de Segurança é possível configurar uma carteira móvel Bitcoin auto-custodiada em 60 segundos, sem palavras semente! Os utilizadores do Passport podem ligar os seus dispositivos à Envoy para uma configuração fácil, actualizações de firmware e uma experiência simples de carteira Bitcoin."),
         "envoy_faq_answer_20": MessageLookupByLibrary.simpleMessage(
@@ -1297,6 +1297,9 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Aumenta a taxa associada à tua transacção para acelerares o tempo de confirmação."),
         "replaceByFee_edit_transaction_requiredAmount":
             MessageLookupByLibrary.simpleMessage("Necessário para Reforçar"),
+        "replaceByFee_ramp_incompleteTransactionAutodeleteWarning":
+            MessageLookupByLibrary.simpleMessage(
+                "Incomplete transactions will disappear from Activity after 5 days."),
         "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "A taxa escolhida só pode ser atingida adicionando mais moedas. A Envoy faz essa operação automaticamente e nunca irá incluir moedas bloqueadas. \n\nEsta seleção pode ser revista ou editada no ecrã seguinte."),
@@ -1324,10 +1327,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_advanced": MessageLookupByLibrary.simpleMessage("Avançado"),
         "settings_advanced_enabled_signet_modal_link":
             MessageLookupByLibrary.simpleMessage(
-                "Learn more about Signet [[here]]."),
+                "Aprende mais sobre a Signet [[aqui]]."),
         "settings_advanced_enabled_signet_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Enabling Signet adds a Signet version of your Envoy Wallet. This feature is primarily used by developers or testers and has zero value."),
+                "A activação do Signet adiciona uma versão Signet à tua Carteira Envoy. Esta funcionalidade é usada principalmente por programadores ou para testes e não tem valor."),
         "settings_advanced_enabled_testnet_modal_link":
             MessageLookupByLibrary.simpleMessage(
                 "Aprende a fazer isso [[aqui]]."),

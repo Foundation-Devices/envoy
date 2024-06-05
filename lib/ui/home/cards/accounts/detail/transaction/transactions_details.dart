@@ -426,7 +426,7 @@ class _TransactionsDetailsWidgetState
                 padding: const EdgeInsets.symmetric(
                     horizontal: EnvoySpacing.medium2),
                 child: Text(
-                  "Incomplete transactions will disappear from Activity after 5 days.", // TODO: Figma
+                  S().replaceByFee_ramp_incompleteTransactionAutodeleteWarning,
                   style: EnvoyTypography.info
                       .copyWith(color: EnvoyColors.textPrimaryInverse),
                   textAlign: TextAlign.center,

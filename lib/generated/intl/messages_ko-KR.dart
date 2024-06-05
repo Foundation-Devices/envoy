@@ -540,7 +540,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_faq_answer_18": MessageLookupByLibrary.simpleMessage(
             "If used with a Passport, Envoy acts as a ‘watch-only’ wallet connected to your hardware wallet. This means Envoy can construct transactions, but they are useless without the relevant authorization, which only Passport can provide. Passport is the \'cold storage\' and Envoy is simply the internet connected interface!If you use Envoy to create a mobile wallet, where the keys are stored securely on your phone, that mobile wallet would not be considered cold storage. This has zero effect on the security of any Passport connected accounts."),
         "envoy_faq_answer_19": MessageLookupByLibrary.simpleMessage(
-            "Yes, Envoy connects using the Electrum server protocol. To connect to your own Electrum Server, scan the QR or enter the URL provided into the network settings on Envoy."),
+            "Yes, Envoy can connect to personal nodes via the Electrum or Esplora server protocols. To connect to your own server, scan the QR or enter the URL provided into the network settings on Envoy."),
         "envoy_faq_answer_2": MessageLookupByLibrary.simpleMessage(
             "Envoy is designed to offer the easiest to use experience of any Bitcoin wallet, without compromising on your privacy. With Envoy Magic Backups, set up a self custodied Bitcoin mobile wallet in 60 seconds, without seed words! Passport users can connect their devices to Envoy for easy setup, firmware updates, and a simple Bitcoin wallet experience."),
         "envoy_faq_answer_20": MessageLookupByLibrary.simpleMessage(
@@ -1266,6 +1266,9 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Increase the fee attached to your transaction to speed up confirmation time."),
         "replaceByFee_edit_transaction_requiredAmount":
             MessageLookupByLibrary.simpleMessage("Required to Boost"),
+        "replaceByFee_ramp_incompleteTransactionAutodeleteWarning":
+            MessageLookupByLibrary.simpleMessage(
+                "Incomplete transactions will disappear from Activity after 5 days."),
         "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. \n\nThis selection can be reviewed or edited in the following screen."),
