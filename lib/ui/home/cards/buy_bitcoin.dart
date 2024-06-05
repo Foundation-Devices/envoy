@@ -330,6 +330,7 @@ void showAdditionalInfoDialog(BuyBitcoinCardState state, BuildContext context) {
 
   showEnvoyDialog(
       context: context,
+      useRootNavigator: true,
       dialog: SizedBox(
         width: MediaQuery.of(context).size.width * 0.9,
         child: BuyOptionDialog(
