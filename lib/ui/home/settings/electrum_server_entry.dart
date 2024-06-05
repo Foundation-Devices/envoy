@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http_tor/http_tor.dart';
 import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
 import 'package:wallet/exceptions.dart';
@@ -15,6 +16,7 @@ import 'package:envoy/business/node_url.dart';
 import 'package:envoy/ui/components/text_field.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/business/scheduler.dart';
 
 enum ElectrumServerEntryState { pending, valid, invalid }
 
@@ -137,6 +139,15 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
     setState(() {
       _state = ElectrumServerEntryState.pending;
     });
+
+    if (address.startsWith('http')) {
+      _checkEsploraServer(address);
+    } else {
+      _checkElectrumServer(address);
+    }
+  }
+
+  void _checkElectrumServer(String address) {
     int port =
         Settings().turnOffTorForThisCase(address) ? -1 : Tor.instance.port;
 
@@ -162,5 +173,41 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
         });
       }
     });
+  }
+
+  Future<void> _checkEsploraServer(String address) async {
+    try {
+      final response = await HttpTor(Tor.instance, EnvoyScheduler().parallel)
+          .get(('$address/blocks/tip/height'));
+      if (response.statusCode == 200) {
+        final responseBody = response.body;
+        final blockHeight = int.tryParse(responseBody);
+
+        if (blockHeight != null) {
+          ConnectivityManager().electrumSuccess();
+          if (mounted) {
+            setState(() {
+              _state = ElectrumServerEntryState.valid;
+              _isError = false;
+              _textBelow =
+                  "${S().privacy_node_connectedTo} Esplora server (Block height: $blockHeight)"; // TODO: Figma
+            });
+          }
+        } else {
+          throw Exception('Invalid block height format');
+        }
+      } else {
+        throw Exception('Failed to connect to Esplora server');
+      }
+    } catch (e) {
+      ConnectivityManager().electrumFailure();
+      if (mounted) {
+        setState(() {
+          _state = ElectrumServerEntryState.invalid;
+          _isError = true;
+          _textBelow = "Could not connect to Esplora server.";
+        });
+      }
+    }
   }
 }

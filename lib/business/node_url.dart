@@ -39,12 +39,10 @@ String parseNodeUrl(String nodeUrl) {
     }
 
     if (nodeUrl.startsWith(HTTP_PREFIX)) {
-      return TCP_PREFIX + nodeUrl.substring(HTTP_PREFIX.length) + TCP_PORT;
+      return nodeUrl;
     }
 
-    if (nodeUrl.startsWith(HTTPS_PREFIX)) {
-      return SSL_PREFIX + nodeUrl.substring(HTTPS_PREFIX.length) + SSL_PORT;
-    }
+    if (nodeUrl.startsWith(HTTPS_PREFIX)) {}
   }
 
   return nodeUrl;
