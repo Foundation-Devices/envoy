@@ -235,18 +235,22 @@ class _TransactionsDetailsWidgetState
                   color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
               trailing: GestureDetector(
                 onLongPress: () {
-                  Clipboard.setData(ClipboardData(text: tx.txId));
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content:
-                          Text('Address copied to clipboard!'))); //TODO: FIGMA
+                  if (tx.type != TransactionType.ramp) {
+                    Clipboard.setData(ClipboardData(text: tx.txId));
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text(
+                            'Transaction ID copied to clipboard!'))); // TODO: FIGMA
+                  }
                 },
                 child: GestureDetector(
                     onTap: () {
-                      setState(() {
-                        showTxIdExpanded = !showTxIdExpanded;
-                        showAddressExpanded = false;
-                        showPaymentId = false;
-                      });
+                      if (tx.type != TransactionType.ramp) {
+                        setState(() {
+                          showTxIdExpanded = !showTxIdExpanded;
+                          showAddressExpanded = false;
+                          showPaymentId = false;
+                        });
+                      }
                     },
                     child: TweenAnimationBuilder(
                       curve: EnvoyEasing.easeInOut,
@@ -331,7 +335,38 @@ class _TransactionsDetailsWidgetState
                   size: EnvoyIconSize.extraSmall,
                   color: EnvoyColors.textPrimary,
                 ),
-                trailing: Text(tx.txId, style: trailingTextStyle),
+                trailing: GestureDetector(
+                  onLongPress: () {
+                    Clipboard.setData(ClipboardData(text: tx.txId));
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text(
+                            'Transaction ID copied to clipboard!'))); //TODO: FIGMA
+                  },
+                  child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          showTxIdExpanded = !showTxIdExpanded;
+                          showAddressExpanded = false;
+                          showPaymentId = false;
+                        });
+                      },
+                      child: TweenAnimationBuilder(
+                        curve: EnvoyEasing.easeInOut,
+                        tween: Tween<double>(
+                            begin: 0, end: showTxIdExpanded ? 1 : 0),
+                        duration: const Duration(milliseconds: 200),
+                        builder: (context, value, child) {
+                          return Text(
+                            truncateWithEllipsisInCenter(tx.txId,
+                                lerpDouble(16, tx.txId.length, value)!.toInt()),
+                            style: EnvoyTypography.info
+                                .copyWith(color: Colors.black),
+                            textAlign: TextAlign.end,
+                            maxLines: 4,
+                          );
+                        },
+                      )),
+                ),
               ),
             rbfPossible
                 ? EnvoyInfoCardListItem(
