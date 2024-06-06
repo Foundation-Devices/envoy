@@ -1,6 +1,6 @@
 {
   ":": ":",
-  "_": "Android Backs Up Every 24h",
+  "_": "30,493.93",
   "about_appVersion": "Versão da Aplicação",
   "about_openSourceLicences": "Licenças de Código Aberto",
   "about_privacyPolicy": "Política de Privacidade",
@@ -63,6 +63,7 @@
   "btcpay_connection_modal_fail_heading": "Vale Expirado",
   "btcpay_connection_modal_fail_subheading": "A Envoy não consegue ligar-se à loja BTCPay do emissor.\n\nPor favor entra em contacto com o emissor ou tenta novamente mais tarde.",
   "btcpay_connection_modal_onchainOnly_subheading": "O vale digitalizado não foi criado com suporte onchain.\n\nPor favor entra em contacto com o criador do vale.",
+  "btcpay_pendingVoucher": "Pending BTCPay Voucher",
   "btcpay_redeem_modal_description": "Descrição:",
   "btcpay_redeem_modal_name": "Nome:",
   "buy_bitcoin_accountSelection_chooseAccount": "Escolher uma conta diferente",

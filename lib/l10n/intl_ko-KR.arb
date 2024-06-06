@@ -1,6 +1,6 @@
 {
   ":": ":",
-  "_": "Android Backs Up Every 24h",
+  "_": "30,493.93",
   "about_appVersion": "App Version",
   "about_openSourceLicences": "Open Source Licences",
   "about_privacyPolicy": "Privacy Policy",
@@ -63,6 +63,7 @@
   "btcpay_connection_modal_fail_heading": "Voucher Expired",
   "btcpay_connection_modal_fail_subheading": "Envoy is unable to connect with the issuer's BTCPay store.\n\nPlease contact the issuer or try again later.",
   "btcpay_connection_modal_onchainOnly_subheading": "The scanned voucher was not created with onchain support.\n\nPlease contact the voucher creator.",
+  "btcpay_pendingVoucher": "Pending BTCPay Voucher",
   "btcpay_redeem_modal_description": "Description:",
   "btcpay_redeem_modal_name": "Name:",
   "buy_bitcoin_accountSelection_chooseAccount": "Choose different account",
