@@ -105,7 +105,8 @@ class _SelectRegionState extends State<SelectRegion> {
     int foundIndex = countries.indexWhere(
       (country) => country.code == countryCode,
     );
-    foundIndex = foundIndex != -1 ? foundIndex : 0;
+    // 223 is the index of USA, set that if the country cannot be found from the locale
+    foundIndex = foundIndex != -1 ? foundIndex : 223;
     Country foundCountry = countries[foundIndex];
     setState(() {
       _initialCountryIndex = foundIndex;
