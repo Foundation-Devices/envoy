@@ -1,6 +1,6 @@
 {
   ":": ":",
-  "_": "Android Backs Up Every 24h",
+  "_": "30,493.93",
   "about_appVersion": "Versió de l'aplicació",
   "about_openSourceLicences": "Llicències de Codi Obert",
   "about_privacyPolicy": "Política de Privacitat",
@@ -63,6 +63,7 @@
   "btcpay_connection_modal_fail_heading": "Val de descompte caducat",
   "btcpay_connection_modal_fail_subheading": "Envoy no es pot connectar amb la botiga BTCPay de l'emissor. Poseu-vos en contacte amb l'emissor o torneu-ho a provar més tard.",
   "btcpay_connection_modal_onchainOnly_subheading": "El val escanejat no s'ha creat amb suport onchain. Poseu-vos en contacte amb el creador del val.",
+  "btcpay_pendingVoucher": "Pending BTCPay Voucher",
   "btcpay_redeem_modal_description": "Descripció:",
   "btcpay_redeem_modal_name": "Nom:",
   "buy_bitcoin_accountSelection_chooseAccount": "Choose different account",
