@@ -139,23 +139,23 @@ class AccountManager extends ChangeNotifier {
     String server;
     String network = account.wallet.network.toString();
 
-    if (s.customElectrumEnabled()) {
-      server = Settings().selectedElectrumAddress.toString();
-    } else {
-      switch (account.wallet.network) {
-        case Network.Mainnet:
+    switch (account.wallet.network) {
+      case Network.Mainnet:
+        if (s.customElectrumEnabled()) {
+          server = Settings().selectedElectrumAddress.toString();
+        } else {
           server = Settings.currentDefaultServer;
-          break;
-        case Network.Testnet:
-          server = Settings.TESTNET_ELECTRUM_SERVER;
-          break;
-        case Network.Signet:
-          server = Settings.MUTINYNET_ESPLORA_SERVER;
-          break;
-        default:
-          server = "Unknown server";
-          break;
-      }
+        }
+        break;
+      case Network.Testnet:
+        server = Settings.TESTNET_ELECTRUM_SERVER;
+        break;
+      case Network.Signet:
+        server = Settings.MUTINYNET_ESPLORA_SERVER;
+        break;
+      default:
+        server = "Unknown server";
+        break;
     }
 
     try {
