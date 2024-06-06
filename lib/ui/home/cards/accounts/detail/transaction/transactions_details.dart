@@ -105,7 +105,7 @@ class _TransactionsDetailsWidgetState
     }
 
     return GestureDetector(
-      onTapDown: (details) {
+      onTapUp: (details) {
         final RenderBox box =
             _detailWidgetKey.currentContext?.findRenderObject() as RenderBox;
         final Offset localOffset = box.globalToLocal(details.globalPosition);
@@ -278,6 +278,7 @@ class _TransactionsDetailsWidgetState
                   ),
                 ),
                 EnvoyInfoCardListItem(
+                  flexAlignment: FlexAlignment.flexLeft,
                   title: S().coindetails_overlay_date,
                   icon: const EnvoyIcon(EnvoyIcons.calendar,
                       color: EnvoyColors.textPrimary,
