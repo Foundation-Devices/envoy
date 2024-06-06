@@ -19,19 +19,26 @@ import 'package:envoy/ui/pages/fw/fw_ios_success.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 
-class FwMicrosdPage extends ConsumerWidget {
+class FwMicrosdPage extends ConsumerStatefulWidget {
   final bool onboarding;
   final int deviceId;
 
   const FwMicrosdPage({super.key, this.onboarding = true, this.deviceId = 1});
 
   @override
-  Widget build(context, ref) {
-    final fwInfo = ref.watch(firmwareStreamProvider(deviceId));
+  ConsumerState<FwMicrosdPage> createState() => _FwMicrosdPageState();
+}
+
+class _FwMicrosdPageState extends ConsumerState<FwMicrosdPage> {
+  bool _inProgress = false;
+
+  @override
+  Widget build(context) {
+    final fwInfo = ref.watch(firmwareStreamProvider(widget.deviceId));
 
     return OnboardingPage(
       rightFunction: (_) {
-        onboarding
+        widget.onboarding
             ? OnboardingPage.popUntilHome(context)
             : OnboardingPage.popUntilGoRoute(context);
       },
@@ -61,19 +68,23 @@ class FwMicrosdPage extends ConsumerWidget {
               enabled: fwInfo.hasValue,
               label: S().component_continue,
               onTap: () async {
+                if (_inProgress) {
+                  return;
+                }
                 try {
+                  _inProgress = true;
                   File firmwareFile =
-                      await UpdatesManager().getStoredFw(deviceId);
+                      await UpdatesManager().getStoredFw(widget.deviceId);
                   await FwUploader(firmwareFile).upload();
 
-                  Devices()
-                      .markDeviceUpdated(deviceId, fwInfo.value!.storedVersion);
+                  Devices().markDeviceUpdated(
+                      widget.deviceId, fwInfo.value!.storedVersion);
 
                   if (Platform.isIOS && context.mounted) {
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) {
                       return FwIosSuccessPage(
-                        onboarding: onboarding,
+                        onboarding: widget.onboarding,
                       );
                     }));
                   }
@@ -83,12 +94,14 @@ class FwMicrosdPage extends ConsumerWidget {
                     if (context.mounted) {
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
-                        return FwAndroidProgressPage(deviceId,
-                            onboarding: onboarding);
+                        return FwAndroidProgressPage(widget.deviceId,
+                            onboarding: widget.onboarding);
                       }));
                     }
                   }
+                  _inProgress = false;
                 } catch (e) {
+                  _inProgress = false;
                   kPrint("SD: error $e");
                   EnvoyReport().log("uploading",
                       "Couldn't upload file to SD card: ${e.toString()}");
@@ -98,8 +111,8 @@ class FwMicrosdPage extends ConsumerWidget {
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) {
                       return FwIosInstructionsPage(
-                        onboarding: onboarding,
-                        deviceId: deviceId,
+                        onboarding: widget.onboarding,
+                        deviceId: widget.deviceId,
                       );
                     }));
 
@@ -107,7 +120,8 @@ class FwMicrosdPage extends ConsumerWidget {
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) {
                       return FwAndroidInstructionsPage(
-                          onboarding: onboarding, deviceId: deviceId);
+                          onboarding: widget.onboarding,
+                          deviceId: widget.deviceId);
                     }));
                   }
                 }
