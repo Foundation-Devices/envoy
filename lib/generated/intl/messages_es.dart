@@ -86,6 +86,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Compra Entrante"),
         "activity_listHeader_Today":
             MessageLookupByLibrary.simpleMessage("Hoy"),
+        "activity_passportUpdate": MessageLookupByLibrary.simpleMessage(
+            "Actualización de Passport disponible"),
         "activity_pending": MessageLookupByLibrary.simpleMessage("Pendiente"),
         "activity_received": MessageLookupByLibrary.simpleMessage("Recibido"),
         "activity_sent": MessageLookupByLibrary.simpleMessage("Enviado"),
@@ -156,6 +158,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "btcpay_connection_modal_onchainOnly_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "El cupón escaneado no se creó con soporte onchain.\n\nPonte en contacto con el creador del cupón."),
+        "btcpay_pendingVoucher":
+            MessageLookupByLibrary.simpleMessage("Cupón BTCPay Pendiente"),
         "btcpay_redeem_modal_description":
             MessageLookupByLibrary.simpleMessage("Descripción:"),
         "btcpay_redeem_modal_name":
@@ -655,7 +659,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_fw_progress_heading": MessageLookupByLibrary.simpleMessage(
             "Envoy está copiando el firmware en la\ntarjeta microSD"),
         "envoy_fw_progress_subheading": MessageLookupByLibrary.simpleMessage(
-            "Esto puede tardar unos segundos. Por favor, no extraiga la tarjeta microSD."),
+            "Esto puede tardar unos segundos. Por favor, no extraigas la tarjeta microSD."),
         "envoy_fw_success_heading": MessageLookupByLibrary.simpleMessage(
             "El firmware se copió correctamente en la\ntarjeta microSD"),
         "envoy_fw_success_subheading": MessageLookupByLibrary.simpleMessage(
@@ -1298,7 +1302,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Requerido para Impulsar"),
         "replaceByFee_ramp_incompleteTransactionAutodeleteWarning":
             MessageLookupByLibrary.simpleMessage(
-                "Incomplete transactions will disappear from Activity after 5 days."),
+                "Las compras que no se completen se eliminarán de Actividad en un plazo de 5 días"),
         "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "La tarifa elegida solo se puede lograr añadiendo más monedas. Envoy lo hace automáticamente y nunca incluirá monedas bloqueadas.\n\nEsta selección se podrá editar en la siguiente pantalla."),

@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("Android Backs Up Every 24h"),
+        "_": MessageLookupByLibrary.simpleMessage("30,493.93"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences":
             MessageLookupByLibrary.simpleMessage("Open Source Licences"),
@@ -84,6 +84,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Incoming Purchase"),
         "activity_listHeader_Today":
             MessageLookupByLibrary.simpleMessage("Today"),
+        "activity_passportUpdate":
+            MessageLookupByLibrary.simpleMessage("Passport update available"),
         "activity_pending": MessageLookupByLibrary.simpleMessage("Pending"),
         "activity_received": MessageLookupByLibrary.simpleMessage("Received"),
         "activity_sent": MessageLookupByLibrary.simpleMessage("Sent"),
@@ -152,6 +154,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "btcpay_connection_modal_onchainOnly_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "The scanned voucher was not created with onchain support.\n\nPlease contact the voucher creator."),
+        "btcpay_pendingVoucher":
+            MessageLookupByLibrary.simpleMessage("Pending BTCPay Voucher"),
         "btcpay_redeem_modal_description":
             MessageLookupByLibrary.simpleMessage("Description:"),
         "btcpay_redeem_modal_name":
@@ -1268,7 +1272,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Required to Boost"),
         "replaceByFee_ramp_incompleteTransactionAutodeleteWarning":
             MessageLookupByLibrary.simpleMessage(
-                "Incomplete transactions will disappear from Activity after 5 days."),
+                "Incomplete purchases will be automatically removed after 5 days"),
         "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. \n\nThis selection can be reviewed or edited in the following screen."),

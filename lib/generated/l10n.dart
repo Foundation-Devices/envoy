@@ -52,10 +52,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `Android Backs Up Every 24h`
+  /// `30,493.93`
   String get _ {
     return Intl.message(
-      'Android Backs Up Every 24h',
+      '30,493.93',
       name: '_',
       desc: '',
       args: [],
@@ -327,6 +327,16 @@ class S {
     return Intl.message(
       'Today',
       name: 'activity_listHeader_Today',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passport update available`
+  String get activity_passportUpdate {
+    return Intl.message(
+      'Passport update available',
+      name: 'activity_passportUpdate',
       desc: '',
       args: [],
     );
@@ -677,6 +687,16 @@ class S {
     return Intl.message(
       'The scanned voucher was not created with onchain support.\n\nPlease contact the voucher creator.',
       name: 'btcpay_connection_modal_onchainOnly_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending BTCPay Voucher`
+  String get btcpay_pendingVoucher {
+    return Intl.message(
+      'Pending BTCPay Voucher',
+      name: 'btcpay_pendingVoucher',
       desc: '',
       args: [],
     );
@@ -5878,10 +5898,10 @@ class S {
     );
   }
 
-  /// `Incomplete transactions will disappear from Activity after 5 days.`
+  /// `Incomplete purchases will be automatically removed after 5 days`
   String get replaceByFee_ramp_incompleteTransactionAutodeleteWarning {
     return Intl.message(
-      'Incomplete transactions will disappear from Activity after 5 days.',
+      'Incomplete purchases will be automatically removed after 5 days',
       name: 'replaceByFee_ramp_incompleteTransactionAutodeleteWarning',
       desc: '',
       args: [],

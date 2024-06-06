@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("Android Backs Up Every 24h"),
+        "_": MessageLookupByLibrary.simpleMessage("30,493.93"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versão da Aplicação"),
         "about_openSourceLicences":
@@ -86,6 +86,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Compra a Receber"),
         "activity_listHeader_Today":
             MessageLookupByLibrary.simpleMessage("Hoje"),
+        "activity_passportUpdate":
+            MessageLookupByLibrary.simpleMessage("Passport update available"),
         "activity_pending": MessageLookupByLibrary.simpleMessage("Pendente"),
         "activity_received": MessageLookupByLibrary.simpleMessage("Recebido"),
         "activity_sent": MessageLookupByLibrary.simpleMessage("Enviado"),
@@ -158,6 +160,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "btcpay_connection_modal_onchainOnly_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "O vale digitalizado não foi criado com suporte onchain.\n\nPor favor entra em contacto com o criador do vale."),
+        "btcpay_pendingVoucher":
+            MessageLookupByLibrary.simpleMessage("Pending BTCPay Voucher"),
         "btcpay_redeem_modal_description":
             MessageLookupByLibrary.simpleMessage("Descrição:"),
         "btcpay_redeem_modal_name":
@@ -1299,7 +1303,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Necessário para Reforçar"),
         "replaceByFee_ramp_incompleteTransactionAutodeleteWarning":
             MessageLookupByLibrary.simpleMessage(
-                "Incomplete transactions will disappear from Activity after 5 days."),
+                "Incomplete purchases will be automatically removed after 5 days"),
         "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "A taxa escolhida só pode ser atingida adicionando mais moedas. A Envoy faz essa operação automaticamente e nunca irá incluir moedas bloqueadas. \n\nEsta seleção pode ser revista ou editada no ecrã seguinte."),
