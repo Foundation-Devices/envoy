@@ -545,13 +545,19 @@ class TriangleShadow extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint()
-      ..shader = const RadialGradient(
+      ..shader = RadialGradient(
         center: Alignment.topCenter,
         focalRadius: 0.5,
         radius: 0.8,
-        stops: [0.0, 0.9],
-        colors: [Colors.grey, Colors.transparent], // Adjust colors as needed
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+        stops: const [
+          0.0,
+          0.9
+        ], // Ensure stops are correct for smooth transition
+        colors: [
+          EnvoyColors.border1.withOpacity(0.7), // Adjust colors as needed
+          Colors.transparent
+        ],
+      ).createShader(Rect.fromLTWH(-0.3, -1.9, size.width, size.height));
 
     Path path = Path();
     path.moveTo(size.width / 2, size.height); // Bottom point
