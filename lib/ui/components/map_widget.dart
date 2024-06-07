@@ -13,6 +13,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:latlng/latlng.dart';
 import 'package:map/map.dart';
 import 'package:envoy/business/venue.dart';
@@ -22,6 +23,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/util/envoy_storage.dart';
+
+import '../../business/coordinates.dart';
 
 const String mapType = "positron";
 
@@ -84,43 +87,51 @@ class MarkersPageState extends State<MarkersPage> {
     _scaleStart = 1.0;
   }
 
+  Future<Coordinates?> getCoordinatesFromJson(String divisionName) async {
+    try {
+      final String response =
+          await rootBundle.loadString('assets/divisions-with-coordinates.json');
+      final List<dynamic> divisions = jsonDecode(response);
+
+      for (var division in divisions) {
+        if (division['division'] == divisionName) {
+          double lat = division['coordinates']['lat'];
+          double lon = division['coordinates']['lon'];
+          return Coordinates(lat, lon);
+        }
+      }
+    } catch (_) {
+      return null;
+    }
+    return null;
+  }
+
   Future<void> goToHome() async {
-    const int maxAttempts = 3;
-    const Duration retryDelay = Duration(seconds: 5);
-    // If no coordinates are found within 10 seconds, display coordinates for Los Angeles (LA)
-    for (int attempts = 0; attempts < maxAttempts; attempts++) {
-      try {
-        var country = await EnvoyStorage().getCountry();
-        if (country?.coordinates?.lat != null &&
-            country?.coordinates?.lon != null) {
-          goTo(country!.coordinates!.lat!, country.coordinates!.lon!);
-          return;
-        } else if (country?.coordinates?.lat == null &&
-            country?.coordinates?.lon == null &&
-            country?.coordinates != null) {
+    try {
+      var country = await EnvoyStorage().getCountry();
+      if (country?.division != null) {
+        var coordinates = await getCoordinatesFromJson(country!.division);
+        if (coordinates != null &&
+            coordinates.lat != null &&
+            coordinates.lon != null) {
+          goTo(coordinates.lat!, coordinates.lon!);
           setState(() {
             _dataLoaded = true;
           });
           return;
-        } else {
-          if (attempts + 1 < maxAttempts) {
-            await Future.delayed(
-                retryDelay); // Wait for fetching location data and try again
-          }
         }
-      } on TimeoutException catch (_) {
-        if (attempts + 1 < maxAttempts) {
-          await Future.delayed(retryDelay);
-        }
-      } catch (_) {
-        setState(() {
-          _dataLoaded = true;
-        });
-        return;
       }
+    } on TimeoutException catch (_) {
+      setState(() {
+        _dataLoaded = true;
+      });
+    } catch (_) {
+      setState(() {
+        _dataLoaded = true;
+      });
+      return;
     }
 
-    // Set _dataLoaded to true if the maximum number of attempts is reached
     setState(() {
       _dataLoaded = true;
     });

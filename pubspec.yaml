@@ -112,6 +112,7 @@ dependencies:
   crypto: any
   typed_data: any
   latlng: any
+  http: ^1.2.1
 dependency_overrides:
   watcher: ^1.1.0
 
