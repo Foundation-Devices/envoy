@@ -453,12 +453,12 @@ class _TransactionsDetailsWidgetState
               const EnvoyIcon(
                 EnvoyIcons.info,
                 color: EnvoyColors.textPrimaryInverse,
-                size: EnvoyIconSize.big,
+                size: EnvoyIconSize.normal,
               ),
-              const SizedBox(height: EnvoySpacing.medium1),
+              const SizedBox(height: EnvoySpacing.xs),
               Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.medium2),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: EnvoySpacing.large1),
                 child: Text(
                   S().replaceByFee_ramp_incompleteTransactionAutodeleteWarning,
                   style: EnvoyTypography.info
