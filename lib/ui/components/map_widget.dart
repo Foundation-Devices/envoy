@@ -33,9 +33,10 @@ class MarkersPage extends StatefulWidget {
 }
 
 class MarkersPageState extends State<MarkersPage> {
+  // Default location set to Montgomery, Alabama if the selected country cannot be found
   MapController controller = MapController(
       location:
-          const LatLng(Angle.degree(34.052235), Angle.degree(-118.243683)));
+          const LatLng(Angle.degree(32.361668), Angle.degree(-86.279167)));
 
   final List<Venue> venueMarkers = [];
   MapTransformer? localTransformer;
