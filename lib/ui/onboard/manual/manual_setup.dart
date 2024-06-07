@@ -15,7 +15,6 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/util/console.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/embedded_video.dart';
@@ -38,9 +37,14 @@ class _ManualSetupState extends State<ManualSetup> {
     return OnboardPageBackground(
         child: EnvoyScaffold(
       removeAppBarPadding: true,
-      topBarLeading: CupertinoNavigationBarBackButton(
-        color: Colors.black,
-        onPressed: () => Navigator.pop(context),
+      topBarLeading: Padding(
+        padding: const EdgeInsets.all(EnvoySpacing.medium1),
+        child: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: const Icon(Icons.arrow_back_ios_rounded,
+                color: EnvoyColors.textPrimary, size: EnvoySpacing.medium2)),
       ),
       topBarActions: [
         TextButton(
@@ -144,31 +148,37 @@ class SeedIntroScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.all(EnvoySpacing.medium1),
-                    child: GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Icon(Icons.arrow_back_ios_rounded,
-                            size: EnvoySpacing.medium2)),
-                  ),
-                ),
-                Container(
-                  child: mode == SeedIntroScreenType.generate ||
-                          mode == SeedIntroScreenType.verify
-                      ? Image.asset(
-                          "assets/shield_inspect.png",
-                          width: 190,
-                          height: 190,
-                        )
-                      : Image.asset(
-                          "assets/fw_intro.png",
-                          width: 250,
-                          height: 250,
-                        ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.all(EnvoySpacing.medium1),
+                        child: GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Icon(Icons.arrow_back_ios_rounded,
+                                size: EnvoySpacing.medium2)),
+                      ),
+                    ),
+                    Container(
+                      child: mode == SeedIntroScreenType.generate ||
+                              mode == SeedIntroScreenType.verify
+                          ? Image.asset(
+                              "assets/shield_inspect.png",
+                              width: 190,
+                              height: 190,
+                            )
+                          : Image.asset(
+                              "assets/fw_intro.png",
+                              width: 150,
+                              height: 150,
+                            ),
+                    ),
+                  ],
                 ),
                 Flexible(
                   child: SingleChildScrollView(
