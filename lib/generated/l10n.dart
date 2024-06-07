@@ -52,10 +52,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `Android Backs Up Every 24h`
+  /// `30,493.93`
   String get _ {
     return Intl.message(
-      'Android Backs Up Every 24h',
+      '30,493.93',
       name: '_',
       desc: '',
       args: [],
@@ -677,6 +677,16 @@ class S {
     return Intl.message(
       'The scanned voucher was not created with onchain support.\n\nPlease contact the voucher creator.',
       name: 'btcpay_connection_modal_onchainOnly_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending BTCPay Voucher`
+  String get btcpay_pendingVoucher {
+    return Intl.message(
+      'Pending BTCPay Voucher',
+      name: 'btcpay_pendingVoucher',
       desc: '',
       args: [],
     );

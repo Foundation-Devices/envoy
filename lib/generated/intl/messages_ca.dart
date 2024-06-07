@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("Android Backs Up Every 24h"),
+        "_": MessageLookupByLibrary.simpleMessage("30,493.93"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versió de l\'aplicació"),
         "about_openSourceLicences":
@@ -157,6 +157,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "btcpay_connection_modal_onchainOnly_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "El val escanejat no s\'ha creat amb suport onchain. Poseu-vos en contacte amb el creador del val."),
+        "btcpay_pendingVoucher":
+            MessageLookupByLibrary.simpleMessage("Pending BTCPay Voucher"),
         "btcpay_redeem_modal_description":
             MessageLookupByLibrary.simpleMessage("Descripció:"),
         "btcpay_redeem_modal_name":

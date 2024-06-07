@@ -12,6 +12,7 @@ import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/business/settings.dart';
 
 class WalletSetupSuccess extends ConsumerStatefulWidget {
   const WalletSetupSuccess({super.key});
@@ -89,6 +90,7 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                     return OnboardingButton(
                         label: S().component_continue,
                         onTap: () async {
+                          Settings().updateAccountsViewSettings();
                           if (context.mounted) {
                             OnboardingPage.popUntilHome(context);
                           }

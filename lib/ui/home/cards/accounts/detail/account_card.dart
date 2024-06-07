@@ -608,7 +608,7 @@ class TransactionListTile extends StatelessWidget {
 
     if (transaction.type == TransactionType.btcPay) {
       return Text(
-        "Pending BTCPay Voucher", // TODO: Figma
+        S().btcpay_pendingVoucher,
         style: _transactionTextStyleInfo,
       );
     }

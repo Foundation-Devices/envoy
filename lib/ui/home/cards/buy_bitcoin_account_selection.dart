@@ -92,7 +92,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
     } else {
       return Padding(
         padding: const EdgeInsets.symmetric(
-            vertical: EnvoySpacing.medium1, horizontal: EnvoySpacing.medium2),
+            vertical: EnvoySpacing.medium2, horizontal: EnvoySpacing.medium2),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

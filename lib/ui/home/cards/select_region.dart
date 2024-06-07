@@ -104,7 +104,8 @@ class _SelectRegionState extends State<SelectRegion> {
     int foundIndex = countries.indexWhere(
       (country) => country.code == countryCode,
     );
-    foundIndex = foundIndex != -1 ? foundIndex : 0;
+    // 223 is the index of USA, set that if the country cannot be found from the locale
+    foundIndex = foundIndex != -1 ? foundIndex : 223;
     Country foundCountry = countries[foundIndex];
     setState(() {
       _initialCountryIndex = foundIndex;
@@ -130,7 +131,7 @@ class _SelectRegionState extends State<SelectRegion> {
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-          vertical: EnvoySpacing.medium1, horizontal: EnvoySpacing.medium2),
+          vertical: EnvoySpacing.medium2, horizontal: EnvoySpacing.medium2),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

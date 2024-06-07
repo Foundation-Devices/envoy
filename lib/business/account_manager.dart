@@ -33,6 +33,7 @@ class AccountAlreadyPaired implements Exception {}
 class AccountManager extends ChangeNotifier {
   List<Account> accounts = [];
   final LocalStorage _ls = LocalStorage();
+  var s = Settings();
 
   Timer? _syncTimer;
   bool _syncBlocked = false;
@@ -140,7 +141,11 @@ class AccountManager extends ChangeNotifier {
 
     switch (account.wallet.network) {
       case Network.Mainnet:
-        server = Settings.currentDefaultServer;
+        if (s.customElectrumEnabled()) {
+          server = Settings().selectedElectrumAddress.toString();
+        } else {
+          server = Settings.currentDefaultServer;
+        }
         break;
       case Network.Testnet:
         server = Settings.TESTNET_ELECTRUM_SERVER;
