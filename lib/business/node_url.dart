@@ -6,6 +6,8 @@
 
 const String TCP_PREFIX = "tcp://";
 const String SSL_PREFIX = "ssl://";
+const String HTTP_PREFIX = "http://";
+const String HTTPS_PREFIX = "https://";
 
 const String TCP_SUFFIX = ":t";
 const String SSL_SUFFIX = ":s";
@@ -13,7 +15,22 @@ const String SSL_SUFFIX = ":s";
 const String TCP_PORT = ":50001";
 const String SSL_PORT = ":50002";
 
+// Normalize the protocol part of the node URL to lowercase
+String normalizeProtocol(String nodeUrl) {
+  if (nodeUrl.toLowerCase().startsWith(TCP_PREFIX)) {
+    return TCP_PREFIX + nodeUrl.substring(TCP_PREFIX.length);
+  } else if (nodeUrl.toLowerCase().startsWith(SSL_PREFIX)) {
+    return SSL_PREFIX + nodeUrl.substring(SSL_PREFIX.length);
+  } else if (nodeUrl.toLowerCase().startsWith(HTTP_PREFIX)) {
+    return HTTP_PREFIX + nodeUrl.substring(HTTP_PREFIX.length);
+  } else if (nodeUrl.toLowerCase().startsWith(HTTPS_PREFIX)) {
+    return HTTPS_PREFIX + nodeUrl.substring(HTTPS_PREFIX.length);
+  }
+  return nodeUrl;
+}
+
 String parseNodeUrl(String nodeUrl) {
+  nodeUrl = normalizeProtocol(nodeUrl);
   if (nodeUrl.startsWith(TCP_PREFIX) || nodeUrl.startsWith(SSL_PREFIX)) {
     return nodeUrl;
   } else {
