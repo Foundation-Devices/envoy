@@ -510,10 +510,10 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                             ),
                           ),
                         ]),
-                    if (uneconomicSpends) ...[
+                    if (!uneconomicSpends) ...[
                       const EnvoyIcon(
                         EnvoyIcons.info,
-                        size: EnvoyIconSize.normal,
+                        size: EnvoyIconSize.medium,
                         color: EnvoyColors.solidWhite,
                       ),
                       const SizedBox(height: EnvoySpacing.xs),

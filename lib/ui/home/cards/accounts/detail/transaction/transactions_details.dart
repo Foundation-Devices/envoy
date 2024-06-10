@@ -453,7 +453,7 @@ class _TransactionsDetailsWidgetState
               const EnvoyIcon(
                 EnvoyIcons.info,
                 color: EnvoyColors.textPrimaryInverse,
-                size: EnvoyIconSize.normal,
+                size: EnvoyIconSize.medium,
               ),
               const SizedBox(height: EnvoySpacing.xs),
               Padding(
