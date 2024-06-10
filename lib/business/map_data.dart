@@ -145,15 +145,4 @@ class MapData {
 
     return Coordinates(null, null);
   }
-
-  Future<void> updateHomeLocation() async {
-    var country = await EnvoyStorage().getCountry();
-    if (country != null) {
-      Coordinates coordinates =
-          await getCoordinates(country.division, country.name);
-      await EnvoyStorage().updateCountry(
-          country.code, country.name, country.division,
-          coordinates: coordinates);
-    }
-  }
 }

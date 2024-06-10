@@ -7,7 +7,6 @@ import 'dart:convert';
 
 import 'package:envoy/business/blog_post.dart';
 import 'package:envoy/business/coins.dart';
-import 'package:envoy/business/coordinates.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/media.dart';
 import 'package:envoy/business/venue.dart';
@@ -186,10 +185,10 @@ class EnvoyStorage {
     removeOutstandingAztecoPendingTxs();
   }
 
-  Future<void> updateCountry(String code, String name, String division,
-      {Coordinates? coordinates}) async {
-    await countryStore.record(0).put(
-        _db, Country(code, name, division, coordinates: coordinates).toJson());
+  Future<void> updateCountry(String code, String name, String division) async {
+    await countryStore
+        .record(0)
+        .put(_db, Country(code, name, division).toJson());
   }
 
   Future<Country?> getCountry() async {
