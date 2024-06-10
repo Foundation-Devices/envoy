@@ -97,8 +97,8 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
               ),
               Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: EnvoySpacing.medium2,
-                      vertical: EnvoySpacing.medium1),
+                    horizontal: EnvoySpacing.medium2,
+                  ),
                   child: IgnorePointer(
                     ignoring: finishSeedEntries == false,
                     child: Opacity(
