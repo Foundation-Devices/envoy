@@ -37,15 +37,12 @@ class _ManualSetupState extends State<ManualSetup> {
     return OnboardPageBackground(
         child: EnvoyScaffold(
       removeAppBarPadding: true,
-      topBarLeading: Padding(
-        padding: const EdgeInsets.all(EnvoySpacing.medium1),
-        child: GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: const Icon(Icons.arrow_back_ios_rounded,
-                color: EnvoyColors.textPrimary, size: EnvoySpacing.medium2)),
-      ),
+      topBarLeading: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: const Icon(Icons.arrow_back_ios_rounded,
+              color: EnvoyColors.textPrimary, size: EnvoySpacing.medium2)),
       topBarActions: [
         TextButton(
           child: Text(S().component_skip,
@@ -154,15 +151,15 @@ class SeedIntroScreen extends StatelessWidget {
                   children: [
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.all(EnvoySpacing.medium1),
-                        child: GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Icon(Icons.arrow_back_ios_rounded,
-                                size: EnvoySpacing.medium2)),
-                      ),
+                      child: GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(EnvoySpacing.medium1),
+                            child: Icon(Icons.arrow_back_ios_rounded,
+                                size: EnvoySpacing.medium2),
+                          )),
                     ),
                     Container(
                       child: mode == SeedIntroScreenType.generate ||
@@ -237,8 +234,8 @@ class SeedIntroScreen extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: EnvoySpacing.medium2,
-                      vertical: EnvoySpacing.medium1),
+                      horizontal: EnvoySpacing.medium1,
+                      vertical: EnvoySpacing.medium2),
                   child: mode == SeedIntroScreenType.generate ||
                           mode == SeedIntroScreenType.verify
                       ? OnboardingButton(

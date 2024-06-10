@@ -115,13 +115,16 @@ class _SeedScreenState extends State<SeedScreen> {
   Widget _buildSeedGenerating(BuildContext context) {
     return Column(
       children: [
-        Container(
+        Align(
           alignment: Alignment.centerLeft,
-          child: IconButton(
-            icon: const Icon(Icons.chevron_left, color: Colors.black),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+          child: Padding(
+            padding: const EdgeInsets.all(EnvoySpacing.medium1),
+            child: GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: const Icon(Icons.arrow_back_ios_rounded,
+                    size: EnvoySpacing.medium2)),
           ),
         ),
         Expanded(
@@ -162,13 +165,16 @@ class _SeedScreenState extends State<SeedScreen> {
 
     return Column(
       children: [
-        Container(
+        Align(
           alignment: Alignment.centerLeft,
-          child: IconButton(
-            icon: const Icon(Icons.chevron_left, color: Colors.black),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+          child: Padding(
+            padding: const EdgeInsets.all(EnvoySpacing.medium1),
+            child: GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: const Icon(Icons.arrow_back_ios_rounded,
+                    size: EnvoySpacing.medium2)),
           ),
         ),
         Expanded(
@@ -364,32 +370,38 @@ class _SeedScreenState extends State<SeedScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            IconButton(
-              icon: const Icon(Icons.chevron_left,
-                  color: Colors.black, size: EnvoySpacing.medium3),
-              onPressed: () {
-                Navigator.pop(context);
-              },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.chevron_left,
+                      color: Colors.black, size: EnvoySpacing.medium3),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close,
+                      color: Colors.black, size: EnvoySpacing.medium2),
+                  onPressed: () {
+                    // Tap on "x" should exit the flow, so pop twice to navigate back two levels
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
             ),
-            IconButton(
-              icon: const Icon(Icons.close,
-                  color: Colors.black, size: EnvoySpacing.medium2),
-              onPressed: () {
-                // Tap on "x" should exit the flow, so pop twice to navigate back two levels
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
+            Image.asset(
+              "assets/shield_ok.png",
+              height: 250,
+              width: 250,
             ),
           ],
-        ),
-        Image.asset(
-          "assets/shield_ok.png",
-          height: 250,
-          width: 250,
         ),
         const SizedBox(
           height: EnvoySpacing.medium2,

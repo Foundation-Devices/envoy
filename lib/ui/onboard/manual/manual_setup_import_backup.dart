@@ -43,7 +43,11 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: EnvoySpacing.large3),
-            child: Image.asset("assets/fw_intro.png"),
+            child: Image.asset(
+              "assets/fw_intro.png",
+              width: 150,
+              height: 150,
+            ),
           ),
           const SizedBox(height: EnvoySpacing.medium1),
           Flexible(
