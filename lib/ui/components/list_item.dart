@@ -187,7 +187,7 @@ class ActivityListTile extends StatelessWidget {
 
       if (notification.type == EnvoyNotificationType.firmware) {
         leftIcon = EnvoyIcons.tool;
-        textLeft1 = S().activity_firmwareUpdate;
+        textLeft1 = S().activity_passportUpdate;
         textLeft2 = timeago
             .format(notification.date, locale: activeLocale.languageCode)
             .capitalize();

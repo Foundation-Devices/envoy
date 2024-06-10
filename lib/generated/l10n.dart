@@ -332,6 +332,16 @@ class S {
     );
   }
 
+  /// `Passport update available`
+  String get activity_passportUpdate {
+    return Intl.message(
+      'Passport update available',
+      name: 'activity_passportUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Pending`
   String get activity_pending {
     return Intl.message(
@@ -5888,10 +5898,10 @@ class S {
     );
   }
 
-  /// `Incomplete transactions will disappear from Activity after 5 days.`
+  /// `Incomplete purchases will be automatically removed after 5 days`
   String get replaceByFee_ramp_incompleteTransactionAutodeleteWarning {
     return Intl.message(
-      'Incomplete transactions will disappear from Activity after 5 days.',
+      'Incomplete purchases will be automatically removed after 5 days',
       name: 'replaceByFee_ramp_incompleteTransactionAutodeleteWarning',
       desc: '',
       args: [],

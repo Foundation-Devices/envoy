@@ -86,6 +86,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Compra Entrante"),
         "activity_listHeader_Today":
             MessageLookupByLibrary.simpleMessage("Hoy"),
+        "activity_passportUpdate": MessageLookupByLibrary.simpleMessage(
+            "Actualización de Passport disponible"),
         "activity_pending": MessageLookupByLibrary.simpleMessage("Pendiente"),
         "activity_received": MessageLookupByLibrary.simpleMessage("Recibido"),
         "activity_sent": MessageLookupByLibrary.simpleMessage("Enviado"),
@@ -1300,7 +1302,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Requerido para Impulsar"),
         "replaceByFee_ramp_incompleteTransactionAutodeleteWarning":
             MessageLookupByLibrary.simpleMessage(
-                "Las transacciones que no se completen desaparecerán de Actividad en 5 días."),
+                "Las compras que no se completen se eliminarán de Actividad en un plazo de 5 días"),
         "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "La tarifa elegida solo se puede lograr añadiendo más monedas. Envoy lo hace automáticamente y nunca incluirá monedas bloqueadas.\n\nEsta selección se podrá editar en la siguiente pantalla."),

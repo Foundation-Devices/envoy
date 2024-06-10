@@ -154,10 +154,8 @@ class Notifications {
         final newVersion =
             await UpdatesManager().getStoredFwVersionString(device.type.index);
         for (var notification in notifications) {
-          if (notification.id == device.type.toString().split('.').last) {
-            if (notification.body == newVersion!) {
-              fwUpdateAvailable = false;
-            }
+          if (notification.body == newVersion!) {
+            fwUpdateAvailable = false;
           }
         }
 
@@ -285,18 +283,29 @@ class Notifications {
     return notificationToRestore;
   }
 
-  bool _shouldBeRemoved(EnvoyNotification notifiaction) {
-    if (notifiaction.type != EnvoyNotificationType.transaction) {
+  bool _shouldBeRemoved(EnvoyNotification notification) {
+    if (notification.type != EnvoyNotificationType.transaction &&
+        notification.type != EnvoyNotificationType.firmware) {
+      return false;
+    }
+    // Remove notification if already has been stored version with same firmware version
+    if (notification.type == EnvoyNotificationType.firmware) {
+      for (var alreadyStoredNotification in notifications) {
+        if (alreadyStoredNotification.type == EnvoyNotificationType.firmware &&
+            alreadyStoredNotification.body == notification.body) {
+          return true;
+        }
+      }
       return false;
     }
 
-    if (notifiaction.accountId == null) {
+    if (notification.accountId == null) {
       return true;
     }
 
     return !AccountManager()
         .accounts
-        .any((account) => account.id == notifiaction.accountId);
+        .any((account) => account.id == notification.accountId);
   }
 
   _startPeriodicSync() {
