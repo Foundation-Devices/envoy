@@ -18,7 +18,7 @@ enum BtcPayVoucherRedeemResult { success, timeout, voucherInvalid }
 enum BtcPayVoucherErrorType { invalid, expired, onChain }
 
 class BtcPayVoucher {
-  String id = "";
+  String pullPaymentId = "";
   String name = "";
   String description = "";
   String uri = "";
@@ -30,9 +30,10 @@ class BtcPayVoucher {
   BtcPayVoucherErrorType errorType = BtcPayVoucherErrorType.invalid;
   String link = "";
   DateTime? expiresAt;
+  String payoutId = "";
 
   BtcPayVoucher(String url) {
-    id = getPullPaymentIdFromUrl(url);
+    pullPaymentId = getPullPaymentIdFromUrl(url);
     uri = getUrifromUrl(url);
   }
 
@@ -79,7 +80,7 @@ class BtcPayVoucher {
   }
 
   Future<BtcPayVoucherRedeemResult> getinfo() async {
-    String url = "https://$uri/api/v1/pull-payments/$id";
+    String url = "https://$uri/api/v1/pull-payments/$pullPaymentId";
 
     HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
 
@@ -95,7 +96,7 @@ class BtcPayVoucher {
       case 200:
         {
           final json = jsonDecode(response.body);
-          id = json['id'];
+          pullPaymentId = json['id'];
           amount = json['amount'];
           currency = json['currency'];
           autoApproveClaims = json['autoApproveClaims'];
@@ -117,7 +118,7 @@ class BtcPayVoucher {
   }
 
   Future<BtcPayVoucherRedeemResult> createPayout(String address) async {
-    String url = "https://$uri/api/v1/pull-payments/$id/payouts";
+    String url = "https://$uri/api/v1/pull-payments/$pullPaymentId/payouts";
 
     HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
 
@@ -142,7 +143,8 @@ class BtcPayVoucher {
     switch (response.statusCode) {
       case 200:
         {
-          //final json = jsonDecode(response.body); // do something with data if needed
+          final json = jsonDecode(response.body);
+          payoutId = json['id'];
           return BtcPayVoucherRedeemResult.success;
         }
       case 400 || 422:
@@ -170,20 +172,23 @@ class BtcPayVoucher {
   }
 }
 
-void addPendingTx(String pullPaymentId, String address, Account account,
-    int? amountSats, String? currency, String? currencyAmount) {
-  EnvoyStorage().addPendingTx(
-    pullPaymentId,
-    account.id ?? "",
-    DateTime.now(),
-    TransactionType.btcPay,
-    amountSats ?? 0,
-    0,
-    address,
-    pullPaymentId: pullPaymentId,
-    currency: currency,
-    currencyAmount: currencyAmount,
-  );
+void addPendingTx(
+  String pullPaymentId,
+  String address,
+  Account account,
+  int? amountSats,
+  String? currency,
+  String? currencyAmount,
+  String payoutId,
+  String btcPayVoucherUri,
+) {
+  EnvoyStorage().addPendingTx(pullPaymentId, account.id ?? "", DateTime.now(),
+      TransactionType.btcPay, amountSats ?? 0, 0, address,
+      pullPaymentId: pullPaymentId,
+      currency: currency,
+      currencyAmount: currencyAmount,
+      payoutId: payoutId,
+      btcPayVoucherUri: btcPayVoucherUri);
   EnvoyStorage()
       .addTxNote(note: "BTCPay voucher", key: pullPaymentId); // TODO: FIGMA
 }
@@ -195,4 +200,18 @@ DateTime? convertUnixTimestampToDateTime(int? unixTimestamp) {
       DateTime.fromMillisecondsSinceEpoch(milliseconds, isUtc: true);
   DateTime localDateTime = dateTime.toLocal();
   return localDateTime;
+}
+
+Future<String?> checkPayoutStatus(
+    String uri, String pullPaymentId, String payoutId) async {
+  var response = await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
+    "https://$uri/api/v1/pull-payments/$pullPaymentId/payouts/$payoutId",
+  );
+  var data = jsonDecode(response.body);
+
+  if (data != null && data.containsKey('state')) {
+    return data['state'];
+  }
+
+  return null;
 }

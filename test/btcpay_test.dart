@@ -11,7 +11,7 @@ void main() {
         "https://btcpay.foundation.xyz/pull-payments/mZqpn42kWsHtKcSp9REAEvKq3RH";
     BtcPayVoucher btcpayVoucher = BtcPayVoucher(qrCode);
 
-    expect(btcpayVoucher.id, "mZqpn42kWsHtKcSp9REAEvKq3RH");
+    expect(btcpayVoucher.pullPaymentId, "mZqpn42kWsHtKcSp9REAEvKq3RH");
   });
 
   test("Test is QR voucher", () {
