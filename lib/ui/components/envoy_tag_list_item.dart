@@ -16,6 +16,7 @@ class EnvoyInfoCardListItem extends StatelessWidget {
   final Widget trailing;
   final FlexAlignment flexAlignment;
   final Color? textColor;
+  final bool verticalPadding;
 
   const EnvoyInfoCardListItem({
     super.key,
@@ -24,13 +25,15 @@ class EnvoyInfoCardListItem extends StatelessWidget {
     required this.trailing,
     this.flexAlignment = FlexAlignment.noFlex,
     this.textColor,
+    this.verticalPadding = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: EnvoySpacing.xs, vertical: EnvoySpacing.small),
+      padding: EdgeInsets.symmetric(
+          horizontal: EnvoySpacing.xs,
+          vertical: verticalPadding ? EnvoySpacing.small : 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.min,

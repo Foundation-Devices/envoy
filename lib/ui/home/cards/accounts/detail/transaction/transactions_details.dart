@@ -194,13 +194,16 @@ class _TransactionsDetailsWidgetState
                           amountSats: tx.amount,
                           amountWidgetStyle: AmountWidgetStyle.singleLine),
               bottomWidgets: [
+                const SizedBox(height: EnvoySpacing.small),
                 EnvoyInfoCardListItem(
+                  verticalPadding: false,
                   flexAlignment: FlexAlignment.flexLeft,
                   title: S().coindetails_overlay_address,
                   icon: const EnvoyIcon(EnvoyIcons.send,
                       color: EnvoyColors.textPrimary,
                       size: EnvoyIconSize.extraSmall),
                   trailing: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
                     onTap: () {
                       setState(() {
                         showAddressExpanded = !showAddressExpanded;
@@ -208,37 +211,45 @@ class _TransactionsDetailsWidgetState
                         showPaymentId = false;
                       });
                     },
-                    child: TweenAnimationBuilder(
-                        curve: EnvoyEasing.easeInOut,
-                        tween: Tween<double>(
-                            begin: 0, end: showAddressExpanded ? 1 : 0),
-                        duration: const Duration(milliseconds: 200),
-                        builder: (context, value, child) {
-                          return addressNotAvailable
-                              ? Text("Address not available ",
-                                  // TODO: Figma
-                                  style: trailingTextStyle)
-                              : Container(
-                                  constraints:
-                                      const BoxConstraints(maxWidth: 155),
-                                  child: AddressWidget(
-                                    widgetKey:
-                                        ValueKey<bool>(showAddressExpanded),
-                                    address: address,
-                                    short: true,
-                                    sideChunks: 2 +
-                                        (value * (address.length / 4)).round(),
-                                  ),
-                                );
-                        }),
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          left: showAddressExpanded ? 0 : EnvoySpacing.medium3,
+                          bottom: 16),
+                      child: TweenAnimationBuilder(
+                          curve: EnvoyEasing.easeInOut,
+                          tween: Tween<double>(
+                              begin: 0, end: showAddressExpanded ? 1 : 0),
+                          duration: const Duration(milliseconds: 200),
+                          builder: (context, value, child) {
+                            return addressNotAvailable
+                                ? Text("Address not available ",
+                                    // TODO: Figma
+                                    style: trailingTextStyle)
+                                : Container(
+                                    constraints:
+                                        const BoxConstraints(maxWidth: 155),
+                                    child: AddressWidget(
+                                      widgetKey:
+                                          ValueKey<bool>(showAddressExpanded),
+                                      address: address,
+                                      short: true,
+                                      sideChunks: 2 +
+                                          (value * (address.length / 4))
+                                              .round(),
+                                    ),
+                                  );
+                          }),
+                    ),
                   ),
                 ),
                 EnvoyInfoCardListItem(
+                  verticalPadding: false,
                   title: S().coindetails_overlay_transactionID,
                   icon: const EnvoyIcon(EnvoyIcons.compass,
                       color: EnvoyColors.textPrimary,
                       size: EnvoyIconSize.small),
                   trailing: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
                     onLongPress: () {
                       if (tx.type != TransactionType.ramp) {
                         Clipboard.setData(ClipboardData(text: tx.txId));
@@ -256,24 +267,29 @@ class _TransactionsDetailsWidgetState
                         });
                       }
                     },
-                    child: TweenAnimationBuilder(
-                      curve: EnvoyEasing.easeInOut,
-                      tween: Tween<double>(
-                          begin: 0, end: showTxIdExpanded ? 1 : 0),
-                      duration: const Duration(milliseconds: 200),
-                      builder: (context, value, child) {
-                        String txId = tx.type == TransactionType.ramp
-                            ? "loading"
-                            : tx.txId; // TODO: Figma
-                        return Text(
-                          truncateWithEllipsisInCenter(txId,
-                              lerpDouble(16, txId.length, value)!.toInt()),
-                          style: EnvoyTypography.info
-                              .copyWith(color: Colors.black),
-                          textAlign: TextAlign.end,
-                          maxLines: 4,
-                        );
-                      },
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          left: showTxIdExpanded ? 0 : EnvoySpacing.medium3,
+                          bottom: 12),
+                      child: TweenAnimationBuilder(
+                        curve: EnvoyEasing.easeInOut,
+                        tween: Tween<double>(
+                            begin: 0, end: showTxIdExpanded ? 1 : 0),
+                        duration: const Duration(milliseconds: 200),
+                        builder: (context, value, child) {
+                          String txId = tx.type == TransactionType.ramp
+                              ? "loading"
+                              : tx.txId; // TODO: Figma
+                          return Text(
+                            truncateWithEllipsisInCenter(txId,
+                                lerpDouble(16, txId.length, value)!.toInt()),
+                            style: EnvoyTypography.info
+                                .copyWith(color: EnvoyColors.textPrimary),
+                            textAlign: TextAlign.end,
+                            maxLines: 4,
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -295,11 +311,20 @@ class _TransactionsDetailsWidgetState
                 ),
                 if (tx.pullPaymentId != null)
                   EnvoyInfoCardListItem(
+                    verticalPadding: false,
                     title: S().coindetails_overlay_paymentID,
                     icon: const EnvoyIcon(EnvoyIcons.btcPay,
                         color: EnvoyColors.textPrimary,
                         size: EnvoyIconSize.small),
                     trailing: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onLongPress: () {
+                          Clipboard.setData(
+                              ClipboardData(text: tx.pullPaymentId!));
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              content: Text(
+                                  'PullPayment ID copied to clipboard!'))); //TODO: FIGMA
+                        },
                         onTap: () {
                           setState(() {
                             showPaymentId = !showPaymentId;
@@ -307,36 +332,33 @@ class _TransactionsDetailsWidgetState
                             showAddressExpanded = false;
                           });
                         },
-                        child: TweenAnimationBuilder(
-                          curve: EnvoyEasing.easeInOut,
-                          tween: Tween<double>(
-                              begin: 0, end: showPaymentId ? 1 : 0),
-                          duration: const Duration(milliseconds: 200),
-                          builder: (context, value, child) {
-                            return SelectableText(
-                              truncateWithEllipsisInCenter(
-                                  tx.pullPaymentId!,
-                                  lerpDouble(
-                                          16, tx.pullPaymentId!.length, value)!
-                                      .toInt()),
-                              style: EnvoyTypography.info
-                                  .copyWith(color: Colors.black),
-                              textAlign: TextAlign.end,
-                              minLines: 1,
-                              maxLines: 4,
-                              onTap: () {
-                                setState(() {
-                                  showPaymentId = !showPaymentId;
-                                  showTxIdExpanded = false;
-                                  showAddressExpanded = false;
-                                });
-                              },
-                            );
-                          },
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              left: showPaymentId ? 0 : EnvoySpacing.medium3,
+                              bottom: 12),
+                          child: TweenAnimationBuilder(
+                            curve: EnvoyEasing.easeInOut,
+                            tween: Tween<double>(
+                                begin: 0, end: showPaymentId ? 1 : 0),
+                            duration: const Duration(milliseconds: 200),
+                            builder: (context, value, child) {
+                              return Text(
+                                  truncateWithEllipsisInCenter(
+                                      tx.pullPaymentId!,
+                                      lerpDouble(16, tx.pullPaymentId!.length,
+                                              value)!
+                                          .toInt()),
+                                  style: EnvoyTypography.info
+                                      .copyWith(color: EnvoyColors.textPrimary),
+                                  textAlign: TextAlign.end,
+                                  maxLines: 4);
+                            },
+                          ),
                         )),
                   ),
                 if (tx.type == TransactionType.ramp)
                   EnvoyInfoCardListItem(
+                    verticalPadding: false,
                     title: S().coindetails_overlay_rampID,
                     icon: const EnvoyIcon(
                       EnvoyIcons.ramp_without_name,
@@ -344,6 +366,7 @@ class _TransactionsDetailsWidgetState
                       color: EnvoyColors.textPrimary,
                     ),
                     trailing: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                       onLongPress: () {
                         Clipboard.setData(ClipboardData(text: tx.txId));
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -357,21 +380,28 @@ class _TransactionsDetailsWidgetState
                           showPaymentId = false;
                         });
                       },
-                      child: TweenAnimationBuilder(
-                        curve: EnvoyEasing.easeInOut,
-                        tween: Tween<double>(
-                            begin: 0, end: showTxIdExpanded ? 1 : 0),
-                        duration: const Duration(milliseconds: 200),
-                        builder: (context, value, child) {
-                          return Text(
-                            truncateWithEllipsisInCenter(tx.txId,
-                                lerpDouble(16, tx.txId.length, value)!.toInt()),
-                            style: EnvoyTypography.info
-                                .copyWith(color: Colors.black),
-                            textAlign: TextAlign.end,
-                            maxLines: 4,
-                          );
-                        },
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            left: showTxIdExpanded ? 0 : EnvoySpacing.medium3,
+                            bottom: 12),
+                        child: TweenAnimationBuilder(
+                          curve: EnvoyEasing.easeInOut,
+                          tween: Tween<double>(
+                              begin: 0, end: showTxIdExpanded ? 1 : 0),
+                          duration: const Duration(milliseconds: 200),
+                          builder: (context, value, child) {
+                            return Text(
+                              truncateWithEllipsisInCenter(
+                                  tx.txId,
+                                  lerpDouble(16, tx.txId.length, value)!
+                                      .toInt()),
+                              style: EnvoyTypography.info
+                                  .copyWith(color: EnvoyColors.textPrimary),
+                              textAlign: TextAlign.end,
+                              maxLines: 4,
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
