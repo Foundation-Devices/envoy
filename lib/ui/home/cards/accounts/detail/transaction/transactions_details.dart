@@ -305,7 +305,7 @@ class _TransactionsDetailsWidgetState
                               ClipboardData(text: tx.pullPaymentId!));
                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                               content: Text(
-                                  'PullPayment ID copied to clipboard!'))); //TODO: FIGMA
+                                  'Payment ID copied to clipboard!'))); //TODO: FIGMA
                         },
                         onTap: () {
                           setState(() {
