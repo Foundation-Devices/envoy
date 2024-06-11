@@ -119,7 +119,7 @@ class _EraseWalletsAndBackupsWarningState
                       height: expandablePageViewHeight,
                       constraints: BoxConstraints(
                         maxHeight: MediaQuery.of(context).size.height *
-                            0.45, // max size of PageView
+                            0.6, // max size of PageView
                       ),
                       child: SingleChildScrollView(
                         child: ExpandablePageView(
