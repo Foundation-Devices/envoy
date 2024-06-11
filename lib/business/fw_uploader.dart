@@ -3,11 +3,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:io';
-import 'package:envoy/util/console.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
 import 'package:flutter/services.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 
 const sdCardEventChannel = EventChannel('sd_card_events');
 final sdFwUploadStreamProvider = StreamProvider.autoDispose(
@@ -49,18 +49,18 @@ class FwUploader {
   promptUserForFolderAccess() async {
     final result = await platform.invokeMethod('prompt_folder_access');
     if (result != null && result is String) {
-      _sdCardPath = result.substring(7);
+      _sdCardPath = result.substring(7).replaceAll("%20", " ");
       EnvoyStorage().setString(lastSDCardPathPrefs, _sdCardPath);
     }
 
     return result;
   }
 
-  _accessFolder() {
+  _accessFolder() async {
     // We don't need arguments for this call but keeping the below for future reference
     // var argsMap = <String, dynamic>{"path": sdCardPath};
 
-    platform.invokeMethod('access_folder');
+    return platform.invokeMethod('access_folder');
   }
 
   _saveFile() {
@@ -88,12 +88,20 @@ class FwUploader {
     }
   }
 
-  _iosUpload() {
-    kPrint("SD: trying to access folder");
-    _accessFolder();
+  _iosUpload() async {
+    if (await _accessFolder()) {
+      EnvoyReport().log("iOS", "Access granted to $_sdCardPath");
+    } else {
+      EnvoyReport().log("iOS", "Access denied to $_sdCardPath");
+    }
 
-    kPrint("SD: trying to copy file to $_sdCardPath");
-    fw.copySync(_sdCardPath + basename(fw.path));
+    try {
+      fw.copySync(_sdCardPath + basename(fw.path));
+      EnvoyReport().log("iOS", "File copied to $_sdCardPath");
+    } on Exception catch (e) {
+      EnvoyReport().log("iOS", "Error copying to $_sdCardPath ($e)");
+      rethrow;
+    }
   }
 
   _androidUpload() {
