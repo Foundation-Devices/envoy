@@ -300,6 +300,13 @@ class _TransactionsDetailsWidgetState
                         color: EnvoyColors.textPrimary,
                         size: EnvoyIconSize.small),
                     trailing: GestureDetector(
+                        onLongPress: () {
+                          Clipboard.setData(
+                              ClipboardData(text: tx.pullPaymentId!));
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              content: Text(
+                                  'Payment ID copied to clipboard!'))); //TODO: FIGMA
+                        },
                         onTap: () {
                           setState(() {
                             showPaymentId = !showPaymentId;
@@ -313,25 +320,16 @@ class _TransactionsDetailsWidgetState
                               begin: 0, end: showPaymentId ? 1 : 0),
                           duration: const Duration(milliseconds: 200),
                           builder: (context, value, child) {
-                            return SelectableText(
-                              truncateWithEllipsisInCenter(
-                                  tx.pullPaymentId!,
-                                  lerpDouble(
-                                          16, tx.pullPaymentId!.length, value)!
-                                      .toInt()),
-                              style: EnvoyTypography.info
-                                  .copyWith(color: Colors.black),
-                              textAlign: TextAlign.end,
-                              minLines: 1,
-                              maxLines: 4,
-                              onTap: () {
-                                setState(() {
-                                  showPaymentId = !showPaymentId;
-                                  showTxIdExpanded = false;
-                                  showAddressExpanded = false;
-                                });
-                              },
-                            );
+                            return Text(
+                                truncateWithEllipsisInCenter(
+                                    tx.pullPaymentId!,
+                                    lerpDouble(16, tx.pullPaymentId!.length,
+                                            value)!
+                                        .toInt()),
+                                style: EnvoyTypography.info
+                                    .copyWith(color: EnvoyColors.textPrimary),
+                                textAlign: TextAlign.end,
+                                maxLines: 4);
                           },
                         )),
                   ),
