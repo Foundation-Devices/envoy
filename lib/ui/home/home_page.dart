@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
@@ -197,11 +198,19 @@ class HomePageState extends ConsumerState<HomePage>
       actionButtonText: S().component_update,
       onActionTap: () {
         EnvoyToast.dismissPreviousToasts(context);
-        launchUrlString(
-            "https://github.com/Foundation-Devices/envoy/releases/tag/$newVersion");
+        final appStoreUrl = _getAppStoreUrl();
+        launchUrlString(appStoreUrl);
       },
     ).show(context);
     isNewAppVersionAvailable.close();
+  }
+
+  String _getAppStoreUrl() {
+    if (Platform.isAndroid) {
+      return "https://play.google.com/store/apps/details?id=com.foundationdevices.envoy";
+    } else {
+      return "https://apps.apple.com/us/app/envoy-by-foundation/id1584811818";
+    }
   }
 
   _notifyAboutTor() {
