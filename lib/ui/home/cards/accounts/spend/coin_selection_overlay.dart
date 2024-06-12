@@ -5,7 +5,6 @@
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/fees.dart';
-import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
@@ -25,7 +24,6 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
-import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
@@ -33,7 +31,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 OverlayEntry? overlayEntry;
@@ -399,24 +396,12 @@ class SpendRequirementOverlayState
                                                 Text(S()
                                                     .coincontrol_edit_transaction_requiredAmount),
                                                 const Spacer(),
-                                                SizedBox.square(
-                                                    dimension: 12,
-                                                    child: SvgPicture.asset(
-                                                      Settings().displayUnit ==
-                                                              DisplayUnit.btc
-                                                          ? "assets/icons/ic_bitcoin_straight.svg"
-                                                          : "assets/icons/ic_sats.svg",
-                                                      color: const Color(
-                                                          0xff808080),
-                                                    )),
-                                                Text(
-                                                  getFormattedAmount(
-                                                      requiredAmount,
-                                                      trailingZeroes: true),
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .titleSmall,
-                                                ),
+                                                EnvoyAmount(
+                                                    amountSats: requiredAmount,
+                                                    amountWidgetStyle:
+                                                        AmountWidgetStyle
+                                                            .sendScreen,
+                                                    account: widget.account)
                                               ],
                                             ),
                                           )
