@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:convert';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:ramp_flutter/configuration.dart';
 import 'package:ramp_flutter/offramp_sale.dart';
@@ -41,10 +41,6 @@ class RampWidget {
     configuration.enabledFlows = ['ONRAMP'];
     configuration.hostLogoUrl =
         "https://storage.googleapis.com/cdn-foundation/envoy/foundationLogo.png";
-
-    // ENV-1111: Ensure the user is at the home route ("/") after exiting Ramp
-    GoRouter router = GoRouter.of(context);
-    router.go("/");
 
     ramp.showRamp(configuration);
   }
@@ -93,7 +89,8 @@ class RampWidget {
   }
 
   static void onRampClosed(BuildContext context) {
-    // Handle ramp closed
+    // ENV-1111: Ensure the user is at the home route ("/") after exiting Ramp
+    mainRouter.go("/");
   }
 }
 
