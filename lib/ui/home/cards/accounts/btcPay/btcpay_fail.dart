@@ -16,6 +16,7 @@ import 'package:envoy/generated/l10n.dart';
 
 class BtcPayFail extends StatelessWidget {
   const BtcPayFail({super.key, required this.voucher});
+
   final BtcPayVoucher voucher;
 
   @override
@@ -78,6 +79,11 @@ Widget getMainErrorMessage(
       return errorMesage(S().azteco_redeem_modal_fail_heading,
           S().btcpay_connection_modal_onchainOnly_subheading,
           link: link);
+    case BtcPayVoucherErrorType.wrongNetwork:
+      return errorMesage(
+        "Wrong network", // TODO: Figma
+        "The voucher you are trying to redeem is for a different network. Please check the voucher details and try again on the correct network.", // TODO: Figma
+      );
   }
 }
 
