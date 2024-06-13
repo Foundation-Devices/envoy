@@ -10,12 +10,22 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/build_context_extension.dart';
+import 'package:envoy/ui/home/home_state.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 
-class SingleWalletPairSuccessPage extends StatelessWidget {
+class SingleWalletPairSuccessPage extends ConsumerStatefulWidget {
   final Wallet pairedWallet;
 
   const SingleWalletPairSuccessPage(this.pairedWallet, {super.key});
 
+  @override
+  ConsumerState<SingleWalletPairSuccessPage> createState() =>
+      _SingleWalletPairSuccessPageState();
+}
+
+class _SingleWalletPairSuccessPageState
+    extends ConsumerState<SingleWalletPairSuccessPage> {
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
@@ -48,13 +58,16 @@ class SingleWalletPairSuccessPage extends StatelessWidget {
             type: EnvoyButtonTypes.secondary,
             label: S().pair_new_device_success_cta2,
             onTap: () {
+              ref.read(homePageBackgroundProvider.notifier).state =
+                  HomePageBackgroundState.hidden;
+              ref.read(homePageTitleProvider.notifier).state = "";
               OnboardingPage.popUntilHome(context);
             }),
         OnboardingButton(
             label: S().pair_new_device_success_cta1,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return SingleWalletAddressVerifyPage(pairedWallet);
+                return SingleWalletAddressVerifyPage(widget.pairedWallet);
               }));
             }),
         SizedBox(
