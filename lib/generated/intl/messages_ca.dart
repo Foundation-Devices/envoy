@@ -1184,6 +1184,13 @@ class MessageLookup extends MessageLookupByLibrary {
             "Desbloqueja amb biometria o PIN"),
         "privacy_node_configure": MessageLookupByLibrary.simpleMessage(
             "Millora la teva privacitat executant el teu propi node. Toca per obtenir més informació."),
+        "privacy_node_configure_blockHeight":
+            MessageLookupByLibrary.simpleMessage("Block height:"),
+        "privacy_node_configure_connectedToEsplora":
+            MessageLookupByLibrary.simpleMessage("Connected to Esplora server"),
+        "privacy_node_configure_noConnectionEsplora":
+            MessageLookupByLibrary.simpleMessage(
+                "Could not connect to Esplora server."),
         "privacy_node_connectedTo":
             MessageLookupByLibrary.simpleMessage("Connectat a"),
         "privacy_node_connection_couldNotReach":
@@ -1314,6 +1321,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "La tarifa escollida només es pot aconseguir afegint més monedes. Envoy ho fa automàticament i mai inclourà cap moneda bloquejada. "),
+        "scv_checkingDeviceSecurity":
+            MessageLookupByLibrary.simpleMessage("Checking Device Security"),
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirmar"),
         "send_keyboard_address_loading":
