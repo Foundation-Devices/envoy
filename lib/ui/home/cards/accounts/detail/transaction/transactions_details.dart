@@ -280,6 +280,7 @@ class _TransactionsDetailsWidgetState
                   ),
                 ),
                 EnvoyInfoCardListItem(
+                  flexAlignment: FlexAlignment.flexLeft,
                   title: S().coindetails_overlay_date,
                   icon: const EnvoyIcon(EnvoyIcons.calendar,
                       color: EnvoyColors.textPrimary,
@@ -377,6 +378,7 @@ class _TransactionsDetailsWidgetState
                   ),
                 rbfPossible
                     ? EnvoyInfoCardListItem(
+                        flexAlignment: FlexAlignment.flexRight,
                         title: _getConfirmationTimeString(ref.watch(
                             txEstimatedConfirmationTimeProvider(
                                 Tuple(tx, widget.account.wallet.network)))),
