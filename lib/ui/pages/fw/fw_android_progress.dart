@@ -40,7 +40,7 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
   void refreshFirmwareUpdateDot() {
     final device = Devices().getDeviceById(widget.deviceId);
     if (device != null) {
-      final _ = ref.refresh(shouldUpdateProvider(device));
+      final _ = ref.invalidate(shouldUpdateProvider(device));
     }
   }
 
