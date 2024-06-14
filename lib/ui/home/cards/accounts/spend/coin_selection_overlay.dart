@@ -37,6 +37,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 OverlayEntry? overlayEntry;
+final GlobalKey<CoinSelectionOverlayState> coinSelectionOverlayKey =
+    GlobalKey<CoinSelectionOverlayState>();
 
 class CoinSelectionOverlay extends ConsumerStatefulWidget {
   final Widget child;
