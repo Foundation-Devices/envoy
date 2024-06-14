@@ -27,7 +27,9 @@ class FwIntroPage extends StatelessWidget {
             ? OnboardingPage.popUntilHome(context)
             : OnboardingPage.popUntilGoRoute(context);
       },
-      clipArt: Image.asset("assets/fw_intro.png", height: 300),
+      clipArt: Transform.translate(
+          offset: const Offset(0, 75),
+          child: Image.asset("assets/fw_intro.png", height: 150)),
       text: [
         Column(
           mainAxisSize: MainAxisSize.min,
