@@ -1179,6 +1179,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Desbloqueo con Huella o PIN"),
         "privacy_node_configure": MessageLookupByLibrary.simpleMessage(
             "Mejora tu privacidad con tu propio nodo. Pulsa Más información arriba. "),
+        "privacy_node_configure_blockHeight":
+            MessageLookupByLibrary.simpleMessage("Altura de bloque:"),
+        "privacy_node_configure_connectedToEsplora":
+            MessageLookupByLibrary.simpleMessage(
+                "Conectado a servidor Esplora"),
+        "privacy_node_configure_noConnectionEsplora":
+            MessageLookupByLibrary.simpleMessage(
+                "No se pudo conectar a servidor Esplora."),
         "privacy_node_connectedTo":
             MessageLookupByLibrary.simpleMessage("Conectado a"),
         "privacy_node_connection_couldNotReach":
@@ -1302,10 +1310,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Requerido para Impulsar"),
         "replaceByFee_ramp_incompleteTransactionAutodeleteWarning":
             MessageLookupByLibrary.simpleMessage(
-                "Las compras que no se completen se eliminarán de Actividad en un plazo de 5 días"),
+                "Las compras que no se completen se eliminarán de tu actividad en un plazo de 5 días"),
         "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "La tarifa elegida solo se puede lograr añadiendo más monedas. Envoy lo hace automáticamente y nunca incluirá monedas bloqueadas.\n\nEsta selección se podrá editar en la siguiente pantalla."),
+        "scv_checkingDeviceSecurity":
+            MessageLookupByLibrary.simpleMessage("Checking Device Security"),
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirmar"),
         "send_keyboard_address_loading":

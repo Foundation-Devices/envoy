@@ -1149,6 +1149,13 @@ class MessageLookup extends MessageLookupByLibrary {
             "Unlock with biometrics or PIN"),
         "privacy_node_configure": MessageLookupByLibrary.simpleMessage(
             "Improve your privacy by running your own node. Tap learn more above. "),
+        "privacy_node_configure_blockHeight":
+            MessageLookupByLibrary.simpleMessage("Block height:"),
+        "privacy_node_configure_connectedToEsplora":
+            MessageLookupByLibrary.simpleMessage("Connected to Esplora server"),
+        "privacy_node_configure_noConnectionEsplora":
+            MessageLookupByLibrary.simpleMessage(
+                "Could not connect to Esplora server."),
         "privacy_node_connectedTo":
             MessageLookupByLibrary.simpleMessage("Connected to"),
         "privacy_node_connection_couldNotReach":
@@ -1276,6 +1283,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. \n\nThis selection can be reviewed or edited in the following screen."),
+        "scv_checkingDeviceSecurity":
+            MessageLookupByLibrary.simpleMessage("Checking Device Security"),
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirm"),
         "send_keyboard_address_loading":
