@@ -49,33 +49,31 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
   }
 
   Widget _recoveryInProgress(BuildContext context) {
-    return Flexible(
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              constraints: BoxConstraints.tight(const Size.fromHeight(240)),
-              child: Transform.scale(
-                scale: 1.2,
-                child: RiveAnimation.asset(
-                  "assets/envoy_loader.riv",
-                  fit: BoxFit.contain,
-                  onInit: _onRiveInit,
-                ),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            constraints: BoxConstraints.tight(const Size.fromHeight(240)),
+            child: Transform.scale(
+              scale: 1.2,
+              child: RiveAnimation.asset(
+                "assets/envoy_loader.riv",
+                fit: BoxFit.contain,
+                onInit: _onRiveInit,
               ),
             ),
-            const SizedBox(
-              height: EnvoySpacing.xl * 2,
-            ),
-            Text(
-              S().magic_setup_recovery_retry_header,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(
+            height: EnvoySpacing.xl * 2,
+          ),
+          Text(
+            S().magic_setup_recovery_retry_header,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+        ],
       ),
     );
   }
