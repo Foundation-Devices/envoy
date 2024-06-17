@@ -667,14 +667,13 @@ Future<Psbt> getPsbt(
     double feeRate, Account account, String initialAddress, int amount,
     {List<Utxo>? dontSpend, List<Utxo>? mustSpend}) async {
   Psbt returnPsbt = Psbt(0, 0, 0, "", "", "");
-
   try {
     returnPsbt = await account.wallet.createPsbt(
         initialAddress, amount, feeRate,
         dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
   } on InsufficientFunds catch (e) {
     // TODO: figure out why this can happen
-    if (e.available < 0) rethrow;
+    if (e.available <= 0) rethrow;
 
     // Get another one with correct amount
     var fee = e.needed - e.available;
