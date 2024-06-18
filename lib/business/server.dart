@@ -29,20 +29,39 @@ class Server {
       throw Exception('Failed to find firmware');
     }
   }
+
+  Future<ApiKeys> fetchApiKeys() async {
+    final response = await http!.get('$_serverAddress/keys');
+
+    if (response.statusCode == 202) {
+      return ApiKeys.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to fetch API keys');
+    }
+  }
 }
 
-class User {
-  final String id;
-  bool confirmed = false;
-  String token = "";
+class ApiKeys {
+  final String mapsKey;
+  final String rampKey;
 
-  User({
-    required this.id,
-    required this.confirmed,
+  ApiKeys({
+    required this.mapsKey,
+    required this.rampKey,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(id: json['id'], confirmed: json['confirmed']);
+  factory ApiKeys.fromJson(Map<String, dynamic> json) {
+    final keys = json['keys'];
+    return ApiKeys(mapsKey: keys['maps_api'], rampKey: keys['ramp_api']);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'keys': {
+        'maps_api': mapsKey,
+        'ramp_api': rampKey,
+      }
+    };
   }
 }
 

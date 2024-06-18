@@ -25,6 +25,7 @@ import 'package:sembast/utils/sembast_import_export.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wallet/wallet.dart' as wallet;
 import 'package:envoy/business/country.dart';
+import 'package:envoy/business/server.dart';
 
 class FirmwareInfo {
   FirmwareInfo({
@@ -65,6 +66,7 @@ const String blogPostsStoreName = "blog_posts";
 const String exchangeRateStoreName = "exchange_rate";
 const String locationsStoreName = "locations";
 const String selectedCountryStoreName = "countries";
+const String apiKeysStoreName = "api_keys";
 
 ///keeps track of spend input tags, this would be handy to show previously used tags
 ///for example when user trying RBF.
@@ -115,6 +117,8 @@ class EnvoyStorage {
 
   StoreRef<int, String> locationStore =
       StoreRef<int, String>(locationsStoreName);
+
+  StoreRef<int, String> apiKeysStore = StoreRef<int, String>(apiKeysStoreName);
 
   // Store everything except videos, blogs and locations
   Map<String, StoreRef> storesToBackUp = {};
@@ -236,7 +240,7 @@ class EnvoyStorage {
   }
 
   Future removePromptState(DismissiblePrompt prompt) async {
-    await dismissedPromptsStore.record(prompt.toString()).delete(db);
+    await dismissedPromptsStore.record(prompt.toString()).delete(_db);
     return true;
   }
 
@@ -254,7 +258,7 @@ class EnvoyStorage {
     final filter = Finder(filter: Filter.byKey(prompt.toString()));
     //returns boolean stream that updates when provided key is updated
     return dismissedPromptsStore
-        .find(db, finder: filter)
+        .find(_db, finder: filter)
         .then((event) => event.isNotEmpty);
   }
 
@@ -503,7 +507,7 @@ class EnvoyStorage {
   // Following methods have same signature as shared_preferences
   // but use the preferences DB store instead
   Future setNewPreferencesValue(String key, value) async {
-    await preferencesStore.record(key).put(db, value);
+    await preferencesStore.record(key).put(_db, value);
     return true;
   }
 
@@ -752,5 +756,19 @@ class EnvoyStorage {
     return null;
   }
 
-  Database get db => _db;
+  Future<bool> storeApiKeys(ApiKeys keys) async {
+    await apiKeysStore.record(0).put(_db, jsonEncode(keys.toJson()));
+    return true;
+  }
+
+  Future<ApiKeys?> getApiKeys() async {
+    var finder = Finder(filter: Filter.byKey(0));
+    var keys = await apiKeysStore.findFirst(_db, finder: finder);
+    if (keys != null) {
+      return ApiKeys.fromJson(jsonDecode(keys.value));
+    }
+    return null;
+  }
+
+  Database db() => _db;
 }
