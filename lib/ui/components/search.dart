@@ -57,7 +57,7 @@ class _EnvoySearchState extends State<EnvoySearch> {
             ? Border.all(color: EnvoyColors.accentPrimary)
             : Border.all(color: Colors.transparent),
         borderRadius: const BorderRadius.all(
-          Radius.circular(EnvoySpacing.medium3),
+          Radius.circular(EnvoySpacing.medium1),
         ),
       ),
       child: TextField(
@@ -77,7 +77,7 @@ class _EnvoySearchState extends State<EnvoySearch> {
             floatingLabelBehavior: FloatingLabelBehavior.never,
             alignLabelWithHint: true,
             isDense: true,
-            contentPadding: const EdgeInsets.only(bottom: 10),
+            contentPadding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
             border: InputBorder.none,
             focusedBorder: InputBorder.none,
             enabledBorder: InputBorder.none,
@@ -91,9 +91,13 @@ class _EnvoySearchState extends State<EnvoySearch> {
             ),
             suffixIcon: _focus.hasFocus
                 ? Padding(
-                    padding: const EdgeInsets.only(left: EnvoySpacing.medium1),
+                    padding: const EdgeInsets.only(
+                        left: EnvoySpacing.medium1,
+                        top: EnvoySpacing.small,
+                        bottom: EnvoySpacing.small),
                     child: GestureDetector(
-                      child: const EnvoyIcon(EnvoyIcons.remove),
+                      child: const EnvoyIcon(EnvoyIcons.remove,
+                          size: EnvoyIconSize.small),
                       onTap: () async {
                         setState(() {
                           widget.controller.text = "";

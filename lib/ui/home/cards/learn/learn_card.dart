@@ -82,19 +82,21 @@ class _LearnCardState extends ConsumerState<LearnCard> {
         child: CustomScrollView(
           physics: isAllEmpty ? const NeverScrollableScrollPhysics() : null,
           slivers: [
-            const SliverPadding(
-                padding: EdgeInsets.symmetric(vertical: EnvoySpacing.xs / 2)),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+                padding: const EdgeInsets.only(
+                    bottom: EnvoySpacing.medium2,
+                    top: EnvoySpacing.small,
+                    left: EnvoySpacing.small,
+                    right: EnvoySpacing.small),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     SizedBox(
                       width: MediaQuery.of(context).size.width -
-                          (EnvoySpacing.medium2 + EnvoySpacing.xl),
-                      height: EnvoySpacing.medium3,
+                          (EnvoySpacing.large1 + EnvoySpacing.xl),
+                      height: EnvoySpacing.large1,
                       child: EnvoySearch(
                           filterSearchResults: (text) {
                             setState(() {
