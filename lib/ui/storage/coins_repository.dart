@@ -11,7 +11,7 @@ import 'package:sembast/sembast.dart';
 /// Repository for storing and retrieving coin tag data
 class CoinRepository {
   final storage = EnvoyStorage();
-  Database db = EnvoyStorage().db;
+  Database db = EnvoyStorage().db();
 
   static CoinRepository? _instance;
 
