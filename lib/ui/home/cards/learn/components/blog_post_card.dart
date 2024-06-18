@@ -93,29 +93,35 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      widget.blog.title,
-                      style: EnvoyTypography.button
-                          .copyWith(color: EnvoyColors.textPrimary),
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
+                    Opacity(
+                      opacity: isBlogRead ? 0.3 : 1.0,
+                      child: Text(
+                        widget.blog.title,
+                        style: EnvoyTypography.button
+                            .copyWith(color: EnvoyColors.textPrimary),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                     const SizedBox(height: EnvoySpacing.xs),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            DateFormat('MMMM dd, yyyy', currentLocale)
-                                .format(widget.blog.publicationDate),
-                          ),
-                          isBlogRead
-                              ? Text(
-                                  S().learningcenter_status_read,
-                                  style: EnvoyTypography.info.copyWith(
-                                      color: EnvoyColors.textSecondary),
-                                )
-                              : const Text("")
-                        ]),
+                    Opacity(
+                      opacity: isBlogRead ? 0.3 : 1.0,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              DateFormat('MMMM dd, yyyy', currentLocale)
+                                  .format(widget.blog.publicationDate),
+                            ),
+                            isBlogRead
+                                ? Text(
+                                    S().learningcenter_status_read,
+                                    style: EnvoyTypography.info.copyWith(
+                                        color: EnvoyColors.textSecondary),
+                                  )
+                                : const Text("")
+                          ]),
+                    ),
                   ],
                 ),
               ),
