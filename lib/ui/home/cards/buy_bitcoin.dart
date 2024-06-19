@@ -23,6 +23,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/business/region_manager.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/ui/components/icon_toolbar.dart';
 
 enum BuyBitcoinCardState { buyInEnvoy, peerToPeer, vouchers, atms, none }
 
@@ -148,46 +149,33 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
                   const SizedBox(
                     height: EnvoySpacing.medium2,
                   ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Expanded(
-                        child: IconTab(
-                          label: S().buy_bitcoin_buyOptions_card_peerToPeer,
-                          icon: EnvoyIcons.privacy,
-                          isSelected:
-                              currentState == BuyBitcoinCardState.peerToPeer,
-                          onSelect: (selected) {
-                            _updateState(BuyBitcoinCardState.peerToPeer);
-                          },
-                        ),
+                  IconToolbar(
+                    options: [
+                      IconToolbarOption(
+                        label: S().buy_bitcoin_buyOptions_card_peerToPeer,
+                        icon: EnvoyIcons.privacy,
+                        isSelected:
+                            currentState == BuyBitcoinCardState.peerToPeer,
+                        onSelect: () {
+                          _updateState(BuyBitcoinCardState.peerToPeer);
+                        },
                       ),
-                      const SizedBox(
-                        width: EnvoySpacing.xs,
+                      IconToolbarOption(
+                        label: S().buy_bitcoin_buyOptions_card_vouchers,
+                        icon: EnvoyIcons.shield,
+                        isSelected:
+                            currentState == BuyBitcoinCardState.vouchers,
+                        onSelect: () {
+                          _updateState(BuyBitcoinCardState.vouchers);
+                        },
                       ),
-                      Expanded(
-                        child: IconTab(
-                          label: S().buy_bitcoin_buyOptions_card_vouchers,
-                          icon: EnvoyIcons.shield,
-                          isSelected:
-                              currentState == BuyBitcoinCardState.vouchers,
-                          onSelect: (selected) {
-                            _updateState(BuyBitcoinCardState.vouchers);
-                          },
-                        ),
-                      ),
-                      const SizedBox(
-                        width: EnvoySpacing.xs,
-                      ),
-                      Expanded(
-                        child: IconTab(
-                          label: S().buy_bitcoin_buyOptions_card_atms,
-                          icon: EnvoyIcons.location_tab,
-                          isSelected: currentState == BuyBitcoinCardState.atms,
-                          onSelect: (selected) {
-                            _updateState(BuyBitcoinCardState.atms);
-                          },
-                        ),
+                      IconToolbarOption(
+                        label: S().buy_bitcoin_buyOptions_card_atms,
+                        icon: EnvoyIcons.location_tab,
+                        isSelected: currentState == BuyBitcoinCardState.atms,
+                        onSelect: () {
+                          _updateState(BuyBitcoinCardState.atms);
+                        },
                       ),
                     ],
                   ),
@@ -251,7 +239,7 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
                 }
               },
             ),
-          )
+          ),
         ],
       ),
     );

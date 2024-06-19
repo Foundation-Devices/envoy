@@ -88,6 +88,7 @@ class IconTabState extends State<IconTab> {
               horizontal:
                   widget.bigTab ? EnvoySpacing.medium2 : EnvoySpacing.small),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               EnvoyIcon(
                 widget.icon,
@@ -104,7 +105,7 @@ class IconTabState extends State<IconTab> {
               Text(
                 widget.label,
                 textAlign: TextAlign.center,
-                maxLines: 1,
+                maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: titleStyle.copyWith(
                   color: titleColor,
