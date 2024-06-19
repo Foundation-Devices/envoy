@@ -20,6 +20,7 @@ import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
@@ -27,6 +28,7 @@ import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/envoy_tag_list_item.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/components/envoy_info_card.dart';
+import 'package:envoy/util/easing.dart';
 
 class CoinDetailsWidget extends ConsumerStatefulWidget {
   final Coin coin;
@@ -68,6 +70,8 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
       accountAccentColor = const Color(0xff808080);
     }
 
+    bool addressNotAvailable = utxoAddress.isEmpty;
+
     return EnvoyInfoCard(
         backgroundColor: accountAccentColor,
         topWidget: CoinBalanceWidget(
@@ -76,9 +80,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
         ),
         bottomWidgets: [
           EnvoyInfoCardListItem(
-            flexAlignment: showExpandedAddress
-                ? FlexAlignment.noFlex
-                : FlexAlignment.flexLeft,
+            flexAlignment: FlexAlignment.flexLeft,
             title: S().coindetails_overlay_address,
             icon: const EnvoyIcon(EnvoyIcons.send,
                 color: EnvoyColors.textPrimary, size: EnvoyIconSize.extraSmall),
@@ -89,17 +91,29 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                   showExpandedTxId = false;
                 });
               },
-              child: SingleChildScrollView(
-                child: AnimatedSize(
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.easeInOut,
-                  child: AddressWidget(
-                    widgetKey: ValueKey<bool>(showExpandedAddress),
-                    address: utxoAddress,
-                    short: !showExpandedAddress,
-                  ),
-                ),
-              ),
+              child: TweenAnimationBuilder(
+                  curve: EnvoyEasing.easeInOut,
+                  tween:
+                      Tween<double>(begin: 0, end: showExpandedAddress ? 1 : 0),
+                  duration:
+                      Duration(milliseconds: showExpandedAddress ? 200 : 50),
+                  builder: (context, value, child) {
+                    return addressNotAvailable
+                        ? Text("Address not available ",
+                            // TODO: Figma
+                            style: trailingTextStyle)
+                        : Container(
+                            constraints: BoxConstraints(
+                                maxWidth: showExpandedAddress ? 125 : 155),
+                            child: AddressWidget(
+                              widgetKey: ValueKey<bool>(showExpandedAddress),
+                              address: utxoAddress,
+                              short: true,
+                              sideChunks: 2 +
+                                  (value * (utxoAddress.length / 4)).round(),
+                            ),
+                          );
+                  }),
             ),
           ),
           EnvoyInfoCardListItem(
@@ -107,6 +121,12 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
             icon: const EnvoyIcon(EnvoyIcons.compass,
                 color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
             trailing: GestureDetector(
+                onLongPress: () {
+                  Clipboard.setData(ClipboardData(text: widget.coin.utxo.txid));
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text(
+                          'Transaction ID copied to clipboard!'))); // TODO: FIGMA
+                },
                 onTap: () {
                   setState(() {
                     showExpandedTxId = !showExpandedTxId;
@@ -117,25 +137,15 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                   tween: Tween<double>(begin: 0, end: showExpandedTxId ? 1 : 0),
                   duration: const Duration(milliseconds: 200),
                   builder: (context, value, child) {
-                    return Padding(
-                      padding: const EdgeInsets.only(left: EnvoySpacing.small),
-                      child: SelectableText(
-                        truncateWithEllipsisInCenter(
-                            widget.coin.utxo.txid,
-                            lerpDouble(16, widget.coin.utxo.txid.length, value)!
-                                .toInt()),
-                        style: EnvoyTypography.info
-                            .copyWith(color: EnvoyColors.textPrimary),
-                        textAlign: TextAlign.end,
-                        maxLines: 4,
-                        minLines: 1,
-                        onTap: () {
-                          setState(() {
-                            showExpandedTxId = !showExpandedTxId;
-                            showExpandedAddress = false;
-                          });
-                        },
-                      ),
+                    return Text(
+                      truncateWithEllipsisInCenter(
+                          widget.coin.utxo.txid,
+                          lerpDouble(16, widget.coin.utxo.txid.length, value)!
+                              .toInt()),
+                      style: EnvoyTypography.info
+                          .copyWith(color: EnvoyColors.textPrimary),
+                      textAlign: TextAlign.end,
+                      maxLines: 4,
                     );
                   },
                 )),

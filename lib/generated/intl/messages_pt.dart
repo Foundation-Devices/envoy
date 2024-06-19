@@ -86,8 +86,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Compra a Receber"),
         "activity_listHeader_Today":
             MessageLookupByLibrary.simpleMessage("Hoje"),
-        "activity_passportUpdate":
-            MessageLookupByLibrary.simpleMessage("Passport update available"),
+        "activity_passportUpdate": MessageLookupByLibrary.simpleMessage(
+            "Actualização para o Passport disponível"),
         "activity_pending": MessageLookupByLibrary.simpleMessage("Pendente"),
         "activity_received": MessageLookupByLibrary.simpleMessage("Recebido"),
         "activity_sent": MessageLookupByLibrary.simpleMessage("Enviado"),
@@ -161,7 +161,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "O vale digitalizado não foi criado com suporte onchain.\n\nPor favor entra em contacto com o criador do vale."),
         "btcpay_pendingVoucher":
-            MessageLookupByLibrary.simpleMessage("Pending BTCPay Voucher"),
+            MessageLookupByLibrary.simpleMessage("Vale BYCPay Pendente"),
         "btcpay_redeem_modal_description":
             MessageLookupByLibrary.simpleMessage("Descrição:"),
         "btcpay_redeem_modal_name":
@@ -1180,6 +1180,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Utilizar biometria ou PIN"),
         "privacy_node_configure": MessageLookupByLibrary.simpleMessage(
             "Aumenta a tua privacidade ao correres o teu próprio nó. Toca em mais informações no canto superior direito para saber mais."),
+        "privacy_node_configure_blockHeight":
+            MessageLookupByLibrary.simpleMessage("Altura do bloco:"),
+        "privacy_node_configure_connectedToEsplora":
+            MessageLookupByLibrary.simpleMessage("Ligado ao servidor Esplora"),
+        "privacy_node_configure_noConnectionEsplora":
+            MessageLookupByLibrary.simpleMessage(
+                "Não foi possível ligar ao servidor Esplora."),
         "privacy_node_connectedTo":
             MessageLookupByLibrary.simpleMessage("Ligado a"),
         "privacy_node_connection_couldNotReach":
@@ -1303,10 +1310,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Necessário para Reforçar"),
         "replaceByFee_ramp_incompleteTransactionAutodeleteWarning":
             MessageLookupByLibrary.simpleMessage(
-                "Incomplete purchases will be automatically removed after 5 days"),
+                "Compras incompletas serão automaticamente removidas após 5 dias"),
         "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "A taxa escolhida só pode ser atingida adicionando mais moedas. A Envoy faz essa operação automaticamente e nunca irá incluir moedas bloqueadas. \n\nEsta seleção pode ser revista ou editada no ecrã seguinte."),
+        "scv_checkingDeviceSecurity":
+            MessageLookupByLibrary.simpleMessage("Checking Device Security"),
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirmar"),
         "send_keyboard_address_loading":

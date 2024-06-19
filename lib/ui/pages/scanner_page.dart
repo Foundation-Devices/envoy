@@ -10,12 +10,10 @@ import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/business/bip21.dart';
 import 'package:envoy/business/btcpay_voucher.dart';
-import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_dialog.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
-import 'package:envoy/ui/pages/scv/scv_result_fail.dart';
-import 'package:envoy/ui/pages/scv/scv_result_ok.dart';
+import 'package:envoy/ui/pages/scv/scv_loading.dart';
 import 'package:envoy/ui/pages/wallet/single_wallet_pair_success.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
@@ -181,6 +179,7 @@ class ScannerPageState extends State<ScannerPage> {
 
   //stores last scan data,to prevent unnecessary re-validation
   String _lastScan = "";
+
   void _onQRViewCreated(QRViewController controller, BuildContext context) {
     this.controller = controller;
     controller.scannedDataStream.listen((barcode) {
@@ -327,7 +326,15 @@ class ScannerPageState extends State<ScannerPage> {
     if (_urDecoder.decoded != null && !_processing) {
       _processing = true;
       if (widget._acceptableTypes.contains(ScannerType.scv)) {
-        _validateScvData(_urDecoder.decoded);
+        if (context.mounted) {
+          Navigator.of(context)
+              .pushReplacement(MaterialPageRoute(builder: (context) {
+            return ScvLoadingPage(
+              _urDecoder.decoded!,
+              widget.challengeToValidate!,
+            );
+          }));
+        }
       } else if (widget._acceptableTypes.contains(ScannerType.tx)) {
         await widget.onTxParsed!((_urDecoder.decoded as CryptoPsbt).decoded);
 
@@ -352,43 +359,6 @@ class ScannerPageState extends State<ScannerPage> {
         _progress == 0.0) {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       _snackbarTimer = Timer(const Duration(seconds: 5), () {});
-    }
-  }
-
-  _validateScvData(Object? object) {
-    if (object is CryptoResponse) {
-      ScvChallengeResponse scvResponse =
-          object.objects[0] as ScvChallengeResponse;
-
-      ScvServer()
-          .validate(widget.challengeToValidate!, scvResponse.responseWords)
-          .then((validated) {
-        if (validated) {
-          bool mustUpdateFirmware = true;
-
-          if (object.objects.length > 2) {
-            PassportModel model = object.objects[1] as PassportModel;
-            PassportFirmwareVersion version =
-                object.objects[2] as PassportFirmwareVersion;
-
-            UpdatesManager()
-                .shouldUpdate(version.version, model.type)
-                .then((bool shouldUpdate) {
-              mustUpdateFirmware = shouldUpdate;
-            });
-          }
-
-          Navigator.of(context)
-              .pushReplacement(MaterialPageRoute(builder: (context) {
-            return ScvResultOkPage(mustUpdateFirmware: mustUpdateFirmware);
-          }));
-        } else {
-          Navigator.of(context)
-              .pushReplacement(MaterialPageRoute(builder: (context) {
-            return const ScvResultFailPage();
-          }));
-        }
-      });
     }
   }
 

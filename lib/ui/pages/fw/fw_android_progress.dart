@@ -16,6 +16,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'fw_intro.dart';
+import 'package:envoy/ui/home/cards/devices/device_list_tile.dart';
 
 class FwAndroidProgressPage extends ConsumerStatefulWidget {
   final bool onboarding;
@@ -35,6 +36,13 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
   int navigationDots = 6;
 
   final PageController _instructionPageController = PageController();
+
+  void refreshFirmwareUpdateDot() {
+    final device = Devices().getDeviceById(widget.deviceId);
+    if (device != null) {
+      ref.invalidate(shouldUpdateProvider(device));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,6 +150,7 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
                   Navigator.of(context)
                       .pushReplacement(MaterialPageRoute(builder: (context) {
                     if (done!) {
+                      refreshFirmwareUpdateDot();
                       return FwPassportPage(
                         onboarding: widget.onboarding,
                       );

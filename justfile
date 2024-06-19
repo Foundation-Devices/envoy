@@ -11,18 +11,17 @@ docker-build:
 docker-build-android: docker-build
     mkdir -p release && \
         docker run --mount type=bind,source="$(pwd)"/release,target=/release \
-        -e MAP_API_KEY=$MAP_API_KEY  -e RAMP_API_KEY=$RAMP_API_KEY\
         -t {{docker_image}} /bin/bash \
-        -c "flutter build apk --release --dart-define='MAP_API_KEY=$MAP_API_KEY' --dart-define='RAMP_API_KEY=$RAMP_API_KEY' -P nosign && flutter build appbundle --dart-define='MAP_API_KEY=$MAP_API_KEY' --dart-define='RAMP_API_KEY=$RAMP_API_KEY' --release -P nosign \
+        -c "flutter build apk --release -P nosign && flutter build appbundle --release -P nosign \
         && cp /root/build/app/outputs/flutter-apk/app-release.apk /release \
         && cp /root/build/app/outputs/bundle/release/app-release.aab /release"
 
 docker-build-android-sign: docker-build
     mkdir -p release && \
         docker run --mount type=bind,source="$(pwd)"/release,target=/release \
-        -e ALIAS_PASSWORD=$ALIAS_PASSWORD -e KEY_PASSWORD=$KEY_PASSWORD -e MAP_API_KEY=$MAP_API_KEY -e RAMP_API_KEY=$RAMP_API_KEY \
+        -e ALIAS_PASSWORD=$ALIAS_PASSWORD -e KEY_PASSWORD=$KEY_PASSWORD \
         -t {{docker_image}} /bin/bash \
-        -c "flutter build apk --dart-define='MAP_API_KEY=$MAP_API_KEY' --dart-define='RAMP_API_KEY=$RAMP_API_KEY' --release && flutter build appbundle --dart-define='MAP_API_KEY=$MAP_API_KEY' --dart-define='RAMP_API_KEY=$RAMP_API_KEY' --release \
+        -c "flutter build apk --release && flutter build appbundle --release \
         && cp /root/build/app/outputs/flutter-apk/app-release.apk /release \
         && cp /root/build/app/outputs/bundle/release/app-release.aab /release"
 

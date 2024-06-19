@@ -212,15 +212,17 @@ class _TransactionsDetailsWidgetState
                         curve: EnvoyEasing.easeInOut,
                         tween: Tween<double>(
                             begin: 0, end: showAddressExpanded ? 1 : 0),
-                        duration: const Duration(milliseconds: 200),
+                        duration: Duration(
+                            milliseconds: showAddressExpanded ? 200 : 50),
                         builder: (context, value, child) {
                           return addressNotAvailable
                               ? Text("Address not available ",
                                   // TODO: Figma
                                   style: trailingTextStyle)
                               : Container(
-                                  constraints:
-                                      const BoxConstraints(maxWidth: 155),
+                                  constraints: BoxConstraints(
+                                      maxWidth:
+                                          showAddressExpanded ? 125 : 155),
                                   child: AddressWidget(
                                     widgetKey:
                                         ValueKey<bool>(showAddressExpanded),

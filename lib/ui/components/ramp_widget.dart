@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 import 'package:envoy/ui/routes/routes.dart';
+import 'package:envoy/business/keys_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:ramp_flutter/configuration.dart';
@@ -20,15 +21,16 @@ import 'package:envoy/ui/shield.dart';
 import 'package:envoy/business/scheduler.dart';
 
 class RampWidget {
-  static const String rampApiKey =
-      String.fromEnvironment("RAMP_API_KEY", defaultValue: '');
-
   static void showRamp(BuildContext context, Account account, String address) {
+    if (KeysManager().keys == null) {
+      return;
+    }
+
     final ramp = RampFlutter();
     final Configuration configuration = Configuration();
     configuration.hostAppName = "Ramp Flutter";
     configuration.url = "https://app.ramp.network";
-    configuration.hostApiKey = rampApiKey;
+    configuration.hostApiKey = KeysManager().keys!.rampKey;
     configuration.userAddress = address;
     configuration.swapAsset = "BTC_BTC";
     ramp.onOnrampPurchaseCreated = (purchase, purchaseViewToken, apiUrl) =>

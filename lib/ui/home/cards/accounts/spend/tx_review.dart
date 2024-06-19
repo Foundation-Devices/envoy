@@ -707,7 +707,7 @@ void editTransaction(BuildContext context, WidgetRef ref) async {
   }
 
   if (ref.read(selectedAccountProvider) != null) {
-    CoinSelectionOverlay.of(context)?.show(SpendOverlayContext.editCoins);
+    coinSelectionOverlayKey.currentState?.show(SpendOverlayContext.editCoins);
   }
   router
       .push(CupertinoPageRoute(

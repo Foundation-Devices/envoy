@@ -41,7 +41,7 @@ class DeviceListTile extends ConsumerStatefulWidget {
 class _DeviceListTileState extends ConsumerState<DeviceListTile> {
   @override
   Widget build(BuildContext context) {
-    var fwShouldUpdate = ref.refresh(shouldUpdateProvider(widget.device));
+    var fwShouldUpdate = ref.watch(shouldUpdateProvider(widget.device));
     var fwInfo = ref.watch(firmwareStreamProvider(widget.device.type.index));
     bool fwAvailable = fwInfo.hasValue && fwInfo.value != null;
 
