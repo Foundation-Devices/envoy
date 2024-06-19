@@ -183,14 +183,12 @@ class Settings extends ChangeNotifier {
     store();
   }
 
-  bool turnOffTorForThisCase(String address) {
+  bool onTorWhitelist(String address) {
     return !torEnabled() || isPrivateAddress(address);
   }
 
   int getPort(Network network) {
-    return turnOffTorForThisCase(electrumAddress(network))
-        ? -1
-        : Tor.instance.port;
+    return onTorWhitelist(electrumAddress(network)) ? -1 : Tor.instance.port;
   }
 
   String get envoyServerAddress {

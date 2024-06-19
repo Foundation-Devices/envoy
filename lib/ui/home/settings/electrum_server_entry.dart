@@ -148,7 +148,7 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
   }
 
   void _checkElectrumServer(String address, {int retryCount = 0}) {
-    bool useTor = !Settings().turnOffTorForThisCase(address);
+    bool useTor = !Settings().onTorWhitelist(address);
     int port = useTor ? Tor.instance.port : -1;
     if (useTor && port == -1) {
       if (retryCount <= 3) {
@@ -161,7 +161,7 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
           setState(() {
             _state = ElectrumServerEntryState.invalid;
             _isError = true;
-            _textBelow = "Tor port is not available."; // TODO: Figma
+            _textBelow = "Tor network not accessible."; // TODO: Figma
           });
         }
         ConnectivityManager().electrumFailure();
