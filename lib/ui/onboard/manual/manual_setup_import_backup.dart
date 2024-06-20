@@ -89,88 +89,91 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
       );
     }
 
-    return OnboardPageBackground(
-        child: Material(
-      color: Colors.transparent,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const SizedBox(height: EnvoySpacing.small),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: EnvoySpacing.large3),
-            child: Image.asset(
-              "assets/fw_intro.png",
-              width: 150,
-              height: 150,
+    return PopScope(
+      canPop: false,
+      child: OnboardPageBackground(
+          child: Material(
+        color: Colors.transparent,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const SizedBox(height: EnvoySpacing.small),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.large3),
+              child: Image.asset(
+                "assets/fw_intro.png",
+                width: 150,
+                height: 150,
+              ),
             ),
-          ),
-          const SizedBox(height: EnvoySpacing.medium1),
-          Flexible(
-            child: SingleChildScrollView(
+            const SizedBox(height: EnvoySpacing.medium1),
+            Flexible(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.small),
+                      child: Text(
+                        S().manual_setup_import_backup_CTA2,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                    ),
+                    const SizedBox(height: EnvoySpacing.medium3),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.large1),
+                      child: Text(S().manual_setup_import_backup_subheading,
+                          textAlign: TextAlign.center,
+                          style: EnvoyTypography.info
+                              .copyWith(color: EnvoyColors.textTertiary)),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: EnvoySpacing.medium1),
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: EnvoySpacing.medium1,
+                  right: EnvoySpacing.medium1,
+                  bottom: EnvoySpacing.medium2,
+                  top: EnvoySpacing.small),
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.small),
-                    child: Text(
-                      S().manual_setup_import_backup_CTA2,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                  const SizedBox(height: EnvoySpacing.medium3),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.large1),
-                    child: Text(S().manual_setup_import_backup_subheading,
-                        textAlign: TextAlign.center,
-                        style: EnvoyTypography.info
-                            .copyWith(color: EnvoyColors.textTertiary)),
-                  ),
+                  OnboardingButton(
+                      type: EnvoyButtonTypes.secondary,
+                      label: S().manual_setup_import_backup_CTA2,
+                      onTap: () {
+                        Future.delayed(const Duration(seconds: 2), () {
+                          setState(() {
+                            _isRecoveryInProgress = true;
+                          });
+                        });
+                        openBackupFile(context).then((value) {
+                          setState(() {
+                            _isRecoveryInProgress = false;
+                          });
+                        });
+                      }),
+                  OnboardingButton(
+                      type: EnvoyButtonTypes.primary,
+                      label: S().manual_setup_import_backup_CTA1,
+                      onTap: () {
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return const ManualSetupCreateAndStoreBackup();
+                        }));
+                      }),
                 ],
               ),
             ),
-          ),
-          const SizedBox(height: EnvoySpacing.medium1),
-          Padding(
-            padding: const EdgeInsets.only(
-                left: EnvoySpacing.medium1,
-                right: EnvoySpacing.medium1,
-                bottom: EnvoySpacing.medium2,
-                top: EnvoySpacing.small),
-            child: Column(
-              children: [
-                OnboardingButton(
-                    type: EnvoyButtonTypes.secondary,
-                    label: S().manual_setup_import_backup_CTA2,
-                    onTap: () {
-                      Future.delayed(const Duration(seconds: 2), () {
-                        setState(() {
-                          _isRecoveryInProgress = true;
-                        });
-                      });
-                      openBackupFile(context).then((value) {
-                        setState(() {
-                          _isRecoveryInProgress = false;
-                        });
-                      });
-                    }),
-                OnboardingButton(
-                    type: EnvoyButtonTypes.primary,
-                    label: S().manual_setup_import_backup_CTA1,
-                    onTap: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return const ManualSetupCreateAndStoreBackup();
-                      }));
-                    }),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ));
+          ],
+        ),
+      )),
+    );
   }
 }
 
