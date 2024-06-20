@@ -41,6 +41,7 @@ class AuthenticateApp extends StatelessWidget {
         GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);
 
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         localizationsDelegates: const [
           S.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -94,7 +95,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
     }
     return Container(
       decoration: const BoxDecoration(
-        color: EnvoyColors.textPrimaryInverse,
+        color: Colors.transparent,
         image: DecorationImage(
             image: ExactAssetImage('assets/splash_blank.png'),
             fit: BoxFit.cover,
