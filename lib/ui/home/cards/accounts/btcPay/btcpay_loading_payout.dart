@@ -38,12 +38,14 @@ class BtcPayLoadingPayoutState extends State<BtcPayLoadingPayout> {
     if (result == BtcPayVoucherRedeemResult.success) {
       {
         addPendingTx(
-            widget.voucher.id,
+            widget.voucher.pullPaymentId,
             address,
             widget.account,
             widget.voucher.amountSats,
             widget.voucher.currency,
-            widget.voucher.amount);
+            widget.voucher.amount,
+            widget.voucher.payoutId,
+            widget.voucher.uri);
         widget.controller.jumpToPage(4);
       }
     } else {

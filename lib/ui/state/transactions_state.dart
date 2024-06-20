@@ -15,6 +15,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/business/btcpay_voucher.dart';
 
 final pendingTransactionsProvider =
     Provider.family<List<Transaction>, String?>((ref, String? accountId) {
@@ -256,6 +257,16 @@ Future prunePendingTransactions(
   }
 
   for (var pendingTx in btcPay) {
+    if (pendingTx.btcPayVoucherUri != null &&
+        pendingTx.payoutId != null &&
+        pendingTx.pullPaymentId != null) {
+      String? state = await checkPayoutStatus(pendingTx.btcPayVoucherUri!,
+          pendingTx.pullPaymentId!, pendingTx.payoutId!);
+      if (state == "Cancelled") {
+        EnvoyStorage().deleteTxNote(pendingTx.pullPaymentId!);
+        EnvoyStorage().deletePendingTx(pendingTx.txId);
+      }
+    }
     transactions
         .where((tx) => tx.outputs!.contains(pendingTx.address))
         .forEach((actualBtcPayTx) {
