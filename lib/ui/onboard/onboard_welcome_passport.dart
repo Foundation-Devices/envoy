@@ -161,6 +161,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
               ),
               child: Column(
                 children: [
+                  const SizedBox(height: EnvoySpacing.medium1),
                   Flexible(
                     child: Container(
                       constraints: const BoxConstraints(
@@ -175,7 +176,6 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const SizedBox(height: EnvoySpacing.small),
                               Column(
                                 children: [
                                   Padding(
@@ -195,9 +195,8 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                                             decoration: TextDecoration.none,
                                           ),
                                         ),
-                                        const Padding(
-                                            padding: EdgeInsets.all(
-                                                EnvoySpacing.small)),
+                                        const SizedBox(
+                                            height: EnvoySpacing.small),
                                         Text(
                                           S().passport_welcome_screen_subheading,
                                           style: EnvoyTypography.info.copyWith(
@@ -221,13 +220,11 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                     padding: const EdgeInsets.only(
                         left: EnvoySpacing.medium1,
                         right: EnvoySpacing.medium1,
-                        top: EnvoySpacing.medium1,
                         bottom: EnvoySpacing.large2),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                         LinkText(
                           text: S().passport_welcome_screen_cta3,
                           textStyle: EnvoyTypography.button.copyWith(
@@ -240,8 +237,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                                 Uri.parse("https://foundation.xyz/passport"));
                           },
                         ),
-                        const Padding(
-                            padding: EdgeInsets.all(EnvoySpacing.medium1)),
+                        const SizedBox(height: EnvoySpacing.medium1),
                         EnvoyButton(
                           S().passport_welcome_screen_cta2,
                           type: EnvoyButtonTypes.secondary,
@@ -252,8 +248,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                             }));
                           },
                         ),
-                        const Padding(
-                            padding: EdgeInsets.all(EnvoySpacing.small)),
+                        const SizedBox(height: EnvoySpacing.medium1),
                         EnvoyButton(
                           S().passport_welcome_screen_cta1,
                           onTap: () {
