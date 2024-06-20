@@ -4,6 +4,7 @@
 
 import 'dart:math';
 import 'package:envoy/ui/shield.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:flutter/material.dart';
 
 Widget envoyScaffoldShieldScrollView(BuildContext context, Widget child) {
@@ -87,7 +88,7 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
         SizedBox.expand(
             child: CustomPaint(
           size: const Size(double.infinity, double.infinity),
-          painter: StripePainter(stripeCount: 428),
+          painter: StripePainter(EnvoyColors.solidWhite.withOpacity(0.1)),
         )),
         SizedBox.expand(
             child: CustomPaint(
@@ -134,52 +135,85 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
 }
 
 class StripePainter extends CustomPainter {
-  final int stripeCount;
+  final double stripeWidth;
+  final double gapWidth;
+  final double rotateDegree;
+  final Color stripeColor;
+  final Color bgColor;
 
-  StripePainter({this.stripeCount = 400});
+  StripePainter(
+    this.stripeColor, {
+    this.stripeWidth = 2.0,
+    this.gapWidth = 2.0,
+    this.rotateDegree = 25.0,
+    this.bgColor = Colors.transparent,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
-    //stripes Pattern rect.
-    final rect = Rect.fromPoints(
-        Offset(size.width / 2, -size.height), Offset(size.width, size.height));
+    /// Expand canvas size
+    const offsetX = 0.0;
+    const offsetY = 10.0;
+    final width = size.width + offsetX * 2;
+    final height = size.height + offsetY * 2;
 
-    canvas.save();
-    canvas.clipRect(rect);
+    /// Shift canvas to top,left with offsetX,Y
+    canvas.translate(-offsetX, -offsetY);
 
-    final x = rect.left;
-    final y = rect.top;
+    // Clip the canvas to the right half
+    final rightHalfRect =
+        Rect.fromLTRB(size.width / 2, 0, size.width, size.height);
+    canvas.clipRect(rightHalfRect);
 
-    final maxDimension = max(rect.width, rect.height);
-    final stripeW = maxDimension / stripeCount / 6;
-    var step = stripeW * 9;
-    final paintStrip = Paint()
-      ..style = PaintingStyle.fill
-      ..color = Colors.transparent;
-    canvas.drawRect(rect, paintStrip);
-    final rectStripesCount = stripeCount * 2.5;
-    final allStripesPath = Path();
-    for (var i = 1; i < rectStripesCount; i += 2) {
-      final stripePath = Path();
-      stripePath.moveTo(x - stripeW + step, y);
-      stripePath.lineTo(x + step, y);
-      stripePath.lineTo(x, y + step);
-      stripePath.lineTo(x - stripeW, y + step);
-      stripePath.close();
-      allStripesPath.addPath(stripePath, Offset.zero);
-      step += stripeW * 9;
+    /// Calculate the biggest diagonal of the screen.
+    final double diagonal = sqrt(width * width + height * height);
+
+    /// jointSize: distance from right edge of (i) stripe to right one of next stripe
+    final double jointSize = stripeWidth + gapWidth;
+
+    /// Calculate the number of iterations needed to cover the diagonal of the screen.
+    final int numIterations = (diagonal / jointSize).ceil();
+
+    /// convert degree to radian
+    final rotateRadian = pi / 180 * rotateDegree;
+
+    /// calculate the xOffset, yOffset according to the trigonometric formula
+    final xOffset = jointSize / sin(rotateRadian);
+    final yOffset = jointSize / sin(pi / 2 - rotateRadian);
+
+    /// config stroke paint object
+    final paint = Paint()
+      ..color = stripeColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = stripeWidth;
+    final path = Path();
+
+    /// setup the path
+    for (int i = 0; i < numIterations; i++) {
+      /// start point on Y axis -> xStart = 0
+      final double yStart = i * yOffset;
+
+      /// end point on X axis -> yEnd = 0
+      final double xEnd = i * xOffset;
+
+      /// make line start -> end
+      path.moveTo(0, yStart);
+      path.lineTo(xEnd, 0);
     }
-    paintStrip
-      ..style = PaintingStyle.fill
-      ..color = Colors.white.withOpacity(0.11);
-    canvas.drawPath(allStripesPath, paintStrip);
 
-    canvas.restore();
+    /// draw path on canvas by using paint object
+    canvas.drawPath(path, paint);
+
+    /// Fill the pattern area background with the patternColor.
+    final patternPaint = Paint()
+      ..color = bgColor
+      ..style = PaintingStyle.fill;
+    canvas.drawRect(Offset.zero & size, patternPaint);
   }
 
   @override
-  bool shouldRepaint(covariant StripePainter oldDelegate) {
-    return oldDelegate.stripeCount != stripeCount;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return oldDelegate != this;
   }
 }
 
