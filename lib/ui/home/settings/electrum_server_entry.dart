@@ -208,7 +208,7 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
               _state = ElectrumServerEntryState.valid;
               _isError = false;
               _textBelow =
-                  "${S().privacy_node_connectedTo} Esplora server (Block height: $blockHeight)"; // TODO: Figma
+                  "${S().privacy_node_configure_connectedToEsplora} (${S().privacy_node_configure_blockHeight} $blockHeight)";
             });
           }
         } else {
