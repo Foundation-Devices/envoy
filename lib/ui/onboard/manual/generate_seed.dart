@@ -5,10 +5,11 @@
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
-import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:rive/rive.dart';
 import 'package:wallet/wallet.dart';
@@ -150,7 +151,8 @@ class _SeedScreenState extends State<SeedScreen> {
               ),
               const Padding(padding: EdgeInsets.all(14)),
               Text(S().manual_setup_generatingSeedLoadingInfo,
-                  style: Theme.of(context).textTheme.titleMedium),
+                  style: EnvoyTypography.subheading20
+                      .copyWith(color: EnvoyColors.gray1000)),
             ],
           ),
         )
@@ -336,7 +338,7 @@ class _SeedScreenState extends State<SeedScreen> {
                       child: Column(
                     children: [
                       const Icon(EnvoyIcons.exclamationWarning,
-                          color: EnvoyColors.darkCopper, size: 56),
+                          color: EnvoyColors.copper500, size: 56),
                       const Padding(padding: EdgeInsets.all(12)),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
