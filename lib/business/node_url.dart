@@ -17,13 +17,17 @@ const String SSL_PORT = ":50002";
 
 // Normalize the protocol part of the node URL to lowercase
 String normalizeProtocol(String nodeUrl) {
-  if (nodeUrl.toLowerCase().startsWith(TCP_PREFIX)) {
+  String nodeUrlLowerCase = nodeUrl.toLowerCase();
+  if (nodeUrlLowerCase.startsWith(TCP_PREFIX)) {
     return TCP_PREFIX + nodeUrl.substring(TCP_PREFIX.length);
-  } else if (nodeUrl.toLowerCase().startsWith(SSL_PREFIX)) {
+  }
+  if (nodeUrlLowerCase.startsWith(SSL_PREFIX)) {
     return SSL_PREFIX + nodeUrl.substring(SSL_PREFIX.length);
-  } else if (nodeUrl.toLowerCase().startsWith(HTTP_PREFIX)) {
+  }
+  if (nodeUrlLowerCase.startsWith(HTTP_PREFIX)) {
     return HTTP_PREFIX + nodeUrl.substring(HTTP_PREFIX.length);
-  } else if (nodeUrl.toLowerCase().startsWith(HTTPS_PREFIX)) {
+  }
+  if (nodeUrlLowerCase.startsWith(HTTPS_PREFIX)) {
     return HTTPS_PREFIX + nodeUrl.substring(HTTPS_PREFIX.length);
   }
   return nodeUrl;
