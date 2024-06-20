@@ -5,10 +5,10 @@
 import 'package:envoy/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-//import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class AboutPage extends StatefulWidget {
   const AboutPage({super.key});
@@ -142,19 +142,18 @@ class AboutButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-          height: 25.0,
+          width: 80,
           decoration: const BoxDecoration(
-              color: EnvoyColors.darkTeal,
-              borderRadius: BorderRadius.all(Radius.circular(15.0))),
+              color: EnvoyColors.accentPrimary,
+              borderRadius:
+                  BorderRadius.all(Radius.circular(EnvoySpacing.small))),
           child: Center(
               child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
+            padding: const EdgeInsets.all(EnvoySpacing.small),
             child: Text(
               label,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14.0,
-                fontWeight: FontWeight.w500,
+              style: EnvoyTypography.button.copyWith(
+                color: EnvoyColors.textPrimaryInverse,
               ),
               textAlign: TextAlign.center,
             ),
