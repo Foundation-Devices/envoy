@@ -198,6 +198,18 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
 
     final accountAccentColor = account.color;
 
+    final FlexAlignment btcFlex = totalInputAmount > 9999999999999999
+        ? FlexAlignment.flexLeft
+        : totalInputAmount < 9999999
+            ? FlexAlignment.flexRight
+            : FlexAlignment.noFlex;
+
+    final FlexAlignment satsFlex = totalInputAmount > 9999999999
+        ? FlexAlignment.flexLeft
+        : totalInputAmount < 9999999
+            ? FlexAlignment.flexRight
+            : FlexAlignment.noFlex;
+
     Set<String> spendTags = inputTagData.map((e) => e.item1).toSet();
 
     final note = ref.watch(stagingTxNoteProvider) ?? "";
@@ -280,6 +292,8 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                             amountWidgetStyle: AmountWidgetStyle.singleLine),
                         bottomWidgets: [
                           EnvoyInfoCardListItem(
+                            flexAlignment:
+                                unit == DisplayUnit.btc ? btcFlex : satsFlex,
                             title:
                                 "${S().coincontrol_tx_detail_expand_spentFrom} ${inputTagData.length} ${inputTagData.length == 1 ? S().coincontrol_tx_detail_expand_coin : S().coincontrol_tx_detail_expand_coins}",
                             icon: const EnvoyIcon(EnvoyIcons.utxo,
