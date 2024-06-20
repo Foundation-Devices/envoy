@@ -14,6 +14,8 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -41,6 +43,7 @@ class AuthenticateApp extends StatelessWidget {
         GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);
 
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         localizationsDelegates: const [
           S.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -94,7 +97,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
     }
     return Container(
       decoration: const BoxDecoration(
-        color: EnvoyColors.textPrimaryInverse,
+        color: Colors.transparent,
         image: DecorationImage(
             image: ExactAssetImage('assets/splash_blank.png'),
             fit: BoxFit.cover,
