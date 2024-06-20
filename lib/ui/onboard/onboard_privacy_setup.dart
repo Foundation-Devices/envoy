@@ -149,9 +149,8 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                             vertical: EnvoySpacing.small),
                         child: const PrivacyOptionSelect()),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: EnvoySpacing.xs,
-                          horizontal: EnvoySpacing.medium3),
+                      padding:
+                          const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
                       child: Consumer(
                         builder: (context, ref, child) {
                           bool betterPerformance0 =
