@@ -6,6 +6,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class AddressWidget extends StatelessWidget {
   final String address;
@@ -103,5 +104,33 @@ class AddressWidget extends StatelessWidget {
     }
 
     return textSpans;
+  }
+
+  double calculateOptimalPadding(String address, BuildContext context,
+      {double allHorizontalPaddings = 0}) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double addressBox = screenWidth - allHorizontalPaddings;
+    double addressHalfWidth = 0;
+    double optimalPadding = 0;
+
+    TextPainter textPainter = TextPainter(
+      // calculate address width in a single line
+      text: TextSpan(children: _buildAddressChunks(address)),
+      textDirection: TextDirection.ltr,
+      maxLines: 1,
+    );
+    textPainter.layout();
+
+    addressHalfWidth = textPainter.width * 0.5 +
+        EnvoySpacing.large2; // half the address width + a bit more
+
+    if (addressBox > addressHalfWidth) {
+      // calculate padding if it is positive
+      optimalPadding = (addressBox - addressHalfWidth) * 0.5;
+    } else {
+      optimalPadding = EnvoySpacing.xs;
+    }
+
+    return optimalPadding;
   }
 }
