@@ -15,7 +15,7 @@ import 'package:envoy/business/account.dart';
 
 enum BtcPayVoucherRedeemResult { success, timeout, voucherInvalid }
 
-enum BtcPayVoucherErrorType { invalid, expired, onChain }
+enum BtcPayVoucherErrorType { invalid, expired, onChain, wrongNetwork }
 
 class BtcPayVoucher {
   String pullPaymentId = "";
@@ -147,7 +147,7 @@ class BtcPayVoucher {
           payoutId = json['id'];
           return BtcPayVoucherRedeemResult.success;
         }
-      case 400 || 422:
+      case 400: // Wellknown error codes
         {
           final json = jsonDecode(response.body);
           errorMessage = json['message'] ?? "";
@@ -156,8 +156,20 @@ class BtcPayVoucher {
             errorType = BtcPayVoucherErrorType.onChain;
           }
 
-          if (errorMessage.contains("expired")) {
+          if (errorCode == "expired") {
             errorType = BtcPayVoucherErrorType.expired;
+          }
+
+          return BtcPayVoucherRedeemResult.voucherInvalid;
+        }
+      case 422: // Unable to validate the request
+        {
+          final json = jsonDecode(response.body);
+          errorMessage = json[0]['message'] ?? "";
+          if (errorMessage ==
+              "A valid address was not provided") // The message when network is wrong
+          {
+            errorType = BtcPayVoucherErrorType.wrongNetwork;
           }
 
           return BtcPayVoucherRedeemResult.voucherInvalid;
