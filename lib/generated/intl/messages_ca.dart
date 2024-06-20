@@ -567,6 +567,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "En aquest moment, Envoy no admet despeses en lot."),
         "envoy_faq_answer_23": MessageLookupByLibrary.simpleMessage(
             "Sí. A partir de la versió 1.4.0, Envoy permet personalitzar totalment les comissions dels miners, així com dues opcions ràpides de selecció de comissions: \'Estàndard\' i \'Més ràpid\'. \'Estàndard\' té com a objectiu finalitzar la teva transacció en un termini de 60 minuts i \'Més ràpid\' en 10 minuts. Aquestes són estimacions basades en la congestió de la xarxa en el moment de construir la transacció i sempre et mostrarem el cost de les dues opcions abans de finalitzar la transacció."),
+        "envoy_faq_answer_24": MessageLookupByLibrary.simpleMessage(
+            "Yes! From v1.7 you can now purchase Bitcoin within Envoy and have it automatically deposited to your mobile account, or any connected Passport accounts. Just click on the buy button from the main Accounts screen."),
         "envoy_faq_answer_3": MessageLookupByLibrary.simpleMessage(
             "Envoy és una cartera Bitcoin senzilla amb potents funcions de privacitat i gestió de comptes, com ara les Còpies de Seguretat Màgiques. Utilitzeu Envoy juntament amb la vostra cartera Passport per a la configuració, actualitzacions de firmware i molt més."),
         "envoy_faq_answer_4": MessageLookupByLibrary.simpleMessage(
@@ -613,6 +615,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Envoy admet les despeses per lots?"),
         "envoy_faq_question_23": MessageLookupByLibrary.simpleMessage(
             "Envoy permet la selecció personalitzada de tarifes de miners?"),
+        "envoy_faq_question_24":
+            MessageLookupByLibrary.simpleMessage("Can I buy Bitcoin in Envoy?"),
         "envoy_faq_question_3":
             MessageLookupByLibrary.simpleMessage("Què pot fer Envoy?"),
         "envoy_faq_question_4": MessageLookupByLibrary.simpleMessage(
