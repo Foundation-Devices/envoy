@@ -56,7 +56,7 @@ class _ExportSeedModalState extends State<ExportSeedModal> {
                     child: Text(
                       S().component_warning,
                       textAlign: TextAlign.center,
-                      style: EnvoyTypography.heading,
+                      style: EnvoyTypography.subheading,
                     ),
                   ),
                   Padding(

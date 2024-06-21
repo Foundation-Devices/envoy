@@ -151,7 +151,7 @@ class _SeedScreenState extends State<SeedScreen> {
               ),
               const Padding(padding: EdgeInsets.all(14)),
               Text(S().manual_setup_generatingSeedLoadingInfo,
-                  style: EnvoyTypography.subheading20
+                  style: EnvoyTypography.heading
                       .copyWith(color: EnvoyColors.gray1000)),
             ],
           ),

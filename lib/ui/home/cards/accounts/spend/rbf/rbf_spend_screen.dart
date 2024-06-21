@@ -231,7 +231,8 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                           child: Text(
                                               S().replaceByFee_boost_tx_heading,
                                               textAlign: TextAlign.center,
-                                              style: EnvoyTypography.heading),
+                                              style:
+                                                  EnvoyTypography.subheading),
                                         ),
                                       ),
                                     ],
