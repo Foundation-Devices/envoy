@@ -27,17 +27,6 @@ class AuthenticateApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        systemStatusBarContrastEnforced: false,
-        systemNavigationBarContrastEnforced: false,
-        systemNavigationBarColor: Colors.transparent,
-        systemNavigationBarDividerColor: Colors.transparent,
-        systemNavigationBarIconBrightness: Brightness.dark,
-        statusBarIconBrightness: Brightness.dark));
-
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
-        overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
-
     final envoyTextTheme =
         GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);
 
@@ -297,6 +286,25 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      // Portrait mode only outside of video player
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitDown,
+        DeviceOrientation.portraitUp,
+      ]);
+      //sets theme for authentication page
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarContrastEnforced: false,
+        systemStatusBarContrastEnforced: false,
+        statusBarColor: Colors.transparent,
+        systemNavigationBarIconBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+      ));
+
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
+          overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+
       bool? useAuth = LocalStorage().prefs.getBool("useLocalAuth");
       if (useAuth == true) {
         initiateAuth();
