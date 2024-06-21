@@ -27,7 +27,6 @@ class AuthenticateApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         systemStatusBarContrastEnforced: false,
         systemNavigationBarContrastEnforced: false,
@@ -36,10 +35,8 @@ class AuthenticateApp extends StatelessWidget {
         systemNavigationBarIconBrightness: Brightness.dark,
         statusBarIconBrightness: Brightness.dark));
 
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,overlays: [
-      SystemUiOverlay.top,
-      SystemUiOverlay.bottom
-    ]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
+        overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
 
     final envoyTextTheme =
         GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);

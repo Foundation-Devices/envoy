@@ -101,10 +101,8 @@ class EnvoyApp extends StatelessWidget {
         systemNavigationBarIconBrightness: Brightness.dark,
         statusBarIconBrightness: Brightness.dark));
 
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,overlays: [
-      SystemUiOverlay.top,
-      SystemUiOverlay.bottom
-    ]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
+        overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
 
     const envoyAccentColor = EnvoyColors.darkTeal;
     const envoyBaseColor = Colors.transparent;
