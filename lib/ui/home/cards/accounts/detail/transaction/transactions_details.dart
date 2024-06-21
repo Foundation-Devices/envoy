@@ -222,7 +222,7 @@ class _TransactionsDetailsWidgetState
                               : Container(
                                   constraints: BoxConstraints(
                                       maxWidth:
-                                          showAddressExpanded ? 125 : 155),
+                                          showAddressExpanded ? 150 : 160),
                                   child: AddressWidget(
                                     widgetKey:
                                         ValueKey<bool>(showAddressExpanded),
@@ -267,13 +267,16 @@ class _TransactionsDetailsWidgetState
                         String txId = tx.type == TransactionType.ramp
                             ? "loading"
                             : tx.txId; // TODO: Figma
-                        return Text(
-                          truncateWithEllipsisInCenter(txId,
-                              lerpDouble(16, txId.length, value)!.toInt()),
-                          style: EnvoyTypography.info
-                              .copyWith(color: Colors.black),
-                          textAlign: TextAlign.end,
-                          maxLines: 4,
+                        return Container(
+                          constraints: const BoxConstraints(maxWidth: 150),
+                          child: Text(
+                            truncateWithEllipsisInCenter(txId,
+                                lerpDouble(16, txId.length, value)!.toInt()),
+                            style: EnvoyTypography.info
+                                .copyWith(color: Colors.black),
+                            textAlign: TextAlign.end,
+                            maxLines: 4,
+                          ),
                         );
                       },
                     ),
@@ -323,16 +326,19 @@ class _TransactionsDetailsWidgetState
                               begin: 0, end: showPaymentId ? 1 : 0),
                           duration: const Duration(milliseconds: 200),
                           builder: (context, value, child) {
-                            return Text(
-                                truncateWithEllipsisInCenter(
-                                    tx.pullPaymentId!,
-                                    lerpDouble(16, tx.pullPaymentId!.length,
-                                            value)!
-                                        .toInt()),
-                                style: EnvoyTypography.info
-                                    .copyWith(color: EnvoyColors.textPrimary),
-                                textAlign: TextAlign.end,
-                                maxLines: 4);
+                            return Container(
+                              constraints: const BoxConstraints(maxWidth: 150),
+                              child: Text(
+                                  truncateWithEllipsisInCenter(
+                                      tx.pullPaymentId!,
+                                      lerpDouble(16, tx.pullPaymentId!.length,
+                                              value)!
+                                          .toInt()),
+                                  style: EnvoyTypography.info
+                                      .copyWith(color: EnvoyColors.textPrimary),
+                                  textAlign: TextAlign.end,
+                                  maxLines: 4),
+                            );
                           },
                         )),
                   ),
@@ -364,13 +370,18 @@ class _TransactionsDetailsWidgetState
                             begin: 0, end: showTxIdExpanded ? 1 : 0),
                         duration: const Duration(milliseconds: 200),
                         builder: (context, value, child) {
-                          return Text(
-                            truncateWithEllipsisInCenter(tx.txId,
-                                lerpDouble(16, tx.txId.length, value)!.toInt()),
-                            style: EnvoyTypography.info
-                                .copyWith(color: Colors.black),
-                            textAlign: TextAlign.end,
-                            maxLines: 4,
+                          return Container(
+                            constraints: const BoxConstraints(maxWidth: 150),
+                            child: Text(
+                              truncateWithEllipsisInCenter(
+                                  tx.txId,
+                                  lerpDouble(16, tx.txId.length, value)!
+                                      .toInt()),
+                              style: EnvoyTypography.info
+                                  .copyWith(color: Colors.black),
+                              textAlign: TextAlign.end,
+                              maxLines: 4,
+                            ),
                           );
                         },
                       ),

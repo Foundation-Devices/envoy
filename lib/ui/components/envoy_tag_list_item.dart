@@ -10,66 +10,153 @@ import 'package:flutter/widgets.dart';
 
 enum FlexAlignment { flexLeft, flexRight, noFlex }
 
-class EnvoyInfoCardListItem extends StatelessWidget {
+class EnvoyInfoCardListItem extends StatefulWidget {
   final String title;
   final Widget icon;
   final Widget trailing;
-  final FlexAlignment flexAlignment;
+  final bool priority;
   final Color? textColor;
+  final FlexAlignment flexAlignment;
 
   const EnvoyInfoCardListItem({
     super.key,
     required this.title,
     required this.icon,
     required this.trailing,
-    this.flexAlignment = FlexAlignment.noFlex,
+    this.priority = false,
     this.textColor,
+    this.flexAlignment = FlexAlignment.noFlex,
   });
 
   @override
+  State<EnvoyInfoCardListItem> createState() => _EnvoyInfoCardListItemState();
+}
+
+class _EnvoyInfoCardListItemState extends State<EnvoyInfoCardListItem> {
+  double iconWidth = 26;
+  double titleWidth = 0;
+
+  // double trailingWidth = 0;
+  int flexSpan = 30;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _measureTitleWidth();
+    });
+  }
+
+  void _measureTitleWidth() {
+    TextPainter textPainter = TextPainter(
+      text: TextSpan(
+        text: widget.title,
+        style: EnvoyTypography.body,
+      ),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    )..layout();
+
+    setState(() {
+      titleWidth = textPainter.size.width;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    double iconAndTitleWidth = titleWidth + iconWidth + 15;
+
     return Padding(
       padding: const EdgeInsets.symmetric(
           horizontal: EnvoySpacing.xs, vertical: EnvoySpacing.small),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Flexible(
-            flex: flexAlignment == FlexAlignment.flexRight ? 8 : 5,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: EnvoySpacing.xs / 2),
-                  child: SizedBox(
-                    width: 26,
-                    child: icon,
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: EnvoySpacing.xs,
+      child: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          //trailingWidth = trailingWidth == 0 ? 50 : trailingWidth;
+          double availableWidth = constraints.maxWidth;
+
+          //double totalFlexWidth = iconAndTitleWidth + trailingWidth;
+
+          int flex1 = (((availableWidth - iconAndTitleWidth) / availableWidth) *
+                  flexSpan)
+              .round()
+              .toInt();
+          int flex2 = flexSpan - flex1;
+
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Flexible(
+                flex: flex2,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: EnvoySpacing.xs / 2),
+                      child: SizedBox(
+                        width: iconWidth,
+                        child: widget.icon,
+                      ),
                     ),
-                    child: Text(
-                      title,
-                      style: EnvoyTypography.body.copyWith(
-                          color: textColor ?? EnvoyColors.textPrimary),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          left: EnvoySpacing.xs,
+                        ),
+                        child: Text(
+                          widget.title,
+                          style: EnvoyTypography.body.copyWith(
+                              color:
+                                  widget.textColor ?? EnvoyColors.textPrimary),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-          Flexible(
-              flex: flexAlignment == FlexAlignment.flexLeft ? 8 : 4,
-              child: trailing),
-        ],
+              ),
+              Flexible(
+                flex: flex1,
+                // child:
+                // MeasureSize(
+                //   onChange: (size) {
+                //     setState(() {
+                //       trailingWidth = size.width;
+                //     });
+                //   },
+                child: widget.trailing,
+                //),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 }
+
+// class MeasureSize extends StatefulWidget {
+//   final Widget child;
+//   final ValueChanged<Size> onChange;
+//
+//   const MeasureSize({super.key, required this.onChange, required this.child});
+//
+//   @override
+//   State<MeasureSize> createState() => _MeasureSizeState();
+// }
+//
+// class _MeasureSizeState extends State<MeasureSize> {
+//   @override
+//   Widget build(BuildContext context) {
+//     WidgetsBinding.instance.addPostFrameCallback((_) {
+//       final size = context.size;
+//       if (size != null) {
+//         widget.onChange(size);
+//       }
+//     });
+//
+//     return widget.child;
+//   }
+// }
