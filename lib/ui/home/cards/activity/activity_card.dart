@@ -70,7 +70,7 @@ class TopLevelActivityCard extends ConsumerWidget {
             Colors.transparent,
             EnvoyColors.solidWhite,
           ],
-          stops: [0.0, 0.03, 0.92, 1.0],
+          stops: [0.0, 0.05, 0.85, 0.96],
         ).createShader(rect);
       },
       blendMode: BlendMode.dstOut,

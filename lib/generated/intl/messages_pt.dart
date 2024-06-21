@@ -569,6 +569,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "De momento a Envoy não suporta gastos em lote."),
         "envoy_faq_answer_23": MessageLookupByLibrary.simpleMessage(
             "Sim. A partir da versão 1.4.0, a Envoy permite personalizar na íntegra as taxas de envio e disponibiliza também duas opções de taxa para seleção rápida - \'Padrão\' e \'Rápida\'. A opção \'Padrão\' tem como objetivo finalizar a tua transação em 60 minutos e a opção \'Rápida\' em 10 minutos. Estas taxas são estimativas baseadas no congestionamento da rede no momento em que a transacção é construída e ser-te-á sempre mostrado o custo de ambas as opções antes de finalizares a transação."),
+        "envoy_faq_answer_24": MessageLookupByLibrary.simpleMessage(
+            "Yes! From v1.7 you can now purchase Bitcoin within Envoy and have it automatically deposited to your mobile account, or any connected Passport accounts. Just click on the buy button from the main Accounts screen."),
         "envoy_faq_answer_3": MessageLookupByLibrary.simpleMessage(
             "A Envoy é uma carteira simples de Bitcoin com poderosas funcionalidades de gestão de contas e privacidade, incluindo as Cópias Mágicas de Segurança.Utiliza a Envoy em conjunto com a carteira física Passport para questões relacionadas com configurações, actualizações de firmware e muito mais."),
         "envoy_faq_answer_4": MessageLookupByLibrary.simpleMessage(
@@ -615,6 +617,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "A Envoy é compatível com gastos em Lote?"),
         "envoy_faq_question_23": MessageLookupByLibrary.simpleMessage(
             "A Envoy permite a selecção personalizada das taxas de envio?"),
+        "envoy_faq_question_24":
+            MessageLookupByLibrary.simpleMessage("Can I buy Bitcoin in Envoy?"),
         "envoy_faq_question_3": MessageLookupByLibrary.simpleMessage(
             "O que é que a Envoy pode fazer?"),
         "envoy_faq_question_4": MessageLookupByLibrary.simpleMessage(

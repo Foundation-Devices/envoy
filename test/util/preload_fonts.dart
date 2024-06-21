@@ -15,7 +15,7 @@ Future<void> preloadFonts(WidgetTester tester) async {
       child: Column(
         children: [
           Text("A", style: EnvoyTypography.body),
-          Text("B", style: EnvoyTypography.largeAmount),
+          Text("B", style: EnvoyTypography.digitsLarge),
         ],
       ),
     ),

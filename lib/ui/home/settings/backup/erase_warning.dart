@@ -42,8 +42,39 @@ class _EraseWalletsAndBackupsWarningState
     extends State<EraseWalletsAndBackupsWarning> {
   final PageController _pageController = PageController();
 
+  double estimateExpandablePageViewHeight(BuildContext context) {
+    double text1Height = 0.0;
+    double text2Height = 0.0;
+    double biggerText = 0.0;
+
+    String text1 = Platform.isAndroid
+        ? S().backups_erase_wallets_and_backups_modal_1_2_android_subheading
+        : S().backups_erase_wallets_and_backups_modal_1_2_ios_subheading;
+    text1Height = estimateTextHeight(text1, EnvoyTypography.info, context);
+
+    String text2 = S().backups_erase_wallets_and_backups_modal_2_2_subheading;
+    text2Height += estimateTextHeight(text2, EnvoyTypography.info, context);
+
+    biggerText = text1Height > text2Height ? text1Height : text2Height;
+
+    return biggerText + EnvoySpacing.medium1;
+  }
+
+  double estimateTextHeight(
+      String text, TextStyle style, BuildContext context) {
+    final TextPainter textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      textDirection: TextDirection.ltr,
+      maxLines: null,
+    )..layout(maxWidth: MediaQuery.of(context).size.width * 0.5);
+
+    return textPainter.size.height;
+  }
+
   @override
   Widget build(BuildContext context) {
+    double expandablePageViewHeight = estimateExpandablePageViewHeight(context);
+
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
       child: Padding(
@@ -85,9 +116,10 @@ class _EraseWalletsAndBackupsWarningState
                         vertical: EnvoySpacing.small,
                         horizontal: EnvoySpacing.medium1),
                     child: Container(
+                      height: expandablePageViewHeight,
                       constraints: BoxConstraints(
                         maxHeight: MediaQuery.of(context).size.height *
-                            0.45, // max size of PageView
+                            0.6, // max size of PageView
                       ),
                       child: SingleChildScrollView(
                         child: ExpandablePageView(

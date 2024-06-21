@@ -246,8 +246,6 @@ class _AccountCardState extends ConsumerState<AccountCard>
                     child: EnvoyTextButton(
                         label: S().receive_tx_list_receive,
                         onTap: () {
-                          EnvoyStorage().addPromptState(
-                              DismissiblePrompt.userInteractedWithReceive);
                           context.go(ROUTE_ACCOUNT_RECEIVE, extra: account);
                         }),
                   ),

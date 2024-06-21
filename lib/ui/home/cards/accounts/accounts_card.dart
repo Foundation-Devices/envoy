@@ -282,14 +282,14 @@ class AccountPrompts extends ConsumerWidget {
     var isDragAndDropDismissed =
         ref.watch(arePromptsDismissedProvider(DismissiblePrompt.dragAndDrop));
 
-    var userInteractedWithReceive = ref.watch(arePromptsDismissedProvider(
-        DismissiblePrompt.userInteractedWithReceive));
+    var userInteractedWithAccDetail = ref.watch(arePromptsDismissedProvider(
+        DismissiblePrompt.userInteractedWithAccDetail));
     var accounts = ref.watch(accountsProvider);
     var accountsHaveZeroBalance = ref.watch(accountsZeroBalanceProvider);
 
-    //Show if the user never visited receive screen, has no balance
+    //Show if the user never visited account detail screen, has no balance
     // and there is only one account visible
-    if (!userInteractedWithReceive &&
+    if (!userInteractedWithAccDetail &&
         accountsHaveZeroBalance &&
         accounts.length == 1) {
       return Center(
@@ -306,7 +306,7 @@ class AccountPrompts extends ConsumerWidget {
           ),
           onTap: () {
             EnvoyStorage()
-                .addPromptState(DismissiblePrompt.userInteractedWithReceive);
+                .addPromptState(DismissiblePrompt.userInteractedWithAccDetail);
           },
         ),
         Container(
@@ -342,14 +342,18 @@ class AccountPrompts extends ConsumerWidget {
         );
       }
 
-      if (!isDragAndDropDismissed && accounts.length > 1) {
+      if (!isDragAndDropDismissed && accounts.length > 1 ||
+          !userInteractedWithAccDetail) {
         return Center(
           child: Wrap(
             alignment: WrapAlignment.center,
             spacing: 5,
             children: [
               Text(
-                S().tap_and_drag_first_time_text,
+                userInteractedWithAccDetail
+                    ? S().tap_and_drag_first_time_text
+                    : S()
+                        .hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt,
                 style: EnvoyTypography.explainer,
               ),
               GestureDetector(

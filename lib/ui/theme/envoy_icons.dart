@@ -84,6 +84,7 @@ enum EnvoyIcons {
   calendar,
   activity,
   download,
+  wallet,
 }
 
 class EnvoyIcon extends StatelessWidget {

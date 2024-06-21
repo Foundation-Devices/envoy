@@ -85,7 +85,7 @@ class PpSetupIntroPage extends StatelessWidget {
                                 Text(
                                   S().envoy_pp_setup_intro_heading,
                                   textAlign: TextAlign.center,
-                                  style: EnvoyTypography.subheading20,
+                                  style: EnvoyTypography.heading,
                                 ),
                                 const Padding(
                                     padding:

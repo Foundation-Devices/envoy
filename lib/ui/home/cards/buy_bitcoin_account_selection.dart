@@ -306,7 +306,7 @@ class _ChooseAccountState extends State<ChooseAccount> {
               centerTitle: true,
               title: Text(
                 S().header_chooseAccount,
-                style: EnvoyTypography.heading.copyWith(color: Colors.white),
+                style: EnvoyTypography.subheading.copyWith(color: Colors.white),
               ),
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_ios_new_rounded),

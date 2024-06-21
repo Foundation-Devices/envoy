@@ -274,6 +274,8 @@ class EnvoyStorage {
     String? pullPaymentId,
     String? currency,
     String? currencyAmount,
+    String? payoutId,
+    String? btcPayVoucherUri,
   }) async {
     await pendingTxStore.record(key).put(_db, {
       'account': accountId,
@@ -286,6 +288,8 @@ class EnvoyStorage {
       'pullPaymentId': pullPaymentId,
       'currencyAmount': currencyAmount,
       'currency': currency,
+      'payoutId': payoutId,
+      'btcPayVoucherUri': btcPayVoucherUri,
     });
     return true;
   }
@@ -333,6 +337,8 @@ class EnvoyStorage {
           pullPaymentId: e['pullPaymentId'] as String?,
           currencyAmount: e['currencyAmount'] as String?,
           currency: e['currency'] as String?,
+          payoutId: e['payoutId'] as String?,
+          btcPayVoucherUri: e['btcPayVoucherUri'] as String?,
         );
       },
     ).toList();
@@ -350,6 +356,8 @@ class EnvoyStorage {
     String? pullPaymentId,
     String? currency,
     String? currencyAmount,
+    String? payoutId,
+    String? btcPayVoucherUri,
   }) async {
     // Retrieve the existing record
     final existingRecord = await pendingTxStore.record(key).get(_db);
@@ -374,6 +382,10 @@ class EnvoyStorage {
     if (pullPaymentId != null) updateData['pullPaymentId'] = pullPaymentId;
     if (currency != null) updateData['currency'] = currency;
     if (currencyAmount != null) updateData['currencyAmount'] = currencyAmount;
+    if (payoutId != null) updateData['payoutId'] = payoutId;
+    if (btcPayVoucherUri != null) {
+      updateData['btcPayVoucherUri'] = btcPayVoucherUri;
+    }
 
     // Update the record with the new data
     await pendingTxStore.record(key).update(_db, updateData);

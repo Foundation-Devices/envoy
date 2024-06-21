@@ -9,6 +9,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/bitcoin_parser.dart';
@@ -70,7 +71,8 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
               color: EnvoyColors.surface3,
               borderRadius: BorderRadius.circular(15)),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            padding: const EdgeInsets.symmetric(
+                horizontal: EnvoySpacing.small, vertical: EnvoySpacing.medium1),
             child: TextFormField(
                 enabled: widget.canEdit,
                 controller: widget.controller,
@@ -101,8 +103,7 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                     minWidth: 24,
                     minHeight: 24,
                   ),
-                  contentPadding: const EdgeInsets.symmetric(
-                      vertical: 16.0, horizontal: 0.0),
+                  contentPadding: const EdgeInsets.only(bottom: 2),
                   suffixIcon: !widget.canEdit
                       ? null
                       : Row(
