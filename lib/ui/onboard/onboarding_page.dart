@@ -276,7 +276,7 @@ class OnboardingText extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(header!,
                         textAlign: TextAlign.center,
-                        style: EnvoyTypography.heading
+                        style: EnvoyTypography.subheading
                             .copyWith(
                                 height: 1.2,
                                 fontSize: 20,

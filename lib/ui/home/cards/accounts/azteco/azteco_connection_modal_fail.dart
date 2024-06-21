@@ -50,7 +50,7 @@ class _AztecoRedeemModalFail extends State<AztecoConnectionModalFail> {
                   "Unable to Connect", // TODO: FIGMA
                   //S().azteco_connection_modal_fail_heading,
                   textAlign: TextAlign.center,
-                  style: EnvoyTypography.heading,
+                  style: EnvoyTypography.subheading,
                 ),
               ),
               Padding(
