@@ -72,10 +72,9 @@ func getSdCardBookmark() -> URL {
                         return
                     }
 
-                    self?.accessFolder(url: bookmarkUrl, result: result)
-                    return
+                    return result(bookmarkUrl.startAccessingSecurityScopedResource())
                 } catch let error {
-                    print(error)
+                    return result(false)
                 }
             } else if call.method == "data_changed" {
                 do {
@@ -229,15 +228,6 @@ func getSdCardBookmark() -> URL {
             secureTextField.leftViewMode = .always
         }
 
-    }
-    
-    private func accessFolder(url: URL, result: FlutterResult) {
-        guard url.startAccessingSecurityScopedResource() else {
-            result(false)
-            return
-        }
-
-        result(true)
     }
 
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {

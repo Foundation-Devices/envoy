@@ -28,19 +28,21 @@ class AuthenticateApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        systemStatusBarContrastEnforced: true,
+        systemStatusBarContrastEnforced: false,
+        systemNavigationBarContrastEnforced: false,
         systemNavigationBarColor: Colors.transparent,
         systemNavigationBarDividerColor: Colors.transparent,
         systemNavigationBarIconBrightness: Brightness.dark,
         statusBarIconBrightness: Brightness.dark));
 
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
-        overlays: [SystemUiOverlay.top]);
+        overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
 
     final envoyTextTheme =
         GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);
 
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         localizationsDelegates: const [
           S.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -94,7 +96,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
     }
     return Container(
       decoration: const BoxDecoration(
-        color: EnvoyColors.textPrimaryInverse,
+        color: Colors.transparent,
         image: DecorationImage(
             image: ExactAssetImage('assets/splash_blank.png'),
             fit: BoxFit.cover,

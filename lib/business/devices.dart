@@ -137,4 +137,8 @@ class Devices extends ChangeNotifier {
             ?.firmwareVersion ??
         "";
   }
+
+  Device? getDeviceById(int deviceId) {
+    return devices.firstWhereOrNull((device) => device.type.index == deviceId);
+  }
 }

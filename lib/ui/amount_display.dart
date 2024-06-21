@@ -113,7 +113,7 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
               ),
               Text(
                   widget.displayedAmount.isEmpty ? "0" : widget.displayedAmount,
-                  style: EnvoyTypography.largeAmount
+                  style: EnvoyTypography.digitsLarge
                       .copyWith(color: EnvoyColors.textPrimary)),
               if (renderGhostZeros)
                 Text(ghostDigits,

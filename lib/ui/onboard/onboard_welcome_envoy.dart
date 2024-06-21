@@ -85,68 +85,64 @@ class _OnboardEnvoyWelcomeScreenState
         bottomNavigationBar: envoyScaffoldShieldScrollView(
           context,
           Padding(
-              padding: const EdgeInsets.all(EnvoySpacing.medium1),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
               child: Column(
                 children: [
+                  const SizedBox(height: EnvoySpacing.xl),
                   Flexible(
                     child: SingleChildScrollView(
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(
-                          vertical: EnvoySpacing.large2,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const SizedBox(height: EnvoySpacing.medium1),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: EnvoySpacing.medium1),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    S().envoy_welcome_screen_heading,
-                                    textAlign: TextAlign.center,
-                                    style: EnvoyTypography.body.copyWith(
-                                      fontSize: 20,
-                                      color: EnvoyColors.gray1000,
-                                      decoration: TextDecoration.none,
-                                    ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: EnvoySpacing.medium1),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text(
+                                  S().envoy_welcome_screen_heading,
+                                  textAlign: TextAlign.center,
+                                  style: EnvoyTypography.body.copyWith(
+                                    fontSize: 20,
+                                    color: EnvoyColors.gray1000,
+                                    decoration: TextDecoration.none,
                                   ),
-                                  const Padding(
-                                      padding: EdgeInsets.all(EnvoySpacing.xs)),
-                                  LinkText(
-                                    text: S().envoy_welcome_screen_subheading,
-                                    textStyle: EnvoyTypography.body.copyWith(
-                                      color: EnvoyColors.inactiveDark,
-                                    ),
-                                    linkStyle: EnvoyTypography.body.copyWith(
-                                      color: EnvoyColors.inactiveDark,
-                                      fontWeight: FontWeight.w700,
-                                    ),
+                                ),
+                                const SizedBox(height: EnvoySpacing.small),
+                                LinkText(
+                                  text: S().envoy_welcome_screen_subheading,
+                                  textStyle: EnvoyTypography.body.copyWith(
+                                    color: EnvoyColors.inactiveDark,
                                   ),
-                                ],
-                              ),
+                                  linkStyle: EnvoyTypography.body.copyWith(
+                                    color: EnvoyColors.inactiveDark,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
+                  const SizedBox(height: EnvoySpacing.medium1),
                   Padding(
                     padding: EdgeInsets.only(
                         left: EnvoySpacing.medium1,
                         right: EnvoySpacing.medium1,
-                        top: EnvoySpacing.medium1,
+                        top: EnvoySpacing.medium2,
                         bottom: context.isSmallScreen
                             ? EnvoySpacing.medium1
                             : EnvoySpacing.large1),
                     child: Column(
                       children: [
-                        const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                        const Padding(
+                            padding: EdgeInsets.all(EnvoySpacing.small)),
                         EnvoyButton(
                           S().envoy_welcome_screen_cta2,
                           type: EnvoyButtonTypes.secondary,

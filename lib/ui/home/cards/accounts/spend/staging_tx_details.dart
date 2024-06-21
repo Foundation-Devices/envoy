@@ -511,17 +511,15 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                           ),
                         ]),
                     if (uneconomicSpends) ...[
-                      const Padding(
-                        padding: EdgeInsets.all(EnvoySpacing.medium1),
-                        child: EnvoyIcon(
-                          EnvoyIcons.info,
-                          size: EnvoyIconSize.big,
-                          color: EnvoyColors.solidWhite,
-                        ),
+                      const EnvoyIcon(
+                        EnvoyIcons.alert,
+                        size: EnvoyIconSize.medium,
+                        color: EnvoyColors.solidWhite,
                       ),
+                      const SizedBox(height: EnvoySpacing.xs),
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.medium3),
+                            horizontal: EnvoySpacing.large1),
                         child: Text(
                           S().coincontrol_tx_detail_high_fee_info_overlay_subheading,
                           textAlign: TextAlign.center,

@@ -11,14 +11,16 @@ part 'fee_rates.g.dart';
 class FeeRates {
   FeeRates();
 
-  double mempoolFastestRate = 0;
-  double mempoolHalfHourRate = 0;
-  double mempoolHourRate = 0;
-  double mempoolEconomyRate = 0;
-  double mempoolMinimumRate = 0;
+  // Fee rate cannot be lower than 1 sat/byte
+  // Expressed here in BTC/kb because we used to depend on Electrum for this
+  double mempoolFastestRate = 0.00001;
+  double mempoolHalfHourRate = 0.00001;
+  double mempoolHourRate = 0.00001;
+  double mempoolEconomyRate = 0.00001;
+  double mempoolMinimumRate = 0.00001;
 
-  double electrumFastRate = 0;
-  double electrumSlowRate = 0;
+  double electrumFastRate = 0.00001;
+  double electrumSlowRate = 0.00001;
 
   @JsonKey(defaultValue: [])
   List<double> mempoolBlocksMedianFeeRate = [];

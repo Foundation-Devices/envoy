@@ -9,7 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:wallet/wallet.dart';
 
-enum EnvoyIconSize { normal, small, big, extraSmall, superSmall, mediumLarge }
+enum EnvoyIconSize {
+  normal,
+  small,
+  big,
+  extraSmall,
+  superSmall,
+  mediumLarge,
+  medium
+}
 
 enum EnvoyIcons {
   chevron_left,
@@ -76,6 +84,7 @@ enum EnvoyIcons {
   calendar,
   activity,
   download,
+  wallet,
 }
 
 class EnvoyIcon extends StatelessWidget {
@@ -160,6 +169,8 @@ extension FloatSize on EnvoyIconSize {
         return 18.0;
       case EnvoyIconSize.normal:
         return 24.0; // Default
+      case EnvoyIconSize.medium:
+        return 32.0;
       case EnvoyIconSize.mediumLarge:
         return 48.0;
       case EnvoyIconSize.big:

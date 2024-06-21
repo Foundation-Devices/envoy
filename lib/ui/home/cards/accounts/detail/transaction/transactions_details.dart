@@ -105,7 +105,7 @@ class _TransactionsDetailsWidgetState
     }
 
     return GestureDetector(
-      onTapDown: (details) {
+      onTapUp: (details) {
         final RenderBox box =
             _detailWidgetKey.currentContext?.findRenderObject() as RenderBox;
         final Offset localOffset = box.globalToLocal(details.globalPosition);
@@ -219,15 +219,17 @@ class _TransactionsDetailsWidgetState
                           curve: EnvoyEasing.easeInOut,
                           tween: Tween<double>(
                               begin: 0, end: showAddressExpanded ? 1 : 0),
-                          duration: const Duration(milliseconds: 200),
+                          duration: Duration(
+                              milliseconds: showAddressExpanded ? 200 : 50),
                           builder: (context, value, child) {
                             return addressNotAvailable
                                 ? Text("Address not available ",
                                     // TODO: Figma
                                     style: trailingTextStyle)
                                 : Container(
-                                    constraints:
-                                        const BoxConstraints(maxWidth: 155),
+                                    constraints: BoxConstraints(
+                                        maxWidth:
+                                            showAddressExpanded ? 125 : 155),
                                     child: AddressWidget(
                                       widgetKey:
                                           ValueKey<bool>(showAddressExpanded),
@@ -294,6 +296,7 @@ class _TransactionsDetailsWidgetState
                   ),
                 ),
                 EnvoyInfoCardListItem(
+                  flexAlignment: FlexAlignment.flexLeft,
                   title: S().coindetails_overlay_date,
                   icon: const EnvoyIcon(EnvoyIcons.calendar,
                       color: EnvoyColors.textPrimary,
@@ -311,19 +314,19 @@ class _TransactionsDetailsWidgetState
                 ),
                 if (tx.pullPaymentId != null)
                   EnvoyInfoCardListItem(
-                    verticalPadding: false,
-                    title: S().coindetails_overlay_paymentID,
-                    icon: const EnvoyIcon(EnvoyIcons.btcPay,
-                        color: EnvoyColors.textPrimary,
-                        size: EnvoyIconSize.small),
-                    trailing: GestureDetector(
+                      verticalPadding: false,
+                      title: S().coindetails_overlay_paymentID,
+                      icon: const EnvoyIcon(EnvoyIcons.btcPay,
+                          color: EnvoyColors.textPrimary,
+                          size: EnvoyIconSize.small),
+                      trailing: GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onLongPress: () {
                           Clipboard.setData(
                               ClipboardData(text: tx.pullPaymentId!));
                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                               content: Text(
-                                  'PullPayment ID copied to clipboard!'))); //TODO: FIGMA
+                                  'Payment ID copied to clipboard!'))); //TODO: FIGMA
                         },
                         onTap: () {
                           setState(() {
@@ -354,8 +357,8 @@ class _TransactionsDetailsWidgetState
                                   maxLines: 4);
                             },
                           ),
-                        )),
-                  ),
+                        ),
+                      )),
                 if (tx.type == TransactionType.ramp)
                   EnvoyInfoCardListItem(
                     verticalPadding: false,
@@ -407,6 +410,7 @@ class _TransactionsDetailsWidgetState
                   ),
                 rbfPossible
                     ? EnvoyInfoCardListItem(
+                        flexAlignment: FlexAlignment.flexRight,
                         title: _getConfirmationTimeString(ref.watch(
                             txEstimatedConfirmationTimeProvider(
                                 Tuple(tx, widget.account.wallet.network)))),
@@ -483,12 +487,12 @@ class _TransactionsDetailsWidgetState
               const EnvoyIcon(
                 EnvoyIcons.info,
                 color: EnvoyColors.textPrimaryInverse,
-                size: EnvoyIconSize.big,
+                size: EnvoyIconSize.medium,
               ),
-              const SizedBox(height: EnvoySpacing.medium1),
+              const SizedBox(height: EnvoySpacing.xs),
               Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.medium2),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: EnvoySpacing.large1),
                 child: Text(
                   S().replaceByFee_ramp_incompleteTransactionAutodeleteWarning,
                   style: EnvoyTypography.info

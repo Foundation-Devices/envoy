@@ -555,6 +555,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "At this time Envoy does not support batch spending."),
         "envoy_faq_answer_23": MessageLookupByLibrary.simpleMessage(
             "Yes. From version 1.4.0, Envoy allows for fully customized miner fees as well as two quick select fee options of ‘Standard’ and ‘Faster’. \'Standard\' aims to get your transaction finalized within 60 minutes and \'Faster\' within 10 minutes. These are estimates based on the network congestion at the time the transaction is built and you will always be shown the cost of both options before finalizing the transaction."),
+        "envoy_faq_answer_24": MessageLookupByLibrary.simpleMessage(
+            "Yes! From v1.7 you can now purchase Bitcoin within Envoy and have it automatically deposited to your mobile account, or any connected Passport accounts. Just click on the buy button from the main Accounts screen."),
         "envoy_faq_answer_3": MessageLookupByLibrary.simpleMessage(
             "Envoy is a simple Bitcoin wallet with powerful account management and privacy features, including Magic Backups.Use Envoy alongside your Passport hardware wallet for setup, firmware updates, and more."),
         "envoy_faq_answer_4": MessageLookupByLibrary.simpleMessage(
@@ -601,6 +603,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Does Envoy support Batch spends?"),
         "envoy_faq_question_23": MessageLookupByLibrary.simpleMessage(
             "Does Envoy allow custom miner fee selection?"),
+        "envoy_faq_question_24":
+            MessageLookupByLibrary.simpleMessage("Can I buy Bitcoin in Envoy?"),
         "envoy_faq_question_3":
             MessageLookupByLibrary.simpleMessage("What can Envoy do?"),
         "envoy_faq_question_4":
@@ -1149,6 +1153,13 @@ class MessageLookup extends MessageLookupByLibrary {
             "Unlock with biometrics or PIN"),
         "privacy_node_configure": MessageLookupByLibrary.simpleMessage(
             "Improve your privacy by running your own node. Tap learn more above. "),
+        "privacy_node_configure_blockHeight":
+            MessageLookupByLibrary.simpleMessage("Block height:"),
+        "privacy_node_configure_connectedToEsplora":
+            MessageLookupByLibrary.simpleMessage("Connected to Esplora server"),
+        "privacy_node_configure_noConnectionEsplora":
+            MessageLookupByLibrary.simpleMessage(
+                "Could not connect to Esplora server."),
         "privacy_node_connectedTo":
             MessageLookupByLibrary.simpleMessage("Connected to"),
         "privacy_node_connection_couldNotReach":
@@ -1276,6 +1287,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. \n\nThis selection can be reviewed or edited in the following screen."),
+        "scv_checkingDeviceSecurity":
+            MessageLookupByLibrary.simpleMessage("Checking Device Security"),
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirm"),
         "send_keyboard_address_loading":

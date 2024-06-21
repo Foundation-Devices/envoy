@@ -21,6 +21,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
+import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 
 class AccountListTile extends ConsumerStatefulWidget {
   final void Function() onTap;
@@ -121,7 +123,11 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
           child: ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(cardRadius - 5)),
             child: GestureDetector(
-              onTap: widget.onTap,
+              onTap: () {
+                EnvoyStorage().addPromptState(
+                    DismissiblePrompt.userInteractedWithAccDetail);
+                widget.onTap();
+              },
               child: Stack(children: [
                 Positioned.fill(
                   child: CustomPaint(

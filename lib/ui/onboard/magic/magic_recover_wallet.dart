@@ -722,7 +722,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                     label: S().component_back,
                     type: EnvoyButtonTypes.tertiary,
                     onTap: () async {
-                      Navigator.maybePop(context);
+                      Navigator.pop(context);
                     }),
                 const Padding(padding: EdgeInsets.all(2)),
                 Consumer(

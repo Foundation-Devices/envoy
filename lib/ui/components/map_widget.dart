@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:core';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:envoy/business/keys_manager.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -186,10 +187,13 @@ class MarkersPageState extends State<MarkersPage> {
     }
   }
 
-  String _openStreetMap(int z, int x, int y) {
-    final url =
-        "https://maps.geoapify.com/v1/tile/$mapType/$z/$x/$y.png?&apiKey=${MapData.mapApiKey}";
-    return url;
+  String _getTileUrl(int z, int x, int y) {
+    final mapApiKey = KeysManager().keys?.mapsKey;
+    if (mapApiKey == null) {
+      return "";
+    }
+
+    return "https://maps.geoapify.com/v1/tile/$mapType/$z/$x/$y.png?&apiKey=$mapApiKey";
   }
 
   Widget _buildVenueMarkerWidget(
@@ -349,7 +353,7 @@ class MarkersPageState extends State<MarkersPage> {
                             x %= tilesInZoom;
                             y %= tilesInZoom;
                             return CachedNetworkImage(
-                              imageUrl: _openStreetMap(z, x, y),
+                              imageUrl: _getTileUrl(z, x, y),
                               fit: BoxFit.cover,
                               errorListener: (e) {
                                 setState(() {
@@ -560,10 +564,8 @@ class TriangleShadow extends CustomPainter {
         center: Alignment.topCenter,
         focalRadius: 0.5,
         radius: 0.8,
-        stops: const [
-          0.0,
-          0.9
-        ], // Ensure stops are correct for smooth transition
+        stops: const [0.0, 0.9],
+        // Ensure stops are correct for smooth transition
         colors: [
           EnvoyColors.border1.withOpacity(0.7), // Adjust colors as needed
           Colors.transparent

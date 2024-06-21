@@ -58,8 +58,9 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 
     if (widget.initalSatAmount > 0) {
       _amountSats = widget.initalSatAmount;
-      _enteredAmount =
-          getDisplayAmount(_amountSats, ref.read(sendScreenUnitProvider));
+      _enteredAmount = getDisplayAmount(
+          _amountSats, ref.read(sendScreenUnitProvider),
+          trailingZeroes: true);
     }
 
     WidgetsBinding.instance.addPostFrameCallback(_getFittedBoxHeight);

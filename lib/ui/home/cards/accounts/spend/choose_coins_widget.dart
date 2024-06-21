@@ -38,69 +38,63 @@ class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
               SpendOverlayContext.hidden;
         }
       },
-      child: ClipRRect(
-        //to keep the window rounded, for symmetry
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(EnvoySpacing.large1),
-          topRight: Radius.circular(EnvoySpacing.large1),
-        ),
-        child: Stack(
-          children: [
-            const Positioned.fill(child: AppBackground()),
-            Positioned(
-              height: shieldTotalHeight,
-              width: MediaQuery.of(context).size.width,
-              child: SizedBox(
-                child: Scaffold(
-                  appBar: AppBar(
-                    elevation: 0,
-                    backgroundColor: Colors.transparent,
-                    title: Text(
-                      S().manage_account_address_heading,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                      ),
+      child: Stack(
+        children: [
+          const Positioned.fill(child: AppBackground()),
+          Positioned(
+            height: shieldTotalHeight,
+            width: MediaQuery.of(context).size.width,
+            child: SizedBox(
+              child: Scaffold(
+                appBar: AppBar(
+                  elevation: 0,
+                  backgroundColor: Colors.transparent,
+                  centerTitle: true,
+                  title: Text(
+                    S().manage_account_address_heading,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  backgroundColor: Colors.transparent,
-                  body: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: Shield(
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              top: 20,
-                              bottom: 0,
-                              left: 20,
-                              right: 20,
-                            ),
-                            child: AccountListTile(account, onTap: () {
-                              // ref.read(fullscreenHomePageProvider.notifier).state = true;
-                              Navigator.pop(context);
-                            }),
+                ),
+                backgroundColor: Colors.transparent,
+                body: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  child: Shield(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            top: 20,
+                            bottom: 0,
+                            left: 20,
+                            right: 20,
                           ),
-                          const SizedBox(height: EnvoySpacing.small),
-                          Expanded(
-                              child: Padding(
-                                  padding: const EdgeInsets.only(
+                          child: AccountListTile(account, onTap: () {
+                            // ref.read(fullscreenHomePageProvider.notifier).state = true;
+                            Navigator.pop(context);
+                          }),
+                        ),
+                        const SizedBox(height: EnvoySpacing.small),
+                        Expanded(
+                            child: Padding(
+                                padding: const EdgeInsets.only(
 
-                                      ///proper padding to align with top sections, based on UI design
-                                      left: 20,
-                                      right: 20,
-                                      top: EnvoySpacing.small),
-                                  child: CoinsList(account: account)))
-                        ],
-                      ),
+                                    ///proper padding to align with top sections, based on UI design
+                                    left: 20,
+                                    right: 20,
+                                    top: EnvoySpacing.small),
+                                child: CoinsList(account: account)))
+                      ],
                     ),
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

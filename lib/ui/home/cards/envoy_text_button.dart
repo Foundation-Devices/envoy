@@ -11,17 +11,19 @@ class EnvoyTextButton extends StatelessWidget {
       required this.label,
       this.onTap,
       this.error = false,
-      this.textStyle});
+      this.textStyle,
+      this.isDisabled = false});
 
   final String label;
   final Function()? onTap;
   final bool error;
   final TextStyle? textStyle;
+  final bool isDisabled;
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: onTap,
+      onPressed: isDisabled ? null : onTap,
       child: Text(label,
           style: textStyle ??
               TextStyle(

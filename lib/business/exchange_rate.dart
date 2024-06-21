@@ -48,6 +48,7 @@ final List<FiatCurrency> supportedFiat = [
   FiatCurrency('MYR', 'RM'),
   FiatCurrency('BRL', 'R\$'),
   FiatCurrency('NOK', 'kr'),
+  FiatCurrency('NZD', '\$')
 ];
 
 class ExchangeRate extends ChangeNotifier {

@@ -330,6 +330,12 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
           optionsWidget: Container(),
         );
         break;
+      case ROUTE_ACCOUNT_RECEIVE:
+        ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
+        break;
+      case ROUTE_ACCOUNT_SEND:
+        ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
+        break;
       case ROUTE_ACTIVITY:
         optionsState.state = null;
         break;

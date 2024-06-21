@@ -147,9 +147,27 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
     }
   }
 
-  void _checkElectrumServer(String address) {
-    int port =
-        Settings().turnOffTorForThisCase(address) ? -1 : Tor.instance.port;
+  void _checkElectrumServer(String address, {int retryCount = 0}) {
+    bool useTor = !Settings().onTorWhitelist(address);
+    int port = useTor ? Tor.instance.port : -1;
+    if (useTor && port == -1) {
+      if (retryCount <= 3) {
+        Future.delayed(const Duration(seconds: 1), () {
+          _checkElectrumServer(address, retryCount: retryCount + 1);
+        });
+      } else {
+        // Handle the case where the port is still -1 after retries
+        if (mounted) {
+          setState(() {
+            _state = ElectrumServerEntryState.invalid;
+            _isError = true;
+            _textBelow = "Tor network not accessible."; // TODO: Figma
+          });
+        }
+        ConnectivityManager().electrumFailure();
+      }
+      return;
+    }
 
     Wallet.getServerFeatures(address, port).then((features) {
       ConnectivityManager().electrumSuccess();
@@ -190,7 +208,7 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
               _state = ElectrumServerEntryState.valid;
               _isError = false;
               _textBelow =
-                  "${S().privacy_node_connectedTo} Esplora server (Block height: $blockHeight)"; // TODO: Figma
+                  "${S().privacy_node_configure_connectedToEsplora} (${S().privacy_node_configure_blockHeight} $blockHeight)";
             });
           }
         } else {
