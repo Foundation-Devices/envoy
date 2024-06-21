@@ -37,6 +37,7 @@ import 'package:envoy/util/tuple.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/components/envoy_info_card.dart';
 import 'package:envoy/ui/components/envoy_tag_list_item.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 
 class TransactionsDetailsWidget extends ConsumerStatefulWidget {
   final Account account;
@@ -243,10 +244,7 @@ class _TransactionsDetailsWidgetState
                   trailing: GestureDetector(
                     onLongPress: () {
                       if (tx.type != TransactionType.ramp) {
-                        Clipboard.setData(ClipboardData(text: tx.txId));
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                            content: Text(
-                                'Transaction ID copied to clipboard!'))); // TODO: FIGMA
+                        copyTxId(context, tx.txId);
                       }
                     },
                     onTap: () {
@@ -346,10 +344,7 @@ class _TransactionsDetailsWidgetState
                     ),
                     trailing: GestureDetector(
                       onLongPress: () {
-                        Clipboard.setData(ClipboardData(text: tx.txId));
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                            content: Text(
-                                'Transaction ID copied to clipboard!'))); //TODO: FIGMA
+                        copyTxId(context, tx.txId);
                       },
                       onTap: () {
                         setState(() {
