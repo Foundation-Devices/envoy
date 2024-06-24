@@ -108,6 +108,7 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
               _typingTimer = Timer(const Duration(seconds: 2), () {
                 if (address.isNotEmpty) {
                   _onAddressChanged(parseNodeUrl(address));
+                  _controller.text = normalizeProtocol(address);
                 }
               });
             },
