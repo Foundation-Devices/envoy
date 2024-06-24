@@ -73,7 +73,7 @@ class _TransactionsDetailsWidgetState
     } else if (minutes >= 60 && minutes < 120) {
       confirmationTime = "1h";
     } else {
-      confirmationTime = "1 day"; // TODO: Figma
+      confirmationTime = "1 ${S().coindetails_overlay_confirmationIn_day}";
     }
 
     return "${S().coindetails_overlay_confirmationIn} ~$confirmationTime";
