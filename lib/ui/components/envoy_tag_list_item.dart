@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-enum FlexAlignment { flexLeft, flexRight, noFlex }
+enum FlexPriority { title, trailing }
 
 class EnvoyInfoCardListItem extends StatefulWidget {
   final String title;
@@ -16,7 +17,7 @@ class EnvoyInfoCardListItem extends StatefulWidget {
   final Widget trailing;
   final bool priority;
   final Color? textColor;
-  final FlexAlignment flexAlignment;
+  final FlexPriority spacingPriority;
 
   const EnvoyInfoCardListItem({
     super.key,
@@ -25,7 +26,7 @@ class EnvoyInfoCardListItem extends StatefulWidget {
     required this.trailing,
     this.priority = false,
     this.textColor,
-    this.flexAlignment = FlexAlignment.noFlex,
+    this.spacingPriority = FlexPriority.title,
   });
 
   @override
@@ -35,9 +36,11 @@ class EnvoyInfoCardListItem extends StatefulWidget {
 class _EnvoyInfoCardListItemState extends State<EnvoyInfoCardListItem> {
   double iconWidth = 26;
   double titleWidth = 0;
-
-  // double trailingWidth = 0;
+  double trailingWidth = 0;
   int flexSpan = 30;
+
+  int measureCount = 0;
+  double maxTrailingWidth = 0;
 
   @override
   void initState() {
@@ -62,25 +65,54 @@ class _EnvoyInfoCardListItemState extends State<EnvoyInfoCardListItem> {
     });
   }
 
+  void _onTrailingSizeChange(Size size) {
+    setState(() {
+      measureCount++;
+      maxTrailingWidth =
+          size.width > maxTrailingWidth ? size.width : maxTrailingWidth;
+
+      if (measureCount < 3) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _reMeasureTrailingWidth();
+        });
+      } else {
+        trailingWidth = maxTrailingWidth;
+      }
+    });
+  }
+
+  void _reMeasureTrailingWidth() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    double iconAndTitleWidth = titleWidth + iconWidth + 15;
+    double iconAndTitleWidth = titleWidth + iconWidth + EnvoySpacing.medium1;
 
     return Padding(
       padding: const EdgeInsets.symmetric(
           horizontal: EnvoySpacing.xs, vertical: EnvoySpacing.small),
       child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          //trailingWidth = trailingWidth == 0 ? 50 : trailingWidth;
-          double availableWidth = constraints.maxWidth;
+          double availableWidth = constraints.maxWidth - EnvoySpacing.medium2;
 
-          //double totalFlexWidth = iconAndTitleWidth + trailingWidth;
+          int flexTrailing = 0;
+          int flexTitle = 0;
 
-          int flex1 = (((availableWidth - iconAndTitleWidth) / availableWidth) *
-                  flexSpan)
-              .round()
-              .toInt();
-          int flex2 = flexSpan - flex1;
+          if (widget.spacingPriority == FlexPriority.title) {
+            flexTrailing =
+                (((availableWidth - iconAndTitleWidth) / availableWidth) *
+                        flexSpan)
+                    .round()
+                    .toInt();
+            flexTitle = flexSpan - flexTrailing;
+          } else {
+            flexTitle =
+                (((availableWidth - trailingWidth) / availableWidth) * flexSpan)
+                    .round()
+                    .toInt();
+            flexTrailing = flexSpan - flexTitle;
+          }
 
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -88,7 +120,7 @@ class _EnvoyInfoCardListItemState extends State<EnvoyInfoCardListItem> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Flexible(
-                flex: flex2,
+                flex: flexTitle,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -118,16 +150,11 @@ class _EnvoyInfoCardListItemState extends State<EnvoyInfoCardListItem> {
                 ),
               ),
               Flexible(
-                flex: flex1,
-                // child:
-                // MeasureSize(
-                //   onChange: (size) {
-                //     setState(() {
-                //       trailingWidth = size.width;
-                //     });
-                //   },
-                child: widget.trailing,
-                //),
+                flex: flexTrailing,
+                child: MeasureSize(
+                  onChange: _onTrailingSizeChange,
+                  child: widget.trailing,
+                ),
               ),
             ],
           );
@@ -137,26 +164,38 @@ class _EnvoyInfoCardListItemState extends State<EnvoyInfoCardListItem> {
   }
 }
 
-// class MeasureSize extends StatefulWidget {
-//   final Widget child;
-//   final ValueChanged<Size> onChange;
-//
-//   const MeasureSize({super.key, required this.onChange, required this.child});
-//
-//   @override
-//   State<MeasureSize> createState() => _MeasureSizeState();
-// }
-//
-// class _MeasureSizeState extends State<MeasureSize> {
-//   @override
-//   Widget build(BuildContext context) {
-//     WidgetsBinding.instance.addPostFrameCallback((_) {
-//       final size = context.size;
-//       if (size != null) {
-//         widget.onChange(size);
-//       }
-//     });
-//
-//     return widget.child;
-//   }
-// }
+typedef OnWidgetSizeChange = void Function(Size size);
+
+class MeasureSizeRenderObject extends RenderProxyBox {
+  Size? oldSize;
+  final OnWidgetSizeChange onChange;
+
+  MeasureSizeRenderObject(this.onChange);
+
+  @override
+  void performLayout() {
+    super.performLayout();
+    Size newSize = child?.size ?? Size.zero;
+    if (oldSize == newSize) return;
+
+    oldSize = newSize;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      onChange(newSize);
+    });
+  }
+}
+
+class MeasureSize extends SingleChildRenderObjectWidget {
+  final OnWidgetSizeChange onChange;
+
+  const MeasureSize({
+    super.key,
+    required this.onChange,
+    super.child,
+  });
+
+  @override
+  RenderObject createRenderObject(BuildContext context) {
+    return MeasureSizeRenderObject(onChange);
+  }
+}

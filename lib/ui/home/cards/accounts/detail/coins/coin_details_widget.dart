@@ -80,7 +80,6 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
         ),
         bottomWidgets: [
           EnvoyInfoCardListItem(
-            flexAlignment: FlexAlignment.flexLeft,
             title: S().coindetails_overlay_address,
             icon: const EnvoyIcon(EnvoyIcons.send,
                 color: EnvoyColors.textPrimary, size: EnvoyIconSize.extraSmall),
@@ -95,23 +94,18 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                   curve: EnvoyEasing.easeInOut,
                   tween:
                       Tween<double>(begin: 0, end: showExpandedAddress ? 1 : 0),
-                  duration:
-                      Duration(milliseconds: showExpandedAddress ? 200 : 50),
+                  duration: const Duration(milliseconds: 200),
                   builder: (context, value, child) {
                     return addressNotAvailable
                         ? Text("Address not available ",
                             // TODO: Figma
                             style: trailingTextStyle)
-                        : Container(
-                            constraints: BoxConstraints(
-                                maxWidth: showExpandedAddress ? 125 : 155),
-                            child: AddressWidget(
-                              widgetKey: ValueKey<bool>(showExpandedAddress),
-                              address: utxoAddress,
-                              short: true,
-                              sideChunks: 2 +
-                                  (value * (utxoAddress.length / 4)).round(),
-                            ),
+                        : AddressWidget(
+                            widgetKey: ValueKey<bool>(showExpandedAddress),
+                            address: utxoAddress,
+                            short: true,
+                            sideChunks:
+                                2 + (value * (utxoAddress.length / 4)).round(),
                           );
                   }),
             ),
@@ -134,21 +128,19 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                   });
                 },
                 child: TweenAnimationBuilder(
+                  curve: EnvoyEasing.easeInOut,
                   tween: Tween<double>(begin: 0, end: showExpandedTxId ? 1 : 0),
                   duration: const Duration(milliseconds: 200),
                   builder: (context, value, child) {
-                    return Container(
-                      constraints: const BoxConstraints(maxWidth: 150),
-                      child: Text(
-                        truncateWithEllipsisInCenter(
-                            widget.coin.utxo.txid,
-                            lerpDouble(16, widget.coin.utxo.txid.length, value)!
-                                .toInt()),
-                        style: EnvoyTypography.info
-                            .copyWith(color: EnvoyColors.textPrimary),
-                        textAlign: TextAlign.end,
-                        maxLines: 4,
-                      ),
+                    return Text(
+                      truncateWithEllipsisInCenter(
+                          widget.coin.utxo.txid,
+                          lerpDouble(16, widget.coin.utxo.txid.length, value)!
+                              .toInt()),
+                      style: EnvoyTypography.info
+                          .copyWith(color: EnvoyColors.textPrimary),
+                      textAlign: TextAlign.end,
+                      maxLines: 4,
                     );
                   },
                 )),
@@ -203,14 +195,12 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Expanded(
-                    child: Text(note,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        style: EnvoyTypography.body
-                            .copyWith(color: EnvoyColors.textPrimary),
-                        textAlign: TextAlign.end),
-                  ),
+                  Text(note,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: EnvoyTypography.body
+                          .copyWith(color: EnvoyColors.textPrimary),
+                      textAlign: TextAlign.end),
                   const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                   note.trim().isNotEmpty
                       ? SvgPicture.asset(
