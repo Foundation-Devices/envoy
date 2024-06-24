@@ -280,7 +280,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                             amountWidgetStyle: AmountWidgetStyle.singleLine),
                         bottomWidgets: [
                           EnvoyInfoCardListItem(
-                            spacingPriority: Flex.trailing,
+                            spacingPriority: FlexPriority.trailing,
                             title:
                                 "${S().coincontrol_tx_detail_expand_spentFrom} ${inputTagData.length} ${inputTagData.length == 1 ? S().coincontrol_tx_detail_expand_coin : S().coincontrol_tx_detail_expand_coins}",
                             icon: const EnvoyIcon(EnvoyIcons.utxo,
@@ -316,7 +316,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                             height: EnvoySpacing.medium2,
                           ),
                           EnvoyInfoCardListItem(
-                              spacingPriority: Flex.trailing,
+                              spacingPriority: FlexPriority.trailing,
                               title: S()
                                   .coincontrol_tx_detail_expand_changeReceived,
                               icon: const EnvoyIcon(EnvoyIcons.transfer,
