@@ -5,6 +5,7 @@
 import 'dart:convert';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/business/keys_manager.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:ramp_flutter/configuration.dart';
@@ -21,10 +22,27 @@ import 'package:envoy/ui/shield.dart';
 import 'package:envoy/business/scheduler.dart';
 
 class RampWidget {
-  static void showRamp(BuildContext context, Account account, String address) {
+  static Future<void> showRamp(
+      BuildContext context, Account account, String address) async {
     if (KeysManager().keys == null) {
       return;
     }
+    // Show a circular progress indicator dialog to prevent the user from seeing the transition to the home page. (ENV-1190)
+    BuildContext dialogContext = context;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: EnvoyColors.surface2,
+      builder: (BuildContext context) {
+        dialogContext = context;
+        return const Center(
+          child: CircularProgressIndicator(
+            color: EnvoyColors.accentPrimary,
+            backgroundColor: EnvoyColors.textInactive,
+          ),
+        );
+      },
+    );
 
     final ramp = RampFlutter();
     final Configuration configuration = Configuration();
@@ -44,7 +62,14 @@ class RampWidget {
     configuration.hostLogoUrl =
         "https://storage.googleapis.com/cdn-foundation/envoy/foundationLogo.png";
 
-    ramp.showRamp(configuration);
+    // ENV-1111: Ensure the user is at the home route ("/") after exiting Ramp
+    mainRouter.go("/");
+    await ramp.showRamp(configuration);
+
+    // Dismiss the circular progress indicator dialog
+    Future.delayed(const Duration(seconds: 1), () {
+      Navigator.pop(dialogContext);
+    });
   }
 
   static Future<void> onOnrampPurchaseCreated(
@@ -90,10 +115,7 @@ class RampWidget {
     // Handle offramp sale created
   }
 
-  static void onRampClosed(BuildContext context) {
-    // ENV-1111: Ensure the user is at the home route ("/") after exiting Ramp
-    mainRouter.go("/");
-  }
+  static void onRampClosed(BuildContext context) {}
 }
 
 Future<String?> checkPurchase(String id, String purchaseViewToken) async {
