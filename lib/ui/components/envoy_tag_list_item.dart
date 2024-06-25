@@ -67,13 +67,13 @@ class _EnvoyInfoCardListItemState extends State<EnvoyInfoCardListItem> {
 
   void _onTrailingSizeChange(Size size) {
     setState(() {
-      measureCount++;
       maxTrailingWidth =
           size.width > maxTrailingWidth ? size.width : maxTrailingWidth;
 
       if (measureCount < 3) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
+            measureCount++;
             _reMeasureTrailingWidth();
           }
         });
