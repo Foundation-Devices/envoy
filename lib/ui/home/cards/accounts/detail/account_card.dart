@@ -476,47 +476,7 @@ class TransactionListTile extends StatelessWidget {
             action();
           },
           onLongPress: () async {
-            final navigator = Navigator.of(context);
-            final scaffold = ScaffoldMessenger.of(context);
-            final scaffoldMessenger = ScaffoldMessenger.of(context);
-            bool dismissed = await EnvoyStorage()
-                .checkPromptDismissed(DismissiblePrompt.copyTxId);
-            if (!dismissed && context.mounted) {
-              showEnvoyPopUp(
-                  context,
-                  S().coincontrol_coin_change_spendable_tate_modal_subheading,
-                  S().component_continue,
-                  (BuildContext context) {
-                    Clipboard.setData(
-                        ClipboardData(text: transaction.txId)); // here
-                    scaffold.showSnackBar(const SnackBar(
-                      content: Text(
-                          "Transaction ID copied to clipboard!"), //TODO: FIGMA
-                    ));
-                    navigator.pop();
-                  },
-                  icon: EnvoyIcons.info,
-                  secondaryButtonLabel: S().component_cancel,
-                  onSecondaryButtonTap: (BuildContext context) {
-                    Navigator.pop(context);
-                  },
-                  checkBoxText: S().component_dontShowAgain,
-                  checkedValue: dismissed,
-                  onCheckBoxChanged: (checkedValue) {
-                    if (!checkedValue) {
-                      EnvoyStorage().addPromptState(DismissiblePrompt.copyTxId);
-                    } else if (checkedValue) {
-                      EnvoyStorage()
-                          .removePromptState(DismissiblePrompt.copyTxId);
-                    }
-                  });
-            } else {
-              Clipboard.setData(ClipboardData(text: transaction.txId)); // here
-              scaffoldMessenger.showSnackBar(const SnackBar(
-                content:
-                    Text("Transaction ID copied to clipboard!"), //TODO: FIGMA
-              ));
-            }
+            await copyTxId(context, transaction.txId);
           },
           onDoubleTap: () {},
           // Avoids unintended behavior, prevents list item disappearance
@@ -731,6 +691,48 @@ class TransactionListTile extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<void> copyTxId(BuildContext context, String txId) async {
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  bool dismissed =
+      await EnvoyStorage().checkPromptDismissed(DismissiblePrompt.copyTxId);
+  if (!dismissed && context.mounted) {
+    showWarningOnTxIdCopy(context, txId);
+  } else {
+    Clipboard.setData(ClipboardData(text: txId));
+    scaffoldMessenger.showSnackBar(const SnackBar(
+      content: Text("Transaction ID copied to clipboard!"), //TODO: FIGMA
+    ));
+  }
+}
+
+void showWarningOnTxIdCopy(BuildContext context, String txId) {
+  showEnvoyPopUp(
+      context,
+      S().coincontrol_coin_change_spendable_tate_modal_subheading,
+      S().component_continue,
+      (BuildContext context) {
+        Clipboard.setData(ClipboardData(text: txId)); // here
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Transaction ID copied to clipboard!"), //TODO: FIGMA
+        ));
+        Navigator.pop(context);
+      },
+      icon: EnvoyIcons.info,
+      secondaryButtonLabel: S().component_cancel,
+      onSecondaryButtonTap: (BuildContext context) {
+        Navigator.pop(context);
+      },
+      checkBoxText: S().component_dontShowAgain,
+      checkedValue: false,
+      onCheckBoxChanged: (checkedValue) {
+        if (!checkedValue) {
+          EnvoyStorage().addPromptState(DismissiblePrompt.copyTxId);
+        } else if (checkedValue) {
+          EnvoyStorage().removePromptState(DismissiblePrompt.copyTxId);
+        }
+      });
 }
 
 class AccountOptions extends ConsumerStatefulWidget {

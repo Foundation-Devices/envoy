@@ -20,7 +20,6 @@ import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
@@ -29,6 +28,7 @@ import 'package:envoy/ui/components/envoy_tag_list_item.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/components/envoy_info_card.dart';
 import 'package:envoy/util/easing.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 
 class CoinDetailsWidget extends ConsumerStatefulWidget {
   final Coin coin;
@@ -116,10 +116,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                 color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
             trailing: GestureDetector(
                 onLongPress: () {
-                  Clipboard.setData(ClipboardData(text: widget.coin.utxo.txid));
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text(
-                          'Transaction ID copied to clipboard!'))); // TODO: FIGMA
+                  copyTxId(context, tx.txId);
                 },
                 onTap: () {
                   setState(() {

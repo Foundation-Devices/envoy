@@ -38,7 +38,6 @@ class _EnvoyInfoCardListItemState extends State<EnvoyInfoCardListItem> {
   double titleWidth = 0;
   double trailingWidth = 0;
   int flexSpan = 30;
-
   int measureCount = 0;
   double maxTrailingWidth = 0;
 

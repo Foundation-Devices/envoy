@@ -87,6 +87,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                               address: snapshot.data!,
                               short: false,
                               align: TextAlign.center,
+                              showWarningOnCopy: false,
                             ),
                           ),
                         ],

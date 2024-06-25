@@ -10,7 +10,6 @@ import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/routes/home_router.dart';
@@ -137,11 +136,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                 ref.read(homePageTitleProvider.notifier).state =
                     S().menu_heading.toUpperCase();
               } else if (state == HamburgerState.back) {
-                if (buyBTCRightAction) {
-                  OnboardingPage.popUntilHome(context);
-                } else {
-                  GoRouter.of(context).pop();
-                }
+                GoRouter.of(context).pop();
               }
             }
           },
