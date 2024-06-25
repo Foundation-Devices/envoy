@@ -12,6 +12,7 @@ final homeShellOptionsProvider =
 final homePageTitleProvider = StateProvider<String>((ref) => "");
 final hideBottomNavProvider = StateProvider<bool>((ref) => false);
 final buyBTCPageProvider = StateProvider<bool>((ref) => false);
+final navigatingToEditRegionProvider = StateProvider<bool>((ref) => false);
 
 final fullscreenHomePageProvider = StateProvider<bool>((ref) => false);
 final homePageBackdropModeProvider = StateProvider<bool>((ref) => false);

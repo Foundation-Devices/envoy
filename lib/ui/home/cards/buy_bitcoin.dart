@@ -53,6 +53,7 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
 
     Future.delayed(const Duration()).then((value) {
       ref.read(homePageTitleProvider.notifier).state = "";
+      ref.read(navigatingToEditRegionProvider.notifier).state = false;
 
       ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
           optionsWidget: const CountryOptions(),
@@ -109,9 +110,10 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
   }
 
   onNativeBackPressed(bool didPop) {
+    bool navigatingToRegion = ref.read(navigatingToEditRegionProvider);
     if (!didPop) {
       HomePageState.of(context)?.toggleOptions();
-    } else {
+    } else if (!navigatingToRegion) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.pop(context);
       });
@@ -561,6 +563,7 @@ class _CountryOptionsState extends ConsumerState<CountryOptions> {
           ),
           onTap: () {
             HomePageState.of(context)?.toggleOptions();
+            ref.read(navigatingToEditRegionProvider.notifier).state = true;
             context.go(
               ROUTE_SELECT_REGION,
             );
