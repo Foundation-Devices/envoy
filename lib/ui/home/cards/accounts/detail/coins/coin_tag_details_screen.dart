@@ -351,7 +351,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                     top: EnvoySpacing.medium1)),
                                             Text(
                                               S().tagged_tagDetails_emptyState_explainer,
-                                              style: EnvoyTypography.heading
+                                              style: EnvoyTypography.subheading
                                                   .copyWith(
                                                 fontSize: 11,
                                                 color: new_colors

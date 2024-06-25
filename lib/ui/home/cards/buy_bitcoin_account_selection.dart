@@ -114,6 +114,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                       filteredAccounts: filteredAccounts,
                       onTap: (Account account) {
                         updateSelectedAccount(account);
+                        chooseAccount(context, filteredAccounts);
                       },
                     ),
                     const SizedBox(
@@ -128,18 +129,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                           textAlign: TextAlign.center,
                         ),
                         onTap: () {
-                          Navigator.of(rootNavigator: true, context)
-                              .push(MaterialTransparentRoute(
-                            builder: (context) {
-                              return BackdropFilter(
-                                  filter:
-                                      ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                                  child: ChooseAccount(
-                                    accounts: filteredAccounts,
-                                    onSelectAccount: updateSelectedAccount,
-                                  ));
-                            },
-                          ));
+                          chooseAccount(context, filteredAccounts);
                         },
                       );
                     }),
@@ -248,6 +238,19 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
       );
     }
   }
+
+  void chooseAccount(BuildContext context, List<Account> filteredAccounts) {
+    Navigator.of(rootNavigator: true, context).push(MaterialTransparentRoute(
+      builder: (context) {
+        return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+            child: ChooseAccount(
+              accounts: filteredAccounts,
+              onSelectAccount: updateSelectedAccount,
+            ));
+      },
+    ));
+  }
 }
 
 class ChooseAccount extends StatefulWidget {
@@ -306,7 +309,7 @@ class _ChooseAccountState extends State<ChooseAccount> {
               centerTitle: true,
               title: Text(
                 S().header_chooseAccount,
-                style: EnvoyTypography.heading.copyWith(color: Colors.white),
+                style: EnvoyTypography.subheading.copyWith(color: Colors.white),
               ),
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_ios_new_rounded),

@@ -51,6 +51,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
   int _amountSats = 0;
   final GlobalKey _fittedBoxKey = GlobalKey();
   double? _fittedBoxHeight;
+  bool _addTrailingZeros = true;
 
   @override
   void initState() {
@@ -58,8 +59,9 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 
     if (widget.initalSatAmount > 0) {
       _amountSats = widget.initalSatAmount;
-      _enteredAmount =
-          getDisplayAmount(_amountSats, ref.read(sendScreenUnitProvider));
+      _enteredAmount = getDisplayAmount(
+          _amountSats, ref.read(sendScreenUnitProvider),
+          trailingZeroes: true);
     }
 
     WidgetsBinding.instance.addPostFrameCallback(_getFittedBoxHeight);
@@ -117,6 +119,8 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
         isAmountZero: _enteredAmount.isEmpty || _enteredAmount == "0",
         isDecimalSeparator: _enteredAmount.contains(fiatDecimalSeparator));
     numpad.events.stream.listen((event) async {
+      _addTrailingZeros =
+          false; // Do not add trailing zeros when manually typing the amount
       switch (event) {
         case NumpadEvents.backspace:
           {
@@ -247,6 +251,11 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
                             enteredAmount.indexOf(fiatDecimalSeparator)) ==
                         2)) {
                   enteredAmount = "${enteredAmount}0";
+                }
+                if (_addTrailingZeros && unit == AmountDisplayUnit.btc) {
+                  enteredAmount = getDisplayAmount(
+                      _amountSats, AmountDisplayUnit.btc,
+                      trailingZeroes: true);
                 }
                 _enteredAmount = enteredAmount;
               },

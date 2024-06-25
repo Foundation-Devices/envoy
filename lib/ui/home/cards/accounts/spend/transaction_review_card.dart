@@ -152,7 +152,8 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                                 const Padding(
                                   padding: EdgeInsets.symmetric(
                                       horizontal: EnvoySpacing.xs),
-                                  child: EnvoyIcon(EnvoyIcons.info,
+                                  child: EnvoyIcon(EnvoyIcons.alert,
+                                      size: EnvoyIconSize.small,
                                       color: EnvoyColors.solidWhite),
                                 ),
                               Text(

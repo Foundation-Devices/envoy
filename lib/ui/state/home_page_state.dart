@@ -31,7 +31,7 @@ enum HomePageBackgroundState {
 
 enum DismissiblePrompt {
   hideAmount,
-  userInteractedWithReceive,
+  userInteractedWithAccDetail,
   secureWallet,
   dragAndDrop,
   createCoinTagWarning,
@@ -40,6 +40,7 @@ enum DismissiblePrompt {
   copyTxId,
   rbfWarning,
   leavingEnvoy,
+  copyAddressWarning,
 
   ///warning for exiting manual coin selection
   txDiscardWarning,

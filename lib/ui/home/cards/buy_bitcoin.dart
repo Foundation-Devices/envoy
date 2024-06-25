@@ -23,6 +23,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/business/region_manager.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/ui/components/icon_toolbar.dart';
 
 enum BuyBitcoinCardState { buyInEnvoy, peerToPeer, vouchers, atms, none }
 
@@ -107,152 +108,158 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
     }
   }
 
+  onNativeBackPressed(bool didPop) {
+    if (!didPop) {
+      HomePageState.of(context)?.toggleOptions();
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pop(context);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-          vertical: EnvoySpacing.medium2, horizontal: EnvoySpacing.medium2),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    S().buy_bitcoin_buyOptions_atms_heading,
-                    style: EnvoyTypography.subheading,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(
-                    height: EnvoySpacing.medium2,
-                  ),
-                  IconTab(
-                    label: S().buy_bitcoin_buyOptions_card_inEnvoy_heading,
-                    isLocked: !regionCanBuy,
-                    icon: EnvoyIcons.btc,
-                    bigTab: true,
-                    isSelected: currentState == BuyBitcoinCardState.buyInEnvoy,
-                    description:
-                        S().buy_bitcoin_buyOptions_card_inEnvoy_subheading,
-                    lockedInfoText: S().buy_bitcoin_buyOptions_card_commingSoon,
-                    onSelect: (selected) {
-                      if (regionCanBuy) {
-                        _updateState(BuyBitcoinCardState.buyInEnvoy);
-                      }
-                    },
-                    poweredByIcons: const [EnvoyIcons.ramp],
-                  ),
-                  const SizedBox(
-                    height: EnvoySpacing.medium2,
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Expanded(
-                        child: IconTab(
+    bool isMenuOpen = ref.watch(homePageOptionsVisibilityProvider);
+    return PopScope(
+      canPop: !isMenuOpen,
+      onPopInvoked: (didPop) {
+        onNativeBackPressed(didPop);
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+            vertical: EnvoySpacing.medium1, horizontal: EnvoySpacing.medium2),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      S().buy_bitcoin_buyOptions_atms_heading,
+                      style: EnvoyTypography.subheading,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(
+                      height: EnvoySpacing.medium2,
+                    ),
+                    IconTab(
+                      label: S().buy_bitcoin_buyOptions_card_inEnvoy_heading,
+                      isLocked: !regionCanBuy,
+                      icon: EnvoyIcons.btc,
+                      bigTab: true,
+                      isSelected:
+                          currentState == BuyBitcoinCardState.buyInEnvoy,
+                      description:
+                          S().buy_bitcoin_buyOptions_card_inEnvoy_subheading,
+                      lockedInfoText:
+                          S().buy_bitcoin_buyOptions_card_commingSoon,
+                      onSelect: (selected) {
+                        if (regionCanBuy) {
+                          _updateState(BuyBitcoinCardState.buyInEnvoy);
+                        }
+                      },
+                      poweredByIcons: const [EnvoyIcons.ramp],
+                    ),
+                    const SizedBox(
+                      height: EnvoySpacing.medium2,
+                    ),
+                    IconToolbar(
+                      options: [
+                        IconToolbarOption(
                           label: S().buy_bitcoin_buyOptions_card_peerToPeer,
                           icon: EnvoyIcons.privacy,
                           isSelected:
                               currentState == BuyBitcoinCardState.peerToPeer,
-                          onSelect: (selected) {
+                          onSelect: () {
                             _updateState(BuyBitcoinCardState.peerToPeer);
                           },
                         ),
-                      ),
-                      const SizedBox(
-                        width: EnvoySpacing.xs,
-                      ),
-                      Expanded(
-                        child: IconTab(
+                        IconToolbarOption(
                           label: S().buy_bitcoin_buyOptions_card_vouchers,
                           icon: EnvoyIcons.shield,
                           isSelected:
                               currentState == BuyBitcoinCardState.vouchers,
-                          onSelect: (selected) {
+                          onSelect: () {
                             _updateState(BuyBitcoinCardState.vouchers);
                           },
                         ),
-                      ),
-                      const SizedBox(
-                        width: EnvoySpacing.xs,
-                      ),
-                      Expanded(
-                        child: IconTab(
+                        IconToolbarOption(
                           label: S().buy_bitcoin_buyOptions_card_atms,
                           icon: EnvoyIcons.location_tab,
                           isSelected: currentState == BuyBitcoinCardState.atms,
-                          onSelect: (selected) {
+                          onSelect: () {
                             _updateState(BuyBitcoinCardState.atms);
                           },
                         ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.medium2),
-                    child: Text(
-                      additionalInfo(currentState),
-                      style: EnvoyTypography.info,
-                      textAlign: TextAlign.center,
+                      ],
                     ),
-                  ),
-                  if (currentState != BuyBitcoinCardState.none)
-                    GestureDetector(
-                      onTap: () {
-                        showAdditionalInfoDialog(currentState, context);
-                      },
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: EnvoySpacing.medium2),
                       child: Text(
-                        S().component_learnMore,
-                        style: EnvoyTypography.button
-                            .copyWith(color: EnvoyColors.accentPrimary),
+                        additionalInfo(currentState),
+                        style: EnvoyTypography.info,
                         textAlign: TextAlign.center,
                       ),
                     ),
-                ],
+                    if (currentState != BuyBitcoinCardState.none)
+                      GestureDetector(
+                        onTap: () {
+                          showAdditionalInfoDialog(currentState, context);
+                        },
+                        child: Text(
+                          S().component_learnMore,
+                          style: EnvoyTypography.button
+                              .copyWith(color: EnvoyColors.accentPrimary),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: EnvoySpacing.large1),
-            child: EnvoyButton(
-              label: S().component_continue,
-              type: ButtonType.primary,
-              state: currentState == BuyBitcoinCardState.none
-                  ? ButtonState.disabled
-                  : ButtonState.defaultState,
-              icon: currentState == BuyBitcoinCardState.vouchers
-                  ? EnvoyIcons.externalLink
-                  : null,
-              onTap: () {
-                switch (currentState) {
-                  case BuyBitcoinCardState.buyInEnvoy:
-                    context.go(
-                      ROUTE_SELECT_ACCOUNT,
-                    );
-                  case BuyBitcoinCardState.peerToPeer:
-                    context.go(
-                      ROUTE_PEER_TO_PEER,
-                    );
-                  case BuyBitcoinCardState.vouchers:
-                    launchUrl(Uri.parse("https://azte.co/"));
-                  case BuyBitcoinCardState.atms:
-                    Navigator.of(context, rootNavigator: true).push(
-                      MaterialPageRoute(builder: (context) {
-                        return MediaQuery.removePadding(
-                            context: context,
-                            child: fullScreenShield(const MarkersPage()));
-                      }),
-                    );
-                  case BuyBitcoinCardState.none:
-                }
-              },
+            Padding(
+              padding: const EdgeInsets.only(bottom: EnvoySpacing.large1),
+              child: EnvoyButton(
+                label: S().component_continue,
+                type: ButtonType.primary,
+                state: currentState == BuyBitcoinCardState.none
+                    ? ButtonState.disabled
+                    : ButtonState.defaultState,
+                icon: currentState == BuyBitcoinCardState.vouchers
+                    ? EnvoyIcons.externalLink
+                    : null,
+                onTap: () {
+                  switch (currentState) {
+                    case BuyBitcoinCardState.buyInEnvoy:
+                      context.go(
+                        ROUTE_SELECT_ACCOUNT,
+                      );
+                    case BuyBitcoinCardState.peerToPeer:
+                      context.go(
+                        ROUTE_PEER_TO_PEER,
+                      );
+                    case BuyBitcoinCardState.vouchers:
+                      launchUrl(Uri.parse("https://azte.co/"));
+                    case BuyBitcoinCardState.atms:
+                      Navigator.of(context, rootNavigator: true).push(
+                        MaterialPageRoute(builder: (context) {
+                          return MediaQuery.removePadding(
+                              context: context,
+                              child: fullScreenShield(const MarkersPage()));
+                        }),
+                      );
+                    case BuyBitcoinCardState.none:
+                  }
+                },
+              ),
             ),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }

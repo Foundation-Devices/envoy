@@ -544,7 +544,8 @@ class _TransactionReviewScreenState
                 vertical: EnvoySpacing.small, horizontal: EnvoySpacing.medium1),
             child: ListTile(
               title: Text(header,
-                  textAlign: TextAlign.center, style: EnvoyTypography.heading),
+                  textAlign: TextAlign.center,
+                  style: EnvoyTypography.subheading),
               subtitle: Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
@@ -707,7 +708,7 @@ void editTransaction(BuildContext context, WidgetRef ref) async {
   }
 
   if (ref.read(selectedAccountProvider) != null) {
-    CoinSelectionOverlay.of(context)?.show(SpendOverlayContext.editCoins);
+    coinSelectionOverlayKey.currentState?.show(SpendOverlayContext.editCoins);
   }
   router
       .push(CupertinoPageRoute(

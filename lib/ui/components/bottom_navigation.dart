@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:io';
+
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/routes/routes.dart';
@@ -50,7 +52,8 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
       }
     });
     return Padding(
-      padding: const EdgeInsets.only(bottom: EnvoySpacing.small),
+      padding: EdgeInsets.only(
+          bottom: Platform.isAndroid ? EnvoySpacing.xs : EnvoySpacing.small),
       child: BottomNavigationBar(
         currentIndex: _selectedIndex,
         selectedItemColor: activeColor,
@@ -126,7 +129,7 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
             activeIcon: Padding(
               padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
               child: EnvoyIcon(
-                EnvoyIcons.bitcoin_b,
+                EnvoyIcons.wallet,
                 color: activeColor,
               ),
             ),

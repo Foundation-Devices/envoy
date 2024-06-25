@@ -148,6 +148,7 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                   padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
                   child: Text(
                     widget.title!,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: EnvoyTypography.subheading,
                     textAlign: TextAlign.center,

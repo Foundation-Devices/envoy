@@ -6,13 +6,14 @@
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/keys_manager.dart';
 import 'package:envoy/business/map_data.dart';
 import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/updates_manager.dart';
-import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/lock/authenticate_page.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/routes/routes.dart';
@@ -58,6 +59,7 @@ Future<void> initSingletons() async {
   await EnvoyStorage().init();
   await LocalStorage.init();
   EnvoyScheduler.init();
+  await KeysManager.init();
   EnvoyReport().init();
   Settings.restore();
   Tor.init(enabled: Settings().torEnabled());
@@ -92,16 +94,17 @@ class EnvoyApp extends StatelessWidget {
     ]);
 
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        systemStatusBarContrastEnforced: true,
+        systemStatusBarContrastEnforced: false,
+        systemNavigationBarContrastEnforced: false,
         systemNavigationBarColor: Colors.transparent,
         systemNavigationBarDividerColor: Colors.transparent,
         systemNavigationBarIconBrightness: Brightness.dark,
         statusBarIconBrightness: Brightness.dark));
 
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
-        overlays: [SystemUiOverlay.top]);
+        overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
 
-    const envoyAccentColor = EnvoyColors.darkTeal;
+    const envoyAccentColor = EnvoyColors.accentPrimary;
     const envoyBaseColor = Colors.transparent;
     final envoyTextTheme =
         GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);
@@ -135,7 +138,21 @@ class EnvoyApp extends StatelessWidget {
             scaffoldBackgroundColor: envoyBaseColor,
             useMaterial3: false),
         routerConfig: mainRouter,
+        scrollBehavior: CustomScrollBehavior(),
       ),
+    );
+  }
+}
+
+class CustomScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Widget buildOverscrollIndicator(
+      BuildContext context, Widget child, ScrollableDetails details) {
+    return GlowingOverscrollIndicator(
+      axisDirection: AxisDirection.right,
+      color: EnvoyColors.textPrimaryInverse,
+      showLeading: false,
+      child: child, // Turn off overscroll indicator
     );
   }
 }

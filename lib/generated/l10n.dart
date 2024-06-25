@@ -2658,6 +2658,16 @@ class S {
     );
   }
 
+  /// `Yes! From v1.7 you can now purchase Bitcoin within Envoy and have it automatically deposited to your mobile account, or any connected Passport accounts. Just click on the buy button from the main Accounts screen.`
+  String get envoy_faq_answer_24 {
+    return Intl.message(
+      'Yes! From v1.7 you can now purchase Bitcoin within Envoy and have it automatically deposited to your mobile account, or any connected Passport accounts. Just click on the buy button from the main Accounts screen.',
+      name: 'envoy_faq_answer_24',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Envoy is a simple Bitcoin wallet with powerful account management and privacy features, including Magic Backups.Use Envoy alongside your Passport hardware wallet for setup, firmware updates, and more.`
   String get envoy_faq_answer_3 {
     return Intl.message(
@@ -2883,6 +2893,16 @@ class S {
     return Intl.message(
       'Does Envoy allow custom miner fee selection?',
       name: 'envoy_faq_question_23',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can I buy Bitcoin in Envoy?`
+  String get envoy_faq_question_24 {
+    return Intl.message(
+      'Can I buy Bitcoin in Envoy?',
+      name: 'envoy_faq_question_24',
       desc: '',
       args: [],
     );
@@ -5368,6 +5388,36 @@ class S {
     );
   }
 
+  /// `Block height:`
+  String get privacy_node_configure_blockHeight {
+    return Intl.message(
+      'Block height:',
+      name: 'privacy_node_configure_blockHeight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connected to Esplora server`
+  String get privacy_node_configure_connectedToEsplora {
+    return Intl.message(
+      'Connected to Esplora server',
+      name: 'privacy_node_configure_connectedToEsplora',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not connect to Esplora server.`
+  String get privacy_node_configure_noConnectionEsplora {
+    return Intl.message(
+      'Could not connect to Esplora server.',
+      name: 'privacy_node_configure_noConnectionEsplora',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Connected to`
   String get privacy_node_connectedTo {
     return Intl.message(
@@ -5913,6 +5963,16 @@ class S {
     return Intl.message(
       'The chosen fee can only be achieved by adding more coins. Envoy does this automatically and will never include any locked coins. \n\nThis selection can be reviewed or edited in the following screen.',
       name: 'replaceByFee_warning_extraUTXO_overlay_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Checking Device Security`
+  String get scv_checkingDeviceSecurity {
+    return Intl.message(
+      'Checking Device Security',
+      name: 'scv_checkingDeviceSecurity',
       desc: '',
       args: [],
     );

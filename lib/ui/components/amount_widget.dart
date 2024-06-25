@@ -188,7 +188,7 @@ class PrimaryAmountWidget extends StatelessWidget {
   final EnvoyIcons iconBtc = EnvoyIcons.btc;
   final EnvoyIcons iconSat = EnvoyIcons.sats;
 
-  final TextStyle textStyleFiatSymbol = EnvoyTypography.body
+  final TextStyle textStyleFiatSymbol = EnvoyTypography.digitsMedium
       .copyWith(color: EnvoyColors.textPrimary, fontSize: 24);
 
   PrimaryAmountWidget({
@@ -217,16 +217,16 @@ class PrimaryAmountWidget extends StatelessWidget {
     }
 
     final TextStyle textStyleBlack = style == PrimaryAmountWidgetStyle.normal
-        ? EnvoyTypography.body.copyWith(
+        ? EnvoyTypography.digitsMedium.copyWith(
             color: EnvoyColors.textPrimary,
           )
-        : EnvoyTypography.largeAmount.copyWith(
+        : EnvoyTypography.digitsLarge.copyWith(
             color: EnvoyColors.textPrimary,
           );
 
     final TextStyle textStyleGray = style == PrimaryAmountWidgetStyle.normal
-        ? EnvoyTypography.body.copyWith(color: EnvoyColors.textTertiary)
-        : EnvoyTypography.largeAmount.copyWith(color: EnvoyColors.textTertiary);
+        ? EnvoyTypography.digitsMedium.copyWith(color: EnvoyColors.textTertiary)
+        : EnvoyTypography.digitsLarge.copyWith(color: EnvoyColors.textTertiary);
 
     final iconSize = style == PrimaryAmountWidgetStyle.normal
         ? EnvoyIconSize.small
@@ -253,7 +253,7 @@ class PrimaryAmountWidget extends StatelessWidget {
                       applyHeightToLastDescent: false,
                     ),
                     style: sendScreen
-                        ? EnvoyTypography.body
+                        ? EnvoyTypography.digitsMedium
                             .copyWith(color: EnvoyColors.textSecondary)
                         : textStyleFiatSymbol,
                   )
@@ -327,7 +327,7 @@ class SecondaryAmountWidget extends StatelessWidget {
       );
     }
 
-    final TextStyle textStyle = EnvoyTypography.info.copyWith(
+    final TextStyle textStyle = EnvoyTypography.digitsSmall.copyWith(
       color: style == SecondaryAmountWidgetStyle.normal
           ? EnvoyColors.textPrimary
           : EnvoyColors.accentPrimary,

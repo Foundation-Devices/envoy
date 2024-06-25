@@ -410,6 +410,7 @@ class HomePageState extends ConsumerState<HomePage>
       child: Shield(child: widget.mainNavigationShell),
     );
     return CoinSelectionOverlay(
+      key: coinSelectionOverlayKey,
       child: Scaffold(
           extendBodyBehindAppBar: true,
           resizeToAvoidBottomInset: false,

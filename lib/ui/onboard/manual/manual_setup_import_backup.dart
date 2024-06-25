@@ -13,6 +13,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/manual/dialogs.dart';
+import 'package:rive/rive.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
@@ -31,81 +32,148 @@ class ManualSetupImportBackup extends StatefulWidget {
 }
 
 class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
+  StateMachineController? _stateMachineController;
+  bool _isRecoveryInProgress = false;
+
   @override
-  Widget build(BuildContext context) {
-    return OnboardPageBackground(
-        child: Material(
-      color: Colors.transparent,
+  void dispose() {
+    _stateMachineController?.dispose();
+    super.dispose();
+  }
+
+  _onRiveInit(Artboard artBoard) {
+    _stateMachineController =
+        StateMachineController.fromArtboard(artBoard, 'STM');
+    artBoard.addController(_stateMachineController!);
+    _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
+  }
+
+  Widget _recoveryInProgress(BuildContext context) {
+    return SingleChildScrollView(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: EnvoySpacing.small),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: EnvoySpacing.large3),
-            child: Image.asset(
-              "assets/fw_intro.png",
-              width: 150,
-              height: 150,
-            ),
-          ),
-          const SizedBox(height: EnvoySpacing.medium1),
-          Flexible(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.small),
-                    child: Text(
-                      S().manual_setup_import_backup_CTA2,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                  const SizedBox(height: EnvoySpacing.medium3),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.large1),
-                    child: Text(S().manual_setup_import_backup_subheading,
-                        textAlign: TextAlign.center,
-                        style: EnvoyTypography.info
-                            .copyWith(color: EnvoyColors.textTertiary)),
-                  ),
-                ],
+          Container(
+            constraints: BoxConstraints.tight(const Size.fromHeight(240)),
+            child: Transform.scale(
+              scale: 1.2,
+              child: RiveAnimation.asset(
+                "assets/envoy_loader.riv",
+                fit: BoxFit.contain,
+                onInit: _onRiveInit,
               ),
             ),
           ),
-          const SizedBox(height: EnvoySpacing.medium1),
-          Padding(
-            padding: const EdgeInsets.only(
-                left: EnvoySpacing.medium1,
-                right: EnvoySpacing.medium1,
-                bottom: EnvoySpacing.medium2,
-                top: EnvoySpacing.small),
-            child: Column(
-              children: [
-                OnboardingButton(
-                    type: EnvoyButtonTypes.secondary,
-                    label: S().manual_setup_import_backup_CTA2,
-                    onTap: () {
-                      openBackupFile(context);
-                    }),
-                OnboardingButton(
-                    type: EnvoyButtonTypes.primary,
-                    label: S().manual_setup_import_backup_CTA1,
-                    onTap: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return const ManualSetupCreateAndStoreBackup();
-                      }));
-                    }),
-              ],
-            ),
+          const SizedBox(
+            height: EnvoySpacing.xl * 2,
+          ),
+          Text(
+            S().magic_setup_recovery_retry_header,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleLarge,
           ),
         ],
       ),
-    ));
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isRecoveryInProgress) {
+      return OnboardPageBackground(
+        child: Material(
+          color: Colors.transparent,
+          child: _recoveryInProgress(context),
+        ),
+      );
+    }
+
+    return PopScope(
+      canPop: false,
+      child: OnboardPageBackground(
+          child: Material(
+        color: Colors.transparent,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const SizedBox(height: EnvoySpacing.small),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.large3),
+              child: Image.asset(
+                "assets/fw_intro.png",
+                width: 150,
+                height: 150,
+              ),
+            ),
+            const SizedBox(height: EnvoySpacing.medium1),
+            Flexible(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.small),
+                      child: Text(
+                        S().manual_setup_import_backup_CTA2,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                    ),
+                    const SizedBox(height: EnvoySpacing.medium3),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.large1),
+                      child: Text(S().manual_setup_import_backup_subheading,
+                          textAlign: TextAlign.center,
+                          style: EnvoyTypography.info
+                              .copyWith(color: EnvoyColors.textTertiary)),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: EnvoySpacing.medium1),
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: EnvoySpacing.medium1,
+                  right: EnvoySpacing.medium1,
+                  bottom: EnvoySpacing.medium2,
+                  top: EnvoySpacing.small),
+              child: Column(
+                children: [
+                  OnboardingButton(
+                      type: EnvoyButtonTypes.secondary,
+                      label: S().manual_setup_import_backup_CTA2,
+                      onTap: () {
+                        Future.delayed(const Duration(seconds: 2), () {
+                          setState(() {
+                            _isRecoveryInProgress = true;
+                          });
+                        });
+                        openBackupFile(context).then((value) {
+                          setState(() {
+                            _isRecoveryInProgress = false;
+                          });
+                        });
+                      }),
+                  OnboardingButton(
+                      type: EnvoyButtonTypes.primary,
+                      label: S().manual_setup_import_backup_CTA1,
+                      onTap: () {
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return const ManualSetupCreateAndStoreBackup();
+                        }));
+                      }),
+                ],
+              ),
+            ),
+          ],
+        ),
+      )),
+    );
   }
 }
 

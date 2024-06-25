@@ -10,11 +10,8 @@ import 'package:tor/tor.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:envoy/business/scheduler.dart';
 import 'dart:core';
-import 'package:envoy/business/coordinates.dart';
 
 class MapData {
-  static const String mapApiKey =
-      String.fromEnvironment("MAP_API_KEY", defaultValue: '');
   List<Venue> venues = [];
 
   static final MapData _instance = MapData._internal();
@@ -106,43 +103,5 @@ class MapData {
     return await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
       "https://coinmap.org/api/v1/venues/$id",
     );
-  }
-
-  Future<Coordinates> getCoordinates(
-      String divisionName, String countryName) async {
-    var response = await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
-      "https://api.geoapify.com/v1/geocode/search?text=$divisionName&format=json&apiKey=$mapApiKey",
-    );
-
-    var data = jsonDecode(response.body);
-    if (data['results'] != null && data['results'].isNotEmpty) {
-      for (var result in data['results']) {
-        if (result['country'] == countryName) {
-          // Extract latitude and longitude
-          double latitude = (result['lat'] as num).toDouble();
-          double longitude = (result['lon'] as num).toDouble();
-
-          return Coordinates(latitude, longitude);
-        }
-      }
-    }
-
-    // If no matching result is found, search by country name
-    var response2 = await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
-      "https://api.geoapify.com/v1/geocode/search?country=$countryName&format=json&apiKey=$mapApiKey",
-    );
-
-    var data2 = jsonDecode(response2.body);
-    if (data2['results'] != null && data2['results'].isNotEmpty) {
-      var firstResult = data2['results'][0];
-
-      // Extract latitude and longitude
-      double latitude = (firstResult['lat'] as num).toDouble();
-      double longitude = (firstResult['lon'] as num).toDouble();
-
-      return Coordinates(latitude, longitude);
-    }
-
-    return Coordinates(null, null);
   }
 }

@@ -68,33 +68,28 @@ class SingleImportPpIntroPage extends StatelessWidget {
                   left: EnvoySpacing.medium1,
                   top: EnvoySpacing.medium1),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  const SizedBox(height: EnvoySpacing.large1),
                   Flexible(
                     child: SingleChildScrollView(
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(
-                            vertical: EnvoySpacing.large1),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const SizedBox(height: EnvoySpacing.small),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: EnvoySpacing.medium1),
-                              child: OnboardingText(
-                                header: S().pair_existing_device_intro_heading,
-                                text: isExistingDevice
-                                    ? S().pair_existing_device_intro_subheading
-                                    : S()
-                                        .pair_new_device_intro_connect_envoy_subheading,
-                              ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(height: EnvoySpacing.small),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: EnvoySpacing.medium1),
+                            child: OnboardingText(
+                              header: S().pair_existing_device_intro_heading,
+                              text: isExistingDevice
+                                  ? S().pair_existing_device_intro_subheading
+                                  : S()
+                                      .pair_new_device_intro_connect_envoy_subheading,
                             ),
-                            const Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: EnvoySpacing.medium2)),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -102,7 +97,6 @@ class SingleImportPpIntroPage extends StatelessWidget {
                     padding: const EdgeInsets.only(
                         left: EnvoySpacing.medium1,
                         right: EnvoySpacing.medium1,
-                        top: EnvoySpacing.medium1,
                         bottom: EnvoySpacing.large2),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,

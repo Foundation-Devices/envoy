@@ -26,21 +26,34 @@ class EnvoyTypography {
   static TextStyle explainer =
       EnvoyTypography.label.copyWith(color: EnvoyColors.textTertiary);
 
-  static TextStyle largeAmount = baseFont
+  static TextStyle digitsLarge = baseFont
       .copyWith(
         fontSize: 40,
       )
       .setWeight(FontWeight.w300);
 
+  static TextStyle digitsMedium = baseFont
+      .copyWith(
+        fontSize: 14,
+      )
+      .setWeight(FontWeight.w500);
+
+  static TextStyle digitsSmall = baseFont
+      .copyWith(
+        fontSize: 12,
+      )
+      .setWeight(FontWeight.w500);
+
   static TextStyle heading = baseFont
       .copyWith(
-        fontSize: 16,
-      )
-      .setWeight(FontWeight.w600);
-
-  static TextStyle subheading20 = baseFont
-      .copyWith(
         fontSize: 20,
+      )
+      .setWeight(FontWeight.w500);
+
+  // NOTE: always in caps
+  static TextStyle topBarTitle = baseFont
+      .copyWith(
+        fontSize: 18,
       )
       .setWeight(FontWeight.w500);
 

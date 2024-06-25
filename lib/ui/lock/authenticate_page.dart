@@ -27,20 +27,11 @@ class AuthenticateApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        systemStatusBarContrastEnforced: true,
-        systemNavigationBarColor: Colors.transparent,
-        systemNavigationBarDividerColor: Colors.transparent,
-        systemNavigationBarIconBrightness: Brightness.dark,
-        statusBarIconBrightness: Brightness.dark));
-
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
-        overlays: [SystemUiOverlay.top]);
-
     final envoyTextTheme =
         GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);
 
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         localizationsDelegates: const [
           S.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -94,7 +85,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
     }
     return Container(
       decoration: const BoxDecoration(
-        color: EnvoyColors.textPrimaryInverse,
+        color: Colors.transparent,
         image: DecorationImage(
             image: ExactAssetImage('assets/splash_blank.png'),
             fit: BoxFit.cover,
@@ -295,6 +286,25 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      // Portrait mode only outside of video player
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitDown,
+        DeviceOrientation.portraitUp,
+      ]);
+      //sets theme for authentication page
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarContrastEnforced: false,
+        systemStatusBarContrastEnforced: false,
+        statusBarColor: Colors.transparent,
+        systemNavigationBarIconBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+      ));
+
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
+          overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+
       bool? useAuth = LocalStorage().prefs.getBool("useLocalAuth");
       if (useAuth == true) {
         initiateAuth();

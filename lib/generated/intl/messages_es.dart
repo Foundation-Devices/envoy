@@ -565,6 +565,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "En este momento Envoy no admite gastos por lotes (\"Batch spending\")."),
         "envoy_faq_answer_23": MessageLookupByLibrary.simpleMessage(
             "Sí. A partir de la versión 1.4.0, Envoy permite personalizar la tasa de transacción totalmente, y mantiene dos opciones rápidas de selección de tasa: \'Estándar\' y \'Más rápido\'. \'Estándar\' tiene como objetivo finalizar tu transacción en un plazo de 60 minutos y \'Más rápido\' en unos 10 minutos. Estas son estimaciones basadas en la congestión de la red en el momento en que se construye la transacción y siempre se te mostrará el coste de cada una de las opciones antes de finalizar la transacción."),
+        "envoy_faq_answer_24": MessageLookupByLibrary.simpleMessage(
+            "¡Sí! A partir de la versión 1.7, ya puedes comprar Bitcoin en Envoy y hacer que se depositen automáticamente en tu cuenta móvil o en cualquier cuenta de Passport conectada. Solo tienes que hacer clic en el botón de compra de la pantalla principal de Cuentas."),
         "envoy_faq_answer_3": MessageLookupByLibrary.simpleMessage(
             "Envoy es una cartera de Bitcoin simple con funciones potentes de gestión de cuentas y privacidad, incluyendo Copias de Seguridad Mágicas. Usa Envoy junto con tu Passport para su configuración, actualizaciones de firmware y más."),
         "envoy_faq_answer_4": MessageLookupByLibrary.simpleMessage(
@@ -611,6 +613,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "¿Admite Envoy el envío por lotes?"),
         "envoy_faq_question_23": MessageLookupByLibrary.simpleMessage(
             "¿Permite Envoy la selección de tasas de envío personalizadas?"),
+        "envoy_faq_question_24": MessageLookupByLibrary.simpleMessage(
+            "¿Puedo comprar Bitcoin en Envoy?"),
         "envoy_faq_question_3":
             MessageLookupByLibrary.simpleMessage("¿Qué puede hacer Envoy?"),
         "envoy_faq_question_4": MessageLookupByLibrary.simpleMessage(
@@ -1179,6 +1183,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Desbloqueo con Huella o PIN"),
         "privacy_node_configure": MessageLookupByLibrary.simpleMessage(
             "Mejora tu privacidad con tu propio nodo. Pulsa Más información arriba. "),
+        "privacy_node_configure_blockHeight":
+            MessageLookupByLibrary.simpleMessage("Altura de bloque:"),
+        "privacy_node_configure_connectedToEsplora":
+            MessageLookupByLibrary.simpleMessage(
+                "Conectado a servidor Esplora"),
+        "privacy_node_configure_noConnectionEsplora":
+            MessageLookupByLibrary.simpleMessage(
+                "No se pudo conectar a servidor Esplora."),
         "privacy_node_connectedTo":
             MessageLookupByLibrary.simpleMessage("Conectado a"),
         "privacy_node_connection_couldNotReach":
@@ -1302,10 +1314,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Requerido para Impulsar"),
         "replaceByFee_ramp_incompleteTransactionAutodeleteWarning":
             MessageLookupByLibrary.simpleMessage(
-                "Las compras que no se completen se eliminarán de Actividad en un plazo de 5 días"),
+                "Las compras que no se completen se eliminarán de tu actividad en un plazo de 5 días"),
         "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "La tarifa elegida solo se puede lograr añadiendo más monedas. Envoy lo hace automáticamente y nunca incluirá monedas bloqueadas.\n\nEsta selección se podrá editar en la siguiente pantalla."),
+        "scv_checkingDeviceSecurity": MessageLookupByLibrary.simpleMessage(
+            "Comprobando la Seguridad del Dispositivo"),
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirmar"),
         "send_keyboard_address_loading":
