@@ -58,10 +58,8 @@ class _SingleWalletPairSuccessPageState
             type: EnvoyButtonTypes.secondary,
             label: S().pair_new_device_success_cta2,
             onTap: () {
-              ref.read(homePageBackgroundProvider.notifier).state =
-                  HomePageBackgroundState.hidden;
-              ref.read(homePageTitleProvider.notifier).state = "";
-              OnboardingPage.popUntilHome(context);
+              OnboardingPage.popUntilHome(context,
+                  ref: ref, resetHomeProviders: true);
             }),
         OnboardingButton(
             label: S().pair_new_device_success_cta1,
