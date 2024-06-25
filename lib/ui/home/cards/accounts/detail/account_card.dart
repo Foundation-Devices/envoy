@@ -476,7 +476,7 @@ class TransactionListTile extends StatelessWidget {
             action();
           },
           onLongPress: () async {
-            await copyTxId(context, transaction.txId);
+            await copyTxId(context, transaction.txId, transaction.type);
           },
           onDoubleTap: () {},
           // Avoids unintended behavior, prevents list item disappearance
@@ -693,7 +693,8 @@ class TransactionListTile extends StatelessWidget {
   }
 }
 
-Future<void> copyTxId(BuildContext context, String txId) async {
+Future<void> copyTxId(
+    BuildContext context, String txId, TransactionType txType) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
   bool dismissed =
       await EnvoyStorage().checkPromptDismissed(DismissiblePrompt.copyTxId);
@@ -701,8 +702,19 @@ Future<void> copyTxId(BuildContext context, String txId) async {
     showWarningOnTxIdCopy(context, txId);
   } else {
     Clipboard.setData(ClipboardData(text: txId));
-    scaffoldMessenger.showSnackBar(const SnackBar(
-      content: Text("Transaction ID copied to clipboard!"), //TODO: FIGMA
+    String message;
+    switch (txType) {
+      case TransactionType.ramp:
+        message = "Ramp ID copied to clipboard!";
+        break;
+      case TransactionType.btcPay:
+        message = "Payment ID copied to clipboard!";
+        break;
+      default:
+        message = "Transaction ID copied to clipboard!"; //TODO: FIGMA
+    }
+    scaffoldMessenger.showSnackBar(SnackBar(
+      content: Text(message),
     ));
   }
 }
