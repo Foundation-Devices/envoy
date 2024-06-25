@@ -10,9 +10,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/build_context_extension.dart';
-import 'package:envoy/ui/home/home_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:envoy/ui/state/home_page_state.dart';
 
 class SingleWalletPairSuccessPage extends ConsumerStatefulWidget {
   final Wallet pairedWallet;
