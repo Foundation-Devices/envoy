@@ -492,6 +492,16 @@ class S {
     );
   }
 
+  /// `Amount`
+  String get azteco_redeem_modal_amount {
+    return Intl.message(
+      'Amount',
+      name: 'azteco_redeem_modal_amount',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Redeem`
   String get azteco_redeem_modal_cta1 {
     return Intl.message(
@@ -527,6 +537,16 @@ class S {
     return Intl.message(
       'Redeem Voucher?',
       name: 'azteco_redeem_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sale Date`
+  String get azteco_redeem_modal_saleDate {
+    return Intl.message(
+      'Sale Date',
+      name: 'azteco_redeem_modal_saleDate',
       desc: '',
       args: [],
     );
@@ -722,6 +742,26 @@ class S {
     );
   }
 
+  /// `Wrong Network`
+  String get btcpay_redeem_modal_wrongNetwork_heading {
+    return Intl.message(
+      'Wrong Network',
+      name: 'btcpay_redeem_modal_wrongNetwork_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is an on-chain voucher. It cannot be redeemed to a Testnet or Signet account.`
+  String get btcpay_redeem_modal_wrongNetwork_subheading {
+    return Intl.message(
+      'This is an on-chain voucher. It cannot be redeemed to a Testnet or Signet account.',
+      name: 'btcpay_redeem_modal_wrongNetwork_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Choose different account`
   String get buy_bitcoin_accountSelection_chooseAccount {
     return Intl.message(
@@ -847,6 +887,16 @@ class S {
     return Intl.message(
       'Coming soon in your area.',
       name: 'buy_bitcoin_buyOptions_card_commingSoon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disabled in settings.`
+  String get buy_bitcoin_buyOptions_card_disabledInSettings {
+    return Intl.message(
+      'Disabled in settings.',
+      name: 'buy_bitcoin_buyOptions_card_disabledInSettings',
       desc: '',
       args: [],
     );
@@ -1239,6 +1289,16 @@ class S {
     return Intl.message(
       'Something Went Wrong',
       name: 'buy_bitcoin_purchaseError_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Purchase ID:`
+  String get buy_bitcoin_purchaseError_purchaseID {
+    return Intl.message(
+      'Purchase ID:',
+      name: 'buy_bitcoin_purchaseError_purchaseID',
       desc: '',
       args: [],
     );
@@ -1686,6 +1746,16 @@ class S {
     );
   }
 
+  /// `New Fee`
+  String get coincontrol_tx_detail_newFee {
+    return Intl.message(
+      'New Fee',
+      name: 'coincontrol_tx_detail_newFee',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `No change`
   String get coincontrol_tx_detail_no_change {
     return Intl.message(
@@ -1931,6 +2001,16 @@ class S {
     return Intl.message(
       'Payment ID',
       name: 'coindetails_overlay_paymentID',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ramp Fees`
+  String get coindetails_overlay_rampFee {
+    return Intl.message(
+      'Ramp Fees',
+      name: 'coindetails_overlay_rampFee',
       desc: '',
       args: [],
     );
@@ -5948,6 +6028,56 @@ class S {
     );
   }
 
+  /// `Transactions Removed`
+  String get replaceByFee_modal_deletedInactiveTX_ramp_heading {
+    return Intl.message(
+      'Transactions Removed',
+      name: 'replaceByFee_modal_deletedInactiveTX_ramp_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Incomplete purchases with the following Ramp IDs were removed from activity after 5 days.`
+  String get replaceByFee_modal_deletedInactiveTX_ramp_subheading {
+    return Intl.message(
+      'Incomplete purchases with the following Ramp IDs were removed from activity after 5 days.',
+      name: 'replaceByFee_modal_deletedInactiveTX_ramp_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Transaction Fee `
+  String get replaceByFee_newFee_modal_heading {
+    return Intl.message(
+      'New Transaction Fee ',
+      name: 'replaceByFee_newFee_modal_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To boost your original transaction, you are about to pay a new fee of:`
+  String get replaceByFee_newFee_modal_subheading {
+    return Intl.message(
+      'To boost your original transaction, you are about to pay a new fee of:',
+      name: 'replaceByFee_newFee_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This will replace the original fee of:`
+  String get replaceByFee_newFee_modal_subheading_replacing {
+    return Intl.message(
+      'This will replace the original fee of:',
+      name: 'replaceByFee_newFee_modal_subheading_replacing',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Incomplete purchases will be automatically removed after 5 days`
   String get replaceByFee_ramp_incompleteTransactionAutodeleteWarning {
     return Intl.message(
@@ -6093,6 +6223,16 @@ class S {
     return Intl.message(
       'Advanced',
       name: 'settings_advanced',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Buy in Envoy`
+  String get settings_advanced_enableBuyRamp {
+    return Intl.message(
+      'Buy in Envoy',
+      name: 'settings_advanced_enableBuyRamp',
       desc: '',
       args: [],
     );

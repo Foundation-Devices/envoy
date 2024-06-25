@@ -81,8 +81,8 @@ Widget getMainErrorMessage(
           link: link);
     case BtcPayVoucherErrorType.wrongNetwork:
       return errorMesage(
-        "Wrong network", // TODO: Figma
-        "The voucher you are trying to redeem is for a different network. Please check the voucher details and try again on the correct network.", // TODO: Figma
+        S().btcpay_redeem_modal_wrongNetwork_heading,
+        S().btcpay_redeem_modal_wrongNetwork_subheading,
       );
   }
 }
