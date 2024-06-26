@@ -52,9 +52,7 @@ class OnboardingPage extends StatelessWidget {
   }
 
   static popUntilHome(BuildContext context,
-      {WidgetRef? ref,
-      bool useRootNavigator = false,
-      bool resetHomeProviders = false}) async {
+      {bool useRootNavigator = false, bool resetHomeProviders = false}) async {
     if (resetHomeProviders) {
       ProviderScope.containerOf(context)
           .read(homePageBackgroundProvider.notifier)
