@@ -255,7 +255,7 @@ class _TransactionsDetailsWidgetState
                     behavior: HitTestBehavior.opaque,
                     onLongPress: () {
                       if (tx.type != TransactionType.ramp) {
-                        copyTxId(context, tx.txId);
+                        copyTxId(context, tx.txId, tx.type);
                       }
                     },
                     onTap: () {
@@ -369,7 +369,7 @@ class _TransactionsDetailsWidgetState
                     trailing: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onLongPress: () {
-                        copyTxId(context, tx.txId);
+                        copyTxId(context, tx.txId, tx.type);
                       },
                       onTap: () {
                         setState(() {

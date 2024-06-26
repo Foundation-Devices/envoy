@@ -122,7 +122,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                 color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
             trailing: GestureDetector(
                 onLongPress: () {
-                  copyTxId(context, tx.txId);
+                  copyTxId(context, tx.txId, tx.type);
                 },
                 onTap: () {
                   setState(() {
