@@ -363,6 +363,7 @@ class _TransactionsDetailsWidgetState
                   ),
                 rbfPossible
                     ? EnvoyInfoCardListItem(
+                        spacingPriority: FlexPriority.trailing,
                         title: _getConfirmationTimeString(ref.watch(
                             txEstimatedConfirmationTimeProvider(
                                 Tuple(tx, widget.account.wallet.network)))),
