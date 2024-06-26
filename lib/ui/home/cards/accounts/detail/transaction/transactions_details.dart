@@ -357,7 +357,7 @@ class _TransactionsDetailsWidgetState
                           ),
                         ),
                       )),
-                if (tx.type == TransactionType.ramp)
+                if (tx.rampId != null)
                   EnvoyInfoCardListItem(
                     verticalPadding: false,
                     title: S().coindetails_overlay_rampID,
@@ -369,7 +369,7 @@ class _TransactionsDetailsWidgetState
                     trailing: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onLongPress: () {
-                        copyTxId(context, tx.txId, tx.type);
+                        copyTxId(context, tx.rampId!, tx.type);
                       },
                       onTap: () {
                         setState(() {
@@ -390,8 +390,8 @@ class _TransactionsDetailsWidgetState
                           builder: (context, value, child) {
                             return Text(
                               truncateWithEllipsisInCenter(
-                                  tx.txId,
-                                  lerpDouble(16, tx.txId.length, value)!
+                                  tx.rampId!,
+                                  lerpDouble(16, tx.rampId!.length, value)!
                                       .toInt()),
                               style: EnvoyTypography.info
                                   .copyWith(color: EnvoyColors.textPrimary),
@@ -402,6 +402,27 @@ class _TransactionsDetailsWidgetState
                         ),
                       ),
                     ),
+                  ),
+                if (tx.rampFee != null)
+                  EnvoyInfoCardListItem(
+                    title: S().coindetails_overlay_rampFee,
+                    icon: const EnvoyIcon(
+                      EnvoyIcons.ramp_without_name,
+                      size: EnvoyIconSize.extraSmall,
+                      color: EnvoyColors.textPrimary,
+                    ),
+                    trailing: hideBalance
+                        ? const LoaderGhost(
+                            width: 74, animate: false, height: 16)
+                        : Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              EnvoyAmount(
+                                  account: widget.account,
+                                  amountSats: tx.rampFee!,
+                                  amountWidgetStyle: AmountWidgetStyle.normal),
+                            ],
+                          ),
                   ),
                 rbfPossible
                     ? EnvoyInfoCardListItem(
@@ -419,7 +440,8 @@ class _TransactionsDetailsWidgetState
                         ),
                       )
                     : Container(),
-                _renderFeeWidget(context, tx),
+                if (tx.type != TransactionType.ramp)
+                  _renderFeeWidget(context, tx),
                 GestureDetector(
                   onTap: () {
                     showEnvoyDialog(

@@ -56,6 +56,8 @@ class RampWidget {
     String address = purchase.receiverAddress ?? "";
     int amount;
     String amountString = purchase.cryptoAmount ?? "";
+    int? rampFee = toSatoshis(purchase.appliedFee, purchase.assetExchangeRate);
+
     try {
       amount = int.parse(amountString);
     } catch (e) {
@@ -65,8 +67,10 @@ class RampWidget {
 
     await EnvoyStorage().addPendingTx(txID, account.id ?? "", DateTime.now(),
         TransactionType.ramp, amount, 0, address,
-        purchaseViewToken: purchaseViewToken);
-    EnvoyStorage().addTxNote(note: "Ramp Purchase", key: address); //TODO: figma
+        purchaseViewToken: purchaseViewToken,
+        rampId: purchase.id,
+        rampFee: rampFee);
+    EnvoyStorage().addTxNote(note: "Ramp Purchase", key: txID); //TODO: figma
     if (context.mounted) {
       Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(builder: (context) {
@@ -107,4 +111,15 @@ Future<String?> checkPurchase(String id, String purchaseViewToken) async {
   }
 
   return null;
+}
+
+int? toSatoshis(double? feeAmount, double? exchangeRate) {
+  if (feeAmount == null || exchangeRate == null || exchangeRate == 0) {
+    return null;
+  }
+
+  double amountInBitcoin = feeAmount / exchangeRate;
+  int amountInSatoshis = (amountInBitcoin * 100000000).round();
+
+  return amountInSatoshis;
 }
