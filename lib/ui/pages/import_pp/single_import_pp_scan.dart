@@ -31,8 +31,6 @@ class SingleImportPpScanPage extends OnboardingPage {
             ),
           )
         ],
-        navigationDots: 2,
-        navigationDotsIndex: 1,
         buttons: [
           Padding(
             padding: EdgeInsets.only(
