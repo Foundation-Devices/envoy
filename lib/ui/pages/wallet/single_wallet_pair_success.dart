@@ -10,20 +10,12 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/build_context_extension.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SingleWalletPairSuccessPage extends ConsumerStatefulWidget {
+class SingleWalletPairSuccessPage extends StatelessWidget {
   final Wallet pairedWallet;
 
   const SingleWalletPairSuccessPage(this.pairedWallet, {super.key});
 
-  @override
-  ConsumerState<SingleWalletPairSuccessPage> createState() =>
-      _SingleWalletPairSuccessPageState();
-}
-
-class _SingleWalletPairSuccessPageState
-    extends ConsumerState<SingleWalletPairSuccessPage> {
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
@@ -62,7 +54,7 @@ class _SingleWalletPairSuccessPageState
             label: S().pair_new_device_success_cta1,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return SingleWalletAddressVerifyPage(widget.pairedWallet);
+                return SingleWalletAddressVerifyPage(pairedWallet);
               }));
             }),
         SizedBox(
