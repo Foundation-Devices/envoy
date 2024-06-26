@@ -116,6 +116,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "A Envoy não consegue estabelecer ligação com a Azteco.\n\nPor favor entra em contacto com support@azte.co ou tenta novamente mais tarde."),
         "azteco_redeem_modal__voucher_code":
             MessageLookupByLibrary.simpleMessage("CÓDIGO DO VALE"),
+        "azteco_redeem_modal_amount":
+            MessageLookupByLibrary.simpleMessage("Amount"),
         "azteco_redeem_modal_cta1":
             MessageLookupByLibrary.simpleMessage("Resgatar"),
         "azteco_redeem_modal_fail_heading":
@@ -124,6 +126,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Por favor confirma se o teu vale ainda está válido.\n\nContacta o support@azte.co para quaisquer questões relacionadas com o vale."),
         "azteco_redeem_modal_heading":
             MessageLookupByLibrary.simpleMessage("Resgatar Vale?"),
+        "azteco_redeem_modal_saleDate":
+            MessageLookupByLibrary.simpleMessage("Sale Date"),
         "azteco_redeem_modal_success_heading":
             MessageLookupByLibrary.simpleMessage("Vale Resgatado"),
         "azteco_redeem_modal_success_subheading":
@@ -166,6 +170,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Descrição:"),
         "btcpay_redeem_modal_name":
             MessageLookupByLibrary.simpleMessage("Nome:"),
+        "btcpay_redeem_modal_wrongNetwork_heading":
+            MessageLookupByLibrary.simpleMessage("Wrong Network"),
+        "btcpay_redeem_modal_wrongNetwork_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "This is an on-chain voucher. It cannot be redeemed to a Testnet or Signet account."),
         "buy_bitcoin_accountSelection_chooseAccount":
             MessageLookupByLibrary.simpleMessage(
                 "Escolher uma conta diferente"),
@@ -199,6 +208,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Caixas Automáticas"),
         "buy_bitcoin_buyOptions_card_commingSoon":
             MessageLookupByLibrary.simpleMessage("Brevemente na tua área."),
+        "buy_bitcoin_buyOptions_card_disabledInSettings":
+            MessageLookupByLibrary.simpleMessage("Disabled in settings."),
         "buy_bitcoin_buyOptions_card_inEnvoy_heading":
             MessageLookupByLibrary.simpleMessage("Comprar na Envoy"),
         "buy_bitcoin_buyOptions_card_inEnvoy_subheading":
@@ -296,6 +307,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Por favor entra em contacto com a Ramp para assistência técnica."),
         "buy_bitcoin_purchaseError_heading":
             MessageLookupByLibrary.simpleMessage("Algo Correu Mal"),
+        "buy_bitcoin_purchaseError_purchaseID":
+            MessageLookupByLibrary.simpleMessage("Purchase ID:"),
         "card_coin_locked":
             MessageLookupByLibrary.simpleMessage("Moeda Bloqueada"),
         "card_coin_selected":
@@ -389,6 +402,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_detail_high_fee_info_overlay_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Algumas moedas mais pequenas foram excluídas desta transação. Com a taxa de comissão escolhida, o custo da sua inclusão é superior ao seu valor."),
+        "coincontrol_tx_detail_newFee":
+            MessageLookupByLibrary.simpleMessage("New Fee"),
         "coincontrol_tx_detail_no_change":
             MessageLookupByLibrary.simpleMessage("Sem troco"),
         "coincontrol_tx_detail_passport_cta2":
@@ -442,6 +457,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Nota"),
         "coindetails_overlay_paymentID":
             MessageLookupByLibrary.simpleMessage("ID de Pagamento"),
+        "coindetails_overlay_rampFee":
+            MessageLookupByLibrary.simpleMessage("Ramp Fees"),
         "coindetails_overlay_rampID":
             MessageLookupByLibrary.simpleMessage("ID de Ramp"),
         "coindetails_overlay_status":
@@ -1312,6 +1329,19 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Aumenta a taxa associada à tua transacção para acelerares o tempo de confirmação."),
         "replaceByFee_edit_transaction_requiredAmount":
             MessageLookupByLibrary.simpleMessage("Necessário para Reforçar"),
+        "replaceByFee_modal_deletedInactiveTX_ramp_heading":
+            MessageLookupByLibrary.simpleMessage("Transactions Removed"),
+        "replaceByFee_modal_deletedInactiveTX_ramp_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Incomplete purchases with the following Ramp IDs were removed from activity after 5 days."),
+        "replaceByFee_newFee_modal_heading":
+            MessageLookupByLibrary.simpleMessage("New Transaction Fee "),
+        "replaceByFee_newFee_modal_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "To boost your original transaction, you are about to pay a new fee of:"),
+        "replaceByFee_newFee_modal_subheading_replacing":
+            MessageLookupByLibrary.simpleMessage(
+                "This will replace the original fee of:"),
         "replaceByFee_ramp_incompleteTransactionAutodeleteWarning":
             MessageLookupByLibrary.simpleMessage(
                 "Compras incompletas serão automaticamente removidas após 5 dias"),
@@ -1342,6 +1372,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "send_reviewScreen_sendMaxWarning": MessageLookupByLibrary.simpleMessage(
             "A enviar o Máximo:\nAs taxas são deduzidas da quantia a enviar."),
         "settings_advanced": MessageLookupByLibrary.simpleMessage("Avançado"),
+        "settings_advanced_enableBuyRamp":
+            MessageLookupByLibrary.simpleMessage("Buy in Envoy"),
         "settings_advanced_enabled_signet_modal_link":
             MessageLookupByLibrary.simpleMessage(
                 "Aprende mais sobre a Signet [[aqui]]."),
