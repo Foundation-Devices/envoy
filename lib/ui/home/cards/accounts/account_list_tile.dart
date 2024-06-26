@@ -313,10 +313,14 @@ class AccountBadge extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: EnvoySpacing.xs),
-                        child: Text(
-                          S().account_type_label_taproot,
+                        child: DefaultTextStyle(
                           style: EnvoyTypography.info
                               .copyWith(color: Colors.white),
+                          child: Text(
+                            S().account_type_label_taproot,
+                            style: EnvoyTypography.info
+                                .copyWith(color: Colors.white),
+                          ),
                         ),
                       ),
                   ],
