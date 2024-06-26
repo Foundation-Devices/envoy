@@ -20,89 +20,87 @@ class AboutPage extends StatefulWidget {
 class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black,
-      child: Padding(
-        padding: const EdgeInsets.only(top: 100, left: 40, right: 40),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(30.0),
-              child: Image.asset("assets/logo.png"),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                AboutText(S().about_appVersion),
-                FutureBuilder<PackageInfo>(
-                    future: PackageInfo.fromPlatform(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return AboutText(
-                          snapshot.data!.version,
-                          dark: true,
-                        );
-                      } else {
-                        return const SizedBox.shrink();
-                      }
-                    }),
-              ],
-            ),
-            const Divider(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(child: AboutText(S().about_openSourceLicences)),
-                AboutButton(
-                  S().about_show,
-                  onTap: () {
-                    showLicensePage(
-                        context: context,
-                        applicationName: "Envoy", // TODO: FIGMA
-                        useRootNavigator: true,
-                        applicationLegalese:
-                            "This program is free software: you can redistribute it and/or modify " // TODO: FIGMA
-                            "it under the terms of the GNU General Public License as published by "
-                            "the Free Software Foundation, either version 3 of the License, or "
-                            "(at your option) any later version. "
-                            "This program is distributed in the hope that it will be useful,"
-                            "but WITHOUT ANY WARRANTY; without even the implied warranty of "
-                            "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the "
-                            "GNU General Public License for more details.");
-                  },
-                )
-              ],
-            ),
-            const Divider(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                AboutText(S().about_termsOfUse),
-                AboutButton(
-                  S().about_show,
-                  onTap: () {
-                    launchUrlString("https://foundation.xyz/terms/");
-                  },
-                )
-              ],
-            ),
-            const Divider(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                AboutText(S().about_privacyPolicy),
-                AboutButton(
-                  S().about_show,
-                  onTap: () {
-                    launchUrlString("https://foundation.xyz/privacy/");
-                  },
-                )
-              ],
-            ),
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.only(top: 100, left: 40, right: 40),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Image.asset("assets/logo.png", height: 150),
+          ),
+          const SizedBox(height: EnvoySpacing.xl),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AboutText(S().about_appVersion),
+              FutureBuilder<PackageInfo>(
+                  future: PackageInfo.fromPlatform(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return AboutText(
+                        snapshot.data!.version,
+                        dark: true,
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  }),
+            ],
+          ),
+          const Divider(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(child: AboutText(S().about_openSourceLicences)),
+              AboutButton(
+                S().about_show,
+                onTap: () {
+                  showLicensePage(
+                      context: context,
+                      applicationName: "Envoy", // TODO: FIGMA
+                      useRootNavigator: true,
+                      applicationLegalese:
+                          "This program is free software: you can redistribute it and/or modify " // TODO: FIGMA
+                          "it under the terms of the GNU General Public License as published by "
+                          "the Free Software Foundation, either version 3 of the License, or "
+                          "(at your option) any later version. "
+                          "This program is distributed in the hope that it will be useful,"
+                          "but WITHOUT ANY WARRANTY; without even the implied warranty of "
+                          "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the "
+                          "GNU General Public License for more details.");
+                },
+              )
+            ],
+          ),
+          const Divider(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AboutText(S().about_termsOfUse),
+              AboutButton(
+                S().about_show,
+                onTap: () {
+                  launchUrlString("https://foundation.xyz/terms/");
+                },
+              )
+            ],
+          ),
+          const Divider(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AboutText(S().about_privacyPolicy),
+              AboutButton(
+                S().about_show,
+                onTap: () {
+                  launchUrlString("https://foundation.xyz/privacy/");
+                },
+              )
+            ],
+          ),
+        ],
       ),
     );
   }
