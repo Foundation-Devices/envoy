@@ -122,7 +122,7 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
             icon: Padding(
               padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
               child: EnvoyIcon(
-                EnvoyIcons.bitcoin_b,
+                EnvoyIcons.wallet,
                 color: inActiveColor,
               ),
             ),
