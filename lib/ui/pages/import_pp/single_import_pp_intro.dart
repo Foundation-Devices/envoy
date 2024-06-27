@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:dots_indicator/dots_indicator.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_scan.dart';
@@ -68,16 +67,15 @@ class SingleImportPpIntroPage extends StatelessWidget {
                   left: EnvoySpacing.medium1,
                   top: EnvoySpacing.medium1),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const SizedBox(height: EnvoySpacing.large1),
                   Flexible(
                     child: SingleChildScrollView(
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const SizedBox(height: EnvoySpacing.small),
+                          const SizedBox(height: EnvoySpacing.large2),
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: EnvoySpacing.medium1),
@@ -98,39 +96,14 @@ class SingleImportPpIntroPage extends StatelessWidget {
                         left: EnvoySpacing.medium1,
                         right: EnvoySpacing.medium1,
                         bottom: EnvoySpacing.large2),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(EnvoySpacing.medium2),
-                          child: DotsIndicator(
-                            decorator: const DotsDecorator(
-                                size: Size.square(EnvoySpacing.xs),
-                                activeSize: Size.square(EnvoySpacing.xs),
-                                spacing: EdgeInsets.symmetric(
-                                    horizontal: EnvoySpacing.xs)),
-                            dotsCount: 2,
-                            position: 0.toDouble(),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: EnvoySpacing.medium1,
-                            left: EnvoySpacing.small,
-                            right: EnvoySpacing.small,
-                          ),
-                          child: EnvoyButton(
-                            S().accounts_empty_text_learn_more,
-                            onTap: () {
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(builder: (context) {
-                                return const SingleImportPpScanPage();
-                              }));
-                            },
-                          ),
-                        )
-                      ],
+                    child: EnvoyButton(
+                      S().accounts_empty_text_learn_more,
+                      onTap: () {
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return const SingleImportPpScanPage();
+                        }));
+                      },
                     ),
                   )
                 ],
