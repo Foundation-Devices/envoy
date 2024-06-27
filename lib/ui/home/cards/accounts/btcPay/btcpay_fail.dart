@@ -3,16 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/btcpay_voucher.dart';
-import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/business/locale.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 
 class BtcPayFail extends StatelessWidget {
   const BtcPayFail({super.key, required this.voucher});
@@ -21,102 +17,51 @@ class BtcPayFail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(EnvoySpacing.medium2),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium3),
-            child: EnvoyIcon(EnvoyIcons.alert,
-                size: EnvoyIconSize.big, color: EnvoyColors.danger),
-          ),
-          getMainErrorMessage(
-              voucher.errorType, voucher.expiresAt, voucher.link),
-          Padding(
-            padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
-            child: EnvoyButton(
-              S().component_continue,
-              type: EnvoyButtonTypes.primaryModal,
-              borderRadius: BorderRadius.circular(EnvoySpacing.small),
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ),
-        ],
-      ),
+    return EnvoyPopUp(
+      icon: EnvoyIcons.alert,
+      title: getTitle(voucher.errorType),
+      content: getErrorContent(voucher.errorType, voucher.expiresAt),
+      link: getLink(voucher.errorType, voucher.link),
+      primaryButtonLabel: S().component_continue,
+      onPrimaryButtonTap: (context) {
+        Navigator.of(context).pop();
+      },
+      typeOfMessage: PopUpState.danger,
     );
   }
 }
 
-Widget getMainErrorMessage(
-    BtcPayVoucherErrorType errorType, DateTime? dateTime, String link) {
+String getTitle(BtcPayVoucherErrorType errorType) {
   switch (errorType) {
     case BtcPayVoucherErrorType.invalid:
-      return errorMesage(
-        S().azteco_connection_modal_fail_heading,
-        S().btcpay_connection_modal_fail_subheading,
-      );
-
+      return S().azteco_connection_modal_fail_heading;
     case BtcPayVoucherErrorType.expired:
-      return errorMesage(
-          S().btcpay_connection_modal_fail_heading,
-          S().btcpay_connection_modal_expired_subheading(
-              DateFormat.yMd(currentLocale)
-                  .format(dateTime ?? DateTime.now())));
-
+      return S().btcpay_connection_modal_fail_heading;
     case BtcPayVoucherErrorType.onChain:
-      return errorMesage(S().azteco_redeem_modal_fail_heading,
-          S().btcpay_connection_modal_onchainOnly_subheading,
-          link: link);
+      return S().azteco_redeem_modal_fail_heading;
     case BtcPayVoucherErrorType.wrongNetwork:
-      return errorMesage(
-        S().btcpay_redeem_modal_wrongNetwork_heading,
-        S().btcpay_redeem_modal_wrongNetwork_subheading,
-      );
+      return S().btcpay_redeem_modal_wrongNetwork_heading;
   }
 }
 
-Column errorMesage(String title, String subheading, {String? link}) {
-  return Column(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Text(
-        title,
-        style: EnvoyTypography.subheading,
-        textAlign: TextAlign.center,
-      ),
-      Padding(
-        padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
-        child: Text(
-          subheading,
-          style: EnvoyTypography.info,
-          textAlign: TextAlign.center,
-        ),
-      ),
-      if (link != null)
-        Padding(
-          padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
-          child: GestureDetector(
-              onTap: () {
-                launchUrl(Uri.parse(link));
-              },
-              child: Text(
-                S().component_learnMore,
-                style: EnvoyTypography.button
-                    .copyWith(color: EnvoyColors.accentPrimary),
-              )),
-        ),
-    ],
-  );
+String getErrorContent(BtcPayVoucherErrorType errorType, DateTime? dateTime) {
+  switch (errorType) {
+    case BtcPayVoucherErrorType.invalid:
+      return S().btcpay_connection_modal_fail_subheading;
+    case BtcPayVoucherErrorType.expired:
+      return S().btcpay_connection_modal_expired_subheading(
+          DateFormat.yMd(currentLocale).format(dateTime ?? DateTime.now()));
+    case BtcPayVoucherErrorType.onChain:
+      return S().btcpay_connection_modal_onchainOnly_subheading;
+    case BtcPayVoucherErrorType.wrongNetwork:
+      return S().btcpay_redeem_modal_wrongNetwork_subheading;
+  }
+}
+
+String? getLink(BtcPayVoucherErrorType errorType, String link) {
+  if (errorType == BtcPayVoucherErrorType.onChain) {
+    return link;
+  } else {
+    return null;
+  }
 }
