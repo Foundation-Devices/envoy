@@ -15,10 +15,13 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as new_color_scheme;
 import 'package:envoy/ui/components/address_widget.dart';
+import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 
 class OnboardingPage extends StatelessWidget {
   final Function(BuildContext)? leftFunction;
@@ -49,7 +52,16 @@ class OnboardingPage extends StatelessWidget {
   }
 
   static popUntilHome(BuildContext context,
-      {bool useRootNavigator = false}) async {
+      {bool useRootNavigator = false, bool resetHomeProviders = false}) async {
+    if (resetHomeProviders) {
+      ProviderScope.containerOf(context)
+          .read(homePageBackgroundProvider.notifier)
+          .state = HomePageBackgroundState.hidden;
+      ProviderScope.containerOf(context)
+          .read(homePageTitleProvider.notifier)
+          .state = "";
+    }
+
     /// get the router and navigator instance from the context
     /// if the parent widget of context get disposed,we wont be able to access goroouter and navigator.
     GoRouter router = GoRouter.of(context);

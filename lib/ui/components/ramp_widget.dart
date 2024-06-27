@@ -45,6 +45,11 @@ class RampWidget {
         "https://storage.googleapis.com/cdn-foundation/envoy/foundationLogo.png";
 
     ramp.showRamp(configuration);
+
+    // ENV-1111: Ensure the user is at the home route ("/") after exiting Ramp
+    Future.delayed(const Duration(seconds: 1), () {
+      mainRouter.go("/");
+    });
   }
 
   static Future<void> onOnrampPurchaseCreated(
@@ -94,10 +99,7 @@ class RampWidget {
     // Handle offramp sale created
   }
 
-  static void onRampClosed(BuildContext context) {
-    // ENV-1111: Ensure the user is at the home route ("/") after exiting Ramp
-    mainRouter.go("/");
-  }
+  static void onRampClosed(BuildContext context) {}
 }
 
 Future<String?> checkPurchase(String id, String purchaseViewToken) async {

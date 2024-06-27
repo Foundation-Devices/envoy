@@ -36,8 +36,6 @@ class ScvScanQrPage extends StatelessWidget {
           ),
         )
       ],
-      navigationDots: 3,
-      navigationDotsIndex: 2,
       leftFunction: (context) {
         // ENV-216: remove ScvShowQrPage off navigation stack so it doesn't animate in background
         Navigator.of(context)

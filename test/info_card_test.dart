@@ -38,7 +38,7 @@ void main() {
         ),
       );
     }
-
+    await tester.pumpAndSettle();
     await expectLater(
         find.byType(Directionality), matchesGoldenFile('envoy_info_card.png'));
   });
@@ -68,6 +68,7 @@ class DetailsWidgetTestCases extends StatelessWidget {
         ),
         bottomWidgets: [
           EnvoyInfoCardListItem(
+            spacingPriority: FlexPriority.trailing,
             title: S().coincontrol_tx_detail_expand_spentFrom,
             icon: const EnvoyIcon(EnvoyIcons.utxo,
                 color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
@@ -102,7 +103,6 @@ class DetailsWidgetTestCases extends StatelessWidget {
             ),
           ),
           EnvoyInfoCardListItem(
-              flexAlignment: FlexAlignment.flexLeft,
               title: S().coindetails_overlay_address,
               icon: const EnvoyIcon(EnvoyIcons.send,
                   color: EnvoyColors.textPrimary,
@@ -111,21 +111,21 @@ class DetailsWidgetTestCases extends StatelessWidget {
                   address: "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq",
                   short: true)),
           EnvoyInfoCardListItem(
-            title: S().coindetails_overlay_transactionID,
-            icon: const EnvoyIcon(EnvoyIcons.compass,
-                color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
-            trailing: Text(
-              "e0fe6c3e08a30b62314f7d20f66007ee440fff975491665c9d255315a0f66ecc",
-              style: EnvoyTypography.body
-                  .copyWith(
-                    color: EnvoyColors.textTertiary,
-                  )
-                  .setWeight(FontWeight.w400),
-              textAlign: TextAlign.end,
-              maxLines: 4,
-            ),
-          ),
+              title: S().coindetails_overlay_transactionID,
+              icon: const EnvoyIcon(EnvoyIcons.compass,
+                  color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
+              trailing: Text(
+                "e0fe6c3e08a30b62314f7d20f66007ee440fff975491665c9d255315a0f66ecc",
+                style: EnvoyTypography.body
+                    .copyWith(
+                      color: EnvoyColors.textTertiary,
+                    )
+                    .setWeight(FontWeight.w400),
+                textAlign: TextAlign.end,
+                maxLines: 4,
+              )),
           EnvoyInfoCardListItem(
+              spacingPriority: FlexPriority.trailing,
               title:
                   '${S().coindetails_overlay_confirmationIn} ~$confirmationTime',
               icon: const EnvoyIcon(EnvoyIcons.clock,
@@ -156,6 +156,7 @@ class DetailsWidgetTestCases extends StatelessWidget {
                 ),
               )),
           EnvoyInfoCardListItem(
+              spacingPriority: FlexPriority.trailing,
               title:
                   '${S().coindetails_overlay_confirmationIn} ~$confirmationTime more text',
               icon: const EnvoyIcon(EnvoyIcons.clock,

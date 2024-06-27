@@ -45,8 +45,6 @@ class ScvShowQrPage extends StatelessWidget {
           ),
         )
       ],
-      navigationDots: 3,
-      navigationDotsIndex: 1,
       buttons: [
         Padding(
           padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
