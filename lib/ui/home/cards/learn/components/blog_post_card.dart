@@ -57,74 +57,83 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                 EnvoyStorage().updateBlogPost(widget.blog);
               },
               child: Stack(children: [
-                FutureBuilder(
-                    future: widget.blog.thumbnail,
-                    builder: (context, snapshot) {
-                      return !snapshot.hasData || snapshot.data == null
-                          ? Center(
-                              child: Container(
-                                height: blogThumbnailHeight,
-                              ),
-                            )
-                          : SizedBox(
-                              height: blogThumbnailHeight,
-                              width: containerWidth,
-                              child: Opacity(
+                Column(
+                  children: [
+                    FutureBuilder(
+                        future: widget.blog.thumbnail,
+                        builder: (context, snapshot) {
+                          return !snapshot.hasData || snapshot.data == null
+                              ? Center(
+                                  child: Container(
+                                    height: blogThumbnailHeight,
+                                  ),
+                                )
+                              : SizedBox(
+                                  height: blogThumbnailHeight,
+                                  width: containerWidth,
+                                  child: Opacity(
+                                    opacity: isBlogRead ? 0.3 : 1.0,
+                                    child: Image.memory(
+                                      Uint8List.fromList(snapshot.data!),
+                                      fit: BoxFit.fitWidth,
+                                    ),
+                                  ),
+                                );
+                        }),
+                    Container(
+                      color: Colors.transparent,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium1,
+                          vertical: EnvoySpacing.xs,
+                        ),
+                        child: Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Opacity(
                                 opacity: isBlogRead ? 0.3 : 1.0,
-                                child: Image.memory(
-                                  Uint8List.fromList(snapshot.data!),
-                                  fit: BoxFit.fitWidth,
+                                child: Text(
+                                  widget.blog.title,
+                                  style: EnvoyTypography.button
+                                      .copyWith(color: EnvoyColors.textPrimary),
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                            );
-                    })
-              ]),
-            ),
-          ),
-          Container(
-            color: Colors.transparent,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: EnvoySpacing.medium1,
-                vertical: EnvoySpacing.xs,
-              ),
-              child: Align(
-                alignment: Alignment.bottomLeft,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Opacity(
-                      opacity: isBlogRead ? 0.3 : 1.0,
-                      child: Text(
-                        widget.blog.title,
-                        style: EnvoyTypography.button
-                            .copyWith(color: EnvoyColors.textPrimary),
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
+                              const SizedBox(height: EnvoySpacing.xs),
+                              Opacity(
+                                opacity: isBlogRead ? 0.3 : 1.0,
+                                child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        DateFormat(
+                                                'MMMM dd, yyyy', currentLocale)
+                                            .format(
+                                                widget.blog.publicationDate),
+                                      ),
+                                      isBlogRead
+                                          ? Text(
+                                              S().learningcenter_status_read,
+                                              style: EnvoyTypography.info
+                                                  .copyWith(
+                                                      color: EnvoyColors
+                                                          .textSecondary),
+                                            )
+                                          : const Text("")
+                                    ]),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: EnvoySpacing.xs),
-                    Opacity(
-                      opacity: isBlogRead ? 0.3 : 1.0,
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              DateFormat('MMMM dd, yyyy', currentLocale)
-                                  .format(widget.blog.publicationDate),
-                            ),
-                            isBlogRead
-                                ? Text(
-                                    S().learningcenter_status_read,
-                                    style: EnvoyTypography.info.copyWith(
-                                        color: EnvoyColors.textSecondary),
-                                  )
-                                : const Text("")
-                          ]),
                     ),
                   ],
                 ),
-              ),
+              ]),
             ),
           ),
         ],
@@ -151,89 +160,94 @@ class BlogPostCardState extends State<BlogPostCard> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.only(
-          bottom: EnvoySpacing.large1,
-          left: EnvoySpacing.medium1,
-          right: EnvoySpacing.medium1,
-        ),
-        child: ShaderMask(
-          shaderCallback: (Rect rect) {
-            return const LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                EnvoyColors.solidWhite,
-                Colors.transparent,
-                Colors.transparent,
-                EnvoyColors.solidWhite,
-              ],
-              stops: [0.0, 0.03, 0.93, 1.0],
-            ).createShader(rect);
-          },
-          blendMode: BlendMode.dstOut,
+      child: ShaderMask(
+        shaderCallback: (Rect rect) {
+          return const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              EnvoyColors.solidWhite,
+              Colors.transparent,
+              Colors.transparent,
+              EnvoyColors.solidWhite,
+            ],
+            stops: [0.0, 0.05, 0.85, 0.96],
+          ).createShader(rect);
+        },
+        blendMode: BlendMode.dstOut,
+        child: Padding(
+          padding: const EdgeInsets.only(
+            bottom: EnvoySpacing.large1,
+            left: EnvoySpacing.medium1,
+            right: EnvoySpacing.medium1,
+          ),
           child: SingleChildScrollView(
-            child: FutureBuilder<String>(
-              future: Future(() async {
-                final document = html_parser.parse(widget.blog.description);
-                final imageTags = document.getElementsByTagName('img');
-                final torClient =
-                    HttpTor(Tor.instance, EnvoyScheduler().parallel);
+            child: Column(
+              children: [
+                const SizedBox(height: EnvoySpacing.medium1),
+                FutureBuilder<String>(
+                  future: Future(() async {
+                    final document = html_parser.parse(widget.blog.description);
+                    final imageTags = document.getElementsByTagName('img');
+                    final torClient =
+                        HttpTor(Tor.instance, EnvoyScheduler().parallel);
 
-                for (final imgTag in imageTags) {
-                  imgTag.attributes['width'] = 'auto';
-                  imgTag.attributes['height'] = 'auto';
+                    for (final imgTag in imageTags) {
+                      imgTag.attributes['width'] = 'auto';
+                      imgTag.attributes['height'] = 'auto';
 
-                  final srcset = imgTag.attributes['srcset'];
-                  if (srcset != null && srcset.isNotEmpty) {
-                    final srcsetUrls = srcset.split(',').map((e) {
-                      final parts = e.trim().split(' ');
-                      return parts.first;
-                    }).toList();
+                      final srcset = imgTag.attributes['srcset'];
+                      if (srcset != null && srcset.isNotEmpty) {
+                        final srcsetUrls = srcset.split(',').map((e) {
+                          final parts = e.trim().split(' ');
+                          return parts.first;
+                        }).toList();
 
-                    if (srcsetUrls.isNotEmpty) {
-                      final firstSrcsetUrl = srcsetUrls.first;
-                      final img = await torClient.get(firstSrcsetUrl);
-                      final dataUri =
-                          'data:image/png;base64,${base64Encode(img.bodyBytes)}';
-                      imgTag.attributes['src'] = dataUri;
-                      imgTag.attributes['style'] = 'border-radius: 16;';
+                        if (srcsetUrls.isNotEmpty) {
+                          final firstSrcsetUrl = srcsetUrls.first;
+                          final img = await torClient.get(firstSrcsetUrl);
+                          final dataUri =
+                              'data:image/png;base64,${base64Encode(img.bodyBytes)}';
+                          imgTag.attributes['src'] = dataUri;
+                          imgTag.attributes['style'] = 'border-radius: 16;';
+                        }
+                      }
                     }
-                  }
-                }
 
-                return document.outerHtml;
-              }),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return DefaultTextStyle(
-                    style: Theme.of(context).textTheme.bodySmall!,
-                    child: Column(
-                      children: [
-                        Html(
-                          data: snapshot.data!,
-                          style: {
-                            "p": Style(fontSize: FontSize.medium),
-                            "a": Style(color: EnvoyColors.accentPrimary),
-                          },
-                          onLinkTap: (linkUrl, _, __) {
-                            launchUrlString(linkUrl!);
-                          },
+                    return document.outerHtml;
+                  }),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return DefaultTextStyle(
+                        style: Theme.of(context).textTheme.bodySmall!,
+                        child: Column(
+                          children: [
+                            Html(
+                              data: snapshot.data!,
+                              style: {
+                                "p": Style(fontSize: FontSize.medium),
+                                "a": Style(color: EnvoyColors.accentPrimary),
+                              },
+                              onLinkTap: (linkUrl, _, __) {
+                                launchUrlString(linkUrl!);
+                              },
+                            ),
+                            Html(data: '<div style="height: 100px;"></div>'),
+                          ],
                         ),
-                        Html(data: '<div style="height: 100px;"></div>'),
-                      ],
-                    ),
-                  );
-                } else {
-                  return const Padding(
-                    padding: EdgeInsets.all(EnvoySpacing.medium1),
-                    child: SizedBox(
-                        height: 60,
-                        width: 60,
-                        child: CircularProgressIndicator()),
-                  );
-                }
-              },
+                      );
+                    } else {
+                      return const Padding(
+                        padding: EdgeInsets.all(EnvoySpacing.medium1),
+                        child: SizedBox(
+                            height: 60,
+                            width: 60,
+                            child: CircularProgressIndicator()),
+                      );
+                    }
+                  },
+                ),
+              ],
             ),
           ),
         ),

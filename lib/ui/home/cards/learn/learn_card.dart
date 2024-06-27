@@ -62,26 +62,31 @@ class _LearnCardState extends ConsumerState<LearnCard> {
 
     final bool isAllEmpty = isSearchEmpty || isFilterEmpty;
 
-    return Padding(
-      padding: const EdgeInsets.all(EnvoySpacing.medium1),
-      child: ShaderMask(
-        shaderCallback: (Rect rect) {
-          return const LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              EnvoyColors.solidWhite,
-              Colors.transparent,
-              Colors.transparent,
-              EnvoyColors.solidWhite,
-            ],
-            stops: [0.0, 0.01, 0.97, 1.0],
-          ).createShader(rect);
-        },
-        blendMode: BlendMode.dstOut,
+    return ShaderMask(
+      shaderCallback: (Rect rect) {
+        return const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            EnvoyColors.solidWhite,
+            Colors.transparent,
+            Colors.transparent,
+            EnvoyColors.solidWhite,
+          ],
+          stops: [0.0, 0.05, 0.85, 0.96],
+        ).createShader(rect);
+      },
+      blendMode: BlendMode.dstOut,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
         child: CustomScrollView(
           physics: isAllEmpty ? const NeverScrollableScrollPhysics() : null,
           slivers: [
+            const SliverToBoxAdapter(
+              child: SizedBox(
+                height: EnvoySpacing.medium1,
+              ),
+            ),
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.only(
@@ -246,7 +251,12 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-              )
+              ),
+            const SliverToBoxAdapter(
+              child: SizedBox(
+                height: EnvoySpacing.medium1,
+              ),
+            ),
           ],
         ),
       ),
