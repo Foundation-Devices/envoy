@@ -1037,6 +1037,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Mai importis la teva clau privada de Passport en les següents pantalles."),
         "manual_setup_import_seed_subheading": MessageLookupByLibrary.simpleMessage(
             "Continueu a continuació per importar una clau existent.\n\nMés endavant tindreu l\'opció d\'importar un fitxer de còpia de seguretat d\'Envoy."),
+        "manual_setup_importingSeedLoadingInfo":
+            MessageLookupByLibrary.simpleMessage("Importing Seed"),
         "manual_setup_magicBackupDetected_heading":
             MessageLookupByLibrary.simpleMessage(
                 "S\'ha detectat una Còpia de Seguretat"),
