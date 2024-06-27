@@ -197,8 +197,6 @@ class _TransactionsDetailsWidgetState
               bottomWidgets: [
                 const SizedBox(height: EnvoySpacing.small),
                 EnvoyInfoCardListItem(
-                  verticalPadding: false,
-                  flexAlignment: FlexAlignment.flexLeft,
                   title: S().coindetails_overlay_address,
                   icon: const EnvoyIcon(EnvoyIcons.send,
                       color: EnvoyColors.textPrimary,
@@ -212,41 +210,28 @@ class _TransactionsDetailsWidgetState
                         showPaymentId = false;
                       });
                     },
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                          left: showAddressExpanded ? 0 : EnvoySpacing.medium3,
-                          bottom: 16),
-                      child: TweenAnimationBuilder(
-                          curve: EnvoyEasing.easeInOut,
-                          tween: Tween<double>(
-                              begin: 0, end: showAddressExpanded ? 1 : 0),
-                          duration: Duration(
-                              milliseconds: showAddressExpanded ? 200 : 50),
-                          builder: (context, value, child) {
-                            return addressNotAvailable
-                                ? Text("Address not available ",
-                                    // TODO: Figma
-                                    style: trailingTextStyle)
-                                : Container(
-                                    constraints: BoxConstraints(
-                                        maxWidth:
-                                            showAddressExpanded ? 125 : 155),
-                                    child: AddressWidget(
-                                      widgetKey:
-                                          ValueKey<bool>(showAddressExpanded),
-                                      address: address,
-                                      short: true,
-                                      sideChunks: 2 +
-                                          (value * (address.length / 4))
-                                              .round(),
-                                    ),
-                                  );
-                          }),
-                    ),
+                    child: TweenAnimationBuilder(
+                        curve: EnvoyEasing.easeInOut,
+                        tween: Tween<double>(
+                            begin: 0, end: showAddressExpanded ? 1 : 0),
+                        duration: const Duration(milliseconds: 200),
+                        builder: (context, value, child) {
+                          return addressNotAvailable
+                              ? Text("Address not available ",
+                                  // TODO: Figma
+                                  style: trailingTextStyle)
+                              : AddressWidget(
+                                  widgetKey:
+                                      ValueKey<bool>(showAddressExpanded),
+                                  address: address,
+                                  short: true,
+                                  sideChunks: 2 +
+                                      (value * (address.length / 4)).round(),
+                                );
+                        }),
                   ),
                 ),
                 EnvoyInfoCardListItem(
-                  verticalPadding: false,
                   title: S().coindetails_overlay_transactionID,
                   icon: const EnvoyIcon(EnvoyIcons.compass,
                       color: EnvoyColors.textPrimary,
@@ -294,7 +279,6 @@ class _TransactionsDetailsWidgetState
                   ),
                 ),
                 EnvoyInfoCardListItem(
-                  flexAlignment: FlexAlignment.flexLeft,
                   title: S().coindetails_overlay_date,
                   icon: const EnvoyIcon(EnvoyIcons.calendar,
                       color: EnvoyColors.textPrimary,
@@ -312,13 +296,11 @@ class _TransactionsDetailsWidgetState
                 ),
                 if (tx.pullPaymentId != null)
                   EnvoyInfoCardListItem(
-                      verticalPadding: false,
                       title: S().coindetails_overlay_paymentID,
                       icon: const EnvoyIcon(EnvoyIcons.btcPay,
                           color: EnvoyColors.textPrimary,
                           size: EnvoyIconSize.small),
                       trailing: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
                         onLongPress: () {
                           Clipboard.setData(
                               ClipboardData(text: tx.pullPaymentId!));
@@ -359,7 +341,6 @@ class _TransactionsDetailsWidgetState
                       )),
                 if (tx.type == TransactionType.ramp)
                   EnvoyInfoCardListItem(
-                    verticalPadding: false,
                     title: S().coindetails_overlay_rampID,
                     icon: const EnvoyIcon(
                       EnvoyIcons.ramp_without_name,
@@ -371,41 +352,18 @@ class _TransactionsDetailsWidgetState
                       onLongPress: () {
                         copyTxId(context, tx.txId, tx.type);
                       },
-                      onTap: () {
-                        setState(() {
-                          showTxIdExpanded = !showTxIdExpanded;
-                          showAddressExpanded = false;
-                          showPaymentId = false;
-                        });
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            left: showTxIdExpanded ? 0 : EnvoySpacing.medium3,
-                            bottom: 12),
-                        child: TweenAnimationBuilder(
-                          curve: EnvoyEasing.easeInOut,
-                          tween: Tween<double>(
-                              begin: 0, end: showTxIdExpanded ? 1 : 0),
-                          duration: const Duration(milliseconds: 200),
-                          builder: (context, value, child) {
-                            return Text(
-                              truncateWithEllipsisInCenter(
-                                  tx.txId,
-                                  lerpDouble(16, tx.txId.length, value)!
-                                      .toInt()),
-                              style: EnvoyTypography.info
-                                  .copyWith(color: EnvoyColors.textPrimary),
-                              textAlign: TextAlign.end,
-                              maxLines: 4,
-                            );
-                          },
-                        ),
+                      child: Text(
+                        tx.txId,
+                        style:
+                            EnvoyTypography.info.copyWith(color: Colors.black),
+                        textAlign: TextAlign.end,
+                        maxLines: 4,
                       ),
                     ),
                   ),
                 rbfPossible
                     ? EnvoyInfoCardListItem(
-                        flexAlignment: FlexAlignment.flexRight,
+                        spacingPriority: FlexPriority.trailing,
                         title: _getConfirmationTimeString(ref.watch(
                             txEstimatedConfirmationTimeProvider(
                                 Tuple(tx, widget.account.wallet.network)))),
@@ -448,14 +406,12 @@ class _TransactionsDetailsWidgetState
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Expanded(
-                          child: Text(note,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: EnvoyTypography.body
-                                  .copyWith(color: EnvoyColors.textPrimary),
-                              textAlign: TextAlign.end),
-                        ),
+                        Text(note,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: EnvoyTypography.body
+                                .copyWith(color: EnvoyColors.textPrimary),
+                            textAlign: TextAlign.end),
                         const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                         note.trim().isNotEmpty
                             ? SvgPicture.asset(
