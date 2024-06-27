@@ -125,16 +125,20 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
             painter: LinesPainter(
                 lineDistance: 2.5, color: EnvoyColors.gray1000, opacity: 0.4),
             child: Padding(
-              padding: const EdgeInsets.all(EnvoySpacing.xs),
+              padding: const EdgeInsets.only(
+                  left: EnvoySpacing.small,
+                  right: EnvoySpacing.small,
+                  top: EnvoySpacing.small),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.xs,
-                        horizontal: EnvoySpacing.small),
+                    padding: const EdgeInsets.only(
+                        top: EnvoySpacing.xs,
+                        bottom: EnvoySpacing.xs,
+                        left: EnvoySpacing.small),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -148,7 +152,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              if (uneconomicSpends)
+                              if (!uneconomicSpends)
                                 const Padding(
                                   padding: EdgeInsets.symmetric(
                                       horizontal: EnvoySpacing.xs),
@@ -176,11 +180,11 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           unit: formatUnit,
                           amountSats: amount,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
-                  const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.xs,
-                        horizontal: EnvoySpacing.small),
+                    padding: const EdgeInsets.only(
+                        top: EnvoySpacing.xs,
+                        bottom: EnvoySpacing.xs,
+                        left: EnvoySpacing.small),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -232,11 +236,11 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                                   2 + (value * (address.length / 4)).round(),
                             )));
                       }),
-                  const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.xs,
-                        horizontal: EnvoySpacing.small),
+                    padding: const EdgeInsets.only(
+                        top: EnvoySpacing.xs,
+                        bottom: EnvoySpacing.xs,
+                        left: EnvoySpacing.small),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -245,7 +249,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           widget.feeTitle,
                           style: titleStyle,
                         ),
-                        const Padding(padding: EdgeInsets.all(12)),
+                        //const Padding(padding: EdgeInsets.all(12)),
                         Expanded(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -280,10 +284,9 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           account: account,
                           amountSats: psbt.fee,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
-                  const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.small,
+                        vertical: EnvoySpacing.xs,
                         horizontal: EnvoySpacing.small),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
@@ -335,19 +338,22 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
 
   Widget _whiteContainer({required Widget child}) {
     return LayoutBuilder(builder: (context, constraints) {
-      return Container(
-        constraints: const BoxConstraints(
-          minHeight: 36,
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
+        child: Container(
+          constraints: const BoxConstraints(
+            minHeight: 36,
+          ),
+          alignment: Alignment.centerLeft,
+          width: double.infinity,
+          decoration: const BoxDecoration(
+              borderRadius:
+                  BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
+              color: EnvoyColors.textPrimaryInverse),
+          padding: const EdgeInsets.symmetric(
+              vertical: 6, horizontal: EnvoySpacing.small),
+          child: child,
         ),
-        alignment: Alignment.centerLeft,
-        width: double.infinity,
-        decoration: const BoxDecoration(
-            borderRadius:
-                BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
-            color: EnvoyColors.textPrimaryInverse),
-        padding: const EdgeInsets.symmetric(
-            vertical: 6, horizontal: EnvoySpacing.small),
-        child: child,
       );
     });
   }
