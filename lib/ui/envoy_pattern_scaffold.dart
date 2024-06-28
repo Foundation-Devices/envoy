@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:math';
-import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/shield.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:flutter/material.dart';
 
 Widget envoyScaffoldShieldScrollView(BuildContext context, Widget child) {
@@ -85,9 +85,16 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
     double shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
     return Stack(
       children: [
-        const Positioned.fill(
-            child: AppBackground(
-          showRadialGradient: true,
+        SizedBox.expand(
+            child: CustomPaint(
+          size: const Size(double.infinity, double.infinity),
+          painter: StripePainter(EnvoyColors.solidWhite.withOpacity(0.1)),
+        )),
+        SizedBox.expand(
+            child: CustomPaint(
+          painter: GradientPainter(
+              gradientRadius: animation?.value ?? 0.8,
+              gradientHeight: widget.gradientHeight),
         )),
         widget.child != null
             ? widget.child!

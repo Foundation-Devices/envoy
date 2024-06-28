@@ -88,7 +88,10 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
         backgroundColor: Colors.transparent,
         body: Stack(
           children: [
-            const Positioned.fill(child: LinesBackground()),
+            const Positioned.fill(
+                child: AppBackground(
+              showRadialGradient: false,
+            )),
             Positioned(
               top: MediaQuery.of(context).size.height * 0.18,
               left: 0,

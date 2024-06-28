@@ -31,9 +31,9 @@ class LinesBackground extends StatelessWidget {
               height: MediaQuery.sizeOf(context).height,
               child: CustomPaint(
                 painter: LinesPainter(
-                    opacity: 0.5,
-                    color: Colors.white,
-                    applyGradientOverlay: true),
+                  opacity: 0.5,
+                  color: Colors.white,
+                ),
               ),
             ),
           ],
@@ -52,16 +52,41 @@ class AppBackgroundState extends State<AppBackground> {
       builder: (BuildContext context, BoxConstraints constraints) {
         double parentHeight = constraints.maxHeight;
         double parentWidth = constraints.maxWidth;
+
         return Stack(children: [
-          Positioned(
-            left: parentWidth / 2,
-            width: parentWidth,
-            height: MediaQuery.sizeOf(context).height,
-            child: CustomPaint(
-              painter: LinesPainter(
-                  opacity: 0.5,
-                  color: Colors.white,
-                  applyGradientOverlay: true),
+          Positioned.fill(
+            child: RepaintBoundary(
+              child: Container(
+                color: Colors.black,
+                child: FractionallySizedBox(
+                  alignment: Alignment.centerRight,
+                  widthFactor: 0.5,
+                  child: ShaderMask(
+                    blendMode: BlendMode.dstIn,
+                    shaderCallback: (bounds) {
+                      return LinearGradient(
+                        colors: [
+                          Colors.white.withOpacity(0.02),
+                          Colors.white.withOpacity(0.1),
+                          Colors.white.withOpacity(0.2),
+                          Colors.white.withOpacity(0.3),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ).createShader(bounds);
+                    },
+                    child: CustomPaint(
+                      isComplex: true,
+                      willChange: false,
+                      painter: LinesPainter(
+                        opacity: 0.5,
+                        hideLineGap: true,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
           AnimatedPositioned(
@@ -99,13 +124,13 @@ class LinesPainter extends CustomPainter {
   final double angle;
   final double opacity;
   final double lineDistance;
-  final bool applyGradientOverlay;
+  final bool hideLineGap;
 
   LinesPainter(
       {this.angle = -18,
       this.lineDistance = 2.5,
+      this.hideLineGap = false,
       this.color = EnvoyColors.whitePrint,
-      this.applyGradientOverlay = false,
       this.opacity = 0.05});
 
   @override
@@ -127,24 +152,8 @@ class LinesPainter extends CustomPainter {
 
       currentY += lineDistance;
     }
-    //
-    if (applyGradientOverlay) {
-      Rect rect = Rect.fromLTWH(0, 0, size.width * 2, size.height);
 
-      /// add color gradient overlay,
-      final gradientPaint = Paint()
-        ..shader = LinearGradient(
-          colors: [
-            Colors.white.withOpacity(0.00),
-            Colors.white.withOpacity(0.1),
-            Colors.white.withOpacity(0.2),
-            Colors.white.withOpacity(0.3),
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ).createShader(rect)
-        ..isAntiAlias = true
-        ..blendMode = BlendMode.dstIn;
+    if (hideLineGap) {
       final p1 = Offset(0, size.height);
 
       /// the gradient overlay leaves a small dots at the end of the lines
@@ -155,8 +164,6 @@ class LinesPainter extends CustomPainter {
         ..blendMode = BlendMode.srcIn
         ..strokeWidth = 1;
       canvas.drawLine(p1, Offset.zero, paint);
-
-      canvas.drawRect(rect, gradientPaint);
     }
   }
 
