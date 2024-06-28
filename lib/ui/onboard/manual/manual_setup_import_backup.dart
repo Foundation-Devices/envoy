@@ -152,9 +152,11 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                             _isRecoveryInProgress = true;
                           });
                         });
-                        openBackupFile(context).then((value) {
-                          setState(() {
-                            _isRecoveryInProgress = false;
+                        Future.delayed(const Duration(milliseconds: 1500), () {
+                          openBackupFile(context).then((value) {
+                            setState(() {
+                              _isRecoveryInProgress = false;
+                            });
                           });
                         });
                       }),

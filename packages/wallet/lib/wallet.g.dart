@@ -26,6 +26,8 @@ Transaction _$TransactionFromJson(Map<String, dynamic> json) => Transaction(
       purchaseViewToken: json['purchaseViewToken'] as String?,
       currencyAmount: json['currencyAmount'] as String?,
       currency: json['currency'] as String?,
+      rampId: json['rampId'] as String?,
+      rampFee: json['rampFee'] as int?,
     );
 
 Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
@@ -46,6 +48,8 @@ Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
       'purchaseViewToken': instance.purchaseViewToken,
       'currencyAmount': instance.currencyAmount,
       'currency': instance.currency,
+      'rampId': instance.rampId,
+      'rampFee': instance.rampFee,
     };
 
 const _$TransactionTypeEnumMap = {

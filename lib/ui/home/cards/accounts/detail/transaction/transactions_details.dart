@@ -195,7 +195,6 @@ class _TransactionsDetailsWidgetState
                           amountSats: tx.amount,
                           amountWidgetStyle: AmountWidgetStyle.singleLine),
               bottomWidgets: [
-                const SizedBox(height: EnvoySpacing.small),
                 EnvoyInfoCardListItem(
                   title: S().coindetails_overlay_address,
                   icon: const EnvoyIcon(EnvoyIcons.send,
@@ -252,29 +251,24 @@ class _TransactionsDetailsWidgetState
                         });
                       }
                     },
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                          left: showTxIdExpanded ? 0 : EnvoySpacing.medium3,
-                          bottom: 12),
-                      child: TweenAnimationBuilder(
-                        curve: EnvoyEasing.easeInOut,
-                        tween: Tween<double>(
-                            begin: 0, end: showTxIdExpanded ? 1 : 0),
-                        duration: const Duration(milliseconds: 200),
-                        builder: (context, value, child) {
-                          String txId = tx.type == TransactionType.ramp
-                              ? "loading"
-                              : tx.txId; // TODO: Figma
-                          return Text(
-                            truncateWithEllipsisInCenter(txId,
-                                lerpDouble(16, txId.length, value)!.toInt()),
-                            style: EnvoyTypography.info
-                                .copyWith(color: EnvoyColors.textPrimary),
-                            textAlign: TextAlign.end,
-                            maxLines: 4,
-                          );
-                        },
-                      ),
+                    child: TweenAnimationBuilder(
+                      curve: EnvoyEasing.easeInOut,
+                      tween: Tween<double>(
+                          begin: 0, end: showTxIdExpanded ? 1 : 0),
+                      duration: const Duration(milliseconds: 200),
+                      builder: (context, value, child) {
+                        String txId = tx.type == TransactionType.ramp
+                            ? "loading"
+                            : tx.txId; // TODO: Figma
+                        return Text(
+                          truncateWithEllipsisInCenter(txId,
+                              lerpDouble(16, txId.length, value)!.toInt()),
+                          style: EnvoyTypography.info
+                              .copyWith(color: EnvoyColors.textPrimary),
+                          textAlign: TextAlign.end,
+                          maxLines: 4,
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -315,31 +309,26 @@ class _TransactionsDetailsWidgetState
                             showAddressExpanded = false;
                           });
                         },
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                              left: showPaymentId ? 0 : EnvoySpacing.medium3,
-                              bottom: 12),
-                          child: TweenAnimationBuilder(
-                            curve: EnvoyEasing.easeInOut,
-                            tween: Tween<double>(
-                                begin: 0, end: showPaymentId ? 1 : 0),
-                            duration: const Duration(milliseconds: 200),
-                            builder: (context, value, child) {
-                              return Text(
-                                  truncateWithEllipsisInCenter(
-                                      tx.pullPaymentId!,
-                                      lerpDouble(16, tx.pullPaymentId!.length,
-                                              value)!
-                                          .toInt()),
-                                  style: EnvoyTypography.info
-                                      .copyWith(color: EnvoyColors.textPrimary),
-                                  textAlign: TextAlign.end,
-                                  maxLines: 4);
-                            },
-                          ),
+                        child: TweenAnimationBuilder(
+                          curve: EnvoyEasing.easeInOut,
+                          tween: Tween<double>(
+                              begin: 0, end: showPaymentId ? 1 : 0),
+                          duration: const Duration(milliseconds: 200),
+                          builder: (context, value, child) {
+                            return Text(
+                                truncateWithEllipsisInCenter(
+                                    tx.pullPaymentId!,
+                                    lerpDouble(16, tx.pullPaymentId!.length,
+                                            value)!
+                                        .toInt()),
+                                style: EnvoyTypography.info
+                                    .copyWith(color: EnvoyColors.textPrimary),
+                                textAlign: TextAlign.end,
+                                maxLines: 4);
+                          },
                         ),
                       )),
-                if (tx.type == TransactionType.ramp)
+                if (tx.rampId != null)
                   EnvoyInfoCardListItem(
                     title: S().coindetails_overlay_rampID,
                     icon: const EnvoyIcon(
@@ -350,16 +339,37 @@ class _TransactionsDetailsWidgetState
                     trailing: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onLongPress: () {
-                        copyTxId(context, tx.txId, tx.type);
+                        copyTxId(context, tx.rampId!, tx.type);
                       },
                       child: Text(
-                        tx.txId,
+                        tx.rampId!,
                         style:
                             EnvoyTypography.info.copyWith(color: Colors.black),
                         textAlign: TextAlign.end,
                         maxLines: 4,
                       ),
                     ),
+                  ),
+                if (tx.rampFee != null)
+                  EnvoyInfoCardListItem(
+                    title: S().coindetails_overlay_rampFee,
+                    icon: const EnvoyIcon(
+                      EnvoyIcons.ramp_without_name,
+                      size: EnvoyIconSize.extraSmall,
+                      color: EnvoyColors.textPrimary,
+                    ),
+                    trailing: hideBalance
+                        ? const LoaderGhost(
+                            width: 74, animate: false, height: 16)
+                        : Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              EnvoyAmount(
+                                  account: widget.account,
+                                  amountSats: tx.rampFee!,
+                                  amountWidgetStyle: AmountWidgetStyle.normal),
+                            ],
+                          ),
                   ),
                 rbfPossible
                     ? EnvoyInfoCardListItem(
@@ -377,7 +387,8 @@ class _TransactionsDetailsWidgetState
                         ),
                       )
                     : Container(),
-                _renderFeeWidget(context, tx),
+                if (tx.type != TransactionType.ramp)
+                  _renderFeeWidget(context, tx),
                 GestureDetector(
                   onTap: () {
                     showEnvoyDialog(

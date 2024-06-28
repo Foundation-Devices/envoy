@@ -34,7 +34,7 @@ class AddressWidget extends StatelessWidget {
       required this.address,
       this.short = false,
       this.widgetKey,
-      this.align = TextAlign.left,
+      this.align = TextAlign.right,
       this.sideChunks = 2,
       this.showWarningOnCopy = true});
 
