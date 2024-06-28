@@ -5,6 +5,7 @@
 import 'dart:ui';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/button.dart';
+import 'package:envoy/ui/components/envoy_loader.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -145,16 +146,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                     const SizedBox(
                       height: EnvoySpacing.medium1,
                     ),
-                    if (address != null)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.medium2,
-                        ),
-                        child: AddressWidget(
-                          address: address!,
-                          align: TextAlign.center,
-                        ),
-                      ),
+                    getAddressWidget(address),
                   ],
                 ),
               ),
@@ -250,6 +242,20 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
             ));
       },
     ));
+  }
+
+  Widget getAddressWidget(String? address) {
+    return address != null
+        ? Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: EnvoySpacing.medium2,
+            ),
+            child: AddressWidget(
+              address: address,
+              align: TextAlign.center,
+            ),
+          )
+        : const EnvoyLoader();
   }
 }
 
