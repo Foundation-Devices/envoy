@@ -20,6 +20,7 @@ import 'package:tor/tor.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/locale.dart';
+import 'package:envoy/ui/components/linear_gradient.dart';
 
 const double blogThumbnailHeight = 172.0;
 const double containerWidth = 309.0;
@@ -56,84 +57,80 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                 widget.blog.read = false;
                 EnvoyStorage().updateBlogPost(widget.blog);
               },
-              child: Stack(children: [
-                Column(
-                  children: [
-                    FutureBuilder(
-                        future: widget.blog.thumbnail,
-                        builder: (context, snapshot) {
-                          return !snapshot.hasData || snapshot.data == null
-                              ? Center(
-                                  child: Container(
-                                    height: blogThumbnailHeight,
-                                  ),
-                                )
-                              : SizedBox(
+              child: Column(
+                children: [
+                  FutureBuilder(
+                      future: widget.blog.thumbnail,
+                      builder: (context, snapshot) {
+                        return !snapshot.hasData || snapshot.data == null
+                            ? Center(
+                                child: Container(
                                   height: blogThumbnailHeight,
-                                  width: containerWidth,
-                                  child: Opacity(
-                                    opacity: isBlogRead ? 0.3 : 1.0,
-                                    child: Image.memory(
-                                      Uint8List.fromList(snapshot.data!),
-                                      fit: BoxFit.fitWidth,
-                                    ),
-                                  ),
-                                );
-                        }),
-                    Container(
-                      color: Colors.transparent,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.medium1,
-                          vertical: EnvoySpacing.xs,
-                        ),
-                        child: Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Opacity(
-                                opacity: isBlogRead ? 0.3 : 1.0,
-                                child: Text(
-                                  widget.blog.title,
-                                  style: EnvoyTypography.button
-                                      .copyWith(color: EnvoyColors.textPrimary),
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
                                 ),
+                              )
+                            : SizedBox(
+                                height: blogThumbnailHeight,
+                                width: containerWidth,
+                                child: Opacity(
+                                  opacity: isBlogRead ? 0.3 : 1.0,
+                                  child: Image.memory(
+                                    Uint8List.fromList(snapshot.data!),
+                                    fit: BoxFit.fitWidth,
+                                  ),
+                                ),
+                              );
+                      }),
+                  Container(
+                    color: Colors.transparent,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.medium1,
+                        vertical: EnvoySpacing.xs,
+                      ),
+                      child: Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Opacity(
+                              opacity: isBlogRead ? 0.3 : 1.0,
+                              child: Text(
+                                widget.blog.title,
+                                style: EnvoyTypography.button
+                                    .copyWith(color: EnvoyColors.textPrimary),
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              const SizedBox(height: EnvoySpacing.xs),
-                              Opacity(
-                                opacity: isBlogRead ? 0.3 : 1.0,
-                                child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        DateFormat(
-                                                'MMMM dd, yyyy', currentLocale)
-                                            .format(
-                                                widget.blog.publicationDate),
-                                      ),
-                                      isBlogRead
-                                          ? Text(
-                                              S().learningcenter_status_read,
-                                              style: EnvoyTypography.info
-                                                  .copyWith(
-                                                      color: EnvoyColors
-                                                          .textSecondary),
-                                            )
-                                          : const Text("")
-                                    ]),
-                              ),
-                            ],
-                          ),
+                            ),
+                            const SizedBox(height: EnvoySpacing.xs),
+                            Opacity(
+                              opacity: isBlogRead ? 0.3 : 1.0,
+                              child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      DateFormat('MMMM dd, yyyy', currentLocale)
+                                          .format(widget.blog.publicationDate),
+                                    ),
+                                    isBlogRead
+                                        ? Text(
+                                            S().learningcenter_status_read,
+                                            style: EnvoyTypography.info
+                                                .copyWith(
+                                                    color: EnvoyColors
+                                                        .textSecondary),
+                                          )
+                                        : const Text("")
+                                  ]),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ]),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -160,21 +157,7 @@ class BlogPostCardState extends State<BlogPostCard> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: ShaderMask(
-        shaderCallback: (Rect rect) {
-          return const LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              EnvoyColors.solidWhite,
-              Colors.transparent,
-              Colors.transparent,
-              EnvoyColors.solidWhite,
-            ],
-            stops: [0.0, 0.05, 0.85, 0.96],
-          ).createShader(rect);
-        },
-        blendMode: BlendMode.dstOut,
+      child: LinearGradients.gradientShaderMask(
         child: Padding(
           padding: const EdgeInsets.only(
             bottom: EnvoySpacing.large1,
