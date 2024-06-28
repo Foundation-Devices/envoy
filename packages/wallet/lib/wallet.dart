@@ -72,6 +72,8 @@ class Transaction extends Comparable {
   final String? currency;
   final String? payoutId;
   final String? btcPayVoucherUri;
+  String? rampId;
+  int? rampFee;
 
   get isConfirmed {
     /// if the tx is a pending transaction, the date will be based on the time the tx was created
@@ -104,6 +106,8 @@ class Transaction extends Comparable {
     this.currency,
     this.payoutId,
     this.btcPayVoucherUri,
+    this.rampFee,
+    this.rampId,
   });
 
   // Serialisation
@@ -151,6 +155,14 @@ class Transaction extends Comparable {
 
   void setPullPaymentId(String? newPullPaymentId) {
     pullPaymentId = newPullPaymentId;
+  }
+
+  void setRampId(String? newRamId) {
+    rampId = newRamId;
+  }
+
+  void setRampFee(int? newRampFee) {
+    rampFee = newRampFee;
   }
 }
 
