@@ -30,8 +30,6 @@ class ScvIntroPage extends StatelessWidget {
           ),
         )
       ],
-      navigationDots: 3,
-      navigationDotsIndex: 0,
       buttons: [
         Padding(
           padding: const EdgeInsets.only(

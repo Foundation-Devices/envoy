@@ -295,7 +295,7 @@ Future prunePendingTransactions(
       String? state =
           await checkPurchase(pendingTx.txId, pendingTx.purchaseViewToken!);
       if (state == "EXPIRED" || state == "CANCELLED") {
-        EnvoyStorage().deleteTxNote(pendingTx.address!);
+        EnvoyStorage().deleteTxNote(pendingTx.txId);
         EnvoyStorage().deletePendingTx(pendingTx.txId);
       }
     }
@@ -304,6 +304,8 @@ Future prunePendingTransactions(
         .where((tx) => tx.outputs!.contains(pendingTx.address))
         .forEach((actualRampTx) {
       kPrint("Pruning Ramp tx: ${actualRampTx.txId}");
+      actualRampTx.setRampFee(pendingTx.rampFee);
+      actualRampTx.setRampId(pendingTx.rampId);
       EnvoyStorage().addTxNote(
           note: "Ramp Purchase", key: actualRampTx.txId); // TODO: FIGMA
       EnvoyStorage().deleteTxNote(pendingTx.address!);

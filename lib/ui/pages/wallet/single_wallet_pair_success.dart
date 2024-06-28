@@ -48,7 +48,7 @@ class SingleWalletPairSuccessPage extends StatelessWidget {
             type: EnvoyButtonTypes.secondary,
             label: S().pair_new_device_success_cta2,
             onTap: () {
-              OnboardingPage.popUntilHome(context);
+              OnboardingPage.popUntilHome(context, resetHomeProviders: true);
             }),
         OnboardingButton(
             label: S().pair_new_device_success_cta1,
