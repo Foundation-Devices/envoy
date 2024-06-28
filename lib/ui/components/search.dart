@@ -74,10 +74,11 @@ class _EnvoySearchState extends State<EnvoySearch> {
             labelStyle: EnvoyTypography.body.copyWith(
               color: EnvoyColors.textTertiary,
             ),
+            isCollapsed: true,
             floatingLabelBehavior: FloatingLabelBehavior.never,
             alignLabelWithHint: true,
             isDense: true,
-            contentPadding: const EdgeInsets.only(bottom: 7),
+            contentPadding: const EdgeInsets.only(top: EnvoySpacing.small),
             border: InputBorder.none,
             focusedBorder: InputBorder.none,
             enabledBorder: InputBorder.none,
@@ -92,7 +93,9 @@ class _EnvoySearchState extends State<EnvoySearch> {
             suffixIcon: _focus.hasFocus
                 ? Padding(
                     padding: const EdgeInsets.only(
-                        left: EnvoySpacing.medium1, top: 10, bottom: 10),
+                        left: EnvoySpacing.medium1,
+                        top: EnvoySpacing.small,
+                        bottom: EnvoySpacing.small),
                     child: GestureDetector(
                       child: const EnvoyIcon(EnvoyIcons.remove,
                           size: EnvoyIconSize.small),
