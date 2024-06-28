@@ -16,6 +16,7 @@ import 'package:wallet/wallet.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/btcpay_voucher.dart';
+import 'package:envoy/business/notifications.dart';
 
 final pendingTransactionsProvider =
     Provider.family<List<Transaction>, String?>((ref, String? accountId) {
@@ -111,6 +112,7 @@ final transactionsProvider =
   ref.watch(rbfBroadCastedTxProvider).forEach((txId) {
     final tx = transactions.firstWhereOrNull((element) => element.txId == txId);
     if (tx != null && !tx.isConfirmed) {
+      Notifications().deleteNotification(tx.txId, accountId: accountId);
       transactions.remove(tx);
     }
   });
