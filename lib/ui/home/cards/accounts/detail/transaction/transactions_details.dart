@@ -195,7 +195,6 @@ class _TransactionsDetailsWidgetState
                           amountSats: tx.amount,
                           amountWidgetStyle: AmountWidgetStyle.singleLine),
               bottomWidgets: [
-                const SizedBox(height: EnvoySpacing.small),
                 EnvoyInfoCardListItem(
                   title: S().coindetails_overlay_address,
                   icon: const EnvoyIcon(EnvoyIcons.send,
@@ -252,29 +251,24 @@ class _TransactionsDetailsWidgetState
                         });
                       }
                     },
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                          left: showTxIdExpanded ? 0 : EnvoySpacing.medium3,
-                          bottom: 12),
-                      child: TweenAnimationBuilder(
-                        curve: EnvoyEasing.easeInOut,
-                        tween: Tween<double>(
-                            begin: 0, end: showTxIdExpanded ? 1 : 0),
-                        duration: const Duration(milliseconds: 200),
-                        builder: (context, value, child) {
-                          String txId = tx.type == TransactionType.ramp
-                              ? "loading"
-                              : tx.txId; // TODO: Figma
-                          return Text(
-                            truncateWithEllipsisInCenter(txId,
-                                lerpDouble(16, txId.length, value)!.toInt()),
-                            style: EnvoyTypography.info
-                                .copyWith(color: EnvoyColors.textPrimary),
-                            textAlign: TextAlign.end,
-                            maxLines: 4,
-                          );
-                        },
-                      ),
+                    child: TweenAnimationBuilder(
+                      curve: EnvoyEasing.easeInOut,
+                      tween: Tween<double>(
+                          begin: 0, end: showTxIdExpanded ? 1 : 0),
+                      duration: const Duration(milliseconds: 200),
+                      builder: (context, value, child) {
+                        String txId = tx.type == TransactionType.ramp
+                            ? "loading"
+                            : tx.txId; // TODO: Figma
+                        return Text(
+                          truncateWithEllipsisInCenter(txId,
+                              lerpDouble(16, txId.length, value)!.toInt()),
+                          style: EnvoyTypography.info
+                              .copyWith(color: EnvoyColors.textPrimary),
+                          textAlign: TextAlign.end,
+                          maxLines: 4,
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -315,28 +309,23 @@ class _TransactionsDetailsWidgetState
                             showAddressExpanded = false;
                           });
                         },
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                              left: showPaymentId ? 0 : EnvoySpacing.medium3,
-                              bottom: 12),
-                          child: TweenAnimationBuilder(
-                            curve: EnvoyEasing.easeInOut,
-                            tween: Tween<double>(
-                                begin: 0, end: showPaymentId ? 1 : 0),
-                            duration: const Duration(milliseconds: 200),
-                            builder: (context, value, child) {
-                              return Text(
-                                  truncateWithEllipsisInCenter(
-                                      tx.pullPaymentId!,
-                                      lerpDouble(16, tx.pullPaymentId!.length,
-                                              value)!
-                                          .toInt()),
-                                  style: EnvoyTypography.info
-                                      .copyWith(color: EnvoyColors.textPrimary),
-                                  textAlign: TextAlign.end,
-                                  maxLines: 4);
-                            },
-                          ),
+                        child: TweenAnimationBuilder(
+                          curve: EnvoyEasing.easeInOut,
+                          tween: Tween<double>(
+                              begin: 0, end: showPaymentId ? 1 : 0),
+                          duration: const Duration(milliseconds: 200),
+                          builder: (context, value, child) {
+                            return Text(
+                                truncateWithEllipsisInCenter(
+                                    tx.pullPaymentId!,
+                                    lerpDouble(16, tx.pullPaymentId!.length,
+                                            value)!
+                                        .toInt()),
+                                style: EnvoyTypography.info
+                                    .copyWith(color: EnvoyColors.textPrimary),
+                                textAlign: TextAlign.end,
+                                maxLines: 4);
+                          },
                         ),
                       )),
                 if (tx.rampId != null)
