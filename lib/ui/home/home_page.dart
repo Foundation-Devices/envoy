@@ -25,6 +25,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/tor_warning.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -430,13 +431,15 @@ class HomePageState extends ConsumerState<HomePage>
               // Main background
               AnimatedPositioned(
                   top: 0,
-                  height: _backgroundShown ? screenHeight + 1500 : screenHeight,
+                  height: screenHeight,
                   left: 0,
                   right: 0,
                   curve: Curves.easeIn,
                   duration: Duration(
                       milliseconds: _animationsDuration.inMilliseconds - 50),
-                  child: const AppBackground()),
+                  child: AppBackground(
+                    showRadialGradient: !_backgroundShown,
+                  )),
               // Variable background
               SafeArea(
                 child: AnimatedSwitcher(
@@ -455,6 +458,7 @@ class HomePageState extends ConsumerState<HomePage>
                               (modalShown || optionsShown || fullScreen)
                           ? 0.5
                           : 0.0),
+                  curve: EnvoyEasing.easeOut,
                   child: Container(
                     alignment: Alignment.bottomCenter,
                     child: IgnorePointer(
@@ -484,6 +488,7 @@ class HomePageState extends ConsumerState<HomePage>
                 height: shieldTotalHeight,
                 left: 5,
                 right: 5,
+                curve: EnvoyEasing.defaultEasing,
                 child: AnimatedOpacity(
                   opacity: _backgroundShown ? 0.1 : 1.0,
                   duration: _backgroundShown
@@ -491,7 +496,7 @@ class HomePageState extends ConsumerState<HomePage>
                           milliseconds: _animationsDuration.inMilliseconds ~/ 4)
                       : _animationsDuration,
                   curve: _backgroundShown
-                      ? Curves.linear
+                      ? EnvoyEasing.easeIn
                       : ShieldFadeInAnimationCurve(),
                   child: Stack(
                     children: [

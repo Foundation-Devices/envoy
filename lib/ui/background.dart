@@ -7,53 +7,87 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:flutter/material.dart';
 
 class AppBackground extends StatefulWidget {
+  final bool showRadialGradient;
+
   @override
   State<AppBackground> createState() => AppBackgroundState();
 
-  const AppBackground({super.key});
+  const AppBackground({super.key, this.showRadialGradient = false});
+}
+
+class LinesBackground extends StatelessWidget {
+  const LinesBackground({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double parentWidth = constraints.maxWidth;
+        return Stack(
+          children: [
+            Positioned(
+              left: parentWidth / 2,
+              width: parentWidth,
+              height: MediaQuery.sizeOf(context).height,
+              child: CustomPaint(
+                painter: LinesPainter(
+                    opacity: 0.5,
+                    color: Colors.white,
+                    applyGradientOverlay: true),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 class AppBackgroundState extends State<AppBackground> {
+  final _animDuration = const Duration(milliseconds: 310);
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         double parentHeight = constraints.maxHeight;
         double parentWidth = constraints.maxWidth;
-
         return Stack(children: [
-          Positioned.fill(
-            child: Container(
-              color: Colors.black,
-              child: FractionallySizedBox(
-                alignment: Alignment.centerRight,
-                widthFactor: 0.5,
-                child: RepaintBoundary(
-                  child: CustomPaint(
-                    painter: LinesPainter(),
-                  ),
-                ),
-              ),
+          Positioned(
+            left: parentWidth / 2,
+            width: parentWidth,
+            height: MediaQuery.sizeOf(context).height,
+            child: CustomPaint(
+              painter: LinesPainter(
+                  opacity: 0.5,
+                  color: Colors.white,
+                  applyGradientOverlay: true),
             ),
           ),
-          Positioned(
-              height: parentHeight * 2,
-              width: parentHeight * 2,
-              top: -parentHeight,
-              right: parentWidth / 2 - parentHeight,
+          AnimatedPositioned(
+              duration: _animDuration,
+              height: parentHeight,
+              width: parentWidth,
+              top: parentHeight * (widget.showRadialGradient ? 0.2 : 0.9),
+              curve: Curves.easeOut,
               child: Opacity(
                   opacity: 0.92,
-                  child: Container(
-                      decoration: const BoxDecoration(
-                          gradient: RadialGradient(
-                    radius: 0.5,
-                    colors: [
-                      Colors.transparent,
-                      EnvoyColors.grey,
-                      Colors.white
-                    ],
-                    stops: [0.0, 0.60, 0.85],
-                  )))))
+                  child: Transform.scale(
+                    scaleY: 0.8,
+                    child: AnimatedContainer(
+                        duration: _animDuration,
+                        decoration: BoxDecoration(
+                            gradient: RadialGradient(
+                          radius: widget.showRadialGradient ? 1.8 : 2.1,
+                          center: Alignment.topCenter,
+                          colors: const [
+                            Colors.transparent,
+                            EnvoyColors.grey,
+                            Colors.white,
+                          ],
+                          stops: const [0.0, 0.60, 0.85],
+                        ))),
+                  ))),
         ]);
       },
     );
@@ -65,29 +99,64 @@ class LinesPainter extends CustomPainter {
   final double angle;
   final double opacity;
   final double lineDistance;
+  final bool applyGradientOverlay;
 
   LinesPainter(
-      {this.angle = 160,
+      {this.angle = -18,
       this.lineDistance = 2.5,
       this.color = EnvoyColors.whitePrint,
+      this.applyGradientOverlay = false,
       this.opacity = 0.05});
 
   @override
   void paint(Canvas canvas, Size size) {
     double degToRad(double deg) => deg * (pi / 180.0);
-    double shieldCrestOffset = size.width * tan(degToRad(angle));
+    double offset = size.width * tan(degToRad(angle));
 
     double currentY = 0;
 
-    while (currentY < size.height - shieldCrestOffset) {
+    while (currentY < size.height - offset) {
       final p1 = Offset(0, currentY);
-      final p2 = Offset(size.width, currentY + shieldCrestOffset);
+
+      final p2 = Offset(size.width - 2, currentY + offset);
       final paint = Paint()
         ..color = color.withOpacity(opacity)
+        ..isAntiAlias = false
         ..strokeWidth = 1;
       canvas.drawLine(p1, p2, paint);
 
       currentY += lineDistance;
+    }
+    //
+    if (applyGradientOverlay) {
+      Rect rect = Rect.fromLTWH(0, 0, size.width * 2, size.height);
+
+      /// add color gradient overlay,
+      final gradientPaint = Paint()
+        ..shader = LinearGradient(
+          colors: [
+            Colors.white.withOpacity(0.00),
+            Colors.white.withOpacity(0.1),
+            Colors.white.withOpacity(0.2),
+            Colors.white.withOpacity(0.3),
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ).createShader(rect)
+        ..isAntiAlias = true
+        ..blendMode = BlendMode.dstIn;
+      final p1 = Offset(0, size.height);
+
+      /// the gradient overlay leaves a small dots at the end of the lines
+      /// to fix this we draw a line from top to bottom with a blur effect
+      final paint = Paint()
+        ..color = Colors.black
+        ..maskFilter = const MaskFilter.blur(BlurStyle.solid, 1)
+        ..blendMode = BlendMode.srcIn
+        ..strokeWidth = 1;
+      canvas.drawLine(p1, Offset.zero, paint);
+
+      canvas.drawRect(rect, gradientPaint);
     }
   }
 

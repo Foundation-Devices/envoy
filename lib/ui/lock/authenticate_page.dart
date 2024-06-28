@@ -9,6 +9,7 @@ import 'dart:ui';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/main.dart';
+import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -83,15 +84,34 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
         ),
       );
     }
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.transparent,
-        image: DecorationImage(
-            image: ExactAssetImage('assets/splash_blank.png'),
-            fit: BoxFit.cover,
-            filterQuality: FilterQuality.high),
-      ),
-    );
+    return Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Stack(
+          children: [
+            const Positioned.fill(child: LinesBackground()),
+            Positioned(
+              top: MediaQuery.of(context).size.height * 0.18,
+              left: 0,
+              right: 0,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    height: 200,
+                    width: 200,
+                    decoration: const BoxDecoration(
+                      color: Colors.transparent,
+                      image: DecorationImage(
+                          image: ExactAssetImage('assets/logo_envoy.png'),
+                          fit: BoxFit.cover,
+                          filterQuality: FilterQuality.high),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ));
   }
 
   void initiateAuth() async {
