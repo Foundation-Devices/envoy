@@ -21,7 +21,9 @@ class BtcPayFail extends StatelessWidget {
       icon: EnvoyIcons.alert,
       title: getTitle(voucher.errorType),
       content: getErrorContent(voucher.errorType, voucher.expiresAt),
-      link: getLink(voucher.errorType, voucher.link),
+      learnMoreLink: voucher.errorType == BtcPayVoucherErrorType.onChain
+          ? voucher.link
+          : null,
       primaryButtonLabel: S().component_continue,
       onPrimaryButtonTap: (context) {
         Navigator.of(context).pop();
@@ -55,13 +57,5 @@ String getErrorContent(BtcPayVoucherErrorType errorType, DateTime? dateTime) {
       return S().btcpay_connection_modal_onchainOnly_subheading;
     case BtcPayVoucherErrorType.wrongNetwork:
       return S().btcpay_redeem_modal_wrongNetwork_subheading;
-  }
-}
-
-String? getLink(BtcPayVoucherErrorType errorType, String link) {
-  if (errorType == BtcPayVoucherErrorType.onChain) {
-    return link;
-  } else {
-    return null;
   }
 }

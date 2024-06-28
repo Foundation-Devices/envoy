@@ -33,7 +33,7 @@ void showEnvoyPopUp(
   Function(bool checked)? onCheckBoxChanged,
   bool? checkedValue,
   bool dismissible = true,
-  String? link,
+  String? learnMoreLink,
 }) =>
     showEnvoyDialog(
         context: context,
@@ -50,7 +50,7 @@ void showEnvoyPopUp(
           checkBoxText: checkBoxText,
           onCheckBoxChanged: onCheckBoxChanged,
           checkedValue: checkedValue ?? true,
-          link: link,
+          learnMoreLink: learnMoreLink,
         ),
         dismissible: dismissible);
 
@@ -69,7 +69,7 @@ class EnvoyPopUp extends StatefulWidget {
       this.checkBoxText,
       this.onCheckBoxChanged,
       this.checkedValue = true,
-      this.link});
+      this.learnMoreLink});
 
   final String? title;
   final String content;
@@ -82,7 +82,7 @@ class EnvoyPopUp extends StatefulWidget {
   final String? checkBoxText;
   final Function(bool checked)? onCheckBoxChanged;
   bool? checkedValue;
-  final String? link;
+  final String? learnMoreLink;
 
   @override
   State<EnvoyPopUp> createState() => _EnvoyPopUpState();
@@ -173,7 +173,7 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                 ),
               Padding(
                 padding: EdgeInsets.only(
-                    bottom: widget.link == null
+                    bottom: widget.learnMoreLink == null
                         ? EnvoySpacing.medium3
                         : EnvoySpacing.medium1),
                 child: Text(
@@ -182,12 +182,12 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                   textAlign: TextAlign.center,
                 ),
               ),
-              if (widget.link != null)
+              if (widget.learnMoreLink != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
                   child: GestureDetector(
                     onTap: () {
-                      launchUrl(Uri.parse(widget.link!));
+                      launchUrl(Uri.parse(widget.learnMoreLink!));
                     },
                     child: Text(
                       S().component_learnMore,
