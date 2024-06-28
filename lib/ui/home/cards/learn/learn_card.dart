@@ -96,7 +96,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                     SizedBox(
                       width: MediaQuery.of(context).size.width -
                           (EnvoySpacing.large1 + EnvoySpacing.xl),
-                      height: EnvoySpacing.large1,
+                      height: EnvoySpacing.large2,
                       child: EnvoySearch(
                           filterSearchResults: (text) {
                             setState(() {

@@ -3,11 +3,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/generated/l10n.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:flutter/widgets.dart';
 
 class EnvoySearch extends StatefulWidget {
   const EnvoySearch({
@@ -77,7 +79,7 @@ class _EnvoySearchState extends State<EnvoySearch> {
             floatingLabelBehavior: FloatingLabelBehavior.never,
             alignLabelWithHint: true,
             isDense: true,
-            contentPadding: const EdgeInsets.only(bottom: 12),
+            contentPadding: const EdgeInsets.only(bottom: 7),
             border: InputBorder.none,
             focusedBorder: InputBorder.none,
             enabledBorder: InputBorder.none,
@@ -92,9 +94,7 @@ class _EnvoySearchState extends State<EnvoySearch> {
             suffixIcon: _focus.hasFocus
                 ? Padding(
                     padding: const EdgeInsets.only(
-                        left: EnvoySpacing.medium1,
-                        top: EnvoySpacing.small,
-                        bottom: EnvoySpacing.small),
+                        left: EnvoySpacing.medium1, top: 10, bottom: 10),
                     child: GestureDetector(
                       child: const EnvoyIcon(EnvoyIcons.remove,
                           size: EnvoyIconSize.small),
