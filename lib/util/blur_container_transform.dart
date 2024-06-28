@@ -831,7 +831,7 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
                       Tween(begin: 0.0, end: 10.0).evaluate(curvedAnimation),
                   sigmaY:
                       Tween(begin: 0.0, end: 10.0).evaluate(curvedAnimation),
-                  tileMode: TileMode.repeated),
+                  tileMode: TileMode.mirror),
               child: Container(
                 color: ColorTween(
                   begin: Colors.transparent,
