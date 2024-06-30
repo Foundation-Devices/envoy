@@ -14,6 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/business/locale.dart';
+import 'package:envoy/ui/components/linear_gradient.dart';
 
 class ActivityCard extends StatefulWidget {
   const ActivityCard({super.key});
@@ -59,21 +60,7 @@ class TopLevelActivityCard extends ConsumerWidget {
         ref.watch(filteredNotificationStreamProvider);
     ref.read(notificationTypeFilterProvider.notifier).state = null;
 
-    return ShaderMask(
-      shaderCallback: (Rect rect) {
-        return const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            EnvoyColors.solidWhite,
-            Colors.transparent,
-            Colors.transparent,
-            EnvoyColors.solidWhite,
-          ],
-          stops: [0.0, 0.05, 0.85, 0.96],
-        ).createShader(rect);
-      },
-      blendMode: BlendMode.dstOut,
+    return LinearGradients.gradientShaderMask(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
         child: CustomScrollView(slivers: [
