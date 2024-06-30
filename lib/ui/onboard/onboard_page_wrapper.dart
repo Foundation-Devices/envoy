@@ -18,7 +18,9 @@ class OnboardPageBackground extends StatelessWidget {
     double shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
     return Stack(
       children: [
-        const AppBackground(),
+        const AppBackground(
+          showRadialGradient: true,
+        ),
         Padding(
           padding: EdgeInsets.only(
               right: 5.0, left: 5.0, top: shieldTop, bottom: shieldBottom),
