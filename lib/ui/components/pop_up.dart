@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/checkbox.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:envoy/generated/l10n.dart';
 
 enum PopUpState {
   deafult,
@@ -31,40 +33,43 @@ void showEnvoyPopUp(
   Function(bool checked)? onCheckBoxChanged,
   bool? checkedValue,
   bool dismissible = true,
+  String? learnMoreLink,
 }) =>
     showEnvoyDialog(
         context: context,
         useRootNavigator: true,
         dialog: EnvoyPopUp(
-            title: title,
-            content: content,
-            icon: icon,
-            primaryButtonLabel: primaryButtonLabel,
-            onPrimaryButtonTap: onPrimaryButtonTap,
-            secondaryButtonLabel: secondaryButtonLabel,
-            onSecondaryButtonTap: onSecondaryButtonTap,
-            typeOfMessage: typeOfMessage,
-            checkBoxText: checkBoxText,
-            onCheckBoxChanged: onCheckBoxChanged,
-            checkedValue: checkedValue ?? true),
+          title: title,
+          content: content,
+          icon: icon,
+          primaryButtonLabel: primaryButtonLabel,
+          onPrimaryButtonTap: onPrimaryButtonTap,
+          secondaryButtonLabel: secondaryButtonLabel,
+          onSecondaryButtonTap: onSecondaryButtonTap,
+          typeOfMessage: typeOfMessage,
+          checkBoxText: checkBoxText,
+          onCheckBoxChanged: onCheckBoxChanged,
+          checkedValue: checkedValue ?? true,
+          learnMoreLink: learnMoreLink,
+        ),
         dismissible: dismissible);
 
 //ignore: must_be_immutable
 class EnvoyPopUp extends StatefulWidget {
-  EnvoyPopUp({
-    super.key,
-    this.icon,
-    this.title,
-    required this.content,
-    required this.primaryButtonLabel,
-    this.secondaryButtonLabel,
-    this.onPrimaryButtonTap,
-    this.onSecondaryButtonTap,
-    this.typeOfMessage = PopUpState.deafult,
-    this.checkBoxText,
-    this.onCheckBoxChanged,
-    this.checkedValue = true,
-  });
+  EnvoyPopUp(
+      {super.key,
+      this.icon,
+      this.title,
+      required this.content,
+      required this.primaryButtonLabel,
+      this.secondaryButtonLabel,
+      this.onPrimaryButtonTap,
+      this.onSecondaryButtonTap,
+      this.typeOfMessage = PopUpState.deafult,
+      this.checkBoxText,
+      this.onCheckBoxChanged,
+      this.checkedValue = true,
+      this.learnMoreLink});
 
   final String? title;
   final String content;
@@ -77,6 +82,7 @@ class EnvoyPopUp extends StatefulWidget {
   final String? checkBoxText;
   final Function(bool checked)? onCheckBoxChanged;
   bool? checkedValue;
+  final String? learnMoreLink;
 
   @override
   State<EnvoyPopUp> createState() => _EnvoyPopUpState();
@@ -127,13 +133,24 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
         color: EnvoyColors.textPrimaryInverse,
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-            vertical: EnvoySpacing.medium3, horizontal: EnvoySpacing.medium2),
+        padding: const EdgeInsets.all(EnvoySpacing.medium2),
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              ),
               if (widget.icon != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
@@ -150,18 +167,35 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                     widget.title!,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: EnvoyTypography.subheading,
+                    style: EnvoyTypography.heading,
                     textAlign: TextAlign.center,
                   ),
                 ),
               Padding(
-                padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
+                padding: EdgeInsets.only(
+                    bottom: widget.learnMoreLink == null
+                        ? EnvoySpacing.medium3
+                        : EnvoySpacing.medium1),
                 child: Text(
                   widget.content,
-                  style: EnvoyTypography.body,
+                  style: EnvoyTypography.info,
                   textAlign: TextAlign.center,
                 ),
               ),
+              if (widget.learnMoreLink != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
+                  child: GestureDetector(
+                    onTap: () {
+                      launchUrl(Uri.parse(widget.learnMoreLink!));
+                    },
+                    child: Text(
+                      S().component_learnMore,
+                      style: EnvoyTypography.button
+                          .copyWith(color: EnvoyColors.accentPrimary),
+                    ),
+                  ),
+                ),
               if (widget.checkBoxText != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
