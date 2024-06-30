@@ -110,6 +110,13 @@ class Notifications {
     sync();
   }
 
+  deleteNotification(String id, {String? accountId}) {
+    notifications.removeWhere(
+        (element) => id == element.id && accountId == element.accountId);
+    _storeNotifications();
+    sync();
+  }
+
   _checkForNotificationsToAdd() async {
     bool notificationsAdded = false;
     bool newEnvoyVersionAvailable = false;
