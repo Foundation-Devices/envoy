@@ -462,6 +462,7 @@ class _TransactionReviewScreenState
     }
 
     Psbt psbt = transactionModel.psbt!;
+    int amount = transactionModel.amount;
 
     String header = (account.wallet.hot || transactionModel.isPSBTFinalized)
         ? S().coincontrol_tx_detail_heading
@@ -471,7 +472,7 @@ class _TransactionReviewScreenState
         ? S().coincontrol_tx_detail_subheading
         : S().coincontrol_txDetail_subheading_passport;
 
-    int feePercentage = ((psbt.fee / (psbt.fee + psbt.sent)) * 100).round();
+    int feePercentage = ((psbt.fee / (psbt.fee + amount)) * 100).round();
 
     return EnvoyScaffold(
       backgroundColor: Colors.transparent,
