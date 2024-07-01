@@ -79,22 +79,15 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
 
     return PopScope(
       child: EnvoyPatternScaffold(
-        appBar: Navigator.canPop(context)
-            ? PreferredSize(
-                preferredSize: AppBar().preferredSize,
-                child: AppBar(
-                    elevation: 0,
-                    backgroundColor: Colors.transparent,
-                    leading: isOnboardingComplete
-                        ? CupertinoNavigationBarBackButton(
-                            color: EnvoyColors.textPrimaryInverse,
-                            onPressed: () => Navigator.pop(context),
-                          )
-                        : const SizedBox.shrink()))
-            : const PreferredSize(
-                preferredSize: Size.fromHeight(0),
-                child: SizedBox(),
-              ),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          leading: isOnboardingComplete && Navigator.canPop(context)
+              ? CupertinoNavigationBarBackButton(
+                  color: EnvoyColors.textPrimaryInverse,
+                  onPressed: () => Navigator.pop(context),
+                )
+              : const SizedBox.shrink(),
+        ),
         header: GestureDetector(
           onTap: () {
             registerEscapeTap(EscapeHatchTap.logo);

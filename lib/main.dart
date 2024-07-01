@@ -96,13 +96,13 @@ class EnvoyApp extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         systemStatusBarContrastEnforced: false,
         systemNavigationBarContrastEnforced: false,
+        statusBarColor: Colors.transparent,
         systemNavigationBarColor: Colors.transparent,
         systemNavigationBarDividerColor: Colors.transparent,
         systemNavigationBarIconBrightness: Brightness.dark,
         statusBarIconBrightness: Brightness.dark));
 
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
-        overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
     const envoyAccentColor = EnvoyColors.accentPrimary;
     const envoyBaseColor = Colors.transparent;
@@ -135,6 +135,8 @@ class EnvoyApp extends StatelessWidget {
             }),
             primaryColor: envoyAccentColor,
             brightness: Brightness.light,
+            appBarTheme:
+                const AppBarTheme(backgroundColor: Colors.black, elevation: 0),
             scaffoldBackgroundColor: envoyBaseColor,
             useMaterial3: false),
         routerConfig: mainRouter,
