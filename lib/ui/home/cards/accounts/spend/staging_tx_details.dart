@@ -541,7 +541,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                 .copyWith(color: EnvoyColors.solidWhite),
                             onTap: () {
                               launchUrlString(
-                                  "https://docs.foundation.xyz/troubleshooting#envoy-is-excluding-small-coins-from-my-transaction");
+                                  "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions");
                             },
                           ),
                         ),
