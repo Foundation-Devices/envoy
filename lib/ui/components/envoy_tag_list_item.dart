@@ -10,14 +10,14 @@ import 'package:flutter/widgets.dart';
 
 enum FlexPriority { title, trailing }
 
-class EnvoyInfoCardListItem extends StatelessWidget {
+class EnvoyInfoCardListItem extends StatefulWidget {
   final String title;
   final Widget icon;
   final Widget trailing;
   final bool priority;
   final Color? textColor;
   final FlexPriority spacingPriority;
-  final CrossAxisAlignment crossAxisAlignment;
+  final bool forceCrossCenterAlign;
 
   const EnvoyInfoCardListItem({
     super.key,
@@ -27,8 +27,36 @@ class EnvoyInfoCardListItem extends StatelessWidget {
     this.priority = false,
     this.textColor,
     this.spacingPriority = FlexPriority.title,
-    this.crossAxisAlignment = CrossAxisAlignment.start,
+    this.forceCrossCenterAlign = false,
   });
+
+  @override
+  State<EnvoyInfoCardListItem> createState() => _EnvoyInfoCardListItemState();
+}
+
+class _EnvoyInfoCardListItemState extends State<EnvoyInfoCardListItem> {
+  final GlobalKey _textKey = GlobalKey();
+  bool _isSingleLine = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.forceCrossCenterAlign) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _checkTextLines());
+    }
+  }
+
+  void _checkTextLines() {
+    final RenderBox renderBox =
+        _textKey.currentContext?.findRenderObject() as RenderBox;
+    final double textHeight = renderBox.size.height;
+    final double lineHeight =
+        EnvoyTypography.body.fontSize! * (EnvoyTypography.body.height ?? 1.6);
+
+    setState(() {
+      _isSingleLine = textHeight <= lineHeight;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,31 +65,38 @@ class EnvoyInfoCardListItem extends StatelessWidget {
           horizontal: EnvoySpacing.xs, vertical: EnvoySpacing.small),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: crossAxisAlignment,
+        crossAxisAlignment: _isSingleLine
+            ? CrossAxisAlignment.center
+            : CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: EnvoySpacing.xs / 2),
+            padding:
+                EdgeInsets.only(top: _isSingleLine ? 0 : EnvoySpacing.xs / 2),
             child: SizedBox(
               width: 26,
-              child: icon,
+              child: widget.icon,
             ),
           ),
           const SizedBox(width: EnvoySpacing.xs),
           Flexible(
-            child: spacingPriority == FlexPriority.trailing
+            child: widget.spacingPriority == FlexPriority.trailing
                 ? Row(
-                    crossAxisAlignment: crossAxisAlignment,
+                    crossAxisAlignment: _isSingleLine
+                        ? CrossAxisAlignment.center
+                        : CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Flexible(
                         child: Text(
-                          title,
+                          widget.title,
+                          key: _textKey,
                           style: EnvoyTypography.body.copyWith(
-                              color: textColor ?? EnvoyColors.textPrimary),
+                              color:
+                                  widget.textColor ?? EnvoyColors.textPrimary),
                         ),
                       ),
                       const SizedBox(width: EnvoySpacing.small),
-                      trailing,
+                      widget.trailing,
                     ],
                   )
                 : Row(
@@ -69,12 +104,13 @@ class EnvoyInfoCardListItem extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        title,
+                        widget.title,
+                        key: _textKey,
                         style: EnvoyTypography.body.copyWith(
-                            color: textColor ?? EnvoyColors.textPrimary),
+                            color: widget.textColor ?? EnvoyColors.textPrimary),
                       ),
                       const SizedBox(width: EnvoySpacing.medium1),
-                      Flexible(child: trailing),
+                      Flexible(child: widget.trailing),
                     ],
                   ),
           ),
