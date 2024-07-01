@@ -6,11 +6,14 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class CardSwipeWrapper extends ConsumerStatefulWidget {
   final Widget child;
@@ -33,7 +36,6 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
     with TickerProviderStateMixin {
   late AnimationController _controller;
   late AnimationController _iconController;
-  LocalStorage localStorage = LocalStorage();
 
   double _offsetX = 0.0;
 
@@ -113,6 +115,7 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final hidden = ref.watch(balanceHideStateStatusProvider(widget.account.id));
     return Stack(
       children: [
         Container(
@@ -131,19 +134,35 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
               return Container(
                 margin: const EdgeInsets.symmetric(horizontal: 24),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Icon(
-                      CupertinoIcons.eye_slash,
-                      size: 20,
-                      color: _iconColorAnimation.value,
-                    ),
-                    Icon(
-                      CupertinoIcons.eye,
-                      size: 20,
-                      color: _iconColorAnimation.value,
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 120),
+                      switchInCurve: EnvoyEasing.defaultEasing,
+                      switchOutCurve: EnvoyEasing.defaultEasing,
+                      transitionBuilder: (child, animation) {
+                        return ScaleTransition(
+                          scale: animation,
+                          child: child,
+                        );
+                      },
+                      child: hidden
+                          ? SvgPicture.asset(
+                              width: EnvoySpacing.medium2,
+                              height: EnvoySpacing.medium2,
+                              'assets/icons/ic_eye_hidden.svg',
+                              color: _iconColorAnimation.value,
+                              key: const ValueKey('ic_eye_hidden'),
+                            )
+                          : SvgPicture.asset(
+                              width: EnvoySpacing.medium2,
+                              height: EnvoySpacing.medium2,
+                              'assets/icons/ic_eye_visible.svg',
+                              color: _iconColorAnimation.value,
+                              key: const ValueKey('ic_eye_visible'),
+                            ),
                     ),
                   ],
                 ),
@@ -164,7 +183,11 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
             if (!widget.draggable) {
               return;
             }
+            if (details.delta.dx > 0) {
+              return;
+            }
             double dragRate = (_offsetX * size.width * .5) / size.width;
+
             //Limit the drag
             if (dragRate.abs() >= 0.4) {
               return;
@@ -176,9 +199,11 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
                 thresholdReached = true;
                 Haptics.lightImpact();
                 _iconController.forward();
-                ref
-                    .read(balanceHideNotifierProvider)
-                    .setHideState(!dragRate.isNegative, widget.account);
+                //toggle the hide state
+                ref.read(balanceHideNotifierProvider).setHideState(
+                    !ref.read(
+                        balanceHideStateStatusProvider(widget.account.id)),
+                    widget.account);
               }
             });
             if (dragRate == 0) {
