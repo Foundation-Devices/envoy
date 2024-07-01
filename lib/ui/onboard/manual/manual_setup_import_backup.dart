@@ -242,7 +242,7 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
             width: 180,
             child: CircularProgressIndicator(
               color: EnvoyColors.tealLight,
-              backgroundColor: Color(0xFFD9D9D9),
+              backgroundColor: EnvoyColors.surface4,
               strokeWidth: 15,
               strokeCap: StrokeCap.round,
             ),
