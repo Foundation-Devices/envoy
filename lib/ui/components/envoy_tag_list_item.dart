@@ -17,6 +17,7 @@ class EnvoyInfoCardListItem extends StatelessWidget {
   final bool priority;
   final Color? textColor;
   final FlexPriority spacingPriority;
+  final CrossAxisAlignment crossAxisAlignment;
 
   const EnvoyInfoCardListItem({
     super.key,
@@ -26,6 +27,7 @@ class EnvoyInfoCardListItem extends StatelessWidget {
     this.priority = false,
     this.textColor,
     this.spacingPriority = FlexPriority.title,
+    this.crossAxisAlignment = CrossAxisAlignment.start,
   });
 
   @override
@@ -35,7 +37,7 @@ class EnvoyInfoCardListItem extends StatelessWidget {
           horizontal: EnvoySpacing.xs, vertical: EnvoySpacing.small),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: crossAxisAlignment,
         children: [
           Padding(
             padding: const EdgeInsets.only(top: EnvoySpacing.xs / 2),
@@ -48,7 +50,7 @@ class EnvoyInfoCardListItem extends StatelessWidget {
           Flexible(
             child: spacingPriority == FlexPriority.trailing
                 ? Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: crossAxisAlignment,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Flexible(
