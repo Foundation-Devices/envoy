@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:flutter/material.dart';
 
 enum EnvoyButtonTypes { primary, secondary, tertiary, primaryModal }
@@ -15,14 +15,12 @@ class EnvoyButton extends StatefulWidget {
   final Color? backgroundColor;
   final TextStyle? textStyle;
   final FontWeight? fontWeight;
-  final bool? readOnly;
   final bool enabled;
 
   const EnvoyButton(
     this.label, {
     super.key,
     this.onTap,
-    this.readOnly = false,
     this.type = EnvoyButtonTypes.primary,
     this.textStyle,
     this.borderRadius,
@@ -42,16 +40,16 @@ class _EnvoyButtonState extends State<EnvoyButton> {
   Widget build(BuildContext context) {
     TextStyle? textStyle = widget.textStyle;
     if (widget.textStyle == null) {
-      Color textColor = EnvoyColors.darkTeal;
+      Color textColor = EnvoyColors.accentPrimary;
       switch (widget.type) {
         case EnvoyButtonTypes.primary:
           textColor = Colors.white;
           break;
         case EnvoyButtonTypes.secondary:
-          textColor = EnvoyColors.darkTeal;
+          textColor = EnvoyColors.accentPrimary;
           break;
         case EnvoyButtonTypes.tertiary:
-          textColor = EnvoyColors.darkTeal;
+          textColor = EnvoyColors.accentPrimary;
           break;
         case EnvoyButtonTypes.primaryModal:
           textColor = Colors.white;
@@ -84,17 +82,27 @@ class _EnvoyButtonState extends State<EnvoyButton> {
             isPressed = false;
           });
         },
-        child: Container(
-            height: 40.0,
-            decoration: _getBoxDecoration(),
-            child: Center(
-                child: Text(
-              widget.label,
-              style: textStyle,
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ))),
+        child: Stack(
+          children: [
+            Container(
+                height: 40.0,
+                decoration: _getBoxDecoration(),
+                child: Center(
+                    child: Text(
+                  widget.label,
+                  style: textStyle,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ))),
+            if (!widget.enabled)
+              Positioned.fill(
+                child: Container(
+                  color: EnvoyColors.textPrimaryInverse.withOpacity(0.5),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -103,28 +111,15 @@ class _EnvoyButtonState extends State<EnvoyButton> {
     switch (widget.type) {
       case EnvoyButtonTypes.primary:
         {
-          if (widget.readOnly == true) {
-            return BoxDecoration(
-                color: EnvoyColors.grey85,
-                borderRadius: widget.borderRadius ??
-                    const BorderRadius.all(Radius.circular(13.0)));
-          }
-          var gradientColors = [EnvoyColors.teal, EnvoyColors.darkTeal];
           return BoxDecoration(
-              color: widget.backgroundColor,
-              gradient: widget.backgroundColor == null
-                  ? LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: gradientColors)
-                  : null,
+              color: widget.backgroundColor ?? EnvoyColors.accentPrimary,
               borderRadius: widget.borderRadius ??
                   const BorderRadius.all(Radius.circular(13.0)));
         }
       case EnvoyButtonTypes.secondary:
         {
           return BoxDecoration(
-              color: widget.backgroundColor ?? EnvoyColors.grey15,
+              color: widget.backgroundColor ?? EnvoyColors.surface3,
               borderRadius: widget.borderRadius ??
                   const BorderRadius.all(Radius.circular(13.0)));
         }
@@ -137,14 +132,8 @@ class _EnvoyButtonState extends State<EnvoyButton> {
 
       case EnvoyButtonTypes.primaryModal:
         {
-          if (widget.readOnly == true) {
-            return BoxDecoration(
-                color: EnvoyColors.grey85,
-                borderRadius: widget.borderRadius ??
-                    const BorderRadius.all(Radius.circular(13.0)));
-          }
           return BoxDecoration(
-              color: EnvoyColors.darkTeal,
+              color: EnvoyColors.accentPrimary,
               borderRadius: widget.borderRadius ??
                   const BorderRadius.all(Radius.circular(13.0)));
         }
