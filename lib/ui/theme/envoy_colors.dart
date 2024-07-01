@@ -31,6 +31,7 @@ class EnvoyColors {
   static const Color textTertiary = gray600;
   static const Color textInactive = gray500;
   static const Color textPrimaryInverse = solidWhite;
+  static const Color tabBar = gray500;
 
   static const Color surface1 = gray50;
   static const Color border1 = gray100;
