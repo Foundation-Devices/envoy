@@ -264,6 +264,17 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               ),
               ListTile(
                 dense: true,
+                contentPadding: const EdgeInsets.all(0),
+                title: Wrap(
+                  children: [SettingText(S().settings_advanced_enableBuyRamp)],
+                ),
+                trailing: SettingToggle(
+                  s.isAllowedBuyInEnvoy,
+                  s.setAllowBuyInEnvoy,
+                ),
+              ),
+              ListTile(
+                dense: true,
                 onTap: () {
                   Navigator.push(
                       context,

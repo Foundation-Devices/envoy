@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
@@ -107,6 +108,11 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
         });
       }
     }
+    if (!Settings().allowBuyInEnvoy) {
+      setState(() {
+        currentState = BuyBitcoinCardState.none;
+      });
+    }
   }
 
   onNativeBackPressed(bool didPop) {
@@ -150,17 +156,19 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
                     ),
                     IconTab(
                       label: S().buy_bitcoin_buyOptions_card_inEnvoy_heading,
-                      isLocked: !regionCanBuy,
+                      isLocked:
+                          !Settings().isAllowedBuyInEnvoy() || !regionCanBuy,
                       icon: EnvoyIcons.btc,
                       bigTab: true,
                       isSelected:
                           currentState == BuyBitcoinCardState.buyInEnvoy,
                       description:
                           S().buy_bitcoin_buyOptions_card_inEnvoy_subheading,
-                      lockedInfoText:
-                          S().buy_bitcoin_buyOptions_card_commingSoon,
+                      lockedInfoText: !Settings().isAllowedBuyInEnvoy()
+                          ? S().buy_bitcoin_buyOptions_card_disabledInSettings
+                          : S().buy_bitcoin_buyOptions_card_commingSoon,
                       onSelect: (selected) {
-                        if (regionCanBuy) {
+                        if (regionCanBuy && Settings().allowBuyInEnvoy) {
                           _updateState(BuyBitcoinCardState.buyInEnvoy);
                         }
                       },
