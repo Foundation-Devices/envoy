@@ -3,13 +3,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/account.dart';
-import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/haptics.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
