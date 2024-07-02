@@ -489,26 +489,16 @@ class HomePageState extends ConsumerState<HomePage>
                 left: 5,
                 right: 5,
                 curve: EnvoyEasing.defaultEasing,
-                child: AnimatedOpacity(
-                  opacity: _backgroundShown ? 0.1 : 1.0,
-                  duration: _backgroundShown
-                      ? Duration(
-                          milliseconds: _animationsDuration.inMilliseconds ~/ 4)
-                      : _animationsDuration,
-                  curve: _backgroundShown
-                      ? EnvoyEasing.easeIn
-                      : ShieldFadeInAnimationCurve(),
-                  child: Stack(
-                    children: [
-                      Hero(
-                          tag: "shield",
-                          child: Shield(
-                              child: Container(
-                            color: Colors.transparent,
-                          ))),
-                      mainWidget,
-                    ],
-                  ),
+                child: Stack(
+                  children: [
+                    Hero(
+                        tag: "shield",
+                        child: Shield(
+                            child: Container(
+                          color: Colors.transparent,
+                        ))),
+                    mainWidget,
+                  ],
                 ),
               ),
             ],

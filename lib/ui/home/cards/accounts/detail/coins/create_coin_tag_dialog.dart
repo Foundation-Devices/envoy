@@ -146,7 +146,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
               margin:
                   const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
               decoration: BoxDecoration(
-                  color: const Color(0xffD9D9D9),
+                  color: EnvoyColors.surface4,
                   borderRadius: BorderRadius.circular(EnvoySpacing.small)),
               child: Padding(
                   padding: const EdgeInsets.only(top: EnvoySpacing.small),

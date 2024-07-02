@@ -7,6 +7,7 @@ import 'package:envoy/ui/home/settings/backup/backup_page.dart';
 import 'package:envoy/ui/home/settings/settings_page.dart';
 import 'package:envoy/ui/home/settings/support_page.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/util/easing.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/home/home_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -147,46 +148,62 @@ class SettingsMenuWidget extends ConsumerWidget {
                     },
                   ),
                 ]),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 30.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                      onTap: () {
-                        launchUrl(
-                            Uri.parse("https://twitter.com/FOUNDATIONdvcs"));
-                      },
-                      child: SvgPicture.asset(
-                        "assets/menu_x.svg",
-                        width: 48,
-                        color: EnvoyColors.textSecondary,
-                      )),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: GestureDetector(
+            TweenAnimationBuilder(
+              builder: (context, value, child) {
+                return Opacity(
+                  opacity: Tween<double>(begin: 0.3, end: 1).transform(value),
+                  child: Transform.translate(
+                    offset: Offset(
+                        0, Tween<double>(begin: -400, end: 0).transform(value)),
+                    child: child,
+                  ),
+                );
+              },
+              duration: const Duration(milliseconds: 380),
+              curve: EnvoyEasing.defaultEasing,
+              tween: Tween<double>(begin: 0, end: 1),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 30.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
                         onTap: () {
-                          launchUrl(Uri.parse(
-                              "https://github.com/Foundation-Devices"));
+                          launchUrl(
+                              Uri.parse("https://twitter.com/FOUNDATIONdvcs"));
                         },
-                        child: Image.asset(
-                          "assets/github.png",
+                        child: SvgPicture.asset(
+                          "assets/menu_x.svg",
+                          width: 48,
+                          color: EnvoyColors.textPrimary,
+                        )),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                      child: GestureDetector(
+                          onTap: () {
+                            launchUrl(Uri.parse(
+                                "https://github.com/Foundation-Devices"));
+                          },
+                          child: Image.asset(
+                            "assets/github.png",
+                            width: 40,
+                            color: EnvoyColors.textTertiary,
+                          )),
+                    ),
+                    GestureDetector(
+                        onTap: () {
+                          launchUrl(
+                              Uri.parse(
+                                  "https://telegram.me/foundationdevices"),
+                              mode: LaunchMode.externalApplication);
+                        },
+                        child: SvgPicture.asset(
+                          "assets/telegram.svg",
                           width: 40,
                           color: EnvoyColors.textTertiary,
                         )),
-                  ),
-                  GestureDetector(
-                      onTap: () {
-                        launchUrl(
-                            Uri.parse("https://telegram.me/foundationdevices"),
-                            mode: LaunchMode.externalApplication);
-                      },
-                      child: SvgPicture.asset(
-                        "assets/telegram.svg",
-                        width: 40,
-                        color: EnvoyColors.textTertiary,
-                      )),
-                ],
+                  ],
+                ),
               ),
             ),
           ],

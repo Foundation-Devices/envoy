@@ -4742,6 +4742,16 @@ class S {
     );
   }
 
+  /// `Importing Seed`
+  String get manual_setup_importingSeedLoadingInfo {
+    return Intl.message(
+      'Importing Seed',
+      name: 'manual_setup_importingSeedLoadingInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Magic Backup Detected`
   String get manual_setup_magicBackupDetected_heading {
     return Intl.message(
