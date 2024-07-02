@@ -164,7 +164,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
               margin:
                   const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
               decoration: BoxDecoration(
-                  color: const Color(0xffD9D9D9),
+                  color: EnvoyColors.surface4,
                   borderRadius: BorderRadius.circular(8)),
               child: TextFormField(
                   maxLength: 30,

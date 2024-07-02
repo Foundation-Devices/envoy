@@ -470,6 +470,7 @@
   "manual_setup_import_seed_heading": "Importa Tu Semilla",
   "manual_setup_import_seed_passport_warning": "No escribas tu semilla de Passport en las siguientes pantallas.",
   "manual_setup_import_seed_subheading": "Continúa debajo para importar una semilla existente.\n\nTendrás la opción de importar una Copia de Seguridad de Envoy más adelante.",
+  "manual_setup_importingSeedLoadingInfo": "Importando Semilla",
   "manual_setup_magicBackupDetected_heading": "Copia de Seguridad Mágica Detectada",
   "manual_setup_magicBackupDetected_ignore": "Ignorar",
   "manual_setup_magicBackupDetected_restore": "Restaurar",

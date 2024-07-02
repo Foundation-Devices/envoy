@@ -237,22 +237,31 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
     return OnboardPageBackground(
         child: Column(
       children: [
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: const Center(
-              child: SizedBox(
-                height: 150,
-                width: 150,
-                child: CircularProgressIndicator(
-                  color: EnvoyColors.tealLight,
-                  backgroundColor: EnvoyColors.textInactive,
-                  strokeWidth: 8,
-                ),
-              ),
+        const Padding(
+          padding: EdgeInsets.only(top: EnvoySpacing.xl),
+          child: SizedBox(
+            height: 180,
+            width: 180,
+            child: CircularProgressIndicator(
+              color: EnvoyColors.tealLight,
+              backgroundColor: EnvoyColors.surface4,
+              strokeWidth: 15,
+              strokeCap: StrokeCap.round,
             ),
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
+          child: DefaultTextStyle(
+            style: EnvoyTypography.heading
+                .copyWith(color: EnvoyColors.textPrimary),
+            child: Text(
+              S().manual_setup_importingSeedLoadingInfo,
+              style: EnvoyTypography.heading
+                  .copyWith(color: EnvoyColors.textPrimary),
+            ),
+          ),
+        )
       ],
     ));
   }

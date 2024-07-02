@@ -874,7 +874,7 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
                   margin: const EdgeInsets.only(top: EnvoySpacing.xs),
                   child: Container(
                     decoration: BoxDecoration(
-                        color: const Color(0xffD9D9D9),
+                        color: EnvoyColors.surface4,
                         borderRadius:
                             BorderRadius.circular(EnvoySpacing.small)),
                     child: TextFormField(

@@ -1011,6 +1011,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Never import your Passport seed into the following screens."),
         "manual_setup_import_seed_subheading": MessageLookupByLibrary.simpleMessage(
             "Continue below to import an existing seed.\n\nYou’ll have the option to import an Envoy Backup File later."),
+        "manual_setup_importingSeedLoadingInfo":
+            MessageLookupByLibrary.simpleMessage("Importing Seed"),
         "manual_setup_magicBackupDetected_heading":
             MessageLookupByLibrary.simpleMessage("Magic Backup Detected"),
         "manual_setup_magicBackupDetected_ignore":

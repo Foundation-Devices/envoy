@@ -470,6 +470,7 @@
   "manual_setup_import_seed_heading": "Importar a Tua Semente",
   "manual_setup_import_seed_passport_warning": "Nunca importes a tua semente do Passport nos menus seguintes.",
   "manual_setup_import_seed_subheading": "Escolhe uma das seguintes opções para importar uma semente existente.\n\nIrá ser possível importar uma Cópia de Segurança da Envoy mais tarde.",
+  "manual_setup_importingSeedLoadingInfo": "Importing Seed",
   "manual_setup_magicBackupDetected_heading": "Cópia Mágica de Segurança Detectada",
   "manual_setup_magicBackupDetected_ignore": "Ignorar",
   "manual_setup_magicBackupDetected_restore": "Restaurar",
