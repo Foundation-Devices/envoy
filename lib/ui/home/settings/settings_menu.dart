@@ -159,7 +159,7 @@ class SettingsMenuWidget extends ConsumerWidget {
                       },
                       child: SvgPicture.asset(
                         "assets/menu_x.svg",
-                        width: 40,
+                        width: 48,
                         color: EnvoyColors.textSecondary,
                       )),
                   Padding(
