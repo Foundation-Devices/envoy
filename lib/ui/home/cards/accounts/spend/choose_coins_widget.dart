@@ -40,7 +40,10 @@ class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
       },
       child: Stack(
         children: [
-          const Positioned.fill(child: AppBackground()),
+          const Positioned.fill(
+              child: AppBackground(
+            showRadialGradient: true,
+          )),
           Positioned(
             height: shieldTotalHeight,
             width: MediaQuery.of(context).size.width,
