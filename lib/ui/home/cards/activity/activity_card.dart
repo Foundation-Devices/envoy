@@ -115,6 +115,10 @@ class TopLevelActivityCard extends ConsumerWidget {
                                         const SizedBox(
                                           height: EnvoySpacing.medium2,
                                         ),
+                                      if (index == 0)
+                                        const SizedBox(
+                                          height: EnvoySpacing.small,
+                                        ),
                                       ListHeader(
                                           title: getTransactionDateString(
                                               notifications[index])),
