@@ -496,7 +496,7 @@ void showNoBoostNoFundsDialog(BuildContext context) {
                   ),
                   onTap: () {
                     launchUrl(Uri.parse(
-                        "https://docs.foundation.xyz/en/troubleshooting#why-cant-envoy-boost-or-cancel-my-transaction"));
+                        "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions"));
                   },
                 ),
                 Padding(
