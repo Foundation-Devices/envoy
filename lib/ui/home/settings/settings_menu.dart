@@ -18,6 +18,9 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class SettingsMenu extends ConsumerStatefulWidget {
   const SettingsMenu({super.key});
@@ -115,39 +118,43 @@ class SettingsMenuWidget extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const SizedBox(height: 9),
-                  MenuOption(
-                    label: S().menu_settings.toUpperCase(),
-                    onTap: () {
-                      background.state = HomePageBackgroundState.settings;
-                    },
-                  ),
-                  if (EnvoySeed().walletDerived())
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium3),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const SizedBox(height: EnvoySpacing.medium2),
                     MenuOption(
-                      label: S().menu_backups.toUpperCase(),
+                      label: S().menu_settings.toUpperCase(),
                       onTap: () {
-                        background.state = HomePageBackgroundState.backups;
+                        background.state = HomePageBackgroundState.settings;
                       },
                     ),
-                  const SizedBox(height: 0),
-                  MenuOption(
-                    label: S().menu_support.toUpperCase(),
-                    onTap: () {
-                      background.state = HomePageBackgroundState.support;
-                    },
-                  ),
-                  const SizedBox(height: 0),
-                  MenuOption(
-                    label: S().menu_about.toUpperCase(),
-                    onTap: () {
-                      background.state = HomePageBackgroundState.about;
-                    },
-                  ),
-                ]),
+                    if (EnvoySeed().walletDerived())
+                      MenuOption(
+                        label: S().menu_backups.toUpperCase(),
+                        onTap: () {
+                          background.state = HomePageBackgroundState.backups;
+                        },
+                      ),
+                    const SizedBox(height: 0),
+                    MenuOption(
+                      label: S().menu_support.toUpperCase(),
+                      onTap: () {
+                        background.state = HomePageBackgroundState.support;
+                      },
+                    ),
+                    const SizedBox(height: 0),
+                    MenuOption(
+                      label: S().menu_about.toUpperCase(),
+                      onTap: () {
+                        background.state = HomePageBackgroundState.about;
+                      },
+                    ),
+                  ]),
+            ),
             TweenAnimationBuilder(
               builder: (context, value, child) {
                 return Opacity(
@@ -229,29 +236,29 @@ class MenuOption extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.only(top: 25, bottom: 25),
-        margin: const EdgeInsets.only(left: 18),
+        padding: const EdgeInsets.symmetric(
+            horizontal: EnvoySpacing.large2, vertical: EnvoySpacing.medium1),
         child: Row(
             mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
                 constraints: const BoxConstraints(minWidth: 142),
                 child: Text(
                   label.toUpperCase(),
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                      color: EnvoyColors.textPrimaryInverse,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600),
+                  textAlign: TextAlign.start,
+                  style: EnvoyTypography.subheading
+                      .copyWith(
+                        color: EnvoyColors.textPrimaryInverse,
+                      )
+                      .setWeight(FontWeight.w500),
                 ),
               ),
               Container(
                 alignment: Alignment.centerLeft,
-                child: const Icon(
-                  Icons.arrow_forward_ios,
+                child: const EnvoyIcon(
+                  EnvoyIcons.chevron_right,
                   color: EnvoyColors.textPrimaryInverse,
-                  size: 16,
                 ),
               )
             ]),
