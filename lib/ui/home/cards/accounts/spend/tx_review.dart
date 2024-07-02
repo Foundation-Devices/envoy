@@ -508,29 +508,24 @@ class _TransactionReviewScreenState
                 children: [
                   if (!transactionModel.isPSBTFinalized)
                     EnvoyButton(
-                      readOnly: transactionModel.loading,
+                      enabled: !transactionModel.loading,
                       S().coincontrol_tx_detail_cta2,
                       type: EnvoyButtonTypes.secondary,
-                      onTap: transactionModel.loading
-                          ? null
-                          : () {
-                              ref
-                                  .read(userHasChangedFeesProvider.notifier)
-                                  .state = false;
-                              editTransaction(context, ref);
-                            },
+                      onTap: () {
+                        ref.read(userHasChangedFeesProvider.notifier).state =
+                            false;
+                        editTransaction(context, ref);
+                      },
                     ),
                   const Padding(padding: EdgeInsets.all(6)),
                   EnvoyButton(
-                    readOnly: transactionModel.loading,
+                    enabled: !transactionModel.loading,
                     (account.wallet.hot || transactionModel.isPSBTFinalized)
                         ? S().coincontrol_tx_detail_cta1
                         : S().coincontrol_txDetail_cta1_passport,
-                    onTap: transactionModel.loading
-                        ? null
-                        : () {
-                            widget.onBroadcast();
-                          },
+                    onTap: () {
+                      widget.onBroadcast();
+                    },
                   ),
                 ],
               ),
