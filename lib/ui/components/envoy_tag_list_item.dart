@@ -17,7 +17,7 @@ class EnvoyInfoCardListItem extends StatefulWidget {
   final bool priority;
   final Color? textColor;
   final FlexPriority spacingPriority;
-  final bool forceCrossCenterAlign;
+  final bool calculateTextLines;
 
   const EnvoyInfoCardListItem({
     super.key,
@@ -27,7 +27,7 @@ class EnvoyInfoCardListItem extends StatefulWidget {
     this.priority = false,
     this.textColor,
     this.spacingPriority = FlexPriority.title,
-    this.forceCrossCenterAlign = false,
+    this.calculateTextLines = false,
   });
 
   @override
@@ -41,7 +41,7 @@ class _EnvoyInfoCardListItemState extends State<EnvoyInfoCardListItem> {
   @override
   void initState() {
     super.initState();
-    if (widget.forceCrossCenterAlign) {
+    if (widget.calculateTextLines) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _checkTextLines());
     }
   }

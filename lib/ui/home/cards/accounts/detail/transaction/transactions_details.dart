@@ -371,9 +371,9 @@ class _TransactionsDetailsWidgetState
                             ],
                           ),
                   ),
-                rbfPossible
+                !rbfPossible
                     ? EnvoyInfoCardListItem(
-                        forceCrossCenterAlign: true,
+                        calculateTextLines: true,
                         spacingPriority: FlexPriority.trailing,
                         title: _getConfirmationTimeString(ref.watch(
                             txEstimatedConfirmationTimeProvider(
