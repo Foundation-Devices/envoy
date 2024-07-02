@@ -845,7 +845,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
-          const AppBackground(),
+          const AppBackground(showRadialGradient: true,),
           Positioned(
             top: topAppBarOffset,
             left: 5,
