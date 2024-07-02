@@ -141,9 +141,6 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
             feeRate: minFeeRate.toInt(),
             originalTx: widget.tx);
 
-        ref.read(spendAddressProvider.notifier).state = receiveOutPut.address;
-        ref.read(spendAmountProvider.notifier).state = receiveOutPut.amount;
-
         int minRate = minFeeRate.toInt();
         int maxRate = rates.max_fee_rate.toInt();
         int fasterFeeRate = minRate + 1;

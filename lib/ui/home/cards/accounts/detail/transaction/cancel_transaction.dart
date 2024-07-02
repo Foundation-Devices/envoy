@@ -739,7 +739,9 @@ Widget background({required Widget child, required BuildContext context}) {
     resizeToAvoidBottomInset: true,
     body: Stack(
       children: [
-        const AppBackground(showRadialGradient: true,),
+        const AppBackground(
+          showRadialGradient: true,
+        ),
         Positioned(
           top: topAppBarOffset,
           left: 5,
