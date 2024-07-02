@@ -52,10 +52,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `30,493.93`
+  /// `Thanks for joining.`
   String get _ {
     return Intl.message(
-      '30,493.93',
+      'Thanks for joining.',
       name: '_',
       desc: '',
       args: [],
@@ -1956,11 +1956,41 @@ class S {
     );
   }
 
+  /// `Explorer`
+  String get coindetails_overlay_explorer {
+    return Intl.message(
+      'Explorer',
+      name: 'coindetails_overlay_explorer',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `COIN DETAILS`
   String get coindetails_overlay_heading {
     return Intl.message(
       'COIN DETAILS',
       name: 'coindetails_overlay_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open in Explorer`
+  String get coindetails_overlay_modal_explorer_heading {
+    return Intl.message(
+      'Open in Explorer',
+      name: 'coindetails_overlay_modal_explorer_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You are about to leave Envoy and view this transaction on a blockchain explorer hosted by Foundation. Ensure you understand the privacy trade-offs before continuing. `
+  String get coindetails_overlay_modal_explorer_subheading {
+    return Intl.message(
+      'You are about to leave Envoy and view this transaction on a blockchain explorer hosted by Foundation. Ensure you understand the privacy trade-offs before continuing. ',
+      name: 'coindetails_overlay_modal_explorer_subheading',
       desc: '',
       args: [],
     );

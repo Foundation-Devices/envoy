@@ -17,16 +17,17 @@ class EnvoyInfoCardListItem extends StatelessWidget {
   final bool priority;
   final Color? textColor;
   final FlexPriority spacingPriority;
+  final Widget? button; // TODO: just for test, wait update for EnvoyInfo Card
 
-  const EnvoyInfoCardListItem({
-    super.key,
-    required this.title,
-    required this.icon,
-    required this.trailing,
-    this.priority = false,
-    this.textColor,
-    this.spacingPriority = FlexPriority.title,
-  });
+  const EnvoyInfoCardListItem(
+      {super.key,
+      required this.title,
+      required this.icon,
+      required this.trailing,
+      this.priority = false,
+      this.textColor,
+      this.spacingPriority = FlexPriority.title,
+      this.button});
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +38,18 @@ class EnvoyInfoCardListItem extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: EnvoySpacing.xs / 2),
-            child: SizedBox(
-              width: 26,
-              child: icon,
-            ),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: EnvoySpacing.xs / 2),
+                child: SizedBox(
+                  width: 26,
+                  child: icon,
+                ),
+              ),
+              if (button != null)
+                button!, // TODO: just for test, wait update for EnvoyInfo Card
+            ],
           ),
           const SizedBox(width: EnvoySpacing.xs),
           Flexible(

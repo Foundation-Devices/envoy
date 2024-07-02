@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("30,493.93"),
+        "_": MessageLookupByLibrary.simpleMessage("Thanks for joining."),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versão da Aplicação"),
         "about_openSourceLicences":
@@ -445,8 +445,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Reforçar"),
         "coindetails_overlay_date":
             MessageLookupByLibrary.simpleMessage("Data"),
+        "coindetails_overlay_explorer":
+            MessageLookupByLibrary.simpleMessage("Explorer"),
         "coindetails_overlay_heading":
             MessageLookupByLibrary.simpleMessage("DETALHES DA MOEDA"),
+        "coindetails_overlay_modal_explorer_heading":
+            MessageLookupByLibrary.simpleMessage("Open in Explorer"),
+        "coindetails_overlay_modal_explorer_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "You are about to leave Envoy and view this transaction on a blockchain explorer hosted by Foundation. Ensure you understand the privacy trade-offs before continuing. "),
         "coindetails_overlay_noBoostNoFunds_heading":
             MessageLookupByLibrary.simpleMessage(
                 "Não é possível Reforçar a Transacção"),

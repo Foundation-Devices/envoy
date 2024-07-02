@@ -1,6 +1,6 @@
 {
   ":": ":",
-  "_": "30,493.93",
+  "_": "Thanks for joining.",
   "about_appVersion": "App Version",
   "about_openSourceLicences": "Open Source Licences",
   "about_privacyPolicy": "Privacy Policy",
@@ -191,7 +191,10 @@
   "coindetails_overlay_confirmationIn_weeks": "weeks",
   "coindetails_overlay_confirmation_boost": "Boost",
   "coindetails_overlay_date": "Date",
+  "coindetails_overlay_explorer": "Explorer",
   "coindetails_overlay_heading": "COIN DETAILS",
+  "coindetails_overlay_modal_explorer_heading": "Open in Explorer",
+  "coindetails_overlay_modal_explorer_subheading": "You are about to leave Envoy and view this transaction on a blockchain explorer hosted by Foundation. Ensure you understand the privacy trade-offs before continuing. ",
   "coindetails_overlay_noBoostNoFunds_heading": "Cannot Boost Transaction",
   "coindetails_overlay_noBoostNoFunds_subheading": "This is because there are not enough confirmed or unlocked coins to choose from. \n\nWhere possible, allow pending coins to confirm or unlock some coins and try again.",
   "coindetails_overlay_notes": "Note",

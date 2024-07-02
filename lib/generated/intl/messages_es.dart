@@ -440,8 +440,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Impulsar"),
         "coindetails_overlay_date":
             MessageLookupByLibrary.simpleMessage("Fecha"),
+        "coindetails_overlay_explorer":
+            MessageLookupByLibrary.simpleMessage("Explorer"),
         "coindetails_overlay_heading":
             MessageLookupByLibrary.simpleMessage("DETALLES DE MONEDA"),
+        "coindetails_overlay_modal_explorer_heading":
+            MessageLookupByLibrary.simpleMessage("Open in Explorer"),
+        "coindetails_overlay_modal_explorer_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "You are about to leave Envoy and view this transaction on a blockchain explorer hosted by Foundation. Ensure you understand the privacy trade-offs before continuing. "),
         "coindetails_overlay_noBoostNoFunds_heading":
             MessageLookupByLibrary.simpleMessage(
                 "Error al Impuslar Transacción"),

@@ -1,6 +1,6 @@
 {
   ":": ":",
-  "_": "30,493.93",
+  "_": "Thanks for joining.",
   "about_appVersion": "Versió de l'aplicació",
   "about_openSourceLicences": "Llicències de Codi Obert",
   "about_privacyPolicy": "Política de Privacitat",
@@ -191,7 +191,10 @@
   "coindetails_overlay_confirmationIn_weeks": "setmanes",
   "coindetails_overlay_confirmation_boost": "Augmenta",
   "coindetails_overlay_date": "Data",
+  "coindetails_overlay_explorer": "Explorer",
   "coindetails_overlay_heading": "DETALLS DE LA MONEDA",
+  "coindetails_overlay_modal_explorer_heading": "Open in Explorer",
+  "coindetails_overlay_modal_explorer_subheading": "You are about to leave Envoy and view this transaction on a blockchain explorer hosted by Foundation. Ensure you understand the privacy trade-offs before continuing. ",
   "coindetails_overlay_noBoostNoFunds_heading": "No es pot augmentar la transacció",
   "coindetails_overlay_noBoostNoFunds_subheading": "Això es deu al fet que no hi ha prou monedes confirmades o desbloquejades per triar. Permet que les monedes pendents confirmin o desbloquegin algunes i torneu-ho a provar.",
   "coindetails_overlay_notes": "Notes",

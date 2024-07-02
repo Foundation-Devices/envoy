@@ -9,6 +9,8 @@ import 'package:envoy/business/locale.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
+import 'package:envoy/ui/components/button.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_button.dart';
@@ -31,6 +33,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/util/tuple.dart';
@@ -38,6 +41,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/components/envoy_info_card.dart';
 import 'package:envoy/ui/components/envoy_tag_list_item.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 
 class TransactionsDetailsWidget extends ConsumerStatefulWidget {
   final Account account;
@@ -271,6 +275,20 @@ class _TransactionsDetailsWidgetState
                       },
                     ),
                   ),
+                  button: (showTxIdExpanded &&
+                          widget.account.wallet.network ==
+                              Network.Mainnet) // Only for Mainnet for now
+                      ? EnvoyButton(
+                          height: EnvoySpacing.medium3,
+                          icon: EnvoyIcons.externalLink,
+                          label: S().coindetails_overlay_explorer,
+                          type: ButtonType.primary,
+                          state: ButtonState.defaultState,
+                          onTap: () {
+                            openTxDetailsInExplorer(context, tx.txId);
+                          },
+                        )
+                      : null,
                 ),
                 EnvoyInfoCardListItem(
                   title: S().coindetails_overlay_date,
@@ -528,4 +546,39 @@ String getTransactionStatusString(Transaction tx) {
   return tx.type == TransactionType.normal && tx.isConfirmed
       ? S().coindetails_overlay_status_confirmed
       : S().activity_pending;
+}
+
+Future<void> openTxDetailsInExplorer(BuildContext context, String txId) async {
+  bool dismissed = await EnvoyStorage()
+      .checkPromptDismissed(DismissiblePrompt.openTxDetailsInExplorer);
+  if (!dismissed && context.mounted) {
+    showEnvoyPopUp(
+        context,
+        S().coindetails_overlay_modal_explorer_subheading,
+        S().component_continue,
+        (context) {
+          Navigator.pop(context);
+          launchUrlString("${Fees.mempoolFoundationInstance}/tx/$txId");
+        },
+        title: S().coindetails_overlay_modal_explorer_heading,
+        learnMoreLink: "https://docs.foundation.xyz/faq/home/#envoy-privacy",
+        icon: EnvoyIcons.info,
+        secondaryButtonLabel: S().component_cancel,
+        onSecondaryButtonTap: (BuildContext context) {
+          Navigator.pop(context);
+        },
+        checkBoxText: S().component_dontShowAgain,
+        checkedValue: false,
+        onCheckBoxChanged: (checkedValue) {
+          if (!checkedValue) {
+            EnvoyStorage()
+                .addPromptState(DismissiblePrompt.openTxDetailsInExplorer);
+          } else if (checkedValue) {
+            EnvoyStorage()
+                .removePromptState(DismissiblePrompt.openTxDetailsInExplorer);
+          }
+        });
+  } else {
+    launchUrlString("${Fees.mempoolFoundationInstance}/tx/$txId");
+  }
 }

@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("30,493.93"),
+        "_": MessageLookupByLibrary.simpleMessage("Thanks for joining."),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences":
             MessageLookupByLibrary.simpleMessage("Open Source Licences"),
@@ -436,8 +436,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Boost"),
         "coindetails_overlay_date":
             MessageLookupByLibrary.simpleMessage("Date"),
+        "coindetails_overlay_explorer":
+            MessageLookupByLibrary.simpleMessage("Explorer"),
         "coindetails_overlay_heading":
             MessageLookupByLibrary.simpleMessage("COIN DETAILS"),
+        "coindetails_overlay_modal_explorer_heading":
+            MessageLookupByLibrary.simpleMessage("Open in Explorer"),
+        "coindetails_overlay_modal_explorer_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "You are about to leave Envoy and view this transaction on a blockchain explorer hosted by Foundation. Ensure you understand the privacy trade-offs before continuing. "),
         "coindetails_overlay_noBoostNoFunds_heading":
             MessageLookupByLibrary.simpleMessage("Cannot Boost Transaction"),
         "coindetails_overlay_noBoostNoFunds_subheading":

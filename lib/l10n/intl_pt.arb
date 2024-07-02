@@ -1,6 +1,6 @@
 {
   ":": ":",
-  "_": "30,493.93",
+  "_": "Thanks for joining.",
   "about_appVersion": "Versão da Aplicação",
   "about_openSourceLicences": "Licenças de Código Aberto",
   "about_privacyPolicy": "Política de Privacidade",
@@ -191,7 +191,10 @@
   "coindetails_overlay_confirmationIn_weeks": "semanas",
   "coindetails_overlay_confirmation_boost": "Reforçar",
   "coindetails_overlay_date": "Data",
+  "coindetails_overlay_explorer": "Explorer",
   "coindetails_overlay_heading": "DETALHES DA MOEDA",
+  "coindetails_overlay_modal_explorer_heading": "Open in Explorer",
+  "coindetails_overlay_modal_explorer_subheading": "You are about to leave Envoy and view this transaction on a blockchain explorer hosted by Foundation. Ensure you understand the privacy trade-offs before continuing. ",
   "coindetails_overlay_noBoostNoFunds_heading": "Não é possível Reforçar a Transacção",
   "coindetails_overlay_noBoostNoFunds_subheading": "Isto deve-se ao facto de não existirem moedas confirmadas ou desbloqueadas suficientes para escolher. \n\nSempre que possível permite que as moedas pendentes sejam confirmadas ou deslobqueia algumas moedas e tenta novamente.",
   "coindetails_overlay_notes": "Nota",
