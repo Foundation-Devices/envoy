@@ -18,6 +18,7 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class SettingsMenu extends ConsumerStatefulWidget {
   const SettingsMenu({super.key});
@@ -202,6 +203,7 @@ class SettingsMenuWidget extends ConsumerWidget {
                           width: 40,
                           color: EnvoyColors.textTertiary,
                         )),
+                    const SizedBox(width: EnvoySpacing.small),
                   ],
                 ),
               ),
