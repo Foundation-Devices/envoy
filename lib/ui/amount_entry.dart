@@ -110,125 +110,131 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     }
   }
 
+  void onNumPadEvents(dynamic event) {
+    var unit = ref.read(sendScreenUnitProvider);
+    _addTrailingZeros =
+        false; // Do not add trailing zeros when manually typing the amount
+    switch (event) {
+      case NumPadEvents.backspace:
+        {
+          setState(() {
+            if (_enteredAmount.isNotEmpty) {
+              _enteredAmount =
+                  _enteredAmount.substring(0, _enteredAmount.length - 1);
+            }
+
+            if (_enteredAmount.isEmpty) {
+              _enteredAmount = "0";
+            }
+          });
+        }
+        break;
+      case NumPadEvents.clearAll:
+        {
+          setState(() {
+            _enteredAmount = "0";
+            _amountSats = 0;
+          });
+          if (widget.onAmountChanged != null) {
+            widget.onAmountChanged!(0);
+          }
+        }
+        break;
+      case NumPadEvents.separator:
+        {
+          if (unit == AmountDisplayUnit.sat) {
+            break;
+          }
+        }
+        break;
+      case NumPadEvents.clipboard:
+        {
+          pasteAmount();
+          break;
+        }
+      default:
+        {
+          // No more than eight decimal digits for BTC
+          if (unit == AmountDisplayUnit.btc &&
+              _enteredAmount.contains(fiatDecimalSeparator) &&
+              ((_enteredAmount.length -
+                      _enteredAmount.indexOf(fiatDecimalSeparator)) >
+                  8)) {
+            break;
+          }
+
+          // No more than two decimal digits for fiat
+          if (unit == AmountDisplayUnit.fiat &&
+              _enteredAmount.contains(fiatDecimalSeparator) &&
+              ((_enteredAmount.length -
+                      _enteredAmount.indexOf(fiatDecimalSeparator)) >
+                  2)) {
+            break;
+          }
+
+          setState(() {
+            if (_enteredAmount == "0") {
+              _enteredAmount = event;
+            } else {
+              _enteredAmount = _enteredAmount + event;
+            }
+
+            // Limit entered amount
+            if (_amountSats >= 2.1e15) {
+              _enteredAmount =
+                  _enteredAmount.substring(0, _enteredAmount.length - 1);
+            }
+          });
+        }
+    }
+
+    _amountSats = getAmountSats();
+
+    // Make sure we don't do any formatting in certain situations
+    bool addZero = (event == "0") &&
+        (unit != AmountDisplayUnit.sat) &&
+        (_enteredAmount.contains(fiatDecimalSeparator));
+
+    bool addDot = (event == NumPadEvents.separator) &&
+        (unit == AmountDisplayUnit.fiat &&
+                !_enteredAmount.contains(fiatDecimalSeparator) ||
+            unit == AmountDisplayUnit.btc &&
+                !_enteredAmount.contains(fiatDecimalSeparator));
+
+    bool removeZero = (event == NumPadEvents.backspace) &&
+        (unit != AmountDisplayUnit.sat) &&
+        (_enteredAmount.contains(fiatDecimalSeparator));
+
+    if (addZero || addDot || removeZero) {
+      setState(() {
+        _enteredAmount = _enteredAmount == "" && addDot
+            ? "0"
+            : (_enteredAmount) + (addDot ? (fiatDecimalSeparator) : "");
+      });
+    } else {
+      // Format it nicely
+      setState(() {
+        _enteredAmount = getDisplayAmount(_amountSats, unit);
+      });
+    }
+
+    if (widget.onAmountChanged != null) {
+      widget.onAmountChanged!(_amountSats);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ref.watch(settingsProvider);
     var unit = ref.watch(sendScreenUnitProvider);
 
-    Numpad numpad = Numpad(unit,
+    NumPad numpad = NumPad(unit,
         isAmountZero: _enteredAmount.isEmpty || _enteredAmount == "0",
-        isDecimalSeparator: _enteredAmount.contains(fiatDecimalSeparator));
-    numpad.events.stream.listen((event) async {
-      _addTrailingZeros =
-          false; // Do not add trailing zeros when manually typing the amount
-      switch (event) {
-        case NumpadEvents.backspace:
-          {
-            setState(() {
-              if (_enteredAmount.isNotEmpty) {
-                _enteredAmount =
-                    _enteredAmount.substring(0, _enteredAmount.length - 1);
-              }
-
-              if (_enteredAmount.isEmpty) {
-                _enteredAmount = "0";
-              }
-            });
-          }
-          break;
-        case NumpadEvents.clearAll:
-          {
-            setState(() {
-              _enteredAmount = "0";
-              _amountSats = 0;
-            });
-            if (widget.onAmountChanged != null) {
-              widget.onAmountChanged!(0);
-            }
-          }
-          break;
-        case NumpadEvents.separator:
-          {
-            if (unit == AmountDisplayUnit.sat) {
-              break;
-            }
-          }
-          break;
-        case NumpadEvents.clipboard:
-          {
-            pasteAmount();
-            break;
-          }
-        default:
-          {
-            // No more than eight decimal digits for BTC
-            if (unit == AmountDisplayUnit.btc &&
-                _enteredAmount.contains(fiatDecimalSeparator) &&
-                ((_enteredAmount.length -
-                        _enteredAmount.indexOf(fiatDecimalSeparator)) >
-                    8)) {
-              break;
-            }
-
-            // No more than two decimal digits for fiat
-            if (unit == AmountDisplayUnit.fiat &&
-                _enteredAmount.contains(fiatDecimalSeparator) &&
-                ((_enteredAmount.length -
-                        _enteredAmount.indexOf(fiatDecimalSeparator)) >
-                    2)) {
-              break;
-            }
-
-            setState(() {
-              if (_enteredAmount == "0") {
-                _enteredAmount = event;
-              } else {
-                _enteredAmount = _enteredAmount + event;
-              }
-
-              // Limit entered amount
-              if (_amountSats >= 2.1e15) {
-                _enteredAmount =
-                    _enteredAmount.substring(0, _enteredAmount.length - 1);
-              }
-            });
-          }
-      }
-
-      _amountSats = getAmountSats();
-
-      // Make sure we don't do any formatting in certain situations
-      bool addZero = (event == "0") &&
-          (unit != AmountDisplayUnit.sat) &&
-          (_enteredAmount.contains(fiatDecimalSeparator));
-
-      bool addDot = (event == NumpadEvents.separator) &&
-          (unit == AmountDisplayUnit.fiat &&
-                  !_enteredAmount.contains(fiatDecimalSeparator) ||
-              unit == AmountDisplayUnit.btc &&
-                  !_enteredAmount.contains(fiatDecimalSeparator));
-
-      bool removeZero = (event == NumpadEvents.backspace) &&
-          (unit != AmountDisplayUnit.sat) &&
-          (_enteredAmount.contains(fiatDecimalSeparator));
-
-      if (addZero || addDot || removeZero) {
-        setState(() {
-          _enteredAmount = _enteredAmount == "" && addDot
-              ? "0"
-              : (_enteredAmount) + (addDot ? (fiatDecimalSeparator) : "");
-        });
-      } else {
-        // Format it nicely
-        setState(() {
-          _enteredAmount = getDisplayAmount(_amountSats, unit);
-        });
-      }
-
-      if (widget.onAmountChanged != null) {
-        widget.onAmountChanged!(_amountSats);
-      }
-    });
+        onDigitEntered: (digit) {
+      onNumPadEvents(digit);
+    }, onNumPadEvents: (event) {
+      onNumPadEvents(event);
+    }, isDecimalSeparator: _enteredAmount.contains(fiatDecimalSeparator));
 
     return Column(
       children: [
@@ -311,28 +317,29 @@ class SpendableAmountWidget extends ConsumerWidget {
   }
 }
 
-enum NumpadEvents { separator, ok, backspace, clearAll, clipboard }
+enum NumPadEvents { separator, ok, backspace, clearAll, clipboard }
 
-class Numpad extends StatefulWidget {
+class NumPad extends StatefulWidget {
   // Dart linter is reporting a false positive here
   // https://github.com/dart-lang/linter/issues/1381
-  // Sink is closed on widget disposal
-  //ignore: close_sinks
-  final StreamController events = StreamController();
-  late final AmountDisplayUnit amountDisplayUnit;
+  final Function(String digit) onDigitEntered;
+  final Function(NumPadEvents event) onNumPadEvents;
+  final AmountDisplayUnit amountDisplayUnit;
   final bool isAmountZero;
   final bool isDecimalSeparator;
 
-  Numpad(this.amountDisplayUnit,
+  const NumPad(this.amountDisplayUnit,
       {super.key,
       required this.isAmountZero,
+      required this.onDigitEntered,
+      required this.onNumPadEvents,
       required this.isDecimalSeparator});
 
   @override
-  State<Numpad> createState() => _NumpadState();
+  State<NumPad> createState() => _NumPadState();
 }
 
-class _NumpadState extends State<Numpad> {
+class _NumPadState extends State<NumPad> {
   @override
   Widget build(BuildContext context) {
     return GridView.count(
@@ -350,7 +357,7 @@ class _NumpadState extends State<Numpad> {
             text: digit,
             onTap: () {
               Haptics.lightImpact();
-              widget.events.sink.add(digit);
+              widget.onDigitEntered(digit);
             },
           );
         })),
@@ -361,7 +368,7 @@ class _NumpadState extends State<Numpad> {
                 onTap: () {
                   if (!widget.isDecimalSeparator) {
                     Haptics.lightImpact();
-                    widget.events.sink.add(NumpadEvents.separator);
+                    widget.onNumPadEvents(NumPadEvents.separator);
                   }
                 },
               )
@@ -371,7 +378,7 @@ class _NumpadState extends State<Numpad> {
           text: "0",
           onTap: () {
             Haptics.lightImpact();
-            widget.events.sink.add("0");
+            widget.onDigitEntered("0");
           },
         ),
         widget.isAmountZero
@@ -379,18 +386,18 @@ class _NumpadState extends State<Numpad> {
                 NumpadButtonType.clipboard,
                 onTap: () {
                   Haptics.lightImpact();
-                  widget.events.sink.add(NumpadEvents.clipboard);
+                  widget.onNumPadEvents(NumPadEvents.clipboard);
                 },
               )
             : NumpadButton(
                 NumpadButtonType.backspace,
                 onTap: () {
                   Haptics.lightImpact();
-                  widget.events.sink.add(NumpadEvents.backspace);
+                  widget.onNumPadEvents(NumPadEvents.backspace);
                 },
                 onLongPressDown: () {
                   Haptics.lightImpact();
-                  widget.events.sink.add(NumpadEvents.clearAll);
+                  widget.onNumPadEvents(NumPadEvents.clearAll);
                 },
               ),
       ],
