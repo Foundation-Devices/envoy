@@ -11,6 +11,9 @@ class StripePainter extends CustomPainter {
   final double rotateDegree;
   final Color stripeColor;
   final Color bgColor;
+  final bool clipHalf;
+  final double offsetX;
+  final double offsetY;
 
   StripePainter(
     this.stripeColor, {
@@ -18,23 +21,29 @@ class StripePainter extends CustomPainter {
     this.gapWidth = 2.0,
     this.rotateDegree = 25.0,
     this.bgColor = Colors.transparent,
+    this.clipHalf = true,
+    this.offsetX = 0,
+    this.offsetY = 10.0,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     /// Expand canvas size
-    const offsetX = 0.0;
-    const offsetY = 10.0;
     final width = size.width + offsetX * 2;
     final height = size.height + offsetY * 2;
 
     /// Shift canvas to top,left with offsetX,Y
     canvas.translate(-offsetX, -offsetY);
 
-    // Clip the canvas to the right half
-    final rightHalfRect =
-        Rect.fromLTRB(size.width / 2, 0, size.width, size.height);
-    canvas.clipRect(rightHalfRect);
+    /// Clip the canvas (draw lines on the right side)
+    if (clipHalf) {
+      final rightHalfRect =
+          Rect.fromLTRB(size.width / 2, 0, size.width, size.height);
+      canvas.clipRect(rightHalfRect);
+    } else {
+      final fullRect = Rect.fromLTRB(0, 0, size.width, size.height);
+      canvas.clipRect(fullRect);
+    }
 
     /// Calculate the biggest diagonal of the screen.
     final double diagonal = sqrt(width * width + height * height);
@@ -61,15 +70,19 @@ class StripePainter extends CustomPainter {
 
     /// setup the path
     for (int i = 0; i < numIterations; i++) {
+      /// setup the path
+      const double xStart = 0;
+
       /// start point on Y axis -> xStart = 0
       final double yStart = i * yOffset;
 
       /// end point on X axis -> yEnd = 0
       final double xEnd = i * xOffset;
+      const double yEnd = 0;
 
       /// make line start -> end
-      path.moveTo(0, yStart);
-      path.lineTo(xEnd, 0);
+      path.moveTo(xStart, yStart);
+      path.lineTo(xEnd, yEnd);
     }
 
     /// draw path on canvas by using paint object

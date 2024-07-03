@@ -6,7 +6,6 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_entry.dart';
-import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
@@ -21,8 +20,7 @@ import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/util/easing.dart';
-
-import '../../../../components/stripe_painter.dart';
+import 'package:envoy/ui/components/stripe_painter.dart';
 
 class TransactionReviewCard extends ConsumerStatefulWidget {
   final Psbt psbt;
@@ -96,10 +94,10 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(cardRadius)),
+        borderRadius: const BorderRadius.all(Radius.circular(cardRadius - 1)),
         color: account.color,
         border:
-            Border.all(color: Colors.black, width: 6, style: BorderStyle.solid),
+            Border.all(color: Colors.black, width: 2, style: BorderStyle.solid),
       ),
       child: Container(
         decoration: BoxDecoration(
@@ -116,18 +114,20 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
               ],
             ),
             border: Border.all(
-                width: 6, color: account.color, style: BorderStyle.solid)),
+                width: 2, color: account.color, style: BorderStyle.solid)),
         child: ClipRRect(
-          borderRadius: const BorderRadius.all(Radius.circular(cardRadius - 7)),
+          borderRadius: const BorderRadius.all(Radius.circular(cardRadius - 4)),
           child: CustomPaint(
             isComplex: true,
             willChange: false,
             painter: StripePainter(
-              EnvoyColors.gray800, // Use your desired stripe color here
+              EnvoyColors.gray1000,
               stripeWidth: 1,
-              gapWidth: 1, // Adjust this value if needed
-              rotateDegree: 20.0, // Adjust this value if needed
+              gapWidth: 1,
+              rotateDegree: 18.0,
               bgColor: Colors.transparent,
+              clipHalf: false,
+              offsetY: 0.0,
             ),
             child: Padding(
               padding: const EdgeInsets.only(
@@ -230,7 +230,6 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           widget.feeTitle,
                           style: titleStyle,
                         ),
-                        //const Padding(padding: EdgeInsets.all(12)),
                         Expanded(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
