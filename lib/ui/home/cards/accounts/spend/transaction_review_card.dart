@@ -22,6 +22,8 @@ import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/util/easing.dart';
 
+import '../../../../components/stripe_painter.dart';
+
 class TransactionReviewCard extends ConsumerStatefulWidget {
   final Psbt psbt;
   final bool psbtFinalized;
@@ -53,8 +55,6 @@ class TransactionReviewCard extends ConsumerStatefulWidget {
 }
 
 class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
-  bool _showFullAddress = false;
-
   @override
   Widget build(BuildContext context) {
     String address = widget.address;
@@ -99,7 +99,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
         borderRadius: const BorderRadius.all(Radius.circular(cardRadius)),
         color: account.color,
         border:
-            Border.all(color: Colors.black, width: 2, style: BorderStyle.solid),
+            Border.all(color: Colors.black, width: 6, style: BorderStyle.solid),
       ),
       child: Container(
         decoration: BoxDecoration(
@@ -116,14 +116,19 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
               ],
             ),
             border: Border.all(
-                width: 2, color: account.color, style: BorderStyle.solid)),
+                width: 6, color: account.color, style: BorderStyle.solid)),
         child: ClipRRect(
-          borderRadius: const BorderRadius.all(Radius.circular(cardRadius - 2)),
+          borderRadius: const BorderRadius.all(Radius.circular(cardRadius - 7)),
           child: CustomPaint(
             isComplex: true,
             willChange: false,
-            painter: LinesPainter(
-                lineDistance: 2.5, color: EnvoyColors.gray1000, opacity: 0.4),
+            painter: StripePainter(
+              EnvoyColors.gray800, // Use your desired stripe color here
+              stripeWidth: 1,
+              gapWidth: 1, // Adjust this value if needed
+              rotateDegree: 20.0, // Adjust this value if needed
+              bgColor: Colors.transparent,
+            ),
             child: Padding(
               padding: const EdgeInsets.only(
                   left: EnvoySpacing.small,
@@ -193,43 +198,19 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           S().coincontrol_tx_detail_destination,
                           style: titleStyle,
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _showFullAddress = !_showFullAddress;
-                            });
-                          },
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                S().coincontrol_tx_detail_destination_details,
-                                style: trailingStyle,
-                              ),
-                              AnimatedRotation(
-                                duration: const Duration(milliseconds: 200),
-                                turns: _showFullAddress ? -.25 : 0,
-                                child: const Icon(
-                                  Icons.chevron_right_outlined,
-                                  color: EnvoyColors.textPrimaryInverse,
-                                ),
-                              )
-                            ],
-                          ),
-                        )
                       ],
                     ),
                   ),
                   TweenAnimationBuilder(
                       curve: EnvoyEasing.easeInOut,
-                      tween: Tween<double>(
-                          begin: 0, end: _showFullAddress ? 1 : 0),
+                      tween: Tween<double>(begin: 0, end: 1),
                       duration: const Duration(milliseconds: 200),
                       builder: (context, value, child) {
                         return AnimatedContainer(
                             duration: const Duration(milliseconds: 120),
                             child: _whiteContainer(
                                 child: AddressWidget(
+                              align: TextAlign.start,
                               address: address,
                               short: true,
                               sideChunks:
@@ -342,7 +323,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
         padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
         child: Container(
           constraints: const BoxConstraints(
-            minHeight: 36,
+            minHeight: 32,
           ),
           alignment: Alignment.centerLeft,
           width: double.infinity,
