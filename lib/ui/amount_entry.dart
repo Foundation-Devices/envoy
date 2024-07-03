@@ -342,9 +342,20 @@ class NumPad extends StatefulWidget {
 class _NumPadState extends State<NumPad> {
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    double childAspectRatio = 1.35;
+    if (width < 380) {
+      childAspectRatio = 1.4;
+    }
+    if (width < 350) {
+      childAspectRatio = 1.5;
+    }
+    if (width <= 320) {
+      childAspectRatio = 1.54;
+    }
     return GridView.count(
       crossAxisCount: 3,
-      childAspectRatio: 4 / 3,
+      childAspectRatio: childAspectRatio,
       shrinkWrap: true,
       // For some reason GridView has a default padding
       padding: EdgeInsets.zero,
