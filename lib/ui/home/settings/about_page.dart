@@ -9,6 +9,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 
 class AboutPage extends StatefulWidget {
   const AboutPage({super.key});
@@ -28,7 +29,7 @@ class _AboutPageState extends State<AboutPage> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(30.0),
-            child: Image.asset("assets/logo.png", height: 150),
+            child: Image.asset("assets/logo.png", height: 170),
           ),
           const SizedBox(height: EnvoySpacing.xl),
           Row(
@@ -80,6 +81,7 @@ class _AboutPageState extends State<AboutPage> {
             children: [
               AboutText(S().about_termsOfUse),
               AboutButton(
+                hasLinkIcon: true,
                 S().about_show,
                 onTap: () {
                   launchUrlString("https://foundation.xyz/terms/");
@@ -93,6 +95,7 @@ class _AboutPageState extends State<AboutPage> {
             children: [
               AboutText(S().about_privacyPolicy),
               AboutButton(
+                hasLinkIcon: true,
                 S().about_show,
                 onTap: () {
                   launchUrlString("https://foundation.xyz/privacy/");
@@ -132,28 +135,55 @@ class AboutText extends StatelessWidget {
 class AboutButton extends StatelessWidget {
   final String label;
   final Function()? onTap;
+  final bool hasLinkIcon;
 
-  const AboutButton(this.label, {super.key, this.onTap});
+  const AboutButton(
+    this.label, {
+    super.key,
+    this.onTap,
+    this.hasLinkIcon = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(
-          width: 80,
+          constraints: const BoxConstraints(
+            minWidth: 100,
+          ),
           decoration: const BoxDecoration(
               color: EnvoyColors.accentPrimary,
               borderRadius:
                   BorderRadius.all(Radius.circular(EnvoySpacing.small))),
           child: Center(
               child: Padding(
-            padding: const EdgeInsets.all(EnvoySpacing.small),
-            child: Text(
-              label,
-              style: EnvoyTypography.button.copyWith(
-                color: EnvoyColors.textPrimaryInverse,
-              ),
-              textAlign: TextAlign.center,
+            padding: const EdgeInsets.symmetric(
+                vertical: EnvoySpacing.small, horizontal: EnvoySpacing.medium1),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                hasLinkIcon
+                    ? const Row(
+                        children: [
+                          EnvoyIcon(
+                            EnvoyIcons.externalLink,
+                            size: EnvoyIconSize.small,
+                            color: EnvoyColors.textPrimaryInverse,
+                          ),
+                          SizedBox(width: EnvoySpacing.small),
+                        ],
+                      )
+                    : const SizedBox.shrink(),
+                Text(
+                  label,
+                  style: EnvoyTypography.button.copyWith(
+                    color: EnvoyColors.textPrimaryInverse,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
           ))),
     );
