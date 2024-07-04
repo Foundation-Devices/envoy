@@ -21,6 +21,7 @@ import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rive/rive.dart' as rive;
@@ -146,11 +147,12 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                     ),
                     Container(
                         padding: const EdgeInsets.symmetric(
-                            vertical: EnvoySpacing.small),
+                            vertical: EnvoySpacing.xs),
                         child: const PrivacyOptionSelect()),
                     Padding(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: EnvoySpacing.xs,
+                          horizontal: EnvoySpacing.xs),
                       child: Consumer(
                         builder: (context, ref, child) {
                           bool betterPerformance0 =
@@ -181,55 +183,49 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
           ),
           Padding(
             padding: EdgeInsets.only(
-                left: EnvoySpacing.medium1,
-                right: EnvoySpacing.medium1,
+                left: EnvoySpacing.medium2,
+                right: EnvoySpacing.medium2,
                 top: EnvoySpacing.xs,
                 bottom: context.isSmallScreen
                     ? EnvoySpacing.xs
                     : EnvoySpacing.medium1),
-            child: Container(
-              constraints: const BoxConstraints(
-                maxWidth: 320,
-              ),
-              child: EnvoyButton(
-                S().component_continue,
-                onTap: () async {
-                  final navigator = Navigator.of(context);
-                  //tor is necessary if user selects onion node
-                  bool torRequire = ref.read(isNodeRequiredTorProvider);
-                  //tor is not required if user selects better performance
-                  bool betterPerformance =
-                      ref.read(privacyOnboardSelectionProvider);
-                  //based on both conditions, set tor enabled or disabled. before entering to the main screen
-                  Settings().setTorEnabled(torRequire || !betterPerformance);
-                  LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
-                  if (!widget.setUpEnvoyWallet) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              const OnboardPassportWelcomeScreen(),
-                        ));
-                  } else {
-                    //if there is magic recovery seed, go to recover wallet screen else go to welcome screen
-                    try {
-                      if (await EnvoySeed().get() != null) {
-                        navigator.push(MaterialPageRoute(
-                            builder: (context) => const MagicRecoverWallet()));
-                      } else {
-                        navigator.push(MaterialPageRoute(
-                          builder: (context) =>
-                              const OnboardEnvoyWelcomeScreen(),
-                        ));
-                      }
-                    } catch (e) {
+            child: EnvoyButton(
+              S().component_continue,
+              onTap: () async {
+                final navigator = Navigator.of(context);
+                //tor is necessary if user selects onion node
+                bool torRequire = ref.read(isNodeRequiredTorProvider);
+                //tor is not required if user selects better performance
+                bool betterPerformance =
+                    ref.read(privacyOnboardSelectionProvider);
+                //based on both conditions, set tor enabled or disabled. before entering to the main screen
+                Settings().setTorEnabled(torRequire || !betterPerformance);
+                LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
+                if (!widget.setUpEnvoyWallet) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const OnboardPassportWelcomeScreen(),
+                      ));
+                } else {
+                  //if there is magic recovery seed, go to recover wallet screen else go to welcome screen
+                  try {
+                    if (await EnvoySeed().get() != null) {
+                      navigator.push(MaterialPageRoute(
+                          builder: (context) => const MagicRecoverWallet()));
+                    } else {
                       navigator.push(MaterialPageRoute(
                         builder: (context) => const OnboardEnvoyWelcomeScreen(),
                       ));
                     }
+                  } catch (e) {
+                    navigator.push(MaterialPageRoute(
+                      builder: (context) => const OnboardEnvoyWelcomeScreen(),
+                    ));
                   }
-                },
-              ),
+                }
+              },
             ),
           ),
         ],
@@ -524,6 +520,8 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
   rive.StateMachineController? _privacyIconController;
   rive.Artboard? _privacyIconArtBoard, _performanceArtBoard;
 
+  final iconSize = 38.0;
+
   @override
   void initState() {
     _loadRiveAnimations();
@@ -596,13 +594,13 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   SizedBox(
-                    height: 45,
-                    width: 45,
+                    height: iconSize,
+                    width: iconSize,
                     child: icon,
                   ),
                   const Padding(padding: EdgeInsets.all(4)),
                   SizedBox(
-                    width: 80,
+                    width: 90,
                     child: Text(
                       text,
                       style: Theme.of(context)
@@ -640,8 +638,8 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   SizedBox(
-                    height: 45,
-                    width: 45,
+                    height: iconSize,
+                    width: iconSize,
                     child: _performanceArtBoard == null
                         ? Container()
                         : rive.Rive(artboard: _performanceArtBoard!),
@@ -683,8 +681,8 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   SizedBox(
-                    height: 45,
-                    width: 45,
+                    height: iconSize,
+                    width: iconSize,
                     child: _privacyIconArtBoard == null
                         ? Container()
                         : rive.Rive(
@@ -693,7 +691,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                   ),
                   const Padding(padding: EdgeInsets.all(2)),
                   SizedBox(
-                    width: 80,
+                    width: 90,
                     child: Text(
                       S().privacy_privacyMode_improvedPrivacy,
                       style: Theme.of(context)
@@ -720,7 +718,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
       opacity: active ? 1 : 0.6,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 340),
-        constraints: BoxConstraints.loose(const Size(100, 110)),
+        constraints: BoxConstraints.loose(const Size(100, 100)),
         alignment: Alignment.center,
         decoration: BoxDecoration(
             borderRadius: const RoundedRectangleBorder(

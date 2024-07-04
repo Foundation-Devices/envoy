@@ -107,7 +107,7 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
                 ),
                 bottomNavigationBar: SizedBox(
                   width: double.infinity,
-                  height: (MediaQuery.of(context).size.height * 0.5)
+                  height: (MediaQuery.of(context).size.height * 0.52)
                       .clamp(350, 580),
                   child: Container(
                     padding: EdgeInsets.only(bottom: shieldBottom),
