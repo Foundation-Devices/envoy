@@ -181,8 +181,6 @@ class SettingsMenuWidget extends ConsumerWidget {
                         },
                         child: SvgPicture.asset(
                           "assets/menu_x.svg",
-                          width: 48,
-                          color: EnvoyColors.textPrimary,
                         )),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -191,10 +189,8 @@ class SettingsMenuWidget extends ConsumerWidget {
                             launchUrl(Uri.parse(
                                 "https://github.com/Foundation-Devices"));
                           },
-                          child: Image.asset(
-                            "assets/github.png",
-                            width: 40,
-                            color: EnvoyColors.textTertiary,
+                          child: SvgPicture.asset(
+                            "assets/github.svg",
                           )),
                     ),
                     GestureDetector(
@@ -206,10 +202,7 @@ class SettingsMenuWidget extends ConsumerWidget {
                         },
                         child: SvgPicture.asset(
                           "assets/telegram.svg",
-                          width: 40,
-                          color: EnvoyColors.textTertiary,
                         )),
-                    const SizedBox(width: EnvoySpacing.small),
                   ],
                 ),
               ),
