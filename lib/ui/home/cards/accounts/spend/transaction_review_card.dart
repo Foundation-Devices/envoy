@@ -157,7 +157,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              if (!uneconomicSpends)
+                              if (uneconomicSpends)
                                 const Padding(
                                   padding: EdgeInsets.symmetric(
                                       horizontal: EnvoySpacing.xs),
