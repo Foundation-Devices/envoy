@@ -125,7 +125,7 @@ class DetailsWidgetTestCases extends StatelessWidget {
                 maxLines: 4,
               )),
           EnvoyInfoCardListItem(
-              calculateTextLines: true,
+              centerSingleLineTitle: true,
               spacingPriority: FlexPriority.trailing,
               title:
                   '${S().coindetails_overlay_confirmationIn} ~$confirmationTime',
@@ -157,7 +157,7 @@ class DetailsWidgetTestCases extends StatelessWidget {
                 ),
               )),
           EnvoyInfoCardListItem(
-              calculateTextLines: true,
+              centerSingleLineTitle: true,
               spacingPriority: FlexPriority.trailing,
               title:
                   '${S().coindetails_overlay_confirmationIn} ~$confirmationTime more text',

@@ -17,7 +17,7 @@ class EnvoyInfoCardListItem extends StatefulWidget {
   final bool priority;
   final Color? textColor;
   final FlexPriority spacingPriority;
-  final bool calculateTextLines;
+  final bool centerSingleLineTitle;
 
   const EnvoyInfoCardListItem({
     super.key,
@@ -27,51 +27,64 @@ class EnvoyInfoCardListItem extends StatefulWidget {
     this.priority = false,
     this.textColor,
     this.spacingPriority = FlexPriority.title,
-    this.calculateTextLines = false,
+    this.centerSingleLineTitle = false,
   });
 
   @override
   State<EnvoyInfoCardListItem> createState() => _EnvoyInfoCardListItemState();
+
+  static TextStyle titleTextStyle(Color? textColor) {
+    return EnvoyTypography.body.copyWith(
+      color: textColor ?? EnvoyColors.textPrimary,
+    );
+  }
 }
 
 class _EnvoyInfoCardListItemState extends State<EnvoyInfoCardListItem> {
-  final GlobalKey _textKey = GlobalKey();
-  bool _isSingleLine = false;
+  final GlobalKey _titleTextKey = GlobalKey();
+  bool isTitleSingleLine = false;
 
   @override
   void initState() {
     super.initState();
-    if (widget.calculateTextLines) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _checkTextLines());
+    if (widget.centerSingleLineTitle) {
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => _checkIfSingleLineTitle());
     }
   }
 
-  void _checkTextLines() {
+  void _checkIfSingleLineTitle() {
+    final TextStyle titleTextStyle =
+        EnvoyInfoCardListItem.titleTextStyle(widget.textColor);
+
     final RenderBox renderBox =
-        _textKey.currentContext?.findRenderObject() as RenderBox;
+        _titleTextKey.currentContext?.findRenderObject() as RenderBox;
     final double textHeight = renderBox.size.height;
     final double lineHeight =
-        EnvoyTypography.body.fontSize! * (EnvoyTypography.body.height ?? 1.6);
+        titleTextStyle.fontSize! * (titleTextStyle.height ?? 1.6);
 
     setState(() {
-      _isSingleLine = textHeight <= lineHeight;
+      isTitleSingleLine = textHeight <= lineHeight;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final TextStyle titleTextStyle =
+        EnvoyInfoCardListItem.titleTextStyle(widget.textColor);
+
     return Padding(
       padding: const EdgeInsets.symmetric(
           horizontal: EnvoySpacing.xs, vertical: EnvoySpacing.small),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: _isSingleLine
+        crossAxisAlignment: isTitleSingleLine
             ? CrossAxisAlignment.center
             : CrossAxisAlignment.start,
         children: [
           Padding(
-            padding:
-                EdgeInsets.only(top: _isSingleLine ? 0 : EnvoySpacing.xs / 2),
+            padding: EdgeInsets.only(
+                top: isTitleSingleLine ? 0 : EnvoySpacing.xs / 2),
             child: SizedBox(
               width: 26,
               child: widget.icon,
@@ -81,7 +94,7 @@ class _EnvoyInfoCardListItemState extends State<EnvoyInfoCardListItem> {
           Flexible(
             child: widget.spacingPriority == FlexPriority.trailing
                 ? Row(
-                    crossAxisAlignment: _isSingleLine
+                    crossAxisAlignment: isTitleSingleLine
                         ? CrossAxisAlignment.center
                         : CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -89,10 +102,8 @@ class _EnvoyInfoCardListItemState extends State<EnvoyInfoCardListItem> {
                       Flexible(
                         child: Text(
                           widget.title,
-                          key: _textKey,
-                          style: EnvoyTypography.body.copyWith(
-                              color:
-                                  widget.textColor ?? EnvoyColors.textPrimary),
+                          key: _titleTextKey,
+                          style: titleTextStyle,
                         ),
                       ),
                       const SizedBox(width: EnvoySpacing.small),
@@ -105,9 +116,8 @@ class _EnvoyInfoCardListItemState extends State<EnvoyInfoCardListItem> {
                     children: [
                       Text(
                         widget.title,
-                        key: _textKey,
-                        style: EnvoyTypography.body.copyWith(
-                            color: widget.textColor ?? EnvoyColors.textPrimary),
+                        key: _titleTextKey,
+                        style: titleTextStyle,
                       ),
                       const SizedBox(width: EnvoySpacing.medium1),
                       Flexible(child: widget.trailing),
