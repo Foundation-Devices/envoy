@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:math';
-
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -12,7 +10,6 @@ import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
 import 'package:envoy/ui/onboard/magic/magic_setup_tutorial.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
-import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,20 +35,50 @@ class _OnboardEnvoyWelcomeScreenState
   Widget build(BuildContext context) {
     return EnvoyPatternScaffold(
       gradientHeight: 1.8,
-      shield: Container(
-        height: max(MediaQuery.of(context).size.height * 0.38, 300),
-        margin: const EdgeInsets.symmetric(
-            vertical: EnvoySpacing.medium1, horizontal: EnvoySpacing.medium1),
-        padding: const EdgeInsets.only(top: EnvoySpacing.large1),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading: CupertinoNavigationBarBackButton(
+          color: Colors.white,
+          onPressed: () => Navigator.pop(context),
+        ),
+        actions: [
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
+            child: EnvoyButton(
+              S().component_skip,
+              textStyle: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: Colors.white),
+              type: EnvoyButtonTypes.tertiary,
+              onTap: () {
+                OnboardingPage.popUntilHome(context);
+              },
+            ),
+          )
+        ],
       ),
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
+          toolbarHeight: kToolbarHeight,
           backgroundColor: Colors.transparent,
           leading: CupertinoNavigationBarBackButton(
             color: Colors.white,
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              Navigator.pop(context);
+              return;
+              //TODO: fix this
+              // if (GoRouter.of(context).canPop()) {
+              //   GoRouter.of(context).pop();
+              // } else {
+              //   GoRouter.of(context).push(ROUTE_ACCOUNTS_HOME);
+              // }
+            },
           ),
+          automaticallyImplyLeading: false,
           actions: [
             Padding(
               padding:
@@ -74,7 +101,7 @@ class _OnboardEnvoyWelcomeScreenState
         //this is better than using a stack
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: Transform.translate(
-          offset: const Offset(-8, 70),
+          offset: const Offset(-8, 68),
           child: Image.asset(
             "assets/envoy_on_device.png",
             alignment: Alignment.bottomCenter,
@@ -85,86 +112,108 @@ class _OnboardEnvoyWelcomeScreenState
         bottomNavigationBar: envoyScaffoldShieldScrollView(
           context,
           Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
+              padding: const EdgeInsets.only(
+                right: EnvoySpacing.medium1,
+                left: EnvoySpacing.medium1,
+                top: EnvoySpacing.medium1,
+              ),
               child: Column(
                 children: [
-                  const SizedBox(height: EnvoySpacing.xl),
+                  const SizedBox(height: EnvoySpacing.medium1),
                   Flexible(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: EnvoySpacing.medium1),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  S().envoy_welcome_screen_heading,
-                                  textAlign: TextAlign.center,
-                                  style: EnvoyTypography.body.copyWith(
-                                    fontSize: 20,
-                                    color: EnvoyColors.gray1000,
-                                    decoration: TextDecoration.none,
-                                  ),
-                                ),
-                                const SizedBox(height: EnvoySpacing.small),
-                                LinkText(
-                                  text: S().envoy_welcome_screen_subheading,
-                                  textStyle: EnvoyTypography.body.copyWith(
-                                    color: EnvoyColors.inactiveDark,
-                                  ),
-                                  linkStyle: EnvoyTypography.body.copyWith(
-                                    color: EnvoyColors.inactiveDark,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ],
-                            ),
+                    child: Container(
+                      constraints: const BoxConstraints(
+                        minHeight: 300,
+                      ),
+                      child: SingleChildScrollView(
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(
+                            vertical: EnvoySpacing.large1,
                           ),
-                        ],
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: EnvoySpacing.medium1),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Text(
+                                          S().envoy_welcome_screen_heading,
+                                          textAlign: TextAlign.center,
+                                          style: EnvoyTypography.body.copyWith(
+                                            fontSize: 20,
+                                            color: EnvoyColors.gray1000,
+                                            decoration: TextDecoration.none,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                            height: EnvoySpacing.small),
+                                        LinkText(
+                                          text: S()
+                                              .envoy_welcome_screen_subheading,
+                                          textStyle:
+                                              EnvoyTypography.body.copyWith(
+                                            color: EnvoyColors.inactiveDark,
+                                          ),
+                                          linkStyle:
+                                              EnvoyTypography.body.copyWith(
+                                            color: EnvoyColors.inactiveDark,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: EnvoySpacing.medium1),
                   Padding(
-                    padding: EdgeInsets.only(
+                    padding: const EdgeInsets.only(
                         left: EnvoySpacing.medium1,
                         right: EnvoySpacing.medium1,
-                        top: EnvoySpacing.medium2,
-                        bottom: context.isSmallScreen
-                            ? EnvoySpacing.medium1
-                            : EnvoySpacing.large1),
-                    child: Column(
-                      children: [
-                        const Padding(
-                            padding: EdgeInsets.all(EnvoySpacing.small)),
-                        EnvoyButton(
-                          S().envoy_welcome_screen_cta2,
-                          type: EnvoyButtonTypes.secondary,
-                          onTap: () {
-                            Navigator.of(context)
-                                .push(MaterialPageRoute(builder: (context) {
-                              return const ManualSetup();
-                            }));
-                          },
-                        ),
-                        const Padding(
-                            padding: EdgeInsets.all(EnvoySpacing.small)),
-                        EnvoyButton(
-                          S().envoy_welcome_screen_cta1,
-                          onTap: () {
-                            Navigator.of(context)
-                                .push(MaterialPageRoute(builder: (context) {
-                              return const MagicSetupTutorial();
-                            }));
-                          },
-                        ),
-                      ],
+                        bottom: EnvoySpacing.large2),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            const SizedBox(height: EnvoySpacing.medium1),
+                            EnvoyButton(
+                              S().envoy_welcome_screen_cta2,
+                              type: EnvoyButtonTypes.secondary,
+                              onTap: () {
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(builder: (context) {
+                                  return const ManualSetup();
+                                }));
+                              },
+                            ),
+                            const SizedBox(height: EnvoySpacing.medium1),
+                            EnvoyButton(
+                              S().envoy_welcome_screen_cta1,
+                              onTap: () {
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(builder: (context) {
+                                  return const MagicSetupTutorial();
+                                }));
+                              },
+                            )
+                          ],
+                        );
+                      },
                     ),
                   ),
                 ],
