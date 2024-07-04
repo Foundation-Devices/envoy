@@ -33,6 +33,38 @@ class LearnCard extends ConsumerStatefulWidget {
 }
 
 class _LearnCardState extends ConsumerState<LearnCard> {
+  final ScrollController _scrollController = ScrollController();
+  bool _isScrollAtTop = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_scrollListener);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels == 0) {
+      if (!_isScrollAtTop) {
+        setState(() {
+          _isScrollAtTop = true;
+        });
+      }
+    } else {
+      if (_isScrollAtTop) {
+        setState(() {
+          _isScrollAtTop = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Video> videos = ref.watch(learnVideosProvider(widget.controller.text));
@@ -64,9 +96,11 @@ class _LearnCardState extends ConsumerState<LearnCard> {
     final bool isAllEmpty = isSearchEmpty || isFilterEmpty;
 
     return LinearGradients.gradientShaderMask(
+      isScrollAtTop: _isScrollAtTop,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
         child: CustomScrollView(
+          controller: _scrollController,
           physics: isAllEmpty ? const NeverScrollableScrollPhysics() : null,
           slivers: [
             const SliverToBoxAdapter(

@@ -152,12 +152,40 @@ class BlogPostCard extends StatefulWidget {
 }
 
 class BlogPostCardState extends State<BlogPostCard> {
-  double topGradientEnd = 0.0;
+  bool _isScrollAtTop = true;
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_scrollListener);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels == 0) {
+      setState(() {
+        _isScrollAtTop = true;
+      });
+    } else if (_isScrollAtTop) {
+      setState(() {
+        _isScrollAtTop = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: LinearGradients.gradientShaderMask(
+        isScrollAtTop: _isScrollAtTop,
         child: Padding(
           padding: const EdgeInsets.only(
             bottom: EnvoySpacing.large1,
@@ -165,6 +193,7 @@ class BlogPostCardState extends State<BlogPostCard> {
             right: EnvoySpacing.medium1,
           ),
           child: SingleChildScrollView(
+            controller: _scrollController,
             child: Column(
               children: [
                 const SizedBox(height: EnvoySpacing.medium1),

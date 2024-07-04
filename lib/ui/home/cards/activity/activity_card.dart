@@ -43,97 +43,134 @@ class ActivityCardState extends State<ActivityCard> {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: unused_local_variable
-
     return const AnimatedSwitcher(
         duration: Duration(milliseconds: 250), child: TopLevelActivityCard());
   }
 }
 
 //ignore: must_be_immutable
-class TopLevelActivityCard extends ConsumerWidget {
+class TopLevelActivityCard extends ConsumerStatefulWidget {
   const TopLevelActivityCard({super.key});
 
   @override
-  Widget build(context, ref) {
+  ConsumerState<TopLevelActivityCard> createState() =>
+      _TopLevelActivityCardState();
+}
+
+class _TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
+  bool _isScrollAtTop = true;
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_scrollListener);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels == 0) {
+      setState(() {
+        _isScrollAtTop = true;
+      });
+    } else if (_isScrollAtTop) {
+      setState(() {
+        _isScrollAtTop = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     List<EnvoyNotification> notifications =
         ref.watch(filteredNotificationStreamProvider);
     ref.read(notificationTypeFilterProvider.notifier).state = null;
 
     return LinearGradients.gradientShaderMask(
+      isScrollAtTop: _isScrollAtTop,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
-        child: CustomScrollView(slivers: [
-          notifications.isEmpty
-              ? SliverFillRemaining(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            height: EnvoySpacing.small,
-                          ),
-                          ListHeader(
-                            title: S().activity_listHeader_Today,
-                          ),
-                          const ActivityGhostListTile(
-                            animate: false,
-                          ),
-                        ],
-                      ),
-                      Text(
-                        S().activity_emptyState_label,
-                        style: EnvoyTypography.body
-                            .copyWith(color: EnvoyColors.textSecondary),
-                      ),
-                      const SizedBox(
-                        height: EnvoySpacing.medium2,
-                      ),
-                    ],
-                  ),
-                )
-              : SliverToBoxAdapter(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      ListView.builder(
-                          padding: const EdgeInsets.only(top: 15.0),
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (BuildContext context, int index) {
-                            return Column(
-                              children: [
-                                if (index == 0 ||
-                                    showHeader(notifications[index],
-                                        notifications[index - 1]))
-                                  Column(
-                                    children: [
-                                      if (index != 0)
-                                        const SizedBox(
-                                          height: EnvoySpacing.medium2,
-                                        ),
-                                      if (index == 0)
-                                        const SizedBox(
-                                          height: EnvoySpacing.small,
-                                        ),
-                                      ListHeader(
-                                          title: getTransactionDateString(
-                                              notifications[index])),
-                                    ],
-                                  ),
-                                ActivityListTile(notifications[index]),
-                              ],
-                            );
-                          },
-                          itemCount: notifications.length),
-                      const SizedBox(height: EnvoySpacing.large2)
-                    ],
-                  ),
-                )
-        ]),
+        child: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            notifications.isEmpty
+                ? SliverFillRemaining(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: EnvoySpacing.small,
+                            ),
+                            ListHeader(
+                              title: S().activity_listHeader_Today,
+                            ),
+                            const ActivityGhostListTile(
+                              animate: false,
+                            ),
+                          ],
+                        ),
+                        Text(
+                          S().activity_emptyState_label,
+                          style: EnvoyTypography.body
+                              .copyWith(color: EnvoyColors.textSecondary),
+                        ),
+                        const SizedBox(
+                          height: EnvoySpacing.medium2,
+                        ),
+                      ],
+                    ),
+                  )
+                : SliverToBoxAdapter(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        ListView.builder(
+                            padding: const EdgeInsets.only(top: 15.0),
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (BuildContext context, int index) {
+                              return Column(
+                                children: [
+                                  if (index == 0 ||
+                                      showHeader(notifications[index],
+                                          notifications[index - 1]))
+                                    Column(
+                                      children: [
+                                        if (index != 0)
+                                          const SizedBox(
+                                            height: EnvoySpacing.medium2,
+                                          ),
+                                        if (index == 0)
+                                          const SizedBox(
+                                            height: EnvoySpacing.small,
+                                          ),
+                                        ListHeader(
+                                            title: getTransactionDateString(
+                                                notifications[index])),
+                                      ],
+                                    ),
+                                  ActivityListTile(notifications[index]),
+                                ],
+                              );
+                            },
+                            itemCount: notifications.length),
+                        const SizedBox(height: EnvoySpacing.large2)
+                      ],
+                    ),
+                  )
+          ],
+        ),
       ),
     );
   }
