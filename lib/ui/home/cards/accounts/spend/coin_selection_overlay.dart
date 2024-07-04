@@ -480,7 +480,6 @@ class SpendRequirementOverlayState
                                     children: [
                                       EnvoyButton(
                                         enabled: valid,
-                                        readOnly: !valid,
                                         type: EnvoyButtonTypes.primaryModal,
                                         inTagSelectionMode
                                             ? S().tagged_tagDetails_sheet_cta1
@@ -651,7 +650,6 @@ class SpendRequirementOverlayState
         }
         return EnvoyButton(
           enabled: valid,
-          readOnly: !valid,
           type: EnvoyButtonTypes.secondary,
           buttonText,
           onTap: () async {

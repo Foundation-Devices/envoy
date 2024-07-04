@@ -286,6 +286,18 @@ class Settings extends ChangeNotifier {
     store();
   }
 
+  @JsonKey(defaultValue: true)
+  bool allowBuyInEnvoy = true;
+
+  bool isAllowedBuyInEnvoy() {
+    return allowBuyInEnvoy;
+  }
+
+  setAllowBuyInEnvoy(bool allowBuy) {
+    allowBuyInEnvoy = allowBuy;
+    store();
+  }
+
   // ENV-989: Trigger settings to show all restored accounts.
   updateAccountsViewSettings() {
     setShowTestnetAccounts(showTestnetAccountsSetting);

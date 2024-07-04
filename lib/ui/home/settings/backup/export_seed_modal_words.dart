@@ -37,7 +37,8 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
             Align(
               alignment: Alignment.centerRight,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
                 child: IconButton(
                   icon: const Icon(Icons.close),
                   onPressed: () {
@@ -54,6 +55,9 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                   Flexible(
                     child: CustomScrollView(
                       shrinkWrap: false,
+                      physics: isSmallScreen
+                          ? const AlwaysScrollableScrollPhysics()
+                          : const NeverScrollableScrollPhysics(),
                       slivers: [
                         SliverPadding(
                           padding: EdgeInsets.symmetric(

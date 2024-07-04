@@ -20,7 +20,8 @@ Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings()
       json['showTestnetAccountsSetting'] as bool? ?? false
   ..showSignetAccountsSetting =
       json['showSignetAccountsSetting'] as bool? ?? false
-  ..enableTaprootSetting = json['enableTaprootSetting'] as bool? ?? false;
+  ..enableTaprootSetting = json['enableTaprootSetting'] as bool? ?? false
+  ..allowBuyInEnvoy = json['allowBuyInEnvoy'] as bool? ?? true;
 
 Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'displayUnit': _$DisplayUnitEnumMap[instance.displayUnit]!,
@@ -34,6 +35,7 @@ Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'showTestnetAccountsSetting': instance.showTestnetAccountsSetting,
       'showSignetAccountsSetting': instance.showSignetAccountsSetting,
       'enableTaprootSetting': instance.enableTaprootSetting,
+      'allowBuyInEnvoy': instance.allowBuyInEnvoy,
     };
 
 const _$DisplayUnitEnumMap = {

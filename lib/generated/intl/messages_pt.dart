@@ -1035,6 +1035,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Nunca importes a tua semente do Passport nos menus seguintes."),
         "manual_setup_import_seed_subheading": MessageLookupByLibrary.simpleMessage(
             "Escolhe uma das seguintes opções para importar uma semente existente.\n\nIrá ser possível importar uma Cópia de Segurança da Envoy mais tarde."),
+        "manual_setup_importingSeedLoadingInfo":
+            MessageLookupByLibrary.simpleMessage("Importing Seed"),
         "manual_setup_magicBackupDetected_heading":
             MessageLookupByLibrary.simpleMessage(
                 "Cópia Mágica de Segurança Detectada"),

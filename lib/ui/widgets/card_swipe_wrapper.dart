@@ -113,19 +113,6 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
     final size = MediaQuery.of(context).size;
     final hidden = ref.watch(balanceHideStateStatusProvider(widget.account.id));
 
-    final hiddenIcon = CustomPaint(
-        key: const Key('hiddenIcon'),
-        size: const Size(24, 24),
-        painter: _HiddenEyeIconPainter(
-          _iconColorAnimation.value ?? Colors.grey,
-        ));
-
-    final visibleIcon = CustomPaint(
-      size: const Size(24, 24),
-      key: const Key('visibleIcon'),
-      painter: _VisibleEyeIconPainter(_iconColorAnimation.value ?? Colors.grey),
-    );
-
     return Stack(
       children: [
         Container(
@@ -158,7 +145,19 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
                             child: child,
                           );
                         },
-                        child: hidden ? hiddenIcon : visibleIcon)
+                        child: hidden
+                            ? CustomPaint(
+                                key: const Key('hiddenIcon'),
+                                size: const Size(24, 24),
+                                painter: _HiddenEyeIconPainter(
+                                  _iconColorAnimation.value ?? Colors.grey,
+                                ))
+                            : CustomPaint(
+                                size: const Size(24, 24),
+                                key: const Key('visibleIcon'),
+                                painter: _VisibleEyeIconPainter(
+                                    _iconColorAnimation.value ?? Colors.grey),
+                              ))
                   ],
                 ),
               );

@@ -470,6 +470,7 @@
   "manual_setup_import_seed_heading": "Import Your Seed",
   "manual_setup_import_seed_passport_warning": "Never import your Passport seed into the following screens.",
   "manual_setup_import_seed_subheading": "Continue below to import an existing seed.\n\nYou’ll have the option to import an Envoy Backup File later.",
+  "manual_setup_importingSeedLoadingInfo": "Importing Seed",
   "manual_setup_magicBackupDetected_heading": "Magic Backup Detected",
   "manual_setup_magicBackupDetected_ignore": "Ignore",
   "manual_setup_magicBackupDetected_restore": "Restore",

@@ -41,12 +41,13 @@ class EnvoyListTile extends StatelessWidget {
       child: ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 0),
           minLeadingWidth: 0,
-          horizontalTitleGap: EnvoySpacing.small,
+          horizontalTitleGap: EnvoySpacing.medium1,
           title: Padding(
             padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
             child: Text(
               textLeft1,
-              style: EnvoyTypography.body,
+              style:
+                  EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary),
             ),
           ),
           subtitle: textLeft2 == null
@@ -62,7 +63,11 @@ class EnvoyListTile extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    EnvoyIcon(leftIcon!, color: iconColor),
+                    EnvoyIcon(
+                      leftIcon!,
+                      color: iconColor,
+                      size: EnvoyIconSize.small,
+                    ),
                   ],
                 ),
           trailing: unitIcon == null
@@ -87,31 +92,26 @@ class ListHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: EnvoySpacing.small,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: EnvoySpacing.medium3),
-            child: Text(
-              title,
-              style: EnvoyTypography.info
-                  .copyWith(color: EnvoyColors.textTertiary),
-            ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: EnvoySpacing.medium3),
+          child: Text(
+            title,
+            style:
+                EnvoyTypography.info.copyWith(color: EnvoyColors.textTertiary),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: EnvoySpacing.small),
-            child: Container(
-              height: 2,
-              color: EnvoyColors.border2,
-            ),
-          )
-        ],
-      ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: EnvoySpacing.small),
+          child: Container(
+            height: 2,
+            color: EnvoyColors.tabBar,
+          ),
+        )
+      ],
     );
   }
 }
