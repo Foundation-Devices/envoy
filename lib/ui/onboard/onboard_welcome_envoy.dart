@@ -155,13 +155,18 @@ class _OnboardEnvoyWelcomeScreenState
                                         ),
                                         const SizedBox(
                                             height: EnvoySpacing.small),
-                                        Text(
-                                          S().envoy_welcome_screen_subheading,
-                                          style: EnvoyTypography.info.copyWith(
+                                        LinkText(
+                                          text: S()
+                                              .envoy_welcome_screen_subheading,
+                                          textStyle:
+                                              EnvoyTypography.body.copyWith(
                                             color: EnvoyColors.inactiveDark,
-                                            decoration: TextDecoration.none,
                                           ),
-                                          textAlign: TextAlign.center,
+                                          linkStyle:
+                                              EnvoyTypography.body.copyWith(
+                                            color: EnvoyColors.inactiveDark,
+                                            fontWeight: FontWeight.w700,
+                                          ),
                                         ),
                                       ],
                                     ),
