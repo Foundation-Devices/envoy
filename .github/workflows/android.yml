@@ -4,11 +4,7 @@
 
 name: Android build
 
-on:
-  pull_request:
-    types:
-      - closed
-  workflow_dispatch:
+on: [ workflow_dispatch ]
 
 jobs:
   build-android:

@@ -16,7 +16,7 @@ class EnvoyLoader extends StatelessWidget {
       width: EnvoySpacing.medium3,
       child: CircularProgressIndicator(
         color: EnvoyColors.tealLight,
-        backgroundColor: EnvoyColors.textPrimaryInverse,
+        backgroundColor: EnvoyColors.surface4,
         strokeWidth: 3,
       ),
     );

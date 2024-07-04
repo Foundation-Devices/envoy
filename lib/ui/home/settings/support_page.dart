@@ -5,6 +5,10 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class SupportPage extends StatelessWidget {
   const SupportPage({super.key});
@@ -12,44 +16,51 @@ class SupportPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 100, bottom: 50),
+      padding: const EdgeInsets.only(top: 0, bottom: 50),
       child: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const SizedBox(height: 50),
-                  MenuOption(
-                    label: S().envoy_support_documentation,
-                    onTap: () {
-                      launchUrl(Uri.parse("https://docs.foundation.xyz"));
-                    },
-                  ),
-                  const SizedBox(height: 50),
-                  MenuOption(
-                    label: S().envoy_support_telegram,
-                    onTap: () {
-                      launchUrl(
-                          Uri.parse("https://telegram.me/foundationdevices"),
-                          mode: LaunchMode.externalApplication);
-                    },
-                  ),
-                  const SizedBox(height: 50),
-                  MenuOption(
-                    label: S().envoy_support_email,
-                    onTap: () {
-                      final Uri emailUri = Uri(
-                        scheme: 'mailto',
-                        path: 'hello@foundation.xyz',
-                      );
-                      launchUrl(emailUri);
-                    },
-                  ),
-                ]),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium3),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const SizedBox(height: EnvoySpacing.medium2),
+                    MenuOption(
+                      icon: EnvoyIcons.externalLink,
+                      label: S().envoy_support_documentation,
+                      onTap: () {
+                        launchUrl(Uri.parse("https://docs.foundation.xyz"));
+                      },
+                    ),
+                    const SizedBox(height: 0),
+                    MenuOption(
+                      icon: EnvoyIcons.externalLink,
+                      label: S().envoy_support_telegram,
+                      onTap: () {
+                        launchUrl(
+                            Uri.parse("https://telegram.me/foundationdevices"),
+                            mode: LaunchMode.externalApplication);
+                      },
+                    ),
+                    const SizedBox(height: 0),
+                    MenuOption(
+                      icon: EnvoyIcons.mail,
+                      label: S().envoy_support_email,
+                      onTap: () {
+                        final Uri emailUri = Uri(
+                          scheme: 'mailto',
+                          path: 'hello@foundation.xyz',
+                        );
+                        launchUrl(emailUri);
+                      },
+                    ),
+                  ]),
+            ),
           ],
         ),
       ),
@@ -60,45 +71,46 @@ class SupportPage extends StatelessWidget {
 class MenuOption extends StatelessWidget {
   final String label;
   final Function() onTap;
+  final EnvoyIcons icon;
 
   const MenuOption({
     super.key,
     required this.label,
     required this.onTap,
+    required this.icon,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
-      const Expanded(flex: 3, child: SizedBox.shrink()),
-      Expanded(
-        flex: 6,
-        child: GestureDetector(
-          onTap: onTap,
-          child: Text(
-            label.toUpperCase(),
-            textAlign: TextAlign.center,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(color: Colors.white),
-          ),
-        ),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+            horizontal: EnvoySpacing.large2, vertical: EnvoySpacing.medium1),
+        child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                label.toUpperCase(),
+                textAlign: TextAlign.center,
+                style: EnvoyTypography.subheading
+                    .copyWith(
+                      color: EnvoyColors.textPrimaryInverse,
+                    )
+                    .setWeight(FontWeight.w500),
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: EnvoyIcon(
+                  icon,
+                  size: EnvoyIconSize.extraSmall,
+                  color: EnvoyColors.textPrimaryInverse,
+                ),
+              )
+            ]),
       ),
-      Expanded(
-        flex: 3,
-        child: Container(
-          alignment: Alignment.centerLeft,
-          child: GestureDetector(
-            onTap: onTap,
-            child: const Icon(
-              Icons.arrow_forward_ios,
-              color: Colors.white,
-              size: 12,
-            ),
-          ),
-        ),
-      )
-    ]);
+    );
   }
 }
