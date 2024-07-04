@@ -91,6 +91,13 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
 
     return PopScope(
       canPop: false,
+      onPopInvoked: (didPop) {
+        if (!didPop) {
+          setState(() {
+            _isRecoveryInProgress = false;
+          });
+        }
+      },
       child: OnboardPageBackground(
           child: Material(
         color: Colors.transparent,
@@ -152,11 +159,10 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                             _isRecoveryInProgress = true;
                           });
                         });
-                        Future.delayed(const Duration(milliseconds: 1500), () {
-                          openBackupFile(context).then((value) {
-                            setState(() {
-                              _isRecoveryInProgress = false;
-                            });
+
+                        openBackupFile(context).then((value) {
+                          setState(() {
+                            _isRecoveryInProgress = false;
                           });
                         });
                       }),
