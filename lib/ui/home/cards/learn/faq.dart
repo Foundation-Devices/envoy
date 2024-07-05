@@ -83,7 +83,7 @@ class Faq extends ConsumerWidget {
       children: [
         if (faqs.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+            padding: const EdgeInsets.only(left: EnvoySpacing.medium1),
             child: Text(
               S().learning_center_title_faq,
               style: EnvoyTypography.body
@@ -176,59 +176,81 @@ class FaqItemWidget extends StatelessWidget {
   final String text;
   final List<dynamic> links;
 
-  const FaqItemWidget(
-      {super.key,
-      required this.title,
-      required this.isExpanded,
-      required this.text,
-      required this.links});
+  const FaqItemWidget({
+    super.key,
+    required this.title,
+    required this.isExpanded,
+    required this.text,
+    required this.links,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-          const EdgeInsets.only(top: EnvoySpacing.small), //EnvoySpacing.small)
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
-        child: Container(
-          color: EnvoyColors.surface2,
-          child: Padding(
-            padding: const EdgeInsets.all(EnvoySpacing.medium1),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        title,
-                        style: EnvoyTypography.button
-                            .copyWith(color: EnvoyColors.accentPrimary),
-                      ),
+      padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+      child: Row(
+        children: [
+          const SizedBox(width: EnvoySpacing.medium1),
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
+                boxShadow: const [
+                  BoxShadow(
+                    color: EnvoyColors.textInactive,
+                    spreadRadius: 0.01,
+                    blurRadius: 6,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
+                child: Container(
+                  color: EnvoyColors.surface2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(EnvoySpacing.medium1),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                title,
+                                style: EnvoyTypography.button
+                                    .copyWith(color: EnvoyColors.accentPrimary),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 4,
+                              ),
+                            ),
+                            Transform.rotate(
+                              angle: isExpanded ? (180 * math.pi / 180) : 0,
+                              child: const EnvoyIcon(
+                                EnvoyIcons.chevron_down,
+                                color: EnvoyColors.accentPrimary,
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (isExpanded)
+                          const SizedBox(height: EnvoySpacing.small),
+                        if (isExpanded)
+                          FaqBodyText(
+                            text,
+                            links: links,
+                          ),
+                      ],
                     ),
-                    Transform.rotate(
-                        angle: isExpanded ? (180 * math.pi / 180) : 0,
-                        child: const EnvoyIcon(
-                          EnvoyIcons.chevron_down,
-                          color: EnvoyColors.accentPrimary,
-                        ))
-                  ],
+                  ),
                 ),
-                if (isExpanded)
-                  const SizedBox(
-                    height: EnvoySpacing.small,
-                  ),
-                if (isExpanded)
-                  FaqBodyText(
-                    text,
-                    links: links,
-                  ),
-              ],
+              ),
             ),
           ),
-        ),
+          const SizedBox(width: EnvoySpacing.medium1),
+        ],
       ),
     );
   }

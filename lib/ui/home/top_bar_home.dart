@@ -216,6 +216,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
 
   ///Show back arrow if current route is part of nested routes (shell routes)
   bool _showBackArrow(String path) {
+    final settings = ref.read(homePageBackgroundProvider);
     if (path.contains(ROUTE_ACCOUNT_DETAIL)) {
       return true;
     }
@@ -232,6 +233,10 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       return true;
     }
     if (path.contains(ROUTE_BUY_BITCOIN)) {
+      return true;
+    }
+    if (settings != HomePageBackgroundState.menu &&
+        settings != HomePageBackgroundState.hidden) {
       return true;
     }
     return false;
@@ -389,6 +394,7 @@ class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
   }
 
   void updateAnimationState(HamburgerMenu? oldWidget) {
+    if (oldWidget?.iconState == widget.iconState) return;
     switch (widget.iconState) {
       case HamburgerState.idle:
         _menuController?.findInput<double>("state_pos")?.change(0.0);

@@ -82,6 +82,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                   child: PageView(
                     physics: const NeverScrollableScrollPhysics(),
                     controller: _pageController,
+                    pageSnapping: false,
                     children: _puzzleOptions.map((e) {
                       return Padding(
                         padding:
@@ -102,10 +103,13 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                             }
                             await Future.delayed(
                                 const Duration(milliseconds: 600));
+                            setState(() {
+                              _puzzlePageIndex++;
+                            });
                             _pageController.animateToPage(
                                 _puzzleOptions.indexOf(e) + 1,
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.ease);
+                                duration: const Duration(milliseconds: 280),
+                                curve: Curves.easeIn);
                           },
                           onWrongAnswer: (answers) {
                             widget.onVerificationFinished(false);
@@ -160,14 +164,6 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       createPuzzles();
-      _pageController.addListener(() {
-        int page = _pageController.page?.toInt() ?? 0;
-        if (_puzzlePageIndex != page) {
-          setState(() {
-            _puzzlePageIndex = page;
-          });
-        }
-      });
     });
   }
 

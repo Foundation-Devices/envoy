@@ -138,7 +138,7 @@ class DialogCheckBoxState extends State<DialogCheckBox> {
           padding: const EdgeInsets.only(left: EnvoySpacing.medium1),
           child: Text(
             widget.label,
-            style: EnvoyTypography.button.copyWith(
+            style: EnvoyTypography.info.copyWith(
               color: EnvoyColors.textSecondary,
             ),
           ),

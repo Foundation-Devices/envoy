@@ -373,6 +373,7 @@ class _TransactionsDetailsWidgetState
                   ),
                 rbfPossible
                     ? EnvoyInfoCardListItem(
+                        centerSingleLineTitle: true,
                         spacingPriority: FlexPriority.trailing,
                         title: _getConfirmationTimeString(ref.watch(
                             txEstimatedConfirmationTimeProvider(

@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:envoy/ui/components/stripe_painter.dart';
 
 Widget envoyScaffoldShieldScrollView(BuildContext context, Widget child) {
   double shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
@@ -107,7 +108,7 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
                 ),
                 bottomNavigationBar: SizedBox(
                   width: double.infinity,
-                  height: (MediaQuery.of(context).size.height * 0.5)
+                  height: (MediaQuery.of(context).size.height * 0.52)
                       .clamp(350, 580),
                   child: Container(
                     padding: EdgeInsets.only(bottom: shieldBottom),
@@ -131,89 +132,6 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
               ),
       ],
     );
-  }
-}
-
-class StripePainter extends CustomPainter {
-  final double stripeWidth;
-  final double gapWidth;
-  final double rotateDegree;
-  final Color stripeColor;
-  final Color bgColor;
-
-  StripePainter(
-    this.stripeColor, {
-    this.stripeWidth = 2.0,
-    this.gapWidth = 2.0,
-    this.rotateDegree = 25.0,
-    this.bgColor = Colors.transparent,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    /// Expand canvas size
-    const offsetX = 0.0;
-    const offsetY = 10.0;
-    final width = size.width + offsetX * 2;
-    final height = size.height + offsetY * 2;
-
-    /// Shift canvas to top,left with offsetX,Y
-    canvas.translate(-offsetX, -offsetY);
-
-    // Clip the canvas to the right half
-    final rightHalfRect =
-        Rect.fromLTRB(size.width / 2, 0, size.width, size.height);
-    canvas.clipRect(rightHalfRect);
-
-    /// Calculate the biggest diagonal of the screen.
-    final double diagonal = sqrt(width * width + height * height);
-
-    /// jointSize: distance from right edge of (i) stripe to right one of next stripe
-    final double jointSize = stripeWidth + gapWidth;
-
-    /// Calculate the number of iterations needed to cover the diagonal of the screen.
-    final int numIterations = (diagonal / jointSize).ceil();
-
-    /// convert degree to radian
-    final rotateRadian = pi / 180 * rotateDegree;
-
-    /// calculate the xOffset, yOffset according to the trigonometric formula
-    final xOffset = jointSize / sin(rotateRadian);
-    final yOffset = jointSize / sin(pi / 2 - rotateRadian);
-
-    /// config stroke paint object
-    final paint = Paint()
-      ..color = stripeColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = stripeWidth;
-    final path = Path();
-
-    /// setup the path
-    for (int i = 0; i < numIterations; i++) {
-      /// start point on Y axis -> xStart = 0
-      final double yStart = i * yOffset;
-
-      /// end point on X axis -> yEnd = 0
-      final double xEnd = i * xOffset;
-
-      /// make line start -> end
-      path.moveTo(0, yStart);
-      path.lineTo(xEnd, 0);
-    }
-
-    /// draw path on canvas by using paint object
-    canvas.drawPath(path, paint);
-
-    /// Fill the pattern area background with the patternColor.
-    final patternPaint = Paint()
-      ..color = bgColor
-      ..style = PaintingStyle.fill;
-    canvas.drawRect(Offset.zero & size, patternPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return oldDelegate != this;
   }
 }
 
