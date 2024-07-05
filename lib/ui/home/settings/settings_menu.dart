@@ -18,8 +18,8 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/ui/home/home_state.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class SettingsMenu extends ConsumerStatefulWidget {
@@ -181,8 +181,6 @@ class SettingsMenuWidget extends ConsumerWidget {
                         },
                         child: SvgPicture.asset(
                           "assets/menu_x.svg",
-                          width: 48,
-                          color: EnvoyColors.textPrimary,
                         )),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -191,10 +189,8 @@ class SettingsMenuWidget extends ConsumerWidget {
                             launchUrl(Uri.parse(
                                 "https://github.com/Foundation-Devices"));
                           },
-                          child: Image.asset(
-                            "assets/github.png",
-                            width: 40,
-                            color: EnvoyColors.textTertiary,
+                          child: SvgPicture.asset(
+                            "assets/github.svg",
                           )),
                     ),
                     GestureDetector(
@@ -206,8 +202,6 @@ class SettingsMenuWidget extends ConsumerWidget {
                         },
                         child: SvgPicture.asset(
                           "assets/telegram.svg",
-                          width: 40,
-                          color: EnvoyColors.textTertiary,
                         )),
                   ],
                 ),
