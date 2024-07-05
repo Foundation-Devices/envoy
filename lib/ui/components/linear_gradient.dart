@@ -6,7 +6,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:flutter/material.dart';
 
 class LinearGradients {
-  static LinearGradient blogPostGradient(bool isScrollAtTop) {
+  static LinearGradient blogPostGradient(double topGradientEnd) {
     return LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
@@ -16,15 +16,15 @@ class LinearGradients {
         Colors.transparent,
         EnvoyColors.solidWhite,
       ],
-      stops: isScrollAtTop ? [0.0, 0.0, 0.85, 0.96] : [0.0, 0.05, 0.85, 0.96],
+      stops: [0.0, topGradientEnd, 0.85, 0.96],
     );
   }
 
   static Widget gradientShaderMask(
-      {required Widget child, required bool isScrollAtTop}) {
+      {required Widget child, required double topGradientEnd}) {
     return ShaderMask(
       shaderCallback: (Rect rect) {
-        return blogPostGradient(isScrollAtTop).createShader(rect);
+        return blogPostGradient(topGradientEnd).createShader(rect);
       },
       blendMode: BlendMode.dstOut,
       child: child,

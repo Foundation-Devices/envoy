@@ -53,39 +53,12 @@ class TopLevelActivityCard extends ConsumerStatefulWidget {
   const TopLevelActivityCard({super.key});
 
   @override
-  ConsumerState<TopLevelActivityCard> createState() =>
-      _TopLevelActivityCardState();
+  TopLevelActivityCardState createState() => TopLevelActivityCardState();
 }
 
-class _TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
-  bool _isScrollAtTop = true;
-  late ScrollController _scrollController;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-    _scrollController.addListener(_scrollListener);
-  }
-
-  @override
-  void dispose() {
-    _scrollController.removeListener(_scrollListener);
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _scrollListener() {
-    if (_scrollController.position.pixels == 0) {
-      setState(() {
-        _isScrollAtTop = true;
-      });
-    } else if (_isScrollAtTop) {
-      setState(() {
-        _isScrollAtTop = false;
-      });
-    }
-  }
+class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
+  double topGradientEnd = 0.0;
+  bool _hasScrollReachedThreshold = false;
 
   @override
   Widget build(BuildContext context) {
@@ -93,13 +66,29 @@ class _TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
         ref.watch(filteredNotificationStreamProvider);
     ref.read(notificationTypeFilterProvider.notifier).state = null;
 
-    return LinearGradients.gradientShaderMask(
-      isScrollAtTop: _isScrollAtTop,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
-        child: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        if (notification is ScrollUpdateNotification) {
+          final currentPosition = notification.metrics.pixels;
+          if (!_hasScrollReachedThreshold && currentPosition >= 1) {
+            _hasScrollReachedThreshold = true;
+            setState(() {
+              topGradientEnd = 0.05;
+            });
+          } else if (_hasScrollReachedThreshold && currentPosition == 0) {
+            _hasScrollReachedThreshold = false;
+            setState(() {
+              topGradientEnd = 0.0;
+            });
+          }
+        }
+        return false;
+      },
+      child: LinearGradients.gradientShaderMask(
+        topGradientEnd: topGradientEnd,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
+          child: CustomScrollView(slivers: [
             notifications.isEmpty
                 ? SliverFillRemaining(
                     child: Column(
@@ -169,7 +158,7 @@ class _TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
                       ],
                     ),
                   )
-          ],
+          ]),
         ),
       ),
     );
