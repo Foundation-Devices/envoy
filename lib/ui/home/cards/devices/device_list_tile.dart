@@ -5,13 +5,13 @@
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/ui/background.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:envoy/ui/pages/fw/fw_intro.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/components/stripe_painter.dart';
 
 final shouldUpdateProvider =
     FutureProvider.family<bool, Device>((ref, device) async {
@@ -83,8 +83,11 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                   children: [
                     Positioned.fill(
                       child: CustomPaint(
-                        painter: LinesPainter(
-                            color: EnvoyColors.gray1000, opacity: 0.4),
+                        isComplex: true,
+                        willChange: false,
+                        painter: StripePainter(
+                          EnvoyColors.gray1000.withOpacity(0.4),
+                        ),
                       ),
                     ),
                     Column(

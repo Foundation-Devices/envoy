@@ -7,7 +7,6 @@ import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
@@ -23,6 +22,7 @@ import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/components/stripe_painter.dart';
 
 class AccountListTile extends ConsumerStatefulWidget {
   final void Function() onTap;
@@ -107,7 +107,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
               border: Border.all(
                   color: account.color, width: 2, style: BorderStyle.solid)),
           child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(cardRadius - 5)),
+            borderRadius: BorderRadius.all(Radius.circular(cardRadius - 4)),
             child: GestureDetector(
               onTap: () {
                 EnvoyStorage().addPromptState(
@@ -117,10 +117,11 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
               child: Stack(children: [
                 Positioned.fill(
                   child: CustomPaint(
-                    willChange: false,
                     isComplex: true,
-                    painter:
-                        LinesPainter(color: EnvoyColors.gray1000, opacity: 0.4),
+                    willChange: false,
+                    painter: StripePainter(
+                      EnvoyColors.gray1000.withOpacity(0.4),
+                    ),
                   ),
                 ),
                 Positioned.fill(
