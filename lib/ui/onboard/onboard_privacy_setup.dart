@@ -717,7 +717,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
       opacity: active ? 1 : 0.6,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 340),
-        constraints: BoxConstraints.loose(const Size(100, 100)),
+        constraints: BoxConstraints.loose(const Size(94, 104)),
         alignment: Alignment.center,
         decoration: BoxDecoration(
             borderRadius: const RoundedRectangleBorder(
