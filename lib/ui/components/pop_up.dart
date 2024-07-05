@@ -140,7 +140,7 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
+                padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
                 child: Align(
                   alignment: Alignment.topRight,
                   child: IconButton(
