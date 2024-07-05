@@ -18,7 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
 
 //ignore: must_be_immutable
 class SendCard extends ConsumerStatefulWidget {
@@ -99,54 +98,53 @@ class _SendCardState extends ConsumerState<SendCard>
 
     return LayoutBuilder(
       builder: (context, constraints) {
+        final width = MediaQuery.sizeOf(context).width;
+        double addressEntryBottomPadding = EnvoySpacing.medium2;
+        if (width <= 380) {
+          addressEntryBottomPadding = EnvoySpacing.medium1;
+        }
+        if (width < 350) {
+          addressEntryBottomPadding = EnvoySpacing.small;
+        }
+        if (width <= 320) {
+          addressEntryBottomPadding = EnvoySpacing.xs;
+        }
         return Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              child: ShaderMask(
-                shaderCallback: (Rect rect) {
-                  return const LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      EnvoyColors.solidWhite,
-                      Colors.transparent,
-                      Colors.transparent,
-                      EnvoyColors.solidWhite,
-                    ],
-                    stops: [0.0, 0.04, 0.96, 1.0],
-                  ).createShader(rect);
-                },
-                blendMode: BlendMode.dstOut,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(EnvoySpacing.medium2),
-                        child: AddressEntry(
-                          account: account!,
-                          initalAddress: addressText,
-                          controller: _controller,
-                          onPaste: _onPaste,
-                          onAmountChanged: (amount) {
-                            if (amount != 0) {
-                              setAmount(amount);
-                            }
-                          },
-                          onAddressChanged: (text) {
-                            ref.read(spendAddressProvider.notifier).state =
-                                text;
-                          },
-                        ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                        top: EnvoySpacing.medium2,
+                        left: EnvoySpacing.medium2,
+                        right: EnvoySpacing.medium2,
+                        bottom: addressEntryBottomPadding,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.medium1),
-                        child: _amountEntry,
+                      child: AddressEntry(
+                        account: account!,
+                        initalAddress: addressText,
+                        controller: _controller,
+                        onPaste: _onPaste,
+                        onAmountChanged: (amount) {
+                          if (amount != 0) {
+                            setAmount(amount);
+                          }
+                        },
+                        onAddressChanged: (text) {
+                          ref.read(spendAddressProvider.notifier).state = text;
+                        },
                       ),
-                    ],
-                  ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium1),
+                      child: _amountEntry,
+                    ),
+                  ],
                 ),
               ),
             ),

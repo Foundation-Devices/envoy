@@ -34,6 +34,7 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
   late AnimationController _iconController;
 
   double _offsetX = 0.0;
+  bool hidden = false;
 
   late Animation<double> _animation;
 
@@ -86,6 +87,11 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
         _offsetX = _animation.value;
       });
     });
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      setState(() {
+        hidden = ref.read(balanceHideStateStatusProvider(widget.account.id));
+      });
+    });
   }
 
   @override
@@ -97,34 +103,20 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
 
   List<Color> disabledColors = [
     Colors.grey,
-    Colors.white,
-    Colors.white,
+    Colors.transparent,
+    Colors.transparent,
     Colors.grey
   ];
   List<Color> activeColors = [
     EnvoyColors.teal,
-    Colors.white,
-    Colors.white,
+    Colors.transparent,
+    Colors.transparent,
     EnvoyColors.teal
   ];
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final hidden = ref.watch(balanceHideStateStatusProvider(widget.account.id));
-
-    final hiddenIcon = CustomPaint(
-        key: const Key('hiddenIcon'),
-        size: const Size(24, 24),
-        painter: _HiddenEyeIconPainter(
-          _iconColorAnimation.value ?? Colors.grey,
-        ));
-
-    final visibleIcon = CustomPaint(
-      size: const Size(24, 24),
-      key: const Key('visibleIcon'),
-      painter: _VisibleEyeIconPainter(_iconColorAnimation.value ?? Colors.grey),
-    );
 
     return Stack(
       children: [
@@ -158,7 +150,19 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
                             child: child,
                           );
                         },
-                        child: hidden ? hiddenIcon : visibleIcon)
+                        child: !hidden
+                            ? CustomPaint(
+                                key: const Key('hiddenIcon'),
+                                size: const Size(24, 24),
+                                painter: _HiddenEyeIconPainter(
+                                  _iconColorAnimation.value ?? Colors.grey,
+                                ))
+                            : CustomPaint(
+                                size: const Size(24, 24),
+                                key: const Key('visibleIcon'),
+                                painter: _VisibleEyeIconPainter(
+                                    _iconColorAnimation.value ?? Colors.grey),
+                              ))
                   ],
                 ),
               );
@@ -173,6 +177,10 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
             thresholdReached = false;
             _controller.stop();
             _iconController.reverse();
+          },
+          onHorizontalDragStart: (details) {
+            hidden =
+                ref.read(balanceHideStateStatusProvider(widget.account.id));
           },
           onHorizontalDragUpdate: (details) {
             if (!widget.draggable) {
@@ -195,10 +203,6 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
                 Haptics.lightImpact();
                 _iconController.forward();
                 //toggle the hide state
-                ref.read(balanceHideNotifierProvider).setHideState(
-                    !ref.read(
-                        balanceHideStateStatusProvider(widget.account.id)),
-                    widget.account);
               }
             });
             if (dragRate == 0) {
@@ -213,6 +217,11 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
             }
             //return to the original position with spring animation
             _runSpringSimulation(details.velocity.pixelsPerSecond, size);
+            if (thresholdReached) {
+              ref.read(balanceHideNotifierProvider).setHideState(
+                  !ref.read(balanceHideStateStatusProvider(widget.account.id)),
+                  widget.account);
+            }
           },
           child: Transform.translate(
             offset: Offset(_offsetX * size.width * .5, 0.0),

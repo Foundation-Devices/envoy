@@ -83,6 +83,8 @@ class Notifications {
   StreamController<List<EnvoyNotification>> streamController =
       StreamController();
   List<EnvoyNotification> notifications = [];
+  List<EnvoyNotification> suppressedNotifications = [];
+
   final LocalStorage _ls = LocalStorage();
 
   static const String notificationPrefs = "notifications";
@@ -111,8 +113,13 @@ class Notifications {
   }
 
   deleteNotification(String id, {String? accountId}) {
-    notifications.removeWhere(
-        (element) => id == element.id && accountId == element.accountId);
+    notifications.removeWhere((notification) {
+      if (id == notification.id && accountId == notification.accountId) {
+        suppressedNotifications.add(notification);
+        return true;
+      }
+      return false;
+    });
     _storeNotifications();
     sync();
   }
@@ -133,6 +140,12 @@ class Notifications {
           for (var notification in notifications) {
             if (notification.id == tx.txId &&
                 notification.amount == tx.amount) {
+              skip = true;
+            }
+          }
+          for (var suppressedNotification in suppressedNotifications) {
+            if (suppressedNotification.id == tx.txId &&
+                suppressedNotification.accountId == account.id) {
               skip = true;
             }
           }

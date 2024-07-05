@@ -363,7 +363,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           children: [
             OnboardingButton(
               label: S().magic_setup_recovery_fail_Android_CTA2,
-              type: EnvoyButtonTypes.tertiary,
+              type: EnvoyButtonTypes.secondary,
               onTap: () async {
                 _setUnhappyState();
                 setState(() {

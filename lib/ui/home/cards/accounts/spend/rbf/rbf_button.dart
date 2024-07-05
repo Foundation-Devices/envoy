@@ -141,9 +141,6 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
             feeRate: minFeeRate.toInt(),
             originalTx: widget.tx);
 
-        ref.read(spendAddressProvider.notifier).state = receiveOutPut.address;
-        ref.read(spendAmountProvider.notifier).state = receiveOutPut.amount;
-
         int minRate = minFeeRate.toInt();
         int maxRate = rates.max_fee_rate.toInt();
         int fasterFeeRate = minRate + 1;
@@ -251,9 +248,11 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    SizedBox(width: EnvoySpacing.xs),
                     Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.medium3),
+                          horizontal: EnvoySpacing.medium2,
+                          vertical: EnvoySpacing.xs),
                       child: SizedBox.square(
                         dimension: 12,
                         child: CircularProgressIndicator(
@@ -262,17 +261,18 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
                         ),
                       ),
                     ),
+                    SizedBox(width: EnvoySpacing.xs),
                   ],
                 )
               : Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    const Icon(
-                      Icons.fast_forward_outlined,
+                    const EnvoyIcon(
+                      EnvoyIcons.rbf_boost,
                       color: Colors.white,
                     ),
-                    const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                    const SizedBox(width: EnvoySpacing.xs),
                     Text(
                       S().coindetails_overlay_confirmation_boost,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -298,7 +298,8 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
     return AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         height: 28,
-        padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
+        padding: const EdgeInsets.symmetric(
+            horizontal: EnvoySpacing.medium1, vertical: EnvoySpacing.xs),
         decoration: BoxDecoration(
             color: buttonColor,
             borderRadius: BorderRadius.circular(EnvoySpacing.small)),
