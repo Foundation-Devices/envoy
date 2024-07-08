@@ -26,10 +26,13 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
 
   @override
   Widget build(BuildContext context) {
-    bool isSmallScreen = MediaQuery.of(context).size.width < 360;
+    Size size = MediaQuery.sizeOf(context);
+    //if the device width is less than 360, we need to use a list view
+    bool needListView = size.width < 360;
+    bool xsDeviceHeight = size.height <= 700;
     return Container(
-      width: MediaQuery.of(context).size.width * 0.80,
-      height: MediaQuery.of(context).size.height * (isSmallScreen ? 0.9 : 0.7),
+      width: size.width * 0.80,
+      height: size.height * (xsDeviceHeight ? 0.9 : 0.75),
       constraints: const BoxConstraints(maxHeight: 600, maxWidth: 400),
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -55,7 +58,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                   Flexible(
                     child: CustomScrollView(
                       shrinkWrap: false,
-                      physics: isSmallScreen
+                      physics: needListView
                           ? const AlwaysScrollableScrollPhysics()
                           : const NeverScrollableScrollPhysics(),
                       slivers: [
@@ -72,7 +75,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                                   color: Colors.black87,
                                   fontWeight: FontWeight.bold);
 
-                              if (isSmallScreen) {
+                              if (needListView) {
                                 return ListView(
                                   shrinkWrap: true,
                                   children: widget.seed.map((word) {

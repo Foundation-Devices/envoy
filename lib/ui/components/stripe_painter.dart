@@ -17,13 +17,13 @@ class StripePainter extends CustomPainter {
 
   StripePainter(
     this.stripeColor, {
-    this.stripeWidth = 2.0,
-    this.gapWidth = 2.0,
-    this.rotateDegree = 25.0,
+    this.stripeWidth = 1.0,
+    this.gapWidth = 1.0,
+    this.rotateDegree = 18.0,
     this.bgColor = Colors.transparent,
-    this.clipHalf = true,
+    this.clipHalf = false,
     this.offsetX = 0,
-    this.offsetY = 10.0,
+    this.offsetY = 0,
   });
 
   @override

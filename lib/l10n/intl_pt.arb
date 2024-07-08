@@ -1,6 +1,6 @@
 {
   ":": ":",
-  "_": "Thanks for joining.",
+  "_": "What is Envoy?",
   "about_appVersion": "Versão da Aplicação",
   "about_openSourceLicences": "Licenças de Código Aberto",
   "about_privacyPolicy": "Política de Privacidade",
@@ -281,6 +281,10 @@
   "envoy_faq_answer_7": "Não, as funcionalidades principais da Envoy serão sempre de utilização gratuita. No futuro, poderemos introduzir serviços pagos opcionais ou subscrições.",
   "envoy_faq_answer_8": "Sim, à semelhança de tudo o que fazemos na Foundation, o código da Envoy é completamente aberto. A Envoy está licenciada sob a mesma licença [[GPLv3]] que o Firmware do nosso Passport. Para aqueles que desejam verificar o nosso código-fonte, podem fazê-lo [[aqui]].",
   "envoy_faq_answer_9": "Não, orgulhamo-nos de garantir de que o Passport é compatível com o maior número possível de carteiras de software diferentes. Vê a nossa lista completa, incluindo tutoriais [[aqui]].",
+  "envoy_faq_link_10": "https://docs.foundation.xyz/firmware-updates/passport/",
+  "envoy_faq_link_8_1": "https://www.gnu.org/licenses/gpl-3.0.en.html",
+  "envoy_faq_link_8_2": "https://github.com/Foundation-Devices/envoy",
+  "envoy_faq_link_9": "https://docs.foundation.xyz/passport/connect/",
   "envoy_faq_question_1": "O que é a Envoy?",
   "envoy_faq_question_10": "Tenho de usar a Envoy para fazer actualizações de firmware no Passport?",
   "envoy_faq_question_11": "Posso gerir mais do que um Passport na Envoy?",

@@ -1,6 +1,6 @@
 {
   ":": ":",
-  "_": "Thanks for joining.",
+  "_": "What is Envoy?",
   "about_appVersion": "Versió de l'aplicació",
   "about_openSourceLicences": "Llicències de Codi Obert",
   "about_privacyPolicy": "Política de Privacitat",
@@ -281,6 +281,10 @@
   "envoy_faq_answer_7": "No, les funcionalitats principals de l'Envoy seran sempre gratuïtes per a ús. En el futur, podríem introduir serveis opcionals de pagament o subscripcions.",
   "envoy_faq_answer_8": "Sí, com tot el que fem a Foundation, Envoy és completament de codi obert. Envoy està llicenciat sota la mateixa llicència [[GPLv3]]. Per a aquells que vulguin comprovar el nostre codi font, feu clic a [[here]].",
   "envoy_faq_answer_9": "No, ens enorgullim de garantir que el Passport sigui compatible amb tantes carteres diferents com sigui possible. Consulteu la nostra llista completa, inclosos els tutorials [[here]].",
+  "envoy_faq_link_10": "https://docs.foundation.xyz/firmware-updates/passport/",
+  "envoy_faq_link_8_1": "https://www.gnu.org/licenses/gpl-3.0.en.html",
+  "envoy_faq_link_8_2": "https://github.com/Foundation-Devices/envoy",
+  "envoy_faq_link_9": "https://docs.foundation.xyz/passport/connect/",
   "envoy_faq_question_1": "Què és Envoy?",
   "envoy_faq_question_10": "He d'utilitzar Envoy per actualitzar el firmware del Passport?",
   "envoy_faq_question_11": "Puc gestionar més d'un Passport amb Envoy?",

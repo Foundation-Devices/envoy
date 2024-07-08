@@ -52,10 +52,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `Thanks for joining.`
+  /// `What is Envoy?`
   String get _ {
     return Intl.message(
-      'Thanks for joining.',
+      'What is Envoy?',
       name: '_',
       desc: '',
       args: [],
@@ -2843,6 +2843,46 @@ class S {
     return Intl.message(
       'No, we pride ourselves on ensuring Passport is compatible with as many different software wallets as possible. See our full list, including tutorials [[here]].',
       name: 'envoy_faq_answer_9',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `https://docs.foundation.xyz/firmware-updates/passport/`
+  String get envoy_faq_link_10 {
+    return Intl.message(
+      'https://docs.foundation.xyz/firmware-updates/passport/',
+      name: 'envoy_faq_link_10',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `https://www.gnu.org/licenses/gpl-3.0.en.html`
+  String get envoy_faq_link_8_1 {
+    return Intl.message(
+      'https://www.gnu.org/licenses/gpl-3.0.en.html',
+      name: 'envoy_faq_link_8_1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `https://github.com/Foundation-Devices/envoy`
+  String get envoy_faq_link_8_2 {
+    return Intl.message(
+      'https://github.com/Foundation-Devices/envoy',
+      name: 'envoy_faq_link_8_2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `https://docs.foundation.xyz/passport/connect/`
+  String get envoy_faq_link_9 {
+    return Intl.message(
+      'https://docs.foundation.xyz/passport/connect/',
+      name: 'envoy_faq_link_9',
       desc: '',
       args: [],
     );

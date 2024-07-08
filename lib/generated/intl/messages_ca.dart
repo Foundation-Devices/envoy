@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("Thanks for joining."),
+        "_": MessageLookupByLibrary.simpleMessage("What is Envoy?"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versió de l\'aplicació"),
         "about_openSourceLicences":
@@ -607,6 +607,14 @@ class MessageLookup extends MessageLookupByLibrary {
             "Sí, com tot el que fem a Foundation, Envoy és completament de codi obert. Envoy està llicenciat sota la mateixa llicència [[GPLv3]]. Per a aquells que vulguin comprovar el nostre codi font, feu clic a [[here]]."),
         "envoy_faq_answer_9": MessageLookupByLibrary.simpleMessage(
             "No, ens enorgullim de garantir que el Passport sigui compatible amb tantes carteres diferents com sigui possible. Consulteu la nostra llista completa, inclosos els tutorials [[here]]."),
+        "envoy_faq_link_10": MessageLookupByLibrary.simpleMessage(
+            "https://docs.foundation.xyz/firmware-updates/passport/"),
+        "envoy_faq_link_8_1": MessageLookupByLibrary.simpleMessage(
+            "https://www.gnu.org/licenses/gpl-3.0.en.html"),
+        "envoy_faq_link_8_2": MessageLookupByLibrary.simpleMessage(
+            "https://github.com/Foundation-Devices/envoy"),
+        "envoy_faq_link_9": MessageLookupByLibrary.simpleMessage(
+            "https://docs.foundation.xyz/passport/connect/"),
         "envoy_faq_question_1":
             MessageLookupByLibrary.simpleMessage("Què és Envoy?"),
         "envoy_faq_question_10": MessageLookupByLibrary.simpleMessage(
