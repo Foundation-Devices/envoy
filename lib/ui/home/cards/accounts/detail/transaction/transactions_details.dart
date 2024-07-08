@@ -287,6 +287,8 @@ class _TransactionsDetailsWidgetState
                           onTap: () {
                             openTxDetailsInExplorer(context, tx.txId);
                           },
+                          edgeInsets: const EdgeInsets.symmetric(
+                              horizontal: EnvoySpacing.medium1),
                         )
                       : null,
                 ),
