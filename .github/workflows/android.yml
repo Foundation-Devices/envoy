@@ -18,9 +18,17 @@ jobs:
 
       - name: Build APK and AAB
         env:
+          ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
+          APP_STORE_CONNECT_PASSWORD: ${{ secrets.APP_STORE_CONNECT_PASSWORD }}
+          APP_STORE_CONNECT_USERNAME: ${{ secrets.APP_STORE_CONNECT_USERNAME }}
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+          BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
           KEY_JKS: ${{ secrets.KEY_JKS }}
-          KEY_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
-          ALIAS_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          MAP_API_KEY: ${{ secrets.MAP_API_KEY }}
+          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+          RAMP_API_KEY: ${{ secrets.RAMP_API_KEY }}
         run: echo -n $KEY_JKS | base64 -di > android/key.jks && just docker-build-android-sign
 
       - uses: actions/upload-artifact@v2

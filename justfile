@@ -19,7 +19,12 @@ docker-build-android: docker-build
 docker-build-android-sign: docker-build
     mkdir -p release && \
         docker run --mount type=bind,source="$(pwd)"/release,target=/release \
-        -e ALIAS_PASSWORD=$ALIAS_PASSWORD -e KEY_PASSWORD=$KEY_PASSWORD \
+        -e ALIAS_PASSWORD=$ALIAS_PASSWORD -e APP_STORE_CONNECT_PASSWORD=$APP_STORE_CONNECT_PASSWORD \
+        -e APP_STORE_CONNECT_USERNAME=$APP_STORE_CONNECT_USERNAME -e BUILD_CERTIFICATE_BASE64=$BUILD_CERTIFICATE_BASE64 \
+        -e BUILD_PROVISION_PROFILE_BASE64=$BUILD_PROVISION_PROFILE_BASE64 -e KEYCHAIN_PASSWORD=$KEYCHAIN_PASSWORD \
+        -e KEY_JKS=$KEY_JKS -e KEY_PASSWORD=$KEY_PASSWORD \
+        -e MAP_API_KEY=$MAP_API_KEY -e P12_PASSWORD=$P12_PASSWORD \
+        -e RAMP_API_KEY=$RAMP_API_KEY \
         -t {{docker_image}} /bin/bash \
         -c "flutter build apk --release && flutter build appbundle --release \
         && cp /root/build/app/outputs/flutter-apk/app-release.apk /release \
