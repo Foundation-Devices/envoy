@@ -210,7 +210,8 @@ class _OnboardEnvoyWelcomeScreenState
                                   return const MagicSetupTutorial();
                                 }));
                               },
-                            )
+                            ),
+                            const SizedBox(height: EnvoySpacing.small),
                           ],
                         );
                       },

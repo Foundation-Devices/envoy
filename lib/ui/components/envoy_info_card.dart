@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ui/components/stripe_painter.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 
@@ -35,7 +35,7 @@ class EnvoyInfoCard extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 160),
         decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(cardRadius)),
+          borderRadius: const BorderRadius.all(Radius.circular(cardRadius - 1)),
           border: Border.all(
             color: EnvoyColors.textPrimary,
             width: 2,
@@ -62,8 +62,13 @@ class EnvoyInfoCard extends StatelessWidget {
           ),
           child: ClipRRect(
             borderRadius:
-                const BorderRadius.all(Radius.circular(cardRadius - 2)),
-            child: StripesBackground(
+                const BorderRadius.all(Radius.circular(cardRadius - 4)),
+            child: CustomPaint(
+              isComplex: true,
+              willChange: false,
+              painter: StripePainter(
+                EnvoyColors.gray1000.withOpacity(0.4),
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

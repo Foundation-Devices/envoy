@@ -267,288 +267,284 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                   ),
                 ),
               ),
-              body: SingleChildScrollView(
+              body: Column(
                 key: _key,
-                child: Column(
-                  children: [
-                    EnvoyInfoCard(
-                        backgroundColor: accountAccentColor,
-                        topWidget: EnvoyAmount(
-                            unit: formatUnit,
-                            account: account,
-                            amountSats: totalReceiveAmount,
-                            amountWidgetStyle: AmountWidgetStyle.singleLine),
-                        bottomWidgets: [
-                          EnvoyInfoCardListItem(
+                children: [
+                  EnvoyInfoCard(
+                      backgroundColor: accountAccentColor,
+                      topWidget: EnvoyAmount(
+                          unit: formatUnit,
+                          account: account,
+                          amountSats: totalReceiveAmount,
+                          amountWidgetStyle: AmountWidgetStyle.singleLine),
+                      bottomWidgets: [
+                        EnvoyInfoCardListItem(
+                          spacingPriority: FlexPriority.trailing,
+                          title:
+                              "${S().coincontrol_tx_detail_expand_spentFrom} ${inputTagData.length} ${inputTagData.length == 1 ? S().coincontrol_tx_detail_expand_coin : S().coincontrol_tx_detail_expand_coins}",
+                          icon: const EnvoyIcon(EnvoyIcons.utxo,
+                              color: EnvoyColors.textPrimary,
+                              size: EnvoyIconSize.small),
+                          trailing: EnvoyAmount(
+                              unit: formatUnit,
+                              account: account,
+                              amountSats: totalInputAmount,
+                              amountWidgetStyle: AmountWidgetStyle.normal),
+                        ),
+                        const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: EnvoySpacing.small),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: EnvoySpacing.medium2),
+                              child: Wrap(
+                                spacing: EnvoySpacing.small,
+                                runSpacing: EnvoySpacing.small,
+                                children: spendTags.map((e) {
+                                  return _coinTag(e);
+                                }).toList(),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: EnvoySpacing.medium2,
+                        ),
+                        EnvoyInfoCardListItem(
                             spacingPriority: FlexPriority.trailing,
                             title:
-                                "${S().coincontrol_tx_detail_expand_spentFrom} ${inputTagData.length} ${inputTagData.length == 1 ? S().coincontrol_tx_detail_expand_coin : S().coincontrol_tx_detail_expand_coins}",
-                            icon: const EnvoyIcon(EnvoyIcons.utxo,
+                                S().coincontrol_tx_detail_expand_changeReceived,
+                            icon: const EnvoyIcon(EnvoyIcons.transfer,
                                 color: EnvoyColors.textPrimary,
-                                size: EnvoyIconSize.small),
-                            trailing: EnvoyAmount(
-                                unit: formatUnit,
-                                account: account,
-                                amountSats: totalInputAmount,
-                                amountWidgetStyle: AmountWidgetStyle.normal),
-                          ),
-                          const Padding(
-                              padding: EdgeInsets.all(EnvoySpacing.xs)),
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(left: EnvoySpacing.small),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: EnvoySpacing.medium2),
-                                child: Wrap(
-                                  spacing: EnvoySpacing.small,
-                                  runSpacing: EnvoySpacing.small,
-                                  children: spendTags.map((e) {
-                                    return _coinTag(e);
-                                  }).toList(),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: EnvoySpacing.medium2,
-                          ),
-                          EnvoyInfoCardListItem(
-                              spacingPriority: FlexPriority.trailing,
-                              title: S()
-                                  .coincontrol_tx_detail_expand_changeReceived,
-                              icon: const EnvoyIcon(EnvoyIcons.transfer,
-                                  color: EnvoyColors.textPrimary,
-                                  size: EnvoyIconSize.extraSmall),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  loading
-                                      ? const Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: EnvoySpacing.xs),
-                                          child: SizedBox.square(
-                                            dimension: 12,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 1,
-                                            ),
-                                          ),
-                                        )
-                                      : Container(
-                                          alignment: Alignment.centerRight,
-                                          child: totalChangeAmount == 0
-                                              ? Text(
-                                                  S().coincontrol_tx_detail_no_change,
-                                                  style: EnvoyTypography.body
-                                                      .copyWith(
-                                                          color: EnvoyColors
-                                                              .textTertiary),
-                                                )
-                                              : EnvoyAmount(
-                                                  unit: formatUnit,
-                                                  account: account,
-                                                  amountSats: totalChangeAmount,
-                                                  amountWidgetStyle:
-                                                      AmountWidgetStyle.normal),
-                                        ),
-                                ],
-                              )),
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(left: EnvoySpacing.small),
-                            child: Container(
-                              height: 24,
-                              margin: const EdgeInsets.only(
-                                  left: EnvoySpacing.medium2),
-                              child: ListView(
-                                scrollDirection: Axis.horizontal,
-                                children: [
-                                  GestureDetector(
-                                      onTap: () {
-                                        showEnvoyDialog(
-                                            context: context,
-                                            builder: Builder(
-                                              builder: (context) =>
-                                                  ChooseTagForStagingTx(
-                                                accountId: account.id!,
-                                                onEditTransaction: () async {
-                                                  Navigator.pop(context);
-
-                                                  final router =
-                                                      GoRouter.of(context);
-
-                                                  ///indicating that we are in edit mode
-                                                  ref
-                                                          .read(
-                                                              spendEditModeProvider
-                                                                  .notifier)
-                                                          .state =
-                                                      SpendOverlayContext
-                                                          .editCoins;
-
-                                                  /// The user has is in edit mode and if the psbt
-                                                  /// has inputs then use them to populate the coin selection state
-                                                  if (ref.read(
-                                                          rawTransactionProvider) !=
-                                                      null) {
-                                                    List<String> inputs = ref
-                                                        .read(
-                                                            rawTransactionProvider)!
-                                                        .inputs
-                                                        .map((e) =>
-                                                            "${e.previousOutputHash}:${e.previousOutputIndex}")
-                                                        .toList();
-
-                                                    if (ref
-                                                        .read(
-                                                            coinSelectionStateProvider)
-                                                        .isEmpty) {
-                                                      ref
-                                                          .read(
-                                                              coinSelectionStateProvider
-                                                                  .notifier)
-                                                          .addAll(inputs);
-                                                    }
-                                                  }
-
-                                                  ///toggle to coins view for coin control
-                                                  ref
-                                                          .read(
-                                                              accountToggleStateProvider
-                                                                  .notifier)
-                                                          .state =
-                                                      AccountToggleState.coins;
-
-                                                  ///pop review
-                                                  router.pop();
-                                                  await Future.delayed(
-                                                      const Duration(
-                                                          milliseconds: 100));
-
-                                                  ///pop spend form
-                                                  router.pop();
-                                                },
-                                                onTagUpdate: () {
-                                                  Navigator.pop(context);
-                                                },
-                                              ),
-                                            ),
-                                            alignment:
-                                                const Alignment(0.0, -.6));
-                                      },
-                                      child: _coinTag(changeOutputTag == null
-                                          ? S().account_details_untagged_card
-                                          : changeOutputTag!.name)),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: EnvoySpacing.medium2,
-                          ),
-                          EnvoyInfoCardListItem(
-                            title: S().coincontrol_tx_history_tx_detail_note,
-                            icon: const EnvoyIcon(EnvoyIcons.note,
-                                color: EnvoyColors.textPrimary,
-                                size: EnvoyIconSize.small),
+                                size: EnvoyIconSize.extraSmall),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                Text(note,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(
-                                            color: EnvoyColors.textPrimary,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 12),
-                                    textAlign: TextAlign.end),
-                                const Padding(
-                                    padding: EdgeInsets.all(EnvoySpacing.xs)),
-                                GestureDetector(
-                                  onTap: () {
-                                    showEnvoyDialog(
-                                      context: context,
-                                      dialog: TxNoteDialog(
-                                        onAdd: (note) {
-                                          ref
-                                              .read(stagingTxNoteProvider
-                                                  .notifier)
-                                              .state = note;
-                                          Navigator.pop(context);
-                                        },
-                                        txId: "UpcomingTx",
-                                        noteHintText: "i.e. Bought P2P Bitcoin",
-                                        noteSubTitle: S()
-                                            .coincontrol_tx_add_note_subheading,
-                                        noteTitle: S().add_note_modal_heading,
-                                        value: ref.read(stagingTxNoteProvider),
-                                      ),
-                                      alignment: const Alignment(0.0, -0.5),
-                                    );
-                                  },
-                                  child: note.trim().isNotEmpty
-                                      ? SvgPicture.asset(
-                                          note.trim().isNotEmpty
-                                              ? "assets/icons/ic_edit_note.svg"
-                                              : "assets/icons/ic_notes.svg",
-                                          color: Theme.of(context).primaryColor,
-                                          height: 18,
-                                        )
-                                      : const Icon(
-                                          Icons.add_circle_rounded,
-                                          color: EnvoyColors.accentPrimary,
-                                          size: 24,
+                                loading
+                                    ? const Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: EnvoySpacing.xs),
+                                        child: SizedBox.square(
+                                          dimension: 12,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 1,
+                                          ),
                                         ),
-                                ),
+                                      )
+                                    : Container(
+                                        alignment: Alignment.centerRight,
+                                        child: totalChangeAmount == 0
+                                            ? Text(
+                                                S().coincontrol_tx_detail_no_change,
+                                                style: EnvoyTypography.body
+                                                    .copyWith(
+                                                        color: EnvoyColors
+                                                            .textTertiary),
+                                              )
+                                            : EnvoyAmount(
+                                                unit: formatUnit,
+                                                account: account,
+                                                amountSats: totalChangeAmount,
+                                                amountWidgetStyle:
+                                                    AmountWidgetStyle.normal),
+                                      ),
+                              ],
+                            )),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: EnvoySpacing.small),
+                          child: Container(
+                            height: 24,
+                            margin: const EdgeInsets.only(
+                                left: EnvoySpacing.medium2),
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                GestureDetector(
+                                    onTap: () {
+                                      showEnvoyDialog(
+                                          context: context,
+                                          builder: Builder(
+                                            builder: (context) =>
+                                                ChooseTagForStagingTx(
+                                              accountId: account.id!,
+                                              onEditTransaction: () async {
+                                                Navigator.pop(context);
+
+                                                final router =
+                                                    GoRouter.of(context);
+
+                                                ///indicating that we are in edit mode
+                                                ref
+                                                        .read(
+                                                            spendEditModeProvider
+                                                                .notifier)
+                                                        .state =
+                                                    SpendOverlayContext
+                                                        .editCoins;
+
+                                                /// The user has is in edit mode and if the psbt
+                                                /// has inputs then use them to populate the coin selection state
+                                                if (ref.read(
+                                                        rawTransactionProvider) !=
+                                                    null) {
+                                                  List<String> inputs = ref
+                                                      .read(
+                                                          rawTransactionProvider)!
+                                                      .inputs
+                                                      .map((e) =>
+                                                          "${e.previousOutputHash}:${e.previousOutputIndex}")
+                                                      .toList();
+
+                                                  if (ref
+                                                      .read(
+                                                          coinSelectionStateProvider)
+                                                      .isEmpty) {
+                                                    ref
+                                                        .read(
+                                                            coinSelectionStateProvider
+                                                                .notifier)
+                                                        .addAll(inputs);
+                                                  }
+                                                }
+
+                                                ///toggle to coins view for coin control
+                                                ref
+                                                        .read(
+                                                            accountToggleStateProvider
+                                                                .notifier)
+                                                        .state =
+                                                    AccountToggleState.coins;
+
+                                                ///pop review
+                                                router.pop();
+                                                await Future.delayed(
+                                                    const Duration(
+                                                        milliseconds: 100));
+
+                                                ///pop spend form
+                                                router.pop();
+                                              },
+                                              onTagUpdate: () {
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                          ),
+                                          alignment: const Alignment(0.0, -.6));
+                                    },
+                                    child: _coinTag(changeOutputTag == null
+                                        ? S().account_details_untagged_card
+                                        : changeOutputTag!.name)),
                               ],
                             ),
                           ),
-                        ]),
-                    if (uneconomicSpends) ...[
-                      const EnvoyIcon(
-                        EnvoyIcons.alert,
-                        size: EnvoyIconSize.medium,
-                        color: EnvoyColors.solidWhite,
-                      ),
-                      const SizedBox(height: EnvoySpacing.xs),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.large1),
-                        child: Text(
-                          S().coincontrol_tx_detail_high_fee_info_overlay_subheading,
-                          textAlign: TextAlign.center,
-                          style: EnvoyTypography.info
-                              .copyWith(color: EnvoyColors.solidWhite),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(EnvoySpacing.medium1),
-                        child: SizedBox(
-                          height: 40,
-                          width: 200,
-                          child: LinkText(
-                            text: S()
-                                .coincontrol_tx_detail_high_fee_info_overlay_learnMore,
-                            textAlign: TextAlign.center,
-                            linkStyle: EnvoyTypography.button
-                                .copyWith(color: EnvoyColors.solidWhite),
-                            onTap: () {
-                              launchUrlString(
-                                  "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions");
-                            },
+                        const SizedBox(
+                          height: EnvoySpacing.medium2,
+                        ),
+                        EnvoyInfoCardListItem(
+                          title: S().coincontrol_tx_history_tx_detail_note,
+                          icon: const EnvoyIcon(EnvoyIcons.note,
+                              color: EnvoyColors.textPrimary,
+                              size: EnvoyIconSize.small),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(note,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(
+                                          color: EnvoyColors.textPrimary,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 12),
+                                  textAlign: TextAlign.end),
+                              const Padding(
+                                  padding: EdgeInsets.all(EnvoySpacing.xs)),
+                              GestureDetector(
+                                onTap: () {
+                                  showEnvoyDialog(
+                                    context: context,
+                                    dialog: TxNoteDialog(
+                                      onAdd: (note) {
+                                        ref
+                                            .read(
+                                                stagingTxNoteProvider.notifier)
+                                            .state = note;
+                                        Navigator.pop(context);
+                                      },
+                                      txId: "UpcomingTx",
+                                      noteHintText: "i.e. Bought P2P Bitcoin",
+                                      noteSubTitle: S()
+                                          .coincontrol_tx_add_note_subheading,
+                                      noteTitle: S().add_note_modal_heading,
+                                      value: ref.read(stagingTxNoteProvider),
+                                    ),
+                                    alignment: const Alignment(0.0, -0.5),
+                                  );
+                                },
+                                child: note.trim().isNotEmpty
+                                    ? SvgPicture.asset(
+                                        note.trim().isNotEmpty
+                                            ? "assets/icons/ic_edit_note.svg"
+                                            : "assets/icons/ic_notes.svg",
+                                        color: Theme.of(context).primaryColor,
+                                        height: 18,
+                                      )
+                                    : const Icon(
+                                        Icons.add_circle_rounded,
+                                        color: EnvoyColors.accentPrimary,
+                                        size: 24,
+                                      ),
+                              ),
+                            ],
                           ),
                         ),
-                      )
-                    ]
-                  ],
-                ),
+                      ]),
+                  if (uneconomicSpends) ...[
+                    const EnvoyIcon(
+                      EnvoyIcons.alert,
+                      size: EnvoyIconSize.medium,
+                      color: EnvoyColors.solidWhite,
+                    ),
+                    const SizedBox(height: EnvoySpacing.xs),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.large1),
+                      child: Text(
+                        S().coincontrol_tx_detail_high_fee_info_overlay_subheading,
+                        textAlign: TextAlign.center,
+                        style: EnvoyTypography.info
+                            .copyWith(color: EnvoyColors.solidWhite),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(EnvoySpacing.medium1),
+                      child: SizedBox(
+                        height: 40,
+                        width: 200,
+                        child: LinkText(
+                          text: S()
+                              .coincontrol_tx_detail_high_fee_info_overlay_learnMore,
+                          textAlign: TextAlign.center,
+                          linkStyle: EnvoyTypography.button
+                              .copyWith(color: EnvoyColors.solidWhite),
+                          onTap: () {
+                            launchUrlString(
+                                "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions");
+                          },
+                        ),
+                      ),
+                    )
+                  ]
+                ],
               ),
             ),
           ),

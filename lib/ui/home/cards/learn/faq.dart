@@ -44,14 +44,23 @@ List<FaqEntry> extractFaqs() {
 
     List<String> links = [];
     int linkIndex = 1;
-    for (;;) {
-      String? link = getTranslationByKey(
-          "envoy_faq_link_${index.toString()}_${linkIndex.toString()}");
-      if (link == null) {
-        break;
+    // First, check if there is a single link without an index
+    String? singleLink =
+        getTranslationByKey("envoy_faq_link_${index.toString()}");
+
+    if (singleLink != null) {
+      links.add(singleLink);
+    } else {
+      // If no single link is found, check for multiple links
+      for (;;) {
+        String? link = getTranslationByKey(
+            "envoy_faq_link_${index.toString()}_${linkIndex.toString()}");
+        if (link == null) {
+          break;
+        }
+        links.add(link);
+        linkIndex++;
       }
-      links.add(link);
-      linkIndex++;
     }
 
     faqs.add(FaqEntry(question, answer, links));

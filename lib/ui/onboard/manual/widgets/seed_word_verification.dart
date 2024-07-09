@@ -4,6 +4,7 @@
 
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
@@ -11,6 +12,7 @@ import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -29,18 +31,15 @@ class VerifySeedPuzzleWidget extends StatefulWidget {
 class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
     with SingleTickerProviderStateMixin {
   final PageController _pageController = PageController();
-  List<List<String>> _puzzleOptions = [];
-  List<String> answers = [];
+  List<Puzzle> _puzzleOptions = [];
   bool _finishedAnswers = false;
 
-  List<int> _seedIndexes = [];
-
-  int _puzzlePageIndex = 0;
+  int _pageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     final isSmallScreen = MediaQuery.sizeOf(context).width < 360;
-    if (answers.isEmpty) {
+    if (_puzzleOptions.isEmpty) {
       return Container();
     }
     return CustomScrollView(
@@ -64,34 +63,47 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
         ),
         const SliverPadding(padding: EdgeInsets.all(EnvoySpacing.small)),
         SliverToBoxAdapter(
-          child: Text(
-              "${S().manual_setup_generate_seed_verify_seed_quiz_question} ${widget.seed.indexOf(answers[_puzzlePageIndex]) + 1}?",
-              style: Theme.of(context).textTheme.titleSmall,
-              textAlign: TextAlign.center),
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            switchInCurve: Curves.easeIn,
+            switchOutCurve: Curves.easeOut,
+            transitionBuilder: (child, animation) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            child: Text(
+                "${S().manual_setup_generate_seed_verify_seed_quiz_question} ${_puzzleOptions[_pageIndex].seedIndex + 1}?",
+                key: ValueKey(
+                  "${_puzzleOptions[_pageIndex].seedIndex}",
+                ),
+                style: Theme.of(context).textTheme.titleSmall,
+                textAlign: TextAlign.center),
+          ),
         ),
         const SliverPadding(padding: EdgeInsets.all(EnvoySpacing.small)),
         SliverToBoxAdapter(
-          child: Container(
+          child: SizedBox(
             height: isSmallScreen ? 280 : 400,
-            padding:
-                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Expanded(
                   child: PageView(
-                    physics: const NeverScrollableScrollPhysics(),
+                    physics: const BouncingScrollPhysics(),
                     controller: _pageController,
-                    pageSnapping: false,
-                    children: _puzzleOptions.map((e) {
+                    pageSnapping: true,
+                    padEnds: true,
+                    children: _puzzleOptions.mapIndexed((index, e) {
                       return Padding(
-                        padding:
-                            const EdgeInsets.only(top: EnvoySpacing.medium1),
+                        padding: const EdgeInsets.only(
+                            top: EnvoySpacing.medium1,
+                            right: EnvoySpacing.medium2,
+                            left: EnvoySpacing.medium2),
                         child: PuzzleWidget(
                           puzzle: e,
-                          seedIndex: _seedIndexes[_puzzlePageIndex],
-                          correctAnswer: answers[_puzzleOptions.indexOf(e)],
-                          onCorrectAnswer: (answers) async {
+                          onCorrectAnswer: () async {
                             bool isLastQuestion =
                                 (_puzzleOptions.indexOf(e) + 1) ==
                                     _puzzleOptions.length;
@@ -101,17 +113,18 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                               });
                               return;
                             }
+
                             await Future.delayed(
                                 const Duration(milliseconds: 600));
                             setState(() {
-                              _puzzlePageIndex++;
+                              _pageIndex++;
                             });
-                            _pageController.animateToPage(
+                            await _pageController.animateToPage(
                                 _puzzleOptions.indexOf(e) + 1,
-                                duration: const Duration(milliseconds: 280),
-                                curve: Curves.easeIn);
+                                duration: const Duration(milliseconds: 320),
+                                curve: EnvoyEasing.defaultEasing);
                           },
-                          onWrongAnswer: (answers) {
+                          onWrongAnswer: () {
                             widget.onVerificationFinished(false);
                           },
                         ),
@@ -174,33 +187,46 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
     setState(() {
       Set<int> randomIndexes = {};
       while (randomIndexes.length < 4) {
-        randomIndexes.add(random.nextInt(widget.seed.length));
+        int nextIndex = random.nextInt(widget.seed.length);
+        if (!randomIndexes.contains(nextIndex)) {
+          randomIndexes.add(nextIndex);
+        }
       }
-      _seedIndexes = randomIndexes.toList();
+      final randomIndexList = randomIndexes.toList();
       _puzzleOptions = List.generate(4, (index) {
         List<String> options = List.generate(3,
             (index) => filteredSeed[random.nextInt(filteredSeed.length - 1)]);
-        options.add(widget.seed[_seedIndexes[index]]);
-        answers.add(widget.seed[_seedIndexes[index]]);
+        String word = widget.seed[randomIndexList[index]];
+        options.add(word);
         options.shuffle();
-        return options;
+        return Puzzle(
+            options: options,
+            answerString: word,
+            seedIndex: randomIndexList[index]);
       });
     });
   }
 }
 
-class PuzzleWidget extends StatefulWidget {
-  final List<String> puzzle;
-  final String correctAnswer;
+class Puzzle {
+  final List<String> options;
+  final String answerString;
   final int seedIndex;
-  final Function(String) onCorrectAnswer;
-  final Function(String) onWrongAnswer;
+
+  const Puzzle(
+      {required this.options,
+      required this.answerString,
+      required this.seedIndex});
+}
+
+class PuzzleWidget extends StatefulWidget {
+  final Puzzle puzzle;
+  final Function() onCorrectAnswer;
+  final Function() onWrongAnswer;
 
   const PuzzleWidget(
       {super.key,
       required this.puzzle,
-      required this.correctAnswer,
-      required this.seedIndex,
       required this.onCorrectAnswer,
       required this.onWrongAnswer});
 
@@ -213,6 +239,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final options = widget.puzzle.options;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -224,7 +251,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
             children: [
               _answerField(context),
               if (chosenAnswer != null)
-                _buildAnswerStatus(chosenAnswer == widget.correctAnswer),
+                _buildAnswerStatus(chosenAnswer == widget.puzzle.answerString),
             ],
           ),
         ),
@@ -244,13 +271,13 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                 return GestureDetector(
                   onTap: () {
                     setState(() {
-                      chosenAnswer = widget.puzzle[index];
+                      chosenAnswer = options[index];
                     });
-                    if (chosenAnswer == widget.correctAnswer) {
-                      widget.onCorrectAnswer(widget.puzzle[index]);
+                    if (chosenAnswer == widget.puzzle.answerString) {
+                      widget.onCorrectAnswer();
                       Haptics.lightImpact();
                     } else {
-                      widget.onWrongAnswer(widget.puzzle[index]);
+                      widget.onWrongAnswer();
                     }
                   },
                   child: Column(
@@ -265,7 +292,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                         decoration: BoxDecoration(
                             color: Colors.grey[300],
                             borderRadius: BorderRadius.circular(4)),
-                        child: Text(widget.puzzle[index],
+                        child: Text(options[index],
                             overflow: TextOverflow.fade,
                             textScaler: MediaQuery.of(context)
                                 .textScaler
@@ -277,7 +304,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                   ),
                 );
               },
-              itemCount: widget.puzzle.length),
+              itemCount: options.length),
         ),
       ],
     );
@@ -331,7 +358,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
     if (chosenAnswer == null) {
       borderColor = Colors.transparent;
     } else {
-      if (chosenAnswer != widget.correctAnswer) {
+      if (chosenAnswer != widget.puzzle.answerString) {
         borderColor = EnvoyColors.accentSecondary;
       } else {
         borderColor = EnvoyColors.textTertiary;
@@ -350,7 +377,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
           borderRadius: BorderRadius.circular(8)),
       child: Row(
         children: [
-          Text(" ${widget.seedIndex + 1}. ",
+          Text(" ${widget.puzzle.seedIndex + 1}. ",
               textScaler: MediaQuery.of(context)
                   .textScaler
                   .clamp(maxScaleFactor: 1.2, minScaleFactor: .8),
