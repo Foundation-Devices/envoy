@@ -440,8 +440,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Impulsar"),
         "coindetails_overlay_date":
             MessageLookupByLibrary.simpleMessage("Fecha"),
+        "coindetails_overlay_explorer":
+            MessageLookupByLibrary.simpleMessage("Explorar"),
         "coindetails_overlay_heading":
             MessageLookupByLibrary.simpleMessage("DETALLES DE MONEDA"),
+        "coindetails_overlay_modal_explorer_heading":
+            MessageLookupByLibrary.simpleMessage("Abrir en Explorador"),
+        "coindetails_overlay_modal_explorer_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Estás a punto de salir de Envoy y ver esta transacción en un explorador alojado por Foundation. Asegúrate de entender las reprecusiones que esta acción tiene en cuanto a privacidad antes de continuar. "),
         "coindetails_overlay_noBoostNoFunds_heading":
             MessageLookupByLibrary.simpleMessage(
                 "Error al Impuslar Transacción"),
@@ -598,6 +605,14 @@ class MessageLookup extends MessageLookupByLibrary {
             "Sí, al igual que todo lo que hacemos en Foundation, Envoy es completamente de código abierto. Envoy tiene la misma licencia [[GPLv3]] que nuestro Firmware de Passport. Para aquellos que deseen verificar nuestro código fuente, pueden hacer clic [[aquí]]."),
         "envoy_faq_answer_9": MessageLookupByLibrary.simpleMessage(
             "No, nos enorgullecemos de garantizar que Passport sea compatible con tantas carteras de software diferentes como sea posible. Puedes ver nuestra lista completa, incluidos los tutoriales, [[aquí]]."),
+        "envoy_faq_link_10": MessageLookupByLibrary.simpleMessage(
+            "https://docs.foundation.xyz/firmware-updates/passport/"),
+        "envoy_faq_link_8_1": MessageLookupByLibrary.simpleMessage(
+            "https://www.gnu.org/licenses/gpl-3.0.en.html"),
+        "envoy_faq_link_8_2": MessageLookupByLibrary.simpleMessage(
+            "https://github.com/Foundation-Devices/envoy"),
+        "envoy_faq_link_9": MessageLookupByLibrary.simpleMessage(
+            "https://docs.foundation.xyz/passport/connect/"),
         "envoy_faq_question_1":
             MessageLookupByLibrary.simpleMessage("¿Qué es Envoy?"),
         "envoy_faq_question_10": MessageLookupByLibrary.simpleMessage(

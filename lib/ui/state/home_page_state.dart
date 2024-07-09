@@ -41,6 +41,7 @@ enum DismissiblePrompt {
   rbfWarning,
   leavingEnvoy,
   copyAddressWarning,
+  openTxDetailsInExplorer,
 
   ///warning for exiting manual coin selection
   txDiscardWarning,

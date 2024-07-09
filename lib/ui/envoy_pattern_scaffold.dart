@@ -89,7 +89,15 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
         SizedBox.expand(
             child: CustomPaint(
           size: const Size(double.infinity, double.infinity),
-          painter: StripePainter(EnvoyColors.solidWhite.withOpacity(0.1)),
+          painter: StripePainter(
+            EnvoyColors.solidWhite.withOpacity(0.1),
+            stripeWidth: 2.0,
+            gapWidth: 2.0,
+            rotateDegree: 25.0,
+            bgColor: Colors.transparent,
+            clipHalf: true,
+            offsetY: 10.0,
+          ),
         )),
         SizedBox.expand(
             child: CustomPaint(
