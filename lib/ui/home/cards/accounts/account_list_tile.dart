@@ -192,20 +192,20 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                 ),
                               ),
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: EnvoySpacing.xs),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     LoaderGhost(
                                       width: 200,
-                                      height: 22,
+                                      height: 24,
                                       animate: account.dateSynced == null,
                                     ),
                                     LoaderGhost(
                                       width: 50,
-                                      height: 18,
+                                      height: 24,
                                       animate: account.dateSynced == null,
                                     ),
                                   ],
