@@ -97,6 +97,9 @@ class _TransactionsDetailsWidgetState
           fontWeight: FontWeight.w600,
         );
 
+    final idTextStyle =
+        EnvoyTypography.body.copyWith(color: EnvoyColors.textSecondary);
+
     bool addressNotAvailable = tx.address == null || tx.address!.isEmpty;
     final address = tx.address ?? "";
 
@@ -267,8 +270,7 @@ class _TransactionsDetailsWidgetState
                         return Text(
                           truncateWithEllipsisInCenter(txId,
                               lerpDouble(16, txId.length, value)!.toInt()),
-                          style: EnvoyTypography.info
-                              .copyWith(color: EnvoyColors.textPrimary),
+                          style: idTextStyle,
                           textAlign: TextAlign.end,
                           maxLines: 4,
                         );
@@ -341,8 +343,7 @@ class _TransactionsDetailsWidgetState
                                     lerpDouble(16, tx.pullPaymentId!.length,
                                             value)!
                                         .toInt()),
-                                style: EnvoyTypography.info
-                                    .copyWith(color: EnvoyColors.textPrimary),
+                                style: idTextStyle,
                                 textAlign: TextAlign.end,
                                 maxLines: 4);
                           },
@@ -363,8 +364,7 @@ class _TransactionsDetailsWidgetState
                       },
                       child: Text(
                         tx.rampId!,
-                        style:
-                            EnvoyTypography.info.copyWith(color: Colors.black),
+                        style: idTextStyle,
                         textAlign: TextAlign.end,
                         maxLines: 4,
                       ),
