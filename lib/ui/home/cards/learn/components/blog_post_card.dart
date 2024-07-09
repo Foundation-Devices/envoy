@@ -152,107 +152,93 @@ class BlogPostCard extends StatefulWidget {
 }
 
 class BlogPostCardState extends State<BlogPostCard> {
-  double topGradientEnd = 0.0;
-  bool _hasScrollReachedThreshold = false;
+  final ValueNotifier<double> topGradientEndNotifier =
+      ValueNotifier<double>(0.0);
+
+  @override
+  void dispose() {
+    topGradientEndNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: NotificationListener<ScrollNotification>(
-        onNotification: (notification) {
-          if (notification is ScrollUpdateNotification) {
-            final currentPosition = notification.metrics.pixels;
-            if (!_hasScrollReachedThreshold && currentPosition >= 1) {
-              _hasScrollReachedThreshold = true;
-              setState(() {
-                topGradientEnd = 0.05;
-              });
-            } else if (_hasScrollReachedThreshold && currentPosition == 0) {
-              _hasScrollReachedThreshold = false;
-              setState(() {
-                topGradientEnd = 0.0;
-              });
-            }
-          }
-          return false;
-        },
-        child: LinearGradients.gradientShaderMask(
-          topGradientEnd: topGradientEnd,
-          child: Padding(
-            padding: const EdgeInsets.only(
-              bottom: EnvoySpacing.large1,
-              left: EnvoySpacing.medium1,
-              right: EnvoySpacing.medium1,
-            ),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(height: EnvoySpacing.medium1),
-                  FutureBuilder<String>(
-                    future: Future(() async {
-                      final document =
-                          html_parser.parse(widget.blog.description);
-                      final imageTags = document.getElementsByTagName('img');
-                      final torClient =
-                          HttpTor(Tor.instance, EnvoyScheduler().parallel);
+      child: LinearGradients.scrollGradientMask(
+        topGradientEndNotifier: topGradientEndNotifier,
+        child: Padding(
+          padding: const EdgeInsets.only(
+            bottom: EnvoySpacing.large1,
+            left: EnvoySpacing.medium1,
+            right: EnvoySpacing.medium1,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const SizedBox(height: EnvoySpacing.medium1),
+                FutureBuilder<String>(
+                  future: Future(() async {
+                    final document = html_parser.parse(widget.blog.description);
+                    final imageTags = document.getElementsByTagName('img');
+                    final torClient =
+                        HttpTor(Tor.instance, EnvoyScheduler().parallel);
 
-                      for (final imgTag in imageTags) {
-                        imgTag.attributes['width'] = 'auto';
-                        imgTag.attributes['height'] = 'auto';
+                    for (final imgTag in imageTags) {
+                      imgTag.attributes['width'] = 'auto';
+                      imgTag.attributes['height'] = 'auto';
 
-                        final srcset = imgTag.attributes['srcset'];
-                        if (srcset != null && srcset.isNotEmpty) {
-                          final srcsetUrls = srcset.split(',').map((e) {
-                            final parts = e.trim().split(' ');
-                            return parts.first;
-                          }).toList();
+                      final srcset = imgTag.attributes['srcset'];
+                      if (srcset != null && srcset.isNotEmpty) {
+                        final srcsetUrls = srcset.split(',').map((e) {
+                          final parts = e.trim().split(' ');
+                          return parts.first;
+                        }).toList();
 
-                          if (srcsetUrls.isNotEmpty) {
-                            final firstSrcsetUrl = srcsetUrls.first;
-                            final img = await torClient.get(firstSrcsetUrl);
-                            final dataUri =
-                                'data:image/png;base64,${base64Encode(img.bodyBytes)}';
-                            imgTag.attributes['src'] = dataUri;
-                            imgTag.attributes['style'] = 'border-radius: 16;';
-                          }
+                        if (srcsetUrls.isNotEmpty) {
+                          final firstSrcsetUrl = srcsetUrls.first;
+                          final img = await torClient.get(firstSrcsetUrl);
+                          final dataUri =
+                              'data:image/png;base64,${base64Encode(img.bodyBytes)}';
+                          imgTag.attributes['src'] = dataUri;
+                          imgTag.attributes['style'] = 'border-radius: 16;';
                         }
                       }
+                    }
 
-                      return document.outerHtml;
-                    }),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return DefaultTextStyle(
-                          style: Theme.of(context).textTheme.bodySmall!,
-                          child: Column(
-                            children: [
-                              Html(
-                                data: snapshot.data!,
-                                style: {
-                                  "p": Style(fontSize: FontSize.medium),
-                                  "a": Style(color: EnvoyColors.accentPrimary),
-                                },
-                                onLinkTap: (linkUrl, _, __) {
-                                  launchUrlString(linkUrl!);
-                                },
-                              ),
-                              Html(data: '<div style="height: 100px;"></div>'),
-                            ],
-                          ),
-                        );
-                      } else {
-                        return const Padding(
-                          padding: EdgeInsets.all(EnvoySpacing.medium1),
-                          child: SizedBox(
-                              height: 60,
-                              width: 60,
-                              child: CircularProgressIndicator()),
-                        );
-                      }
-                    },
-                  ),
-                ],
-              ),
+                    return document.outerHtml;
+                  }),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return DefaultTextStyle(
+                        style: Theme.of(context).textTheme.bodySmall!,
+                        child: Column(
+                          children: [
+                            Html(
+                              data: snapshot.data!,
+                              style: {
+                                "p": Style(fontSize: FontSize.medium),
+                                "a": Style(color: EnvoyColors.accentPrimary),
+                              },
+                              onLinkTap: (linkUrl, _, __) {
+                                launchUrlString(linkUrl!);
+                              },
+                            ),
+                            Html(data: '<div style="height: 100px;"></div>'),
+                          ],
+                        ),
+                      );
+                    } else {
+                      return const Padding(
+                        padding: EdgeInsets.all(EnvoySpacing.medium1),
+                        child: SizedBox(
+                            height: 60,
+                            width: 60,
+                            child: CircularProgressIndicator()),
+                      );
+                    }
+                  },
+                ),
+              ],
             ),
           ),
         ),
