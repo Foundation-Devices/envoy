@@ -305,7 +305,7 @@ class _ChooseAccountState extends State<ChooseAccount> {
   Widget build(BuildContext context) {
     return Builder(builder: (context) {
       return GestureDetector(
-        onTapDown: (details) {
+        onTapUp: (details) {
           for (var element in keys) {
             final RenderBox box =
                 element.currentContext?.findRenderObject() as RenderBox;
@@ -313,7 +313,9 @@ class _ChooseAccountState extends State<ChooseAccount> {
                 box.globalToLocal(details.globalPosition);
 
             if (!box.paintBounds.contains(localOffset)) {
-              Navigator.of(context).pop();
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
               break;
             }
           }
