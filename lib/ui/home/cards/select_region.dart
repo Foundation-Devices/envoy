@@ -46,6 +46,7 @@ class _SelectRegionState extends State<SelectRegion> {
         _initialRegionIndex =
             getDivisionIndex(selectedCountry!.divisions, selectedRegion!);
         dropdownDivisionKey.currentState?.setSelectedIndex(_initialRegionIndex);
+        _divisionSelected = true;
       }
 
       setState(() {
