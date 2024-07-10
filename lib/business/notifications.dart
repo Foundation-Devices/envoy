@@ -124,6 +124,7 @@ class Notifications {
     sync();
   }
 
+  // TODO: refactor this to monstrosity to use composable providers
   _checkForNotificationsToAdd() async {
     bool notificationsAdded = false;
     bool newEnvoyVersionAvailable = false;
