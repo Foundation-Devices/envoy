@@ -15,6 +15,7 @@ import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/state/onboarding_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/build_context_extension.dart';
@@ -26,7 +27,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rive/rive.dart' as rive;
 import 'package:tor/tor.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
-import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/console.dart';
 
@@ -47,6 +47,8 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
         .textTheme
         .bodyMedium
         ?.copyWith(fontSize: 11, fontWeight: FontWeight.w500);
+
+    final isSmallDevice = MediaQuery.sizeOf(context).width <= 380;
     return EnvoyPatternScaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -145,8 +147,10 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                       ),
                     ),
                     Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: EnvoySpacing.xs),
+                        padding: EdgeInsets.symmetric(
+                            vertical: isSmallDevice
+                                ? EnvoySpacing.small
+                                : EnvoySpacing.medium1),
                         child: const PrivacyOptionSelect()),
                     Padding(
                       padding: const EdgeInsets.symmetric(
