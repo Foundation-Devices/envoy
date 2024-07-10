@@ -21,6 +21,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/embedded_video.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'manual_setup_import_backup.dart';
 
 class ManualSetup extends StatefulWidget {
@@ -82,7 +83,8 @@ class _ManualSetupState extends State<ManualSetup> {
             Text(
               S().manual_setup_tutorial_heading,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleLarge,
+              style: EnvoyTypography.heading
+                  .copyWith(color: EnvoyColors.textPrimary),
             ),
             Padding(
               padding:
@@ -204,7 +206,8 @@ class SeedIntroScreen extends StatelessWidget {
                                 ? S().manual_setup_generate_seed_heading
                                 : S().manual_setup_import_seed_heading,
                             textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.titleLarge,
+                            style: EnvoyTypography.heading
+                                .copyWith(color: EnvoyColors.textPrimary),
                           ),
                           const SizedBox(
                             height: EnvoySpacing.medium2,

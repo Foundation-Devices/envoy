@@ -4,7 +4,7 @@
 
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
@@ -70,7 +70,8 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                       alignment: Alignment.center,
                       child: Text(
                         S().manual_setup_import_seed_12_words_heading,
-                        style: Theme.of(context).textTheme.titleLarge,
+                        style: EnvoyTypography.heading
+                            .copyWith(color: EnvoyColors.textPrimary),
                         textAlign: TextAlign.center,
                       )),
                 ],
@@ -257,7 +258,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                       ),
                     ),
                     const Icon(EnvoyIcons.exclamationWarning,
-                        color: EnvoyColors.darkCopper, size: 60),
+                        color: EnvoyColors.accentSecondary, size: 60),
                     const Padding(padding: EdgeInsets.all(4)),
                     Padding(
                       padding: const EdgeInsets.symmetric(

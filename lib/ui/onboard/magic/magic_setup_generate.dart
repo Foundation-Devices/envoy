@@ -291,11 +291,10 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            S().recovery_scenario_heading,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          Text(S().recovery_scenario_heading,
+              textAlign: TextAlign.center,
+              style: EnvoyTypography.heading
+                  .copyWith(color: EnvoyColors.textPrimary)),
           const SizedBox(height: EnvoySpacing.medium2),
           Text(
             S().recovery_scenario_subheading,
@@ -411,7 +410,8 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                     Text(
                       S().android_backup_info_heading,
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge,
+                      style: EnvoyTypography.heading
+                          .copyWith(color: EnvoyColors.textPrimary),
                     ),
                     const Padding(
                         padding: EdgeInsets.symmetric(
