@@ -192,7 +192,7 @@ class _EnvoyInfoCardListItemState extends State<EnvoyInfoCardListItem> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: EnvoySpacing.medium1),
+                  const SizedBox(width: EnvoySpacing.small),
                   Flexible(
                     child: widget.trailing,
                   ),

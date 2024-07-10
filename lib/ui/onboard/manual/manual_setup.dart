@@ -14,6 +14,7 @@ import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
+import 'package:envoy/util/build_context_extension.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -56,21 +57,25 @@ class _ManualSetupState extends State<ManualSetup> {
         ),
       ],
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              padding: const EdgeInsets.only(top: 5),
-              child: Column(
-                children: [
-                  !Platform.isLinux
-                      ? EmbeddedVideo(
-                          path: "assets/videos/fd_wallet_manual.m4v",
-                          key: _playerKey,
-                        )
-                      : Container(),
-                ],
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+              child: Container(
+                padding: const EdgeInsets.only(top: 5),
+                child: Column(
+                  children: [
+                    !Platform.isLinux
+                        ? EmbeddedVideo(
+                            path: "assets/videos/fd_wallet_manual.m4v",
+                            key: _playerKey,
+                          )
+                        : Container(),
+                  ],
+                ),
               ),
             ),
             const Padding(padding: EdgeInsets.only(bottom: 6)),
@@ -79,44 +84,52 @@ class _ManualSetupState extends State<ManualSetup> {
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            Text(
-              S().manual_setup_tutorial_subheading,
-              textAlign: TextAlign.center,
-              style:
-                  Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 13),
-            ),
             Padding(
-              padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-              child: Column(
-                children: [
-                  OnboardingButton(
-                      label: S().manual_setup_tutorial_CTA2,
-                      type: EnvoyButtonTypes.secondary,
-                      fontWeight: FontWeight.w600,
-                      onTap: () {
-                        _playerKey.currentState?.pause();
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return const SeedIntroScreen(
-                            mode: SeedIntroScreenType.import,
-                          );
-                        }));
-                      }),
-                  !EnvoySeed().walletDerived()
-                      ? OnboardingButton(
-                          label: S().manual_setup_tutorial_CTA1,
-                          fontWeight: FontWeight.w600,
-                          onTap: () {
-                            _playerKey.currentState?.pause();
-                            Navigator.of(context)
-                                .push(MaterialPageRoute(builder: (context) {
-                              return const SeedIntroScreen(
-                                  mode: SeedIntroScreenType.generate);
-                            }));
-                          })
-                      : const SizedBox.shrink(),
-                ],
+              padding:
+                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+              child: Text(
+                S().manual_setup_tutorial_subheading,
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall!
+                    .copyWith(fontSize: 13),
               ),
+            ),
+            Column(
+              children: [
+                OnboardingButton(
+                    label: S().manual_setup_tutorial_CTA2,
+                    type: EnvoyButtonTypes.secondary,
+                    fontWeight: FontWeight.w600,
+                    onTap: () {
+                      _playerKey.currentState?.pause();
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return const SeedIntroScreen(
+                          mode: SeedIntroScreenType.import,
+                        );
+                      }));
+                    }),
+                !EnvoySeed().walletDerived()
+                    ? OnboardingButton(
+                        label: S().manual_setup_tutorial_CTA1,
+                        fontWeight: FontWeight.w600,
+                        onTap: () {
+                          _playerKey.currentState?.pause();
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return const SeedIntroScreen(
+                                mode: SeedIntroScreenType.generate);
+                          }));
+                        })
+                    : const SizedBox.shrink(),
+                const SizedBox(height: EnvoySpacing.xs),
+                SizedBox(
+                    height: context.isSmallScreen
+                        ? EnvoySpacing.medium1
+                        : EnvoySpacing.medium2),
+              ],
             )
           ],
         ),
