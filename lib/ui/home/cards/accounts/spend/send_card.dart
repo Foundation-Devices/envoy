@@ -14,6 +14,7 @@ import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/util/console.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -149,8 +150,11 @@ class _SendCardState extends ConsumerState<SendCard>
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(
-                  bottom: EnvoySpacing.medium3, top: EnvoySpacing.small),
+              padding: EdgeInsets.only(
+                  bottom: width <= 380
+                      ? EnvoySpacing.medium1
+                      : EnvoySpacing.medium2,
+                  top: EnvoySpacing.small),
               child: Consumer(
                 builder: (context, ref, child) {
                   final isCoinSelected = ref.watch(isCoinsSelectedProvider);

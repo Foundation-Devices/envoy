@@ -272,8 +272,10 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: EnvoySpacing.medium2,
+          padding: EdgeInsets.symmetric(
+            vertical: MediaQuery.sizeOf(context).width <= 390
+                ? EnvoySpacing.medium1
+                : EnvoySpacing.medium2,
           ),
           child: SpendableAmountWidget(widget.account!),
         ),
