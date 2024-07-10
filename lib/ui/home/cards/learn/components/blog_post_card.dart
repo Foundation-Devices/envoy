@@ -152,20 +152,10 @@ class BlogPostCard extends StatefulWidget {
 }
 
 class BlogPostCardState extends State<BlogPostCard> {
-  final ValueNotifier<double> topGradientEndNotifier =
-      ValueNotifier<double>(0.0);
-
-  @override
-  void dispose() {
-    topGradientEndNotifier.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: LinearGradients.scrollGradientMask(
-        topGradientEndNotifier: topGradientEndNotifier,
+      child: ScrollGradientMask(
         child: Padding(
           padding: const EdgeInsets.only(
             bottom: EnvoySpacing.large1,

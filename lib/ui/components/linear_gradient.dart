@@ -19,53 +19,67 @@ class LinearGradients {
       stops: [0.0, topGradientEnd, 0.85, 0.96],
     );
   }
+}
 
-  static Widget gradientShaderMask({
-    required Widget child,
-    required double topGradientEnd,
-  }) {
-    return ShaderMask(
-      shaderCallback: (Rect rect) {
-        return blogPostGradient(topGradientEnd).createShader(rect);
-      },
-      blendMode: BlendMode.dstOut,
-      child: child,
-    );
+class ScrollGradientMask extends StatefulWidget {
+  final Widget child;
+
+  const ScrollGradientMask({required this.child, super.key});
+
+  @override
+  ScrollGradientMaskState createState() => ScrollGradientMaskState();
+}
+
+class ScrollGradientMaskState extends State<ScrollGradientMask> {
+  final ValueNotifier<double> topGradientEndNotifier =
+      ValueNotifier<double>(0.0);
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()
+      ..addListener(() {
+        if (_scrollController.offset == 0) {
+          topGradientEndNotifier.value = 0.0;
+        } else {
+          topGradientEndNotifier.value = 0.05;
+        }
+      });
   }
 
-  static Widget scrollGradientMask({
-    required Widget child,
-    ValueNotifier<double>? topGradientEndNotifier,
-  }) {
-    final notifier = topGradientEndNotifier ?? ValueNotifier<double>(0.0);
-    bool hasScrollReachedThreshold = false;
-    const thresholdPos = 1;
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    topGradientEndNotifier.dispose();
+    super.dispose();
+  }
 
-    return NotificationListener<ScrollNotification>(
-      onNotification: (notification) {
-        if (notification is ScrollUpdateNotification) {
-          final currentPosition = notification.metrics.pixels;
-
-          if (!hasScrollReachedThreshold && currentPosition >= thresholdPos) {
-            hasScrollReachedThreshold = true;
-            notifier.value = 0.05;
-          } else if (hasScrollReachedThreshold && currentPosition == 0) {
-            hasScrollReachedThreshold = false;
-            notifier.value = 0.0;
-          }
-        }
-        return false;
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<double>(
+      valueListenable: topGradientEndNotifier,
+      builder: (context, topGradientEnd, child) {
+        return ShaderMask(
+          shaderCallback: (Rect rect) {
+            return LinearGradients.blogPostGradient(topGradientEnd)
+                .createShader(rect);
+          },
+          blendMode: BlendMode.dstOut,
+          child: NotificationListener<ScrollNotification>(
+            onNotification: (scrollNotification) {
+              if (scrollNotification.metrics.pixels == 0) {
+                topGradientEndNotifier.value = 0.0;
+              } else {
+                topGradientEndNotifier.value = 0.05;
+              }
+              return true;
+            },
+            child: widget.child,
+          ),
+        );
       },
-      child: ValueListenableBuilder<double>(
-        valueListenable: notifier,
-        builder: (context, topGradientEnd, child) {
-          return gradientShaderMask(
-            topGradientEnd: topGradientEnd,
-            child: child!,
-          );
-        },
-        child: child,
-      ),
+      child: widget.child,
     );
   }
 }

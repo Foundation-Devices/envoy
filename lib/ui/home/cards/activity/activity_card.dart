@@ -57,23 +57,13 @@ class TopLevelActivityCard extends ConsumerStatefulWidget {
 }
 
 class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
-  final ValueNotifier<double> topGradientEndNotifier =
-      ValueNotifier<double>(0.0);
-
-  @override
-  void dispose() {
-    topGradientEndNotifier.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     List<EnvoyNotification> notifications =
         ref.watch(filteredNotificationStreamProvider);
     ref.read(notificationTypeFilterProvider.notifier).state = null;
 
-    return LinearGradients.scrollGradientMask(
-      topGradientEndNotifier: topGradientEndNotifier,
+    return ScrollGradientMask(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
         child: CustomScrollView(slivers: [

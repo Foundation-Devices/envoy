@@ -33,15 +33,6 @@ class LearnCard extends ConsumerStatefulWidget {
 }
 
 class _LearnCardState extends ConsumerState<LearnCard> {
-  final ValueNotifier<double> topGradientEndNotifier =
-      ValueNotifier<double>(0.0);
-
-  @override
-  void dispose() {
-    topGradientEndNotifier.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     List<Video> videos = ref.watch(learnVideosProvider(widget.controller.text));
@@ -72,8 +63,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
 
     final bool isAllEmpty = isSearchEmpty || isFilterEmpty;
 
-    return LinearGradients.scrollGradientMask(
-      topGradientEndNotifier: topGradientEndNotifier,
+    return ScrollGradientMask(
       child: CustomScrollView(
         physics: isAllEmpty ? const NeverScrollableScrollPhysics() : null,
         slivers: [
