@@ -532,6 +532,7 @@ class _SlidingToggleState extends State<SlidingToggle>
   late Animation<Color?> _tagsIconColorAnimation;
   final Color _iconDisabledColor = new_color_scheme.EnvoyColors.textTertiary;
   String _text = "Activity"; // TODO: FIGMA
+  double _widestWidth = 0.0;
 
   @override
   void initState() {
@@ -628,6 +629,26 @@ class _SlidingToggleState extends State<SlidingToggle>
         fontWeight: FontWeight.w600, color: _textColorAnimation.value);
     return LayoutBuilder(
       builder: (context, constraints) {
+        // Measure the width of the text
+        final textPainter = TextPainter(
+          text: TextSpan(
+            text: _text, // replace with _text,
+            style: textTheme,
+          ),
+          maxLines: 1,
+          textDirection: TextDirection.ltr,
+        )..layout();
+
+        // Calculate the width, ensuring it does not exceed 180
+        double textWidth =
+            textPainter.width * 2 + 30; // Add padding/margins if necessary
+        double newWidth = textWidth > 180 ? 180 : textWidth;
+
+        // Update the widest width if the new width is greater
+        if (newWidth > _widestWidth) {
+          _widestWidth = newWidth;
+        }
+
         return GestureDetector(
           onTap: () async {
             value = value == "Tx" ? "Coins" : "Tx"; // TODO: FIGMA
@@ -642,15 +663,17 @@ class _SlidingToggleState extends State<SlidingToggle>
             }
             widget.onChange(value);
           },
-          child: Container(
-            constraints: BoxConstraints.tight(const Size(120, 34)),
+          child: SizedBox(
+            height: 34,
+            width: _widestWidth,
             child: Container(
               decoration: BoxDecoration(
-                  color: new_color_scheme.EnvoyColors.solidWhite,
-                  borderRadius: BorderRadius.circular(EnvoySpacing.medium3)),
+                color: new_color_scheme.EnvoyColors.solidWhite,
+                borderRadius: BorderRadius.circular(EnvoySpacing.medium3),
+              ),
               child: Stack(
                 children: [
-                  //Show selection background with 71% of width
+                  // Show selection background with 71% of width
                   AlignTransition(
                     alignment: _slidingSegmentAnimation,
                     child: FractionallySizedBox(
@@ -658,9 +681,10 @@ class _SlidingToggleState extends State<SlidingToggle>
                       child: Container(
                         margin: const EdgeInsets.all(2),
                         decoration: BoxDecoration(
-                            color: new_color_scheme.EnvoyColors.accentPrimary,
-                            borderRadius:
-                                BorderRadius.circular(EnvoySpacing.medium3)),
+                          color: new_color_scheme.EnvoyColors.accentPrimary,
+                          borderRadius:
+                              BorderRadius.circular(EnvoySpacing.medium3),
+                        ),
                       ),
                     ),
                   ),
@@ -668,8 +692,11 @@ class _SlidingToggleState extends State<SlidingToggle>
                     alignment: Alignment.centerLeft,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 8.0),
-                      child: Icon(Icons.history,
-                          size: 18, color: _activityIconColorAnimation.value),
+                      child: Icon(
+                        Icons.history,
+                        size: 18,
+                        color: _activityIconColorAnimation.value,
+                      ),
                     ),
                   ),
                   AlignTransition(
@@ -679,31 +706,39 @@ class _SlidingToggleState extends State<SlidingToggle>
                         .animate(CurvedAnimation(
                             parent: _animationController,
                             curve: Curves.easeInOutCubic)),
-                    child: Builder(builder: (context) {
-                      return SvgPicture.asset("assets/icons/ic_tag.svg",
+                    child: Builder(
+                      builder: (context) {
+                        return SvgPicture.asset(
+                          "assets/icons/ic_tag.svg",
                           width: 18,
                           height: 18,
-                          color: _tagsIconColorAnimation.value);
-                    }),
+                          color: _tagsIconColorAnimation.value,
+                        );
+                      },
+                    ),
                   ),
                   AlignTransition(
-                      alignment: Tween(
-                              begin: const Alignment(-.12, 0.0),
-                              end: const Alignment(.45, 0))
-                          .animate(CurvedAnimation(
-                              parent: _animationController,
-                              curve: Curves.easeInOutCubic)),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 2),
-                        child: Text(
-                          _text,
-                          key: ValueKey(_text),
-                          //prevent unnecessary overflows, container size is fixed
-                          textScaler: const TextScaler.linear(1),
-                          textAlign: TextAlign.start,
-                          style: textTheme,
-                        ),
-                      )),
+                    alignment: Tween(
+                            begin: const Alignment(-.12, 0.0),
+                            end: const Alignment(.75, 0))
+                        .animate(CurvedAnimation(
+                            parent: _animationController,
+                            curve: Curves.easeInOutCubic)),
+                    child: Container(
+                      width: _widestWidth * 0.5,
+                      padding: const EdgeInsets.symmetric(horizontal: 2),
+                      child: Text(
+                        _text, // texxt, // _text,
+                        key: ValueKey(_text),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        // prevent unnecessary overflows, container size is fixed
+                        textScaler: const TextScaler.linear(1),
+                        textAlign: TextAlign.center,
+                        style: textTheme,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
