@@ -540,7 +540,8 @@ class _TransactionReviewScreenState
             child: ListTile(
               title: Text(header,
                   textAlign: TextAlign.center,
-                  style: EnvoyTypography.subheading),
+                  style: EnvoyTypography.heading
+                      .copyWith(color: EnvoyColors.textPrimary)),
               subtitle: Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: EnvoySpacing.small),

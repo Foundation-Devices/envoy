@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
+
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -9,6 +10,8 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class CoinLockWarning extends StatefulWidget {
   final String warningMessage;
@@ -179,13 +182,9 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
             width: 68,
           ),
           const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-          Text(
-            S().change_output_from_multiple_tags_modal_heading,
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+          Text(S().change_output_from_multiple_tags_modal_heading,
+              style: EnvoyTypography.heading
+                  .copyWith(color: EnvoyColors.textPrimary)),
           const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           Padding(
             padding:
