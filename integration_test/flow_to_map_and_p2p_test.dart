@@ -27,6 +27,8 @@ void main() {
       // Uncomment the line below if testing on local machine.
       // await resetEnvoyData();
 
+      // Trigger beefQA action on GitHub
+
       ScreenshotController envoyScreenshotController = ScreenshotController();
       await initSingletons();
       await tester.pumpWidget(Screenshot(
