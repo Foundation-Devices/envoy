@@ -27,8 +27,6 @@ void main() {
       // Uncomment the line below if testing on local machine.
       // await resetEnvoyData();
 
-      // Trigger beefQA action on GitHub
-
       ScreenshotController envoyScreenshotController = ScreenshotController();
       await initSingletons();
       await tester.pumpWidget(Screenshot(
@@ -40,13 +38,11 @@ void main() {
 
       await tester.pump(Durations.long2);
 
-      // Adding extra pumps to ensure the UI transitions smoothly from /account/region to /account/region/buy.
-      for (var i = 0; i < 20; i++) {
-        await tester.pump(Durations.long2);
-      }
-
       await tester.pump(Durations.long2);
       final atmTab = find.text("ATMs");
+
+      await tester.pumpUntilFound(atmTab, tries: 50, duration: Durations.long2);
+      await tester.pump(Durations.long2);
       expect(atmTab, findsOneWidget);
       await tester.tap(atmTab);
       await tester.pump(Durations.long2);
@@ -144,5 +140,30 @@ Future<void> resetEnvoyData() async {
     await dbFile.delete();
   } catch (e) {
     kPrint('Error deleting app data: $e');
+  }
+}
+
+extension PumpUntilFound on WidgetTester {
+  /// Pumps the widget tree until the specified [finder] locates an element,
+  /// or until the maximum number of tries is reached.
+  ///
+  /// This is particularly useful in scenarios involving animations or delayed
+  /// widget appearances, where the desired widget might not be immediately
+  /// present in the widget tree. It is especially handy when dealing with
+  /// never-ending animations like a `CircularProgressIndicator`.
+  Future<void> pumpUntilFound(
+    Finder finder, {
+    Duration duration = const Duration(milliseconds: 100),
+    int tries = 10,
+  }) async {
+    for (var i = 0; i < tries; i++) {
+      await pump(duration);
+
+      final isNotEmpty = finder.tryEvaluate();
+
+      if (isNotEmpty) {
+        break;
+      }
+    }
   }
 }
