@@ -96,7 +96,9 @@ Stack fullScreenShield(Widget child) {
   double topAppBarOffset = 10; //appBarHeight ;//+ 10; // check this size
   return Stack(
     children: [
-      const AppBackground(),
+      const AppBackground(
+        showRadialGradient: true,
+      ),
       Positioned(
           top: topAppBarOffset,
           left: 5,

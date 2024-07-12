@@ -26,6 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 
 class MagicRecoverWallet extends ConsumerStatefulWidget {
   const MagicRecoverWallet({super.key});
@@ -539,7 +540,8 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           Text(
             S().magic_setup_recovery_retry_header,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
+            style: EnvoyTypography.heading
+                .copyWith(color: EnvoyColors.textPrimary),
           ),
         ],
       ),
@@ -639,7 +641,8 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           child: Text(
             S().magic_setup_recovery_fail_heading,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
+            style: EnvoyTypography.heading
+                .copyWith(color: EnvoyColors.textPrimary),
           ),
         ),
         const Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),

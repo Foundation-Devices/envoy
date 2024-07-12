@@ -293,11 +293,10 @@ class _TxReviewState extends ConsumerState<TxReview> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          title,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
+                        Text(title,
+                            textAlign: TextAlign.center,
+                            style: EnvoyTypography.heading
+                                .copyWith(color: EnvoyColors.textPrimary)),
                         const Padding(padding: EdgeInsets.all(18)),
                         Text(subTitle,
                             textAlign: TextAlign.center,
@@ -541,7 +540,8 @@ class _TransactionReviewScreenState
             child: ListTile(
               title: Text(header,
                   textAlign: TextAlign.center,
-                  style: EnvoyTypography.subheading),
+                  style: EnvoyTypography.heading
+                      .copyWith(color: EnvoyColors.textPrimary)),
               subtitle: Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
