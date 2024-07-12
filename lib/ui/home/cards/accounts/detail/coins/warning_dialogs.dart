@@ -55,11 +55,11 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                const SizedBox(height: EnvoySpacing.xs),
+                const SizedBox(height: EnvoySpacing.medium2),
                 Image.asset(
                   "assets/exclamation_triangle.png",
-                  height: 68,
-                  width: 68,
+                  height: 64,
+                  width: 64,
                 ),
                 const SizedBox(height: EnvoySpacing.medium3),
                 Text(S().component_warning,
