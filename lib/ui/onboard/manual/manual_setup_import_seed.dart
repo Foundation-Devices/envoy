@@ -98,7 +98,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
               ),
               Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.medium2,
+                    horizontal: EnvoySpacing.xs,
                   ),
                   child: IgnorePointer(
                     ignoring: finishSeedEntries == false,
@@ -115,7 +115,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
               SizedBox(
                   height: context.isSmallScreen
                       ? EnvoySpacing.medium1
-                      : EnvoySpacing.medium3),
+                      : EnvoySpacing.medium2),
               // SFT-1749: disable passphrases for beta
               // Column(
               //   children: [

@@ -28,6 +28,8 @@ class PinIntroPage extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(
             bottom: EnvoySpacing.medium2,
+            left: EnvoySpacing.xs,
+            right: EnvoySpacing.xs,
           ),
           child: OnboardingButton(
               label: S().component_continue,

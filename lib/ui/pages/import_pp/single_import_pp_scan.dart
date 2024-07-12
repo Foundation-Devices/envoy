@@ -26,6 +26,8 @@ class SingleImportPpScanPage extends OnboardingPage {
         buttons: [
           Padding(
             padding: EdgeInsets.only(
+                left: EnvoySpacing.xs,
+                right: EnvoySpacing.xs,
                 bottom: context.isSmallScreen
                     ? EnvoySpacing.medium1
                     : EnvoySpacing.medium3),

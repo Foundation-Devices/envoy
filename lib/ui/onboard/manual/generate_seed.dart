@@ -180,65 +180,70 @@ class _SeedScreenState extends State<SeedScreen> {
           ),
         ),
         Expanded(
-            child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            body: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                    seedList.length == 24
-                        ? S().manual_setup_generate_seed_write_words_24_heading
-                        : S().manual_setup_generate_seed_write_words_heading,
-                    style: EnvoyTypography.heading
-                        .copyWith(color: EnvoyColors.textPrimary),
-                    textAlign: TextAlign.center),
-                const Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
-                Expanded(
-                  child: PageView(
-                      controller: _seedDisplayPageController,
-                      physics: const NeverScrollableScrollPhysics(),
-                      children: [
-                        _buildTwoMnemonicColumns(0),
-                        if (seedList.length > 12) _buildTwoMnemonicColumns(12),
-                      ]),
-                ),
-                if (seedList.length > 12)
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.small),
-                    child: DotsIndicator(
-                        pageController: _seedDisplayPageController,
-                        totalPages: 2),
+                    padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+                    child: Text(
+                        seedList.length == 24
+                            ? S().manual_setup_generate_seed_write_words_24_heading
+                            : S().manual_setup_generate_seed_write_words_heading,
+                        style: EnvoyTypography.heading
+                            .copyWith(color: EnvoyColors.textPrimary),
+                        textAlign: TextAlign.center),
                   ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: EnvoySpacing.medium2),
-                  child: OnboardingButton(
-                    onTap: () async {
-                      if (seedList.length == 12 || _onSecondPage) {
-                        await _pageController.nextPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.ease);
-                      } else {
-                        setState(() {
-                          _onSecondPage = true;
-                        });
-                        await _seedDisplayPageController.nextPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.ease);
-                      }
-                    },
-                    label: seedList.length == 12 || _onSecondPage
-                        ? S().component_done
-                        : S().component_continue,
+                  const Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+                      child: PageView(
+                          controller: _seedDisplayPageController,
+                          physics: const NeverScrollableScrollPhysics(),
+                          children: [
+                            _buildTwoMnemonicColumns(0),
+                            if (seedList.length > 12) _buildTwoMnemonicColumns(12),
+                          ]),
+                    ),
                   ),
-                )
-              ],
-            ),
-          ),
-        ))
+                  if (seedList.length > 12)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: EnvoySpacing.small),
+                      child: DotsIndicator(
+                          pageController: _seedDisplayPageController,
+                          totalPages: 2),
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: EnvoySpacing.xs,
+                        right: EnvoySpacing.xs,
+                        bottom: EnvoySpacing.medium2),
+                    child: OnboardingButton(
+                      onTap: () async {
+                        if (seedList.length == 12 || _onSecondPage) {
+                          await _pageController.nextPage(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.ease);
+                        } else {
+                          setState(() {
+                            _onSecondPage = true;
+                          });
+                          await _seedDisplayPageController.nextPage(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.ease);
+                        }
+                      },
+                      label: seedList.length == 12 || _onSecondPage
+                          ? S().component_done
+                          : S().component_continue,
+                    ),
+                  )
+                ],
+              ),
+            ))
       ],
     );
   }
@@ -437,7 +442,7 @@ class _SeedScreenState extends State<SeedScreen> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(
-              horizontal: EnvoySpacing.medium1, vertical: EnvoySpacing.medium1),
+              horizontal: EnvoySpacing.xs, vertical: EnvoySpacing.medium2),
           child: OnboardingButton(
               label: S().component_continue,
               fontWeight: FontWeight.w600,

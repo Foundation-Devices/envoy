@@ -237,33 +237,30 @@ class OnboardingPage extends StatelessWidget {
               ),
             ]),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                navigationDots != 0
-                    ? Padding(
-                        padding: const EdgeInsets.all(2.0),
-                        child: DotsIndicator(
-                          decorator: const DotsDecorator(
-                              size: Size.square(5.0),
-                              activeSize: Size.square(5.0),
-                              spacing: EdgeInsets.symmetric(horizontal: 5)),
-                          dotsCount: navigationDots,
-                          position: navigationDotsIndex.toDouble(),
-                        ),
-                      )
-                    : const SizedBox.shrink(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: helperTextAbove ?? const SizedBox.shrink(),
-                ),
-                ...?buttons,
-                helperTextBelow ?? const SizedBox.shrink()
-              ],
-            ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              navigationDots != 0
+                  ? Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: DotsIndicator(
+                        decorator: const DotsDecorator(
+                            size: Size.square(5.0),
+                            activeSize: Size.square(5.0),
+                            spacing: EdgeInsets.symmetric(horizontal: 5)),
+                        dotsCount: navigationDots,
+                        position: navigationDotsIndex.toDouble(),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: helperTextAbove ?? const SizedBox.shrink(),
+              ),
+              ...?buttons,
+              helperTextBelow ?? const SizedBox.shrink()
+            ],
           ),
         ],
       ),
