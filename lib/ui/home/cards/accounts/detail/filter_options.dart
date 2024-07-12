@@ -531,7 +531,10 @@ class _SlidingToggleState extends State<SlidingToggle>
   late Animation<Color?> _activityIconColorAnimation;
   late Animation<Color?> _tagsIconColorAnimation;
   final Color _iconDisabledColor = new_color_scheme.EnvoyColors.textTertiary;
-  String _text = "Activity"; // TODO: FIGMA
+  final String _buttonText1 = "Activity"; // TODO: FIGMA
+  final String _buttonText2 = "Tags"; // TODO: FIGMA
+  late String _text = _buttonText1;
+  double _widestWidth = 0.0;
 
   @override
   void initState() {
@@ -605,9 +608,9 @@ class _SlidingToggleState extends State<SlidingToggle>
     _animationController.addListener(() {
       setState(() {
         if (_animationController.value < 0.5) {
-          _text = "Activity"; // TODO: FIGMA
+          _text = _buttonText1;
         } else if (_animationController.value > 0.5) {
-          _text = "Tags"; // TODO: FIGMA
+          _text = _buttonText2;
         }
       });
     });
@@ -620,6 +623,43 @@ class _SlidingToggleState extends State<SlidingToggle>
             duration: const Duration(milliseconds: 0));
       }
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _calculateWidestWidth(context);
+  }
+
+  void _calculateWidestWidth(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme.bodyMedium?.copyWith(
+        fontWeight: FontWeight.w600, color: _textColorAnimation.value);
+
+    final textPainter1 = TextPainter(
+      text: TextSpan(
+        text: _buttonText1,
+        style: textTheme,
+      ),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    )..layout();
+
+    final textPainter2 = TextPainter(
+      text: TextSpan(
+        text: _buttonText2,
+        style: textTheme,
+      ),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    )..layout();
+
+    double textWidth1 = textPainter1.width * 2 + 30; // + for compensation
+    double textWidth2 = textPainter2.width * 2 + 30;
+
+    _widestWidth = (textWidth1 > textWidth2 ? textWidth1 : textWidth2);
+    if (_widestWidth > 180) {
+      _widestWidth = 180;
+    }
   }
 
   @override
@@ -642,15 +682,17 @@ class _SlidingToggleState extends State<SlidingToggle>
             }
             widget.onChange(value);
           },
-          child: Container(
-            constraints: BoxConstraints.tight(const Size(120, 34)),
+          child: SizedBox(
+            height: 34,
+            width: _widestWidth,
             child: Container(
               decoration: BoxDecoration(
-                  color: new_color_scheme.EnvoyColors.solidWhite,
-                  borderRadius: BorderRadius.circular(EnvoySpacing.medium3)),
+                color: new_color_scheme.EnvoyColors.solidWhite,
+                borderRadius: BorderRadius.circular(EnvoySpacing.medium3),
+              ),
               child: Stack(
                 children: [
-                  //Show selection background with 71% of width
+                  // Show selection background with 71% of width
                   AlignTransition(
                     alignment: _slidingSegmentAnimation,
                     child: FractionallySizedBox(
@@ -658,9 +700,10 @@ class _SlidingToggleState extends State<SlidingToggle>
                       child: Container(
                         margin: const EdgeInsets.all(2),
                         decoration: BoxDecoration(
-                            color: new_color_scheme.EnvoyColors.accentPrimary,
-                            borderRadius:
-                                BorderRadius.circular(EnvoySpacing.medium3)),
+                          color: new_color_scheme.EnvoyColors.accentPrimary,
+                          borderRadius:
+                              BorderRadius.circular(EnvoySpacing.medium3),
+                        ),
                       ),
                     ),
                   ),
@@ -668,8 +711,11 @@ class _SlidingToggleState extends State<SlidingToggle>
                     alignment: Alignment.centerLeft,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 8.0),
-                      child: Icon(Icons.history,
-                          size: 18, color: _activityIconColorAnimation.value),
+                      child: Icon(
+                        Icons.history,
+                        size: 18,
+                        color: _activityIconColorAnimation.value,
+                      ),
                     ),
                   ),
                   AlignTransition(
@@ -679,31 +725,42 @@ class _SlidingToggleState extends State<SlidingToggle>
                         .animate(CurvedAnimation(
                             parent: _animationController,
                             curve: Curves.easeInOutCubic)),
-                    child: Builder(builder: (context) {
-                      return SvgPicture.asset("assets/icons/ic_tag.svg",
+                    child: Builder(
+                      builder: (context) {
+                        return SvgPicture.asset(
+                          "assets/icons/ic_tag.svg",
                           width: 18,
                           height: 18,
-                          color: _tagsIconColorAnimation.value);
-                    }),
+                          color: _tagsIconColorAnimation.value,
+                        );
+                      },
+                    ),
                   ),
                   AlignTransition(
-                      alignment: Tween(
-                              begin: const Alignment(-.12, 0.0),
-                              end: const Alignment(.45, 0))
-                          .animate(CurvedAnimation(
-                              parent: _animationController,
-                              curve: Curves.easeInOutCubic)),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 2),
-                        child: Text(
-                          _text,
-                          key: ValueKey(_text),
-                          //prevent unnecessary overflows, container size is fixed
-                          textScaler: const TextScaler.linear(1),
-                          textAlign: TextAlign.start,
-                          style: textTheme,
-                        ),
-                      )),
+                    alignment: Tween(
+                            begin: const Alignment(-.12, 0.0),
+                            end: const Alignment(.75, 0))
+                        .animate(CurvedAnimation(
+                            parent: _animationController,
+                            curve: Curves.easeInOutCubic)),
+                    child: Container(
+                      width: _widestWidth * 0.5,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.xs),
+                      child: Text(
+                        _text,
+                        key: ValueKey(_text),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        // prevent unnecessary overflows, container size is fixed
+                        textScaler: const TextScaler.linear(1),
+                        textAlign: _animationController.value == 0.0
+                            ? TextAlign.start
+                            : TextAlign.center,
+                        style: textTheme,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
