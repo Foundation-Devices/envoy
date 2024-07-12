@@ -38,7 +38,12 @@ void main() {
 
       await tester.pump(Durations.long2);
 
-      await Future.delayed(const Duration(seconds: 5));
+      // Adding extra pumps to ensure the UI transitions smoothly from /account/region to /account/region/buy.
+      for (var i = 0; i < 20; i++) {
+        await tester.pump(Durations.long2);
+      }
+
+      await tester.pump(Durations.long2);
       final atmTab = find.text("ATMs");
       expect(atmTab, findsOneWidget);
       await tester.tap(atmTab);
@@ -50,9 +55,9 @@ void main() {
       await tester.pumpAndSettle();
 
       final iconFinder = find.byWidgetPredicate(
-        (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.location,
+        (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.plus,
       );
-      expect(iconFinder, findsAny);
+      expect(iconFinder, findsOneWidget);
     } finally {
       FlutterError.onError = originalOnError;
     }
@@ -82,6 +87,7 @@ Future<void> fromHomeToBuyOptions(WidgetTester tester) async {
   final continueButtonFinder = find.text('Continue');
   expect(continueButtonFinder, findsOneWidget);
   await tester.tap(continueButtonFinder);
+  await tester.pump(Durations.long2);
   await tester.pump(Durations.long2);
 }
 
