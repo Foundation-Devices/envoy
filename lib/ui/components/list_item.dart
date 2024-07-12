@@ -17,8 +17,6 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
-import 'package:envoy/business/exchange_rate.dart';
-import 'package:envoy/business/settings.dart';
 
 class EnvoyListTile extends StatelessWidget {
   const EnvoyListTile({
@@ -118,41 +116,13 @@ class ListHeader extends StatelessWidget {
   }
 }
 
-class ActivityListTile extends StatefulWidget {
+class ActivityListTile extends StatelessWidget {
   const ActivityListTile(
     this.notification, {
     super.key,
   });
 
   final EnvoyNotification notification;
-
-  @override
-  ActivityListTileState createState() => ActivityListTileState();
-}
-
-class ActivityListTileState extends State<ActivityListTile> {
-  @override
-  void initState() {
-    super.initState();
-
-    // Redraw when we fetch exchange rate
-    ExchangeRate().addListener(_redraw);
-
-    // Redraw when we change bitcoin unit
-    Settings().addListener(_redraw);
-  }
-
-  @override
-  void dispose() {
-    ExchangeRate().removeListener(_redraw);
-    Settings().removeListener(_redraw);
-
-    super.dispose();
-  }
-
-  _redraw() {
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -163,22 +133,22 @@ class ActivityListTileState extends State<ActivityListTile> {
       Color? iconColor;
       Widget? unitIcon;
       final Locale activeLocale = Localizations.localeOf(context);
-      final accountId = widget.notification.accountId;
+      final accountId = notification.accountId;
       bool hide = false;
 
       if (accountId != null) {
         hide = ref.watch(balanceHideStateStatusProvider(accountId));
       }
 
-      if (widget.notification.type == EnvoyNotificationType.transaction) {
-        leftIcon = widget.notification.amount! >= 0
+      if (notification.type == EnvoyNotificationType.transaction) {
+        leftIcon = notification.amount! >= 0
             ? EnvoyIcons.arrow_down_left
             : EnvoyIcons.arrow_up_right;
-        textLeft1 = widget.notification.amount! >= 0
+        textLeft1 = notification.amount! >= 0
             ? S().activity_received
             : S().activity_sent;
         textLeft2 = timeago
-            .format(widget.notification.date, locale: activeLocale.languageCode)
+            .format(notification.date, locale: activeLocale.languageCode)
             .capitalize();
         iconColor = EnvoyColors.textTertiary;
 
@@ -206,7 +176,7 @@ class ActivityListTileState extends State<ActivityListTile> {
             return FittedBox(
               child: EnvoyAmount(
                 account: AccountManager().getAccountById(accountId)!,
-                amountSats: widget.notification.amount!,
+                amountSats: notification.amount!,
                 amountWidgetStyle: AmountWidgetStyle.normal,
                 alignToEnd: true,
               ),
@@ -215,21 +185,21 @@ class ActivityListTileState extends State<ActivityListTile> {
         }();
       }
 
-      if (widget.notification.type == EnvoyNotificationType.firmware) {
+      if (notification.type == EnvoyNotificationType.firmware) {
         leftIcon = EnvoyIcons.tool;
         textLeft1 = S().activity_passportUpdate;
         textLeft2 = timeago
-            .format(widget.notification.date, locale: activeLocale.languageCode)
+            .format(notification.date, locale: activeLocale.languageCode)
             .capitalize();
 
         iconColor = EnvoyColors.textTertiary;
       }
 
-      if (widget.notification.type == EnvoyNotificationType.envoyUpdate) {
+      if (notification.type == EnvoyNotificationType.envoyUpdate) {
         leftIcon = EnvoyIcons.download;
         textLeft1 = S().activity_envoyUpdateAvailable;
         textLeft2 = timeago
-            .format(widget.notification.date, locale: activeLocale.languageCode)
+            .format(notification.date, locale: activeLocale.languageCode)
             .capitalize();
 
         iconColor = EnvoyColors.textTertiary;
