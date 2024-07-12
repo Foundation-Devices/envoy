@@ -525,8 +525,7 @@ class SpendRequirementOverlayState
     final account = ref.read(selectedAccountProvider);
     Set<String> walletSelection = ref.read(coinSelectionFromWallet);
     Set<String> coinSelection = ref.read(coinSelectionStateProvider);
-    bool selectionChanged =
-        walletSelection.difference(coinSelection).isNotEmpty;
+    Set coinSelectionDiff = coinSelection.difference(walletSelection);
 
     if (mode == SpendOverlayContext.editCoins) {
       if (ref.read(coinDetailsActiveProvider)) {
@@ -537,7 +536,7 @@ class SpendRequirementOverlayState
       await Future.delayed(const Duration(milliseconds: 120));
 
       ///if the user changed the selection, validate the transaction
-      if (selectionChanged) {
+      if (coinSelectionDiff.isNotEmpty) {
         ///reset fees if coin selection changed
         ref.read(spendFeeRateProvider.notifier).state =
             Fees().slowRate(account!.wallet.network) * 100000;
@@ -555,7 +554,7 @@ class SpendRequirementOverlayState
         //wait for coin details screen to animate out
         await Future.delayed(const Duration(milliseconds: 320));
       }
-      navigator.pop(selectionChanged);
+      navigator.pop(coinSelectionDiff);
     } else {
       if (ref.read(coinDetailsActiveProvider)) {
         navigator.pop();
