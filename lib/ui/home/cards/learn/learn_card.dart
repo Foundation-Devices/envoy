@@ -63,7 +63,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
 
     final bool isAllEmpty = isSearchEmpty || isFilterEmpty;
 
-    return LinearGradients.gradientShaderMask(
+    return ScrollGradientMask(
       child: CustomScrollView(
         physics: isAllEmpty ? const NeverScrollableScrollPhysics() : null,
         slivers: [
