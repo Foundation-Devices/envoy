@@ -5,8 +5,9 @@
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
-
 import 'package:envoy/business/azteco_voucher.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class AztecoRedeemModal extends StatefulWidget {
   final AztecoVoucher voucher;
@@ -22,10 +23,8 @@ class AztecoRedeemModal extends StatefulWidget {
 class _AztecoRedeemModalState extends State<AztecoRedeemModal> {
   @override
   Widget build(BuildContext context) {
-    var headingTextStyle = Theme.of(context)
-        .textTheme
-        .bodyMedium
-        ?.copyWith(fontWeight: FontWeight.w500, fontSize: 20);
+    var headingTextStyle =
+        EnvoyTypography.heading.copyWith(color: EnvoyColors.textPrimary);
 
     var voucherCodeTextStyle = Theme.of(context)
         .textTheme

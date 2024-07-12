@@ -8,7 +8,7 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/ui/animated_qr_image.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -166,8 +166,8 @@ class OnboardingPage extends StatelessWidget {
                   height: 150,
                   width: 150,
                   child: CircularProgressIndicator(
-                    color: EnvoyColors.teal,
-                    backgroundColor: EnvoyColors.greyLoadingSpinner,
+                    color: EnvoyColors.accentPrimary,
+                    backgroundColor: EnvoyColors.textTertiary,
                     strokeWidth: 8,
                   ),
                 );
@@ -288,13 +288,8 @@ class OnboardingText extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(header!,
                         textAlign: TextAlign.center,
-                        style: EnvoyTypography.subheading
-                            .copyWith(
-                                height: 1.2,
-                                fontSize: 20,
-                                color: EnvoyColors.gray1000,
-                                decoration: TextDecoration.none)
-                            .setWeight(FontWeight.w500)))
+                        style: EnvoyTypography.heading
+                            .copyWith(color: EnvoyColors.textPrimary)))
                 : const SizedBox.shrink(),
             const SizedBox(height: EnvoySpacing.medium1),
             text != null
@@ -374,7 +369,7 @@ class LinkText extends StatelessWidget {
         ? Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 13)
         : textStyle!;
     TextStyle linkStyleBuild = linkStyle == null
-        ? const TextStyle(color: EnvoyColors.darkTeal)
+        ? const TextStyle(color: EnvoyColors.accentPrimary)
         : linkStyle!;
 
     List<TextSpan> spans = [];
