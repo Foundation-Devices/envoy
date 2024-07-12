@@ -21,6 +21,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart';
+import 'package:envoy/util/envoy_storage.dart';
 
 class HomeAppBar extends ConsumerStatefulWidget {
   final bool backGroundShown;
@@ -119,7 +120,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         opacity: (optionsShown || inEditMode) ? 0.0 : 1.0,
         child: HamburgerMenu(
           iconState: state,
-          onPressed: () {
+          onPressed: () async {
             if (homePageDropState != HomePageBackgroundState.hidden) {
               if (homePageDropState != HomePageBackgroundState.menu) {
                 ref.read(homePageBackgroundProvider.notifier).state =
@@ -136,7 +137,16 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                 ref.read(homePageTitleProvider.notifier).state =
                     S().menu_heading.toUpperCase();
               } else if (state == HamburgerState.back) {
-                GoRouter.of(context).pop();
+                if (path == ROUTE_SELECT_REGION &&
+                    await EnvoyStorage().getCountry() != null) {
+                  if (context.mounted) {
+                    context.go(ROUTE_BUY_BITCOIN);
+                  }
+                } else {
+                  if (context.mounted) {
+                    GoRouter.of(context).pop();
+                  }
+                }
               }
             }
           },
