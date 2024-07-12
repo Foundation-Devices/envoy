@@ -166,7 +166,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       actions: [
 // Right action
         Opacity(
-          opacity: inEditMode ? 0.0 : 1.0,
+          opacity: (inEditMode || backDropEnabled) ? 0.0 : 1.0,
           child: AnimatedSwitcher(
               duration: _animationsDuration,
               child: AbsorbPointer(

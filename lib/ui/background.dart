@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:io';
 import 'dart:math';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +61,10 @@ class AppBackgroundState extends State<AppBackground> {
                 color: Colors.black,
                 child: FractionallySizedBox(
                   alignment: Alignment.centerRight,
-                  widthFactor: 0.5,
+                  // 0.5 would be the perfect symmetry,
+                  // but it leaves a small gap due to the mask filter (see LinesPainter) .
+                  // ios canvas rendering leaves more gap than android ( due to blur filter probably)
+                  widthFactor: Platform.isIOS ? 0.501 : 0.5,
                   child: ShaderMask(
                     blendMode: BlendMode.dstIn,
                     shaderCallback: (bounds) {
@@ -160,9 +164,8 @@ class LinesPainter extends CustomPainter {
       /// to fix this we draw a line from top to bottom with a blur effect
       final paint = Paint()
         ..color = Colors.black
-        ..maskFilter = const MaskFilter.blur(BlurStyle.solid, 1)
-        ..blendMode = BlendMode.srcIn
-        ..strokeWidth = 1;
+        ..maskFilter = const MaskFilter.blur(BlurStyle.solid, 0)
+        ..blendMode = BlendMode.srcIn;
       canvas.drawLine(p1, Offset.zero, paint);
     }
   }
