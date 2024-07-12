@@ -272,8 +272,10 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: EnvoySpacing.medium2,
+          padding: EdgeInsets.symmetric(
+            vertical: MediaQuery.sizeOf(context).width <= 390
+                ? EnvoySpacing.medium1
+                : EnvoySpacing.medium2,
           ),
           child: SpendableAmountWidget(widget.account!),
         ),
@@ -342,19 +344,19 @@ class NumPad extends StatefulWidget {
 class _NumPadState extends State<NumPad> {
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width;
-    double childAspectRatio = 1.35;
-    if (width < 380) {
-      childAspectRatio = 1.4;
-    }
-    if (width < 350) {
-      childAspectRatio = 1.5;
-    }
-    if (width <= 320) {
-      childAspectRatio = 1.54;
-    }
+    final size = MediaQuery.sizeOf(context);
+    final width = size.width * 0.8;
+    //total height of the numpad,only .34 of the screen height will be used by the numpad
+    final height = size.height * 0.34;
+
+    const int crossAxisCount = 3;
+    final int rowCount = (12 / crossAxisCount).ceil();
+
+    // Calculate the child aspect ratio, based on the width and height
+    final childAspectRatio = (width / crossAxisCount) / (height / rowCount);
+
     return GridView.count(
-      crossAxisCount: 3,
+      crossAxisCount: crossAxisCount,
       childAspectRatio: childAspectRatio,
       shrinkWrap: true,
       // For some reason GridView has a default padding
