@@ -121,13 +121,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
             isComplex: true,
             willChange: false,
             painter: StripePainter(
-              EnvoyColors.gray1000,
-              stripeWidth: 1,
-              gapWidth: 1,
-              rotateDegree: 18.0,
-              bgColor: Colors.transparent,
-              clipHalf: false,
-              offsetY: 0.0,
+              EnvoyColors.gray1000.withOpacity(0.4),
             ),
             child: Padding(
               padding: const EdgeInsets.only(

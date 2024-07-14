@@ -257,7 +257,8 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                               return const TouPage();
                             }));
                           },
-                        )
+                        ),
+                        const SizedBox(height: EnvoySpacing.small),
                       ],
                     ),
                   ),

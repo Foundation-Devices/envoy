@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("30,493.93"),
+        "_": MessageLookupByLibrary.simpleMessage("What is Envoy?"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versão da Aplicação"),
         "about_openSourceLicences":
@@ -445,8 +445,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Reforçar"),
         "coindetails_overlay_date":
             MessageLookupByLibrary.simpleMessage("Data"),
+        "coindetails_overlay_explorer":
+            MessageLookupByLibrary.simpleMessage("Explorer"),
         "coindetails_overlay_heading":
             MessageLookupByLibrary.simpleMessage("DETALHES DA MOEDA"),
+        "coindetails_overlay_modal_explorer_heading":
+            MessageLookupByLibrary.simpleMessage("Open in Explorer"),
+        "coindetails_overlay_modal_explorer_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "You are about to leave Envoy and view this transaction on a blockchain explorer hosted by Foundation. Ensure you understand the privacy trade-offs before continuing. "),
         "coindetails_overlay_noBoostNoFunds_heading":
             MessageLookupByLibrary.simpleMessage(
                 "Não é possível Reforçar a Transacção"),
@@ -602,6 +609,14 @@ class MessageLookup extends MessageLookupByLibrary {
             "Sim, à semelhança de tudo o que fazemos na Foundation, o código da Envoy é completamente aberto. A Envoy está licenciada sob a mesma licença [[GPLv3]] que o Firmware do nosso Passport. Para aqueles que desejam verificar o nosso código-fonte, podem fazê-lo [[aqui]]."),
         "envoy_faq_answer_9": MessageLookupByLibrary.simpleMessage(
             "Não, orgulhamo-nos de garantir de que o Passport é compatível com o maior número possível de carteiras de software diferentes. Vê a nossa lista completa, incluindo tutoriais [[aqui]]."),
+        "envoy_faq_link_10": MessageLookupByLibrary.simpleMessage(
+            "https://docs.foundation.xyz/firmware-updates/passport/"),
+        "envoy_faq_link_8_1": MessageLookupByLibrary.simpleMessage(
+            "https://www.gnu.org/licenses/gpl-3.0.en.html"),
+        "envoy_faq_link_8_2": MessageLookupByLibrary.simpleMessage(
+            "https://github.com/Foundation-Devices/envoy"),
+        "envoy_faq_link_9": MessageLookupByLibrary.simpleMessage(
+            "https://docs.foundation.xyz/passport/connect/"),
         "envoy_faq_question_1":
             MessageLookupByLibrary.simpleMessage("O que é a Envoy?"),
         "envoy_faq_question_10": MessageLookupByLibrary.simpleMessage(

@@ -146,13 +146,12 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                                   const EdgeInsets.symmetric(
                                                       horizontal:
                                                           EnvoySpacing.medium1),
-                                              child: Text(
-                                                stepHeadings[i],
-                                                textAlign: TextAlign.center,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleLarge,
-                                              ),
+                                              child: Text(stepHeadings[i],
+                                                  textAlign: TextAlign.center,
+                                                  style: EnvoyTypography.heading
+                                                      .copyWith(
+                                                          color: EnvoyColors
+                                                              .textPrimary)),
                                             ),
                                             const Padding(
                                                 padding: EdgeInsets.symmetric(

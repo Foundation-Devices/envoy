@@ -50,12 +50,16 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
           rightAction: Consumer(
             builder: (context, ref, child) {
               bool menuVisible = ref.watch(homePageOptionsVisibilityProvider);
-              return IconButton(
-                  onPressed: () {
-                    HomePageState.of(context)?.toggleOptions();
-                  },
-                  icon: Icon(
-                      menuVisible ? Icons.close : Icons.more_horiz_outlined));
+              return SizedBox(
+                height: 55,
+                width: 55,
+                child: IconButton(
+                    onPressed: () {
+                      HomePageState.of(context)?.toggleOptions();
+                    },
+                    icon: Icon(
+                        menuVisible ? Icons.close : Icons.more_horiz_outlined)),
+              );
             },
           ));
     });

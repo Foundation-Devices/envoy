@@ -10,6 +10,8 @@ import 'package:envoy/ui/pages/scv/scv_intro.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class TouPage extends StatelessWidget {
   const TouPage({super.key});
@@ -55,11 +57,10 @@ class TouPage extends StatelessWidget {
                 ],
               ),
             ),
-            Text(
-              S().envoy_account_tos_heading,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            Text(S().envoy_account_tos_heading,
+                textAlign: TextAlign.center,
+                style: EnvoyTypography.heading
+                    .copyWith(color: EnvoyColors.textPrimary)),
             Flexible(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(4.0),

@@ -33,6 +33,7 @@ class EnvoyButton extends StatefulWidget {
   final EnvoyIcons? icon;
   final double height;
   final Function? onTap;
+  final EdgeInsets edgeInsets;
 
   const EnvoyButton({
     super.key,
@@ -42,6 +43,8 @@ class EnvoyButton extends StatefulWidget {
     this.icon,
     this.onTap,
     this.height = 48.0,
+    this.edgeInsets = const EdgeInsets.symmetric(
+        horizontal: EnvoySpacing.xs, vertical: EnvoySpacing.small),
   });
 
   @override
@@ -109,9 +112,7 @@ class EnvoyButtonState extends State<EnvoyButton> {
                     duration: const Duration(milliseconds: 180),
                     opacity: widget.state == ButtonState.loading ? 0 : 1,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.xs,
-                          vertical: EnvoySpacing.small),
+                      padding: widget.edgeInsets,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [

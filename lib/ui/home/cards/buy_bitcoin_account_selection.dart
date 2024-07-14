@@ -25,6 +25,9 @@ import 'package:envoy/ui/components/ramp_widget.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 
+GlobalKey<ChooseAccountState> chooseAccountKey =
+    GlobalKey<ChooseAccountState>();
+
 class SelectAccount extends ConsumerStatefulWidget {
   const SelectAccount({super.key});
 
@@ -87,6 +90,8 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
   @override
   Widget build(BuildContext context) {
     List<Account> filteredAccounts = [];
+    List<Account> mainnetAccounts = ref.read(mainnetAccountsProvider(
+        null)); // This list is used for choosing accounts, maintaining the same order as displayed in the home screen.
     if (selectedAccount != null) {
       filteredAccounts = ref.watch(mainnetAccountsProvider(selectedAccount));
     }
@@ -127,7 +132,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                         filteredAccounts: filteredAccounts,
                         onTap: (Account account) {
                           updateSelectedAccount(account);
-                          chooseAccount(context, filteredAccounts);
+                          chooseAccount(context, mainnetAccounts, account);
                         },
                       ),
                       const SizedBox(
@@ -142,7 +147,8 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                             textAlign: TextAlign.center,
                           ),
                           onTap: () {
-                            chooseAccount(context, filteredAccounts);
+                            chooseAccount(
+                                context, mainnetAccounts, selectedAccount!);
                           },
                         );
                       }),
@@ -246,7 +252,8 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
     }
   }
 
-  void chooseAccount(BuildContext context, List<Account> filteredAccounts) {
+  void chooseAccount(BuildContext context, List<Account> filteredAccounts,
+      Account selectedAccount) {
     setState(() {
       isChooseAccountOpen = true;
     });
@@ -257,12 +264,15 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
             setState(() {
               isChooseAccountOpen = false;
             });
+            chooseAccountKey.currentState?.moveAccountToEnd(selectedAccount);
           },
           child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
               child: ChooseAccount(
                 accounts: filteredAccounts,
                 onSelectAccount: updateSelectedAccount,
+                selectedAccount: selectedAccount,
+                key: chooseAccountKey,
               )),
         );
       },
@@ -289,33 +299,39 @@ class ChooseAccount extends StatefulWidget {
     super.key,
     required this.accounts,
     required this.onSelectAccount,
+    required this.selectedAccount,
+    this.chooseAccountKey,
   });
 
   final List<Account> accounts;
   final Function(Account) onSelectAccount;
+  final Account selectedAccount;
+  final GlobalKey<ChooseAccountState>? chooseAccountKey;
 
   @override
-  State<ChooseAccount> createState() => _ChooseAccountState();
+  State<ChooseAccount> createState() => ChooseAccountState();
 }
 
-class _ChooseAccountState extends State<ChooseAccount> {
-  late List<GlobalKey> keys = widget.accounts.map((e) => GlobalKey()).toList();
+class ChooseAccountState extends State<ChooseAccount> {
+  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
+  late List<Account> accounts;
+  late Account _currentSelectedAccount;
+
+  @override
+  void initState() {
+    super.initState();
+    accounts = List<Account>.from(widget.accounts);
+    _currentSelectedAccount = widget.selectedAccount;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Builder(builder: (context) {
       return GestureDetector(
-        onTapDown: (details) {
-          for (var element in keys) {
-            final RenderBox box =
-                element.currentContext?.findRenderObject() as RenderBox;
-            final Offset localOffset =
-                box.globalToLocal(details.globalPosition);
-
-            if (!box.paintBounds.contains(localOffset)) {
-              Navigator.of(context).pop();
-              break;
-            }
+        onTapUp: (_) {
+          moveAccountToEnd(widget.selectedAccount);
+          if (context.mounted) {
+            Navigator.of(context).pop();
           }
         },
         child: TweenAnimationBuilder(
@@ -368,34 +384,15 @@ class _ChooseAccountState extends State<ChooseAccount> {
                   ).createShader(rect);
                 },
                 blendMode: BlendMode.dstOut,
-                child: ListView.builder(
-                  itemCount: widget.accounts.length,
+                child: AnimatedList(
+                  key: _listKey,
+                  initialItemCount: accounts.length,
                   physics: const BouncingScrollPhysics(),
                   padding: const EdgeInsets.only(
                       top: EnvoySpacing.medium2, bottom: EnvoySpacing.medium2),
-                  itemBuilder: (context, index) {
-                    return Container(
-                      key: keys[index],
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: EnvoySpacing.small,
-                            horizontal: EnvoySpacing.medium1),
-                        child: Hero(
-                          transitionOnUserGestures: true,
-                          tag: widget.accounts[index].id!,
-                          key: ValueKey(widget.accounts[index].id!),
-                          child: AccountListTile(
-                            widget.accounts[index],
-                            onTap: () async {
-                              final navigator = Navigator.of(context);
-                              widget.onSelectAccount(widget.accounts[index]);
-                              navigator.pop();
-                            },
-                            draggable: false,
-                          ),
-                        ),
-                      ),
-                    );
+                  itemBuilder: (context, index, animation) {
+                    return _buildAccountItem(
+                        context, accounts[index], animation, index);
                   },
                 ),
               ),
@@ -404,6 +401,76 @@ class _ChooseAccountState extends State<ChooseAccount> {
         ),
       );
     });
+  }
+
+  int _getAccountIndexById(String? id) {
+    for (int i = 0; i < accounts.length; i++) {
+      if (accounts[i].id == id) {
+        return i;
+      }
+    }
+    return 0;
+  }
+
+  Widget _buildAccountItem(BuildContext context, Account account,
+      Animation<double> animation, int index) {
+    return SizeTransition(
+      sizeFactor: animation,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+            vertical: EnvoySpacing.small, horizontal: EnvoySpacing.medium1),
+        child: Hero(
+          transitionOnUserGestures: true,
+          tag: account.id!,
+          child: AccountListTile(
+            account,
+            onTap: () async {
+              final navigator = Navigator.of(context);
+              _currentSelectedAccount = account;
+              widget.onSelectAccount(account);
+              moveAccountToEnd(account);
+              navigator.pop();
+            },
+            draggable: false,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void moveAccountToEnd(Account accountToMove) {
+    // Ensure moving the correct account to prevent lag when navigating back on Android.
+    if (_currentSelectedAccount == accountToMove) {
+      int index = _getAccountIndexById(accountToMove.id);
+      final account = accounts.removeAt(index);
+      _listKey.currentState!.removeItem(
+        index,
+        (context, animation) =>
+            _buildRemovedAccountItem(context, account, animation),
+        duration: const Duration(milliseconds: 300),
+      );
+      accounts.add(account);
+      _listKey.currentState!.insertItem(
+        accounts.length - 1,
+        duration: const Duration(milliseconds: 300),
+      );
+    }
+  }
+
+  Widget _buildRemovedAccountItem(
+      BuildContext context, Account account, Animation<double> animation) {
+    return SizeTransition(
+      sizeFactor: animation,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+            vertical: EnvoySpacing.small, horizontal: EnvoySpacing.medium1),
+        child: AccountListTile(
+          account,
+          onTap: () {},
+          draggable: false,
+        ),
+      ),
+    );
   }
 }
 

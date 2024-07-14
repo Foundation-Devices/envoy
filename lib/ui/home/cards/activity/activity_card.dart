@@ -43,24 +43,27 @@ class ActivityCardState extends State<ActivityCard> {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: unused_local_variable
-
     return const AnimatedSwitcher(
         duration: Duration(milliseconds: 250), child: TopLevelActivityCard());
   }
 }
 
 //ignore: must_be_immutable
-class TopLevelActivityCard extends ConsumerWidget {
+class TopLevelActivityCard extends ConsumerStatefulWidget {
   const TopLevelActivityCard({super.key});
 
   @override
-  Widget build(context, ref) {
+  TopLevelActivityCardState createState() => TopLevelActivityCardState();
+}
+
+class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
+  @override
+  Widget build(BuildContext context) {
     List<EnvoyNotification> notifications =
         ref.watch(filteredNotificationStreamProvider);
     ref.read(notificationTypeFilterProvider.notifier).state = null;
 
-    return LinearGradients.gradientShaderMask(
+    return ScrollGradientMask(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
         child: CustomScrollView(slivers: [

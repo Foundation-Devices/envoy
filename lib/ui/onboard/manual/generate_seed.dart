@@ -191,7 +191,8 @@ class _SeedScreenState extends State<SeedScreen> {
                     seedList.length == 24
                         ? S().manual_setup_generate_seed_write_words_24_heading
                         : S().manual_setup_generate_seed_write_words_heading,
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: EnvoyTypography.heading
+                        .copyWith(color: EnvoyColors.textPrimary),
                     textAlign: TextAlign.center),
                 const Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
                 Expanded(
@@ -412,11 +413,10 @@ class _SeedScreenState extends State<SeedScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Text(
-                  S().manual_setup_generate_seed_verify_seed_heading,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text(S().manual_setup_generate_seed_verify_seed_heading,
+                    textAlign: TextAlign.center,
+                    style: EnvoyTypography.heading
+                        .copyWith(color: EnvoyColors.textPrimary)),
                 Padding(
                   padding: const EdgeInsets.all(EnvoySpacing.medium2),
                   child: Text(

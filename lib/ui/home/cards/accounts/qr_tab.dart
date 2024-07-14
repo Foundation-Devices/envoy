@@ -2,14 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as design_system;
-
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/account.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:envoy/ui/components/stripe_painter.dart';
 
 class QrTab extends StatelessWidget {
   final String title;
@@ -53,8 +52,11 @@ class QrTab extends StatelessWidget {
               child: Stack(children: [
                 Positioned.fill(
                   child: CustomPaint(
-                    painter:
-                        LinesPainter(color: EnvoyColors.gray1000, opacity: 0.4),
+                    isComplex: true,
+                    willChange: false,
+                    painter: StripePainter(
+                      EnvoyColors.gray1000.withOpacity(0.4),
+                    ),
                   ),
                 ),
                 Column(
