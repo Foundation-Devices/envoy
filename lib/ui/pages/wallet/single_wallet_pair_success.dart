@@ -8,8 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:wallet/wallet.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/util/build_context_extension.dart';
 
 class SingleWalletPairSuccessPage extends StatelessWidget {
   final Wallet pairedWallet;
@@ -38,31 +36,19 @@ class SingleWalletPairSuccessPage extends StatelessWidget {
         ),
       ],
       buttons: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
-          child: OnboardingButton(
-              type: EnvoyButtonTypes.secondary,
-              label: S().pair_new_device_success_cta2,
-              onTap: () {
-                OnboardingPage.popUntilHome(context, resetHomeProviders: true);
-              }),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
-          child: OnboardingButton(
-              label: S().pair_new_device_success_cta1,
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return SingleWalletAddressVerifyPage(pairedWallet);
-                }));
-              }),
-        ),
-        SizedBox(
-          height: context.isSmallScreen
-              ? EnvoySpacing.medium1
-              : EnvoySpacing.medium2,
-        )
+        OnboardingButton(
+            type: EnvoyButtonTypes.secondary,
+            label: S().pair_new_device_success_cta2,
+            onTap: () {
+              OnboardingPage.popUntilHome(context, resetHomeProviders: true);
+            }),
+        OnboardingButton(
+            label: S().pair_new_device_success_cta1,
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return SingleWalletAddressVerifyPage(pairedWallet);
+              }));
+            }),
       ],
     );
   }

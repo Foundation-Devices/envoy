@@ -13,6 +13,7 @@ import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
+import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -237,30 +238,38 @@ class OnboardingPage extends StatelessWidget {
               ),
             ]),
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              navigationDots != 0
-                  ? Padding(
-                      padding: const EdgeInsets.all(2.0),
-                      child: DotsIndicator(
-                        decorator: const DotsDecorator(
-                            size: Size.square(5.0),
-                            activeSize: Size.square(5.0),
-                            spacing: EdgeInsets.symmetric(horizontal: 5)),
-                        dotsCount: navigationDots,
-                        position: navigationDotsIndex.toDouble(),
-                      ),
-                    )
-                  : const SizedBox.shrink(),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: helperTextAbove ?? const SizedBox.shrink(),
-              ),
-              ...?buttons,
-              helperTextBelow ?? const SizedBox.shrink()
-            ],
+          Padding(
+            padding: EdgeInsets.only(
+                left: EnvoySpacing.xs,
+                right: EnvoySpacing.xs,
+                bottom: context.isSmallScreen
+                    ? EnvoySpacing.medium1
+                    : EnvoySpacing.medium2),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                navigationDots != 0
+                    ? Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: DotsIndicator(
+                          decorator: const DotsDecorator(
+                              size: Size.square(5.0),
+                              activeSize: Size.square(5.0),
+                              spacing: EdgeInsets.symmetric(horizontal: 5)),
+                          dotsCount: navigationDots,
+                          position: navigationDotsIndex.toDouble(),
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: helperTextAbove ?? const SizedBox.shrink(),
+                ),
+                ...?buttons,
+                helperTextBelow ?? const SizedBox.shrink()
+              ],
+            ),
           ),
         ],
       ),

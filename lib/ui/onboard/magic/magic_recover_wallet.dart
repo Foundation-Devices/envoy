@@ -304,7 +304,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
               SizedBox(
                   height: context.isSmallScreen
                       ? EnvoySpacing.medium1
-                      : EnvoySpacing.medium3),
+                      : EnvoySpacing.medium2),
             ],
           );
         },

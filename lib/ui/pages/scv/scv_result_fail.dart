@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/envoy_button.dart';
 
 class ScvResultFailPage extends StatelessWidget {
@@ -24,30 +23,23 @@ class ScvResultFailPage extends StatelessWidget {
             text: S().envoy_scv_result_fail_subheading)
       ],
       buttons: [
-        Padding(
-          padding: const EdgeInsets.only(
-            bottom: EnvoySpacing.medium2,
-            left: EnvoySpacing.xs,
-            right: EnvoySpacing.xs,
-          ),
-          child: Column(
-            children: [
-              OnboardingButton(
-                  type: EnvoyButtonTypes.secondary,
-                  label: S().envoy_scv_result_fail_cta1,
-                  onTap: () {
-                    launchUrl(Uri.parse("mailto:hello@foundation.xyz"));
-                  }),
-              OnboardingButton(
-                  label: S().component_retry,
-                  onTap: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return ScvShowQrPage();
-                    }));
-                  }),
-            ],
-          ),
+        Column(
+          children: [
+            OnboardingButton(
+                type: EnvoyButtonTypes.secondary,
+                label: S().envoy_scv_result_fail_cta1,
+                onTap: () {
+                  launchUrl(Uri.parse("mailto:hello@foundation.xyz"));
+                }),
+            OnboardingButton(
+                label: S().component_retry,
+                onTap: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return ScvShowQrPage();
+                  }));
+                }),
+          ],
         ),
       ],
     );

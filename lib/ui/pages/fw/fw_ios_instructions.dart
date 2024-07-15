@@ -12,7 +12,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/pages/fw/fw_ios_success.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 //ignore: must_be_immutable
 class FwIosInstructionsPage extends ConsumerWidget {
@@ -51,37 +50,30 @@ class FwIosInstructionsPage extends ConsumerWidget {
       navigationDots: 6,
       navigationDotsIndex: 2,
       buttons: [
-        Padding(
-          padding: const EdgeInsets.only(
-              bottom: EnvoySpacing.medium2,
-              left: EnvoySpacing.xs,
-              right: EnvoySpacing.xs),
-          child: OnboardingButton(
-              label: S().component_continue,
-              onTap: () async {
-                final navigator = Navigator.of(context);
-                final firmwareFile =
-                    await UpdatesManager().getStoredFw(deviceId);
-                final uploader = FwUploader(firmwareFile);
-                final folderPath = await uploader.promptUserForFolderAccess();
+        OnboardingButton(
+            label: S().component_continue,
+            onTap: () async {
+              final navigator = Navigator.of(context);
+              final firmwareFile = await UpdatesManager().getStoredFw(deviceId);
+              final uploader = FwUploader(firmwareFile);
+              final folderPath = await uploader.promptUserForFolderAccess();
 
-                if (folderPath != null) {
-                  await uploader.upload();
-                  Devices()
-                      .markDeviceUpdated(deviceId, fwInfo.value!.storedVersion);
+              if (folderPath != null) {
+                await uploader.upload();
+                Devices()
+                    .markDeviceUpdated(deviceId, fwInfo.value!.storedVersion);
 
-                  navigator.push(MaterialPageRoute(builder: (context) {
-                    return FwIosSuccessPage(
-                      onboarding: onboarding,
-                    );
-                  }));
-                } else {
-                  navigator.push(MaterialPageRoute(builder: (context) {
-                    return FwMicrosdPage(onboarding: onboarding);
-                  }));
-                }
-              }),
-        ),
+                navigator.push(MaterialPageRoute(builder: (context) {
+                  return FwIosSuccessPage(
+                    onboarding: onboarding,
+                  );
+                }));
+              } else {
+                navigator.push(MaterialPageRoute(builder: (context) {
+                  return FwMicrosdPage(onboarding: onboarding);
+                }));
+              }
+            }),
       ],
     );
   }

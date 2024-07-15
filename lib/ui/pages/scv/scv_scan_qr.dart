@@ -38,21 +38,13 @@ class ScvScanQrPage extends StatelessWidget {
         }));
       },
       buttons: [
-        Padding(
-          padding: const EdgeInsets.only(
-            bottom: EnvoySpacing.medium2,
-            left: EnvoySpacing.xs,
-            right: EnvoySpacing.xs,
-          ),
-          child: OnboardingButton(
-              label: S().component_continue,
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return ScannerPage.scv(challenge);
-                }));
-              }),
-        ),
+        OnboardingButton(
+            label: S().component_continue,
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return ScannerPage.scv(challenge);
+              }));
+            }),
       ],
     );
   }
