@@ -537,11 +537,15 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: [
-          Text(
-            S().magic_setup_recovery_retry_header,
-            textAlign: TextAlign.center,
+          DefaultTextStyle(
             style: EnvoyTypography.heading
                 .copyWith(color: EnvoyColors.textPrimary),
+            child: Text(
+              S().magic_setup_recovery_retry_header,
+              textAlign: TextAlign.center,
+              style: EnvoyTypography.heading
+                  .copyWith(color: EnvoyColors.textPrimary),
+            ),
           ),
         ],
       ),
