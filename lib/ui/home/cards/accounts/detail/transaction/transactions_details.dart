@@ -278,8 +278,10 @@ class _TransactionsDetailsWidgetState
                     ),
                   ),
                   button: (showTxIdExpanded &&
-                          widget.account.wallet.network ==
-                              Network.Mainnet) // Only for Mainnet for now
+                          (widget.account.wallet.network == Network.Mainnet ||
+                              widget.account.wallet.network ==
+                                  Network
+                                      .Signet)) // Only for Mainnet and Signet for now
                       ? EnvoyButton(
                           height: EnvoySpacing.medium3,
                           icon: EnvoyIcons.externalLink,
@@ -287,7 +289,8 @@ class _TransactionsDetailsWidgetState
                           type: ButtonType.primary,
                           state: ButtonState.defaultState,
                           onTap: () {
-                            openTxDetailsInExplorer(context, tx.txId);
+                            openTxDetailsInExplorer(context, tx.txId,
+                                widget.account.wallet.network);
                           },
                           edgeInsets: const EdgeInsets.symmetric(
                               horizontal: EnvoySpacing.medium1),
@@ -551,7 +554,8 @@ String getTransactionStatusString(Transaction tx) {
       : S().activity_pending;
 }
 
-Future<void> openTxDetailsInExplorer(BuildContext context, String txId) async {
+Future<void> openTxDetailsInExplorer(
+    BuildContext context, String txId, Network network) async {
   bool dismissed = await EnvoyStorage()
       .checkPromptDismissed(DismissiblePrompt.openTxDetailsInExplorer);
   if (!dismissed && context.mounted) {
@@ -561,7 +565,13 @@ Future<void> openTxDetailsInExplorer(BuildContext context, String txId) async {
         S().component_continue,
         (context) {
           Navigator.pop(context);
-          launchUrlString("${Fees.mempoolFoundationInstance}/tx/$txId");
+          if (network == Network.Mainnet) {
+            launchUrlString("${Fees.mempoolFoundationInstance}/tx/$txId");
+          } else {
+            // for Signet
+            launchUrlString(
+                "${Fees.mutinynetMempoolFoundationInstance}/tx/$txId");
+          }
         },
         title: S().coindetails_overlay_modal_explorer_heading,
         learnMoreLink: "https://docs.foundation.xyz/faq/home/#envoy-privacy",
