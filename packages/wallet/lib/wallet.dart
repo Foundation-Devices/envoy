@@ -427,7 +427,7 @@ class ElectrumServerFeatures {
 
 // Dummy placeholder wallet for greying out
 class GhostWallet extends Wallet {
-  GhostWallet() : super("", Network.Mainnet, "", "", hot: true);
+  GhostWallet({bool hot = true}) : super("", Network.Mainnet, "", "", hot: hot);
 }
 
 @JsonSerializable()
