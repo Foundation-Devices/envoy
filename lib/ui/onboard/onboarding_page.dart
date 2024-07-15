@@ -228,10 +228,12 @@ class OnboardingPage extends StatelessWidget {
                   ),
                 ),
               Flexible(
-                child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [...?text]),
+                child: SingleChildScrollView(
+                  child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [...?text]),
+                ),
               ),
             ]),
           ),

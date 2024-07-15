@@ -19,13 +19,9 @@ class SingleWalletAddressVerifyConfirmPage extends StatelessWidget {
       key: const Key("single_wallet_verify_confirm"),
       clipArt: Image.asset("assets/address_verify.png"),
       text: [
-        Flexible(
-          child: SingleChildScrollView(
-            child: OnboardingText(
-                header: S().pair_new_device_address_heading,
-                text: S().pair_new_device_address_subheading),
-          ),
-        ),
+        OnboardingText(
+            header: S().pair_new_device_address_heading,
+            text: S().pair_new_device_address_subheading),
       ],
       buttons: [
         OnboardingButton(

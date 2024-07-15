@@ -18,6 +18,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/widgets/expandable_page_view.dart';
 
 class MagicSetupGenerate extends StatefulWidget {
   const MagicSetupGenerate({super.key});
@@ -128,38 +129,35 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
             ),
           ),
           text: [
-            Expanded(
-              child: PageView(
-                physics: const NeverScrollableScrollPhysics(),
-                controller: _pageController,
-                children: [
-                  ...stepsHeadings.map((heading) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: EnvoySpacing.xs,
-                          horizontal: EnvoySpacing.small),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Flexible(
-                            child: SingleChildScrollView(
-                              child: OnboardingText(
-                                header: heading,
-                                text: stepSubHeadings[
-                                    stepsHeadings.indexOf(heading)],
-                                key: ValueKey<String>(
-                                  stepSubHeadings[
-                                      stepsHeadings.indexOf(heading)],
-                                ),
+            ExpandablePageView(
+              physics: const NeverScrollableScrollPhysics(),
+              controller: _pageController,
+              children: [
+                ...stepsHeadings.map((heading) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.xs,
+                        horizontal: EnvoySpacing.small),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: SingleChildScrollView(
+                            child: OnboardingText(
+                              header: heading,
+                              text: stepSubHeadings[
+                                  stepsHeadings.indexOf(heading)],
+                              key: ValueKey<String>(
+                                stepSubHeadings[stepsHeadings.indexOf(heading)],
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                    );
-                  })
-                ],
-              ),
+                        ),
+                      ],
+                    ),
+                  );
+                })
+              ],
             )
           ]),
     );
