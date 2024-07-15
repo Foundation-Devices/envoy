@@ -63,7 +63,10 @@ class FwIntroPage extends StatelessWidget {
       navigationDotsIndex: 0,
       buttons: [
         Padding(
-          padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+          padding: const EdgeInsets.only(
+              bottom: EnvoySpacing.medium2,
+              left: EnvoySpacing.xs,
+              right: EnvoySpacing.xs),
           child: OnboardingButton(
               label: S().envoy_fw_intro_cta,
               onTap: () {

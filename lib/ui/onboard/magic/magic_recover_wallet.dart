@@ -357,7 +357,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
         padding: const EdgeInsets.only(
           left: EnvoySpacing.xs,
           right: EnvoySpacing.xs,
-            ),
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

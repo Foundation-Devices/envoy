@@ -142,7 +142,10 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
       buttons: [
         if (done != null)
           Padding(
-            padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+            padding: const EdgeInsets.only(
+                bottom: EnvoySpacing.medium2,
+                left: EnvoySpacing.xs,
+                right: EnvoySpacing.xs),
             child: OnboardingButton(
                 label: done! ? S().component_continue : S().component_tryAgain,
                 onTap: () {

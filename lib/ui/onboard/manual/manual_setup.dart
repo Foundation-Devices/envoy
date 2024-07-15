@@ -251,7 +251,7 @@ class SeedIntroScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: EnvoySpacing.xs,
-                      vertical: EnvoySpacing.medium2+ EnvoySpacing.xs),
+                      vertical: EnvoySpacing.medium2 + EnvoySpacing.xs),
                   child: mode == SeedIntroScreenType.generate ||
                           mode == SeedIntroScreenType.verify
                       ? OnboardingButton(

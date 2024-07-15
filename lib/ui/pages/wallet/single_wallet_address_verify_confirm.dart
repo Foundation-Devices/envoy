@@ -24,22 +24,28 @@ class SingleWalletAddressVerifyConfirmPage extends StatelessWidget {
             text: S().pair_new_device_address_subheading),
       ],
       buttons: [
-        OnboardingButton(
-          label: S().pair_new_device_address_cta2,
-          onTap: () {
-            launchUrl(Uri.parse("mailto:hello@foundation.xyz"));
-          },
-          type: EnvoyButtonTypes.secondary,
-        ),
-        OnboardingButton(
-            label: S().component_continue,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
+          child: OnboardingButton(
+            label: S().pair_new_device_address_cta2,
             onTap: () {
-              OnboardingPage.popUntilHome(context);
-            }),
+              launchUrl(Uri.parse("mailto:hello@foundation.xyz"));
+            },
+            type: EnvoyButtonTypes.secondary,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
+          child: OnboardingButton(
+              label: S().component_continue,
+              onTap: () {
+                OnboardingPage.popUntilHome(context);
+              }),
+        ),
         SizedBox(
           height: context.isSmallScreen
               ? EnvoySpacing.medium1
-              : EnvoySpacing.medium3,
+              : EnvoySpacing.medium2,
         )
       ],
     );

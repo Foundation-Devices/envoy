@@ -38,23 +38,30 @@ class SingleWalletPairSuccessPage extends StatelessWidget {
         ),
       ],
       buttons: [
-        OnboardingButton(
-            type: EnvoyButtonTypes.secondary,
-            label: S().pair_new_device_success_cta2,
-            onTap: () {
-              OnboardingPage.popUntilHome(context, resetHomeProviders: true);
-            }),
-        OnboardingButton(
-            label: S().pair_new_device_success_cta1,
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return SingleWalletAddressVerifyPage(pairedWallet);
-              }));
-            }),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
+          child: OnboardingButton(
+              type: EnvoyButtonTypes.secondary,
+              label: S().pair_new_device_success_cta2,
+              onTap: () {
+                OnboardingPage.popUntilHome(context, resetHomeProviders: true);
+              }),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
+          child: OnboardingButton(
+              label: S().pair_new_device_success_cta1,
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return SingleWalletAddressVerifyPage(pairedWallet);
+                }));
+              }),
+        ),
         SizedBox(
           height: context.isSmallScreen
               ? EnvoySpacing.medium1
-              : EnvoySpacing.medium3,
+              : EnvoySpacing.medium2,
         )
       ],
     );

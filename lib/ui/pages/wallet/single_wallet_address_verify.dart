@@ -12,6 +12,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class SingleWalletAddressVerifyPage extends StatelessWidget {
   final Wallet pairedWallet;
+
   const SingleWalletAddressVerifyPage(this.pairedWallet, {super.key});
 
   @override
@@ -30,17 +31,21 @@ class SingleWalletAddressVerifyPage extends StatelessWidget {
         ),
       ],
       buttons: [
-        OnboardingButton(
-            label: S().component_continue,
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return const SingleWalletAddressVerifyConfirmPage();
-              }));
-            }),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
+          child: OnboardingButton(
+              label: S().component_continue,
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return const SingleWalletAddressVerifyConfirmPage();
+                }));
+              }),
+        ),
         SizedBox(
           height: context.isSmallScreen
               ? EnvoySpacing.medium1
-              : EnvoySpacing.medium3,
+              : EnvoySpacing.medium2,
         )
       ],
     );

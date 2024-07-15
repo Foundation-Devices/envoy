@@ -56,7 +56,10 @@ class FwMicrosdPage extends ConsumerWidget {
       navigationDotsIndex: 1,
       buttons: [
         Padding(
-          padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+          padding: const EdgeInsets.only(
+              bottom: EnvoySpacing.medium2,
+              left: EnvoySpacing.xs,
+              right: EnvoySpacing.xs),
           child: OnboardingButton(
               enabled: fwInfo.hasValue,
               label: S().component_continue,

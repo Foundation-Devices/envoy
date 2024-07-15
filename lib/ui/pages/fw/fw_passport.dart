@@ -48,7 +48,10 @@ class FwPassportPage extends StatelessWidget {
       navigationDotsIndex: 5,
       buttons: [
         Padding(
-          padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+          padding: const EdgeInsets.only(
+              bottom: EnvoySpacing.medium2,
+              left: EnvoySpacing.xs,
+              right: EnvoySpacing.xs),
           child: OnboardingButton(
               label: S().component_continue,
               onTap: () {

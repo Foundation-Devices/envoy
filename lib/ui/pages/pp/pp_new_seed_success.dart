@@ -31,6 +31,8 @@ class PpNewSeedSuccessPage extends StatelessWidget {
       buttons: [
         Padding(
           padding: const EdgeInsets.only(
+            left: EnvoySpacing.xs,
+            right: EnvoySpacing.xs,
             bottom: EnvoySpacing.medium2,
           ),
           child: OnboardingButton(

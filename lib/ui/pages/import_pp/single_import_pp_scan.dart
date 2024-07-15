@@ -30,7 +30,7 @@ class SingleImportPpScanPage extends OnboardingPage {
                 right: EnvoySpacing.xs,
                 bottom: context.isSmallScreen
                     ? EnvoySpacing.medium1
-                    : EnvoySpacing.medium3),
+                    : EnvoySpacing.medium2),
             child: OnboardingButton(
                 label: S().component_continue,
                 onTap: () {

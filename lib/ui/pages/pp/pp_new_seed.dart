@@ -25,7 +25,10 @@ class PpNewSeedPage extends StatelessWidget {
       navigationDotsIndex: 0,
       buttons: [
         Padding(
-          padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+          padding: const EdgeInsets.only(
+              left: EnvoySpacing.xs,
+              right: EnvoySpacing.xs,
+              bottom: EnvoySpacing.medium2),
           child: OnboardingButton(
               label: S().component_continue,
               onTap: () {

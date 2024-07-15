@@ -48,7 +48,10 @@ class FwAndroidInstructionsPage extends StatelessWidget {
       navigationDotsIndex: 2,
       buttons: [
         Padding(
-          padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+          padding: const EdgeInsets.only(
+              bottom: EnvoySpacing.medium2,
+              left: EnvoySpacing.xs,
+              right: EnvoySpacing.xs),
           child: OnboardingButton(
               label: "Continue", // TODO: FIGMA
               onTap: () {
