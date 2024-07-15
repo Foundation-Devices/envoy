@@ -853,7 +853,8 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(widget.noteTitle,
-                    style: Theme.of(context).textTheme.titleLarge),
+                    style: EnvoyTypography.heading
+                        .copyWith(color: EnvoyColors.textPrimary)),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Text(

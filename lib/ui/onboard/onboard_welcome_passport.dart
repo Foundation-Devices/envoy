@@ -40,7 +40,8 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                     Text(
                       S().passport_welcome_screen_heading,
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge,
+                      style: EnvoyTypography.heading
+                          .copyWith(color: EnvoyColors.textPrimary),
                     ),
                     const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                     Text(

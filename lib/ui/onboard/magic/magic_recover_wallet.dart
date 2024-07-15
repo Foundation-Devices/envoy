@@ -560,7 +560,8 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           children: [
             Text(
               S().wallet_setup_success_heading,
-              style: Theme.of(context).textTheme.titleLarge,
+              style: EnvoyTypography.heading
+                  .copyWith(color: EnvoyColors.textPrimary),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 36),
@@ -587,7 +588,8 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           child: Text(
             S().magic_setup_recovery_fail_backup_heading,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
+            style: EnvoyTypography.heading
+                .copyWith(color: EnvoyColors.textPrimary),
           ),
         ),
         const Padding(padding: EdgeInsets.all(28)),
@@ -614,7 +616,8 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           child: Text(
             S().magic_setup_recovery_fail_connectivity_heading,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
+            style: EnvoyTypography.heading
+                .copyWith(color: EnvoyColors.textPrimary),
           ),
         ),
         const Padding(padding: EdgeInsets.all(28)),

@@ -337,7 +337,8 @@ class ActionText extends StatelessWidget {
               Text(
                 header,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge,
+                style: EnvoyTypography.heading
+                    .copyWith(color: EnvoyColors.textPrimary),
               ),
               Text(
                 text,

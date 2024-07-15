@@ -424,7 +424,8 @@ void showSecurityDialog(BuildContext context) {
                         vertical: EnvoySpacing.small, horizontal: 12),
                     child: Text(S().wallet_security_modal__heading,
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleLarge),
+                        style: EnvoyTypography.heading
+                            .copyWith(color: EnvoyColors.textPrimary)),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(

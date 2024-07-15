@@ -11,6 +11,8 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 void showRestoreFailedDialog(BuildContext context) {
   showEnvoyDialog(
@@ -54,7 +56,8 @@ void showRestoreFailedDialog(BuildContext context) {
                       child: Text(
                           S().manual_setup_import_backup_fails_modal_heading,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleLarge),
+                          style: EnvoyTypography.heading
+                              .copyWith(color: EnvoyColors.textPrimary)),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
