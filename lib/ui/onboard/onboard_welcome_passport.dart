@@ -6,6 +6,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
+import 'package:envoy/ui/prime/onboard_prime_communication_intro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -246,7 +247,6 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                               return const SingleImportPpIntroPage();
                             }));
                             //PRIME-DEMO
-
                           },
                         ),
                         const SizedBox(height: EnvoySpacing.medium1),
@@ -266,10 +266,10 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                             //   return ScannerPage(const [ScannerType.pair]);
                             // // }));
                             //
-                            // Navigator.of(context)
-                            //     .push(MaterialPageRoute(builder: (context) {
-                            //   return OnboardPrime();
-                            // }));
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return const OnboardPrimeQuantumLink();
+                            }));
                           },
                         ),
                         const SizedBox(height: EnvoySpacing.small),
