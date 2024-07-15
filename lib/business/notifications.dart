@@ -18,6 +18,8 @@ import 'package:tor/tor.dart';
 import 'dart:convert';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/scheduler.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
+import 'package:envoy/ui/state/transactions_state.dart';
 
 part 'notifications.g.dart';
 
@@ -63,6 +65,7 @@ final filteredNotificationStreamProvider =
       ref.watch(notificationStreamProvider).valueOrNull ?? [];
   EnvoyNotificationType? filter = ref.watch(notificationTypeFilterProvider);
   int order = ref.watch(notificationOrderProvider);
+  ref.watch(transactionNotificationsProvider);
 
   if (order == 0) {
     notifications.sort((a, b) => b.date.compareTo(a.date));
@@ -71,6 +74,39 @@ final filteredNotificationStreamProvider =
     return List<EnvoyNotification>.from(notifications);
   } else {
     return notifications.where((element) => element.type == filter).toList();
+  }
+});
+
+final transactionNotificationsProvider = Provider((ref) {
+  final accountManager = ref.watch(accountManagerProvider);
+
+  for (var account in accountManager.accounts) {
+    final transactions = ref.watch(transactionsProvider(account.id));
+    for (var tx in transactions) {
+      if ((tx.date.isAfter(Notifications().lastUpdated) || !tx.isConfirmed)) {
+        bool skip = false;
+
+        for (var notification
+            in ref.watch(notificationStreamProvider).asData?.value ?? []) {
+          if (notification.id == tx.txId && notification.amount == tx.amount) {
+            skip = true;
+            break;
+          }
+        }
+
+        if (!skip) {
+          Notifications().add(EnvoyNotification(
+              "Transaction",
+              tx.isConfirmed ? tx.date : DateTime.now(),
+              EnvoyNotificationType.transaction,
+              tx.txId,
+              tx.txId,
+              amount: tx.amount,
+              accountId: account.id));
+        }
+        Notifications().lastUpdated = DateTime.now();
+      }
+    }
   }
 });
 
@@ -131,39 +167,6 @@ class Notifications {
     if (!_githubVersionChecked) {
       newEnvoyVersionAvailable = await isThereNewEnvoyVersion();
       _githubVersionChecked = true;
-    }
-
-    for (var account in AccountManager().accounts) {
-      for (var tx in account.wallet.transactions) {
-        if ((tx.date.isAfter(lastUpdated) || !tx.isConfirmed)) {
-          bool skip = false;
-
-          for (var notification in notifications) {
-            if (notification.id == tx.txId &&
-                notification.amount == tx.amount) {
-              skip = true;
-            }
-          }
-          for (var suppressedNotification in suppressedNotifications) {
-            if (suppressedNotification.id == tx.txId &&
-                suppressedNotification.accountId == account.id) {
-              skip = true;
-            }
-          }
-
-          if (!skip) {
-            add(EnvoyNotification(
-                "Transaction",
-                tx.isConfirmed ? tx.date : DateTime.now(),
-                EnvoyNotificationType.transaction,
-                tx.txId,
-                tx.txId,
-                amount: tx.amount,
-                accountId: account.id));
-            notificationsAdded = true;
-          }
-        }
-      }
     }
 
     for (var device in Devices().devices) {
