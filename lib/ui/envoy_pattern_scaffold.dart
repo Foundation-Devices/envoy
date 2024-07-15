@@ -29,6 +29,7 @@ class EnvoyPatternScaffold extends StatefulWidget {
   final Widget? child;
   final Widget? shield;
   final Widget? header;
+  final String? heroTag;
   final PreferredSizeWidget? appBar;
   final bool animate;
   final double gradientHeight;
@@ -40,6 +41,7 @@ class EnvoyPatternScaffold extends StatefulWidget {
       this.appBar,
       this.shield,
       this.header,
+      this.heroTag,
       this.gradientHeight = 1.5});
 
   @override
@@ -84,6 +86,7 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
   @override
   Widget build(BuildContext context) {
     double shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
+
     return Stack(
       children: [
         SizedBox.expand(
@@ -107,37 +110,49 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
         )),
         widget.child != null
             ? widget.child!
-            : Scaffold(
-                backgroundColor: Colors.transparent,
-                appBar: widget.appBar,
-                body: Align(
-                  alignment: Alignment.center,
-                  child: widget.header,
-                ),
-                bottomNavigationBar: SizedBox(
-                  width: double.infinity,
-                  height: (MediaQuery.of(context).size.height * 0.52)
-                      .clamp(350, 580),
-                  child: Container(
-                    padding: EdgeInsets.only(bottom: shieldBottom),
-                    decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [
-                          Color(0x00000000),
-                          Color(0xff686868),
-                          Color(0xffFFFFFF),
-                        ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter)),
-                    child: Shield(
-                      child: Padding(
-                          padding: const EdgeInsets.only(
-                              right: 8, left: 8, top: 8, bottom: 40),
-                          child: SizedBox.expand(child: widget.shield)),
+            : Builder(builder: (context) {
+                Widget shield = Shield(
+                  child: Padding(
+                      padding: const EdgeInsets.only(
+                          right: 8, left: 8, top: 8, bottom: 40),
+                      child: SizedBox.expand(child: widget.shield)),
+                );
+
+                return Scaffold(
+                  backgroundColor: Colors.transparent,
+                  appBar: widget.appBar,
+                  body: Align(
+                    alignment: Alignment.center,
+                    child: widget.header,
+                  ),
+                  bottomNavigationBar: SizedBox(
+                    width: double.infinity,
+                    height: (MediaQuery.of(context).size.height * 0.52)
+                        .clamp(350, 580),
+                    child: Container(
+                      padding: EdgeInsets.only(bottom: shieldBottom),
+                      decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: [
+                            Color(0x00000000),
+                            Color(0xff686868),
+                            Color(0xffFFFFFF),
+                          ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter)),
+                      child: widget.heroTag != null
+                          ? Hero(
+                              tag: widget.heroTag!,
+                              child: Material(
+                                color: Colors.transparent,
+                                child: shield,
+                              ),
+                            )
+                          : shield,
                     ),
                   ),
-                ),
-              ),
+                );
+              }),
       ],
     );
   }

@@ -127,6 +127,10 @@ class Devices extends ChangeNotifier {
     if (serialNumber == "envoy") {
       return S().accounts_screen_walletType_Envoy;
     }
+    //TODO: for demo
+    if (serialNumber == "prime") {
+      return "Passport Prime";
+    }
 
     return devices.firstWhere((d) => d.serial == serialNumber).name;
   }
