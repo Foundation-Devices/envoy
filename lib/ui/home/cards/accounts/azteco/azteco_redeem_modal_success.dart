@@ -5,6 +5,8 @@
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class AztecoRedeemModalSuccess extends StatefulWidget {
   const AztecoRedeemModalSuccess({super.key});
@@ -16,10 +18,8 @@ class AztecoRedeemModalSuccess extends StatefulWidget {
 class _AztecoRedeemModalSuccess extends State<AztecoRedeemModalSuccess> {
   @override
   Widget build(BuildContext context) {
-    var headingTextStyle = Theme.of(context)
-        .textTheme
-        .bodyMedium
-        ?.copyWith(fontWeight: FontWeight.w500, fontSize: 20);
+    var headingTextStyle =
+        EnvoyTypography.heading.copyWith(color: EnvoyColors.textPrimary);
 
     return Column(
       mainAxisSize: MainAxisSize.min,

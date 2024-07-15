@@ -7,7 +7,7 @@ import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
@@ -196,10 +196,10 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
 
     Color border = tag.untagged
         ? const Color(0xff808080)
-        : tag.getAccount()?.color ?? EnvoyColors.listAccountTileColors[0];
+        : tag.getAccount()?.color ?? EnvoyColors.accentSecondary;
     Color cardBackground = tag.untagged
         ? const Color(0xff808080)
-        : tag.getAccount()?.color ?? EnvoyColors.listAccountTileColors[0];
+        : tag.getAccount()?.color ?? EnvoyColors.accentSecondary;
 
     //Listen to coin tag lock states
     ref.watch(coinTagLockStateProvider(widget.coinTag));
@@ -459,7 +459,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             child: Text(
               S().delete_tag_modal_cta2.toUpperCase(),
-              style: const TextStyle(color: EnvoyColors.lightCopper),
+              style: const TextStyle(color: EnvoyColors.accentSecondary),
             ),
           ),
           onTap: () {
@@ -713,17 +713,15 @@ class DeleteTagDialog extends StatelessWidget {
             Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
-              child: Text(
-                dialogSubheading,
-                textAlign: TextAlign.center,
-                style: EnvoyTypography.info
-                    .copyWith(color: new_colors.EnvoyColors.textPrimary),
-              ),
+              child: Text(dialogSubheading,
+                  textAlign: TextAlign.center,
+                  style: EnvoyTypography.heading
+                      .copyWith(color: EnvoyColors.textPrimary)),
             ),
             EnvoyButton(
               secondaryButtonText,
               textStyle: EnvoyTypography.body
-                  .copyWith(color: EnvoyColors.copper, fontSize: 16),
+                  .copyWith(color: EnvoyColors.accentSecondary, fontSize: 16),
               onTap: () async {
                 await onSecondaryButtonTap();
               },
@@ -733,8 +731,8 @@ class DeleteTagDialog extends StatelessWidget {
               padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
               child: EnvoyButton(
                 primaryButtonText,
-                textStyle: EnvoyTypography.body
-                    .copyWith(color: EnvoyColors.white100, fontSize: 16),
+                textStyle: EnvoyTypography.body.copyWith(
+                    color: EnvoyColors.textPrimaryInverse, fontSize: 16),
                 type: EnvoyButtonTypes.primaryModal,
                 borderRadius: const BorderRadius.all(Radius.circular(6.0)),
                 onTap: () async {

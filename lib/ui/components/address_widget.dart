@@ -23,11 +23,9 @@ class AddressWidget extends StatelessWidget {
 
   final TextStyle textStyleBold =
       EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary);
-  final TextStyle textStyleNormal = EnvoyTypography.body
-      .copyWith(
-        color: EnvoyColors.textTertiary,
-      )
-      .setWeight(FontWeight.w400);
+  final TextStyle textStyleNormal = EnvoyTypography.body.copyWith(
+    color: EnvoyColors.textTertiary,
+  );
 
   AddressWidget(
       {super.key,

@@ -6,25 +6,80 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:flutter/material.dart';
 
 class LinearGradients {
-  static const LinearGradient blogPostGradient = LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [
-      EnvoyColors.solidWhite,
-      Colors.transparent,
-      Colors.transparent,
-      EnvoyColors.solidWhite,
-    ],
-    stops: [0.0, 0.05, 0.85, 0.96],
-  );
+  static LinearGradient blogPostGradient(double topGradientEnd) {
+    return LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: const [
+        EnvoyColors.solidWhite,
+        Colors.transparent,
+        Colors.transparent,
+        EnvoyColors.solidWhite,
+      ],
+      stops: [0.0, topGradientEnd, 0.85, 0.96],
+    );
+  }
+}
 
-  static Widget gradientShaderMask({required Widget child}) {
-    return ShaderMask(
-      shaderCallback: (Rect rect) {
-        return blogPostGradient.createShader(rect);
+class ScrollGradientMask extends StatefulWidget {
+  final Widget child;
+
+  const ScrollGradientMask({required this.child, super.key});
+
+  @override
+  ScrollGradientMaskState createState() => ScrollGradientMaskState();
+}
+
+class ScrollGradientMaskState extends State<ScrollGradientMask> {
+  final ValueNotifier<double> topGradientEndNotifier =
+      ValueNotifier<double>(0.0);
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()
+      ..addListener(() {
+        if (_scrollController.offset == 0) {
+          topGradientEndNotifier.value = 0.0;
+        } else {
+          topGradientEndNotifier.value = 0.05;
+        }
+      });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    topGradientEndNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<double>(
+      valueListenable: topGradientEndNotifier,
+      builder: (context, topGradientEnd, child) {
+        return ShaderMask(
+          shaderCallback: (Rect rect) {
+            return LinearGradients.blogPostGradient(topGradientEnd)
+                .createShader(rect);
+          },
+          blendMode: BlendMode.dstOut,
+          child: NotificationListener<ScrollNotification>(
+            onNotification: (scrollNotification) {
+              if (scrollNotification.metrics.pixels == 0) {
+                topGradientEndNotifier.value = 0.0;
+              } else {
+                topGradientEndNotifier.value = 0.05;
+              }
+              return true;
+            },
+            child: widget.child,
+          ),
+        );
       },
-      blendMode: BlendMode.dstOut,
-      child: child,
+      child: widget.child,
     );
   }
 }

@@ -83,9 +83,8 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
           const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Text(
             S().change_output_from_multiple_tags_modal_heading,
-            style: EnvoyTypography.body.copyWith(
-              fontSize: 20,
-            ),
+            style: EnvoyTypography.heading
+                .copyWith(color: EnvoyColors.textPrimary),
           ),
           const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           PageTransitionSwitcher(

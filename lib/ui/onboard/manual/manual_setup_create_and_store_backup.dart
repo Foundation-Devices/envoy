@@ -52,11 +52,10 @@ class _ManualSetupCreateAndStoreBackupState
                     horizontal: EnvoySpacing.medium3),
                 child: Column(
                   children: [
-                    Text(
-                      S().manual_setup_create_and_store_backup_heading,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
+                    Text(S().manual_setup_create_and_store_backup_heading,
+                        textAlign: TextAlign.center,
+                        style: EnvoyTypography.heading
+                            .copyWith(color: EnvoyColors.textPrimary)),
                     const SizedBox(height: EnvoySpacing.medium1),
                     Text(
                       S().manual_setup_create_and_store_backup_subheading,

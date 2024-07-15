@@ -8,7 +8,7 @@ import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/home/settings/backup/erase_warning.dart';
 import 'package:envoy/ui/home/settings/backup/export_backup_modal.dart';
 import 'package:envoy/ui/home/settings/backup/export_seed_modal.dart';
@@ -112,7 +112,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                 if (!s.syncToCloud)
                   SettingText(
                     S().manual_toggle_off_disabled_for_manual_seed_configuration,
-                    color: EnvoyColors.grey,
+                    color: EnvoyColors.textTertiary,
                   ),
                 if (s.syncToCloud)
                   Padding(
@@ -141,7 +141,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                                       dimension: 18,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2,
-                                        color: EnvoyColors.teal,
+                                        color: EnvoyColors.accentPrimary,
                                         backgroundColor: Color(0xffD9D9D9),
                                       ),
                                     );
@@ -151,7 +151,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                                           const BoxConstraints(maxWidth: 150),
                                       child: SettingText(
                                         S().manual_toggle_on_seed_backedup_iOS_backup_now,
-                                        color: EnvoyColors.teal,
+                                        color: EnvoyColors.accentPrimary,
                                         onTap: () {
                                           showBackupDialog(context);
                                         },
@@ -170,7 +170,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                                     ? S()
                                         .manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup
                                     : "${timeago.format(lastEnvoyServerBackup, locale: activeLocale.languageCode).capitalize()} ${S().manual_toggle_on_seed_backedup_iOS_toFoundationServers}",
-                            color: EnvoyColors.grey,
+                            color: EnvoyColors.textTertiary,
                             maxLines: 2,
                           ),
                         ],
@@ -208,7 +208,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                                       const BoxConstraints(maxWidth: 190),
                                   child: SettingText(
                                     S().manual_toggle_on_seed_not_backedup_android_open_settings,
-                                    color: EnvoyColors.teal,
+                                    color: EnvoyColors.accentPrimary,
                                     onTap: () {
                                       EnvoySeed().showSettingsMenu();
                                     },
@@ -228,7 +228,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                                               .manual_toggle_on_seed_backedup_android_stored
                                           : S()
                                               .manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup,
-                                  color: EnvoyColors.grey,
+                                  color: EnvoyColors.textTertiary,
                                   maxLines: 2,
                                 );
                               }),
@@ -323,7 +323,8 @@ class _BackupPageState extends ConsumerState<BackupPage>
                   child: Text(
                       S().manual_toggle_on_seed_backup_now_modal_heading,
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge),
+                      style: EnvoyTypography.heading
+                          .copyWith(color: EnvoyColors.textPrimary)),
                 ),
                 const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 Flexible(

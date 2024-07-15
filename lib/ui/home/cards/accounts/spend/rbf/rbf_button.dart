@@ -299,7 +299,8 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         duration: const Duration(milliseconds: 200),
         height: 28,
         padding: const EdgeInsets.symmetric(
-            horizontal: EnvoySpacing.medium1, vertical: EnvoySpacing.xs),
+          horizontal: EnvoySpacing.medium1,
+        ),
         decoration: BoxDecoration(
             color: buttonColor,
             borderRadius: BorderRadius.circular(EnvoySpacing.small)),
