@@ -38,8 +38,11 @@ void main() {
 
       await tester.pump(Durations.long2);
 
-      await Future.delayed(const Duration(seconds: 5));
+      await tester.pump(Durations.long2);
       final atmTab = find.text("ATMs");
+
+      await tester.pumpUntilFound(atmTab, tries: 50, duration: Durations.long2);
+      await tester.pump(Durations.long2);
       expect(atmTab, findsOneWidget);
       await tester.tap(atmTab);
       await tester.pump(Durations.long2);
@@ -50,9 +53,9 @@ void main() {
       await tester.pumpAndSettle();
 
       final iconFinder = find.byWidgetPredicate(
-        (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.location,
+        (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.plus,
       );
-      expect(iconFinder, findsAny);
+      expect(iconFinder, findsOneWidget);
     } finally {
       FlutterError.onError = originalOnError;
     }
@@ -82,6 +85,7 @@ Future<void> fromHomeToBuyOptions(WidgetTester tester) async {
   final continueButtonFinder = find.text('Continue');
   expect(continueButtonFinder, findsOneWidget);
   await tester.tap(continueButtonFinder);
+  await tester.pump(Durations.long2);
   await tester.pump(Durations.long2);
 }
 
@@ -136,5 +140,30 @@ Future<void> resetEnvoyData() async {
     await dbFile.delete();
   } catch (e) {
     kPrint('Error deleting app data: $e');
+  }
+}
+
+extension PumpUntilFound on WidgetTester {
+  /// Pumps the widget tree until the specified [finder] locates an element,
+  /// or until the maximum number of tries is reached.
+  ///
+  /// This is particularly useful in scenarios involving animations or delayed
+  /// widget appearances, where the desired widget might not be immediately
+  /// present in the widget tree. It is especially handy when dealing with
+  /// never-ending animations like a `CircularProgressIndicator`.
+  Future<void> pumpUntilFound(
+    Finder finder, {
+    Duration duration = const Duration(milliseconds: 100),
+    int tries = 10,
+  }) async {
+    for (var i = 0; i < tries; i++) {
+      await pump(duration);
+
+      final isNotEmpty = finder.tryEvaluate();
+
+      if (isNotEmpty) {
+        break;
+      }
+    }
   }
 }
