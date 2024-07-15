@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:typed_data';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +10,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/business/video.dart';
 import 'package:envoy/ui/home/cards/learn/video_player.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 const double videoImageHeight = 172.0;
@@ -31,7 +31,7 @@ class VideoCard extends ConsumerStatefulWidget {
 
 class _VideoCardState extends ConsumerState<VideoCard> {
   _playVimeoVideo(Video video) async {
-    Navigator.of(context, rootNavigator: true).push(
+    await Navigator.of(context, rootNavigator: true).push(
         PageRouteBuilder(pageBuilder: (context, animation, secondAnimation) {
       return FullScreenVideoPlayer(video);
     }, transitionsBuilder: (context, animation, anotherAnimation, child) {
@@ -41,6 +41,9 @@ class _VideoCardState extends ConsumerState<VideoCard> {
         child: child,
       );
     }));
+    //make sure to reset the system ui mode after the video is closed
+    //video player sometimes doesn't reset it
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   }
 
   @override

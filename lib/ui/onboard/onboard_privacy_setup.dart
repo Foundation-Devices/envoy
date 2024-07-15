@@ -8,13 +8,14 @@ import 'package:envoy/business/node_url.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/state/onboarding_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/build_context_extension.dart';
@@ -26,9 +27,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rive/rive.dart' as rive;
 import 'package:tor/tor.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
-import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class OnboardPrivacySetup extends ConsumerStatefulWidget {
   final bool setUpEnvoyWallet;
@@ -47,6 +48,8 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
         .textTheme
         .bodyMedium
         ?.copyWith(fontSize: 11, fontWeight: FontWeight.w500);
+
+    final isSmallDevice = MediaQuery.sizeOf(context).width <= 380;
     return EnvoyPatternScaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -127,7 +130,8 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                               Text(
                                 heading,
                                 textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.titleLarge,
+                                style: EnvoyTypography.heading
+                                    .copyWith(color: EnvoyColors.textPrimary),
                               ),
                               const Padding(
                                   padding: EdgeInsets.all(EnvoySpacing.small)),
@@ -145,8 +149,10 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                       ),
                     ),
                     Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: EnvoySpacing.xs),
+                        padding: EdgeInsets.symmetric(
+                            vertical: isSmallDevice
+                                ? EnvoySpacing.small
+                                : EnvoySpacing.medium1),
                         child: const PrivacyOptionSelect()),
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -163,15 +169,13 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                                   linkStyle: messageStyle?.copyWith(
                                       fontSize: 11,
                                       fontWeight: FontWeight.w900,
-                                      color:
-                                          EnvoyColors.listAccountTileColors[0]))
+                                      color: EnvoyColors.accentSecondary))
                               : LinkText(
                                   text: S().privacy_privacyMode_torSuggestionOn,
                                   linkStyle: messageStyle?.copyWith(
                                       fontSize: 11,
                                       fontWeight: FontWeight.w900,
-                                      color: EnvoyColors
-                                          .listAccountTileColors[1]));
+                                      color: EnvoyColors.accentPrimary));
                         },
                       ),
                     ),
@@ -287,7 +291,8 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                     ),
                     Text(
                       S().privacy_setting_add_node_modal_heading,
-                      style: Theme.of(context).textTheme.titleLarge,
+                      style: EnvoyTypography.heading
+                          .copyWith(color: EnvoyColors.textPrimary),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -359,12 +364,12 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                                         },
                                         child: const Icon(
                                           Icons.paste,
-                                          color: EnvoyColors.teal,
+                                          color: EnvoyColors.accentPrimary,
                                         ),
                                       )),
                                   GestureDetector(
                                     child: const Icon(Icons.qr_code,
-                                        color: EnvoyColors.teal),
+                                        color: EnvoyColors.accentPrimary),
                                     onTap: () {
                                       Navigator.of(context).push(
                                           MaterialPageRoute(builder: (context) {
@@ -400,7 +405,7 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                                   height: 16,
                                   margin: const EdgeInsets.only(right: 8),
                                   child: CircularProgressIndicator(
-                                    color: EnvoyColors.teal,
+                                    color: EnvoyColors.accentPrimary,
                                     backgroundColor: Colors.grey[200],
                                     strokeWidth: 2,
                                   ),
@@ -425,7 +430,7 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                                             Border.all(color: Colors.black)),
                                     child: const Icon(
                                       Icons.check_outlined,
-                                      color: EnvoyColors.teal,
+                                      color: EnvoyColors.accentPrimary,
                                       size: 16,
                                     )),
                                 const Padding(padding: EdgeInsets.all(4)),
@@ -724,7 +729,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                     borderRadius: BorderRadius.all(Radius.circular(12)))
                 .borderRadius,
             border: Border.all(
-                color: active ? EnvoyColors.teal : Colors.transparent,
+                color: active ? EnvoyColors.accentPrimary : Colors.transparent,
                 width: 3),
             gradient: active
                 ? const LinearGradient(

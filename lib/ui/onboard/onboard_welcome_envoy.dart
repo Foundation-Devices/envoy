@@ -147,11 +147,10 @@ class _OnboardEnvoyWelcomeScreenState
                                         Text(
                                           S().envoy_welcome_screen_heading,
                                           textAlign: TextAlign.center,
-                                          style: EnvoyTypography.body.copyWith(
-                                            fontSize: 20,
-                                            color: EnvoyColors.gray1000,
-                                            decoration: TextDecoration.none,
-                                          ),
+                                          style: EnvoyTypography.heading
+                                              .copyWith(
+                                                  color:
+                                                      EnvoyColors.textPrimary),
                                         ),
                                         const SizedBox(
                                             height: EnvoySpacing.small),
@@ -210,7 +209,8 @@ class _OnboardEnvoyWelcomeScreenState
                                   return const MagicSetupTutorial();
                                 }));
                               },
-                            )
+                            ),
+                            const SizedBox(height: EnvoySpacing.small),
                           ],
                         );
                       },

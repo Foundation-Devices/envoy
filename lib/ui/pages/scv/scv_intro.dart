@@ -18,17 +18,9 @@ class ScvIntroPage extends StatelessWidget {
       clipArt:
           Center(child: Image.asset("assets/shield_inspect.png", width: 150)),
       text: [
-        Expanded(
-          child: PageView(
-            children: [
-              SingleChildScrollView(
-                child: OnboardingText(
-                    header: S().envoy_scv_intro_heading,
-                    text: S().envoy_scv_intro_subheading),
-              ),
-            ],
-          ),
-        )
+        OnboardingText(
+            header: S().envoy_scv_intro_heading,
+            text: S().envoy_scv_intro_subheading)
       ],
       buttons: [
         Padding(

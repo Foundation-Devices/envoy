@@ -152,12 +152,10 @@ class BlogPostCard extends StatefulWidget {
 }
 
 class BlogPostCardState extends State<BlogPostCard> {
-  double topGradientEnd = 0.0;
-
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: LinearGradients.gradientShaderMask(
+      child: ScrollGradientMask(
         child: Padding(
           padding: const EdgeInsets.only(
             bottom: EnvoySpacing.large1,

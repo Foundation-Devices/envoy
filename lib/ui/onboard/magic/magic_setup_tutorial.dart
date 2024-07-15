@@ -53,91 +53,91 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
         ),
       ],
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              padding: const EdgeInsets.only(top: 5),
-              child: Column(
-                children: [
-                  !Platform.isLinux
-                      ? EmbeddedVideo(
-                          path: "assets/videos/magic_backups.m4v",
-                          key: _playerKey,
-                        )
-                      : Container(),
-                ],
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+              child: Container(
+                padding: const EdgeInsets.only(top: 5),
+                child: Column(
+                  children: [
+                    !Platform.isLinux
+                        ? EmbeddedVideo(
+                            path: "assets/videos/magic_backups.m4v",
+                            key: _playerKey,
+                          )
+                        : Container(),
+                  ],
+                ),
               ),
             ),
             const Padding(padding: EdgeInsets.only(bottom: 6)),
             Text(
               S().magic_setup_tutorial_heading,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            LinkText(
-              text: Platform.isAndroid
-                  ? S().magic_setup_tutorial_android_subheading
-                  : S().magic_setup_tutorial_ios_subheading,
-              linkStyle: EnvoyTypography.button
-                  .copyWith(color: EnvoyColors.accentPrimary),
-              onTap: () {
-                _playerKey.currentState?.pause();
-                showEnvoyDialog(
-                    context: context,
-                    dialog: WalletSecurityModal(
-                      onLastStep: () {
-                        Navigator.pop(context);
-                      },
-                    ));
-              },
+              style: EnvoyTypography.heading
+                  .copyWith(color: EnvoyColors.textPrimary),
             ),
             Padding(
-              padding: const EdgeInsets.only(
-                  top: EnvoySpacing.xs, bottom: EnvoySpacing.medium2),
-              child: Column(
-                children: [
-                  OnboardingButton(
-                      fontWeight: FontWeight.w600,
-                      type: EnvoyButtonTypes.secondary,
-                      label: S().magic_setup_tutorial_ios_CTA2,
-                      textStyle: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(
-                              color: EnvoyColors.accentPrimary,
-                              fontWeight: FontWeight.w600),
-                      onTap: () {
-                        _playerKey.currentState?.pause();
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return const MagicRecoverWallet();
-                        }));
-                      }),
-                  OnboardingButton(
-                      fontWeight: FontWeight.w600,
-                      textStyle: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(
-                              color: EnvoyColors.surface2,
-                              fontWeight: FontWeight.w600),
-                      label: S().magic_setup_tutorial_ios_CTA1,
-                      onTap: () {
-                        _playerKey.currentState?.pause();
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return const MagicSetupGenerate();
-                        }));
-                        // showCreateWarning(context);
-                      }),
-                  SizedBox(
-                      height: context.isSmallScreen
-                          ? EnvoySpacing.medium1
-                          : EnvoySpacing.medium3),
-                ],
+              padding:
+                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+              child: LinkText(
+                text: Platform.isAndroid
+                    ? S().magic_setup_tutorial_android_subheading
+                    : S().magic_setup_tutorial_ios_subheading,
+                linkStyle: EnvoyTypography.button
+                    .copyWith(color: EnvoyColors.accentPrimary),
+                onTap: () {
+                  _playerKey.currentState?.pause();
+                  showEnvoyDialog(
+                      context: context,
+                      dialog: WalletSecurityModal(
+                        onLastStep: () {
+                          Navigator.pop(context);
+                        },
+                      ));
+                },
               ),
+            ),
+            Column(
+              children: [
+                OnboardingButton(
+                    fontWeight: FontWeight.w600,
+                    type: EnvoyButtonTypes.secondary,
+                    label: S().magic_setup_tutorial_ios_CTA2,
+                    textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: EnvoyColors.accentPrimary,
+                        fontWeight: FontWeight.w600),
+                    onTap: () {
+                      _playerKey.currentState?.pause();
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return const MagicRecoverWallet();
+                      }));
+                    }),
+                OnboardingButton(
+                    fontWeight: FontWeight.w600,
+                    textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: EnvoyColors.surface2,
+                        fontWeight: FontWeight.w600),
+                    label: S().magic_setup_tutorial_ios_CTA1,
+                    onTap: () {
+                      _playerKey.currentState?.pause();
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return const MagicSetupGenerate();
+                      }));
+                      // showCreateWarning(context);
+                    }),
+                const SizedBox(height: EnvoySpacing.xs),
+                SizedBox(
+                    height: context.isSmallScreen
+                        ? EnvoySpacing.medium1
+                        : EnvoySpacing.medium2),
+              ],
             )
           ],
         ),

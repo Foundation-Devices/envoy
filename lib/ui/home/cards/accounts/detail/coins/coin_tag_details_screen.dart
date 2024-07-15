@@ -6,9 +6,8 @@ import 'package:animations/animations.dart';
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
@@ -29,6 +28,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
+import 'package:envoy/ui/components/stripe_painter.dart';
 
 class CoinTagDetailsScreen extends ConsumerStatefulWidget {
   final bool showCoins;
@@ -196,15 +196,15 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
 
     Color border = tag.untagged
         ? const Color(0xff808080)
-        : tag.getAccount()?.color ?? EnvoyColors.listAccountTileColors[0];
+        : tag.getAccount()?.color ?? EnvoyColors.accentSecondary;
     Color cardBackground = tag.untagged
         ? const Color(0xff808080)
-        : tag.getAccount()?.color ?? EnvoyColors.listAccountTileColors[0];
+        : tag.getAccount()?.color ?? EnvoyColors.accentSecondary;
 
     //Listen to coin tag lock states
     ref.watch(coinTagLockStateProvider(widget.coinTag));
 
-    const cardRadius = 24.0;
+    const cardRadius = EnvoySpacing.medium2;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -231,7 +231,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               key: _detailWidgetKey,
               decoration: BoxDecoration(
                 borderRadius:
-                    const BorderRadius.all(Radius.circular(cardRadius)),
+                    const BorderRadius.all(Radius.circular(cardRadius - 1)),
                 border: Border.all(
                     color: Colors.black, width: 2, style: BorderStyle.solid),
                 gradient: LinearGradient(
@@ -245,7 +245,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               child: Container(
                 decoration: BoxDecoration(
                     borderRadius:
-                        const BorderRadius.all(Radius.circular(cardRadius)),
+                        const BorderRadius.all(Radius.circular(cardRadius - 3)),
                     border: Border.all(
                         color: border, width: 2, style: BorderStyle.solid)),
                 child: RawScrollbar(
@@ -257,8 +257,13 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                   ),
                   child: ClipRRect(
                     borderRadius:
-                        const BorderRadius.all(Radius.circular(cardRadius - 2)),
-                    child: StripesBackground(
+                        const BorderRadius.all(Radius.circular(cardRadius - 4)),
+                    child: CustomPaint(
+                      isComplex: true,
+                      willChange: false,
+                      painter: StripePainter(
+                        EnvoyColors.gray1000.withOpacity(0.4),
+                      ),
                       child: tag.coins.length == 1
                           ? singleCoinWidget(context)
                           : Column(
@@ -274,12 +279,12 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                               color: Colors.white,
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(
-                                                      cardRadius - 5.5))),
+                                                      cardRadius - 9))),
                                           child: ClipRRect(
                                             borderRadius:
                                                 const BorderRadius.all(
                                                     Radius.circular(
-                                                        cardRadius - 5.5)),
+                                                        cardRadius - 9)),
                                             child: ScrollConfiguration(
                                               behavior: ScrollConfiguration.of(
                                                       context)
@@ -454,7 +459,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             child: Text(
               S().delete_tag_modal_cta2.toUpperCase(),
-              style: const TextStyle(color: EnvoyColors.lightCopper),
+              style: const TextStyle(color: EnvoyColors.accentSecondary),
             ),
           ),
           onTap: () {
@@ -708,17 +713,15 @@ class DeleteTagDialog extends StatelessWidget {
             Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
-              child: Text(
-                dialogSubheading,
-                textAlign: TextAlign.center,
-                style: EnvoyTypography.info
-                    .copyWith(color: new_colors.EnvoyColors.textPrimary),
-              ),
+              child: Text(dialogSubheading,
+                  textAlign: TextAlign.center,
+                  style: EnvoyTypography.heading
+                      .copyWith(color: EnvoyColors.textPrimary)),
             ),
             EnvoyButton(
               secondaryButtonText,
               textStyle: EnvoyTypography.body
-                  .copyWith(color: EnvoyColors.copper, fontSize: 16),
+                  .copyWith(color: EnvoyColors.accentSecondary, fontSize: 16),
               onTap: () async {
                 await onSecondaryButtonTap();
               },
@@ -728,8 +731,8 @@ class DeleteTagDialog extends StatelessWidget {
               padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
               child: EnvoyButton(
                 primaryButtonText,
-                textStyle: EnvoyTypography.body
-                    .copyWith(color: EnvoyColors.white100, fontSize: 16),
+                textStyle: EnvoyTypography.body.copyWith(
+                    color: EnvoyColors.textPrimaryInverse, fontSize: 16),
                 type: EnvoyButtonTypes.primaryModal,
                 borderRadius: const BorderRadius.all(Radius.circular(6.0)),
                 onTap: () async {

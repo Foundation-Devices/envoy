@@ -11,6 +11,7 @@ import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 
 class BtcPayInfo extends StatelessWidget {
   final BtcPayVoucher voucher;
@@ -49,7 +50,8 @@ class BtcPayInfo extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
           child: Text(
             S().azteco_redeem_modal_heading,
-            style: EnvoyTypography.subheading,
+            style: EnvoyTypography.heading
+                .copyWith(color: EnvoyColors.textPrimary),
             textAlign: TextAlign.center,
           ),
         ),

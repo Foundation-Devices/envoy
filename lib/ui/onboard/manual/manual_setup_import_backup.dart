@@ -68,11 +68,10 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
           const SizedBox(
             height: EnvoySpacing.xl * 2,
           ),
-          Text(
-            S().magic_setup_recovery_retry_header,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          Text(S().magic_setup_recovery_retry_header,
+              textAlign: TextAlign.center,
+              style: EnvoyTypography.heading
+                  .copyWith(color: EnvoyColors.textPrimary)),
         ],
       ),
     );
@@ -122,11 +121,10 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: EnvoySpacing.small),
-                      child: Text(
-                        S().manual_setup_import_backup_CTA2,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
+                      child: Text(S().manual_setup_import_backup_CTA2,
+                          textAlign: TextAlign.center,
+                          style: EnvoyTypography.heading
+                              .copyWith(color: EnvoyColors.textPrimary)),
                     ),
                     const SizedBox(height: EnvoySpacing.medium3),
                     Padding(
