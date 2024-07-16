@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:math';
+
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/filter_chip.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -522,6 +524,8 @@ class SlidingToggle extends StatefulWidget {
 
 class _SlidingToggleState extends State<SlidingToggle>
     with SingleTickerProviderStateMixin {
+  final textTheme = EnvoyTypography.info;
+
   String value = "Tx"; // TODO: FIGMA
 
   final Duration _duration = const Duration(milliseconds: 150);
@@ -531,10 +535,10 @@ class _SlidingToggleState extends State<SlidingToggle>
   late Animation<Color?> _activityIconColorAnimation;
   late Animation<Color?> _tagsIconColorAnimation;
   final Color _iconDisabledColor = new_color_scheme.EnvoyColors.textTertiary;
-  final String _buttonText1 = "Activity"; // TODO: FIGMA
-  final String _buttonText2 = "Tags"; // TODO: FIGMA
-  late String _text = _buttonText1;
-  double _widestWidth = 0.0;
+  final String _firstOptionText = "Activity"; // TODO: FIGMA
+  final String _secondOptionText = "Tags"; // TODO: FIGMA
+  late String _currentOptionText = _firstOptionText;
+  double _maxOptionWidth = 0.0;
 
   @override
   void initState() {
@@ -608,9 +612,9 @@ class _SlidingToggleState extends State<SlidingToggle>
     _animationController.addListener(() {
       setState(() {
         if (_animationController.value < 0.5) {
-          _text = _buttonText1;
+          _currentOptionText = _firstOptionText;
         } else if (_animationController.value > 0.5) {
-          _text = _buttonText2;
+          _currentOptionText = _secondOptionText;
         }
       });
     });
@@ -628,16 +632,13 @@ class _SlidingToggleState extends State<SlidingToggle>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _calculateWidestWidth(context);
+    _maxOptionWidth = getMaxOptionWidth(context);
   }
 
-  void _calculateWidestWidth(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme.bodyMedium?.copyWith(
-        fontWeight: FontWeight.w600, color: _textColorAnimation.value);
-
+  double getMaxOptionWidth(BuildContext context) {
     final textPainter1 = TextPainter(
       text: TextSpan(
-        text: _buttonText1,
+        text: _firstOptionText,
         style: textTheme,
       ),
       maxLines: 1,
@@ -646,7 +647,7 @@ class _SlidingToggleState extends State<SlidingToggle>
 
     final textPainter2 = TextPainter(
       text: TextSpan(
-        text: _buttonText2,
+        text: _secondOptionText,
         style: textTheme,
       ),
       maxLines: 1,
@@ -656,16 +657,15 @@ class _SlidingToggleState extends State<SlidingToggle>
     double textWidth1 = textPainter1.width * 2 + 30; // + for compensation
     double textWidth2 = textPainter2.width * 2 + 30;
 
-    _widestWidth = (textWidth1 > textWidth2 ? textWidth1 : textWidth2);
-    if (_widestWidth > 180) {
-      _widestWidth = 180;
+    double maxWidth = max(textWidth1, textWidth2);
+    if (maxWidth > 180) {
+      maxWidth = 180;
     }
+    return maxWidth;
   }
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme.bodyMedium?.copyWith(
-        fontWeight: FontWeight.w600, color: _textColorAnimation.value);
     return LayoutBuilder(
       builder: (context, constraints) {
         return GestureDetector(
@@ -684,7 +684,7 @@ class _SlidingToggleState extends State<SlidingToggle>
           },
           child: SizedBox(
             height: 34,
-            width: _widestWidth,
+            width: _maxOptionWidth,
             child: Container(
               decoration: BoxDecoration(
                 color: new_color_scheme.EnvoyColors.solidWhite,
@@ -744,12 +744,12 @@ class _SlidingToggleState extends State<SlidingToggle>
                             parent: _animationController,
                             curve: Curves.easeInOutCubic)),
                     child: Container(
-                      width: _widestWidth * 0.5,
+                      width: _maxOptionWidth * 0.5,
                       padding: const EdgeInsets.symmetric(
                           horizontal: EnvoySpacing.xs),
                       child: Text(
-                        _text,
-                        key: ValueKey(_text),
+                        _currentOptionText,
+                        key: ValueKey(_currentOptionText),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                         // prevent unnecessary overflows, container size is fixed
@@ -757,7 +757,8 @@ class _SlidingToggleState extends State<SlidingToggle>
                         textAlign: _animationController.value == 0.0
                             ? TextAlign.start
                             : TextAlign.center,
-                        style: textTheme,
+                        style: textTheme.copyWith(
+                            color: _textColorAnimation.value),
                       ),
                     ),
                   ),
