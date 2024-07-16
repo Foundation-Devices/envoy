@@ -4,7 +4,6 @@
 
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/devices.dart';
-import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -43,31 +42,9 @@ class AccountListTile extends ConsumerStatefulWidget {
 class _AccountListTileState extends ConsumerState<AccountListTile> {
   final double containerHeight = 114;
 
-  _redraw() {
-    setState(() {});
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Redraw when we fetch exchange rate
-    ExchangeRate().addListener(_redraw);
-
-    // Redraw when we change bitcoin unit
-    Settings().addListener(_redraw);
-  }
-
-  @override
-  void dispose() {
-    ExchangeRate().removeListener(_redraw);
-    Settings().removeListener(_redraw);
-
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
+    ref.watch(settingsProvider);
     ref.watch(accountManagerProvider);
     var account = widget.account.wallet is GhostWallet
         ? widget.account

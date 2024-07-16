@@ -5,7 +5,6 @@
 import 'package:animations/animations.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/account_manager.dart';
-import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -70,15 +69,9 @@ class _AccountCardState extends ConsumerState<AccountCard>
   late Account account;
   late Animation<Alignment> animation;
 
-  _redraw() {
-    setState(() {});
-  }
-
   @override
   void initState() {
     super.initState();
-    // Redraw when we fetch exchange rate
-    ExchangeRate().addListener(_redraw);
     animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 200));
     animation =
@@ -126,13 +119,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
   final ScrollController _scrollController = ScrollController();
 
   @override
-  void dispose() {
-    super.dispose();
-    ExchangeRate().removeListener(_redraw);
-  }
-
-  @override
   Widget build(BuildContext context) {
+    ref.watch(settingsProvider);
     account = ref.read(selectedAccountProvider) ?? AccountManager().accounts[0];
 
     List<Transaction> transactions =

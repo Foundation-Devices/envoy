@@ -15,7 +15,6 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/business/locale.dart';
 import 'package:envoy/ui/components/linear_gradient.dart';
-import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 
 class ActivityCard extends StatefulWidget {
@@ -60,30 +59,8 @@ class TopLevelActivityCard extends ConsumerStatefulWidget {
 
 class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
   @override
-  void initState() {
-    super.initState();
-
-    // Redraw when we fetch exchange rate
-    ExchangeRate().addListener(_redraw);
-
-    // Redraw when we change bitcoin unit
-    Settings().addListener(_redraw);
-  }
-
-  @override
-  void dispose() {
-    ExchangeRate().removeListener(_redraw);
-    Settings().removeListener(_redraw);
-
-    super.dispose();
-  }
-
-  _redraw() {
-    setState(() {});
-  }
-
-  @override
   Widget build(BuildContext context) {
+    ref.watch(settingsProvider);
     List<EnvoyNotification> notifications =
         ref.watch(filteredNotificationStreamProvider);
     ref.read(notificationTypeFilterProvider.notifier).state = null;
