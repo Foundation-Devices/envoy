@@ -488,11 +488,7 @@ class TransactionListTile extends StatelessWidget {
                   minLeadingWidth: 0,
                   horizontalTitleGap: EnvoySpacing.small,
                   title: transactionTitle(context),
-                  subtitle: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.centerLeft,
-                    child: txSubtitle(activeLocale),
-                  ),
+                  subtitle: txSubtitle(activeLocale),
                   contentPadding: const EdgeInsets.all(0),
                   trailing: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -561,6 +557,8 @@ class TransactionListTile extends StatelessWidget {
       return Text(
         S().azteco_account_tx_history_pending_voucher,
         style: _transactionTextStyleInfo,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
       );
     }
 
@@ -568,12 +566,16 @@ class TransactionListTile extends StatelessWidget {
       return Text(
         S().btcpay_pendingVoucher,
         style: _transactionTextStyleInfo,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
       );
     }
     if (transaction.type == TransactionType.ramp) {
       return Text(
         S().activity_pending,
         style: _transactionTextStyleInfo,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
       );
     }
 
@@ -585,12 +587,16 @@ class TransactionListTile extends StatelessWidget {
         return Text(
           time,
           style: _transactionTextStyleInfo,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
         );
       });
     } else {
       return Text(
         S().receive_tx_list_awaitingConfirmation,
         style: _transactionTextStyleInfo,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
       );
     }
   }
