@@ -62,20 +62,16 @@ class FwIntroPage extends StatelessWidget {
       navigationDots: 6,
       navigationDotsIndex: 0,
       buttons: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
-          child: OnboardingButton(
-              label: S().envoy_fw_intro_cta,
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return FwMicrosdPage(
-                    onboarding: onboarding,
-                    deviceId: deviceId,
-                  );
-                }));
-              }),
-        ),
+        OnboardingButton(
+            label: S().envoy_fw_intro_cta,
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return FwMicrosdPage(
+                  onboarding: onboarding,
+                  deviceId: deviceId,
+                );
+              }));
+            }),
       ],
     );
   }
