@@ -49,6 +49,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:wallet/wallet.dart';
+import 'package:envoy/business/exchange_rate.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget {
@@ -69,9 +70,15 @@ class _AccountCardState extends ConsumerState<AccountCard>
   late Account account;
   late Animation<Alignment> animation;
 
+  _redraw() {
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
+    // Redraw when we fetch exchange rate
+    ExchangeRate().addListener(_redraw);
     animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 200));
     animation =
@@ -117,6 +124,12 @@ class _AccountCardState extends ConsumerState<AccountCard>
   }
 
   final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    ExchangeRate().removeListener(_redraw);
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -22,6 +22,7 @@ import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';
+import 'package:envoy/business/exchange_rate.dart';
 
 class AccountListTile extends ConsumerStatefulWidget {
   final void Function() onTap;
@@ -41,6 +42,23 @@ class AccountListTile extends ConsumerStatefulWidget {
 
 class _AccountListTileState extends ConsumerState<AccountListTile> {
   final double containerHeight = 114;
+
+  @override
+  void initState() {
+    super.initState();
+    // Redraw when we fetch exchange rate
+    ExchangeRate().addListener(_redraw);
+  }
+
+  @override
+  void dispose() {
+    ExchangeRate().removeListener(_redraw);
+    super.dispose();
+  }
+
+  _redraw() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
