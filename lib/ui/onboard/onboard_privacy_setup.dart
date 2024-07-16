@@ -130,8 +130,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                               Text(
                                 heading,
                                 textAlign: TextAlign.center,
-                                style: EnvoyTypography.heading
-                                    .copyWith(color: EnvoyColors.textPrimary),
+                                style: EnvoyTypography.heading,
                               ),
                               const Padding(
                                   padding: EdgeInsets.all(EnvoySpacing.small)),
@@ -291,8 +290,7 @@ class _NodeSetupDialogState extends ConsumerState<NodeSetupDialog> {
                     ),
                     Text(
                       S().privacy_setting_add_node_modal_heading,
-                      style: EnvoyTypography.heading
-                          .copyWith(color: EnvoyColors.textPrimary),
+                      style: EnvoyTypography.heading,
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),

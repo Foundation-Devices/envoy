@@ -120,8 +120,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                         const SizedBox(height: EnvoySpacing.small),
                         Text(
                           S().welcome_screen_heading,
-                          style: EnvoyTypography.heading
-                              .copyWith(color: EnvoyColors.textPrimary),
+                          style: EnvoyTypography.heading,
                           textAlign: TextAlign.center,
                         ),
                         const Padding(

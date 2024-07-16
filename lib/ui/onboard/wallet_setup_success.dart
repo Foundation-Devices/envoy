@@ -65,8 +65,7 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                       children: [
                         Text(
                           S().wallet_setup_success_heading,
-                          style: EnvoyTypography.heading
-                              .copyWith(color: EnvoyColors.textPrimary),
+                          style: EnvoyTypography.heading,
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: EnvoySpacing.large2),

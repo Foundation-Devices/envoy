@@ -45,9 +45,7 @@ class EnvoyTypography {
       .setWeight(FontWeight.w500);
 
   static TextStyle heading = baseFont
-      .copyWith(
-        fontSize: 20,
-      )
+      .copyWith(fontSize: 20, color: EnvoyColors.textPrimary)
       .setWeight(FontWeight.w500);
 
   // NOTE: always in caps

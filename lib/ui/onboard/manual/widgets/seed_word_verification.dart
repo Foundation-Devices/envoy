@@ -58,8 +58,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
         SliverToBoxAdapter(
           child: Text(
               S().manual_setup_generate_seed_verify_seed_quiz_1_4_heading,
-              style: EnvoyTypography.heading
-                  .copyWith(color: EnvoyColors.textPrimary),
+              style: EnvoyTypography.heading,
               textAlign: TextAlign.center),
         ),
         const SliverPadding(padding: EdgeInsets.all(EnvoySpacing.small)),

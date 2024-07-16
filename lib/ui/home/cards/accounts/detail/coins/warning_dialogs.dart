@@ -63,8 +63,7 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
                 ),
                 const SizedBox(height: EnvoySpacing.medium3),
                 Text(S().component_warning,
-                    style: EnvoyTypography.heading
-                        .copyWith(color: EnvoyColors.textPrimary),
+                    style: EnvoyTypography.heading,
                     textAlign: TextAlign.center),
                 const SizedBox(height: EnvoySpacing.medium1),
                 Padding(
@@ -183,8 +182,7 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
           ),
           const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           Text(S().change_output_from_multiple_tags_modal_heading,
-              style: EnvoyTypography.heading
-                  .copyWith(color: EnvoyColors.textPrimary)),
+              style: EnvoyTypography.heading),
           const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           Padding(
             padding:

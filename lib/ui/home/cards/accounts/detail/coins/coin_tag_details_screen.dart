@@ -714,9 +714,7 @@ class DeleteTagDialog extends StatelessWidget {
               padding:
                   const EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
               child: Text(dialogSubheading,
-                  textAlign: TextAlign.center,
-                  style: EnvoyTypography.heading
-                      .copyWith(color: EnvoyColors.textPrimary)),
+                  textAlign: TextAlign.center, style: EnvoyTypography.heading),
             ),
             EnvoyButton(
               secondaryButtonText,

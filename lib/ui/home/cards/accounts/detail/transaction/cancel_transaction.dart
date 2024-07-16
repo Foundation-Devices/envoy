@@ -656,8 +656,7 @@ class _CancelTransactionProgressState
                                 Text(
                                   title,
                                   textAlign: TextAlign.center,
-                                  style: EnvoyTypography.heading
-                                      .copyWith(color: EnvoyColors.textPrimary),
+                                  style: EnvoyTypography.heading,
                                 ),
                                 const Padding(padding: EdgeInsets.all(18)),
                                 Text(subTitle,

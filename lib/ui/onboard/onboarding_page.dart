@@ -290,8 +290,7 @@ class OnboardingText extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(header!,
                         textAlign: TextAlign.center,
-                        style: EnvoyTypography.heading
-                            .copyWith(color: EnvoyColors.textPrimary)))
+                        style: EnvoyTypography.heading))
                 : const SizedBox.shrink(),
             const SizedBox(height: EnvoySpacing.medium1),
             text != null
@@ -334,12 +333,8 @@ class ActionText extends StatelessWidget {
           onTap: action,
           child: Column(
             children: [
-              Text(
-                header,
-                textAlign: TextAlign.center,
-                style: EnvoyTypography.heading
-                    .copyWith(color: EnvoyColors.textPrimary),
-              ),
+              Text(header,
+                  textAlign: TextAlign.center, style: EnvoyTypography.heading),
               Text(
                 text,
                 textAlign: TextAlign.center,

@@ -275,8 +275,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
                         ListTile(
                           contentPadding: const EdgeInsets.all(0),
                           title: Text(title,
-                              style: EnvoyTypography.heading
-                                  .copyWith(color: EnvoyColors.textPrimary),
+                              style: EnvoyTypography.heading,
                               textAlign: TextAlign.center),
                           subtitle: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8.0),

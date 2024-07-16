@@ -78,8 +78,7 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
             Text(
               S().magic_setup_tutorial_heading,
               textAlign: TextAlign.center,
-              style: EnvoyTypography.heading
-                  .copyWith(color: EnvoyColors.textPrimary),
+              style: EnvoyTypography.heading,
             ),
             Padding(
               padding:

@@ -69,9 +69,7 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
             height: EnvoySpacing.xl * 2,
           ),
           Text(S().magic_setup_recovery_retry_header,
-              textAlign: TextAlign.center,
-              style: EnvoyTypography.heading
-                  .copyWith(color: EnvoyColors.textPrimary)),
+              textAlign: TextAlign.center, style: EnvoyTypography.heading),
         ],
       ),
     );
@@ -123,8 +121,7 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                           horizontal: EnvoySpacing.small),
                       child: Text(S().manual_setup_import_backup_CTA2,
                           textAlign: TextAlign.center,
-                          style: EnvoyTypography.heading
-                              .copyWith(color: EnvoyColors.textPrimary)),
+                          style: EnvoyTypography.heading),
                     ),
                     const SizedBox(height: EnvoySpacing.medium3),
                     Padding(
@@ -257,13 +254,9 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
         Padding(
           padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
           child: DefaultTextStyle(
-            style: EnvoyTypography.heading
-                .copyWith(color: EnvoyColors.textPrimary),
-            child: Text(
-              S().manual_setup_importingSeedLoadingInfo,
-              style: EnvoyTypography.heading
-                  .copyWith(color: EnvoyColors.textPrimary),
-            ),
+            style: EnvoyTypography.heading,
+            child: Text(S().manual_setup_importingSeedLoadingInfo,
+                style: EnvoyTypography.heading),
           ),
         )
       ],
