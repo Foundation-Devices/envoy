@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:rive/rive.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class FwIosSuccessPage extends StatelessWidget {
   final bool onboarding;
@@ -49,19 +48,16 @@ class FwIosSuccessPage extends StatelessWidget {
       navigationDots: 6,
       navigationDotsIndex: 4,
       buttons: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
-          child: OnboardingButton(
-              label: S().component_continue,
-              onTap: () {
-                Navigator.of(context)
-                    .pushReplacement(MaterialPageRoute(builder: (context) {
-                  return FwPassportPage(
-                    onboarding: onboarding,
-                  );
-                }));
-              }),
-        )
+        OnboardingButton(
+            label: S().component_continue,
+            onTap: () {
+              Navigator.of(context)
+                  .pushReplacement(MaterialPageRoute(builder: (context) {
+                return FwPassportPage(
+                  onboarding: onboarding,
+                );
+              }));
+            })
       ],
     );
   }

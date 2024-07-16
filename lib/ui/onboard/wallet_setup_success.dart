@@ -65,7 +65,8 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                       children: [
                         Text(
                           S().wallet_setup_success_heading,
-                          style: Theme.of(context).textTheme.titleLarge,
+                          style: EnvoyTypography.heading
+                              .copyWith(color: EnvoyColors.textPrimary),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: EnvoySpacing.large2),
@@ -81,10 +82,10 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
               const SizedBox(height: EnvoySpacing.medium1),
               Padding(
                 padding: const EdgeInsets.only(
-                    left: EnvoySpacing.medium1,
-                    right: EnvoySpacing.medium1,
-                    bottom: EnvoySpacing.medium2,
-                    top: EnvoySpacing.small),
+                  left: EnvoySpacing.xs,
+                  right: EnvoySpacing.xs,
+                  bottom: EnvoySpacing.medium2,
+                ),
                 child: Consumer(
                   builder: (context, ref, child) {
                     return OnboardingButton(

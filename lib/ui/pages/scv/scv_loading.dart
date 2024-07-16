@@ -73,33 +73,28 @@ class _ScvLoadingPageState extends State<ScvLoadingPage> {
       key: const Key("scv_loading"),
       rightFunction: null,
       leftFunction: null,
+      text: [
+        OnboardingText(
+          header: S().scv_checkingDeviceSecurity,
+        ),
+      ],
       clipArt: Padding(
         padding: const EdgeInsets.only(top: EnvoySpacing.xl),
-        child: Column(
-          children: [
-            SizedBox(
-              width: 300,
-              height: 300,
-              child: RiveAnimation.asset(
-                "assets/envoy_loader.riv",
-                fit: BoxFit.contain,
-                onInit: (artboard) {
-                  var stateMachineController =
-                      StateMachineController.fromArtboard(artboard, 'STM');
-                  artboard.addController(stateMachineController!);
-                  stateMachineController
-                      .findInput<bool>("indeterminate")
-                      ?.change(true);
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
-              child: OnboardingText(
-                header: S().scv_checkingDeviceSecurity,
-              ),
-            )
-          ],
+        child: SizedBox(
+          width: 300,
+          height: 300,
+          child: RiveAnimation.asset(
+            "assets/envoy_loader.riv",
+            fit: BoxFit.contain,
+            onInit: (artboard) {
+              var stateMachineController =
+                  StateMachineController.fromArtboard(artboard, 'STM');
+              artboard.addController(stateMachineController!);
+              stateMachineController
+                  .findInput<bool>("indeterminate")
+                  ?.change(true);
+            },
+          ),
         ),
       ),
     );

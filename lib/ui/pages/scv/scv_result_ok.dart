@@ -6,7 +6,6 @@ import 'package:envoy/ui/pages/pin/pin_intro.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 //ignore: must_be_immutable
 class ScvResultOkPage extends StatelessWidget {
@@ -24,21 +23,15 @@ class ScvResultOkPage extends StatelessWidget {
             text: S().envoy_scv_result_ok_subheading)
       ],
       buttons: [
-        Padding(
-          padding: const EdgeInsets.only(
-            bottom: EnvoySpacing.medium2,
-          ),
-          child: OnboardingButton(
-              label: S().component_continue,
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return PinIntroPage(
-                    mustUpdateFirmware: mustUpdateFirmware,
-                  );
-                }));
-              }),
-        ),
+        OnboardingButton(
+            label: S().component_continue,
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return PinIntroPage(
+                  mustUpdateFirmware: mustUpdateFirmware,
+                );
+              }));
+            }),
       ],
     );
   }

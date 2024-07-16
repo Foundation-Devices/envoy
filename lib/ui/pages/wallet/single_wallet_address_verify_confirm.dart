@@ -7,8 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/util/build_context_extension.dart';
 
 class SingleWalletAddressVerifyConfirmPage extends StatelessWidget {
   const SingleWalletAddressVerifyConfirmPage({super.key});
@@ -19,13 +17,9 @@ class SingleWalletAddressVerifyConfirmPage extends StatelessWidget {
       key: const Key("single_wallet_verify_confirm"),
       clipArt: Image.asset("assets/address_verify.png"),
       text: [
-        Flexible(
-          child: SingleChildScrollView(
-            child: OnboardingText(
-                header: S().pair_new_device_address_heading,
-                text: S().pair_new_device_address_subheading),
-          ),
-        ),
+        OnboardingText(
+            header: S().pair_new_device_address_heading,
+            text: S().pair_new_device_address_subheading),
       ],
       buttons: [
         OnboardingButton(
@@ -40,11 +34,6 @@ class SingleWalletAddressVerifyConfirmPage extends StatelessWidget {
             onTap: () {
               OnboardingPage.popUntilHome(context);
             }),
-        SizedBox(
-          height: context.isSmallScreen
-              ? EnvoySpacing.medium1
-              : EnvoySpacing.medium3,
-        )
       ],
     );
   }

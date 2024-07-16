@@ -19,6 +19,7 @@ import 'package:envoy/ui/routes/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 enum EscapeHatchTap { logo, text }
 
@@ -119,7 +120,8 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                         const SizedBox(height: EnvoySpacing.small),
                         Text(
                           S().welcome_screen_heading,
-                          style: Theme.of(context).textTheme.titleLarge,
+                          style: EnvoyTypography.heading
+                              .copyWith(color: EnvoyColors.textPrimary),
                           textAlign: TextAlign.center,
                         ),
                         const Padding(

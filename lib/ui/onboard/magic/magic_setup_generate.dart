@@ -18,6 +18,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/widgets/expandable_page_view.dart';
 
 class MagicSetupGenerate extends StatefulWidget {
   const MagicSetupGenerate({super.key});
@@ -128,38 +129,35 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
             ),
           ),
           text: [
-            Expanded(
-              child: PageView(
-                physics: const NeverScrollableScrollPhysics(),
-                controller: _pageController,
-                children: [
-                  ...stepsHeadings.map((heading) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: EnvoySpacing.xs,
-                          horizontal: EnvoySpacing.small),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Flexible(
-                            child: SingleChildScrollView(
-                              child: OnboardingText(
-                                header: heading,
-                                text: stepSubHeadings[
-                                    stepsHeadings.indexOf(heading)],
-                                key: ValueKey<String>(
-                                  stepSubHeadings[
-                                      stepsHeadings.indexOf(heading)],
-                                ),
+            ExpandablePageView(
+              physics: const NeverScrollableScrollPhysics(),
+              controller: _pageController,
+              children: [
+                ...stepsHeadings.map((heading) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.xs,
+                        horizontal: EnvoySpacing.small),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: SingleChildScrollView(
+                            child: OnboardingText(
+                              header: heading,
+                              text: stepSubHeadings[
+                                  stepsHeadings.indexOf(heading)],
+                              key: ValueKey<String>(
+                                stepSubHeadings[stepsHeadings.indexOf(heading)],
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                    );
-                  })
-                ],
-              ),
+                        ),
+                      ],
+                    ),
+                  );
+                })
+              ],
             )
           ]),
     );
@@ -251,8 +249,8 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                 Padding(
                   padding: const EdgeInsets.only(
                       bottom: EnvoySpacing.medium2,
-                      left: EnvoySpacing.small,
-                      right: EnvoySpacing.small),
+                      left: EnvoySpacing.xs,
+                      right: EnvoySpacing.xs),
                   child: OnboardingButton(
                     label: S().component_continue,
                     onTap: () {
@@ -291,11 +289,10 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            S().recovery_scenario_heading,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          Text(S().recovery_scenario_heading,
+              textAlign: TextAlign.center,
+              style: EnvoyTypography.heading
+                  .copyWith(color: EnvoyColors.textPrimary)),
           const SizedBox(height: EnvoySpacing.medium2),
           Text(
             S().recovery_scenario_subheading,
@@ -411,7 +408,8 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                     Text(
                       S().android_backup_info_heading,
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge,
+                      style: EnvoyTypography.heading
+                          .copyWith(color: EnvoyColors.textPrimary),
                     ),
                     const Padding(
                         padding: EdgeInsets.symmetric(

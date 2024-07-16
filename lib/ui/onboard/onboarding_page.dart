@@ -8,11 +8,12 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/ui/animated_qr_image.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
+import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -166,8 +167,8 @@ class OnboardingPage extends StatelessWidget {
                   height: 150,
                   width: 150,
                   child: CircularProgressIndicator(
-                    color: EnvoyColors.teal,
-                    backgroundColor: EnvoyColors.greyLoadingSpinner,
+                    color: EnvoyColors.accentPrimary,
+                    backgroundColor: EnvoyColors.textTertiary,
                     strokeWidth: 8,
                   ),
                 );
@@ -228,15 +229,22 @@ class OnboardingPage extends StatelessWidget {
                   ),
                 ),
               Flexible(
-                child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [...?text]),
+                child: SingleChildScrollView(
+                  child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [...?text]),
+                ),
               ),
             ]),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.only(
+                left: EnvoySpacing.xs,
+                right: EnvoySpacing.xs,
+                bottom: context.isSmallScreen
+                    ? EnvoySpacing.medium1
+                    : EnvoySpacing.medium2),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -288,13 +296,8 @@ class OnboardingText extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(header!,
                         textAlign: TextAlign.center,
-                        style: EnvoyTypography.subheading
-                            .copyWith(
-                                height: 1.2,
-                                fontSize: 20,
-                                color: EnvoyColors.gray1000,
-                                decoration: TextDecoration.none)
-                            .setWeight(FontWeight.w500)))
+                        style: EnvoyTypography.heading
+                            .copyWith(color: EnvoyColors.textPrimary)))
                 : const SizedBox.shrink(),
             const SizedBox(height: EnvoySpacing.medium1),
             text != null
@@ -374,7 +377,7 @@ class LinkText extends StatelessWidget {
         ? Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 13)
         : textStyle!;
     TextStyle linkStyleBuild = linkStyle == null
-        ? const TextStyle(color: EnvoyColors.darkTeal)
+        ? const TextStyle(color: EnvoyColors.accentPrimary)
         : linkStyle!;
 
     List<TextSpan> spans = [];

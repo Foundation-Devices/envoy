@@ -188,21 +188,23 @@ class HomePageState extends ConsumerState<HomePage>
   }
 
   _notifyAboutNewAppVersion(String newVersion) {
-    EnvoyToast(
-      backgroundColor: Colors.lightBlue,
-      replaceExisting: true,
-      message: S().toast_newEnvoyUpdateAvailable,
-      icon: const EnvoyIcon(
-        EnvoyIcons.info,
-        color: EnvoyColors.accentPrimary,
-      ),
-      actionButtonText: S().component_update,
-      onActionTap: () {
-        EnvoyToast.dismissPreviousToasts(context);
-        final appStoreUrl = _getAppStoreUrl();
-        launchUrlString(appStoreUrl);
-      },
-    ).show(context);
+    if (context.mounted) {
+      EnvoyToast(
+        backgroundColor: Colors.lightBlue,
+        replaceExisting: true,
+        message: S().toast_newEnvoyUpdateAvailable,
+        icon: const EnvoyIcon(
+          EnvoyIcons.info,
+          color: EnvoyColors.accentPrimary,
+        ),
+        actionButtonText: S().component_update,
+        onActionTap: () {
+          EnvoyToast.dismissPreviousToasts(context);
+          final appStoreUrl = _getAppStoreUrl();
+          launchUrlString(appStoreUrl);
+        },
+      ).show(context);
+    }
     isNewAppVersionAvailable.close();
   }
 
@@ -215,58 +217,64 @@ class HomePageState extends ConsumerState<HomePage>
   }
 
   _notifyAboutTor() {
-    EnvoyToast(
-      backgroundColor: Colors.lightBlue,
-      replaceExisting: true,
-      message: S().tor_connectivity_toast_warning,
-      icon: const EnvoyIcon(
-        EnvoyIcons.info,
-        color: EnvoyColors.accentPrimary,
-      ),
-      actionButtonText: S().component_learnMore,
-      onActionTap: () {
-        EnvoyToast.dismissPreviousToasts(context);
-        showEnvoyDialog(dialog: const TorWarning(), context: context);
-      },
-    ).show(context);
+    if (context.mounted) {
+      EnvoyToast(
+        backgroundColor: Colors.lightBlue,
+        replaceExisting: true,
+        message: S().tor_connectivity_toast_warning,
+        icon: const EnvoyIcon(
+          EnvoyIcons.info,
+          color: EnvoyColors.accentPrimary,
+        ),
+        actionButtonText: S().component_learnMore,
+        onActionTap: () {
+          EnvoyToast.dismissPreviousToasts(context);
+          showEnvoyDialog(dialog: const TorWarning(), context: context);
+        },
+      ).show(context);
+    }
   }
 
   _notifyAboutFoundationServerDown() {
-    EnvoyToast(
-      backgroundColor: Colors.lightBlue,
-      replaceExisting: true,
-      message: S().toast_foundationServersDown,
-      icon: const EnvoyIcon(
-        EnvoyIcons.info,
-        color: EnvoyColors.accentPrimary,
-      ),
-      actionButtonText: S().component_retry,
-      onActionTap: () {
-        EnvoyToast.dismissPreviousToasts(context);
-        Settings().switchToNextDefaultServer();
-      },
-    ).show(context);
+    if (context.mounted) {
+      EnvoyToast(
+        backgroundColor: Colors.lightBlue,
+        replaceExisting: true,
+        message: S().toast_foundationServersDown,
+        icon: const EnvoyIcon(
+          EnvoyIcons.info,
+          color: EnvoyColors.accentPrimary,
+        ),
+        actionButtonText: S().component_retry,
+        onActionTap: () {
+          EnvoyToast.dismissPreviousToasts(context);
+          Settings().switchToNextDefaultServer();
+        },
+      ).show(context);
+    }
   }
 
   _displayBackupToast(bool success) {
-    EnvoyToast(
-      backgroundColor: Colors.lightBlue,
-      replaceExisting: true,
-      duration:
-          success ? const Duration(seconds: 4) : const Duration(seconds: 3),
-      message: success
-          ? S().manual_toggle_on_seed_backup_in_progress_toast_heading
-          : S().manualToggleOnSeed_toastHeading_failedText,
-      icon: success
-          ? const EnvoyIcon(
-              EnvoyIcons.info,
-              color: EnvoyColors.accentPrimary,
-            )
-          : const EnvoyIcon(
-              EnvoyIcons.alert,
-              color: EnvoyColors.accentSecondary,
-            ),
-    ).show(context);
+    if (context.mounted) {
+      EnvoyToast(
+        backgroundColor: Colors.lightBlue,
+        replaceExisting: true,
+        duration:
+            success ? const Duration(seconds: 4) : const Duration(seconds: 3),
+        message: success
+            ? S().manual_toggle_on_seed_backup_in_progress_toast_heading
+            : S().manualToggleOnSeed_toastHeading_failedText,
+        icon: success
+            ? const EnvoyIcon(
+                EnvoyIcons.info,
+                color: EnvoyColors.accentPrimary,
+              )
+            : const EnvoyIcon(
+                EnvoyIcons.alert,
+                color: EnvoyColors.accentSecondary,
+              ),
+      ).show(context);
+    }
   }
 
   /// Handle the back button press behavior

@@ -180,21 +180,27 @@ class _SeedScreenState extends State<SeedScreen> {
           ),
         ),
         Expanded(
-            child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            body: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
+            child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: EnvoySpacing.medium2),
+                child: Text(
                     seedList.length == 24
                         ? S().manual_setup_generate_seed_write_words_24_heading
                         : S().manual_setup_generate_seed_write_words_heading,
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: EnvoyTypography.heading
+                        .copyWith(color: EnvoyColors.textPrimary),
                     textAlign: TextAlign.center),
-                const Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
-                Expanded(
+              ),
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.medium2),
                   child: PageView(
                       controller: _seedDisplayPageController,
                       physics: const NeverScrollableScrollPhysics(),
@@ -203,39 +209,41 @@ class _SeedScreenState extends State<SeedScreen> {
                         if (seedList.length > 12) _buildTwoMnemonicColumns(12),
                       ]),
                 ),
-                if (seedList.length > 12)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.small),
-                    child: DotsIndicator(
-                        pageController: _seedDisplayPageController,
-                        totalPages: 2),
-                  ),
+              ),
+              if (seedList.length > 12)
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: EnvoySpacing.medium2),
-                  child: OnboardingButton(
-                    onTap: () async {
-                      if (seedList.length == 12 || _onSecondPage) {
-                        await _pageController.nextPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.ease);
-                      } else {
-                        setState(() {
-                          _onSecondPage = true;
-                        });
-                        await _seedDisplayPageController.nextPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.ease);
-                      }
-                    },
-                    label: seedList.length == 12 || _onSecondPage
-                        ? S().component_done
-                        : S().component_continue,
-                  ),
-                )
-              ],
-            ),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
+                  child: DotsIndicator(
+                      pageController: _seedDisplayPageController,
+                      totalPages: 2),
+                ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: EnvoySpacing.xs,
+                    right: EnvoySpacing.xs,
+                    bottom: EnvoySpacing.medium2),
+                child: OnboardingButton(
+                  onTap: () async {
+                    if (seedList.length == 12 || _onSecondPage) {
+                      await _pageController.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.ease);
+                    } else {
+                      setState(() {
+                        _onSecondPage = true;
+                      });
+                      await _seedDisplayPageController.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.ease);
+                    }
+                  },
+                  label: seedList.length == 12 || _onSecondPage
+                      ? S().component_done
+                      : S().component_continue,
+                ),
+              )
+            ],
           ),
         ))
       ],
@@ -412,11 +420,10 @@ class _SeedScreenState extends State<SeedScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Text(
-                  S().manual_setup_generate_seed_verify_seed_heading,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text(S().manual_setup_generate_seed_verify_seed_heading,
+                    textAlign: TextAlign.center,
+                    style: EnvoyTypography.heading
+                        .copyWith(color: EnvoyColors.textPrimary)),
                 Padding(
                   padding: const EdgeInsets.all(EnvoySpacing.medium2),
                   child: Text(
@@ -437,7 +444,7 @@ class _SeedScreenState extends State<SeedScreen> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(
-              horizontal: EnvoySpacing.medium1, vertical: EnvoySpacing.medium1),
+              horizontal: EnvoySpacing.xs, vertical: EnvoySpacing.medium2),
           child: OnboardingButton(
               label: S().component_continue,
               fontWeight: FontWeight.w600,

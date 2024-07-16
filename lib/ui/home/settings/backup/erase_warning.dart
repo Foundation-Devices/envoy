@@ -434,7 +434,8 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
                         Text(
                           title,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleLarge,
+                          style: EnvoyTypography.heading
+                              .copyWith(color: EnvoyColors.textPrimary),
                         ),
                         const Padding(padding: EdgeInsets.all(18)),
                       ],
@@ -534,7 +535,8 @@ class AndroidBackupWarning extends StatelessWidget {
                         Text(
                           S().android_backup_info_heading,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleLarge,
+                          style: EnvoyTypography.heading
+                              .copyWith(color: EnvoyColors.textPrimary),
                         ),
                         const Padding(padding: EdgeInsets.all(12)),
                         LinkText(
