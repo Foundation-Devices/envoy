@@ -68,10 +68,14 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
           const SizedBox(
             height: EnvoySpacing.xl * 2,
           ),
-          Text(S().magic_setup_recovery_retry_header,
-              textAlign: TextAlign.center,
-              style: EnvoyTypography.heading
-                  .copyWith(color: EnvoyColors.textPrimary)),
+          DefaultTextStyle(
+            style: EnvoyTypography.heading
+                .copyWith(color: EnvoyColors.textPrimary),
+            child: Text(S().magic_setup_recovery_retry_header,
+                textAlign: TextAlign.center,
+                style: EnvoyTypography.heading
+                    .copyWith(color: EnvoyColors.textPrimary)),
+          ),
         ],
       ),
     );
