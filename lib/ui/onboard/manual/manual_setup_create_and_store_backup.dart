@@ -73,9 +73,8 @@ class _ManualSetupCreateAndStoreBackupState
           const SizedBox(height: EnvoySpacing.medium1),
           Padding(
             padding: const EdgeInsets.only(
-                top: EnvoySpacing.xs,
-                left: EnvoySpacing.medium1,
-                right: EnvoySpacing.medium1,
+                left: EnvoySpacing.xs,
+                right: EnvoySpacing.xs,
                 bottom: EnvoySpacing.medium2),
             child: OnboardingButton(
                 type: EnvoyButtonTypes.primary,

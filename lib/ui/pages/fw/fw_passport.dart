@@ -47,21 +47,18 @@ class FwPassportPage extends StatelessWidget {
       navigationDots: 6,
       navigationDotsIndex: 5,
       buttons: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
-          child: OnboardingButton(
-              label: S().component_continue,
-              onTap: () {
-                if (!onboarding) {
-                  OnboardingPage.popUntilGoRoute(context);
-                } else {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return const PpSetupIntroPage();
-                  }));
-                }
-              }),
-        ),
+        OnboardingButton(
+            label: S().component_continue,
+            onTap: () {
+              if (!onboarding) {
+                OnboardingPage.popUntilGoRoute(context);
+              } else {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return const PpSetupIntroPage();
+                }));
+              }
+            }),
       ],
     );
   }

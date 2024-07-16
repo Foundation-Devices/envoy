@@ -8,8 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:wallet/wallet.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/util/build_context_extension.dart';
 
 class SingleWalletPairSuccessPage extends StatelessWidget {
   final Wallet pairedWallet;
@@ -51,11 +49,6 @@ class SingleWalletPairSuccessPage extends StatelessWidget {
                 return SingleWalletAddressVerifyPage(pairedWallet);
               }));
             }),
-        SizedBox(
-          height: context.isSmallScreen
-              ? EnvoySpacing.medium1
-              : EnvoySpacing.medium3,
-        )
       ],
     );
   }

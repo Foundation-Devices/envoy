@@ -304,7 +304,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
               SizedBox(
                   height: context.isSmallScreen
                       ? EnvoySpacing.medium1
-                      : EnvoySpacing.medium3),
+                      : EnvoySpacing.medium2),
             ],
           );
         },
@@ -355,10 +355,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
             MagicRecoveryWalletState.unableToDecryptBackup) {
       return Padding(
         padding: const EdgeInsets.only(
-            top: EnvoySpacing.xs,
-            left: EnvoySpacing.medium1,
-            right: EnvoySpacing.medium1,
-            bottom: EnvoySpacing.medium2),
+          left: EnvoySpacing.xs,
+          right: EnvoySpacing.xs,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -477,7 +476,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
             SizedBox(
                 height: context.isSmallScreen
                     ? EnvoySpacing.medium1
-                    : EnvoySpacing.medium3),
+                    : EnvoySpacing.medium2),
           ],
         ),
       );
