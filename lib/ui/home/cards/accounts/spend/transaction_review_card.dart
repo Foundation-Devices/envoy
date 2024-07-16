@@ -85,12 +85,12 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
         ? DisplayUnit.btc
         : DisplayUnit.sat;
 
-    AmountDisplayUnit formatUnit =
-        unit == DisplayUnit.btc ? AmountDisplayUnit.btc : AmountDisplayUnit.sat;
-
     if (sendScreenUnit == AmountDisplayUnit.fiat) {
       unit = Settings().displayUnit;
     }
+
+    AmountDisplayUnit formatUnit =
+        unit == DisplayUnit.btc ? AmountDisplayUnit.btc : AmountDisplayUnit.sat;
 
     return Container(
       decoration: BoxDecoration(
