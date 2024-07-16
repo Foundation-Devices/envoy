@@ -95,7 +95,7 @@ class SingleImportPpIntroPage extends StatelessWidget {
                     padding: const EdgeInsets.only(
                         left: EnvoySpacing.medium1,
                         right: EnvoySpacing.medium1,
-                        bottom: EnvoySpacing.large2),
+                        bottom: EnvoySpacing.large3),
                     child: EnvoyButton(
                       S().accounts_empty_text_learn_more,
                       onTap: () {

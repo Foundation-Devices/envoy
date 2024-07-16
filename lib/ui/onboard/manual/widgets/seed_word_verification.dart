@@ -158,13 +158,14 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                     )
                   : Padding(
                       padding: const EdgeInsets.only(
-                          top: EnvoySpacing.xs, bottom: EnvoySpacing.medium2),
+                          left: EnvoySpacing.xs,
+                          right: EnvoySpacing.xs,
+                          bottom: EnvoySpacing.medium2),
                       child: OnboardingButton(
                           label: S().component_continue,
                           onTap: () {
                             widget.onVerificationFinished(true);
                           })),
-              const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
             ],
           ),
         ),

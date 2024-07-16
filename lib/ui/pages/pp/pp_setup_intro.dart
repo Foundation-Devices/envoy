@@ -105,8 +105,8 @@ class PpSetupIntroPage extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.medium2,
-                        vertical: EnvoySpacing.medium1),
+                        horizontal: EnvoySpacing.small,
+                        vertical: EnvoySpacing.small),
                     child: Column(
                       children: [
                         EnvoyButton(

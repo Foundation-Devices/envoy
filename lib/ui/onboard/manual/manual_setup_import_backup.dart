@@ -68,8 +68,11 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
           const SizedBox(
             height: EnvoySpacing.xl * 2,
           ),
-          Text(S().magic_setup_recovery_retry_header,
-              textAlign: TextAlign.center, style: EnvoyTypography.heading),
+          DefaultTextStyle(
+            style: EnvoyTypography.heading,
+            child: Text(S().magic_setup_recovery_retry_header,
+                textAlign: TextAlign.center, style: EnvoyTypography.heading),
+          ),
         ],
       ),
     );
@@ -139,10 +142,10 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
             const SizedBox(height: EnvoySpacing.medium1),
             Padding(
               padding: const EdgeInsets.only(
-                  left: EnvoySpacing.medium1,
-                  right: EnvoySpacing.medium1,
-                  bottom: EnvoySpacing.medium2,
-                  top: EnvoySpacing.small),
+                left: EnvoySpacing.xs,
+                right: EnvoySpacing.xs,
+                bottom: EnvoySpacing.medium2,
+              ),
               child: Column(
                 children: [
                   OnboardingButton(
