@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:math';
+
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/filter_chip.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -522,6 +524,8 @@ class SlidingToggle extends StatefulWidget {
 
 class _SlidingToggleState extends State<SlidingToggle>
     with SingleTickerProviderStateMixin {
+  final textTheme = EnvoyTypography.info;
+
   String value = "Tx"; // TODO: FIGMA
 
   final Duration _duration = const Duration(milliseconds: 150);
@@ -531,7 +535,10 @@ class _SlidingToggleState extends State<SlidingToggle>
   late Animation<Color?> _activityIconColorAnimation;
   late Animation<Color?> _tagsIconColorAnimation;
   final Color _iconDisabledColor = new_color_scheme.EnvoyColors.textTertiary;
-  String _text = "Activity"; // TODO: FIGMA
+  final String _firstOptionText = "Activity"; // TODO: FIGMA
+  final String _secondOptionText = "Tags"; // TODO: FIGMA
+  late String _currentOptionText = _firstOptionText;
+  double _maxOptionWidth = 0.0;
 
   @override
   void initState() {
@@ -605,9 +612,9 @@ class _SlidingToggleState extends State<SlidingToggle>
     _animationController.addListener(() {
       setState(() {
         if (_animationController.value < 0.5) {
-          _text = "Activity"; // TODO: FIGMA
+          _currentOptionText = _firstOptionText;
         } else if (_animationController.value > 0.5) {
-          _text = "Tags"; // TODO: FIGMA
+          _currentOptionText = _secondOptionText;
         }
       });
     });
@@ -623,9 +630,42 @@ class _SlidingToggleState extends State<SlidingToggle>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _maxOptionWidth = getMaxOptionWidth(context);
+  }
+
+  double getMaxOptionWidth(BuildContext context) {
+    final textPainter1 = TextPainter(
+      text: TextSpan(
+        text: _firstOptionText,
+        style: textTheme,
+      ),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    )..layout();
+
+    final textPainter2 = TextPainter(
+      text: TextSpan(
+        text: _secondOptionText,
+        style: textTheme,
+      ),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    )..layout();
+
+    double textWidth1 = textPainter1.width * 2 + 30; // + for compensation
+    double textWidth2 = textPainter2.width * 2 + 30;
+
+    double maxWidth = max(textWidth1, textWidth2);
+    if (maxWidth > 180) {
+      maxWidth = 180;
+    }
+    return maxWidth;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme.bodyMedium?.copyWith(
-        fontWeight: FontWeight.w600, color: _textColorAnimation.value);
     return LayoutBuilder(
       builder: (context, constraints) {
         return GestureDetector(
@@ -642,15 +682,17 @@ class _SlidingToggleState extends State<SlidingToggle>
             }
             widget.onChange(value);
           },
-          child: Container(
-            constraints: BoxConstraints.tight(const Size(120, 34)),
+          child: SizedBox(
+            height: 34,
+            width: _maxOptionWidth,
             child: Container(
               decoration: BoxDecoration(
-                  color: new_color_scheme.EnvoyColors.solidWhite,
-                  borderRadius: BorderRadius.circular(EnvoySpacing.medium3)),
+                color: new_color_scheme.EnvoyColors.solidWhite,
+                borderRadius: BorderRadius.circular(EnvoySpacing.medium3),
+              ),
               child: Stack(
                 children: [
-                  //Show selection background with 71% of width
+                  // Show selection background with 71% of width
                   AlignTransition(
                     alignment: _slidingSegmentAnimation,
                     child: FractionallySizedBox(
@@ -658,9 +700,10 @@ class _SlidingToggleState extends State<SlidingToggle>
                       child: Container(
                         margin: const EdgeInsets.all(2),
                         decoration: BoxDecoration(
-                            color: new_color_scheme.EnvoyColors.accentPrimary,
-                            borderRadius:
-                                BorderRadius.circular(EnvoySpacing.medium3)),
+                          color: new_color_scheme.EnvoyColors.accentPrimary,
+                          borderRadius:
+                              BorderRadius.circular(EnvoySpacing.medium3),
+                        ),
                       ),
                     ),
                   ),
@@ -668,8 +711,11 @@ class _SlidingToggleState extends State<SlidingToggle>
                     alignment: Alignment.centerLeft,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 8.0),
-                      child: Icon(Icons.history,
-                          size: 18, color: _activityIconColorAnimation.value),
+                      child: Icon(
+                        Icons.history,
+                        size: 18,
+                        color: _activityIconColorAnimation.value,
+                      ),
                     ),
                   ),
                   AlignTransition(
@@ -679,31 +725,43 @@ class _SlidingToggleState extends State<SlidingToggle>
                         .animate(CurvedAnimation(
                             parent: _animationController,
                             curve: Curves.easeInOutCubic)),
-                    child: Builder(builder: (context) {
-                      return SvgPicture.asset("assets/icons/ic_tag.svg",
+                    child: Builder(
+                      builder: (context) {
+                        return SvgPicture.asset(
+                          "assets/icons/ic_tag.svg",
                           width: 18,
                           height: 18,
-                          color: _tagsIconColorAnimation.value);
-                    }),
+                          color: _tagsIconColorAnimation.value,
+                        );
+                      },
+                    ),
                   ),
                   AlignTransition(
-                      alignment: Tween(
-                              begin: const Alignment(-.12, 0.0),
-                              end: const Alignment(.45, 0))
-                          .animate(CurvedAnimation(
-                              parent: _animationController,
-                              curve: Curves.easeInOutCubic)),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 2),
-                        child: Text(
-                          _text,
-                          key: ValueKey(_text),
-                          //prevent unnecessary overflows, container size is fixed
-                          textScaler: const TextScaler.linear(1),
-                          textAlign: TextAlign.start,
-                          style: textTheme,
-                        ),
-                      )),
+                    alignment: Tween(
+                            begin: const Alignment(-.12, 0.0),
+                            end: const Alignment(.75, 0))
+                        .animate(CurvedAnimation(
+                            parent: _animationController,
+                            curve: Curves.easeInOutCubic)),
+                    child: Container(
+                      width: _maxOptionWidth * 0.5,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.xs),
+                      child: Text(
+                        _currentOptionText,
+                        key: ValueKey(_currentOptionText),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        // prevent unnecessary overflows, container size is fixed
+                        textScaler: const TextScaler.linear(1),
+                        textAlign: _animationController.value == 0.0
+                            ? TextAlign.start
+                            : TextAlign.center,
+                        style: textTheme.copyWith(
+                            color: _textColorAnimation.value),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
