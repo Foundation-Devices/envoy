@@ -17,7 +17,7 @@ class SingleWalletAddressVerifyConfirmPage extends StatelessWidget {
     return OnboardingPage(
       key: const Key("single_wallet_verify_confirm"),
       clipArt: Padding(
-        padding: const EdgeInsets.all(EnvoySpacing.medium3),
+        padding: const EdgeInsets.all(EnvoySpacing.large1),
         child: Image.asset("assets/fi_shield.png", height: 140),
       ),
       text: [

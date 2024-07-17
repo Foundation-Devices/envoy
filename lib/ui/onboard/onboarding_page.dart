@@ -298,7 +298,6 @@ class OnboardingText extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: EnvoyTypography.heading))
                 : const SizedBox.shrink(),
-            const SizedBox(height: EnvoySpacing.medium1),
             text != null
                 ? Padding(
                     padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
