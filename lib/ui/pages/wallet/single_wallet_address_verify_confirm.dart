@@ -22,8 +22,10 @@ class SingleWalletAddressVerifyConfirmPage extends StatelessWidget {
       ),
       text: [
         OnboardingText(
-            header: S().pair_new_device_address_heading,
-            text: S().pair_new_device_address_subheading),
+          header: S().pair_new_device_address_heading,
+          text: S().pair_new_device_address_subheading,
+          subtitleTopPadding: EnvoySpacing.medium3,
+        ),
       ],
       buttons: [
         OnboardingButton(

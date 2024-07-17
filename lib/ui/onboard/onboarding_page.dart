@@ -280,8 +280,13 @@ class OnboardingPage extends StatelessWidget {
 class OnboardingText extends StatelessWidget {
   final String? header;
   final String? text;
+  final double subtitleTopPadding;
 
-  const OnboardingText({this.header, this.text, super.key});
+  const OnboardingText(
+      {this.header,
+      this.text,
+      super.key,
+      this.subtitleTopPadding = EnvoySpacing.large2});
 
   @override
   Widget build(BuildContext context) {
@@ -300,7 +305,7 @@ class OnboardingText extends StatelessWidget {
                 : const SizedBox.shrink(),
             text != null
                 ? Padding(
-                    padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
+                    padding: EdgeInsets.only(top: subtitleTopPadding),
                     child: Text(
                       text!,
                       textAlign: TextAlign.center,
