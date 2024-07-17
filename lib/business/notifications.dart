@@ -8,6 +8,7 @@ import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/util/list_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -95,6 +96,7 @@ final transactionNotificationsProvider = Provider((ref) {
         }
 
         if (!skip) {
+          Notifications().deleteSuppressedNotifications(account.id);
           Notifications().add(EnvoyNotification(
               "Transaction",
               tx.isConfirmed ? tx.date : DateTime.now(),
@@ -119,7 +121,7 @@ class Notifications {
   StreamController<List<EnvoyNotification>> streamController =
       StreamController();
   List<EnvoyNotification> notifications = [];
-  List<EnvoyNotification> suppressedNotifications = [];
+  List<EnvoyNotification> notificationsThatWillBeSuppressed = [];
 
   final LocalStorage _ls = LocalStorage();
 
@@ -148,16 +150,39 @@ class Notifications {
     sync();
   }
 
-  deleteNotification(String id, {String? accountId}) {
-    notifications.removeWhere((notification) {
-      if (id == notification.id && accountId == notification.accountId) {
-        suppressedNotifications.add(notification);
-        return true;
-      }
-      return false;
-    });
-    _storeNotifications();
-    sync();
+  void deleteNotification(String id,
+      {String? accountId, Duration delay = Duration.zero}) {
+    // Find the notification immediately and put it in notificationsThatWillBeSuppressed
+    EnvoyNotification? notificationToSuppress = notifications.firstWhereOrNull(
+      (notification) =>
+          notification.id == id && notification.accountId == accountId,
+    );
+
+    if (notificationToSuppress != null) {
+      notificationsThatWillBeSuppressed.add(notificationToSuppress);
+
+      // Schedule the deletion from notifications after the delay
+      Future.delayed(delay, () {
+        notifications.removeWhere((notification) =>
+            notification.id == id && notification.accountId == accountId);
+        notificationsThatWillBeSuppressed.removeWhere((notification) =>
+            notification.id == id && notification.accountId == accountId);
+        _storeNotifications();
+        sync();
+      });
+    }
+  }
+
+  void deleteSuppressedNotifications(String? accountId) {
+    var suppressedNotificationsToDelete = notificationsThatWillBeSuppressed
+        .where(
+          (notification) => notification.accountId == accountId,
+        )
+        .toList();
+
+    for (var notification in suppressedNotificationsToDelete) {
+      deleteNotification(notification.id, accountId: notification.accountId);
+    }
   }
 
   // TODO: refactor this to monstrosity to use composable providers
