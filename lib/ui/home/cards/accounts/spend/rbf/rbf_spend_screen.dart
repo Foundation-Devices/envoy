@@ -374,7 +374,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                         Text(
                           title,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleLarge,
+                          style: EnvoyTypography.heading,
                         ),
                         const Padding(padding: EdgeInsets.all(18)),
                         Text(subTitle,

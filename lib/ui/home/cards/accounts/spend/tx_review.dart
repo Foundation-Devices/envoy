@@ -295,8 +295,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                       children: [
                         Text(title,
                             textAlign: TextAlign.center,
-                            style: EnvoyTypography.heading
-                                .copyWith(color: EnvoyColors.textPrimary)),
+                            style: EnvoyTypography.heading),
                         const Padding(padding: EdgeInsets.all(18)),
                         Text(subTitle,
                             textAlign: TextAlign.center,
@@ -539,9 +538,7 @@ class _TransactionReviewScreenState
                 vertical: EnvoySpacing.small, horizontal: EnvoySpacing.medium1),
             child: ListTile(
               title: Text(header,
-                  textAlign: TextAlign.center,
-                  style: EnvoyTypography.heading
-                      .copyWith(color: EnvoyColors.textPrimary)),
+                  textAlign: TextAlign.center, style: EnvoyTypography.heading),
               subtitle: Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
@@ -852,8 +849,7 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(widget.noteTitle,
-                    style: Theme.of(context).textTheme.titleLarge),
+                Text(widget.noteTitle, style: EnvoyTypography.heading),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Text(

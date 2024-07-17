@@ -70,8 +70,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                       alignment: Alignment.center,
                       child: Text(
                         S().manual_setup_import_seed_12_words_heading,
-                        style: EnvoyTypography.heading
-                            .copyWith(color: EnvoyColors.textPrimary),
+                        style: EnvoyTypography.heading,
                         textAlign: TextAlign.center,
                       )),
                 ],

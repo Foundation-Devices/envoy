@@ -37,8 +37,8 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
   Widget build(BuildContext context) {
     return Container(
         width: 280,
-        height: 400,
-        padding: const EdgeInsets.all(24),
+        height: 430,
+        padding: const EdgeInsets.all(EnvoySpacing.medium2),
         child: Stack(
           fit: StackFit.passthrough,
           children: [
@@ -55,23 +55,25 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                const Padding(padding: EdgeInsets.all(8)),
+                const SizedBox(height: EnvoySpacing.medium2),
                 Image.asset(
                   "assets/exclamation_triangle.png",
-                  height: 68,
-                  width: 68,
+                  height: 64,
+                  width: 64,
                 ),
-                const Padding(padding: EdgeInsets.all(8)),
+                const SizedBox(height: EnvoySpacing.medium3),
+                Text(S().component_warning,
+                    style: EnvoyTypography.heading,
+                    textAlign: TextAlign.center),
+                const SizedBox(height: EnvoySpacing.medium1),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Text(widget.warningMessage,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(fontWeight: FontWeight.w500, fontSize: 12),
+                      style: EnvoyTypography.digitsSmall
+                          .copyWith(color: EnvoyColors.textPrimary),
                       textAlign: TextAlign.center),
                 ),
-                const Padding(padding: EdgeInsets.all(8)),
+                const SizedBox(height: EnvoySpacing.medium3),
                 GestureDetector(
                   onTap: () {
                     setState(() {
@@ -96,16 +98,13 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
                       ),
                       Text(
                         S().component_dontShowAgain,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: dismissed
-                                  ? Colors.black
-                                  : const Color(0xff808080),
-                            ),
+                        style: EnvoyTypography.digitsMedium
+                            .copyWith(color: EnvoyColors.textSecondary),
                       ),
                     ],
                   ),
                 ),
-                const Padding(padding: EdgeInsets.all(8)),
+                const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                 EnvoyButton(
                   S().component_back,
                   onTap: () {
@@ -113,7 +112,7 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
                   },
                   type: EnvoyButtonTypes.tertiary,
                 ),
-                const Padding(padding: EdgeInsets.all(8)),
+                const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                 EnvoyButton(
                   widget.buttonTitle,
                   onTap: () {
@@ -183,8 +182,7 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
           ),
           const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           Text(S().change_output_from_multiple_tags_modal_heading,
-              style: EnvoyTypography.heading
-                  .copyWith(color: EnvoyColors.textPrimary)),
+              style: EnvoyTypography.heading),
           const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           Padding(
             padding:
