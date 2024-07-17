@@ -5,7 +5,6 @@
 import 'package:animations/animations.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/account_manager.dart';
-import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -50,6 +49,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:wallet/wallet.dart';
+import 'package:envoy/business/exchange_rate.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget {
@@ -133,6 +133,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(settingsProvider);
     account = ref.read(selectedAccountProvider) ?? AccountManager().accounts[0];
 
     List<Transaction> transactions =
