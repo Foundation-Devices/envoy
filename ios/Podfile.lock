@@ -33,6 +33,8 @@ PODS:
     - Ramp
   - rive_common (0.0.1):
     - Flutter
+  - rust_lib_btle (0.0.1):
+    - Flutter
   - share_plus (0.0.1):
     - Flutter
   - shared_preferences_foundation (0.0.1):
@@ -64,6 +66,7 @@ DEPENDENCIES:
   - Ramp (from `https://github.com/RampNetwork/ramp-sdk-ios`, tag `4.0.1`)
   - ramp_flutter (from `.symlinks/plugins/ramp_flutter/ios`)
   - rive_common (from `.symlinks/plugins/rive_common/ios`)
+  - rust_lib_btle (from `.symlinks/plugins/rust_lib_btle/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite (from `.symlinks/plugins/sqflite/darwin`)
@@ -108,6 +111,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/ramp_flutter/ios"
   rive_common:
     :path: ".symlinks/plugins/rive_common/ios"
+  rust_lib_btle:
+    :path: ".symlinks/plugins/rust_lib_btle/ios"
   share_plus:
     :path: ".symlinks/plugins/share_plus/ios"
   shared_preferences_foundation:
@@ -133,24 +138,25 @@ SPEC CHECKSUMS:
   flutter_local_notifications: 4cde75091f6327eb8517fa068a0a5950212d2086
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
   flutter_vlc_player: a0bd756da5d2456f6d26963976616185a65ec677
-  integration_test: 13825b8a9334a850581300559b8839134b124670
-  local_auth_darwin: c7e464000a6a89e952235699e32b329457608d98
+  integration_test: ce0a3ffa1de96d1a89ca0ac26fca7ea18a749ef4
+  local_auth_darwin: 4d56c90c2683319835a61274b57620df9c4520ab
   MobileVLCKit: 144d5f565512d1147d63b0fa1379231b3fd66535
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   package_info_plus: 58f0028419748fad15bf008b270aaa8e54380b1c
-  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
+  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
   qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
   Ramp: 3f843fb75cac12ad40842afa3226bae36dc93521
   ramp_flutter: aac85dee8bc93b5f7563c909ba15a37727fe3fe8
   rive_common: 3a4c254c6e4db7e4b9e05daeb3d1f47ae4f7bf76
+  rust_lib_btle: fbdf242e4afa9fcfe383f905d357affc6b7f9fe3
   share_plus: 8875f4f2500512ea181eef553c3e27dba5135aad
-  shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
+  shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
   tor: 662a9f5b980b5c86decb8ba611de9bcd4c8286eb
-  url_launcher_ios: 6116280ddcfe98ab8820085d8d76ae7449447586
+  url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
   wakelock_plus: 78ec7c5b202cab7761af8e2b2b3d0671be6c4ae1
 
 PODFILE CHECKSUM: dbcfe0eb16baa2f26e442d8dc652993159052923
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.15.2

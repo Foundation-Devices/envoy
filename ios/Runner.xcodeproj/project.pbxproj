@@ -16,6 +16,7 @@
 		787400BE2955C8010097D2C3 /* libwallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 787400BA2955C8010097D2C3 /* libwallet_ffi.a */; };
 		787400BF2955C8010097D2C3 /* libhttp_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 787400BB2955C8010097D2C3 /* libhttp_ffi.a */; };
 		787400C02955C8010097D2C3 /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 787400BC2955C8010097D2C3 /* libur_ffi.a */; };
+		78ABDD2B2C46EDA400677063 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78ABDD292C46ED4500677063 /* CoreBluetooth.framework */; };
 		78CFC741291BC27300A3AFDC /* libwallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760E27F831B4005559E4 /* libwallet_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		78CFC742291BC27600A3AFDC /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760C27F831AC005559E4 /* libur_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		78CFC744291BC28300A3AFDC /* libhttp_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760827F83192005559E4 /* libhttp_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -27,19 +28,6 @@
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		A32C2D9F135BF88BF0BCD327 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4255A42DB2AF56F644919A15 /* Pods_Runner.framework */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
@@ -55,6 +43,7 @@
 		787400BB2955C8010097D2C3 /* libhttp_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libhttp_ffi.a; path = "../target/aarch64-apple-ios-sim/debug/libhttp_ffi.a"; sourceTree = "<group>"; };
 		787400BC2955C8010097D2C3 /* libur_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libur_ffi.a; path = "../target/aarch64-apple-ios-sim/debug/libur_ffi.a"; sourceTree = "<group>"; };
 		788D58E02795A8DC00CD47BA /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
+		78ABDD292C46ED4500677063 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		78C3760827F83192005559E4 /* libhttp_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libhttp_ffi.a; path = "../target/aarch64-apple-ios/debug/libhttp_ffi.a"; sourceTree = "<group>"; };
 		78C3760C27F831AC005559E4 /* libur_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libur_ffi.a; path = "../target/aarch64-apple-ios/debug/libur_ffi.a"; sourceTree = "<group>"; };
 		78C3760E27F831B4005559E4 /* libwallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwallet_ffi.a; path = "../target/aarch64-apple-ios/debug/libwallet_ffi.a"; sourceTree = "<group>"; };
@@ -83,6 +72,7 @@
 				78CFC76A292E5CE000A3AFDC /* libhttp_ffi.a in Frameworks */,
 				78CFC76D292E5CE000A3AFDC /* libur_ffi.a in Frameworks */,
 				78CFC744291BC28300A3AFDC /* libhttp_ffi.a in Frameworks */,
+				78ABDD2B2C46EDA400677063 /* CoreBluetooth.framework in Frameworks */,
 				787400BF2955C8010097D2C3 /* libhttp_ffi.a in Frameworks */,
 				787400BE2955C8010097D2C3 /* libwallet_ffi.a in Frameworks */,
 				787400C02955C8010097D2C3 /* libur_ffi.a in Frameworks */,
@@ -101,6 +91,7 @@
 		13500A27E223965968B383DF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				78ABDD292C46ED4500677063 /* CoreBluetooth.framework */,
 				7861873A299FF9AC00CDC6F4 /* libbackup_ffi.a */,
 				7861873C299FF9EF00CDC6F4 /* libbackup_ffi.a */,
 				7861873E299FFA0F00CDC6F4 /* libbackup_ffi.a */,
@@ -186,7 +177,6 @@
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
-				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				87738A51227A128470B3E277 /* [CP] Embed Pods Frameworks */,
 			);
@@ -569,12 +559,25 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				"LD_RUNPATH_SEARCH_PATHS[arch=*]" = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					/opt/homebrew/Cellar/xz/5.4.6/lib,
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${DT_TOOLCHAIN_DIR}/usr/lib/swift/${PLATFORM_NAME}\"",
 					/usr/lib/swift,
 					"../target/aarch64-apple-ios/debug",
 					"../target/aarch64-apple-ios-sim/debug",
+				);
+				"LIBRARY_SEARCH_PATHS[arch=*]" = (
+					"$(inherited)",
+					"\"${DT_TOOLCHAIN_DIR}/usr/lib/swift/${PLATFORM_NAME}\"",
+					/usr/lib/swift,
+					"../target/aarch64-apple-ios/debug",
+					"../target/aarch64-apple-ios-sim/debug",
+					/opt/homebrew/Cellar/xz/5.4.6/lib,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.foundationdevices.envoy;
 				PRODUCT_NAME = "$(TARGET_NAME)";

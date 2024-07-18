@@ -32,7 +32,7 @@ dependencies:
   flutter_local_notifications: ^17.0.0
   flutter_localizations:
     sdk: flutter
-  intl: ^0.18.0
+  intl: ^0.19.0
 
   # Rust FFI libraries
   ur:
@@ -43,7 +43,8 @@ dependencies:
     path: packages/wallet
   backup:
     path: packages/backup
-
+  bluart:
+    path: packages/bluart
 
   # qr_code_scanner fork
   qr_code_scanner:
@@ -64,7 +65,7 @@ dependencies:
   flutter_secure_storage: ^5.0.2
   shared_preferences: ^2.0.11
   cbor: ^4.1.0
-  uuid: ^3.0.5
+  uuid: ^4.4.2
   google_fonts: ^6.1.0
   carousel_slider: ^4.0.0
   url_launcher: ^6.0.18
@@ -74,9 +75,8 @@ dependencies:
   share_plus: ^8.0.2
   timeago: ^3.2.2
   webfeed:
-    git:
-      url: https://github.com/foundation-devices/webfeed.git
-      ref: f6c13566b5641022f5a953965f5a2061fbc40c13
+    path: ../webfeed
+
   flutter_svg: ^1.0.3
   bip32: ^2.0.0
   package_info_plus: ^6.0.0
