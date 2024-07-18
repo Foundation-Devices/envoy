@@ -462,7 +462,8 @@ void showNoBoostNoFundsDialog(BuildContext context) {
                   ),
                 ),
                 const Padding(
-                  padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium3),
+                  padding: EdgeInsets.only(
+                      bottom: EnvoySpacing.medium3, top: EnvoySpacing.xs),
                   child: EnvoyIcon(
                     EnvoyIcons.alert,
                     size: EnvoyIconSize.big,
