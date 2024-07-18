@@ -87,8 +87,7 @@ final transactionNotificationsProvider = Provider((ref) {
       if ((tx.date.isAfter(Notifications().lastUpdated) || !tx.isConfirmed)) {
         bool skip = false;
 
-        for (var notification
-            in ref.watch(notificationStreamProvider).asData?.value ?? []) {
+        for (var notification in Notifications().notifications) {
           if (notification.id == tx.txId && notification.amount == tx.amount) {
             skip = true;
             break;
