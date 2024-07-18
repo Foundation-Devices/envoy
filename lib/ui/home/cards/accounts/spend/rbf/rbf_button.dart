@@ -457,7 +457,7 @@ void showNoBoostNoFundsDialog(BuildContext context) {
                   child: IconButton(
                     icon: const Icon(Icons.close),
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      Navigator.of(context, rootNavigator: true).pop();
                     },
                   ),
                 ),
@@ -503,7 +503,7 @@ void showNoBoostNoFundsDialog(BuildContext context) {
                   child: EnvoyButton(
                     label: S().component_continue,
                     onTap: () {
-                      Navigator.pop(context);
+                      Navigator.of(context, rootNavigator: true).pop();
                     },
                     type: ButtonType.primary,
                     state: ButtonState.defaultState,
