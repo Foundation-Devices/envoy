@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/main.dart';
 import 'package:envoy/ui/home/settings/setting_toggle.dart';
 import 'package:envoy/ui/home/top_bar_home.dart';
@@ -13,7 +14,7 @@ import 'package:screenshot/screenshot.dart';
 import 'flow_to_map_and_p2p_test.dart';
 
 void main() {
-  testWidgets('show fiat toggle', (tester) async {
+  testWidgets('check Fiat in App', (tester) async {
     final FlutterExceptionHandler? originalOnError = FlutterError.onError;
     FlutterError.onError = (FlutterErrorDetails details) {
       kPrint('FlutterError caught: ${details.exceptionAsString()}');
@@ -30,13 +31,27 @@ void main() {
       await tester.pumpWidget(Screenshot(
           controller: envoyScreenshotController, child: const EnvoyApp()));
 
-      //await setUpAppFromStart(tester); // TODO
+      await setUpAppFromStart(tester);
 
-      await fromHomeToSettings(tester);
-      await fromSettingsToSettings(tester);
-      await findAndToggleDisplayFiatSwitch(tester);
-      await findCurrentFiatInSettings(tester);
-      //await fromSettingsToFiatDropdown(tester);
+      await pressHamburgerMenu(tester);
+      await goToSettings(tester);
+
+      bool isSettingsFiatSwitchOn = await isDisplayFiatSwitchOn(tester);
+      if (!isSettingsFiatSwitchOn) {
+        await findAndToggleDisplayFiatSwitch(tester);
+      }
+
+      String? currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
+      await pressHamburgerMenu(tester); // back to settings
+      await pressHamburgerMenu(tester); // back to home
+
+      if (currentSettingsFiatCode != null) {
+        bool fiatCheckResult =
+            await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+        expect(fiatCheckResult, isTrue);
+      }
+
+      //await fromSettingsToFiatDropdown(tester); // if you want to open the dropdown and switch the Fiat
 
       // Note: The "ramp" widget is only supported on Android and iOS platforms,
       // so there is no reliable way to verify its functionality in this test.
@@ -47,7 +62,37 @@ void main() {
   });
 }
 
-Future<void> fromHomeToSettings(WidgetTester tester) async {
+FiatCurrency? getFiatCurrencyByCode(String code) {
+  for (var fiatCurrency in supportedFiat) {
+    if (fiatCurrency.code == code) {
+      return fiatCurrency;
+    }
+  }
+  return null; // Return null if no matching FiatCurrency is found
+}
+
+Future<bool> checkFiatOnCurrentScreen(
+    WidgetTester tester, String currentFiatCode) async {
+  FiatCurrency? fiatCurrency = getFiatCurrencyByCode(currentFiatCode);
+  if (fiatCurrency != null) {
+    String? screenSymbol = await findSymbolOnScreen(tester);
+    return screenSymbol == fiatCurrency.symbol;
+  }
+  return false; // Return false if fiatCurrency is null
+}
+
+Future<String?> findSymbolOnScreen(WidgetTester tester) async {
+  // Find all symbols on the screen that match the supported fiat symbols
+  for (var fiat in supportedFiat) {
+    final fiatSymbolFinder = find.text(fiat.symbol);
+    if (tester.any(fiatSymbolFinder)) {
+      return fiat.symbol;
+    }
+  }
+  return null; // Return null if no matching symbol is found
+}
+
+Future<void> pressHamburgerMenu(WidgetTester tester) async {
   await tester.pump();
   final hamburgerIcon = find.byType(HamburgerMenu);
   expect(hamburgerIcon, findsOneWidget);
@@ -56,7 +101,7 @@ Future<void> fromHomeToSettings(WidgetTester tester) async {
   await tester.pump(Durations.long2);
 }
 
-Future<void> fromSettingsToSettings(WidgetTester tester) async {
+Future<void> goToSettings(WidgetTester tester) async {
   await tester.pump();
   final settingsButton = find.text('SETTINGS');
   expect(settingsButton, findsOneWidget);
@@ -65,7 +110,7 @@ Future<void> fromSettingsToSettings(WidgetTester tester) async {
   await tester.pump(Durations.long2);
 }
 
-Future<void> findCurrentFiatInSettings(WidgetTester tester) async {
+Future<String?> findCurrentFiatInSettings(WidgetTester tester) async {
   await tester.pump();
   final dropdownFiatFinder = find.byType(DropdownButton<String>);
   expect(dropdownFiatFinder, findsOneWidget);
@@ -76,9 +121,29 @@ Future<void> findCurrentFiatInSettings(WidgetTester tester) async {
 
   // Get the currently selected value
   final currentFiat = dropdownFiatWidget.value;
-  print('Current selected fiat: $currentFiat');
-
   await tester.pump(Durations.long2);
+
+  return currentFiat;
+}
+
+Future<bool> isDisplayFiatSwitchOn(WidgetTester tester) async {
+  await tester.pump();
+
+  // Find the ListTile widget containing the text "Display Fiat Values"
+  final listTileFinder = find.ancestor(
+      of: find.text('Display Fiat Values'), matching: find.byType(ListTile));
+  expect(listTileFinder, findsOneWidget);
+
+  // Find the SettingToggle widget within the ListTile
+  final settingToggleFinder =
+      find.descendant(of: listTileFinder, matching: find.byType(SettingToggle));
+  expect(settingToggleFinder, findsOneWidget);
+
+  // Retrieve the SettingToggle widget
+  final settingToggleWidget = tester.widget<SettingToggle>(settingToggleFinder);
+
+  // Return the state of the switch using the getter function
+  return settingToggleWidget.getter();
 }
 
 Future<void> findAndToggleDisplayFiatSwitch(WidgetTester tester) async {
@@ -89,7 +154,7 @@ Future<void> findAndToggleDisplayFiatSwitch(WidgetTester tester) async {
       of: find.text('Display Fiat Values'), matching: find.byType(ListTile));
   expect(listTileFinder, findsOneWidget);
 
-  // Find the Switch widget within the ListTile
+  // Find the SettingToggle widget within the ListTile
   final switchFinder =
       find.descendant(of: listTileFinder, matching: find.byType(SettingToggle));
   expect(switchFinder, findsOneWidget);
