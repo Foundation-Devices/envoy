@@ -24,7 +24,6 @@ import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/home/cards/buy_bitcoin.dart';
 import 'package:envoy/ui/home/cards/peer_to_peer_options.dart';
 import 'package:envoy/ui/home/cards/select_region.dart';
-import 'package:envoy/util/envoy_storage.dart';
 
 /// Different routes for accounts.
 /// The nested routes cannot start with a slash,
@@ -227,14 +226,6 @@ final accountsRouter = StatefulShellBranch(
             ),
             GoRoute(
                 path: _SELECT_REGION,
-                onExit: (context) async {
-                  if (await EnvoyStorage().getCountry() != null) {
-                    if (context.mounted) {
-                      context.go(ROUTE_BUY_BITCOIN);
-                    }
-                  }
-                  return true;
-                },
                 pageBuilder: (context, state) {
                   return wrapWithVerticalAxisAnimation(const SelectRegion());
                 },
