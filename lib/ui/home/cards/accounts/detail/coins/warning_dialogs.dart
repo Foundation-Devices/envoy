@@ -36,99 +36,100 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: 280,
-        height: 430,
-        padding: const EdgeInsets.all(EnvoySpacing.medium2),
-        child: Stack(
-          fit: StackFit.passthrough,
-          children: [
-            Align(
-              alignment: const Alignment(1.15, -1.1),
-              child: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
+      width: 280,
+      padding: const EdgeInsets.all(EnvoySpacing.medium2),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Align(
+            alignment: Alignment.topRight,
+            child: IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+          ),
+          const SizedBox(height: EnvoySpacing.xs),
+          Image.asset(
+            "assets/exclamation_triangle.png",
+            height: 64,
+            width: 64,
+          ),
+          const SizedBox(height: EnvoySpacing.medium3),
+          Text(
+            S().component_warning,
+            style: EnvoyTypography.heading,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: EnvoySpacing.medium1),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Text(
+              widget.warningMessage,
+              style: EnvoyTypography.digitsSmall.copyWith(
+                color: EnvoyColors.textPrimary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: EnvoySpacing.medium3),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                dismissed = !dismissed;
+              });
+            },
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: EnvoySpacing.medium2),
-                Image.asset(
-                  "assets/exclamation_triangle.png",
-                  height: 64,
-                  width: 64,
-                ),
-                const SizedBox(height: EnvoySpacing.medium3),
-                Text(S().component_warning,
-                    style: EnvoyTypography.heading,
-                    textAlign: TextAlign.center),
-                const SizedBox(height: EnvoySpacing.medium1),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Text(widget.warningMessage,
-                      style: EnvoyTypography.digitsSmall
-                          .copyWith(color: EnvoyColors.textPrimary),
-                      textAlign: TextAlign.center),
-                ),
-                const SizedBox(height: EnvoySpacing.medium3),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      dismissed = !dismissed;
-                    });
-                  },
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        child: EnvoyCheckbox(
-                          value: dismissed,
-                          onChanged: (value) {
-                            if (value != null) {
-                              setState(() {
-                                dismissed = value;
-                              });
-                            }
-                          },
-                        ),
-                      ),
-                      Text(
-                        S().component_dontShowAgain,
-                        style: EnvoyTypography.digitsMedium
-                            .copyWith(color: EnvoyColors.textSecondary),
-                      ),
-                    ],
+                SizedBox(
+                  child: EnvoyCheckbox(
+                    value: dismissed,
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          dismissed = value;
+                        });
+                      }
+                    },
                   ),
                 ),
-                const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-                EnvoyButton(
-                  S().component_back,
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  type: EnvoyButtonTypes.tertiary,
-                ),
-                const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-                EnvoyButton(
-                  widget.buttonTitle,
-                  onTap: () {
-                    if (dismissed) {
-                      EnvoyStorage().addPromptState(widget.promptType);
-                    } else {
-                      EnvoyStorage().removePromptState(widget.promptType);
-                    }
-                    widget.onContinue();
-                  },
-                  type: EnvoyButtonTypes.primaryModal,
+                Text(
+                  S().component_dontShowAgain,
+                  style: EnvoyTypography.digitsMedium.copyWith(
+                    color: EnvoyColors.textSecondary,
+                  ),
                 ),
               ],
             ),
-          ],
-        ));
+          ),
+          const SizedBox(height: EnvoySpacing.medium3),
+          EnvoyButton(
+            S().component_back,
+            onTap: () {
+              Navigator.pop(context);
+            },
+            type: EnvoyButtonTypes.tertiary,
+          ),
+          const SizedBox(height: EnvoySpacing.medium1),
+          EnvoyButton(
+            widget.buttonTitle,
+            onTap: () {
+              if (dismissed) {
+                EnvoyStorage().addPromptState(widget.promptType);
+              } else {
+                EnvoyStorage().removePromptState(widget.promptType);
+              }
+              widget.onContinue();
+            },
+            type: EnvoyButtonTypes.primaryModal,
+          ),
+        ],
+      ),
+    );
   }
 }
 
