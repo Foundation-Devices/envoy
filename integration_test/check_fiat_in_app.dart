@@ -38,7 +38,7 @@ void main() {
 
       bool isSettingsFiatSwitchOn = await isDisplayFiatSwitchOn(tester);
       if (!isSettingsFiatSwitchOn) {
-        await findAndToggleDisplayFiatSwitch(tester);
+        await findAndToggleSettingsSwitch(tester, 'Display Fiat Values');
       }
 
       String? currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
@@ -146,12 +146,13 @@ Future<bool> isDisplayFiatSwitchOn(WidgetTester tester) async {
   return settingToggleWidget.getter();
 }
 
-Future<void> findAndToggleDisplayFiatSwitch(WidgetTester tester) async {
+Future<void> findAndToggleSettingsSwitch(
+    WidgetTester tester, String switchName) async {
   await tester.pump();
 
   // Find the ListTile widget containing the text "Display Fiat Values"
-  final listTileFinder = find.ancestor(
-      of: find.text('Display Fiat Values'), matching: find.byType(ListTile));
+  final listTileFinder =
+      find.ancestor(of: find.text(switchName), matching: find.byType(ListTile));
   expect(listTileFinder, findsOneWidget);
 
   // Find the SettingToggle widget within the ListTile
