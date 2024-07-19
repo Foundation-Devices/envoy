@@ -318,15 +318,31 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
           rightAction: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) {
-                  if (EnvoySeed().walletDerived()) {
-                    return const OnboardPassportWelcomeScreen();
-                  } else {
-                    return const WelcomeScreen();
-                  }
-                },
-              ));
+              Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) {
+                      if (EnvoySeed().walletDerived()) {
+                        return const OnboardPassportWelcomeScreen();
+                      } else {
+                        return const WelcomeScreen();
+                      }
+                    },
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      const begin = Offset(0.0, 1.0);
+                      const end = Offset.zero;
+                      const curve = Curves.ease;
+                      var tween = Tween(begin: begin, end: end)
+                          .chain(CurveTween(curve: curve));
+
+                      return SlideTransition(
+                        position: animation.drive(tween),
+                        child: child,
+                      );
+                    },
+                    reverseTransitionDuration: Duration.zero,
+                  ));
             },
             child: Container(
               height: 55,
