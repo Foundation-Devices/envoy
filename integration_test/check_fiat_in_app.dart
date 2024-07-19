@@ -36,9 +36,11 @@ void main() {
       await pressHamburgerMenu(tester);
       await goToSettings(tester);
 
-      bool isSettingsFiatSwitchOn = await isDisplayFiatSwitchOn(tester);
+      bool isSettingsFiatSwitchOn =
+          await isSlideSwitchOn(tester, 'Display Fiat Values');
       if (!isSettingsFiatSwitchOn) {
-        await findAndToggleDisplayFiatSwitch(tester);
+        // find And Toggle DisplayFiat Switch
+        await findAndToggleSlideSwitch(tester, 'Display Fiat Values');
       }
 
       String? currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
@@ -46,6 +48,8 @@ void main() {
       await pressHamburgerMenu(tester); // back to home
 
       if (currentSettingsFiatCode != null) {
+        // wait until Fiat shows up or use "pump until" here if it fails
+        await tester.pump(Durations.long2);
         bool fiatCheckResult =
             await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
         expect(fiatCheckResult, isTrue);
@@ -126,12 +130,12 @@ Future<String?> findCurrentFiatInSettings(WidgetTester tester) async {
   return currentFiat;
 }
 
-Future<bool> isDisplayFiatSwitchOn(WidgetTester tester) async {
+Future<bool> isSlideSwitchOn(WidgetTester tester, String listTileText) async {
   await tester.pump();
 
   // Find the ListTile widget containing the text "Display Fiat Values"
   final listTileFinder = find.ancestor(
-      of: find.text('Display Fiat Values'), matching: find.byType(ListTile));
+      of: find.text(listTileText), matching: find.byType(ListTile));
   expect(listTileFinder, findsOneWidget);
 
   // Find the SettingToggle widget within the ListTile
@@ -146,12 +150,13 @@ Future<bool> isDisplayFiatSwitchOn(WidgetTester tester) async {
   return settingToggleWidget.getter();
 }
 
-Future<void> findAndToggleDisplayFiatSwitch(WidgetTester tester) async {
+Future<void> findAndToggleSlideSwitch(
+    WidgetTester tester, String listTileText) async {
   await tester.pump();
 
   // Find the ListTile widget containing the text "Display Fiat Values"
   final listTileFinder = find.ancestor(
-      of: find.text('Display Fiat Values'), matching: find.byType(ListTile));
+      of: find.text(listTileText), matching: find.byType(ListTile));
   expect(listTileFinder, findsOneWidget);
 
   // Find the SettingToggle widget within the ListTile
