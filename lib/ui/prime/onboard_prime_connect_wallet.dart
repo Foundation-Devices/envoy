@@ -63,6 +63,7 @@ class _ConnectPrimeAccountState extends State<ConnectPrimeAccount> {
     }
 
     return CustomScrollView(
+      shrinkWrap: true,
       slivers: [
         const SliverPadding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
         SliverToBoxAdapter(
@@ -98,48 +99,50 @@ class _ConnectPrimeAccountState extends State<ConnectPrimeAccount> {
         ),
         const SliverPadding(padding: EdgeInsets.all(EnvoySpacing.medium3)),
         SliverFillRemaining(
+            fillOverscroll: false,
+            hasScrollBody: false,
             child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              PageTransitionSwitcher(
-                duration: const Duration(milliseconds: 340),
-                transitionBuilder:
-                    (child, primaryAnimation, secondaryAnimation) {
-                  return SharedAxisTransition(
-                    animation: primaryAnimation,
-                    secondaryAnimation: secondaryAnimation,
-                    transitionType: SharedAxisTransitionType.vertical,
-                    child: child,
-                  );
-                },
-                child: connectingInProgress
-                    ? Container()
-                    : PhysicalModel(
-                        elevation: 8,
-                        borderRadius: BorderRadius.circular(16),
-                        color: EnvoyColors.transparent,
-                        child: AccountListTile(
-                          //TODO: Add proper account
-                          Account(
-                            deviceSerial: 'prime',
-                            dateAdded: DateTime.now(),
-                            number: 5,
-                            id: '',
-                            dateSynced: DateTime.now(),
-                            name: "Primary",
-                            wallet: GhostWallet(hot: false),
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  PageTransitionSwitcher(
+                    duration: const Duration(milliseconds: 340),
+                    transitionBuilder:
+                        (child, primaryAnimation, secondaryAnimation) {
+                      return SharedAxisTransition(
+                        animation: primaryAnimation,
+                        secondaryAnimation: secondaryAnimation,
+                        transitionType: SharedAxisTransitionType.vertical,
+                        child: child,
+                      );
+                    },
+                    child: connectingInProgress
+                        ? Container()
+                        : PhysicalModel(
+                            elevation: 8,
+                            borderRadius: BorderRadius.circular(16),
+                            color: EnvoyColors.transparent,
+                            child: AccountListTile(
+                              //TODO: Add proper account
+                              Account(
+                                deviceSerial: 'prime',
+                                dateAdded: DateTime.now(),
+                                number: 5,
+                                id: '',
+                                dateSynced: DateTime.now(),
+                                name: "Primary",
+                                wallet: GhostWallet(hot: false),
+                              ),
+                              draggable: false,
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                            ),
                           ),
-                          draggable: false,
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ))
+            ))
       ],
     );
   }

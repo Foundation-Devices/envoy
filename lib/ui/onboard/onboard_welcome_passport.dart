@@ -145,7 +145,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
         floatingActionButton: Transform.translate(
           offset: const Offset(0, 90),
           child: Image.asset(
-            "assets/prime_and_passport_welcome.png",
+            "assets/welcome_prime.png",
             alignment: Alignment.bottomCenter,
             width: MediaQuery.of(context).size.width * 0.8,
             height: MediaQuery.of(context).size.height * 0.8,
