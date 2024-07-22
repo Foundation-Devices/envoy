@@ -38,11 +38,11 @@ void main() {
       bool isSettingsSignetSwitchOn = await isSlideSwitchOn(tester, 'Signet');
       if (!isSettingsSignetSwitchOn) {
         // find And Toggle Signet Switch
-        await findAndToggleSlideSwitch(tester, 'Signet');
+        await findAndToggleSettingsSwitch(tester, 'Signet');
       } else {
         // if it is already ON turn it OFF and ON again so that the pop-up shows up
-        await findAndToggleSlideSwitch(tester, 'Signet');
-        await findAndToggleSlideSwitch(tester, 'Signet');
+        await findAndToggleSettingsSwitch(tester, 'Signet');
+        await findAndToggleSettingsSwitch(tester, 'Signet');
       }
 
       // find Signet text on that pop-up
@@ -56,10 +56,10 @@ void main() {
       await tester.pump(Durations.long2);
 
       // Tap the toggle to disable Signet
-      await findAndToggleSlideSwitch(tester, 'Signet');
+      await findAndToggleSettingsSwitch(tester, 'Signet');
       await tester.pump(Durations.long2);
       // Tap it again to enable it
-      await findAndToggleSlideSwitch(tester, 'Signet');
+      await findAndToggleSettingsSwitch(tester, 'Signet');
 
       //
       // Make sure that the hyperlink in the pop up works // TODO
@@ -77,7 +77,7 @@ void main() {
       bool isSettingsTaprootSwitchOn = await isSlideSwitchOn(tester, 'Taproot');
       if (isSettingsTaprootSwitchOn) {
         // find And Toggle Taproot Switch
-        await findAndToggleSlideSwitch(tester, 'Taproot');
+        await findAndToggleSettingsSwitch(tester, 'Taproot');
       }
 
       // Go back to the Accounts view
@@ -98,7 +98,7 @@ void main() {
       // tap to disable Signet
       if (isSettingsSignetSwitchOn) {
         // find And Toggle Signet Switch
-        await findAndToggleSlideSwitch(tester, 'Signet');
+        await findAndToggleSettingsSwitch(tester, 'Signet');
       }
 
       // Go back to the accounts view and make sure that the account disappeared

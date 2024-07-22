@@ -40,7 +40,7 @@ void main() {
           await isSlideSwitchOn(tester, 'Display Fiat Values');
       if (!isSettingsFiatSwitchOn) {
         // find And Toggle DisplayFiat Switch
-        await findAndToggleSlideSwitch(tester, 'Display Fiat Values');
+        await findAndToggleSettingsSwitch(tester, 'Display Fiat Values');
       }
 
       String? currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
@@ -159,7 +159,7 @@ Future<bool> isSlideSwitchOn(WidgetTester tester, String listTileText) async {
   return settingToggleWidget.getter();
 }
 
-Future<void> findAndToggleSlideSwitch(
+Future<void> findAndToggleSettingsSwitch(
     WidgetTester tester, String listTileText) async {
   await tester.pump();
 
