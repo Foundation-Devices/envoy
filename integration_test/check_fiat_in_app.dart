@@ -11,6 +11,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:screenshot/screenshot.dart';
+import 'check_for_toast.dart';
 import 'flow_to_map_and_p2p_test.dart';
 
 void main() {
@@ -106,6 +107,9 @@ Future<String?> findSymbolOnScreen(
 }
 
 Future<void> pressHamburgerMenu(WidgetTester tester) async {
+  // check if the toast pop-up is there before pressing on to the tob bar
+  await checkForToast(tester);
+  // go with top bar hamburger button
   await tester.pump();
   final hamburgerIcon = find.byType(HamburgerMenu);
   expect(hamburgerIcon, findsOneWidget);
