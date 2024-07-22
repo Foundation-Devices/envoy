@@ -22,14 +22,14 @@ void main() {
     };
     try {
       // Uncomment the line below if testing on local machine.
-      // await resetEnvoyData();
+      //await resetEnvoyData();
 
       await initSingletons();
       ScreenshotController envoyScreenshotController = ScreenshotController();
       await tester.pumpWidget(Screenshot(
           controller: envoyScreenshotController, child: const EnvoyApp()));
 
-      //await setUpAppFromStart(tester); // TODO
+      await setUpAppFromStart(tester);
 
       await pressHamburgerMenu(tester);
       await goToSettings(tester);
