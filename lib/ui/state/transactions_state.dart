@@ -112,7 +112,8 @@ final transactionsProvider =
   ref.watch(rbfBroadCastedTxProvider).forEach((txId) {
     final tx = transactions.firstWhereOrNull((element) => element.txId == txId);
     if (tx != null && !tx.isConfirmed) {
-      Notifications().deleteNotification(tx.txId, accountId: accountId);
+      Notifications().deleteNotification(tx.txId,
+          accountId: accountId, delay: const Duration(seconds: 30));
       transactions.remove(tx);
     }
   });
