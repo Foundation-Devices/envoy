@@ -53,11 +53,8 @@ Future<void> checkForToast(WidgetTester tester) async {
     // Check if the icon is found initially
     bool iconInitiallyFound = iconFinder.evaluate().isNotEmpty;
     if (!iconInitiallyFound) {
-      print('Icon was not found initially.');
       return; // Exit the test if the icon is not found initially
     }
-
-    print('Icon found initially, entering wait loop.');
 
     const maxRetries = 10; // Maximum number of retries
     int retryCount = 0;
@@ -77,17 +74,17 @@ Future<void> checkForToast(WidgetTester tester) async {
 
       iconStillThere = iconStillThereFinder.evaluate().isNotEmpty;
       if (!iconStillThere) {
-        print('Icon is no longer present after waiting.');
         break; // Break the loop
       } else {
-        print('Icon is still present.');
         retryCount++;
       }
     }
 
     if (iconStillThere) {
-      print('Icon was still present after the maximum wait time.');
-      // Handle the case where the icon is still present after retries, if needed
+      // if the icon is still there after all the retries, exit and try pressing the button anyway,
+      // if it is really there it will fail to press the button
+      // if that does not work try changing the number of maxRetries
+      return;
     }
   });
 }
