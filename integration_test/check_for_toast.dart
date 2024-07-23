@@ -47,7 +47,9 @@ Future<void> checkForToast(WidgetTester tester) async {
     await tester.pumpAndSettle();
 
     final iconFinder = find.byWidgetPredicate(
-      (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.info,
+      (widget) =>
+          widget is EnvoyIcon &&
+          (widget.icon == EnvoyIcons.info || widget.icon == EnvoyIcons.alert),
     );
 
     // Check if the icon is found initially
