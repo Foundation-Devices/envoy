@@ -67,11 +67,7 @@ void main() {
 
       // In the pop up now tap Continue to make sure that the button works
       // find Signet text on that pop-up
-      final continueButton = find.text('Continue');
-      // Check that a pop up comes up
-      await tester.pumpUntilFound(continueButton, duration: Durations.long1);
-      await tester.tap(continueButton.last);
-      await tester.pump(Durations.long2);
+      await findAndTapPopUpText(tester, 'Continue');
 
       // Make sure Taproot is off when searching for Signet account (maybe not necessary)
       bool isSettingsTaprootSwitchOn = await isSlideSwitchOn(tester, 'Taproot');
@@ -124,5 +120,14 @@ Future<void> openAdvanced(WidgetTester tester) async {
   expect(advancedButton, findsOneWidget);
 
   await tester.tap(advancedButton);
+  await tester.pump(Durations.long2);
+}
+
+Future<void> findAndTapPopUpText(WidgetTester tester, String tapText) async {
+  await tester.pump();
+  final tapButtonText = find.text(tapText);
+  await tester.pumpUntilFound(tapButtonText,
+      tries: 50, duration: Durations.long1);
+  await tester.tap(tapButtonText.last);
   await tester.pump(Durations.long2);
 }

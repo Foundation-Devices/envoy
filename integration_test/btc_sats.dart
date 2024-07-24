@@ -3,8 +3,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/main.dart';
+import 'package:envoy/ui/address_entry.dart';
 import 'package:envoy/ui/amount_display.dart';
+import 'package:envoy/ui/amount_entry.dart';
+import 'package:envoy/ui/components/button.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/home/settings/setting_toggle.dart';
 import 'package:envoy/ui/home/top_bar_home.dart';
@@ -14,7 +19,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:screenshot/screenshot.dart';
 import 'check_fiat_in_app.dart';
+import 'connect_passport_via_recovery.dart';
+import 'edit_account_name.dart';
 import 'flow_to_map_and_p2p_test.dart';
+import 'signet.dart';
+
+String someValidReceiveAddress = 'bc1qer3cxjxx6eav95ta6w4a3n7c3k254fhyud28vy';
 
 void main() {
   testWidgets('check BTC/sats in App', (tester) async {
@@ -34,9 +44,9 @@ void main() {
       await tester.pumpWidget(Screenshot(
           controller: envoyScreenshotController, child: const EnvoyApp()));
 
-      //await setUpAppFromStart(tester); //TODO
+      // await setUpWalletFromSeedViaMagicRecover(tester,seed);//TODO
 
-      // Go to setting and enable fiat, we will need this later
+      /// Go to setting and enable fiat, we will need this later
       await pressHamburgerMenu(tester);
       await goToSettings(tester);
 
@@ -57,8 +67,15 @@ void main() {
       // I am looking only one icon, because all of them are set with the same widget
       await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
+      // Go to Activity and check for BTC
+      await findAndPressTextButton(tester, 'Activity');
+      await checkForEnvoyIcon(tester, EnvoyIcons.btc);
+      //back to accounts
+      await findAndPressTextButton(tester, 'Accounts');
+
       /// Get into an account, tap Send
-      await findAndPressTextButton(tester, 'Mobile Wallet');
+      await findAndPressTextButton(
+          tester, 'Primary (#0)'); // TODO: change the account
       await findAndPressTextButton(tester, 'Send');
 
       /// Make sure the first proposed unit is BTC
@@ -81,14 +98,51 @@ void main() {
       ///  Check that the number below the fiat is displayed in BTC
       await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
+      /// With the unit in fiat, paste a valid address, enter a valid amount, tap continue
+      await enterTextInField(
+          tester, find.byType(TextFormField), someValidReceiveAddress);
+
+      // enter amount in Fiat
+      /// This can fail if the fee is too high (small total amount)
+      await findAndPressTextButton(tester, '1');
+      await findAndPressTextButton(tester, '.');
+      await findAndPressTextButton(tester, '1');
+
+      // go to staging
+      await findAndPressTextButton(tester, 'Confirm');
+
+      // now wait for it to go to staging
+      final textFinder = find.text("Fee");
+      await tester.pumpUntilFound(textFinder,
+          tries: 10, duration: Durations.long2);
+
+      /// Check that in the Send review table all units are in BTC (and fiat)
+      // function is checking icons for BTC
+      await checkForEnvoyIcon(tester, EnvoyIcons.btc);
+
+      // check if the fiat on the screen is the same one in the settings
+      if (currentSettingsFiatCode != null) {
+        await tester.pump(Durations.long2);
+        bool fiatCheckResult =
+            await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+        expect(fiatCheckResult, isTrue);
+      }
+
+      /// Cancel the transaction and go back to settings, now toggle Sats
+      await findAndPressEnvoyIcon(tester, EnvoyIcons.chevron_left);
+
+      // await tester.pump(); // TODO: Does not work on this pop-up?
+      // final tapButtonText = find.text('Cancel Transaction');
+      // await tester.pumpUntilFound(tapButtonText, duration: Durations.long1);
+      // await tester.tap(tapButtonText.last);
+      // await tester.pump(Durations.long2);
+
+      //await findAndTapPopUpText(tester, 'Cancel Transaction'); // TODO: Does not work on this pop-up?
+
 // TODO
-      // 7) With the unit in fiat, paste a valid address, enter a valid amount, tap continue
+
       //
-      // 8) Check that in the Send review table all units are in BTC (and fiat)
-      //
-      // 9) Cancel the transaction and go back to settings, now toggle Sats
-      //
-      // 10) Close the app, reopen the app
+      // 10) Close the app, reopen the app // TODO: Can't do this
       //
       // 11) Go to settings, check that killing the app didn't disable the Sats toggle
       //
@@ -105,37 +159,24 @@ void main() {
   });
 }
 
-Future<void> checkForEnvoyIcon(
+Future<void> findAndPressEnvoyIcon(
     WidgetTester tester, EnvoyIcons expectedIcon) async {
-  await tester.pumpAndSettle(); // Initial pump to settle the widget tree
+  // Use the existing function to find the EnvoyIcon
+  final iconFinder = await checkForEnvoyIcon(tester, expectedIcon);
 
-  // when starting the app from scratch, icons and numbers do not immediately show up
-  // so we need to try to find icon a few more times
-  const maxRetries = 5; // Maximum number of retries
-  const retryDelay = Duration(seconds: 1); // Delay between retries
+  // Tap the widget
+  await tester.tap(iconFinder);
+  await tester.pumpAndSettle(); // Allow any resulting animations to complete
+}
 
-  for (int retryCount = 0; retryCount < maxRetries; retryCount++) {
-    // Find all icons using a widget predicate
-    final iconFinders = find.byWidgetPredicate(
-      (widget) => widget is EnvoyIcon && widget.icon == expectedIcon,
-    );
+Future<Finder> checkForEnvoyIcon(
+    WidgetTester tester, EnvoyIcons expectedIcon) async {
+  final iconFinder = find.byWidgetPredicate(
+    (widget) => widget is EnvoyIcon && widget.icon == expectedIcon,
+  );
+  await tester.pumpUntilFound(iconFinder, tries: 10, duration: Durations.long2);
 
-    // Check if the next icon is found
-    if (iconFinders.evaluate().isNotEmpty) {
-      // Ensure there is at least one widget
-      expect(iconFinders, findsWidgets);
-      return; // Exit function if at least one widget is found
-    }
-
-    // Wait for the specified delay before retrying
-    await Future.delayed(retryDelay);
-    await tester
-        .pumpAndSettle(); // Pump and settle to allow the widget tree to update
-  }
-
-  // If the function reaches here, the icon was not found after the retries
-  throw Exception(
-      'Envoy icon $expectedIcon not found after $maxRetries retries');
+  return iconFinder;
 }
 
 Future<void> findAndPressTextButton(

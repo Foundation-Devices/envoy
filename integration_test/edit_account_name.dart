@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:screenshot/screenshot.dart';
+import 'check_for_toast.dart';
 import 'flow_to_map_and_p2p_test.dart';
 
 void main() {
@@ -28,20 +29,20 @@ void main() {
       await tester.pumpWidget(Screenshot(
           controller: envoyScreenshotController, child: const EnvoyApp()));
 
-      await setUpAppFromStart(tester); // if it fails, comment this line put
+      await setUpAppFromStart(tester);
 
       await fromHomeToHotWallet(tester);
       await fromHotWalletToDotsMenu(tester);
       await fromDotsMenuToEditName(tester);
-      await enterHotWalletName(tester, 'What ever');
+      await enterTextInField(tester, find.byType(TextField), 'What ever');
       await exitEditName(tester);
       await checkHotWalletName(
           tester, 'Mobile Wallet'); // check if the name is the same
 
       await fromHotWalletToDotsMenu(tester);
       await fromDotsMenuToEditName(tester);
-      await enterHotWalletName(
-          tester, 'Twenty one characters plus ten'); // 30 chars
+      await enterTextInField(tester, find.byType(TextField),
+          'Twenty one characters plus ten'); // 30 chars
       await saveHotWalletName(tester);
       await checkHotWalletName(
           tester, 'Twenty one character'); // it needs to cut text (chars 20/20)
@@ -49,7 +50,7 @@ void main() {
       // Rename hot wallet back to "Mobile Wallet" if you want to repeat the test locally
       await fromHotWalletToDotsMenu(tester);
       await fromDotsMenuToEditName(tester);
-      await enterHotWalletName(tester, 'Mobile Wallet');
+      await enterTextInField(tester, find.byType(TextField), 'Mobile Wallet');
       await saveHotWalletName(tester);
     } finally {
       // Restore the original FlutterError.onError handler after the test.
@@ -68,6 +69,8 @@ Future<void> fromHomeToHotWallet(WidgetTester tester) async {
 }
 
 Future<void> fromHotWalletToDotsMenu(WidgetTester tester) async {
+  await checkForToast(tester);
+
   await tester.pump();
   final dotsButton = find.byIcon(Icons.more_horiz_outlined);
   expect(dotsButton, findsOneWidget);
@@ -94,15 +97,23 @@ Future<void> exitEditName(WidgetTester tester) async {
   await tester.pump(Durations.long2);
 }
 
-Future<void> enterHotWalletName(WidgetTester tester, String newName) async {
+Future<void> enterTextInField(
+  WidgetTester tester,
+  Finder fieldFinder,
+  String text,
+) async {
   await tester.pump();
-  final nameField = find.byType(TextField);
+
+  final nameField = fieldFinder;
+  // Ensure the widget is present on the screen
   expect(nameField, findsOneWidget);
 
+  // Tap the field to focus it
   await tester.tap(nameField);
   await tester.pump(Durations.long2);
 
-  await tester.enterText(nameField, newName);
+  // Enter text into the field
+  await tester.enterText(nameField, text);
   await tester.pump(Durations.long2);
 }
 
