@@ -40,7 +40,7 @@ void main() {
       // turn Testnet ON
       bool isSettingsTestnetSwitchOn = await isSlideSwitchOn(tester, 'Testnet');
       if (!isSettingsTestnetSwitchOn) {
-        // find And Toggle Signet Switch
+        // find And Toggle Testnet Switch
         await findAndToggleSettingsSwitch(tester, 'Testnet');
         // exit Testnet pop-up
         final closeDialogButton = find.byIcon(Icons.close);
@@ -100,7 +100,7 @@ void main() {
       /// turn Testnet OFF
       isSettingsTestnetSwitchOn = await isSlideSwitchOn(tester, 'Testnet');
       if (isSettingsTestnetSwitchOn) {
-        // find And Toggle Signet Switch
+        // find And Toggle Testnet Switch
         await findAndToggleSettingsSwitch(tester, 'Testnet');
       }
 
@@ -149,7 +149,7 @@ void main() {
       // turn Testnet ON
       isSettingsTestnetSwitchOn = await isSlideSwitchOn(tester, 'Testnet');
       if (!isSettingsTestnetSwitchOn) {
-        // find And Toggle Signet Switch
+        // find And Toggle Testnet Switch
         await findAndToggleSettingsSwitch(tester, 'Testnet');
         // exit Testnet pop-up
         final closeDialogButton = find.byIcon(Icons.close);
