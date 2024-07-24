@@ -11,6 +11,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:screenshot/screenshot.dart';
+import 'check_for_toast.dart';
 import 'flow_to_map_and_p2p_test.dart';
 
 void main() {
@@ -24,7 +25,7 @@ void main() {
     };
     try {
       // Uncomment the line below if testing on local machine.
-      // await resetEnvoyData();
+      //await resetEnvoyData();
 
       await initSingletons();
       ScreenshotController envoyScreenshotController = ScreenshotController();
@@ -36,16 +37,24 @@ void main() {
       await pressHamburgerMenu(tester);
       await goToSettings(tester);
 
-      bool isSettingsFiatSwitchOn = await isDisplayFiatSwitchOn(tester);
+      bool isSettingsFiatSwitchOn =
+          await isSlideSwitchOn(tester, 'Display Fiat Values');
       if (!isSettingsFiatSwitchOn) {
+        // find And Toggle DisplayFiat Switch
         await findAndToggleSettingsSwitch(tester, 'Display Fiat Values');
       }
 
       String? currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
+
+      // Wait for the Backup pop-up to finish before going to home so it does not fail
+      // Or we should write aditional function that is searching for "EnvoyIcons.info" icon on all toast pop-ups
+      // await tester.pump(const Duration(seconds: 10));
+
       await pressHamburgerMenu(tester); // back to settings
       await pressHamburgerMenu(tester); // back to home
 
       if (currentSettingsFiatCode != null) {
+        await tester.pump(Durations.long2);
         bool fiatCheckResult =
             await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
         expect(fiatCheckResult, isTrue);
@@ -75,24 +84,32 @@ Future<bool> checkFiatOnCurrentScreen(
     WidgetTester tester, String currentFiatCode) async {
   FiatCurrency? fiatCurrency = getFiatCurrencyByCode(currentFiatCode);
   if (fiatCurrency != null) {
-    String? screenSymbol = await findSymbolOnScreen(tester);
+    String? screenSymbol =
+        await findSymbolOnScreen(tester, fiatCurrency.symbol);
     return screenSymbol == fiatCurrency.symbol;
   }
   return false; // Return false if fiatCurrency is null
 }
 
-Future<String?> findSymbolOnScreen(WidgetTester tester) async {
-  // Find all symbols on the screen that match the supported fiat symbols
-  for (var fiat in supportedFiat) {
-    final fiatSymbolFinder = find.text(fiat.symbol);
-    if (tester.any(fiatSymbolFinder)) {
-      return fiat.symbol;
+Future<String?> findSymbolOnScreen(
+    WidgetTester tester, String fiatSymbol) async {
+  final finder = find.text(fiatSymbol);
+
+  // Wait until the symbol appears on the screen or timeout after 60 seconds
+  final end = DateTime.now().add(const Duration(seconds: 60));
+  while (DateTime.now().isBefore(end)) {
+    await tester.pump();
+    if (tester.any(finder)) {
+      return fiatSymbol;
     }
   }
   return null; // Return null if no matching symbol is found
 }
 
 Future<void> pressHamburgerMenu(WidgetTester tester) async {
+  // check if the toast pop-up is there before pressing on to the tob bar
+  await checkForToast(tester);
+  // go with top bar hamburger button
   await tester.pump();
   final hamburgerIcon = find.byType(HamburgerMenu);
   expect(hamburgerIcon, findsOneWidget);
@@ -126,12 +143,12 @@ Future<String?> findCurrentFiatInSettings(WidgetTester tester) async {
   return currentFiat;
 }
 
-Future<bool> isDisplayFiatSwitchOn(WidgetTester tester) async {
+Future<bool> isSlideSwitchOn(WidgetTester tester, String listTileText) async {
   await tester.pump();
 
   // Find the ListTile widget containing the text "Display Fiat Values"
   final listTileFinder = find.ancestor(
-      of: find.text('Display Fiat Values'), matching: find.byType(ListTile));
+      of: find.text(listTileText), matching: find.byType(ListTile));
   expect(listTileFinder, findsOneWidget);
 
   // Find the SettingToggle widget within the ListTile
@@ -147,12 +164,12 @@ Future<bool> isDisplayFiatSwitchOn(WidgetTester tester) async {
 }
 
 Future<void> findAndToggleSettingsSwitch(
-    WidgetTester tester, String switchName) async {
+    WidgetTester tester, String listTileText) async {
   await tester.pump();
 
   // Find the ListTile widget containing the text "Display Fiat Values"
-  final listTileFinder =
-      find.ancestor(of: find.text(switchName), matching: find.byType(ListTile));
+  final listTileFinder = find.ancestor(
+      of: find.text(listTileText), matching: find.byType(ListTile));
   expect(listTileFinder, findsOneWidget);
 
   // Find the SettingToggle widget within the ListTile
