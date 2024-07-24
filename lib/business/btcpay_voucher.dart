@@ -76,7 +76,7 @@ class BtcPayVoucher {
   }
 
   static bool isVoucher(String url) {
-    return url.contains("btcpay");
+    return url.contains("pull-payments");
   }
 
   Future<BtcPayVoucherRedeemResult> getinfo() async {
