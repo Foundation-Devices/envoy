@@ -1707,9 +1707,11 @@ packages:
   webfeed:
     dependency: "direct main"
     description:
-      path: "../webfeed"
-      relative: true
-    source: path
+      path: "."
+      ref: "2e0f4ec0bffb85df13b2c114d93d5ec0490bd2c1"
+      resolved-ref: "2e0f4ec0bffb85df13b2c114d93d5ec0490bd2c1"
+      url: "https://github.com/foundation-devices/webfeed.git"
+    source: git
     version: "0.7.0"
   webkit_inspection_protocol:
     dependency: transitive
