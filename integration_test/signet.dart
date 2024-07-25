@@ -124,10 +124,9 @@ Future<void> openAdvanced(WidgetTester tester) async {
 }
 
 Future<void> findAndTapPopUpText(WidgetTester tester, String tapText) async {
-  await tester.pump();
   final tapButtonText = find.text(tapText);
   await tester.pumpUntilFound(tapButtonText,
-      tries: 50, duration: Durations.long1);
+      tries: 10, duration: Durations.long1);
   await tester.tap(tapButtonText.last);
   await tester.pump(Durations.long2);
 }
