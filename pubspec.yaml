@@ -75,7 +75,9 @@ dependencies:
   share_plus: ^8.0.2
   timeago: ^3.2.2
   webfeed:
-    path: ../webfeed
+    git:
+      url: https://github.com/foundation-devices/webfeed.git
+      ref: 2e0f4ec0bffb85df13b2c114d93d5ec0490bd2c1
 
   flutter_svg: ^1.0.3
   bip32: ^2.0.0
