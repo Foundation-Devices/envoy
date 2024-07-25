@@ -39,6 +39,7 @@ enum ScannerType {
   seed,
   azteco,
   btcPay,
+  discovery
 }
 
 const SnackBar invalidAddressSnackbar = SnackBar(
@@ -246,6 +247,18 @@ class ScannerPageState extends State<ScannerPage> {
   _onDetect(String code, List<int>? rawBytes, BuildContext context) async {
     final NavigatorState navigator = Navigator.of(context);
     final scaffold = ScaffoldMessenger.of(context);
+
+    if (widget._acceptableTypes.contains(ScannerType.discovery)) {
+      if (AztecoVoucher.isVoucher(code)) {
+        final voucher = AztecoVoucher(code);
+        navigator.pop();
+        showEnvoyDialog(
+            context: context, dialog: AztecoDialog(voucher, widget.account!));
+        return;
+      }
+    }
+
+
     if (widget._acceptableTypes.contains(ScannerType.azteco)) {
       if (AztecoVoucher.isVoucher(code)) {
         final voucher = AztecoVoucher(code);
@@ -255,6 +268,7 @@ class ScannerPageState extends State<ScannerPage> {
         return;
       }
     }
+
     if (widget._acceptableTypes.contains(ScannerType.btcPay)) {
       if (BtcPayVoucher.isVoucher(code)) {
         final voucher = BtcPayVoucher(code);

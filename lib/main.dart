@@ -13,6 +13,7 @@ import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/updates_manager.dart';
+import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/lock/authenticate_page.dart';
 import 'package:envoy/ui/routes/route_state.dart';
@@ -66,6 +67,7 @@ Future<void> initSingletons() async {
   UpdatesManager.init();
   ScvServer.init();
   EnvoySeed.init();
+  BluetoothManager.init();
 
   // Start Tor regardless of whether we are using it or not
   try {
