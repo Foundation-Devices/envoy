@@ -51,53 +51,26 @@ Future<void> checkForToast(WidgetTester tester) async {
           (widget.icon == EnvoyIcons.info || widget.icon == EnvoyIcons.alert),
     );
 
+    //await tester.pumpUntilFound(iconFinder, tries: 10, duration: Durations.long2); // TODO: can this improve the test?
+
     // Check if the icon is found initially
-    bool iconInitiallyFound = iconFinder.evaluate().isNotEmpty;
-    if (!iconInitiallyFound) {
-      //   // if the icon is still there after all the retries, exit and try pressing the button anyway,
-      //   // if it is really there it will fail to press the button
-      //   // if that does not work try changing the number of maxRetries
+    bool iconFound = iconFinder.evaluate().isNotEmpty;
+    if (!iconFound) {
+      // If the icon is not found initially, simply return
       return;
     }
 
-    await tester.pumpUntilFound(iconFinder,
-        tries: 10, duration: Durations.long2);
+    // Wait until the icon is gone
+    int tries = 0;
+    const maxTries = 10;
+    while (iconFound && tries < maxTries) {
+      await tester.pump(Durations.long2); // Wait for a certain duration
+      iconFound = iconFinder.evaluate().isNotEmpty;
+      tries++;
+    }
 
-    // const maxRetries = 10; // Number of retries
-    // const retryDelay = Duration(milliseconds: 500); // Delay between retries
-    // const timeoutDuration = Duration(seconds: 10); // Overall timeout duration
-    // int retryCount = 0;
-    // bool iconStillThere = true;
-    // final startTime = DateTime.now();
-    //
-    // while (retryCount < maxRetries && iconStillThere) {
-    //   // Check if the total duration has exceeded the timeout duration
-    //   if (DateTime.now().difference(startTime) > timeoutDuration) {
-    //     return;
-    //   }
-    //
-    //   // Wait for the specified delay
-    //   await Future.delayed(retryDelay);
-    //
-    //   // Recheck if the icon is still there
-    //   await tester.pumpAndSettle();
-    //   final iconStillThereFinder = find.byWidgetPredicate(
-    //     (widget) =>
-    //         widget is EnvoyIcon &&
-    //         (widget.icon == EnvoyIcons.info || widget.icon == EnvoyIcons.alert),
-    //   );
-    //
-    //   iconStillThere = iconStillThereFinder.evaluate().isNotEmpty;
-    //   if (!iconStillThere) {
-    //     break; // Break the loop if the icon is not found
-    //   } else {
-    //     retryCount++;
-    //   }
-    // }
-    //
-    // if (iconStillThere) {
-
-    //   return;
-    // }
+    if (iconFound) {
+      throw Exception('Icon is still present after maximum retries.');
+    }
   });
 }
