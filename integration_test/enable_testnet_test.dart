@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:screenshot/screenshot.dart';
 import 'check_fiat_in_app.dart';
+import 'connect_passport_via_recovery.dart';
 import 'flow_to_map_and_p2p_test.dart';
 
 void main() {
@@ -29,11 +30,15 @@ void main() {
       await tester.pumpWidget(Screenshot(
           controller: envoyScreenshotController, child: const EnvoyApp()));
 
-      await setUpAppFromStart(tester);
+      // Recover wallet with Passport accounts
+      await setUpWalletFromSeedViaMagicRecover(tester, seed);
 
-      await pressHamburgerMenu(tester);
-      await goToSettings(tester);
-      await openAdvanced(tester);
+      await fromHomeToAdvancedMenu(tester);
+      bool testnetAlreadyEnabled = await isSlideSwitchOn(tester, "Testnet");
+      if (testnetAlreadyEnabled) {
+        // Disable it
+        await findAndToggleSettingsSwitch(tester, "Testnet");
+      }
       await findAndToggleSettingsSwitch(tester, "Testnet");
       await tester.pump(Durations.long2);
       final continueButtonFromDialog = find.text('Continue');
@@ -61,8 +66,25 @@ void main() {
       await pressHamburgerMenu(tester); // back to settings menu
       await pressHamburgerMenu(tester); // back to home
       final testnetAccountBadge = find.text('Testnet');
-      // Check that a Testnet account is displayed
-      expect(testnetAccountBadge, findsAny);
+      // Check that a Testnet accounts is displayed
+      expect(testnetAccountBadge, findsAtLeast(2));
+
+      // Go to setting and disable it
+      await fromHomeToAdvancedMenu(tester);
+      await findAndToggleSettingsSwitch(tester, "Testnet"); // Disable
+      await pressHamburgerMenu(tester); // back to settings menu
+      await pressHamburgerMenu(tester); // back to home
+      expect(testnetAccountBadge, findsNothing);
+
+      // Go to settings and enable it again
+      await fromHomeToAdvancedMenu(tester);
+      await findAndToggleSettingsSwitch(tester, "Testnet"); // Enable again
+      await tester.tap(continueButtonFromDialog);
+      await tester.pump(Durations.long2);
+      await pressHamburgerMenu(tester); // back to settings menu
+      await pressHamburgerMenu(tester); // back to home
+      // Ensure there are at least two badges: one for the passport and one for the hot testnet wallet.
+      expect(testnetAccountBadge, findsAtLeast(2));
     } finally {
       // Restore the original FlutterError.onError handler after the test.
       FlutterError.onError = originalOnError;
@@ -72,9 +94,15 @@ void main() {
 
 Future<void> openAdvanced(WidgetTester tester) async {
   await tester.pump();
-  final settingsButton = find.text('Advanced');
-  expect(settingsButton, findsOneWidget);
+  final advancedButton = find.text('Advanced');
+  expect(advancedButton, findsOneWidget);
 
-  await tester.tap(settingsButton);
+  await tester.tap(advancedButton);
   await tester.pump(Durations.long2);
+}
+
+Future<void> fromHomeToAdvancedMenu(WidgetTester tester) async {
+  await pressHamburgerMenu(tester);
+  await goToSettings(tester);
+  await openAdvanced(tester);
 }
