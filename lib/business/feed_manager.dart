@@ -38,13 +38,12 @@ class FeedManager {
 
     _addVideosFromVimeo();
 
-    // Temporarily commented out due to site maintenance
-    // HttpTor(Tor.instance, EnvoyScheduler().parallel)
-    //     .get("https://foundation.xyz/feed")
-    //     .then((response) {
-    //   RssFeed feed = RssFeed.parse(response.body);
-    //   _addBlogPostsFromRssFeed(feed);
-    // });
+    HttpTor(Tor.instance, EnvoyScheduler().parallel)
+        .get("https://foundation.xyz/feed")
+        .then((response) {
+      RssFeed feed = RssFeed.parse(response.body);
+      _addBlogPostsFromRssFeed(feed);
+    });
   }
 
   Future<Response> getVimeoData({int videosPerPage = 100, int page = 1}) async {

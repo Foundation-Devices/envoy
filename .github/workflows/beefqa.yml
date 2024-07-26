@@ -50,3 +50,6 @@ jobs:
 
       - name: QA edit hot wallet name
         run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/edit_account_name.dart -d linux --verbose
+
+      - name: QA enable testnet
+        run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/enable_testnet_test.dart -d linux --verbose

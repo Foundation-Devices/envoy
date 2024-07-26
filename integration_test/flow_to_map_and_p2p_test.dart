@@ -68,12 +68,11 @@ Future<void> fromHomeToBuyOptions(WidgetTester tester) async {
   expect(buyBitcoinButton, findsOneWidget);
 
   await tester.tap(buyBitcoinButton);
-
-  await Future.delayed(const Duration(
-      seconds: 5)); // Ensure enough time for reading JSON data for countries.
   await tester.pump(Durations.long2);
 
   final selectRegionDropDown = find.text('Select State');
+  await tester.pumpUntilFound(selectRegionDropDown,
+      tries: 50, duration: Durations.long2);
   expect(selectRegionDropDown, findsOneWidget);
   await tester.tap(selectRegionDropDown);
   await tester.pump(Durations.long2);

@@ -23,7 +23,7 @@ void main() {
     };
     try {
       // Uncomment the line below if testing on local machine.
-      // await resetEnvoyData();
+      await resetEnvoyData();
 
       await initSingletons();
       ScreenshotController envoyScreenshotController = ScreenshotController();
