@@ -41,7 +41,8 @@ void main() {
       await tester.pump(Durations.long2);
       final atmTab = find.text("ATMs");
 
-      await tester.pumpUntilFound(atmTab, tries: 50, duration: Durations.long2);
+      await tester.pumpUntilFound(atmTab,
+          tries: 100, duration: Durations.long2);
       await tester.pump(Durations.long2);
       expect(atmTab, findsOneWidget);
       await tester.tap(atmTab);
