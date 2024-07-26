@@ -99,7 +99,7 @@ void main() {
       await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
       /// With the unit in fiat, paste a valid address, enter a valid amount, tap continue
-      await enterTextInField(
+      await enterNewText(
           tester, find.byType(TextFormField), someValidReceiveAddress);
 
       // enter amount in Fiat
@@ -186,7 +186,7 @@ void main() {
       await checkForEnvoyIcon(tester, EnvoyIcons.sats);
 
       /// With the unit in fiat, paste a valid address, enter a valid amount, tap continue
-      await enterTextInField(
+      await enterNewText(
           tester, find.byType(TextFormField), someValidReceiveAddress);
 
       // enter amount in Fiat

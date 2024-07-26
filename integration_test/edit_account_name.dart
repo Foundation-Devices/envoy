@@ -32,26 +32,25 @@ void main() {
       await setUpAppFromStart(tester);
 
       await fromHomeToHotWallet(tester);
-      await fromHotWalletToDotsMenu(tester);
+      await openDotsMenu(tester);
       await fromDotsMenuToEditName(tester);
-      await enterTextInField(tester, find.byType(TextField), 'What ever');
+      await enterNewText(tester, find.byType(TextField), 'What ever');
       await exitEditName(tester);
-      await checkHotWalletName(
-          tester, 'Mobile Wallet'); // check if the name is the same
+      await checkName(tester, 'Mobile Wallet'); // check if the name is the same
 
-      await fromHotWalletToDotsMenu(tester);
+      await openDotsMenu(tester);
       await fromDotsMenuToEditName(tester);
-      await enterTextInField(tester, find.byType(TextField),
+      await enterNewText(tester, find.byType(TextField),
           'Twenty one characters plus ten'); // 30 chars
-      await saveHotWalletName(tester);
-      await checkHotWalletName(
+      await saveName(tester);
+      await checkName(
           tester, 'Twenty one character'); // it needs to cut text (chars 20/20)
 
       // Rename hot wallet back to "Mobile Wallet" if you want to repeat the test locally
-      await fromHotWalletToDotsMenu(tester);
+      await openDotsMenu(tester);
       await fromDotsMenuToEditName(tester);
-      await enterTextInField(tester, find.byType(TextField), 'Mobile Wallet');
-      await saveHotWalletName(tester);
+      await enterNewText(tester, find.byType(TextField), 'Mobile Wallet');
+      await saveName(tester);
     } finally {
       // Restore the original FlutterError.onError handler after the test.
       FlutterError.onError = originalOnError;
@@ -68,7 +67,7 @@ Future<void> fromHomeToHotWallet(WidgetTester tester) async {
   await tester.pump(Durations.long2);
 }
 
-Future<void> fromHotWalletToDotsMenu(WidgetTester tester) async {
+Future<void> openDotsMenu(WidgetTester tester) async {
   await checkForToast(tester);
 
   await tester.pump();
@@ -97,7 +96,7 @@ Future<void> exitEditName(WidgetTester tester) async {
   await tester.pump(Durations.long2);
 }
 
-Future<void> enterTextInField(
+Future<void> enterNewText(
   WidgetTester tester,
   Finder fieldFinder,
   String text,
@@ -117,7 +116,7 @@ Future<void> enterTextInField(
   await tester.pump(Durations.long2);
 }
 
-Future<void> saveHotWalletName(WidgetTester tester) async {
+Future<void> saveName(WidgetTester tester) async {
   await tester.pump();
   final saveButton = find.text('Save');
   expect(saveButton, findsOneWidget);
@@ -126,7 +125,7 @@ Future<void> saveHotWalletName(WidgetTester tester) async {
   await tester.pump(Durations.long2);
 }
 
-Future<void> checkHotWalletName(WidgetTester tester, String name) async {
+Future<void> checkName(WidgetTester tester, String name) async {
   await tester.pump();
   final nameText = find.text(name);
   expect(nameText, findsOneWidget);

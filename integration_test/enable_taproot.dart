@@ -10,10 +10,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:screenshot/screenshot.dart';
 import 'check_fiat_in_app.dart';
 import 'connect_passport_via_recovery.dart';
+import 'enable_testnet_test.dart';
 import 'flow_to_map_and_p2p_test.dart';
 
 void main() {
-  testWidgets('Enable testnet', (tester) async {
+  testWidgets('Enable taproot', (tester) async {
     final FlutterExceptionHandler? originalOnError = FlutterError.onError;
     FlutterError.onError = (FlutterErrorDetails details) {
       kPrint('FlutterError caught: ${details.exceptionAsString()}');
@@ -33,76 +34,67 @@ void main() {
       // Recover wallet with Passport accounts
       await setUpWalletFromSeedViaMagicRecover(tester, seed);
 
-      await fromHomeToAdvancedMenu(tester);
-      bool testnetAlreadyEnabled = await isSlideSwitchOn(tester, "Testnet");
-      if (testnetAlreadyEnabled) {
+      await pressHamburgerMenu(tester);
+      await goToSettings(tester);
+      await openAdvanced(tester);
+      bool taprootAlreadyEnabled = await isSlideSwitchOn(tester, "Taproot");
+      if (taprootAlreadyEnabled) {
         // Disable it
-        await findAndToggleSettingsSwitch(tester, "Testnet");
+        await findAndToggleSettingsSwitch(tester, "Taproot");
       }
-      await findAndToggleSettingsSwitch(tester, "Testnet");
+      await findAndToggleSettingsSwitch(tester, "Taproot");
       await tester.pump(Durations.long2);
-      final continueButtonFromDialog = find.text('Continue');
+      final doItLaterFromDialog = find.text('Do It Later');
       final popUpText = find.text(
-        'Enabling Testnet',
+        'Taproot on Passport',
       );
       // Check that a pop up comes up
       await tester.pumpUntilFound(popUpText, duration: Durations.long1);
-      expect(continueButtonFromDialog, findsOneWidget);
+      expect(doItLaterFromDialog, findsOneWidget);
 
       final closeDialogButton = find.byIcon(Icons.close);
       await tester.tap(closeDialogButton.last);
       await tester.pump(Durations.long2);
       // Check that a pop up close on 'x'
       expect(popUpText, findsNothing);
-      await findAndToggleSettingsSwitch(tester, "Testnet"); // Disable
-      await findAndToggleSettingsSwitch(tester, "Testnet"); // Enable again
+      await findAndToggleSettingsSwitch(tester, "Taproot"); // Disable
+      await findAndToggleSettingsSwitch(tester, "Taproot"); // Enable again
 
       // Check that a pop up comes up
-      expect(continueButtonFromDialog, findsOneWidget);
-      await tester.tap(continueButtonFromDialog);
+      expect(doItLaterFromDialog, findsOneWidget);
+      await tester.tap(doItLaterFromDialog);
       await tester.pump(Durations.long2);
-      // Check that a pop up close on Continue
-      expect(continueButtonFromDialog, findsNothing);
+      // Check that a pop up close on "Do It Later"
+      expect(doItLaterFromDialog, findsNothing);
       await pressHamburgerMenu(tester); // back to settings menu
       await pressHamburgerMenu(tester); // back to home
-      final testnetAccountBadge = find.text('Testnet');
-      // Check that a Testnet accounts is displayed
-      expect(testnetAccountBadge, findsAtLeast(2));
+      final taprootBadge = find.text('Taproot');
+      // Check that a Taproot accounts is displayed
+      expect(taprootBadge, findsAny);
 
-      // Go to setting and disable it
-      await fromHomeToAdvancedMenu(tester);
-      await findAndToggleSettingsSwitch(tester, "Testnet"); // Disable
+      // Check if the Taproot account disappears after being disabled
+      await pressHamburgerMenu(tester);
+      await goToSettings(tester);
+      await openAdvanced(tester);
+      await findAndToggleSettingsSwitch(tester, "Taproot"); // Disable
       await pressHamburgerMenu(tester); // back to settings menu
       await pressHamburgerMenu(tester); // back to home
-      expect(testnetAccountBadge, findsNothing);
+      expect(taprootBadge, findsNothing);
 
-      // Go to settings and enable it again
-      await fromHomeToAdvancedMenu(tester);
-      await findAndToggleSettingsSwitch(tester, "Testnet"); // Enable again
-      await tester.tap(continueButtonFromDialog);
+      // Check if "Reconnect Passport" button working
+      await pressHamburgerMenu(tester);
+      await goToSettings(tester);
+      await openAdvanced(tester);
+      await findAndToggleSettingsSwitch(tester, "Taproot"); // Enable again
+      final reconnectPassportButton = find.text('Reconnect Passport');
+      expect(reconnectPassportButton, findsOneWidget);
+      await tester.tap(reconnectPassportButton);
       await tester.pump(Durations.long2);
-      await pressHamburgerMenu(tester); // back to settings menu
-      await pressHamburgerMenu(tester); // back to home
-      // Ensure there are at least two badges: one for the passport and one for the hot testnet wallet.
-      expect(testnetAccountBadge, findsAtLeast(2));
+      final connectPassportButton = find.text('Get Started');
+      expect(connectPassportButton, findsOneWidget);
     } finally {
       // Restore the original FlutterError.onError handler after the test.
       FlutterError.onError = originalOnError;
     }
   });
-}
-
-Future<void> openAdvanced(WidgetTester tester) async {
-  await tester.pump();
-  final advancedButton = find.text('Advanced');
-  expect(advancedButton, findsOneWidget);
-
-  await tester.tap(advancedButton);
-  await tester.pump(Durations.long2);
-}
-
-Future<void> fromHomeToAdvancedMenu(WidgetTester tester) async {
-  await pressHamburgerMenu(tester);
-  await goToSettings(tester);
-  await openAdvanced(tester);
 }
