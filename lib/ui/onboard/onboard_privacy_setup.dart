@@ -50,6 +50,7 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
         ?.copyWith(fontSize: 11, fontWeight: FontWeight.w500);
 
     final isSmallDevice = MediaQuery.sizeOf(context).width <= 380;
+
     return EnvoyPatternScaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -125,15 +126,21 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Padding(
-                                  padding: EdgeInsets.all(EnvoySpacing.small)),
+                              Padding(
+                                  padding: EdgeInsets.all(
+                                      MediaQuery.sizeOf(context).width < 350
+                                          ? EnvoySpacing.xs
+                                          : EnvoySpacing.small)),
                               Text(
                                 heading,
                                 textAlign: TextAlign.center,
                                 style: EnvoyTypography.heading,
                               ),
-                              const Padding(
-                                  padding: EdgeInsets.all(EnvoySpacing.small)),
+                              Padding(
+                                  padding: EdgeInsets.all(
+                                      MediaQuery.sizeOf(context).width < 350
+                                          ? EnvoySpacing.xs
+                                          : EnvoySpacing.small)),
                               SizedBox(
                                 width: 250,
                                 child: Text(
@@ -522,7 +529,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
   rive.StateMachineController? _privacyIconController;
   rive.Artboard? _privacyIconArtBoard, _performanceArtBoard;
 
-  final iconSize = 38.0;
+  double iconSize = 38.0;
 
   @override
   void initState() {
@@ -548,6 +555,9 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
 
   @override
   Widget build(BuildContext context) {
+    if (MediaQuery.sizeOf(context).width < 350) {
+      iconSize = 28.0;
+    }
     //turns off the flag that enables tor. this wont affect tor process if it is already running
     ref.listen<bool>(privacyOnboardSelectionProvider, (previous, next) {
       if (mounted) {
@@ -605,10 +615,9 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                     width: 90,
                     child: Text(
                       text,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(fontSize: 8.5),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 8.5,
+                          ),
                       textAlign: TextAlign.center,
                       maxLines: 2,
                     ),
@@ -644,7 +653,8 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                     width: iconSize,
                     child: _performanceArtBoard == null
                         ? Container()
-                        : rive.Rive(artboard: _performanceArtBoard!),
+                        : rive.Rive(
+                            artboard: _performanceArtBoard!),
                   ),
                   const Padding(padding: EdgeInsets.all(4)),
                   Text(
@@ -715,12 +725,13 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
   }
 
   Widget _buildToggleContainer(bool active, Widget child) {
+    double width = MediaQuery.sizeOf(context).width < 350 ? 88 : 100;
     return AnimatedOpacity(
       duration: const Duration(milliseconds: 340),
       opacity: active ? 1 : 0.6,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 340),
-        constraints: BoxConstraints.loose(const Size(94, 104)),
+        constraints: BoxConstraints.tight(Size.square(width)),
         alignment: Alignment.center,
         decoration: BoxDecoration(
             borderRadius: const RoundedRectangleBorder(
