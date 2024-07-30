@@ -653,8 +653,7 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                     width: iconSize,
                     child: _performanceArtBoard == null
                         ? Container()
-                        : rive.Rive(
-                            artboard: _performanceArtBoard!),
+                        : rive.Rive(artboard: _performanceArtBoard!),
                   ),
                   const Padding(padding: EdgeInsets.all(4)),
                   Text(
