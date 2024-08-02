@@ -20,7 +20,8 @@ dependencies:
   flutter:
     sdk: flutter
   path_provider: ^2.0.2
-  tor: ^0.0.4
+  tor:
+    path: ../../../tor
 
 dev_dependencies:
   ffigen: ^6.0.0

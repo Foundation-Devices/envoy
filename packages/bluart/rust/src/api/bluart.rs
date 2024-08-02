@@ -1,12 +1,12 @@
 #![allow(unused_imports)]
 
 use btleplug::api::{Central, Manager as _, Peripheral, ScanFilter};
-use btleplug::platform::{Adapter, Manager};
+pub use btleplug::platform::{Adapter, Manager};
 
 use uuid::Uuid;
 use btleplug::api::bleuuid::uuid_from_u16;
 use btleplug::api::WriteType;
-use std::net::{TcpListener, TcpStream};
+pub use std::net::{TcpListener, TcpStream};
 use flutter_rust_bridge::frb;
 use std::io::{self, Read, Write};
 use std::io::Error;
@@ -20,12 +20,11 @@ pub enum BluartPeripheral {
 #[frb(opaque)]
 pub struct TcpAsPeripheral {
     pub port: String,
-    pub stream: Option<std::net::TcpStream>,
+    stream: Option<std::net::TcpStream>,
 }
 
 
 impl TcpAsPeripheral {
-    // pub fn bezveze(_ha: String){}
     pub fn new(url: String) -> TcpAsPeripheral {
         TcpAsPeripheral {
             port: url.to_string(),

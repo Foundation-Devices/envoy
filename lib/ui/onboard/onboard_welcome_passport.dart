@@ -2,14 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
-import 'package:envoy/ui/prime/onboard_prime_communication_intro.dart';
-import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -266,34 +262,10 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                             // }));
 
                             // Do the QR scan first then move to BL pair screen
-                            // Navigator.of(context)
-                            //     .push(MaterialPageRoute(builder: (context) {
-                            //   return ScannerPage(const [ScannerType.discovery]);
-                            // }));
-
-                            await BluetoothManager().scan();
-                            kPrint(
-                                "Found devices: ${BluetoothManager().peripherals.length}");
-
-                            if (await BluetoothManager().sayHello()) {
-                              showEnvoyPopUp(
-                                  context, "Found Prime and said HELLO", "Okay",
-                                  (BuildContext context) {
-                                Navigator.pop(context);
-                              });
-                            } else {
-                              showEnvoyPopUp(
-                                  context, "Couldn't find Prime", "Shit",
-                                  (BuildContext context) {
-                                Navigator.pop(context);
-                              });
-                            }
-
-                            //
-                            // Navigator.of(context)
-                            //     .push(MaterialPageRoute(builder: (context) {
-                            //   return const OnboardPrimeQuantumLink();
-                            // }));
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return ScannerPage(const [ScannerType.discovery]);
+                            }));
                           },
                         ),
                         const SizedBox(height: EnvoySpacing.small),

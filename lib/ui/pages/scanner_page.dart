@@ -27,6 +27,10 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/business/account.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/seed_qr_extract.dart';
+import 'package:envoy/business/bluetooth_manager.dart';
+
+import '../components/pop_up.dart';
+import '../prime/onboard_prime_communication_intro.dart';
 
 enum ScannerType {
   generic,
@@ -248,17 +252,6 @@ class ScannerPageState extends State<ScannerPage> {
     final NavigatorState navigator = Navigator.of(context);
     final scaffold = ScaffoldMessenger.of(context);
 
-    if (widget._acceptableTypes.contains(ScannerType.discovery)) {
-      if (AztecoVoucher.isVoucher(code)) {
-        final voucher = AztecoVoucher(code);
-        navigator.pop();
-        showEnvoyDialog(
-            context: context, dialog: AztecoDialog(voucher, widget.account!));
-        return;
-      }
-    }
-
-
     if (widget._acceptableTypes.contains(ScannerType.azteco)) {
       if (AztecoVoucher.isVoucher(code)) {
         final voucher = AztecoVoucher(code);
@@ -364,6 +357,11 @@ class ScannerPageState extends State<ScannerPage> {
             content: Text("Please use Testnet"), // TODO: FIGMA
           ));
         }
+      } else if (widget._acceptableTypes.contains(ScannerType.discovery)) {
+        if (_validatePairData(_urDecoder.decoded) &&
+            _urDecoder.decoded is Binary) {
+          _connectOverBluetooth();
+        }
       }
     }
   }
@@ -415,6 +413,29 @@ class ScannerPageState extends State<ScannerPage> {
       navigator.pushReplacement(MaterialPageRoute(builder: (context) {
         return SingleWalletPairSuccessPage(pairedAccount!.wallet);
       }));
+    }
+  }
+
+  void _connectOverBluetooth() async {
+    int foundPeripherals = 0;
+    while (foundPeripherals <= 1) {
+      await BluetoothManager().scan();
+      foundPeripherals = BluetoothManager().peripherals.length;
+      kPrint("Found devices: $foundPeripherals");
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+
+    if (await BluetoothManager().connectToPrime()) {
+      Navigator.pop(context);
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+        return const OnboardPrimeQuantumLink();
+      }));
+    } else {
+      showEnvoyPopUp(context, "Couldn't connect to Prime", "OK",
+          (BuildContext context) {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      });
     }
   }
 }

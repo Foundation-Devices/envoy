@@ -1,24 +1,16 @@
-# Flutter Rust Bridge BLE Dart Plugin
+# bluart_example
 
-This Dart plugin for BLE is created using the Flutter Rust Bridge.
+Demonstrates how to use the bluart plugin.
 
-## Using the Plugin
+## Getting Started
 
-To use this plugin, follow these steps:
+This project is a starting point for a Flutter application.
 
-1. **Get an Adapter:**
-    - Use `firstAdapter` or `getAdapters` functions to obtain a Bluetooth adapter.
+A few resources to get you started if this is your first Flutter project:
 
-2. **Scan for Peripherals:**
-    - Start scanning with `startScan` and stop scanning with `stopScan`.
-    - Use `getPeripherals` to retrieve a list of peripherals for a given adapter.
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-3. **Connect to Peripherals:**
-    - Use `connectPeripheral` to establish a connection to a Bluetooth peripheral.
-    - Check the connection status with `isConnected`.
-    - Retrieve the name of the peripheral using `getNameFromPeripheral`.
-
-4. **Read and Write Data:**
-    - Define specific characteristics for a peripheral.
-    - Use `writeTo` to write data to the peripheral.
-    - Use `readFrom` to read data from the peripheral.
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.

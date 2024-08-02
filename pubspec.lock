@@ -78,7 +78,7 @@ packages:
       path: "packages/bluart"
       relative: true
     source: path
-    version: "1.0.0+1"
+    version: "0.0.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -523,10 +523,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_rust_bridge
-      sha256: "7bdcbe0dc20a85f743bfc1a8ee940656d57beeccb0da44b0e2c8271535b61ae5"
+      sha256: fac14d2dd67eeba29a20e5d99fac0d4d9fcd552cdf6bf4f8945f7679c6b07b1d
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0-dev.24"
+    version: "2.1.0"
   flutter_secure_storage:
     dependency: "direct main"
     description:
@@ -611,6 +611,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  foundation_api:
+    dependency: "direct main"
+    description:
+      path: "packages/foundation_api"
+      relative: true
+    source: path
+    version: "0.0.1"
   freezed:
     dependency: "direct dev"
     description:
@@ -1213,13 +1220,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.10"
-  rust_lib_btle:
-    dependency: transitive
-    description:
-      path: "packages/bluart/rust_builder"
-      relative: true
-    source: path
-    version: "0.0.1"
   rxdart:
     dependency: transitive
     description:
@@ -1541,10 +1541,9 @@ packages:
   tor:
     dependency: "direct main"
     description:
-      name: tor
-      sha256: d57b464c0f9b8af2fd6c13541aece57a534b010728ffe88477b12a032b3404ee
-      url: "https://pub.dev"
-    source: hosted
+      path: "../tor"
+      relative: true
+    source: path
     version: "0.0.4"
   typed_data:
     dependency: "direct main"
@@ -1754,5 +1753,5 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: ">=3.3.0 <4.0.0"
+  dart: ">=3.4.3 <4.0.0"
   flutter: ">=3.19.2"

@@ -1,10 +1,9 @@
-use std::sync::mpsc::channel;
-
-use bc_envelope::{Envelope, Expression, ResponseBehavior};
+use anyhow::Error;
+use bc_components::ARID;
+use bc_envelope::{Envelope, Expression, SealedRequest};
 use bc_envelope::prelude::{CBOREncodable, URDecodable};
-use foundation_api::{AbstractBluetoothChannel, AbstractEnclave, BluetoothEndpoint, Discovery, PAIRING_FUNCTION, PairingResponse};
+use foundation_api::{AbstractEnclave, Discovery, PAIRING_FUNCTION, SecureFrom};
 
-use crate::bluetooth::BluetoothChannel;
 use crate::enclave::Enclave;
 
 pub fn extract_discovery(qr_code: String) -> anyhow::Result<Discovery> {
@@ -21,18 +20,19 @@ pub fn extract_discovery(qr_code: String) -> anyhow::Result<Discovery> {
     }
 }
 
-pub async fn pair(/*channel: &BluetoothChannel*//*, recipient: &PublicKeyBase*/) -> anyhow::Result<PairingResponse> {
-    let (sender, receiver) = channel();
-    let channel = BluetoothChannel::new(BluetoothEndpoint::new(), sender, receiver);
+pub async fn pair(discovery_qr: String) -> Result<Vec<u8>, Error> {
+    let envelope = Envelope::from_ur_string(discovery_qr).unwrap();
+    let inner = envelope.unwrap_envelope()?;
+    let discovery = Discovery::try_from(Expression::try_from(inner)?)?;
+
+    let enclave = Enclave::new();
 
     let body = Expression::new(PAIRING_FUNCTION);
-    let temp_enclave = Enclave::new();
-    let recipient = temp_enclave.public_key();
-    let response = channel.call(recipient, &temp_enclave, body.clone(), Some(body)).await?;
-    let envelope = response.result()?;
 
-    let pairing_response: PairingResponse = envelope.to_cbor().try_into()?;
-    Ok(pairing_response)
+    let request = SealedRequest::new_with_body(body, ARID::new(), enclave.public_key());
+    let sent_envelope = Envelope::secure_from((request, discovery.sender()), &enclave);
+
+    Ok(sent_envelope.to_cbor_data())
 }
 
 #[flutter_rust_bridge::frb(init)]

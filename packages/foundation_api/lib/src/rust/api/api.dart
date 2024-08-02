@@ -10,4 +10,5 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 Future<Discovery> extractDiscovery({required String qrCode}) =>
     RustLib.instance.api.crateApiApiExtractDiscovery(qrCode: qrCode);
 
-Future<PairingResponse> pair() => RustLib.instance.api.crateApiApiPair();
+Future<Uint8List> pair({required String discoveryQr}) =>
+    RustLib.instance.api.crateApiApiPair(discoveryQr: discoveryQr);

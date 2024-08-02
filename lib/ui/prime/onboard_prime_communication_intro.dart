@@ -85,6 +85,8 @@ class _OnboardPrimeQuantumLinkState extends State<OnboardPrimeQuantumLink> {
                 child: EnvoyButton(
                   "Establish QuantumLink",
                   onTap: () async {
+                    // Send pairing code here
+
                     Navigator.push(context, MaterialPageRoute(
                       builder: (context) {
                         return const OnboardPrime();

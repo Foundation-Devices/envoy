@@ -10,7 +10,8 @@ list(APPEND FLUTTER_PLUGIN_LIST
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
-  rust_lib_btle
+  bluart
+  foundation_api
   tor
 )
 
