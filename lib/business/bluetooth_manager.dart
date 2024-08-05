@@ -85,12 +85,20 @@ class BluetoothManager {
   writeData(List<int> data) async {
     print("data to transmit2: ${data.length}");
     List<int> dataToWrite = [data.length, ...data];
-    await writeTo(
-        peripheral: connected!,
-        data: dataToWrite,
-        rxCharacteristic: rxCharacteristic);
 
-    print("written ${data.length}!");
+    // Can't do more than 256 at a time? Find out why
+    // It seems writing is only reliable in 256 byte chunks (tops)
+    // TODO: coordinate with Lucio on the link layer
+    int lenWritten = 0;
+    while (lenWritten < dataToWrite.length) {
+      await writeTo(
+          peripheral: connected!,
+          data: dataToWrite.sublist(lenWritten, lenWritten + 256),
+          rxCharacteristic: rxCharacteristic);
+
+      lenWritten += 256;
+      print("written $lenWritten!");
+    }
   }
 
   Future<List<int>> readData() async {
