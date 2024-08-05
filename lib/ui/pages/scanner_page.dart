@@ -360,7 +360,8 @@ class ScannerPageState extends State<ScannerPage> {
       } else if (widget._acceptableTypes.contains(ScannerType.discovery)) {
         if (_validatePairData(_urDecoder.decoded) &&
             _urDecoder.decoded is Binary) {
-          _connectOverBluetooth();
+          final discoveryQr = (_urDecoder.decoded as Binary).decoded;
+          _connectOverBluetooth(discoveryQr);
         }
       }
     }
@@ -416,7 +417,7 @@ class ScannerPageState extends State<ScannerPage> {
     }
   }
 
-  void _connectOverBluetooth() async {
+  void _connectOverBluetooth(String discoveryCode) async {
     int foundPeripherals = 0;
     while (foundPeripherals <= 1) {
       await BluetoothManager().scan();
@@ -428,7 +429,7 @@ class ScannerPageState extends State<ScannerPage> {
     if (await BluetoothManager().connectToPrime()) {
       Navigator.pop(context);
       Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-        return const OnboardPrimeQuantumLink();
+        return OnboardPrimeQuantumLink(discoveryQr: discoveryCode);
       }));
     } else {
       showEnvoyPopUp(context, "Couldn't connect to Prime", "OK",

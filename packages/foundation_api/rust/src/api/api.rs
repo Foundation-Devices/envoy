@@ -1,8 +1,8 @@
-use anyhow::Error;
+use anyhow::{bail, Error};
 use bc_components::ARID;
-use bc_envelope::{Envelope, Expression, SealedRequest};
-use bc_envelope::prelude::{CBOREncodable, URDecodable};
-use foundation_api::{AbstractEnclave, Discovery, PAIRING_FUNCTION, SecureFrom};
+use bc_envelope::{Envelope, Expression, ResponseBehavior, SealedRequest, SealedResponse};
+use bc_envelope::prelude::{CBOREncodable, CBORTaggedEncodable, URDecodable};
+use foundation_api::{AbstractEnclave, Discovery, PAIRING_FUNCTION, PairingResponse, SecureFrom, SecureTryFrom};
 
 use crate::enclave::Enclave;
 
@@ -28,11 +28,20 @@ pub async fn pair(discovery_qr: String) -> Result<Vec<u8>, Error> {
     let enclave = Enclave::new();
 
     let body = Expression::new(PAIRING_FUNCTION);
-
     let request = SealedRequest::new_with_body(body, ARID::new(), enclave.public_key());
     let sent_envelope = Envelope::secure_from((request, discovery.sender()), &enclave);
 
     Ok(sent_envelope.to_cbor_data())
+}
+
+pub async fn decode_pairing_response(response: Vec<u8>) -> anyhow::Result<PairingResponse>{
+    let envelope = Envelope::try_from_cbor_data(response)?;
+    let response = SealedResponse::secure_try_from(envelope, &Enclave::new())?;
+    // TODO: verify that the response is from a paired device
+
+    let result = response.result()?;
+    let pairing = PairingResponse::try_from(result.tagged_cbor())?;
+    Ok(pairing)
 }
 
 #[flutter_rust_bridge::frb(init)]

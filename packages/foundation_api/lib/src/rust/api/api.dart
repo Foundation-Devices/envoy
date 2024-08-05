@@ -12,3 +12,6 @@ Future<Discovery> extractDiscovery({required String qrCode}) =>
 
 Future<Uint8List> pair({required String discoveryQr}) =>
     RustLib.instance.api.crateApiApiPair(discoveryQr: discoveryQr);
+
+Future<PairingResponse> decodePairingResponse({required List<int> response}) =>
+    RustLib.instance.api.crateApiApiDecodePairingResponse(response: response);

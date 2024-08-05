@@ -9,6 +9,7 @@ import 'package:bluart/src/rust/api/bluart.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/uuid_value.dart';
 import 'package:foundation_api/src/rust/api/api.dart' as api;
+import 'package:foundation_api/src/rust/frb_generated.dart' as api_lib;
 
 class BluetoothManager {
   static final BluetoothManager _instance = BluetoothManager._internal();
@@ -26,6 +27,7 @@ class BluetoothManager {
   static Future<BluetoothManager> init() async {
     var singleton = BluetoothManager._instance;
     await RustLib.init();
+    await api_lib.RustLib.init();
     return singleton;
   }
 
@@ -75,14 +77,25 @@ class BluetoothManager {
 
   pair(String scannedQr) async {
     // get binary pairing envelope and send
+    //ur:discovery/1-1/lpadadcfadcycyknksdpfehkadcytpsplftpsplrtpsotansfginieinjkiajlkoihjpkkoytpsotansfljoidjzkpihjyjljljyisguihjpkoiniaihtpsotpdagdnthsghbybecffwbalevtsffwdiwensesoytpsotansflktidjzkpihjyjljljyisfxishsjphsiajyihjpinjkjyiniatpsotpdagdfwrovebnrpchfwnllsbwrygahnjllpbtoytpsotansfliyjkihjtieihjptpsotansgylftanshfhdcxinayhnkkpmjnssfeaetesomyrksgtbwtwsaxkokspmynltrhzsbklebgyahsjonstansgrhdcxkedlaxgyetdifhzekogelfkbfhssnsotsnrphhsaiosetodtrfotfngyglclwzkpoyaxtpsotansghhdfzdpytswheemhphpdwbnisisjsondlkglaiyylplyahygdaowfaovoiogyztgrfhonwtaylgmnlgahdslaiohylffrdyfliyrsdwetcwbdjoaowpmuvdjymyoyqzvecsnlbgreyncp
     final data = await api.pair(discoveryQr: scannedQr);
-
-    print("data to transmit: ${data.length}");
-    await writeTo(
-        peripheral: connected!,
-        data: data,
-        rxCharacteristic: rxCharacteristic);
+    writeData(data);
   }
 
+  writeData(List<int> data) async {
+    print("data to transmit2: ${data.length}");
+    List<int> dataToWrite = [data.length, ...data];
+    await writeTo(
+        peripheral: connected!,
+        data: dataToWrite,
+        rxCharacteristic: rxCharacteristic);
 
+    print("written ${data.length}!");
+  }
+
+  Future<List<int>> readData() async {
+    return readFrom(
+    peripheral: connected!,
+    characteristic: rxCharacteristic);
+  }
 }

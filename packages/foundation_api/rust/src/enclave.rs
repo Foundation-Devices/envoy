@@ -7,6 +7,11 @@ use {
     foundation_api::AbstractEnclave,
 };
 
+pub const ENVOY_PRIVATE_KEY: [u8; 32] = [
+    15, 131, 160, 171, 247, 96, 203, 55, 241, 8, 213, 27, 120, 225, 7, 209, 13, 76, 235, 255, 3, 235, 172,
+    190, 232, 255, 100, 232, 118, 41, 216, 235,
+];
+
 #[derive(Debug)]
 pub(crate) struct Enclave {
     private_key: PrivateKeyBase,
@@ -15,7 +20,7 @@ pub(crate) struct Enclave {
 
 impl Enclave {
     pub fn new() -> Self {
-        let private_key = PrivateKeyBase::new();
+        let private_key = PrivateKeyBase::from_data(ENVOY_PRIVATE_KEY.to_vec());
         let public_key = private_key.schnorr_public_key_base();
         Self {
             private_key,

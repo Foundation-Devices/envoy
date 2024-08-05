@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
+import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/prime/onboard_prime_connect.dart';
@@ -11,7 +12,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OnboardPrimeQuantumLink extends StatefulWidget {
-  const OnboardPrimeQuantumLink({super.key});
+  final String discoveryQr;
+  const OnboardPrimeQuantumLink({super.key, required this.discoveryQr});
 
   @override
   State<OnboardPrimeQuantumLink> createState() =>
@@ -86,6 +88,7 @@ class _OnboardPrimeQuantumLinkState extends State<OnboardPrimeQuantumLink> {
                   "Establish QuantumLink",
                   onTap: () async {
                     // Send pairing code here
+                    await BluetoothManager().pair(widget.discoveryQr);
 
                     Navigator.push(context, MaterialPageRoute(
                       builder: (context) {
