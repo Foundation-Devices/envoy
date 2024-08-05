@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:envoy/util/console.dart';
 import 'package:bluart/src/rust/frb_generated.dart';
 import 'package:bluart/src/rust/api/bluart.dart';
@@ -84,7 +85,7 @@ class BluetoothManager {
 
   writeData(List<int> data) async {
     print("data to transmit2: ${data.length}");
-    List<int> dataToWrite = [data.length, ...data];
+    List<int> dataToWrite = [...numberToByteList(data.length), ...data];
 
     // Can't do more than 256 at a time? Find out why
     // It seems writing is only reliable in 256 byte chunks (tops)
@@ -106,4 +107,10 @@ class BluetoothManager {
     peripheral: connected!,
     characteristic: rxCharacteristic);
   }
+}
+
+List<int> numberToByteList(int number) {
+  final byteData = ByteData(4); // 32-bit
+  byteData.setUint32(0, number, Endian.little);
+  return byteData.buffer.asUint8List().toList();
 }
