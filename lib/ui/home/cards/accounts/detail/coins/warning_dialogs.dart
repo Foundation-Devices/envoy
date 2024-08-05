@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
-import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -35,97 +35,118 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
 
   @override
   Widget build(BuildContext context) {
+    double contentSpace = EnvoySpacing.medium1;
+    if (MediaQuery.sizeOf(context).width < 350) {
+      contentSpace = EnvoySpacing.small;
+    }
     return Container(
-      width: 280,
-      padding: const EdgeInsets.all(EnvoySpacing.medium2),
+      //clamp the width so it doesn't stretch too much
+      width: (MediaQuery.sizeOf(context).width * 0.75).clamp(280, 400),
+      height: 448,
+      padding: const EdgeInsets.symmetric(
+          horizontal: EnvoySpacing.medium1, vertical: EnvoySpacing.medium1),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Align(
-            alignment: Alignment.topRight,
+          Container(
+            height: 34,
+            alignment: Alignment.centerRight,
             child: IconButton(
+              padding: const EdgeInsets.all(0),
               icon: const Icon(Icons.close),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
           ),
-          const SizedBox(height: EnvoySpacing.xs),
           Image.asset(
             "assets/exclamation_triangle.png",
-            height: 64,
-            width: 64,
+            height: 54,
+            width: 54,
           ),
-          const SizedBox(height: EnvoySpacing.medium3),
-          Text(
-            S().component_warning,
-            style: EnvoyTypography.heading,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: EnvoySpacing.medium1),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Text(
-              widget.warningMessage,
-              style: EnvoyTypography.digitsSmall.copyWith(
-                color: EnvoyColors.textPrimary,
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: contentSpace),
+              Text(
+                S().component_warning,
+                style: EnvoyTypography.heading,
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: EnvoySpacing.medium3),
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                dismissed = !dismissed;
-              });
-            },
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  child: EnvoyCheckbox(
-                    value: dismissed,
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() {
-                          dismissed = value;
-                        });
-                      }
-                    },
+              SizedBox(height: contentSpace),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text(
+                  widget.warningMessage,
+                  style: EnvoyTypography.info.copyWith(
+                    color: EnvoyColors.textPrimary,
                   ),
+                  textAlign: TextAlign.center,
                 ),
-                Text(
-                  S().component_dontShowAgain,
-                  style: EnvoyTypography.digitsMedium.copyWith(
-                    color: EnvoyColors.textSecondary,
-                  ),
+              ),
+              SizedBox(height: contentSpace),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    dismissed = !dismissed;
+                  });
+                },
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    EnvoyCheckbox(
+                      value: dismissed,
+                      visualDensity: VisualDensity.compact,
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            dismissed = value;
+                          });
+                        }
+                      },
+                    ),
+                    Text(
+                      S().component_dontShowAgain,
+                      style: EnvoyTypography.info.copyWith(
+                        color: EnvoyColors.textSecondary,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          const SizedBox(height: EnvoySpacing.medium3),
-          EnvoyButton(
-            S().component_back,
-            onTap: () {
-              Navigator.pop(context);
-            },
-            type: EnvoyButtonTypes.tertiary,
-          ),
-          const SizedBox(height: EnvoySpacing.medium1),
-          EnvoyButton(
-            widget.buttonTitle,
-            onTap: () {
-              if (dismissed) {
-                EnvoyStorage().addPromptState(widget.promptType);
-              } else {
-                EnvoyStorage().removePromptState(widget.promptType);
-              }
-              widget.onContinue();
-            },
-            type: EnvoyButtonTypes.primaryModal,
+          Column(
+            children: [
+              EnvoyButton(
+                label: S().component_back,
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                height: 48,
+                type: ButtonType.tertiary,
+                state: ButtonState.defaultState,
+              ),
+              const SizedBox(height: EnvoySpacing.small),
+              EnvoyButton(
+                label: widget.buttonTitle,
+                state: ButtonState.defaultState,
+                edgeInsets: const EdgeInsets.all(0),
+                onTap: () {
+                  if (dismissed) {
+                    EnvoyStorage().addPromptState(widget.promptType);
+                  } else {
+                    EnvoyStorage().removePromptState(widget.promptType);
+                  }
+                  widget.onContinue();
+                },
+                type: ButtonType.primary,
+              ),
+            ],
           ),
         ],
       ),
@@ -229,15 +250,17 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
             ),
           ),
           EnvoyButton(
-            S().component_back,
+            label: S().component_back,
             onTap: () {
               Navigator.pop(context);
             },
-            type: EnvoyButtonTypes.tertiary,
+            type: ButtonType.primary,
+            state: ButtonState.defaultState,
           ),
           const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           EnvoyButton(
-            S().component_continue,
+            state: ButtonState.defaultState,
+            label: S().component_continue,
             onTap: () {
               ///user has dismissed the prompt
               if (dismissed) {
@@ -249,7 +272,7 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
               }
               widget.onContinue();
             },
-            type: EnvoyButtonTypes.primaryModal,
+            type: ButtonType.primary,
           ),
         ],
       ),
