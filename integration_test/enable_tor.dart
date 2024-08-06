@@ -10,7 +10,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:screenshot/screenshot.dart';
-import 'flow_to_map_and_p2p_test.dart';
 
 void main() {
   testWidgets('enable tor and check top shield', (tester) async {
