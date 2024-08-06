@@ -37,8 +37,9 @@ void main() {
       }
     };
     try {
-      // Uncomment the line below if testing on local machine.
-      // await resetEnvoyData();
+      // Uncomment the line below if you want to start from the beginning,
+      // but then you MUST call setAppFromStart or setUpWalletFromSeedViaMagicRecover.
+      await resetEnvoyData();
 
       ScreenshotController envoyScreenshotController = ScreenshotController();
       await initSingletons();

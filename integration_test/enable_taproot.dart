@@ -23,7 +23,8 @@ void main() {
       }
     };
     try {
-      // Uncomment the line below if testing on local machine.
+      // Uncomment the line below if you want to start from the beginning,
+      // but then you MUST call setAppFromStart or setUpWalletFromSeedViaMagicRecover.
       // await resetEnvoyData();
 
       await initSingletons();
@@ -32,7 +33,7 @@ void main() {
           controller: envoyScreenshotController, child: const EnvoyApp()));
 
       // Recover wallet with Passport accounts
-      await setUpWalletFromSeedViaMagicRecover(tester, seed);
+      // await setUpWalletFromSeedViaMagicRecover(tester, seed);
 
       await pressHamburgerMenu(tester);
       await goToSettings(tester);

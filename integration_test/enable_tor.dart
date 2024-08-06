@@ -22,7 +22,8 @@ void main() {
       }
     };
     try {
-      // Uncomment the line below if testing on local machine.
+      // Uncomment the line below if you want to start from the beginning,
+      // but then you MUST call setAppFromStart or setUpWalletFromSeedViaMagicRecover.
       //await resetEnvoyData();
 
       ScreenshotController envoyScreenshotController = ScreenshotController();
@@ -30,7 +31,7 @@ void main() {
       await tester.pumpWidget(Screenshot(
           controller: envoyScreenshotController, child: const EnvoyApp()));
 
-      await setUpAppFromStart(tester);
+      //await setUpAppFromStart(tester);
 
       await goToPrivacy(tester);
 
@@ -43,6 +44,7 @@ void main() {
       await enablePrivacy(tester);
       // Check the shield icon after enabling privacy
       await checkShieldIcon(tester, isPrivacy: true);
+      await enablePerformance(tester);
     } finally {
       FlutterError.onError = originalOnError;
     }

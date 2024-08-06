@@ -6,6 +6,7 @@ import 'package:envoy/main.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:screenshot/screenshot.dart';
 import 'flow_to_map_and_p2p_test.dart';
@@ -21,7 +22,8 @@ void main() {
       }
     };
     try {
-      // Uncomment the line below if testing on local machine.
+      // Uncomment the line below if you want to start from the beginning,
+      // but then you MUST call setAppFromStart or setUpWalletFromSeedViaMagicRecover.
       // await resetEnvoyData();
 
       await initSingletons();
@@ -43,50 +45,21 @@ void main() {
 }
 
 Future<void> checkForToast(WidgetTester tester) async {
-  await tester.runAsync(() async {
-    await tester.pumpAndSettle();
+  //await tester.pumpAndSettle();
 
-    final iconFinder = find.byWidgetPredicate(
-      (widget) =>
-          widget is EnvoyIcon &&
-          (widget.icon == EnvoyIcons.info || widget.icon == EnvoyIcons.alert),
-    );
+  final iconFinder = find.byWidgetPredicate(
+    (widget) =>
+        widget is EnvoyIcon &&
+        (widget.icon == EnvoyIcons.info || widget.icon == EnvoyIcons.alert),
+  );
 
-    // Check if the icon is found initially
-    bool iconInitiallyFound = iconFinder.evaluate().isNotEmpty;
-    if (!iconInitiallyFound) {
-      return; // Exit the test if the icon is not found initially
-    }
-
-    const maxRetries = 10; // Maximum number of retries
-    int retryCount = 0;
-    bool iconStillThere = true;
-
-    while (retryCount < maxRetries && iconStillThere) {
-      // Wait for 1 second
-      await Future.delayed(const Duration(seconds: 1));
-
-      // Recheck if the icon is still there
-      await tester.pumpAndSettle();
-      final iconStillThereFinder = find.byWidgetPredicate(
-        (widget) =>
-            widget is EnvoyIcon &&
-            (widget.icon == EnvoyIcons.info || widget.icon == EnvoyIcons.alert),
-      );
-
-      iconStillThere = iconStillThereFinder.evaluate().isNotEmpty;
-      if (!iconStillThere) {
-        break; // Break the loop
-      } else {
-        retryCount++;
-      }
-    }
-
-    if (iconStillThere) {
-      // if the icon is still there after all the retries, exit and try pressing the button anyway,
-      // if it is really there it will fail to press the button
-      // if that does not work try changing the number of maxRetries
-      return;
-    }
-  });
+  // Check if the icon is found initially
+  bool iconInitiallyFound = iconFinder.evaluate().isNotEmpty;
+  if (!iconInitiallyFound) {
+    return; // Exit the test if the icon is not found initially
+  } else {
+    final closeToastButton = find.byIcon(Icons.close);
+    await tester.tap(closeToastButton.last);
+    await tester.pump(Durations.long2);
+  }
 }

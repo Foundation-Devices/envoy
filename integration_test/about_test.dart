@@ -24,7 +24,8 @@ void main() {
       }
     };
     try {
-      // Uncomment the line below if testing on local machine.
+      // Uncomment the line below if you want to start from the beginning,
+      // but then you MUST call setAppFromStart or setUpWalletFromSeedViaMagicRecover.
       // await resetEnvoyData();
 
       await initSingletons();
@@ -32,7 +33,7 @@ void main() {
       await tester.pumpWidget(Screenshot(
           controller: envoyScreenshotController, child: const EnvoyApp()));
 
-      await setUpAppFromStart(tester);
+      // await setUpAppFromStart(tester);
 
       await pressHamburgerMenu(tester);
       await goToAbout(tester);

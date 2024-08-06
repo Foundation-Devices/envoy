@@ -24,7 +24,8 @@ void main() {
       }
     };
     try {
-      // Uncomment the line below if testing on local machine.
+      // Uncomment the line below if you want to start from the beginning,
+      // but then you MUST call setAppFromStart or setUpWalletFromSeedViaMagicRecover.
       //await resetEnvoyData();
 
       await initSingletons();
@@ -32,7 +33,7 @@ void main() {
       await tester.pumpWidget(Screenshot(
           controller: envoyScreenshotController, child: const EnvoyApp()));
 
-      await setUpAppFromStart(tester);
+      // await setUpAppFromStart(tester);
 
       await pressHamburgerMenu(tester);
       await goToSettings(tester);
@@ -108,9 +109,9 @@ Future<String?> findSymbolOnScreen(
 
 Future<void> pressHamburgerMenu(WidgetTester tester) async {
   // check if the toast pop-up is there before pressing on to the tob bar
-  await checkForToast(tester);
+  //await checkForToast(tester);
   // go with top bar hamburger button
-  await tester.pump();
+  //await tester.pump();
   final hamburgerIcon = find.byType(HamburgerMenu);
   expect(hamburgerIcon, findsOneWidget);
 

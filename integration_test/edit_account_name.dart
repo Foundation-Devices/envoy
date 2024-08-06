@@ -19,7 +19,8 @@ void main() {
       }
     };
     try {
-      // Uncomment the line below if testing on local machine.
+      // Uncomment the line below if you want to start from the beginning,
+      // but then you MUST call setAppFromStart or setUpWalletFromSeedViaMagicRecover.
       // await resetEnvoyData();
 
       await initSingletons();
@@ -27,8 +28,8 @@ void main() {
       await tester.pumpWidget(Screenshot(
           controller: envoyScreenshotController, child: const EnvoyApp()));
 
-      // This line is commented out to check if GitHub Actions save app data
-      //await setUpAppFromStart(tester); // if it fails, comment this line put
+      // Uncomment if resetEnvoyData is uncommented
+      //await setUpAppFromStart(tester);
 
       await fromHomeToHotWallet(tester);
       await openDotsMenu(tester);
