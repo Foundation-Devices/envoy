@@ -40,10 +40,13 @@ jobs:
           flutter-version: '3.19.5'
 
       - name: Install dependencies
+        run: flutter clean
+
+      - name: Install dependencies
         run: flutter pub get
 
       - name: Build Rust libs
-        run: cargo build
+        run: cargo build --verbose
 
       - name: QA map flow
         run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/flow_to_map_and_p2p_test.dart -d linux --verbose
