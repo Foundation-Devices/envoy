@@ -49,6 +49,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Update Cargo dependencies
+        run: cargo update
+
       - name: Build Rust libs
         run: cargo build --verbose
 
