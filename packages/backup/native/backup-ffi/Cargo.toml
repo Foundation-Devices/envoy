@@ -24,7 +24,6 @@ bdk = { version = "0.28.0", features = ["keys-bip39"] }
 log ="0.4.14"
 lazy_static = "1.4"
 allo-isolate = "0.1.12"
-time = "0.3.36"
 
 [build-dependencies]
 cbindgen = "= 0.24.3"
