@@ -16,10 +16,10 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install Ninja
-        run: sudo apt-get install -y ninja-build
+        run: sudo apt-get install -y ninja-build=1.10.1-1
 
       - name: Install CMake
-        run: sudo apt-get install -y cmake
+        run: sudo apt-get install -y cmake=3.22.1-1ubuntu1
 
       - name: sudo update
         run: sudo apt-get update
