@@ -732,7 +732,9 @@ class _SlidingToggleState extends State<SlidingToggle>
                                       _currentOptionText,
                                       key: ValueKey(_currentOptionText),
                                       overflow: TextOverflow.ellipsis,
-                                      textScaler: MediaQuery.textScalerOf(context).clamp(
+                                      textScaler:
+                                          MediaQuery.textScalerOf(context)
+                                              .clamp(
                                         minScaleFactor: 0.8,
                                         maxScaleFactor: 1.2,
                                       ),
