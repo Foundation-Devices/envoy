@@ -49,15 +49,15 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Update Cargo dependencies
-        run: cargo update
+      - name: Cargo version
+        run: cargo version
 
       - name: Build Rust libs
         run: cargo build --verbose
 
       - name: QA map flow
         run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/flow_to_map_and_p2p_test.dart -d linux --verbose
-        continue-on-error: true
+        continue-on-error: false
 
       - name: QA about
         run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/about_test.dart -d linux --verbose
