@@ -10,3 +10,6 @@ exclude = ["passport2/extmod/foundation-rust"]
 lto = true
 codegen-units = 1
 debug = true
+
+[dependencies]
+time = "0.3.28"
