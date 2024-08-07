@@ -8,7 +8,6 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
@@ -28,6 +27,7 @@ import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/shield.dart';
+import 'package:envoy/ui/components/linear_gradient.dart';
 
 class AccountsCard extends ConsumerStatefulWidget {
   const AccountsCard({
@@ -147,12 +147,10 @@ class _AccountsListState extends ConsumerState<AccountsList> {
   final ScrollController _scrollController = ScrollController();
   final double _accountHeight = 124;
   bool _onReOrderStart = false;
-  double _listWidgetHeight = 0;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(_afterLayout);
   }
 
   @override
@@ -161,29 +159,10 @@ class _AccountsListState extends ConsumerState<AccountsList> {
     super.dispose();
   }
 
-  void _afterLayout(_) {
-    if (mounted) {
-      setState(() {
-        _listWidgetHeight = _getListHeight();
-      });
-    }
-  }
-
-  double _getListHeight() {
-    if (context.findRenderObject() == null) {
-      return 0.0;
-    }
-
-    final RenderBox listRenderBox = context.findRenderObject() as RenderBox;
-    return listRenderBox.size.height;
-  }
-
   @override
   Widget build(BuildContext context) {
     final accounts = ref.watch(accountsProvider);
     final listContentHeight = accounts.length * _accountHeight;
-
-    final isFadingEnabled = listContentHeight > _listWidgetHeight;
 
     ref.listen(accountsProvider, (List<Account>? previous, List<Account> next) {
       if (previous!.length < next.length) {
@@ -207,10 +186,7 @@ class _AccountsListState extends ConsumerState<AccountsList> {
       }
     });
 
-    final scrollView = FadingEdgeScrollView.fromScrollView(
-      scrollController: _scrollController,
-      gradientFractionOnStart: isFadingEnabled ? 0.03 : 0.0,
-      gradientFractionOnEnd: isFadingEnabled ? 0.06 : 0.0,
+    final scrollView = ScrollGradientMask(
       child: ReorderableListView(
         footer: Opacity(
           opacity: _onReOrderStart ? 0.0 : 1.0,
