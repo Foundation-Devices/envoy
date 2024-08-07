@@ -18,6 +18,7 @@ tokio = { version = "1", features = ["full"] }
 lazy_static = "1.4"
 log = "0.4.14"
 allo-isolate = "0.1.12"
+time = "0.3.36"
 
 [build-dependencies]
 cbindgen = "= 0.24.3"
