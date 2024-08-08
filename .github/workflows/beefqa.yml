@@ -30,12 +30,18 @@ jobs:
       - name: Install ZBar
         run: sudo apt-get install -y libzbar-dev
 
-#      - name: Install Rust
-#        uses: actions-rs/toolchain@v1
-#        with:
-#          toolchain: 1.69.0
-#          override: true
-#          components: rustfmt, clippy
+      - name: Cargo clean
+        run: cargo clean
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: 1.69.0
+          override: true
+          components: rustfmt, clippy
+
+      - name: Rust version
+        run: rustc --version
 
       - uses: actions/setup-java@v1
         with:
