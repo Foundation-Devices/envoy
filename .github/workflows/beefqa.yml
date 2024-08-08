@@ -30,6 +30,9 @@ jobs:
       - name: Install ZBar
         run: sudo apt-get install -y libzbar-dev
 
+      - name: Flutter version
+        run: flutter --version
+
 #      - name: Cargo clean
 #        run: cargo clean
 
