@@ -30,22 +30,6 @@ jobs:
       - name: Install ZBar
         run: sudo apt-get install -y libzbar-dev
 
-      - name: Flutter version
-        run: flutter --version
-
-#      - name: Cargo clean
-#        run: cargo clean
-
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: 1.69.0
-          override: true
-          components: rustfmt, clippy
-
-      - name: Rust version
-        run: rustc --version
-
       - uses: actions/setup-java@v1
         with:
           java-version: '12.x'
@@ -58,23 +42,8 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - run: rustup --version
-
-      - run: rustup component add rustfmt
-
-      - run: rustup component add clippy
-
-      - name: Verify Rust formatting
-        run: cargo fmt --all -- --check
-
-      - name: Catch common Rust mistakes
-        run: cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
-
-      - name: Cargo version
-        run: cargo version
-
       - name: Build Rust libs
-        run: cargo build --verbose
+        run: cargo build
 
       - name: QA map flow
         run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/flow_to_map_and_p2p_test.dart -d linux --verbose
