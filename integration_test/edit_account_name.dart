@@ -53,7 +53,6 @@ void main() {
 
       await enterTextInField(tester, find.byType(TextField), 'Mobile Wallet');
       await saveName(tester);
-
     } finally {
       // Restore the original FlutterError.onError handler after the test.
       FlutterError.onError = originalOnError;
@@ -69,7 +68,6 @@ Future<void> fromHomeToHotWallet(WidgetTester tester) async {
   await tester.tap(hotWalletButton);
   await tester.pump(Durations.long2);
 }
-
 
 Future<void> openDotsMenu(WidgetTester tester) async {
   await tester.pump();

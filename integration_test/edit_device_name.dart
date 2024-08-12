@@ -39,14 +39,16 @@ void main() {
       await openDeviceCard(tester, "Passport");
       await openDotsMenu(tester);
       await openEditDevice(tester);
-      await enterTextInField(tester, find.byType(TextField), 'New Passport name');
+      await enterTextInField(
+          tester, find.byType(TextField), 'New Passport name');
       await exitEditName(tester);
       await checkName(tester, 'Passport'); // check if the name is the same
 
       // Test for input name longer than the allowed maximum
       await openDotsMenu(tester);
       await openEditDevice(tester);
-      await enterTextInField(tester, find.byType(TextField), 'Twenty one characters plus ten'); // 30 chars
+      await enterTextInField(tester, find.byType(TextField),
+          'Twenty one characters plus ten'); // 30 chars
       await saveName(tester);
       await checkName(
           tester, 'Twenty one character'); // it needs to cut text (chars 20/20)
