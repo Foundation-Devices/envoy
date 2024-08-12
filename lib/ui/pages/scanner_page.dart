@@ -325,7 +325,8 @@ class ScannerPageState extends State<ScannerPage> {
 
     if (_urDecoder.decoded != null && !_processing) {
       _processing = true;
-      if (widget._acceptableTypes.contains(ScannerType.scv)) {
+      if (widget._acceptableTypes.contains(ScannerType.scv) &&
+          _urDecoder.decoded is CryptoResponse) {
         if (context.mounted) {
           Navigator.of(context)
               .pushReplacement(MaterialPageRoute(builder: (context) {
