@@ -818,7 +818,7 @@ class Wallet {
           throw Exception(error);
         }
         if (feeRates.min_fee_rate == -1.1) {
-          throw Exception("Transaction cannot be boosted");
+          throw Exception("Transaction cannot be boosted,Error: ${error}");
         }
         if (feeRates.min_fee_rate == -1.6) {
           throw Exception("Unlock coin to boost transaction");
