@@ -84,28 +84,24 @@ final transactionNotificationsProvider = Provider((ref) {
   for (var account in accountManager.accounts) {
     final transactions = ref.watch(transactionsProvider(account.id));
     for (var tx in transactions) {
-      if ((tx.date.isAfter(Notifications().lastUpdated) || !tx.isConfirmed)) {
-        bool skip = false;
-
-        for (var notification in Notifications().notifications) {
-          if (notification.id == tx.txId && notification.amount == tx.amount) {
-            skip = true;
-            break;
-          }
+      bool skip = false;
+      for (var notification in Notifications().notifications) {
+        if (notification.id == tx.txId && notification.amount == tx.amount) {
+          skip = true;
+          break;
         }
+      }
 
-        if (!skip) {
-          Notifications().deleteSuppressedNotifications(account.id);
-          Notifications().add(EnvoyNotification(
-              "Transaction",
-              tx.isConfirmed ? tx.date : DateTime.now(),
-              EnvoyNotificationType.transaction,
-              tx.txId,
-              tx.txId,
-              amount: tx.amount,
-              accountId: account.id));
-        }
-        Notifications().lastUpdated = DateTime.now();
+      if (!skip) {
+        Notifications().deleteSuppressedNotifications(account.id);
+        Notifications().add(EnvoyNotification(
+            "Transaction",
+            tx.isConfirmed ? tx.date : DateTime.now(),
+            EnvoyNotificationType.transaction,
+            tx.txId,
+            tx.txId,
+            amount: tx.amount,
+            accountId: account.id));
       }
     }
   }
@@ -113,7 +109,6 @@ final transactionNotificationsProvider = Provider((ref) {
 
 class Notifications {
   int unread = 0;
-  late DateTime lastUpdated = DateTime.now();
   Timer? _syncTimer;
   bool _githubVersionChecked = false;
 
@@ -186,7 +181,6 @@ class Notifications {
 
   // TODO: refactor this to monstrosity to use composable providers
   _checkForNotificationsToAdd() async {
-    bool notificationsAdded = false;
     bool newEnvoyVersionAvailable = false;
     if (!_githubVersionChecked) {
       newEnvoyVersionAvailable = await isThereNewEnvoyVersion();
@@ -215,7 +209,6 @@ class Notifications {
             newVersion!,
             device.type.toString().split('.').last,
           ));
-          notificationsAdded = true;
         }
       }
     }
@@ -238,15 +231,10 @@ class Notifications {
           latestEnvoyVersion,
           EnvoyNotificationType.envoyUpdate.name,
         ));
-        notificationsAdded = true;
         if (!isNewAppVersionAvailable.isClosed) {
           isNewAppVersionAvailable.add(latestEnvoyVersion);
         }
       }
-    }
-
-    if (notificationsAdded) {
-      lastUpdated = DateTime.now();
     }
   }
 
@@ -270,10 +258,7 @@ class Notifications {
   }
 
   _storeNotifications() {
-    var jsonMap = {
-      "last_updated": lastUpdated.toIso8601String(),
-      "notifications": notifications
-    };
+    var jsonMap = {"notifications": notifications};
 
     String json = jsonEncode(jsonMap);
     _ls.prefs.setString(notificationPrefs, json);
@@ -288,8 +273,6 @@ class Notifications {
 
     if (_ls.prefs.containsKey(notificationPrefs)) {
       var jsonMap = jsonDecode(_ls.prefs.getString(notificationPrefs)!);
-
-      lastUpdated = DateTime.parse(jsonMap["last_updated"]);
 
       for (var notification in jsonMap["notifications"]) {
         EnvoyNotification notificationToRestore =
