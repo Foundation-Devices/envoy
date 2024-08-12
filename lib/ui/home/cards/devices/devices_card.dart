@@ -190,9 +190,13 @@ class DevicesOptions extends ConsumerWidget {
           ),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return const SingleImportPpIntroPage();
-            }));
+            Navigator.of(context).push(PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) {
+                return const SingleImportPpIntroPage();
+              },
+              reverseTransitionDuration: Duration.zero,
+              transitionDuration: Duration.zero,
+            ));
           },
         ),
         const SizedBox(
@@ -203,9 +207,13 @@ class DevicesOptions extends ConsumerWidget {
               style: const TextStyle(color: EnvoyColors.accentSecondary)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return const TouPage();
-            }));
+            Navigator.of(context).push(PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) {
+                return const TouPage();
+              },
+              reverseTransitionDuration: Duration.zero,
+              transitionDuration: Duration.zero,
+            ));
           },
         ),
       ],
