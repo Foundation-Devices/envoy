@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:screenshot/screenshot.dart';
+import 'enable_testnet_test.dart';
 import 'flow_to_map_and_p2p_test.dart';
 import 'check_fiat_in_app.dart';
 
@@ -31,9 +32,7 @@ void main() {
 
       await setUpAppFromStart(tester);
 
-      await pressHamburgerMenu(tester);
-      await goToSettings(tester);
-      await openAdvanced(tester);
+      await fromHomeToAdvancedMenu(tester);
 
       bool isSettingsSignetSwitchOn = await isSlideSwitchOn(tester, 'Signet');
       if (!isSettingsSignetSwitchOn) {
@@ -86,9 +85,7 @@ void main() {
       expect(signetTextAccount, findsOneWidget);
 
       // Go back to settings, tap Signet switch again to disable it
-      await pressHamburgerMenu(tester);
-      await goToSettings(tester);
-      await openAdvanced(tester);
+      await fromHomeToAdvancedMenu(tester);
 
       isSettingsSignetSwitchOn = await isSlideSwitchOn(tester, 'Signet');
       // tap to disable Signet
