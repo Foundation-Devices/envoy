@@ -251,7 +251,7 @@ class _SendCardState extends ConsumerState<SendCard>
                     },
                     error: !valid,
                     label: buttonText,
-                    isDisabled: !valid,
+                    isDisabled: !valid || tx.loading,
                   );
                 },
               ),
