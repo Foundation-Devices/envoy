@@ -29,7 +29,7 @@ void main() {
       await tester.pumpWidget(Screenshot(
           controller: envoyScreenshotController, child: const EnvoyApp()));
 
-      //await setUpWalletFromSeedViaMagicRecover(tester, seed);
+      await setUpWalletFromSeedViaMagicRecover(tester, seed);
 
       final devicesButton = find.text('Devices');
       await tester.tap(devicesButton);
