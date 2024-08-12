@@ -39,14 +39,15 @@ void main() {
       await openDeviceCard(tester, "Passport");
       await openDotsMenu(tester);
       await openEditDevice(tester);
-      await enterNewName(tester, 'New Passport name');
+      await enterNewText(tester, find.byType(TextField), 'New Passport name');
       await exitEditName(tester);
       await checkName(tester, 'Passport'); // check if the name is the same
 
       // Test for input name longer than the allowed maximum
       await openDotsMenu(tester);
       await openEditDevice(tester);
-      await enterNewName(tester, 'Twenty one characters plus ten'); // 30 chars
+      await enterNewText(tester, find.byType(TextField),
+          'Twenty one characters plus ten'); // 30 chars
       await saveName(tester);
       await checkName(
           tester, 'Twenty one character'); // it needs to cut text (chars 20/20)
@@ -54,7 +55,7 @@ void main() {
       // Reset the device name to its initial value
       await openDotsMenu(tester);
       await openEditDevice(tester);
-      await enterNewName(tester, 'Passport');
+      await enterNewText(tester, find.byType(TextField), 'Passport');
       await saveName(tester);
     } finally {
       // Restore the original FlutterError.onError handler after the test.

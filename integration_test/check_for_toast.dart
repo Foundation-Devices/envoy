@@ -6,6 +6,7 @@ import 'package:envoy/main.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:screenshot/screenshot.dart';
 import 'flow_to_map_and_p2p_test.dart';
@@ -44,49 +45,32 @@ void main() {
 
 Future<void> checkForToast(WidgetTester tester) async {
   await tester.runAsync(() async {
-    await tester.pumpAndSettle();
-
     final iconFinder = find.byWidgetPredicate(
       (widget) =>
           widget is EnvoyIcon &&
           (widget.icon == EnvoyIcons.info || widget.icon == EnvoyIcons.alert),
     );
 
+    //await tester.pumpUntilFound(iconFinder, tries: 10, duration: Durations.long2); // TODO: can this improve the test?
+
     // Check if the icon is found initially
-    bool iconInitiallyFound = iconFinder.evaluate().isNotEmpty;
-    if (!iconInitiallyFound) {
-      return; // Exit the test if the icon is not found initially
-    }
-
-    const maxRetries = 10; // Maximum number of retries
-    int retryCount = 0;
-    bool iconStillThere = true;
-
-    while (retryCount < maxRetries && iconStillThere) {
-      // Wait for 1 second
-      await Future.delayed(const Duration(seconds: 1));
-
-      // Recheck if the icon is still there
-      await tester.pumpAndSettle();
-      final iconStillThereFinder = find.byWidgetPredicate(
-        (widget) =>
-            widget is EnvoyIcon &&
-            (widget.icon == EnvoyIcons.info || widget.icon == EnvoyIcons.alert),
-      );
-
-      iconStillThere = iconStillThereFinder.evaluate().isNotEmpty;
-      if (!iconStillThere) {
-        break; // Break the loop
-      } else {
-        retryCount++;
-      }
-    }
-
-    if (iconStillThere) {
-      // if the icon is still there after all the retries, exit and try pressing the button anyway,
-      // if it is really there it will fail to press the button
-      // if that does not work try changing the number of maxRetries
+    bool iconFound = iconFinder.evaluate().isNotEmpty;
+    if (!iconFound) {
+      // If the icon is not found initially, simply return
       return;
+    }
+
+    // Wait until the icon is gone
+    int tries = 0;
+    const maxTries = 10;
+    while (iconFound && tries < maxTries) {
+      await tester.pump(Durations.long2); // Wait for a certain duration
+      iconFound = iconFinder.evaluate().isNotEmpty;
+      tries++;
+    }
+
+    if (iconFound) {
+      throw Exception('Icon is still present after maximum retries.');
     }
   });
 }

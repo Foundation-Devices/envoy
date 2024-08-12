@@ -46,10 +46,6 @@ void main() {
 
       String? currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
 
-      // Wait for the Backup pop-up to finish before going to home so it does not fail
-      // Or we should write aditional function that is searching for "EnvoyIcons.info" icon on all toast pop-ups
-      // await tester.pump(const Duration(seconds: 10));
-
       await pressHamburgerMenu(tester); // back to settings
       await pressHamburgerMenu(tester); // back to home
 
@@ -95,8 +91,8 @@ Future<String?> findSymbolOnScreen(
     WidgetTester tester, String fiatSymbol) async {
   final finder = find.text(fiatSymbol);
 
-  // Wait until the symbol appears on the screen or timeout after 60 seconds
-  final end = DateTime.now().add(const Duration(seconds: 60));
+  // Wait until the symbol appears on the screen or timeout after 30 seconds
+  final end = DateTime.now().add(const Duration(seconds: 30));
   while (DateTime.now().isBefore(end)) {
     await tester.pump();
     if (tester.any(finder)) {
