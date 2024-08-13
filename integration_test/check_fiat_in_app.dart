@@ -55,7 +55,7 @@ void main() {
         // find And Toggle DisplayFiat Switch
         await findAndToggleSettingsSwitch(tester, 'Display Fiat Values');
         // Wait for the LoaderGhost to disappear
-        await checkAndWaitLoaderGhostInAccount(tester, 'Primary (#0)');
+        await checkAndWaitLoaderGhostInAccount(tester, 'GH TEST ACC (#1)');
       }
 
       String? currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
@@ -84,7 +84,11 @@ void main() {
 
       /// in Mainet Account
       await findAndPressTextButton(tester, 'Accounts');
-      await findAndPressTextButton(tester, 'Primary (#0)');
+
+      // Scroll down by 600 pixels
+      await scrollHome(tester, -600);
+
+      await findFirstTextButtonAndPress(tester, 'GH TEST ACC (#1)');
 
       if (currentSettingsFiatCode != null) {
         await tester.pump(Durations.long2);
@@ -120,7 +124,7 @@ void main() {
       await findAndPressTextButton(tester, 'Send');
       // press the widget two times so it can circle to Fiat
       await findAndPressWidget<AmountDisplay>(tester);
-      //await findAndPressWidget<AmountDisplay>(tester);
+      await findAndPressWidget<AmountDisplay>(tester);
 
       if (currentSettingsFiatCode != null) {
         await tester.pump(Durations.long2);
@@ -129,7 +133,6 @@ void main() {
         expect(fiatCheckResult, isTrue);
       }
 
-      /// in Staging tx
       /// With the unit in fiat, paste a valid address, enter a valid amount, tap continue
       await enterTextInField(
           tester, find.byType(TextFormField), someValidReceiveAddress);
@@ -141,12 +144,12 @@ void main() {
       await findAndPressTextButton(tester, '1');
 
       // go to staging
-      await findAndPressTextButton(tester, 'Confirm');
+      await waitForTealTextAndTap(tester, 'Confirm');
 
       // now wait for it to go to staging
       final textFinder = find.text("Fee");
       await tester.pumpUntilFound(textFinder,
-          tries: 10, duration: Durations.long2);
+          tries: 20, duration: Durations.long2);
 
       if (currentSettingsFiatCode != null) {
         await tester.pump(Durations.long2);
@@ -154,6 +157,7 @@ void main() {
             await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
         expect(fiatCheckResult, isTrue);
       }
+      await tester.pump(Durations.long2);
 
       /// in staging details
       // go to staging details
@@ -184,7 +188,7 @@ FiatCurrency? getFiatCurrencyByCode(String code) {
       return fiatCurrency;
     }
   }
-  return null; // Return null if no matching FiatCurrency is found
+  return null;
 }
 
 Future<bool> checkFiatOnCurrentScreen(
@@ -195,7 +199,7 @@ Future<bool> checkFiatOnCurrentScreen(
         await findSymbolOnScreen(tester, fiatCurrency.symbol);
     return screenSymbol == fiatCurrency.symbol;
   }
-  return false; // Return false if fiatCurrency is null
+  return false;
 }
 
 Future<String?> findSymbolOnScreen(
@@ -210,7 +214,7 @@ Future<String?> findSymbolOnScreen(
       return fiatSymbol;
     }
   }
-  return null; // Return null if no matching symbol is found
+  return null;
 }
 
 Future<void> pressHamburgerMenu(WidgetTester tester) async {
