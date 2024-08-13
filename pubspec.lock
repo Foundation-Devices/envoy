@@ -1496,10 +1496,10 @@ packages:
     dependency: "direct main"
     description:
       name: tor
-      sha256: "208ce122d0f436e3fdf9b12077a65262c921a668d3231fe23cfb83f17132a24e"
+      sha256: "7f56272076c044231ffb32c162d381c287fceb7f3f0174ac7c512d60e141f138"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.5"
+    version: "0.0.6"
   typed_data:
     dependency: "direct main"
     description:

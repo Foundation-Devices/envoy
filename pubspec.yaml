@@ -58,7 +58,7 @@ dependencies:
       ref: 405f0341c86f8f676cdca39115ea055ec7239346
       path: flutter_vlc_player
 
-  tor: 0.0.5
+  tor: 0.0.6
   qr_flutter: ^4.1.0
   dots_indicator: ^2.0.0
   flutter_secure_storage: ^5.0.2
