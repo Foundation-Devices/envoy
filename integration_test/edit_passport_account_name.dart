@@ -36,14 +36,15 @@ void main() {
       await openPassportAccount(tester);
       await openDotsMenu(tester);
       await fromDotsMenuToEditName(tester);
-      await enterNewName(tester, 'What ever');
+      await enterNewText(tester, find.byType(TextField), 'What ever');
       await exitEditName(tester);
       await checkName(
           tester, accountPassportName); // check if the name is the same
 
       await openDotsMenu(tester);
       await fromDotsMenuToEditName(tester);
-      await enterNewName(tester, 'Twenty one characters plus ten'); // 30 chars
+      await enterNewText(tester, find.byType(TextField),
+          'Twenty one characters plus ten'); // 30 chars
       await saveName(tester);
       await checkName(
           tester, 'Twenty one character'); // it needs to cut text (chars 20/20)
@@ -51,7 +52,7 @@ void main() {
       // Reset the account name to its initial value
       await openDotsMenu(tester);
       await fromDotsMenuToEditName(tester);
-      await enterNewName(tester, accountPassportName);
+      await enterNewText(tester, find.byType(TextField), accountPassportName);
       await saveName(tester);
     } finally {
       // Restore the original FlutterError.onError handler after the test.
