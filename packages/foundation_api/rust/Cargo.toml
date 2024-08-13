@@ -8,7 +8,8 @@ crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
 flutter_rust_bridge = "=2.1.0"
-foundation-api = { git = "ssh://git@github.com/Foundation-Devices/foundation-api.git" }
+foundation-api = { path = "../../../../foundation-api/api" }
+foundation-abstracted = { path = "../../../../foundation-api/abstracted" }
 bc-envelope = { version = "^0.18.0", default-features = false, features = [
     "multithreaded",
     "attachment",

@@ -28,19 +28,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ahash"
-version = "0.8.11"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e89da841a80418a9b391ebaea17f5c112ffaaa96f621d2c285b5174da76b9011"
-dependencies = [
- "cfg-if",
- "getrandom",
- "once_cell",
- "version_check",
- "zerocopy",
-]
-
-[[package]]
 name = "aho-corasick"
 version = "1.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -472,21 +459,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "crossbeam-queue"
-version = "0.3.11"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "df0346b5d5e76ac2fe4e327c5fd1118d6be7c51dfb18f9b7922923f287471e35"
-dependencies = [
- "crossbeam-utils",
-]
-
-[[package]]
-name = "crossbeam-utils"
-version = "0.8.20"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "22ec99545bb0ed0ea7bb9b8e1e9122ea386ff8a48c0922e43f36d45ab09e0e80"
-
-[[package]]
 name = "crunchy"
 version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -559,19 +531,6 @@ checksum = "e77a43b28d0668df09411cb0bc9a8c2adc40f9a048afe863e05fd43251e8e39c"
 dependencies = [
  "cfg-if",
  "num_cpus",
-]
-
-[[package]]
-name = "dashmap"
-version = "5.5.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "978747c1d849a7d2ee5e8adc0159961c48fb7e5db2f06af6723b80123bb53856"
-dependencies = [
- "cfg-if",
- "hashbrown",
- "lock_api",
- "once_cell",
- "parking_lot_core",
 ]
 
 [[package]]
@@ -707,6 +666,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "faster-hex"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a2a2b11eda1d40935b26cf18f6833c526845ae8c41e58d09af6adeb6f0269183"
+
+[[package]]
 name = "ff"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -772,36 +737,44 @@ dependencies = [
 ]
 
 [[package]]
-name = "foundation-api"
-version = "0.2.0"
-source = "git+ssh://git@github.com/Foundation-Devices/foundation-api.git#da1729e6d92eba5947ce885f646f755a00564f0c"
+name = "foundation-abstracted"
+version = "0.1.0"
 dependencies = [
  "anyhow",
  "async-trait",
  "bc-components",
  "bc-envelope",
- "dcbor",
+ "foundation-api",
  "foundation-ur",
  "foundation-urtypes",
  "hex",
- "minicbor 0.24.2",
- "mpsc",
  "nu-ansi-term",
- "paste",
- "rand",
  "thiserror",
  "tokio",
 ]
 
 [[package]]
+name = "foundation-api"
+version = "0.2.0"
+dependencies = [
+ "anyhow",
+ "bc-components",
+ "bc-envelope",
+ "dcbor",
+ "foundation-urtypes",
+ "minicbor 0.24.2",
+ "paste",
+]
+
+[[package]]
 name = "foundation-arena"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-rs#c7b4318cf760bc07caeda42097e93cceb7351cdf"
+source = "git+https://github.com/Foundation-Devices/foundation-rs#9f9afbb4811a6c0fe56302f4b0f2c0304fa63659"
 
 [[package]]
 name = "foundation-ur"
 version = "0.3.0"
-source = "git+https://github.com/Foundation-Devices/foundation-rs#c7b4318cf760bc07caeda42097e93cceb7351cdf"
+source = "git+https://github.com/Foundation-Devices/foundation-rs#9f9afbb4811a6c0fe56302f4b0f2c0304fa63659"
 dependencies = [
  "bitcoin_hashes 0.14.0",
  "crc",
@@ -815,12 +788,12 @@ dependencies = [
 [[package]]
 name = "foundation-urtypes"
 version = "0.5.0"
-source = "git+https://github.com/Foundation-Devices/foundation-rs#c7b4318cf760bc07caeda42097e93cceb7351cdf"
+source = "git+https://github.com/Foundation-Devices/foundation-rs#9f9afbb4811a6c0fe56302f4b0f2c0304fa63659"
 dependencies = [
  "bitcoin",
+ "faster-hex",
  "foundation-arena",
  "heapless",
- "hex",
  "minicbor 0.24.2",
  "uuid",
 ]
@@ -834,6 +807,7 @@ dependencies = [
  "bc-components",
  "bc-envelope",
  "flutter_rust_bridge",
+ "foundation-abstracted",
  "foundation-api",
  "indoc",
 ]
@@ -983,12 +957,6 @@ checksum = "47d60b12902ba28e2730cd37e95b8c9223af2808df9e902d4df49588d1470606"
 dependencies = [
  "byteorder",
 ]
-
-[[package]]
-name = "hashbrown"
-version = "0.14.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e5274423e17b7c9fc20b6e7e208532f9b19825d82dfd615708b70edd83df41f1"
 
 [[package]]
 name = "heapless"
@@ -1240,28 +1208,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "mpsc"
-version = "0.2.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f7834099e9869f9733f791233e8c8778e2353765df9b0a863df740a8440f6889"
-dependencies = [
- "ahash",
- "crossbeam-queue",
- "dashmap 5.5.3",
- "futures",
- "log",
- "queue-ext",
- "rand",
- "std-ext",
-]
-
-[[package]]
 name = "nu-ansi-term"
-version = "0.49.0"
+version = "0.50.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c073d3c1930d0751774acf49e66653acecb416c3a54c6ec095a9b11caddb5a68"
+checksum = "d4a28e057d01f97e61255210fcff094d74ed0466038633e95017f5beb68e4399"
 dependencies = [
- "windows-sys 0.48.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -1349,7 +1301,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8343ce955f18e7e68c0207dd0ea776ec453035685395ababd2ea651c569728b3"
 dependencies = [
  "cc",
- "dashmap 4.0.2",
+ "dashmap",
  "log",
 ]
 
@@ -1488,26 +1440,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "pin-project"
-version = "1.1.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b6bf43b791c5b9e34c3d182969b4abb522f9343702850a2e57f460d00d09b4b3"
-dependencies = [
- "pin-project-internal",
-]
-
-[[package]]
-name = "pin-project-internal"
-version = "1.1.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2f38a4412a78282e09a2cf38d195ea5420d15ba0602cb375210efbc877243965"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.72",
-]
-
-[[package]]
 name = "pin-project-lite"
 version = "0.2.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1573,18 +1505,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5e719e8df665df0d1c8fbfd238015744736151d4445ec0836b8e628aae103b77"
 dependencies = [
  "unicode-ident",
-]
-
-[[package]]
-name = "queue-ext"
-version = "0.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "120b0b73691c04d1b3895c9c1131b1e553f0f93f09ffe2ba594992db585624c8"
-dependencies = [
- "futures",
- "log",
- "pin-project",
- "pin-project-lite",
 ]
 
 [[package]]
@@ -1951,15 +1871,6 @@ name = "stable_deref_trait"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
-
-[[package]]
-name = "std-ext"
-version = "0.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "797407b9e578c18c30f62929a2dc555afe4605cd42e4c4a533360153fc2d7421"
-dependencies = [
- "parking_lot",
-]
 
 [[package]]
 name = "subtle"
@@ -2376,26 +2287,6 @@ dependencies = [
  "rand_core",
  "serde",
  "zeroize",
-]
-
-[[package]]
-name = "zerocopy"
-version = "0.7.35"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1b9b4fd18abc82b8136838da5d50bae7bdea537c574d8dc1a34ed098d6c166f0"
-dependencies = [
- "zerocopy-derive",
-]
-
-[[package]]
-name = "zerocopy-derive"
-version = "0.7.35"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fa4f8080344d4671fb4e831a13ad1e68092748387dfc4f55e356242fae12ce3e"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.72",
 ]
 
 [[package]]

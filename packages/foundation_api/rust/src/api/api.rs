@@ -2,7 +2,8 @@ use anyhow::{bail, Error};
 use bc_components::ARID;
 use bc_envelope::{Envelope, Expression, ResponseBehavior, SealedRequest, SealedResponse};
 use bc_envelope::prelude::{CBOREncodable, CBORTaggedEncodable, URDecodable};
-use foundation_api::{AbstractEnclave, Discovery, PAIRING_FUNCTION, PairingResponse, SecureFrom, SecureTryFrom};
+use foundation_api::{Discovery, PAIRING_FUNCTION, PairingResponse};
+use foundation_abstracted::{AbstractEnclave, SecureFrom, SecureTryFrom};
 
 use crate::enclave::Enclave;
 

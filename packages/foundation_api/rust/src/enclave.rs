@@ -4,7 +4,7 @@ use {
     anyhow::Result,
     bc_components::{PrivateKeyBase, PublicKeyBase, ARID},
     bc_envelope::prelude::*,
-    foundation_api::AbstractEnclave,
+    foundation_abstracted::AbstractEnclave,
 };
 
 pub const ENVOY_PRIVATE_KEY: [u8; 32] = [
