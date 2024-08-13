@@ -42,7 +42,13 @@ class ScvScanQrPage extends StatelessWidget {
             label: S().component_continue,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return ScannerPage.scv(challenge);
+                return ScannerPage(
+                  challengeToValidate: challenge,
+                  const [
+                    ScannerType.scv,
+                    ScannerType.pair,
+                  ],
+                );
               }));
             }),
       ],
