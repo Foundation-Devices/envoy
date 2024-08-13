@@ -48,6 +48,9 @@ final showTaprootAccountsProvider = Provider((ref) {
 class Settings extends ChangeNotifier {
   static const String SETTINGS_PREFS = "settings";
 
+  static const String TOR_ONION_ELECTRUM_SERVER =
+      "mocmguuik7rws4bclpcoz2ldfzesjolatrzggaxfl37hjpreap777yqd.onion:50001";
+
   static final List<String> defaultServers = getDefaultFulcrumServers();
   static String currentDefaultServer = selectRandomDefaultServer();
 
@@ -139,7 +142,11 @@ class Settings extends ChangeNotifier {
     }
 
     if (usingDefaultElectrumServer) {
-      return currentDefaultServer;
+      if (usingTor) {
+        return TOR_ONION_ELECTRUM_SERVER;
+      } else {
+        return currentDefaultServer;
+      }
     } else {
       return parseNodeUrl(selectedElectrumAddress);
     }
