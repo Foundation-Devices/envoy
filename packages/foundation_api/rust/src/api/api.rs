@@ -3,9 +3,13 @@ use bc_components::ARID;
 use bc_envelope::{Envelope, Expression, ResponseBehavior, SealedRequest, SealedResponse};
 use bc_envelope::prelude::{CBOREncodable, CBORTaggedEncodable, URDecodable};
 use foundation_api::{Discovery, PAIRING_FUNCTION, PairingResponse};
-use foundation_abstracted::{AbstractEnclave, SecureFrom, SecureTryFrom};
-
+use foundation_abstracted::{AbstractBluetoothChannel, AbstractEnclave, SecureFrom, SecureTryFrom};
+use foundation_api::bluetooth_endpoint::BluetoothEndpoint;
+use tokio::sync::mpsc;
+use crate::bluetooth::BluetoothChannel;
+use crate::frb_generated::StreamSink;
 use crate::enclave::Enclave;
+use tokio::sync::mpsc::Receiver;
 
 pub fn extract_discovery(qr_code: String) -> anyhow::Result<Discovery> {
     match Envelope::from_ur_string(qr_code) {
@@ -33,6 +37,26 @@ pub async fn pair(discovery_qr: String) -> Result<Vec<u8>, Error> {
     let sent_envelope = Envelope::secure_from((request, discovery.sender()), &enclave);
 
     Ok(sent_envelope.to_cbor_data())
+}
+
+pub async fn pair_stream(discovery_qr: String, sink: StreamSink<Vec<u8>>) -> anyhow::Result<()> {
+    let envelope = Envelope::from_ur_string(discovery_qr)?;
+    let inner = envelope.unwrap_envelope()?;
+    let discovery = Discovery::try_from(Expression::try_from(inner)?)?;
+
+    let enclave = Enclave::new();
+
+    let body = Expression::new(PAIRING_FUNCTION);
+    let request = SealedRequest::new_with_body(body, ARID::new(), enclave.public_key());
+    let sent_envelope = Envelope::secure_from((request, discovery.sender()), &enclave);
+
+    let endpoint = BluetoothEndpoint::new();
+    let (sender1, receiver1) = mpsc::channel(100);
+
+    let bluetooth = BluetoothChannel::new(endpoint, sink, receiver1);
+
+    bluetooth.send_envelope(&sent_envelope).await.expect("TODO: panic message");
+    Ok(())
 }
 
 pub async fn decode_pairing_response(response: Vec<u8>) -> anyhow::Result<PairingResponse>{

@@ -122,6 +122,7 @@ dependencies:
 dependency_overrides:
   watcher: ^1.1.0
   intl: any
+  win32: ^5.5.4
 
 dev_dependencies:
   test: any
