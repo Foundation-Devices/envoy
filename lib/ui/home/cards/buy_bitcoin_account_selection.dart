@@ -313,7 +313,6 @@ class ChooseAccount extends StatefulWidget {
 }
 
 class ChooseAccountState extends State<ChooseAccount> {
-  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
   late List<Account> accounts;
   late Account _currentSelectedAccount;
 
@@ -384,15 +383,13 @@ class ChooseAccountState extends State<ChooseAccount> {
                   ).createShader(rect);
                 },
                 blendMode: BlendMode.dstOut,
-                child: AnimatedList(
-                  key: _listKey,
-                  initialItemCount: accounts.length,
-                  physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.only(
-                      top: EnvoySpacing.medium2, bottom: EnvoySpacing.medium2),
-                  itemBuilder: (context, index, animation) {
-                    return _buildAccountItem(
-                        context, accounts[index], animation, index);
+                child: ReorderableListView.builder(
+                  shrinkWrap: true,
+                  buildDefaultDragHandles: false,
+                  itemCount: accounts.length,
+                  onReorder: (oldIndex, newIndex) {},
+                  itemBuilder: (context, index) {
+                    return _buildAccountItem(context, accounts[index]);
                   },
                 ),
               ),
@@ -412,27 +409,27 @@ class ChooseAccountState extends State<ChooseAccount> {
     return 0;
   }
 
-  Widget _buildAccountItem(BuildContext context, Account account,
-      Animation<double> animation, int index) {
-    return SizeTransition(
-      sizeFactor: animation,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-            vertical: EnvoySpacing.small, horizontal: EnvoySpacing.medium1),
-        child: Hero(
-          transitionOnUserGestures: true,
-          tag: account.id!,
-          child: AccountListTile(
-            account,
-            onTap: () async {
-              final navigator = Navigator.of(context);
-              _currentSelectedAccount = account;
-              widget.onSelectAccount(account);
-              moveAccountToEnd(account);
-              navigator.pop();
-            },
-            draggable: false,
-          ),
+  Widget _buildAccountItem(
+    BuildContext context,
+    Account account,
+  ) {
+    return Padding(
+      key: ValueKey(account.id),
+      padding: const EdgeInsets.symmetric(
+          vertical: EnvoySpacing.small, horizontal: EnvoySpacing.medium1),
+      child: Hero(
+        transitionOnUserGestures: true,
+        tag: account.id!,
+        child: AccountListTile(
+          account,
+          onTap: () async {
+            final navigator = Navigator.of(context);
+            _currentSelectedAccount = account;
+            widget.onSelectAccount(account);
+            moveAccountToEnd(account);
+            navigator.pop();
+          },
+          draggable: false,
         ),
       ),
     );
@@ -442,35 +439,11 @@ class ChooseAccountState extends State<ChooseAccount> {
     // Ensure moving the correct account to prevent lag when navigating back on Android.
     if (_currentSelectedAccount == accountToMove) {
       int index = _getAccountIndexById(accountToMove.id);
-      final account = accounts.removeAt(index);
-      _listKey.currentState!.removeItem(
-        index,
-        (context, animation) =>
-            _buildRemovedAccountItem(context, account, animation),
-        duration: const Duration(milliseconds: 300),
-      );
-      accounts.add(account);
-      _listKey.currentState!.insertItem(
-        accounts.length - 1,
-        duration: const Duration(milliseconds: 300),
-      );
+      setState(() {
+        final Account account = accounts.removeAt(index);
+        accounts.insert(accounts.length, account);
+      });
     }
-  }
-
-  Widget _buildRemovedAccountItem(
-      BuildContext context, Account account, Animation<double> animation) {
-    return SizeTransition(
-      sizeFactor: animation,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-            vertical: EnvoySpacing.small, horizontal: EnvoySpacing.medium1),
-        child: AccountListTile(
-          account,
-          onTap: () {},
-          draggable: false,
-        ),
-      ),
-    );
   }
 }
 
