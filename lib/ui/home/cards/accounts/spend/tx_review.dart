@@ -261,6 +261,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                     _stateMachineController
                         ?.findInput<bool>("indeterminate")
                         ?.change(true);
+                    //start broadcast immediately after the animation is loaded
                     broadcastTx(context);
                   },
                 ),
@@ -371,7 +372,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
   void broadcastTx(BuildContext context) async {
     Account? account = ref.read(selectedAccountProvider);
     TransactionModel transactionModel = ref.read(spendTransactionProvider);
-
+    final providerContainer = ProviderScope.containerOf(context);
     if (account == null || transactionModel.psbt == null) {
       return;
     }
@@ -380,9 +381,10 @@ class _TxReviewState extends ConsumerState<TxReview> {
       _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
       _stateMachineController?.findInput<bool>("happy")?.change(false);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+      await Future.delayed(const Duration(milliseconds: 600));
       await ref
           .read(spendTransactionProvider.notifier)
-          .broadcast(ProviderScope.containerOf(context));
+          .broadcast(providerContainer);
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
       _stateMachineController?.findInput<bool>("happy")?.change(true);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);

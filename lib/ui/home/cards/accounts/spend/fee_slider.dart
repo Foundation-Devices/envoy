@@ -65,7 +65,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
     return Theme.of(context)
         .textTheme
         .bodySmall
-        ?.copyWith(fontSize: 11, fontWeight: FontWeight.w600);
+        ?.copyWith(fontSize: 10, fontWeight: FontWeight.w600);
   }
 
   @override
@@ -92,8 +92,8 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
 
     return Container(
         constraints: const BoxConstraints(
-          maxWidth: 180,
-          minWidth: 180,
+          maxWidth: 184,
+          minWidth: 184,
           maxHeight: 24,
         ),
         child: Consumer(
@@ -178,6 +178,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
               labelColor: Colors.white,
               indicatorWeight: 1,
               tabAlignment: TabAlignment.fill,
+              splashBorderRadius: BorderRadius.circular(0),
               indicatorSize: TabBarIndicatorSize.label,
               labelStyle: _labelStyle,
               tabs: [
@@ -185,6 +186,8 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                   child: Text(
                     S().coincontrol_tx_detail_fee_standard,
                     maxLines: 1,
+                    textScaler: MediaQuery.textScalerOf(context)
+                        .clamp(minScaleFactor: 1, maxScaleFactor: 1.1),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -192,6 +195,8 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                   child: Text(
                     S().coincontrol_tx_detail_fee_faster,
                     maxLines: 1,
+                    textScaler: MediaQuery.textScalerOf(context)
+                        .clamp(minScaleFactor: 1, maxScaleFactor: 1.3),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -199,6 +204,8 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                   child: Text(
                     S().coincontrol_tx_detail_fee_custom,
                     maxLines: 1,
+                    textScaler: MediaQuery.textScalerOf(context)
+                        .clamp(minScaleFactor: 1, maxScaleFactor: 1.3),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
