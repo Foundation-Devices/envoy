@@ -63,6 +63,9 @@ jobs:
       - name: QA edit device name
         run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/edit_device_name.dart -d linux --verbose
 
+      - name: QA edit passport account name
+        run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/edit_passport_account_name.dart -d linux --verbose
+
       - name: QA check fiat
         run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/check_fiat_in_app.dart -d linux --verbose
 
