@@ -11,8 +11,10 @@ import 'package:screenshot/screenshot.dart';
 import 'connect_passport_via_recovery.dart';
 import 'edit_account_name.dart';
 
+const String accountPassportName = "Primary (#0)";
+
 void main() {
-  testWidgets('edit device name', (tester) async {
+  testWidgets('Edit Passport account name', (tester) async {
     final FlutterExceptionHandler? originalOnError = FlutterError.onError;
     FlutterError.onError = (FlutterErrorDetails details) {
       kPrint('FlutterError caught: ${details.exceptionAsString()}');
@@ -31,35 +33,27 @@ void main() {
 
       await setUpWalletFromSeedViaMagicRecover(tester, seed);
 
-      final devicesButton = find.text('Devices');
-      await tester.tap(devicesButton);
-      await tester.pumpAndSettle();
-
-      // Input text without tapping Save
-      await openDeviceCard(tester, "Passport");
+      await openPassportAccount(tester);
       await openDotsMenu(tester);
-      await openEditDevice(tester);
-
-      await enterTextInField(
-          tester, find.byType(TextField), 'New Passport name');
+      await fromDotsMenuToEditName(tester);
+      await enterTextInField(tester, find.byType(TextField), 'What ever');
       await exitEditName(tester);
-      await checkName(tester, 'Passport'); // check if the name is the same
+      await checkName(
+          tester, accountPassportName); // check if the name is the same
 
-      // Test for input name longer than the allowed maximum
       await openDotsMenu(tester);
-      await openEditDevice(tester);
-
+      await fromDotsMenuToEditName(tester);
       await enterTextInField(tester, find.byType(TextField),
           'Twenty one characters plus ten'); // 30 chars
       await saveName(tester);
       await checkName(
           tester, 'Twenty one character'); // it needs to cut text (chars 20/20)
 
-      // Reset the device name to its initial value
+      // Reset the account name to its initial value
       await openDotsMenu(tester);
-      await openEditDevice(tester);
-
-      await enterTextInField(tester, find.byType(TextField), 'Passport');
+      await fromDotsMenuToEditName(tester);
+      await enterTextInField(
+          tester, find.byType(TextField), accountPassportName);
       await saveName(tester);
     } finally {
       // Restore the original FlutterError.onError handler after the test.
@@ -68,20 +62,11 @@ void main() {
   });
 }
 
-Future<void> openDeviceCard(WidgetTester tester, String deviceName) async {
+Future<void> openPassportAccount(WidgetTester tester) async {
   await tester.pump();
-  final deviceCard = find.text(deviceName);
-  expect(deviceCard, findsOneWidget);
+  final hotWalletButton = find.text(accountPassportName);
+  expect(hotWalletButton, findsOneWidget);
 
-  await tester.tap(deviceCard);
-  await tester.pump(Durations.long2);
-}
-
-Future<void> openEditDevice(WidgetTester tester) async {
-  await tester.pump();
-  final editNameButton = find.text('EDIT DEVICE NAME');
-  expect(editNameButton, findsOneWidget);
-
-  await tester.tap(editNameButton);
+  await tester.tap(hotWalletButton);
   await tester.pump(Durations.long2);
 }

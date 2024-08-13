@@ -111,6 +111,11 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
   }
 
   void onNumPadEvents(dynamic event) {
+    TransactionModel tx = ref.read(spendTransactionProvider);
+    // Lock numpad while loading after tapping confirm
+    if (tx.loading) {
+      return;
+    }
     var unit = ref.read(sendScreenUnitProvider);
     _addTrailingZeros =
         false; // Do not add trailing zeros when manually typing the amount

@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:screenshot/screenshot.dart';
+import 'check_for_toast.dart';
 import 'flow_to_map_and_p2p_test.dart';
 
 void main() {
@@ -40,7 +41,6 @@ void main() {
 
       await openDotsMenu(tester);
       await fromDotsMenuToEditName(tester);
-
       await enterTextInField(tester, find.byType(TextField),
           'Twenty one characters plus ten'); // 30 chars
       await saveName(tester);
@@ -70,6 +70,7 @@ Future<void> fromHomeToHotWallet(WidgetTester tester) async {
 }
 
 Future<void> openDotsMenu(WidgetTester tester) async {
+  await checkForToast(tester);
   await tester.pump();
   final dotsButton = find.byIcon(Icons.more_horiz_outlined);
   expect(dotsButton, findsOneWidget);

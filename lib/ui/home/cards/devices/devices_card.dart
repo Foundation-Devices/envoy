@@ -20,6 +20,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/home/home_page.dart';
+import 'package:envoy/ui/components/linear_gradient.dart';
 
 //ignore: must_be_immutable
 class DevicesCard extends ConsumerStatefulWidget {
@@ -116,21 +117,7 @@ class _DevicesListState extends State<DevicesList> {
           )
         : Padding(
             padding: const EdgeInsets.all(EnvoySpacing.medium2),
-            child: ShaderMask(
-              shaderCallback: (Rect rect) {
-                return const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    EnvoyColors.solidWhite,
-                    Colors.transparent,
-                    Colors.transparent,
-                    EnvoyColors.solidWhite,
-                  ],
-                  stops: [0.0, 0.01, 0.97, 1.0],
-                ).createShader(rect);
-              },
-              blendMode: BlendMode.dstOut,
+            child: ScrollGradientMask(
               child: CustomScrollView(
                 slivers: [
                   const SliverPadding(
@@ -190,9 +177,13 @@ class DevicesOptions extends ConsumerWidget {
           ),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return const SingleImportPpIntroPage();
-            }));
+            Navigator.of(context).push(PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) {
+                return const SingleImportPpIntroPage();
+              },
+              reverseTransitionDuration: Duration.zero,
+              transitionDuration: Duration.zero,
+            ));
           },
         ),
         const SizedBox(
@@ -203,9 +194,13 @@ class DevicesOptions extends ConsumerWidget {
               style: const TextStyle(color: EnvoyColors.accentSecondary)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return const TouPage();
-            }));
+            Navigator.of(context).push(PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) {
+                return const TouPage();
+              },
+              reverseTransitionDuration: Duration.zero,
+              transitionDuration: Duration.zero,
+            ));
           },
         ),
       ],

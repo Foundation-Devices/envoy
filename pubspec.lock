@@ -666,7 +666,7 @@ packages:
     source: hosted
     version: "0.15.4"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       sha256: "761a297c042deedc1ffbb156d6e2af13886bb305c2a343a4d972504cd67dd938"
@@ -1496,10 +1496,10 @@ packages:
     dependency: "direct main"
     description:
       name: tor
-      sha256: "91173945a2d161530a45ccac8c37e7fad1af725117ec527be5be68e3a210a374"
+      sha256: "7f56272076c044231ffb32c162d381c287fceb7f3f0174ac7c512d60e141f138"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.3"
+    version: "0.0.6"
   typed_data:
     dependency: "direct main"
     description:
