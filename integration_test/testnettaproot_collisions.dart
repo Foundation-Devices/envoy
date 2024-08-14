@@ -9,7 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:screenshot/screenshot.dart';
-import 'flow_to_map_and_p2p_test.dart';
+import 'connect_passport_via_recovery.dart';
 import 'check_fiat_in_app.dart';
 
 void main() {
@@ -23,14 +23,14 @@ void main() {
     };
     try {
       // Uncomment the line below if testing on local machine.
-      //await resetEnvoyData();
+      // await resetEnvoyData();
 
       await initSingletons();
       ScreenshotController envoyScreenshotController = ScreenshotController();
       await tester.pumpWidget(Screenshot(
           controller: envoyScreenshotController, child: const EnvoyApp()));
 
-      await setUpAppFromStart(tester);
+      await setUpWalletFromSeedViaMagicRecover(tester, seed);
 
       // go to menu / settings / advanced
       await pressHamburgerMenu(tester);
@@ -86,12 +86,38 @@ void main() {
           reason:
               'Expected to find at least one Testnet Taproot account but did not.');
 
-      // 4) Pair a testnet Passport account //TODO
-      //
-      // 5) Make sure there is now a Testnet Taproot Passport account //TODO
-      //
+      /// 5) Make sure there is now a Testnet Taproot Passport account
+      // Scroll down by 1000 pixels
+      await scrollHome(tester, -1000);
 
-      // Go to settings, disable Testnet
+      // Find all AccountListTile widgets
+      accountListTileFinder = find.byType(AccountListTile);
+
+      // Flag to track if a matching account is found
+      foundTestnetTaprootAccount = false;
+
+      // Iterate through each AccountListTile and verify the contents
+      for (var i = 0; i < accountListTileFinder.evaluate().length; i++) {
+        final accountBadge = accountListTileFinder.at(i);
+        bool isAccTestnetTaproot = await isAccountTestnetTaproot(
+            tester, accountBadge,
+            isHotWallet: false);
+
+        //if any account is Passport for Testnet Taproot, break
+        if (isAccTestnetTaproot) {
+          foundTestnetTaprootAccount = true;
+          break;
+        }
+      }
+      // Assert if a matching Passport account is found
+      expect(foundTestnetTaprootAccount, true,
+          reason:
+              'Expected to find at least one Testnet Taproot account but did not.');
+
+      // Scroll up by 1000 pixels
+      await scrollHome(tester, 1000);
+
+      /// Go to settings, disable Testnet
       // go to menu / settings / advanced
       await pressHamburgerMenu(tester);
       await goToSettings(tester);
@@ -212,6 +238,9 @@ void main() {
       await pressHamburgerMenu(tester);
       await pressHamburgerMenu(tester);
 
+      // Scroll down by 1000 pixels
+      await scrollHome(tester, -1000);
+
       // Go to Accounts, make sure both testnet Taproot accounts show up again
       // Ensure the screen is fully rendered
       await tester.pumpAndSettle();
@@ -225,10 +254,11 @@ void main() {
       // Iterate through each AccountListTile and verify the contents
       for (var i = 0; i < accountListTileFinder.evaluate().length; i++) {
         final accountBadge = accountListTileFinder.at(i);
-        bool isAccTestnetTaproot =
-            await isAccountTestnetTaproot(tester, accountBadge);
+        bool isAccTestnetTaproot = await isAccountTestnetTaproot(
+            tester, accountBadge,
+            isHotWallet: false);
 
-        //if any account is hot wallet for Testnet Taproot, break
+        //if any account is Passport for Testnet Taproot, break
         if (isAccTestnetTaproot) {
           foundTestnetTaprootAccount = true;
           break;
@@ -248,12 +278,12 @@ void main() {
   });
 }
 
-// Hot wallets only!
 Future<bool> isAccountTestnetTaproot(
-    WidgetTester tester, Finder accountListTile) async {
+    WidgetTester tester, Finder accountListTile,
+    {bool isHotWallet = true}) async {
   await tester.pumpAndSettle();
 
-  // Check for the presence of 'Testnet', 'Taproot', and 'Envoy' texts within the Account List.
+  // Check for the presence of 'Testnet' and 'Taproot' texts within the Account List.
   bool containsTestnet = find
       .descendant(
         of: accountListTile,
@@ -270,26 +300,27 @@ Future<bool> isAccountTestnetTaproot(
       .evaluate()
       .isNotEmpty;
 
-  bool containsEnvoy = find
+  // Check for 'Envoy' if isHotWallet is true, otherwise check for 'Passport'.
+  bool containsEnvoyOrPassport = find
       .descendant(
         of: accountListTile,
-        matching: find.text('Envoy'),
+        matching: find.text(isHotWallet ? 'Envoy' : 'Passport'),
       )
       .evaluate()
       .isNotEmpty;
 
-  // Return true if the account is Testnet-Taproot Hot account
-  bool meetsCriteria = containsTestnet && containsTaproot && containsEnvoy;
+  // Return true if meets criteria.
+  bool meetsCriteria =
+      containsTestnet && containsTaproot && containsEnvoyOrPassport;
 
   return meetsCriteria;
 }
 
-// Hot wallets only!
-Future<bool> isAccountTestnet(
-    WidgetTester tester, Finder accountListTile) async {
+Future<bool> isAccountTestnet(WidgetTester tester, Finder accountListTile,
+    {bool isHotWallet = true}) async {
   await tester.pumpAndSettle();
 
-  // Check for the presence of 'Testnet', and 'Envoy' texts within the Account List.
+  // Check for the presence of 'Testnet' text within the Account List.
   bool containsTestnet = find
       .descendant(
         of: accountListTile,
@@ -298,16 +329,17 @@ Future<bool> isAccountTestnet(
       .evaluate()
       .isNotEmpty;
 
-  bool containsEnvoy = find
+  // Check for 'Envoy' if isHotWallet is true, otherwise check for 'Passport'.
+  bool containsEnvoyOrPassport = find
       .descendant(
         of: accountListTile,
-        matching: find.text('Envoy'),
+        matching: find.text(isHotWallet ? 'Envoy' : 'Passport'),
       )
       .evaluate()
       .isNotEmpty;
 
-  // Return true if the account is Testnet Hot account
-  bool meetsCriteria = containsTestnet && containsEnvoy;
+  // Return true if the account meets the criteria.
+  bool meetsCriteria = containsTestnet && containsEnvoyOrPassport;
 
   return meetsCriteria;
 }
