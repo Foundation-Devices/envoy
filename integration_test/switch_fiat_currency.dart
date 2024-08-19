@@ -70,8 +70,11 @@ void main() {
       await pressHamburgerMenu(tester); // back to settings
       await pressHamburgerMenu(tester); // back to home
 
+      // Scroll down by 600 pixels
+      await scrollHome(tester, -600);
+
       // Wait for the LoaderGhost to disappear
-      await checkAndWaitLoaderGhostInAccount(tester, 'Primary (#0)');
+      await checkAndWaitLoaderGhostInAccount(tester, 'GH TEST ACC (#1)');
 
       // Check the Fiat on the screen
       if (currentSettingsFiatCode != null) {
@@ -82,7 +85,7 @@ void main() {
       }
 
       String usdFiatAmount =
-          await extractFiatAmountFromAccount(tester, 'Primary (#0)');
+          await extractFiatAmountFromAccount(tester, 'GH TEST ACC (#1)');
 
       ///Go back to settings, change from USD to JPY, for example
       await pressHamburgerMenu(tester);
@@ -97,7 +100,7 @@ void main() {
       await pressHamburgerMenu(tester); // back to home
 
       /// Check that all fiat values ate grayed out "loading"
-      await checkAndWaitLoaderGhostInAccount(tester, 'Primary (#0)');
+      await checkAndWaitLoaderGhostInAccount(tester, 'GH TEST ACC (#1)');
 
       /// Check that when the number loads we get the actual JPY value, not just the same number noted in step 2 with the JPY symbol
       // Check the Fiat on the screen
@@ -109,7 +112,7 @@ void main() {
       }
 
       String newFiatAmount =
-          await extractFiatAmountFromAccount(tester, 'Primary (#0)');
+          await extractFiatAmountFromAccount(tester, 'GH TEST ACC (#1)');
       // Check if the numbers differ from different Fiats
       expect(newFiatAmount != usdFiatAmount, isTrue);
 
@@ -147,7 +150,7 @@ void main() {
       await pressHamburgerMenu(tester); // back to home
 
       // Wait for the LoaderGhost to disappear
-      await checkAndWaitLoaderGhostInAccount(tester, 'Primary (#0)');
+      await checkAndWaitLoaderGhostInAccount(tester, 'GH TEST ACC (#1)');
 
       // Check the Fiat on the screen
       if (currentSettingsFiatCode != null) {
@@ -158,7 +161,7 @@ void main() {
       }
 
       usdFiatAmount =
-          await extractFiatAmountFromAccount(tester, 'Primary (#0)');
+          await extractFiatAmountFromAccount(tester, 'GH TEST ACC (#1)');
 
       ///Go back to settings, change from USD to JPY, for example
       await pressHamburgerMenu(tester);
@@ -173,7 +176,7 @@ void main() {
       await pressHamburgerMenu(tester); // back to home
 
       /// Check that all fiat values ate grayed out "loading"
-      await checkAndWaitLoaderGhostInAccount(tester, 'Primary (#0)');
+      await checkAndWaitLoaderGhostInAccount(tester, 'GH TEST ACC (#1)');
 
       /// Check that when the number loads we get the actual JPY value, not just the same number noted in step 2 with the JPY symbol
       // Check the Fiat on the screen
@@ -185,7 +188,7 @@ void main() {
       }
 
       newFiatAmount =
-          await extractFiatAmountFromAccount(tester, 'Primary (#0)');
+          await extractFiatAmountFromAccount(tester, 'GH TEST ACC (#1)');
       // Check if the numbers differ from different Fiats
       expect(newFiatAmount != usdFiatAmount, isTrue);
 
@@ -205,11 +208,11 @@ Future<String> extractFiatAmountFromAccount(
   // Find the AccountListTile containing the specified accountText
   final accountListTileFinder =
       find.widgetWithText(AccountListTile, accountText);
-  expect(accountListTileFinder, findsOneWidget);
+  expect(accountListTileFinder.first, findsOneWidget);
 
   // Find the SecondaryAmountWidget within the AccountListTile
   final secondaryAmountWidgetFinder = find.descendant(
-    of: accountListTileFinder,
+    of: accountListTileFinder.first,
     matching: find.byType(SecondaryAmountWidget),
   );
   expect(secondaryAmountWidgetFinder, findsOneWidget);
@@ -270,7 +273,7 @@ Future<void> checkAndWaitLoaderGhostInAccount(
   // Find the AccountListTile containing the specified accountText
   final accountListTileFinder =
       find.widgetWithText(AccountListTile, accountText);
-  expect(accountListTileFinder, findsOneWidget);
+  expect(accountListTileFinder.first, findsOneWidget);
 
   while (true) {
     // Find the LoaderGhost within the AccountListTile

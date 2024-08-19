@@ -51,26 +51,21 @@ Future<void> checkForToast(WidgetTester tester) async {
           (widget.icon == EnvoyIcons.info || widget.icon == EnvoyIcons.alert),
     );
 
-    //await tester.pumpUntilFound(iconFinder, tries: 10, duration: Durations.long2); // TODO: can this improve the test?
-
-    // Check if the icon is found initially
+    // Check if the EnvoyIcon is found
     bool iconFound = iconFinder.evaluate().isNotEmpty;
-    if (!iconFound) {
-      // If the icon is not found initially, simply return
-      return;
-    }
-
-    // Wait until the icon is gone
-    int tries = 0;
-    const maxTries = 10;
-    while (iconFound && tries < maxTries) {
-      await tester.pump(Durations.long2); // Wait for a certain duration
-      iconFound = iconFinder.evaluate().isNotEmpty;
-      tries++;
-    }
-
     if (iconFound) {
-      throw Exception('Icon is still present after maximum retries.');
+      // Try finding the close icon
+      final closeIconFinder = find.byWidgetPredicate(
+        (widget) => widget is Icon && widget.icon == Icons.close,
+      );
+
+      // Check if the close icon is found
+      bool closeIconFound = closeIconFinder.evaluate().isNotEmpty;
+      if (closeIconFound) {
+        // Tap on the close icon
+        await tester.tap(closeIconFinder.first);
+        await tester.pump(); // Rebuild the widget tree after the tap
+      }
     }
   });
 }

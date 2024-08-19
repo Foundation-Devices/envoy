@@ -39,6 +39,7 @@ void main() {
       await openDeviceCard(tester, "Passport");
       await openDotsMenu(tester);
       await openEditDevice(tester);
+
       await enterTextInField(
           tester, find.byType(TextField), 'New Passport name');
       await exitEditName(tester);
