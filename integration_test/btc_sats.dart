@@ -4,6 +4,7 @@
 
 import 'package:envoy/main.dart';
 import 'package:envoy/ui/amount_display.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/foundation.dart';
@@ -69,13 +70,18 @@ void main() {
 
       // Go to Activity and check for BTC
       await findAndPressTextButton(tester, 'Activity');
-      await checkForEnvoyIcon(tester, EnvoyIcons.btc);
+      await checkForEnvoyIcon(
+          tester,
+          EnvoyIcons
+              .btc); // TODO: why does it pass if there is no icon on the screen
       //back to accounts
       await findAndPressTextButton(tester, 'Accounts');
 
+      // Scroll down by 600 pixels
+      await scrollHome(tester, -600);
+
       /// Get into an account, tap Send
-      await findAndPressTextButton(
-          tester, 'Primary (#0)'); // TODO: change the account
+      await findFirstTextButtonAndPress(tester, 'GH TEST ACC (#1)');
       await findAndPressTextButton(tester, 'Send');
 
       /// Make sure the first proposed unit is BTC
@@ -99,7 +105,7 @@ void main() {
       await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
       /// With the unit in fiat, paste a valid address, enter a valid amount, tap continue
-      await enterNewText(
+      await enterTextInField(
           tester, find.byType(TextFormField), someValidReceiveAddress);
 
       // enter amount in Fiat
@@ -109,7 +115,7 @@ void main() {
       await findAndPressTextButton(tester, '1');
 
       // go to staging
-      await findAndPressTextButton(tester, 'Confirm');
+      await waitForTealTextAndTap(tester, 'Confirm');
 
       // now wait for it to go to staging
       final textFinder = find.text("Fee");
@@ -161,13 +167,15 @@ void main() {
 
       // Go to Activity and check for sats
       await findAndPressTextButton(tester, 'Activity');
-      await checkForEnvoyIcon(tester, EnvoyIcons.sats);
+      await checkForEnvoyIcon(
+          tester,
+          EnvoyIcons
+              .sats); // TODO: why does it pass if there is no icon on the screen
       //back to accounts
       await findAndPressTextButton(tester, 'Accounts');
 
       /// Get into an account, tap Send
-      await findAndPressTextButton(
-          tester, 'Primary (#0)'); // TODO: change the account
+      await findFirstTextButtonAndPress(tester, 'GH TEST ACC (#1)');
       await findAndPressTextButton(tester, 'Send');
 
       /// Make sure the first proposed unit is sats
@@ -186,7 +194,7 @@ void main() {
       await checkForEnvoyIcon(tester, EnvoyIcons.sats);
 
       /// With the unit in fiat, paste a valid address, enter a valid amount, tap continue
-      await enterNewText(
+      await enterTextInField(
           tester, find.byType(TextFormField), someValidReceiveAddress);
 
       // enter amount in Fiat
@@ -196,7 +204,7 @@ void main() {
       await findAndPressTextButton(tester, '1');
 
       // go to staging
-      await findAndPressTextButton(tester, 'Confirm');
+      await waitForTealTextAndTap(tester, 'Confirm');
 
       // now wait for it to go to staging
       final textFinder2 = find.text("Fee");
@@ -224,12 +232,54 @@ void main() {
   });
 }
 
+Future<void> waitForTealTextAndTap(
+    WidgetTester tester, String textToFind) async {
+  // Define the Teal color you want to check for
+  const Color expectedColor = EnvoyColors.accentPrimary;
+
+  // Finder for the text widget
+  final Finder textFinder = find.text(textToFind);
+
+  // Wait until the text is found
+  await tester.pumpUntilFound(textFinder, tries: 20, duration: Durations.long2);
+
+  // Set the maximum number of retries to wait for the text to turn Teal
+  const int maxRetries = 10;
+  int retryCount = 0;
+
+  // Loop until the text's color is Teal or the maximum retries are reached
+  bool isTeal = false;
+  while (!isTeal && retryCount < maxRetries) {
+    // Get the Text widget
+    final Text textWidget = tester.widget<Text>(textFinder);
+
+    // Check the color of the Text widget
+    if (textWidget.style?.color == expectedColor) {
+      isTeal = true;
+    } else {
+      // If not Teal, wait a bit and try again
+      await tester.pump(const Duration(milliseconds: 1000));
+      retryCount++;
+    }
+  }
+
+  // If the text is Teal, tap it
+  if (isTeal) {
+    await tester.tap(textFinder);
+    await tester.pumpAndSettle();
+  } else {
+    throw Exception("Text did not turn teal after $maxRetries attempts");
+  }
+
+  await tester.pump(Durations.long2);
+}
+
 Future<void> findAndPressEnvoyIcon(
     WidgetTester tester, EnvoyIcons expectedIcon) async {
   // Use the existing function to find the EnvoyIcon
   final iconFinder = await checkForEnvoyIcon(tester, expectedIcon);
 
-  await tester.tap(iconFinder);
+  await tester.tap(iconFinder.first);
   await tester.pump(Durations.long2);
 }
 
@@ -253,6 +303,21 @@ Future<void> findAndPressTextButton(
   await tester.pump(Durations.long2);
 }
 
+Future<void> findFirstTextButtonAndPress(
+    WidgetTester tester, String buttonText) async {
+  await tester.pumpAndSettle();
+
+  // Find all widgets that match the text
+  final textButtons = find.text(buttonText);
+
+  // Ensure at least one widget is found
+  expect(textButtons, findsWidgets);
+
+  // Tap the first widget that matches
+  await tester.tap(textButtons.first);
+  await tester.pumpAndSettle();
+}
+
 Future<void> findAndPressWidget<T extends Widget>(WidgetTester tester) async {
   await tester.pumpAndSettle(); // Initial pump to settle the widget tree
 
@@ -261,5 +326,5 @@ Future<void> findAndPressWidget<T extends Widget>(WidgetTester tester) async {
   expect(widgetFinder, findsOneWidget);
   await tester.tap(widgetFinder);
 
-  await tester.pump(Durations.long2);
+  await tester.pumpAndSettle();
 }

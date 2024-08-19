@@ -13,18 +13,18 @@ import 'flow_to_map_and_p2p_test.dart';
 
 // Wallet for BEEFQA: this seed has magic recovery enabled on the Foundation server
 const List<String> seed = [
-  "bracket",
-  "region",
-  "people",
-  "frog",
-  "park",
-  "box",
-  "chunk",
-  "goose",
-  "blue",
-  "toss",
-  "machine",
-  "agent"
+  "vault",
+  "dust",
+  "appear",
+  "acoustic",
+  "evolve",
+  "monster",
+  "arena",
+  "injury",
+  "tourist",
+  "grab",
+  "pair",
+  "harvest"
 ];
 
 void main() {
@@ -113,9 +113,15 @@ Future<void> setUpWalletFromSeedViaMagicRecover(
   await tester.tap(continueButtonFinder);
   await tester.pump(const Duration(milliseconds: 500));
 
+  // Scroll down by 600 pixels
+  await scrollHome(tester, -600);
+
   // search for passport account
   final passportAccount = find.text("Passport");
-  expect(passportAccount, findsAny);
+
+  // Ensure at least one instance of the text is found
+  expect(passportAccount, findsWidgets);
+  await tester.pumpAndSettle();
 }
 
 Future<void> enterSeedWords(
@@ -129,4 +135,10 @@ Future<void> enterSeedWords(
     await tester.enterText(finder.at(i), seed[i]);
     await tester.pump(Durations.long2);
   }
+}
+
+Future<void> scrollHome(WidgetTester tester, double pixels) async {
+  // Perform the drag operation on the ReorderableListView by the specified number of pixels
+  await tester.drag(find.byType(ReorderableListView), Offset(0, pixels));
+  await tester.pumpAndSettle();
 }
