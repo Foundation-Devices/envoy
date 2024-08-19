@@ -34,13 +34,15 @@ void main() {
       await fromHomeToHotWallet(tester);
       await openDotsMenu(tester);
       await fromDotsMenuToEditName(tester);
-      await enterNewText(tester, find.byType(TextField), 'What ever');
+
+      await enterTextInField(tester, find.byType(TextField), 'What ever');
       await exitEditName(tester);
       await checkName(tester, 'Mobile Wallet'); // check if the name is the same
 
       await openDotsMenu(tester);
       await fromDotsMenuToEditName(tester);
-      await enterNewText(tester, find.byType(TextField),
+
+      await enterTextInField(tester, find.byType(TextField),
           'Twenty one characters plus ten'); // 30 chars
       await saveName(tester);
       await checkName(
@@ -49,7 +51,8 @@ void main() {
       // Rename hot wallet back to "Mobile Wallet" if you want to repeat the test locally
       await openDotsMenu(tester);
       await fromDotsMenuToEditName(tester);
-      await enterNewText(tester, find.byType(TextField), 'Mobile Wallet');
+
+      await enterTextInField(tester, find.byType(TextField), 'Mobile Wallet');
       await saveName(tester);
     } finally {
       // Restore the original FlutterError.onError handler after the test.
@@ -69,7 +72,6 @@ Future<void> fromHomeToHotWallet(WidgetTester tester) async {
 
 Future<void> openDotsMenu(WidgetTester tester) async {
   await checkForToast(tester);
-
   await tester.pump();
   final dotsButton = find.byIcon(Icons.more_horiz_outlined);
   expect(dotsButton, findsOneWidget);
@@ -96,7 +98,7 @@ Future<void> exitEditName(WidgetTester tester) async {
   await tester.pump(Durations.long2);
 }
 
-Future<void> enterNewText(
+Future<void> enterTextInField(
   WidgetTester tester,
   Finder fieldFinder,
   String text,

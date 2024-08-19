@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:screenshot/screenshot.dart';
+import 'btc_sats.dart';
 import 'flow_to_map_and_p2p_test.dart';
 
 void main() {
@@ -32,17 +33,17 @@ void main() {
 
       await setUpAppFromStart(tester);
 
-      await goToPrivacy(tester);
+      await findAndPressTextButton(tester, 'Privacy');
 
       // enable "better performance" if it is not enabled
       await enablePerformance(tester);
       // Check the shield icon after enabling performance
-      await checkShieldIcon(tester, isPrivacy: false);
+      await checkTorShieldIcon(tester, expectPrivacy: false);
 
       // Perform the required actions to change to privacy
       await enablePrivacy(tester);
       // Check the shield icon after enabling privacy
-      await checkShieldIcon(tester, isPrivacy: true);
+      await checkTorShieldIcon(tester, expectPrivacy: true);
     } finally {
       FlutterError.onError = originalOnError;
     }
@@ -86,17 +87,8 @@ Future<void> enablePerformance(WidgetTester tester) async {
   await findAndTapBigTab(tester, 'Better');
 }
 
-Future<void> goToPrivacy(WidgetTester tester) async {
-  await tester.pump();
-  final privacyButton = find.text('Privacy');
-  expect(privacyButton, findsOneWidget);
-
-  await tester.tap(privacyButton);
-  await tester.pump(Durations.long2);
-}
-
-Future<void> checkShieldIcon(WidgetTester tester,
-    {required bool isPrivacy}) async {
+Future<bool> checkTorShieldIcon(WidgetTester tester,
+    {required bool expectPrivacy}) async {
   await tester.pumpAndSettle(); // Ensure the screen updates after interactions
 
   // Find all Image widgets on the screen
@@ -105,7 +97,7 @@ Future<void> checkShieldIcon(WidgetTester tester,
   // Collect all Image widgets
   final imageWidgets = tester.widgetList<Image>(imageFinder).toList();
 
-  if (isPrivacy) {
+  if (expectPrivacy) {
     // Check the number of image widgets found
     expect(imageWidgets, hasLength(1),
         reason: 'Image should be visible when Privacy is enabled.');
@@ -122,16 +114,20 @@ Future<void> checkShieldIcon(WidgetTester tester,
       // Expected image paths when tor is enabled
       if (ConnectivityManager().electrumConnected) {
         expect(imageAssetPath, 'assets/indicator_shield_teal.png');
+        return true;
       } else {
         expect(imageAssetPath, 'assets/indicator_shield_red.png');
+        return false;
       }
     } else {
       // Expect no image to be displayed
       expect(imageAssetPath, isNull);
+      return false;
     }
   } else {
     // When Performance is enabled, expect no shield image to be visible
     expect(imageWidgets, isEmpty,
         reason: 'No image should be visible when Performance is enabled.');
+    return false;
   }
 }
