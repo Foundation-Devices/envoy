@@ -41,6 +41,7 @@ void main() {
 
       await openDotsMenu(tester);
       await fromDotsMenuToEditName(tester);
+
       await enterTextInField(tester, find.byType(TextField),
           'Twenty one characters plus ten'); // 30 chars
       await saveName(tester);
