@@ -45,41 +45,8 @@ jobs:
       - name: Build Rust libs
         run: cargo build
 
-      - name: QA map flow
-        run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/flow_to_map_and_p2p_test.dart -d linux --verbose
-
-      - name: QA about
-        run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/about_test.dart -d linux --verbose
-
-      - name: QA menu support
-        run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/menu_support.dart -d linux --verbose
-
-      - name: QA edit hot wallet name
-        run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/edit_account_name.dart -d linux --verbose
-
-      - name: QA magic recover
-        run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/connect_passport_via_recovery.dart -d linux --verbose
-
-      - name: QA edit device name
-        run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/edit_device_name.dart -d linux --verbose
-
-      - name: QA edit passport account name
-        run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/edit_passport_account_name.dart -d linux --verbose
-
-      - name: QA check fiat
-        run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/check_fiat_in_app.dart -d linux --verbose
-
-      - name: QA enable testnet
-        run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/enable_testnet_test.dart -d linux --verbose
-
-      - name: QA enable taproot
-        run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/enable_taproot.dart -d linux --verbose
-
-      - name: QA enable signet
-        run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/signet.dart -d linux --verbose
-
-      - name: QA enable tor
-        run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/enable_tor.dart -d linux --verbose
-
-      - name: QA buy button
-        run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/buy_button_test.dart -d linux --verbose
+      - name: Run QA Tests in Specified Order
+        run: |
+          while IFS= read -r test_file; do
+            xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test "$test_file" -d linux --verbose
+          done < test_order.txt
