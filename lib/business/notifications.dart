@@ -272,18 +272,20 @@ class Notifications {
     notifications.clear();
 
     if (_ls.prefs.containsKey(notificationPrefs)) {
-      var jsonMap = jsonDecode(_ls.prefs.getString(notificationPrefs)!);
+      String? jsonString = _ls.prefs.getString(notificationPrefs);
+      if (jsonString != null) {
+        var jsonMap = jsonDecode(jsonString);
+        for (var notification in jsonMap["notifications"]) {
+          EnvoyNotification notificationToRestore =
+              EnvoyNotification.fromJson(notification);
 
-      for (var notification in jsonMap["notifications"]) {
-        EnvoyNotification notificationToRestore =
-            EnvoyNotification.fromJson(notification);
+          // Migration: tx notifications previously didn't have account data
+          notificationToRestore = addMissingAccountId(notificationToRestore);
 
-        // Migration: tx notifications previously didn't have account data
-        notificationToRestore = addMissingAccountId(notificationToRestore);
-
-        // Only add tx notifications that link to an account
-        if (!_shouldBeRemoved(notificationToRestore)) {
-          add(notificationToRestore);
+          // Only add tx notifications that link to an account
+          if (!_shouldBeRemoved(notificationToRestore)) {
+            add(notificationToRestore);
+          }
         }
       }
     }
