@@ -33,7 +33,7 @@ StreamController<String> isNewAppVersionAvailable = StreamController();
 @JsonSerializable()
 class EnvoyNotification {
   final String title;
-  final DateTime date;
+  final DateTime? date;
   final EnvoyNotificationType type;
   final String body;
   final String id;
@@ -69,7 +69,13 @@ final filteredNotificationStreamProvider =
   ref.watch(transactionNotificationsProvider);
 
   if (order == 0) {
-    notifications.sort((a, b) => b.date.compareTo(a.date));
+    notifications.sort((a, b) {
+      if (b.date == null && a.date == null) return 0;
+      // Sort null dates (indicating pending transactions) to the top
+      if (b.date == null) return 1;
+      if (a.date == null) return -1;
+      return b.date!.compareTo(a.date!);
+    });
   }
   if (filter == null) {
     return List<EnvoyNotification>.from(notifications);
@@ -88,7 +94,11 @@ final transactionNotificationsProvider = Provider((ref) {
       for (var notification in Notifications().notifications) {
         if (notification.id == tx.txId && notification.amount == tx.amount) {
           skip = true;
-          break;
+          if (notification.date == null && tx.isConfirmed) {
+            skip = false;
+            Notifications().deleteNotification(notification.id,
+                accountId: notification.accountId);
+          }
         }
       }
 
@@ -96,7 +106,7 @@ final transactionNotificationsProvider = Provider((ref) {
         Notifications().deleteSuppressedNotifications(account.id);
         Notifications().add(EnvoyNotification(
             "Transaction",
-            tx.isConfirmed ? tx.date : DateTime.now(),
+            tx.isConfirmed ? tx.date : null,
             EnvoyNotificationType.transaction,
             tx.txId,
             tx.txId,
@@ -301,7 +311,7 @@ class Notifications {
           if (tx.txId == notificationToRestore.id) {
             notificationToRestore = EnvoyNotification(
                 "Transaction",
-                tx.isConfirmed ? tx.date : DateTime.now(),
+                tx.isConfirmed ? tx.date : null,
                 EnvoyNotificationType.transaction,
                 tx.txId,
                 tx.txId,
