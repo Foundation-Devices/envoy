@@ -140,7 +140,7 @@ Future<void> enterSeedWords(
 Future<void> scrollHome(WidgetTester tester, double pixels) async {
   // Perform the drag operation on the ReorderableListView by the specified number of pixels
   await tester.drag(find.byType(ReorderableListView), Offset(0, pixels));
-  await tester.pumpAndSettle();
+  await tester.pump(Durations.long2);
 }
 
 Future<void> scrollUntilVisible(WidgetTester tester, Finder finder,
