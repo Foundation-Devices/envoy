@@ -266,7 +266,7 @@ Future<void> waitForTealTextAndTap(
   // If the text is Teal, tap it
   if (isTeal) {
     await tester.tap(textFinder);
-    await tester.pumpAndSettle();
+    await tester.pump(Durations.long2);
   } else {
     throw Exception("Text did not turn teal after $maxRetries attempts");
   }
