@@ -2,10 +2,12 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+# This tests use wallet which is set up from zero (no need for passport account)
 integration_test/flow_to_map_and_p2p_test.dart
 integration_test/about_test.dart
 integration_test/menu_support.dart
 integration_test/edit_account_name.dart
+# From below is test that need already set up wallet with passport and coins o it
 integration_test/connect_passport_via_recovery.dart
 integration_test/edit_device_name.dart
 integration_test/edit_passport_account_name.dart
@@ -14,4 +16,5 @@ integration_test/enable_testnet_test.dart
 integration_test/enable_taproot.dart
 integration_test/signet.dart
 integration_test/enable_tor.dart
+# Below this is test that use app without any account
 integration_test/buy_button_test.dart
