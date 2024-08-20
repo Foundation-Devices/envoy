@@ -49,6 +49,8 @@ void main() {
       /// 2) Check that the fiat toggle exists
       bool isSettingsFiatSwitchOn =
           await isSlideSwitchOn(tester, 'Display Fiat Values');
+      bool isSettingsViewSatsSwitchOn =
+          await isSlideSwitchOn(tester, 'View Amount in Sats');
 
       /// 3) Check that it can toggle just fine, leave it enabled (leave default fiat value)
       if (!isSettingsFiatSwitchOn) {
@@ -122,9 +124,11 @@ void main() {
 
       /// in Send
       await findAndPressTextButton(tester, 'Send');
-      // press the widget two times so it can circle to Fiat
+      // press the widget one/two times so it can circle to Fiat
       await findAndPressWidget<AmountDisplay>(tester);
-      await findAndPressWidget<AmountDisplay>(tester);
+      if (!isSettingsViewSatsSwitchOn) {
+        await findAndPressWidget<AmountDisplay>(tester);
+      }
 
       if (currentSettingsFiatCode != null) {
         await tester.pump(Durations.long2);
