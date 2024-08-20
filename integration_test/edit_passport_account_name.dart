@@ -10,7 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:screenshot/screenshot.dart';
 import 'edit_account_name.dart';
 
-const String accountPassportName = "Primary (#0)";
+const String accountPassportName = "GH TEST ACC (#1)";
 
 void main() {
   testWidgets('Edit Passport account name', (tester) async {
