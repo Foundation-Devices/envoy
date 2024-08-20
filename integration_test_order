@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 integration_test/flow_to_map_and_p2p_test.dart
 integration_test/about_test.dart
 integration_test/menu_support.dart

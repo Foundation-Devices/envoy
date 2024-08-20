@@ -46,7 +46,4 @@ jobs:
         run: cargo build
 
       - name: Run QA Tests in Specified Order
-        run: |
-          while IFS= read -r test_file; do
-            xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test "$test_file" -d linux --verbose
-          done < test_order.txt
+        run: ./run_integration_tests.sh
