@@ -70,10 +70,7 @@ void main() {
 
       // Go to Activity and check for BTC
       await findAndPressTextButton(tester, 'Activity');
-      await checkForEnvoyIcon(
-          tester,
-          EnvoyIcons
-              .btc); // TODO: why does it pass if there is no icon on the screen
+      await checkForEnvoyIcon(tester, EnvoyIcons.btc);
       //back to accounts
       await findAndPressTextButton(tester, 'Accounts');
 
@@ -152,10 +149,6 @@ void main() {
         await findAndToggleSettingsSwitch(tester, 'View Amount in Sats');
       }
 
-      // 10) Close the app, reopen the app // TODO: Can't do this
-      //
-      // 11) Go to settings, check that killing the app didn't disable the Sats toggle
-
       /// Repeat steps 2-8, but instead of BTC you should be seeing Sats in every step
       // return to home
       await pressHamburgerMenu(tester);
@@ -167,10 +160,7 @@ void main() {
 
       // Go to Activity and check for sats
       await findAndPressTextButton(tester, 'Activity');
-      await checkForEnvoyIcon(
-          tester,
-          EnvoyIcons
-              .sats); // TODO: why does it pass if there is no icon on the screen
+      await checkForEnvoyIcon(tester, EnvoyIcons.sats);
       //back to accounts
       await findAndPressTextButton(tester, 'Accounts');
 
@@ -240,13 +230,15 @@ Future<void> waitForTealTextAndTap(
   // Finder for the text widget
   final Finder textFinder = find.text(textToFind);
 
-  // Wait until the text is found
+  // Wait until the text is found initially
   await tester.pumpUntilFound(textFinder, tries: 20, duration: Durations.long2);
 
   // Set the maximum number of retries to wait for the text to turn Teal
   const int maxRetries = 10;
   int retryCount = 0;
 
+  // Wait the text button to settle
+  await tester.pump(const Duration(milliseconds: 3000));
   // Loop until the text's color is Teal or the maximum retries are reached
   bool isTeal = false;
   while (!isTeal && retryCount < maxRetries) {
@@ -266,7 +258,7 @@ Future<void> waitForTealTextAndTap(
   // If the text is Teal, tap it
   if (isTeal) {
     await tester.tap(textFinder);
-    await tester.pumpAndSettle();
+    await tester.pump(Durations.long2);
   } else {
     throw Exception("Text did not turn teal after $maxRetries attempts");
   }
@@ -305,8 +297,6 @@ Future<void> findAndPressTextButton(
 
 Future<void> findFirstTextButtonAndPress(
     WidgetTester tester, String buttonText) async {
-  await tester.pumpAndSettle();
-
   // Find all widgets that match the text
   final textButtons = find.text(buttonText);
 
@@ -315,16 +305,14 @@ Future<void> findFirstTextButtonAndPress(
 
   // Tap the first widget that matches
   await tester.tap(textButtons.first);
-  await tester.pumpAndSettle();
+  await tester.pump(Durations.long2);
 }
 
 Future<void> findAndPressWidget<T extends Widget>(WidgetTester tester) async {
-  await tester.pumpAndSettle(); // Initial pump to settle the widget tree
-
   // Find the widget of type T
   final widgetFinder = find.byType(T);
   expect(widgetFinder, findsOneWidget);
   await tester.tap(widgetFinder);
 
-  await tester.pumpAndSettle();
+  await tester.pump(Durations.long2);
 }
