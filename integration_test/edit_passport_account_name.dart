@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:screenshot/screenshot.dart';
+import 'connect_passport_via_recovery.dart';
 import 'edit_account_name.dart';
 
 const String accountPassportName = "GH TEST ACC (#1)";
@@ -32,6 +33,10 @@ void main() {
 
       // await setUpWalletFromSeedViaMagicRecover(tester, seed);
 
+      await scrollUntilVisible(
+        tester,
+        find.text(accountPassportName),
+      );
       await openPassportAccount(tester);
       await openDotsMenu(tester);
       await fromDotsMenuToEditName(tester);

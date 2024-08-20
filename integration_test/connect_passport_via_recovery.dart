@@ -142,3 +142,18 @@ Future<void> scrollHome(WidgetTester tester, double pixels) async {
   await tester.drag(find.byType(ReorderableListView), Offset(0, pixels));
   await tester.pumpAndSettle();
 }
+
+Future<void> scrollUntilVisible(WidgetTester tester, Finder finder,
+    {int maxScrolls = 50, double scrollIncrement = -100}) async {
+  for (int i = 0; i < maxScrolls; i++) {
+    // Try to find the widget
+    if (finder.evaluate().isNotEmpty) {
+      return; // Widget found, stop scrolling
+    }
+
+    await scrollHome(tester, scrollIncrement);
+  }
+
+  // Optionally, you could throw an exception if the widget isn't found after maxScrolls
+  throw Exception('Widget not found after scrolling $maxScrolls times.');
+}
