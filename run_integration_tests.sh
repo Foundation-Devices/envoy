@@ -11,7 +11,7 @@ failed_tests=()
 # Iterate over each test file in integration_test_order
 while IFS= read -r test_file; do
   # Skip lines that start with #
-  if [[ $test_file =~ ^# ]]; then
+  if [[ $test_file =~ ^[[:space:]] ]] || [[ $test_file =~ ^# ]]; then
     continue
   fi
 
