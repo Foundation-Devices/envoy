@@ -319,12 +319,12 @@ Future<void> findFirstTextButtonAndPress(
 }
 
 Future<void> findAndPressWidget<T extends Widget>(WidgetTester tester) async {
-  await tester.pumpAndSettle(); // Initial pump to settle the widget tree
+  await tester.pump(Durations.long2); // Initial pump to settle the widget tree
 
   // Find the widget of type T
   final widgetFinder = find.byType(T);
   expect(widgetFinder, findsOneWidget);
   await tester.tap(widgetFinder);
 
-  await tester.pumpAndSettle();
+  await tester.pump(Durations.long2);
 }
