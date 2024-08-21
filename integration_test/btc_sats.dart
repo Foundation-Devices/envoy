@@ -305,7 +305,7 @@ Future<void> findAndPressTextButton(
 
 Future<void> findFirstTextButtonAndPress(
     WidgetTester tester, String buttonText) async {
-  await tester.pumpAndSettle();
+  await tester.pump(Durations.long2);
 
   // Find all widgets that match the text
   final textButtons = find.text(buttonText);
@@ -315,7 +315,7 @@ Future<void> findFirstTextButtonAndPress(
 
   // Tap the first widget that matches
   await tester.tap(textButtons.first);
-  await tester.pumpAndSettle();
+  await tester.pump(Durations.long2);
 }
 
 Future<void> findAndPressWidget<T extends Widget>(WidgetTester tester) async {

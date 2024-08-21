@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:screenshot/screenshot.dart';
 import 'check_for_toast.dart';
+import 'connect_passport_via_recovery.dart';
 
 void main() {
   testWidgets('flow to edit acc name', (tester) async {
@@ -32,6 +33,7 @@ void main() {
       // Uncomment if resetEnvoyData is uncommented
       //await setUpAppFromStart(tester);
 
+      await scrollHome(tester, 300);
       await fromHomeToHotWallet(tester);
       await openDotsMenu(tester);
       await fromDotsMenuToEditName(tester);
