@@ -64,6 +64,8 @@ class _LearnCardState extends ConsumerState<LearnCard> {
     final bool isAllEmpty = isSearchEmpty || isFilterEmpty;
 
     return ScrollGradientMask(
+      bottomGradientValue: 0.85,
+      end: 0.96,
       child: CustomScrollView(
         physics: isAllEmpty ? const NeverScrollableScrollPhysics() : null,
         slivers: [
