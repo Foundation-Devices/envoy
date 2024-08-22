@@ -14,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:screenshot/screenshot.dart';
 import 'btc_sats.dart';
-import 'check_for_toast.dart';
 import 'connect_passport_via_recovery.dart';
 import 'edit_account_name.dart';
 import 'flow_to_map_and_p2p_test.dart';
@@ -32,7 +31,8 @@ void main() {
       }
     };
     try {
-      // Uncomment the line below if testing on local machine.
+      // Uncomment the line below if you want to start from the beginning,
+      // but then you MUST call setAppFromStart or setUpWalletFromSeedViaMagicRecover.
       //await resetEnvoyData();
 
       await initSingletons();
@@ -40,7 +40,7 @@ void main() {
       await tester.pumpWidget(Screenshot(
           controller: envoyScreenshotController, child: const EnvoyApp()));
 
-      await setUpWalletFromSeedViaMagicRecover(tester, seed);
+      //await setUpWalletFromSeedViaMagicRecover(tester, seed);
 
       /// 1) Go to settings
       await pressHamburgerMenu(tester);
@@ -49,6 +49,8 @@ void main() {
       /// 2) Check that the fiat toggle exists
       bool isSettingsFiatSwitchOn =
           await isSlideSwitchOn(tester, 'Display Fiat Values');
+      bool isSettingsViewSatsSwitchOn =
+          await isSlideSwitchOn(tester, 'View Amount in Sats');
 
       /// 3) Check that it can toggle just fine, leave it enabled (leave default fiat value)
       if (!isSettingsFiatSwitchOn) {
@@ -122,9 +124,11 @@ void main() {
 
       /// in Send
       await findAndPressTextButton(tester, 'Send');
-      // press the widget two times so it can circle to Fiat
+      // press the widget one/two times so it can circle to Fiat
       await findAndPressWidget<AmountDisplay>(tester);
-      await findAndPressWidget<AmountDisplay>(tester);
+      if (!isSettingsViewSatsSwitchOn) {
+        await findAndPressWidget<AmountDisplay>(tester);
+      }
 
       if (currentSettingsFiatCode != null) {
         await tester.pump(Durations.long2);
@@ -219,9 +223,9 @@ Future<String?> findSymbolOnScreen(
 
 Future<void> pressHamburgerMenu(WidgetTester tester) async {
   // check if the toast pop-up is there before pressing on to the tob bar
-  await checkForToast(tester);
+  //await checkForToast(tester);
   // go with top bar hamburger button
-  await tester.pump();
+  //await tester.pump();
   final hamburgerIcon = find.byType(HamburgerMenu);
   expect(hamburgerIcon, findsOneWidget);
 

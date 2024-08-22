@@ -22,7 +22,8 @@ void main() {
       }
     };
     try {
-      // Uncomment the line below if testing on local machine.
+      // Uncomment the line below if you want to start from the beginning,
+      // but then you MUST call setAppFromStart or setUpWalletFromSeedViaMagicRecover.
       // await resetEnvoyData();
 
       await initSingletons();
@@ -44,28 +45,21 @@ void main() {
 }
 
 Future<void> checkForToast(WidgetTester tester) async {
-  await tester.runAsync(() async {
-    final iconFinder = find.byWidgetPredicate(
-      (widget) =>
-          widget is EnvoyIcon &&
-          (widget.icon == EnvoyIcons.info || widget.icon == EnvoyIcons.alert),
-    );
+  //await tester.pumpAndSettle();
 
-    // Check if the EnvoyIcon is found
-    bool iconFound = iconFinder.evaluate().isNotEmpty;
-    if (iconFound) {
-      // Try finding the close icon
-      final closeIconFinder = find.byWidgetPredicate(
-        (widget) => widget is Icon && widget.icon == Icons.close,
-      );
+  final iconFinder = find.byWidgetPredicate(
+    (widget) =>
+        widget is EnvoyIcon &&
+        (widget.icon == EnvoyIcons.info || widget.icon == EnvoyIcons.alert),
+  );
 
-      // Check if the close icon is found
-      bool closeIconFound = closeIconFinder.evaluate().isNotEmpty;
-      if (closeIconFound) {
-        // Tap on the close icon
-        await tester.tap(closeIconFinder.first);
-        await tester.pump(); // Rebuild the widget tree after the tap
-      }
-    }
-  });
+  // Check if the icon is found initially
+  bool iconInitiallyFound = iconFinder.evaluate().isNotEmpty;
+  if (!iconInitiallyFound) {
+    return; // Exit the test if the icon is not found initially
+  } else {
+    final closeToastButton = find.byIcon(Icons.close);
+    await tester.tap(closeToastButton.last);
+    await tester.pump(Durations.long2);
+  }
 }

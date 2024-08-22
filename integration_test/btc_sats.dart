@@ -266,7 +266,7 @@ Future<void> waitForTealTextAndTap(
   // If the text is Teal, tap it
   if (isTeal) {
     await tester.tap(textFinder);
-    await tester.pumpAndSettle();
+    await tester.pump(Durations.long2);
   } else {
     throw Exception("Text did not turn teal after $maxRetries attempts");
   }
@@ -305,7 +305,7 @@ Future<void> findAndPressTextButton(
 
 Future<void> findFirstTextButtonAndPress(
     WidgetTester tester, String buttonText) async {
-  await tester.pumpAndSettle();
+  await tester.pump(Durations.long2);
 
   // Find all widgets that match the text
   final textButtons = find.text(buttonText);
@@ -315,16 +315,16 @@ Future<void> findFirstTextButtonAndPress(
 
   // Tap the first widget that matches
   await tester.tap(textButtons.first);
-  await tester.pumpAndSettle();
+  await tester.pump(Durations.long2);
 }
 
 Future<void> findAndPressWidget<T extends Widget>(WidgetTester tester) async {
-  await tester.pumpAndSettle(); // Initial pump to settle the widget tree
+  await tester.pump(Durations.long2); // Initial pump to settle the widget tree
 
   // Find the widget of type T
   final widgetFinder = find.byType(T);
   expect(widgetFinder, findsOneWidget);
   await tester.tap(widgetFinder);
 
-  await tester.pumpAndSettle();
+  await tester.pump(Durations.long2);
 }

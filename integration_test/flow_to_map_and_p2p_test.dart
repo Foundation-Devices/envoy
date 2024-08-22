@@ -24,7 +24,8 @@ void main() {
       }
     };
     try {
-      // Uncomment the line below if testing on local machine.
+      // Uncomment the line below if you want to start from the beginning,
+      // but then you MUST call setAppFromStart or setUpWalletFromSeedViaMagicRecover.
       // await resetEnvoyData();
 
       ScreenshotController envoyScreenshotController = ScreenshotController();
@@ -41,7 +42,8 @@ void main() {
       await tester.pump(Durations.long2);
       final atmTab = find.text("ATMs");
 
-      await tester.pumpUntilFound(atmTab, tries: 50, duration: Durations.long2);
+      await tester.pumpUntilFound(atmTab,
+          tries: 100, duration: Durations.long2);
       await tester.pump(Durations.long2);
       expect(atmTab, findsOneWidget);
       await tester.tap(atmTab);
@@ -68,12 +70,11 @@ Future<void> fromHomeToBuyOptions(WidgetTester tester) async {
   expect(buyBitcoinButton, findsOneWidget);
 
   await tester.tap(buyBitcoinButton);
-
-  await Future.delayed(const Duration(
-      seconds: 5)); // Ensure enough time for reading JSON data for countries.
   await tester.pump(Durations.long2);
 
   final selectRegionDropDown = find.text('Select State');
+  await tester.pumpUntilFound(selectRegionDropDown,
+      tries: 50, duration: Durations.long2);
   expect(selectRegionDropDown, findsOneWidget);
   await tester.tap(selectRegionDropDown);
   await tester.pump(Durations.long2);

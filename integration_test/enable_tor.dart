@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:screenshot/screenshot.dart';
 import 'btc_sats.dart';
-import 'flow_to_map_and_p2p_test.dart';
 
 void main() {
   testWidgets('enable tor and check top shield', (tester) async {
@@ -23,7 +22,8 @@ void main() {
       }
     };
     try {
-      // Uncomment the line below if testing on local machine.
+      // Uncomment the line below if you want to start from the beginning,
+      // but then you MUST call setAppFromStart or setUpWalletFromSeedViaMagicRecover.
       //await resetEnvoyData();
 
       ScreenshotController envoyScreenshotController = ScreenshotController();
@@ -31,7 +31,7 @@ void main() {
       await tester.pumpWidget(Screenshot(
           controller: envoyScreenshotController, child: const EnvoyApp()));
 
-      await setUpAppFromStart(tester);
+      //await setUpAppFromStart(tester);
 
       await findAndPressTextButton(tester, 'Privacy');
 
@@ -43,6 +43,7 @@ void main() {
       // Perform the required actions to change to privacy
       await enablePrivacy(tester);
       // Check the shield icon after enabling privacy
+
       await checkTorShieldIcon(tester, expectPrivacy: true);
     } finally {
       FlutterError.onError = originalOnError;

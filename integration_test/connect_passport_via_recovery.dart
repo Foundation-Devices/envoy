@@ -37,8 +37,9 @@ void main() {
       }
     };
     try {
-      // Uncomment the line below if testing on local machine.
-      // await resetEnvoyData();
+      // Uncomment the line below if you want to start from the beginning,
+      // but then you MUST call setAppFromStart or setUpWalletFromSeedViaMagicRecover.
+      await resetEnvoyData();
 
       ScreenshotController envoyScreenshotController = ScreenshotController();
       await initSingletons();
@@ -139,5 +140,20 @@ Future<void> enterSeedWords(
 Future<void> scrollHome(WidgetTester tester, double pixels) async {
   // Perform the drag operation on the ReorderableListView by the specified number of pixels
   await tester.drag(find.byType(ReorderableListView), Offset(0, pixels));
-  await tester.pumpAndSettle();
+  await tester.pump(Durations.long2);
+}
+
+Future<void> scrollUntilVisible(WidgetTester tester, Finder finder,
+    {int maxScrolls = 50, double scrollIncrement = -100}) async {
+  for (int i = 0; i < maxScrolls; i++) {
+    // Try to find the widget
+    if (finder.evaluate().isNotEmpty) {
+      return; // Widget found, stop scrolling
+    }
+
+    await scrollHome(tester, scrollIncrement);
+  }
+
+  // Optionally, you could throw an exception if the widget isn't found after maxScrolls
+  throw Exception('Widget not found after scrolling $maxScrolls times.');
 }

@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:screenshot/screenshot.dart';
+import 'envoy_test.dart';
 
 void main() {
   testWidgets('buy button test', (tester) async {
@@ -19,8 +20,9 @@ void main() {
       }
     };
     try {
-      // Uncomment the line below if testing on local machine.
-      //await resetEnvoyData();
+      // Uncomment the line below if you want to start from the beginning,
+      // but then you MUST call setAppFromStart or setUpWalletFromSeedViaMagicRecover.
+      await resetEnvoyData();
 
       ScreenshotController envoyScreenshotController = ScreenshotController();
       await initSingletons();
