@@ -29,7 +29,8 @@ void main() {
       }
     };
     try {
-      // Uncomment the line below if testing on local machine.
+      // Uncomment the line below if you want to start from the beginning,
+      // but then you MUST call setAppFromStart or setUpWalletFromSeedViaMagicRecover.
       // await resetEnvoyData();
 
       await initSingletons();
@@ -37,7 +38,7 @@ void main() {
       await tester.pumpWidget(Screenshot(
           controller: envoyScreenshotController, child: const EnvoyApp()));
 
-      await setUpWalletFromSeedViaMagicRecover(tester, seed);
+      // await setUpWalletFromSeedViaMagicRecover(tester, seed);
 
       /// Go to setting and enable fiat, we will need this later
       await pressHamburgerMenu(tester);
@@ -70,10 +71,7 @@ void main() {
 
       // Go to Activity and check for BTC
       await findAndPressTextButton(tester, 'Activity');
-      await checkForEnvoyIcon(
-          tester,
-          EnvoyIcons
-              .btc); // TODO: why does it pass if there is no icon on the screen
+      await checkForEnvoyIcon(tester, EnvoyIcons.btc);
       //back to accounts
       await findAndPressTextButton(tester, 'Accounts');
 
@@ -152,10 +150,6 @@ void main() {
         await findAndToggleSettingsSwitch(tester, 'View Amount in Sats');
       }
 
-      // 10) Close the app, reopen the app // TODO: Can't do this
-      //
-      // 11) Go to settings, check that killing the app didn't disable the Sats toggle
-
       /// Repeat steps 2-8, but instead of BTC you should be seeing Sats in every step
       // return to home
       await pressHamburgerMenu(tester);
@@ -167,10 +161,7 @@ void main() {
 
       // Go to Activity and check for sats
       await findAndPressTextButton(tester, 'Activity');
-      await checkForEnvoyIcon(
-          tester,
-          EnvoyIcons
-              .sats); // TODO: why does it pass if there is no icon on the screen
+      await checkForEnvoyIcon(tester, EnvoyIcons.sats);
       //back to accounts
       await findAndPressTextButton(tester, 'Accounts');
 
@@ -240,13 +231,15 @@ Future<void> waitForTealTextAndTap(
   // Finder for the text widget
   final Finder textFinder = find.text(textToFind);
 
-  // Wait until the text is found
+  // Wait until the text is found initially
   await tester.pumpUntilFound(textFinder, tries: 20, duration: Durations.long2);
 
   // Set the maximum number of retries to wait for the text to turn Teal
   const int maxRetries = 10;
   int retryCount = 0;
 
+  // Wait the text button to settle
+  await tester.pump(const Duration(milliseconds: 3000));
   // Loop until the text's color is Teal or the maximum retries are reached
   bool isTeal = false;
   while (!isTeal && retryCount < maxRetries) {
@@ -319,7 +312,7 @@ Future<void> findFirstTextButtonAndPress(
 }
 
 Future<void> findAndPressWidget<T extends Widget>(WidgetTester tester) async {
-  await tester.pump(Durations.long2); // Initial pump to settle the widget tree
+  await tester.pump(Durations.long2);
 
   // Find the widget of type T
   final widgetFinder = find.byType(T);

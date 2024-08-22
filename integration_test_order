@@ -16,5 +16,6 @@ integration_test/enable_testnet_test.dart
 integration_test/enable_taproot.dart
 integration_test/signet.dart
 integration_test/enable_tor.dart
+integration_test/boost_screen.dart
 # Below this is test that use app without any account
 integration_test/buy_button_test.dart

@@ -75,14 +75,11 @@ void main() {
       }
 
       /// in Activity
-      // await findAndPressTextButton(tester, 'Activity'); // TODO: uncomment when transaction is made
-      //
-      // if (currentSettingsFiatCode != null) {
-      //   await tester.pump(Durations.long2);
-      //   bool fiatCheckResult =
-      //   await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
-      //   expect(fiatCheckResult, isTrue);
-      // }
+      await findAndPressTextButton(tester, 'Activity');
+
+      if (currentSettingsFiatCode != null) {
+        await scrollActivityAndCheckFiat(tester, currentSettingsFiatCode);
+      }
 
       /// in Mainet Account
       await findAndPressTextButton(tester, 'Accounts');
@@ -173,9 +170,6 @@ void main() {
             await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
         expect(fiatCheckResult, isTrue);
       }
-
-      // 5) Close the app, reopen it // TODO: unable to do this
-      // 6) Check that the toggle remains switched on
 
       // Note: The "ramp" widget is only supported on Android and iOS platforms,
       // so there is no reliable way to verify its functionality in this test.
@@ -304,4 +298,39 @@ Future<void> fromSettingsToFiatDropdown(WidgetTester tester) async {
 
   await tester.tap(dropdownButton);
   await tester.pump(Durations.long2);
+}
+
+Future<void> scrollActivityAndCheckFiat(
+  WidgetTester tester,
+  String currentSettingsFiatCode,
+) async {
+  bool fiatCheckResult;
+
+  // Loop until the check passes or until you cannot scroll anymore
+  while (true) {
+    // Check the result on the current screen
+    fiatCheckResult =
+        await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+
+    // If the check is successful, exit the loop
+    if (fiatCheckResult) {
+      break;
+    }
+
+    // Perform the drag operation on the CustomScrollView by the specified number of pixels
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, -100));
+    await tester.pump(Durations.long2);
+
+    // If it reaches the bottom and cannot scroll further, it will return
+    final Finder scrollable = find.byType(CustomScrollView);
+    final ScrollableState scrollableState =
+        tester.state<ScrollableState>(scrollable);
+    if (scrollableState.position.pixels >=
+        scrollableState.position.maxScrollExtent) {
+      break;
+    }
+  }
+
+  // Assert that the fiatCheckResult is true at the end of the scroll
+  expect(fiatCheckResult, isTrue);
 }
