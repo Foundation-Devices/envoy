@@ -156,6 +156,8 @@ class BlogPostCardState extends State<BlogPostCard> {
   Widget build(BuildContext context) {
     return Center(
       child: ScrollGradientMask(
+        bottomGradientValue: 0.85,
+        end: 0.96,
         child: Padding(
           padding: const EdgeInsets.only(
             bottom: EnvoySpacing.large1,
