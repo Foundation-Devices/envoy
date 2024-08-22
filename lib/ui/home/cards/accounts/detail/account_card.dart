@@ -347,7 +347,6 @@ class _AccountCardState extends ConsumerState<AccountCard>
   Widget _buildTransactionListWidget(
       List<Transaction> transactions, bool txFiltersEnabled) {
     if (transactions.isEmpty) {
-      /// ovde ima
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,

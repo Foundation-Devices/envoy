@@ -17,6 +17,8 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
+import 'package:envoy/ui/state/transactions_state.dart';
 
 class EnvoyListTile extends StatelessWidget {
   const EnvoyListTile({
@@ -144,12 +146,49 @@ class ActivityListTile extends StatelessWidget {
         leftIcon = notification.amount! >= 0
             ? EnvoyIcons.arrow_down_left
             : EnvoyIcons.arrow_up_right;
+        bool? isBoosted = ref.watch(isTxBoostedProvider(notification.id));
+        bool isConfirmed = notification.date != null;
+
         textLeft1 = notification.amount! >= 0
             ? S().activity_received
             : S().activity_sent;
-        textLeft2 = timeago
-            .format(notification.date, locale: activeLocale.languageCode)
-            .capitalize();
+        if (notification.amount! < 0) {
+          RBFState? cancelState =
+              ref.watch(cancelTxStateProvider(notification.id));
+          if (cancelState != null) {
+            if (!isConfirmed) {
+              leftIcon = EnvoyIcons.alert;
+            }
+            if (cancelState.originalTxId == notification.id) {
+              if (!isConfirmed) {
+                textLeft1 = S().activity_canceling;
+              }
+            }
+            if (cancelState.newTxId == notification.id) {
+              if (isConfirmed) {
+                textLeft1 = S().activity_sent_canceled;
+                leftIcon = EnvoyIcons.close;
+              } else {
+                textLeft1 = S().activity_canceling;
+              }
+            }
+          } else {
+            if (isBoosted == true) {
+              leftIcon = EnvoyIcons.rbf_boost;
+              if (isConfirmed) {
+                textLeft1 = S().activity_sent_boosted;
+              }
+              textLeft1 = S().activity_boosted;
+            }
+          }
+        }
+        textLeft2 = notification.date == null
+            ? (notification.amount! >= 0
+                ? S().receive_tx_list_awaitingConfirmation
+                : S().activity_pending)
+            : timeago
+                .format(notification.date!, locale: activeLocale.languageCode)
+                .capitalize();
         iconColor = EnvoyColors.textTertiary;
 
         unitIcon = () {
@@ -189,7 +228,8 @@ class ActivityListTile extends StatelessWidget {
         leftIcon = EnvoyIcons.tool;
         textLeft1 = S().activity_passportUpdate;
         textLeft2 = timeago
-            .format(notification.date, locale: activeLocale.languageCode)
+            .format(notification.date ?? DateTime.now(),
+                locale: activeLocale.languageCode)
             .capitalize();
 
         iconColor = EnvoyColors.textTertiary;
@@ -199,7 +239,8 @@ class ActivityListTile extends StatelessWidget {
         leftIcon = EnvoyIcons.download;
         textLeft1 = S().activity_envoyUpdateAvailable;
         textLeft2 = timeago
-            .format(notification.date, locale: activeLocale.languageCode)
+            .format(notification.date ?? DateTime.now(),
+                locale: activeLocale.languageCode)
             .capitalize();
 
         iconColor = EnvoyColors.textTertiary;

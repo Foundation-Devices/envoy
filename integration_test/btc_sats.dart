@@ -29,7 +29,8 @@ void main() {
       }
     };
     try {
-      // Uncomment the line below if testing on local machine.
+      // Uncomment the line below if you want to start from the beginning,
+      // but then you MUST call setAppFromStart or setUpWalletFromSeedViaMagicRecover.
       // await resetEnvoyData();
 
       await initSingletons();
@@ -37,7 +38,7 @@ void main() {
       await tester.pumpWidget(Screenshot(
           controller: envoyScreenshotController, child: const EnvoyApp()));
 
-      await setUpWalletFromSeedViaMagicRecover(tester, seed);
+      // await setUpWalletFromSeedViaMagicRecover(tester, seed);
 
       /// Go to setting and enable fiat, we will need this later
       await pressHamburgerMenu(tester);
@@ -297,6 +298,8 @@ Future<void> findAndPressTextButton(
 
 Future<void> findFirstTextButtonAndPress(
     WidgetTester tester, String buttonText) async {
+  await tester.pump(Durations.long2);
+
   // Find all widgets that match the text
   final textButtons = find.text(buttonText);
 
@@ -309,6 +312,8 @@ Future<void> findFirstTextButtonAndPress(
 }
 
 Future<void> findAndPressWidget<T extends Widget>(WidgetTester tester) async {
+  await tester.pump(Durations.long2);
+
   // Find the widget of type T
   final widgetFinder = find.byType(T);
   expect(widgetFinder, findsOneWidget);

@@ -145,6 +145,7 @@ class EnvoyToastState extends State<EnvoyToast> {
                           child: Text(
                             widget.message ?? "",
                             overflow: widget.overflow ?? TextOverflow.ellipsis,
+                            maxLines: 2,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall

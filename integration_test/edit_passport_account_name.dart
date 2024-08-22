@@ -11,7 +11,7 @@ import 'package:screenshot/screenshot.dart';
 import 'connect_passport_via_recovery.dart';
 import 'edit_account_name.dart';
 
-const String accountPassportName = "Primary (#0)";
+const String accountPassportName = "GH TEST ACC (#1)";
 
 void main() {
   testWidgets('Edit Passport account name', (tester) async {
@@ -31,8 +31,12 @@ void main() {
       await tester.pumpWidget(Screenshot(
           controller: envoyScreenshotController, child: const EnvoyApp()));
 
-      await setUpWalletFromSeedViaMagicRecover(tester, seed);
+      // await setUpWalletFromSeedViaMagicRecover(tester, seed);
 
+      await scrollUntilVisible(
+        tester,
+        find.text(accountPassportName),
+      );
       await openPassportAccount(tester);
       await openDotsMenu(tester);
       await fromDotsMenuToEditName(tester);

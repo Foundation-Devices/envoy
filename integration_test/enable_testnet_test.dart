@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:screenshot/screenshot.dart';
 import 'check_fiat_in_app.dart';
-import 'connect_passport_via_recovery.dart';
 import 'flow_to_map_and_p2p_test.dart';
 
 void main() {
@@ -22,7 +21,8 @@ void main() {
       }
     };
     try {
-      // Uncomment the line below if testing on local machine.
+      // Uncomment the line below if you want to start from the beginning,
+      // but then you MUST call setAppFromStart or setUpWalletFromSeedViaMagicRecover.
       // await resetEnvoyData();
 
       await initSingletons();
@@ -31,7 +31,7 @@ void main() {
           controller: envoyScreenshotController, child: const EnvoyApp()));
 
       // Recover wallet with Passport accounts
-      await setUpWalletFromSeedViaMagicRecover(tester, seed);
+      // await setUpWalletFromSeedViaMagicRecover(tester, seed);
 
       await fromHomeToAdvancedMenu(tester);
       bool testnetAlreadyEnabled = await isSlideSwitchOn(tester, "Testnet");

@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:screenshot/screenshot.dart';
 import 'check_for_toast.dart';
-import 'flow_to_map_and_p2p_test.dart';
+import 'connect_passport_via_recovery.dart';
 
 void main() {
   testWidgets('flow to edit acc name', (tester) async {
@@ -21,7 +21,8 @@ void main() {
       }
     };
     try {
-      // Uncomment the line below if testing on local machine.
+      // Uncomment the line below if you want to start from the beginning,
+      // but then you MUST call setAppFromStart or setUpWalletFromSeedViaMagicRecover.
       // await resetEnvoyData();
 
       await initSingletons();
@@ -29,8 +30,10 @@ void main() {
       await tester.pumpWidget(Screenshot(
           controller: envoyScreenshotController, child: const EnvoyApp()));
 
-      await setUpAppFromStart(tester);
+      // Uncomment if resetEnvoyData is uncommented
+      //await setUpAppFromStart(tester);
 
+      await scrollHome(tester, 300);
       await fromHomeToHotWallet(tester);
       await openDotsMenu(tester);
       await fromDotsMenuToEditName(tester);
