@@ -132,6 +132,7 @@ Future<void> saveName(WidgetTester tester) async {
 
 Future<void> checkName(WidgetTester tester, String name) async {
   await tester.pump();
+  await tester.pump();
   final nameText = find.text(name);
   expect(nameText, findsOneWidget);
 }
