@@ -14,7 +14,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:screenshot/screenshot.dart';
 import 'btc_sats.dart';
 import 'check_fiat_in_app.dart';
-import 'connect_passport_via_recovery.dart';
 import 'edit_account_name.dart';
 import 'enable_testnet_test.dart';
 import 'flow_to_map_and_p2p_test.dart';
