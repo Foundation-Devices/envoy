@@ -163,13 +163,14 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
 }
 
 String getTransactionDateString(EnvoyNotification notification) {
-  return DateFormat.yMd(currentLocale).format(notification.date);
+  return DateFormat.yMd(currentLocale)
+      .format(notification.date ?? DateTime.now());
 }
 
 bool showHeader(EnvoyNotification notificationCurrent,
     EnvoyNotification notificationPrevious) {
-  return !DateUtils.isSameDay(
-      notificationCurrent.date, notificationPrevious.date);
+  return !DateUtils.isSameDay(notificationCurrent.date ?? DateTime.now(),
+      notificationPrevious.date ?? DateTime.now());
 }
 
 class ActivityGhostListTile extends StatelessWidget {

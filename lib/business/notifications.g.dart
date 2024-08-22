@@ -9,7 +9,7 @@ part of 'notifications.dart';
 EnvoyNotification _$EnvoyNotificationFromJson(Map<String, dynamic> json) =>
     EnvoyNotification(
       json['title'] as String,
-      DateTime.parse(json['date'] as String),
+      json['date'] == null ? null : DateTime.parse(json['date'] as String),
       $enumDecode(_$EnvoyNotificationTypeEnumMap, json['type']),
       json['body'] as String,
       json['id'] as String,
@@ -20,7 +20,7 @@ EnvoyNotification _$EnvoyNotificationFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$EnvoyNotificationToJson(EnvoyNotification instance) =>
     <String, dynamic>{
       'title': instance.title,
-      'date': instance.date.toIso8601String(),
+      'date': instance.date?.toIso8601String(),
       'type': _$EnvoyNotificationTypeEnumMap[instance.type]!,
       'body': instance.body,
       'id': instance.id,
