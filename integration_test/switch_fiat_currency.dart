@@ -17,7 +17,7 @@ import 'connect_passport_via_recovery.dart';
 import 'enable_tor.dart';
 
 void main() {
-  testWidgets('check Fiat in App', (tester) async {
+  testWidgets('Switching Fiat in App', (tester) async {
     final FlutterExceptionHandler? originalOnError = FlutterError.onError;
     FlutterError.onError = (FlutterErrorDetails details) {
       kPrint('FlutterError caught: ${details.exceptionAsString()}');
@@ -34,7 +34,7 @@ void main() {
       await tester.pumpWidget(Screenshot(
           controller: envoyScreenshotController, child: const EnvoyApp()));
 
-      await setUpWalletFromSeedViaMagicRecover(tester, seed);
+      //await setUpWalletFromSeedViaMagicRecover(tester, seed);
 
       /// Open Envoy settings, enable fiat
       await findAndPressTextButton(tester, 'Privacy');
@@ -127,7 +127,7 @@ void main() {
 
       expect(torIsConnected, isTrue);
 
-      /// Open Envoy settings, enble fiat
+      /// Open Envoy settings, enable fiat
       await pressHamburgerMenu(tester);
       await goToSettings(tester);
 
@@ -191,9 +191,6 @@ void main() {
           await extractFiatAmountFromAccount(tester, 'GH TEST ACC (#1)');
       // Check if the numbers differ from different Fiats
       expect(newFiatAmount != usdFiatAmount, isTrue);
-
-      // Note: The "ramp" widget is only supported on Android and iOS platforms,
-      // so there is no reliable way to verify its functionality in this test.
     } finally {
       // Restore the original FlutterError.onError handler after the test.
       FlutterError.onError = originalOnError;
