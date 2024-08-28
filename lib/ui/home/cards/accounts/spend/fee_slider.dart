@@ -39,15 +39,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final rate = ref.read(spendFeeRateProvider);
       setFees(ref.read(feeChooserStateProvider));
-      if (rate == standardFee) {
-        _tabController.animateTo(0);
-      } else {
-        if (rate == fasterFee) {
-          _tabController.animateTo(1);
-        } else {
-          _tabController.animateTo(2);
-        }
-      }
+      selectFeeTab(rate);
     });
     Future.delayed(const Duration(milliseconds: 10))
         .then((value) => calculateFeeBoundary());
@@ -62,10 +54,25 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
   }
 
   TextStyle? get _labelStyle {
-    return Theme.of(context)
-        .textTheme
-        .bodySmall
-        ?.copyWith(fontSize: 10, fontWeight: FontWeight.w600);
+    return Theme.of(context).textTheme.bodySmall?.copyWith(
+        fontSize: 9.5,
+        fontWeight: FontWeight.w600,
+        fontStyle: FontStyle.normal);
+  }
+
+  selectFeeTab(num fee) {
+    int index = 0;
+    if (fee.toInt() == standardFee.toInt()) {
+      index = 0;
+    } else {
+      if (fee.toInt() == fasterFee.toInt()) {
+        index = 1;
+      } else {
+        index = 2;
+      }
+    }
+    _tabController.animateTo(index.toInt(),
+        duration: const Duration(milliseconds: 200));
   }
 
   @override
@@ -76,18 +83,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
     });
 
     ref.listen(spendFeeRateProvider, (previous, next) {
-      int index = 0;
-      if (next == standardFee) {
-        index = 0;
-      } else {
-        if (next == fasterFee) {
-          index = 1;
-        } else {
-          index = 2;
-        }
-      }
-      _tabController.animateTo(index.toInt(),
-          duration: const Duration(milliseconds: 200));
+      selectFeeTab(next);
     });
 
     return Container(
