@@ -339,7 +339,13 @@ class AccountPrompts extends ConsumerWidget {
                       .copyWith(color: EnvoyColors.accentPrimary),
                 ),
                 onTap: () {
-                  EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
+                  if (userInteractedWithAccDetail) {
+                    EnvoyStorage()
+                        .addPromptState(DismissiblePrompt.dragAndDrop);
+                  } else {
+                    EnvoyStorage().addPromptState(
+                        DismissiblePrompt.userInteractedWithAccDetail);
+                  }
                 },
               ),
               Container(
