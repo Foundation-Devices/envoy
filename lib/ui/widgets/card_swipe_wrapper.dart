@@ -87,11 +87,8 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
         _offsetX = _animation.value;
       });
     });
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      setState(() {
-        hidden = ref.read(balanceHideStateStatusProvider(widget.account.id));
-      });
-    });
+
+    hidden = ref.read(balanceHideStateStatusProvider(widget.account.id));
   }
 
   @override
