@@ -91,7 +91,8 @@ class Settings extends ChangeNotifier {
       "ssl://testnet.foundation.xyz:50002";
 
   // MutinyNet Esplora
-  static const String MUTINYNET_ESPLORA_SERVER = "https://mutinynet.com/api";
+  static const String MUTINYNET_ESPLORA_SERVER =
+      "ssl://mutinynet.foundation.xyz:50002";
 
   DisplayUnit displayUnit = DisplayUnit.btc;
 
