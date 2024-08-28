@@ -187,7 +187,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                     S().coincontrol_tx_detail_fee_standard,
                     maxLines: 1,
                     textScaler: MediaQuery.textScalerOf(context)
-                        .clamp(minScaleFactor: 1, maxScaleFactor: 1.1),
+                        .clamp(minScaleFactor: 1, maxScaleFactor: 1),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
