@@ -151,7 +151,7 @@ class AccountManager extends ChangeNotifier {
         server = Settings.TESTNET_ELECTRUM_SERVER;
         break;
       case Network.Signet:
-        server = Settings.MUTINYNET_ESPLORA_SERVER;
+        server = Settings.MUTINYNET_ELECTRUM_SERVER;
         break;
       default:
         server = "Unknown server";

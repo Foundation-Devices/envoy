@@ -90,8 +90,9 @@ class Settings extends ChangeNotifier {
   static const String TESTNET_ELECTRUM_SERVER =
       "ssl://testnet.foundation.xyz:50002";
 
-  // MutinyNet Esplora
-  static const String MUTINYNET_ESPLORA_SERVER = "https://mutinynet.com/api";
+  // MutinyNet Electrum
+  static const String MUTINYNET_ELECTRUM_SERVER =
+      "ssl://mutinynet.foundation.xyz:50002";
 
   DisplayUnit displayUnit = DisplayUnit.btc;
 
@@ -138,7 +139,7 @@ class Settings extends ChangeNotifier {
     }
 
     if (network == Network.Signet) {
-      return MUTINYNET_ESPLORA_SERVER;
+      return MUTINYNET_ELECTRUM_SERVER;
     }
 
     if (usingDefaultElectrumServer) {

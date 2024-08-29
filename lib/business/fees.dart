@@ -99,7 +99,8 @@ class Fees {
   static const _mempoolRecommendedFeesEndpoints = {
     Network.Mainnet: "$mempoolFoundationInstance/api/v1/fees/recommended",
     Network.Testnet: "$_mempoolInstance/testnet/api/v1/fees/recommended",
-    Network.Signet: "$_mempoolInstance/signet/api/v1/fees/recommended"
+    Network.Signet:
+        "$mutinynetMempoolFoundationInstance/api/v1/fees/recommended"
   };
   static const mutinynetMempoolFoundationInstance =
       "https://mutiny.foundation.xyz";
@@ -107,7 +108,8 @@ class Fees {
   static const _mempoolBlocksFeesEndpoints = {
     Network.Mainnet: "$mempoolFoundationInstance/api/v1/fees/mempool-blocks",
     Network.Testnet: "$_mempoolInstance/testnet/api/v1/fees/mempool-blocks",
-    Network.Signet: "$_mempoolInstance/signet/api/v1/fees/mempool-blocks"
+    Network.Signet:
+        "$mutinynetMempoolFoundationInstance/api/v1/fees/mempool-blocks"
   };
 
   factory Fees() {
