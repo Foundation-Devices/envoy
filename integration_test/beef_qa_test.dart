@@ -54,7 +54,7 @@ Future<void> main() async {
         await tester.pumpAndSettle();
 
         final iconFinder = find.byWidgetPredicate(
-          (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.plus,
+              (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.plus,
         );
         expect(iconFinder, findsOneWidget);
       });
@@ -378,7 +378,7 @@ Future<void> main() async {
         await goToSettings(tester);
 
         bool isSettingsFiatSwitchOn =
-            await isSlideSwitchOn(tester, 'Display Fiat Values');
+        await isSlideSwitchOn(tester, 'Display Fiat Values');
         if (!isSettingsFiatSwitchOn) {
           // find And Toggle DisplayFiat Switch
           await findAndToggleSettingsSwitch(tester, 'Display Fiat Values');
@@ -386,7 +386,7 @@ Future<void> main() async {
 
         // make sure BTC is ON
         bool isSettingsViewSatsSwitchOn =
-            await isSlideSwitchOn(tester, 'View Amount in Sats');
+        await isSlideSwitchOn(tester, 'View Amount in Sats');
         if (isSettingsViewSatsSwitchOn) {
           // find And Toggle DisplayFiat Switch
           await findAndToggleSettingsSwitch(tester, 'View Amount in Sats');
@@ -401,7 +401,7 @@ Future<void> main() async {
         }
 
         String? currentSettingsFiatCode =
-            await findCurrentFiatInSettings(tester);
+        await findCurrentFiatInSettings(tester);
 
         // return to home
         await pressHamburgerMenu(tester);
@@ -477,7 +477,7 @@ Future<void> main() async {
         if (currentSettingsFiatCode != null) {
           await tester.pump(Durations.long2);
           bool fiatCheckResult =
-              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+          await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
           expect(fiatCheckResult, isTrue);
         }
         await tester.pump(Durations.long2);
@@ -493,7 +493,7 @@ Future<void> main() async {
 
         // turn SATS view ON
         isSettingsViewSatsSwitchOn =
-            await isSlideSwitchOn(tester, 'View Amount in Sats');
+        await isSlideSwitchOn(tester, 'View Amount in Sats');
         if (!isSettingsViewSatsSwitchOn) {
           // find And Toggle DisplayFiat Switch
           await findAndToggleSettingsSwitch(tester, 'View Amount in Sats');
@@ -561,7 +561,7 @@ Future<void> main() async {
         if (currentSettingsFiatCode != null) {
           await tester.pump(Durations.long2);
           bool fiatCheckResult =
-              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+          await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
           expect(fiatCheckResult, isTrue);
         }
 
@@ -581,9 +581,9 @@ Future<void> main() async {
 
         /// 2) Check that the fiat toggle exists
         bool isSettingsFiatSwitchOn =
-            await isSlideSwitchOn(tester, 'Display Fiat Values');
+        await isSlideSwitchOn(tester, 'Display Fiat Values');
         bool isSettingsViewSatsSwitchOn =
-            await isSlideSwitchOn(tester, 'View Amount in Sats');
+        await isSlideSwitchOn(tester, 'View Amount in Sats');
 
         /// 3) Check that it can toggle just fine, leave it enabled (leave default fiat value)
         if (!isSettingsFiatSwitchOn) {
@@ -597,7 +597,7 @@ Future<void> main() async {
         }
 
         String? currentSettingsFiatCode =
-            await findCurrentFiatInSettings(tester);
+        await findCurrentFiatInSettings(tester);
 
         await pressHamburgerMenu(tester); // back to settings
         await pressHamburgerMenu(tester); // back to home
@@ -610,7 +610,7 @@ Future<void> main() async {
         if (currentSettingsFiatCode != null) {
           await tester.pump(Durations.long2);
           bool fiatCheckResult =
-              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+          await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
           expect(fiatCheckResult, isTrue);
         }
 
@@ -620,7 +620,7 @@ Future<void> main() async {
         if (currentSettingsFiatCode != null) {
           await tester.pump(Durations.long2);
           bool fiatCheckResult =
-              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+          await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
           expect(fiatCheckResult, isTrue);
         }
 
@@ -632,7 +632,7 @@ Future<void> main() async {
         if (currentSettingsFiatCode != null) {
           await tester.pump(Durations.long2);
           bool fiatCheckResult =
-              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+          await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
           expect(fiatCheckResult, isTrue);
         }
 
@@ -642,7 +642,7 @@ Future<void> main() async {
         if (currentSettingsFiatCode != null) {
           await tester.pump(Durations.long2);
           bool fiatCheckResult =
-              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+          await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
           expect(fiatCheckResult, isTrue);
         }
 
@@ -652,7 +652,7 @@ Future<void> main() async {
         if (currentSettingsFiatCode != null) {
           await tester.pump(Durations.long2);
           bool fiatCheckResult =
-              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+          await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
           expect(fiatCheckResult, isTrue);
         }
 
@@ -689,7 +689,7 @@ Future<void> main() async {
         if (currentSettingsFiatCode != null) {
           await tester.pump(Durations.long2);
           bool fiatCheckResult =
-              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+          await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
           expect(fiatCheckResult, isTrue);
         }
         await tester.pump(Durations.long2);
@@ -701,7 +701,7 @@ Future<void> main() async {
         if (currentSettingsFiatCode != null) {
           await tester.pump(Durations.long2);
           bool fiatCheckResult =
-              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+          await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
           expect(fiatCheckResult, isTrue);
         }
       });
@@ -864,7 +864,7 @@ Future<void> main() async {
 
         // Make sure Taproot is off when searching for Signet account (maybe not necessary)
         bool isSettingsTaprootSwitchOn =
-            await isSlideSwitchOn(tester, 'Taproot');
+        await isSlideSwitchOn(tester, 'Taproot');
         if (isSettingsTaprootSwitchOn) {
           // find And Toggle Taproot Switch
           await findAndToggleSettingsSwitch(tester, 'Taproot');
@@ -1042,7 +1042,7 @@ Future<void> main() async {
 
         // turn Testnet ON
         bool isSettingsTestnetSwitchOn =
-            await isSlideSwitchOn(tester, 'Testnet');
+        await isSlideSwitchOn(tester, 'Testnet');
         if (!isSettingsTestnetSwitchOn) {
           // find And Toggle Testnet Switch
           await findAndToggleSettingsSwitch(tester, 'Testnet');
@@ -1054,7 +1054,7 @@ Future<void> main() async {
 
         // turn taproot ON
         bool isSettingsTaprootSwitchOn =
-            await isSlideSwitchOn(tester, 'Taproot');
+        await isSlideSwitchOn(tester, 'Taproot');
         if (!isSettingsTaprootSwitchOn) {
           // find And Toggle Taproot Switch
           await findAndToggleSettingsSwitch(tester, 'Taproot');
@@ -1088,7 +1088,7 @@ Future<void> main() async {
         // Expect that testTaprootFound is true after the loop
         expect(testTaprootFound, true,
             reason:
-                'Expected to find at least one Testnet Taproot account but did not.');
+            'Expected to find at least one Testnet Taproot account but did not.');
 
         // scroll back by 10000
         await scrollHome(tester, 10000);
@@ -1130,7 +1130,7 @@ Future<void> main() async {
         // Expect that testTaprootFound is false after the loop
         expect(testTaprootFound, false,
             reason:
-                'Expected not to find Testnet Taproot account but found one.');
+            'Expected not to find Testnet Taproot account but found one.');
 
         // scroll back by 10000
         await scrollHome(tester, 10000);
@@ -1205,7 +1205,7 @@ Future<void> main() async {
         // Expect that testTaprootFound is false after the loop
         expect(testTaprootFound, false,
             reason:
-                'Expected not to find Testnet Taproot account but found one.');
+            'Expected not to find Testnet Taproot account but found one.');
 
         // scroll back by 10000
         await scrollHome(tester, 10000);
@@ -1271,7 +1271,7 @@ Future<void> main() async {
         // Expect that testTaprootFound is true after the loop
         expect(testTaprootFound, true,
             reason:
-                'Expected to find at least one Testnet Taproot account but did not.');
+            'Expected to find at least one Testnet Taproot account but did not.');
 
         // scroll back by 10000
         await scrollHome(tester, 10000);
@@ -1300,10 +1300,10 @@ Future<void> main() async {
         }
 
         String? currentSettingsFiatCode =
-            await findCurrentFiatInSettings(tester);
+        await findCurrentFiatInSettings(tester);
 
         bool isSettingsFiatSwitchOn =
-            await isSlideSwitchOn(tester, 'Display Fiat Values');
+        await isSlideSwitchOn(tester, 'Display Fiat Values');
         if (!isSettingsFiatSwitchOn) {
           // find And Toggle DisplayFiat Switch
           await findAndToggleSettingsSwitch(tester, 'Display Fiat Values');
@@ -1328,12 +1328,12 @@ Future<void> main() async {
         if (currentSettingsFiatCode != null) {
           await tester.pump(Durations.long2);
           bool fiatCheckResult =
-              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+          await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
           expect(fiatCheckResult, isTrue);
         }
 
         String usdFiatAmount =
-            await extractFiatAmountFromAccount(tester, accountPassportName);
+        await extractFiatAmountFromAccount(tester, accountPassportName);
 
         ///Go back to settings, change from USD to JPY, for example
         await pressHamburgerMenu(tester);
@@ -1355,12 +1355,12 @@ Future<void> main() async {
         if (currentSettingsFiatCode != null) {
           await tester.pump(Durations.long2);
           bool fiatCheckResult =
-              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+          await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
           expect(fiatCheckResult, isTrue);
         }
 
         String newFiatAmount =
-            await extractFiatAmountFromAccount(tester, accountPassportName);
+        await extractFiatAmountFromAccount(tester, accountPassportName);
         // Check if the numbers differ from different Fiats
         expect(newFiatAmount != usdFiatAmount, isTrue);
 
@@ -1371,7 +1371,7 @@ Future<void> main() async {
         await findAndPressTextButton(tester, 'Accounts');
         // Check the shield icon after enabling privacy
         bool torIsConnected =
-            await checkTorShieldIcon(tester, expectPrivacy: true);
+        await checkTorShieldIcon(tester, expectPrivacy: true);
 
         expect(torIsConnected, isTrue);
 
@@ -1385,7 +1385,7 @@ Future<void> main() async {
         currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
 
         isSettingsFiatSwitchOn =
-            await isSlideSwitchOn(tester, 'Display Fiat Values');
+        await isSlideSwitchOn(tester, 'Display Fiat Values');
         if (!isSettingsFiatSwitchOn) {
           // find And Toggle DisplayFiat Switch
           await findAndToggleSettingsSwitch(tester, 'Display Fiat Values');
@@ -1404,12 +1404,12 @@ Future<void> main() async {
         if (currentSettingsFiatCode != null) {
           await tester.pump(Durations.long2);
           bool fiatCheckResult =
-              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+          await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
           expect(fiatCheckResult, isTrue);
         }
 
         usdFiatAmount =
-            await extractFiatAmountFromAccount(tester, accountPassportName);
+        await extractFiatAmountFromAccount(tester, accountPassportName);
 
         ///Go back to settings, change from USD to JPY, for example
         await pressHamburgerMenu(tester);
@@ -1431,12 +1431,12 @@ Future<void> main() async {
         if (currentSettingsFiatCode != null) {
           await tester.pump(Durations.long2);
           bool fiatCheckResult =
-              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+          await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
           expect(fiatCheckResult, isTrue);
         }
 
         newFiatAmount =
-            await extractFiatAmountFromAccount(tester, accountPassportName);
+        await extractFiatAmountFromAccount(tester, accountPassportName);
         // Check if the numbers differ from different Fiats
         expect(newFiatAmount != usdFiatAmount, isTrue);
       });

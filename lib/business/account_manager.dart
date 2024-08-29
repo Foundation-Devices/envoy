@@ -31,15 +31,6 @@ import 'package:wallet/wallet.dart';
 class AccountAlreadyPaired implements Exception {}
 
 class AccountManager extends ChangeNotifier {
-  @override
-  // ignore: must_call_super
-  void dispose({bool? force}) {
-    // prevents riverpods StateNotifierProvider from disposing it
-    if (force == true) {
-      super.dispose();
-    }
-  }
-
   List<Account> accounts = [];
   final LocalStorage _ls = LocalStorage();
   var s = Settings();
@@ -109,7 +100,7 @@ class AccountManager extends ChangeNotifier {
             }
 
             final syncAccountIndex =
-                accounts.indexWhere((a) => a.id == syncedAccount.id);
+            accounts.indexWhere((a) => a.id == syncedAccount.id);
             if (syncAccountIndex != -1) {
               accounts[syncAccountIndex] = accounts[syncAccountIndex].copyWith(
                   wallet: syncedAccount.wallet,
@@ -129,7 +120,7 @@ class AccountManager extends ChangeNotifier {
   }
 
   StreamController<bool> isAccountBalanceHigherThanUsd1000Stream =
-      StreamController.broadcast();
+  StreamController();
 
   notifyIfAccountBalanceHigherThanUsd1000() {
     for (var account in accounts) {
@@ -216,8 +207,8 @@ class AccountManager extends ChangeNotifier {
 
   bool checkIfWalletFromSeedExists(String seed,
       {String? passphrase,
-      WalletType type = WalletType.witnessPublicKeyHash,
-      Network? network}) {
+        WalletType type = WalletType.witnessPublicKeyHash,
+        Network? network}) {
     try {
       var wallet = Wallet.deriveWallet(
           seed,
@@ -358,7 +349,7 @@ class AccountManager extends ChangeNotifier {
     var fwVersion = json["fw_version"].toString();
     var serial = json["serial"].toString();
     String deviceName = json.containsKey("device_name") &&
-            json["device_name"].toString().isNotEmpty
+        json["device_name"].toString().isNotEmpty
         ? json["device_name"].toString()
         : "Passport";
 
@@ -382,7 +373,7 @@ class AccountManager extends ChangeNotifier {
     String scriptType = json["derivation"].contains("86") ? "tr" : "wpkh";
     String xfp = reverseXfpStringEndianness(json["xfp"].toRadixString(16));
     String derivation =
-        json["derivation"].toString().replaceAll("'", "h").replaceAll("m", "");
+    json["derivation"].toString().replaceAll("'", "h").replaceAll("m", "");
     String xpub = json["xpub"];
 
     var partialDescriptor = "$scriptType([$xfp$derivation]$xpub";
@@ -435,7 +426,7 @@ class AccountManager extends ChangeNotifier {
       String externalDescriptor, String internalDescriptor) async {
     int publicKeyIndex = externalDescriptor.indexOf("]") + 1;
     String publicKeyType =
-        externalDescriptor.substring(publicKeyIndex, publicKeyIndex + 4);
+    externalDescriptor.substring(publicKeyIndex, publicKeyIndex + 4);
 
     Network network;
     if (publicKeyType == "tpub") {
