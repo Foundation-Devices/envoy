@@ -31,6 +31,15 @@ import 'package:wallet/wallet.dart';
 class AccountAlreadyPaired implements Exception {}
 
 class AccountManager extends ChangeNotifier {
+  @override
+  // ignore: must_call_super
+  void dispose({bool? force}) {
+    // prevents riverpods StateNotifierProvider from disposing it
+    if (force == true) {
+      super.dispose();
+    }
+  }
+
   List<Account> accounts = [];
   final LocalStorage _ls = LocalStorage();
   var s = Settings();
@@ -120,7 +129,7 @@ class AccountManager extends ChangeNotifier {
   }
 
   StreamController<bool> isAccountBalanceHigherThanUsd1000Stream =
-      StreamController();
+      StreamController.broadcast();
 
   notifyIfAccountBalanceHigherThanUsd1000() {
     for (var account in accounts) {

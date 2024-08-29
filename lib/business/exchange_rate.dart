@@ -52,6 +52,15 @@ final List<FiatCurrency> supportedFiat = [
 ];
 
 class ExchangeRate extends ChangeNotifier {
+  @override
+  // ignore: must_call_super
+  void dispose({bool? force}) {
+    // prevents riverpods StateNotifierProvider from disposing it
+    if (force == true) {
+      super.dispose();
+    }
+  }
+
   final String RATE_KEY = "rate";
   final String USD_RATE_KEY = "usdRate";
   final String CURRENCY_KEY = "currency";

@@ -12,7 +12,7 @@ while IFS= read -r test_file; do
   fi
 
   # Run the test for the current file
-  if ! xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test "$test_file" -d linux --verbose; then
+  if ! xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test "$test_file" -d linux; then
     echo "Test failed: $test_file"
     exit 1 # Exit immediately on failure
   fi
