@@ -151,7 +151,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
       child: Scaffold(
         body: PopScope(
           canPop: !isMenuOpen,
-          onPopInvoked: (bool didPop) async {
+          onPopInvokedWithResult: (bool didPop, _) async {
             if (!didPop) {
               HomePageState.of(context)?.toggleOptions();
             }
@@ -808,9 +808,10 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
               dialog: Builder(
                 builder: (context) {
                   if (!isKeyboardShown) {
-                    Future.delayed(const Duration(milliseconds: 200))
-                        .then((value) {
-                      FocusScope.of(context).requestFocus(focusNode);
+                    Future.delayed(const Duration(milliseconds: 200)).then((_) {
+                      if (context.mounted) {
+                        FocusScope.of(context).requestFocus(focusNode);
+                      }
                     });
                     isKeyboardShown = true;
                   }

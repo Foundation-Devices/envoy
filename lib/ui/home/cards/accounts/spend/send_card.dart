@@ -61,14 +61,15 @@ class _SendCardState extends ConsumerState<SendCard>
       onPaste: _onPaste,
       account: ref.read(selectedAccountProvider),
     );
-    Future.delayed(const Duration(milliseconds: 10)).then((value) {
+    Future.delayed(const Duration(milliseconds: 10)).then((_) {
       ref.read(homePageTitleProvider.notifier).state =
           S().receive_tx_list_send.toUpperCase();
       account = ref.read(selectedAccountProvider);
       if (ref.read(spendAmountProvider) != 0) {
         setAmount(ref.read(spendAmountProvider));
       }
-      if (account == null) {
+      if (account == null && context.mounted) {
+        // ignore: use_build_context_synchronously
         context.pop();
         return;
       }

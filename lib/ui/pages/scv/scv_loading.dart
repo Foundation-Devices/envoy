@@ -53,11 +53,15 @@ class _ScvLoadingPageState extends State<ScvLoadingPage> {
             });
           }
 
+          if (!context.mounted) return;
+
+          // ignore: use_build_context_synchronously
           Navigator.of(context)
               .pushReplacement(MaterialPageRoute(builder: (context) {
             return ScvResultOkPage(mustUpdateFirmware: mustUpdateFirmware);
           }));
         } else {
+          // ignore: use_build_context_synchronously
           Navigator.of(context)
               .pushReplacement(MaterialPageRoute(builder: (context) {
             return const ScvResultFailPage();

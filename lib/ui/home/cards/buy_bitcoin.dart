@@ -131,7 +131,7 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
     bool isMenuOpen = ref.watch(homePageOptionsVisibilityProvider);
     return PopScope(
       canPop: !isMenuOpen,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, _) {
         onNativeBackPressed(didPop);
       },
       child: Padding(

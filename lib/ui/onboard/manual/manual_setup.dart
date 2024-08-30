@@ -322,11 +322,10 @@ class SeedIntroScreen extends StatelessWidget {
                                       }
 
                                       kPrint("isValid $isValid $seedWords");
-
-                                      //TODO: Passphrase
-
                                       Future.delayed(Duration.zero, () {
-                                        checkSeed(context, result);
+                                        if (context.mounted) {
+                                          checkSeed(context, result);
+                                        }
                                       });
                                     });
                                   }));

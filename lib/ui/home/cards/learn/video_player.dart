@@ -201,7 +201,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      onPopInvoked: (_) async {
+      onPopInvokedWithResult: (_, __) async {
         _controller?.stop();
 
         setState(() {

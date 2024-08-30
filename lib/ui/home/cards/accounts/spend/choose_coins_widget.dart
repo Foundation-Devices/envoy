@@ -32,7 +32,7 @@ class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
     final shieldTotalHeight = MediaQuery.of(context).size.height * .98;
 
     return PopScope(
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, _) {
         if (didPop) {
           ref.read(spendEditModeProvider.notifier).state =
               SpendOverlayContext.hidden;

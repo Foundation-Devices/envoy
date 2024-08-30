@@ -63,7 +63,7 @@ class DevicesCardState extends ConsumerState<DevicesCard>
 
     return PopScope(
       canPop: !ref.watch(homePageOptionsVisibilityProvider),
-      onPopInvoked: (bool didPop) async {
+      onPopInvokedWithResult: (bool didPop, _) async {
         if (!didPop) {
           HomePageState.of(context)?.toggleOptions();
         }
@@ -179,13 +179,15 @@ class DevicesOptions extends ConsumerWidget {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             // Delay navigation to allow the UI to update
             Future.delayed(const Duration(milliseconds: 200), () {
-              Navigator.of(context).push(PageRouteBuilder(
-                pageBuilder: (context, animation, secondaryAnimation) {
-                  return const SingleImportPpIntroPage();
-                },
-                reverseTransitionDuration: Duration.zero,
-                transitionDuration: Duration.zero,
-              ));
+              if (context.mounted) {
+                Navigator.of(context).push(PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) {
+                    return const SingleImportPpIntroPage();
+                  },
+                  reverseTransitionDuration: Duration.zero,
+                  transitionDuration: Duration.zero,
+                ));
+              }
             });
           },
         ),
@@ -199,13 +201,15 @@ class DevicesOptions extends ConsumerWidget {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             // Delay navigation to allow the UI to update
             Future.delayed(const Duration(milliseconds: 200), () {
-              Navigator.of(context).push(PageRouteBuilder(
-                pageBuilder: (context, animation, secondaryAnimation) {
-                  return const TouPage();
-                },
-                reverseTransitionDuration: Duration.zero,
-                transitionDuration: Duration.zero,
-              ));
+              if (context.mounted) {
+                Navigator.of(context).push(PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) {
+                    return const TouPage();
+                  },
+                  reverseTransitionDuration: Duration.zero,
+                  transitionDuration: Duration.zero,
+                ));
+              }
             });
           },
         ),

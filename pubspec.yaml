@@ -32,7 +32,7 @@ dependencies:
   flutter_local_notifications: ^17.0.0
   flutter_localizations:
     sdk: flutter
-  intl: ^0.18.0
+  intl: ^0.19.0
 
   # Rust FFI libraries
   ur:
@@ -76,7 +76,7 @@ dependencies:
   webfeed:
     git:
       url: https://github.com/foundation-devices/webfeed.git
-      ref: f6c13566b5641022f5a953965f5a2061fbc40c13
+      ref: 2e0f4ec0bffb85df13b2c114d93d5ec0490bd2c1
   flutter_svg: ^1.0.3
   bip32: ^2.0.0
   package_info_plus: ^6.0.0
@@ -115,6 +115,7 @@ dependencies:
   http: ^1.2.1
 dependency_overrides:
   watcher: ^1.1.0
+  win32: ^5.5.4 # https://stackoverflow.com/questions/69553108/flutter-error-unmodifiableuint8listview-is-restricted-and-cant-be-extended-o
 
 dev_dependencies:
   test: any
@@ -130,7 +131,7 @@ dev_dependencies:
   custom_lint:
   riverpod_lint:
   freezed: ^2.3.4
-  screenshot: ^2.1.0
+  screenshot: ^3.0.0
   convert: any
   flutter_lints:
 

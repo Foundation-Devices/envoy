@@ -33,7 +33,7 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      onPopInvoked: (_) async {
+      onPopInvokedWithResult: (_, __) async {
         Navigator.of(context).pop();
       },
       child: Padding(

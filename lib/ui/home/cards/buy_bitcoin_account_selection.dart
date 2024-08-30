@@ -100,7 +100,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
     } else {
       return PopScope(
         canPop: !isChooseAccountOpen,
-        onPopInvoked: (didPop) {
+        onPopInvokedWithResult: (didPop, _) {
           if (!didPop) {
             Navigator.of(context).pop();
             setState(() {
@@ -260,7 +260,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
     Navigator.of(rootNavigator: true, context).push(MaterialTransparentRoute(
       builder: (context) {
         return PopScope(
-          onPopInvoked: (_) {
+          onPopInvokedWithResult: (_, __) {
             setState(() {
               isChooseAccountOpen = false;
             });

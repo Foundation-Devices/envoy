@@ -159,7 +159,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   Widget build(BuildContext context) {
     bool isThereBottomButtons = getBottomButtons() != null;
     return PopScope(
-      onPopInvoked: (_) {
+      onPopInvokedWithResult: (_, __) {
         _handleBackPress();
       },
       child: Material(
@@ -183,8 +183,8 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                         CupertinoNavigationBarBackButton(
                           color: Colors.black,
                           onPressed: () {
-                            _handleBackPress().then((value) {
-                              if (value) {
+                            _handleBackPress().then((proceed) {
+                              if (proceed && context.mounted) {
                                 Navigator.pop(context);
                               }
                             });
@@ -734,8 +734,10 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                         label: S().component_continue,
                         onTap: () {
                           EnvoySeed().get().then((seed) async {
-                            EnvoySeed().deriveAndAddWallets(seed!);
-                            OnboardingPage.popUntilHome(context);
+                            if (context.mounted) {
+                              EnvoySeed().deriveAndAddWallets(seed!);
+                              OnboardingPage.popUntilHome(context);
+                            }
                           });
                         });
                   },
