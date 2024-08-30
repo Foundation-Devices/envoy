@@ -103,8 +103,8 @@ final transactionsProvider =
   for (var pending in pendingTransactions) {
     final tx = transactions
         .firstWhereOrNull((element) => element.txId == pending.txId);
-    final rbfOriginals = ref.watch(rbfBroadCastedTxProvider);
-    if (tx == null && !rbfOriginals.contains(pending.txId)) {
+    final recentRBFs = ref.watch(rbfBroadCastedTxProvider);
+    if (tx == null && !recentRBFs.contains(pending.txId)) {
       transactions.add(pending);
     }
   }
@@ -289,7 +289,7 @@ Future prunePendingTransactions(
             ExchangeRate().convertFiatStringToSats(pendingTx.currencyAmount!);
         EnvoyStorage().updatePendingTx(pendingTx.txId, amount: amountSats);
       } catch (e) {
-        return;
+        kPrint("Error converting fiat to sats: $e");
       }
     }
   }
@@ -340,6 +340,14 @@ Future prunePendingTransactions(
           if (kDebugMode) {
             kPrint("Pruning orphan RBF tx : ${pendingTx.txId} ");
           }
+          EnvoyStorage().deletePendingTx(pendingTx.txId);
+        }
+      } else {
+        // Remove dangling pending transactions
+        // Since RBFState is not available and the transaction is not found in the mempool list,
+        // this means the transaction didn't hit the mempool,
+        // and we can remove it if it is older than 2 days.
+        if (DateTime.now().difference(pendingTx.date).inDays > 2) {
           EnvoyStorage().deletePendingTx(pendingTx.txId);
         }
       }
