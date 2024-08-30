@@ -105,27 +105,6 @@ class FadingEdgeScrollView extends StatefulWidget {
     );
   }
 
-  /// Constructor for creating [FadingEdgeScrollView] with [PageView] as child
-  /// child must have [PageView.controller] set
-  factory FadingEdgeScrollView.fromPageView({
-    Key? key,
-    required PageView child,
-    double gradientFractionOnStart = 0.1,
-    double gradientFractionOnEnd = 0.1,
-    bool shouldDisposeScrollController = false,
-  }) {
-    return FadingEdgeScrollView._internal(
-      key: key,
-      scrollController: child.controller,
-      scrollDirection: child.scrollDirection,
-      reverse: child.reverse,
-      gradientFractionOnStart: gradientFractionOnStart,
-      gradientFractionOnEnd: gradientFractionOnEnd,
-      shouldDisposeScrollController: shouldDisposeScrollController,
-      child: child,
-    );
-  }
-
   /// Constructor for creating [FadingEdgeScrollView] with [ScrollView] as child
   /// child must have [ScrollView.controller] set
   factory FadingEdgeScrollView.fromListWheelScrollView({
