@@ -133,7 +133,7 @@ Future<bool> checkFiatOnCurrentScreen(
   FiatCurrency? fiatCurrency = getFiatCurrencyByCode(currentFiatCode);
   if (fiatCurrency != null) {
     String? screenSymbol =
-    await findSymbolOnScreen(tester, fiatCurrency.symbol);
+        await findSymbolOnScreen(tester, fiatCurrency.symbol);
     return screenSymbol == fiatCurrency.symbol;
   }
   return false;
@@ -156,9 +156,8 @@ Future<String?> findSymbolOnScreen(
 
 Future<void> pressHamburgerMenu(WidgetTester tester) async {
   // check if the toast pop-up is there before pressing on to the tob bar
-  //await checkForToast(tester);
+  await checkForToast(tester);
   // go with top bar hamburger button
-  //await tester.pump();
   final hamburgerIcon = find.byType(HamburgerMenu);
   expect(hamburgerIcon, findsOneWidget);
 
@@ -182,7 +181,7 @@ Future<String?> findCurrentFiatInSettings(WidgetTester tester) async {
 
   // Retrieve the DropdownButton widget
   final dropdownFiatWidget =
-  tester.widget<DropdownButton<String>>(dropdownFiatFinder);
+      tester.widget<DropdownButton<String>>(dropdownFiatFinder);
 
   // Get the currently selected value
   final currentFiat = dropdownFiatWidget.value;
@@ -201,7 +200,7 @@ Future<bool> isSlideSwitchOn(WidgetTester tester, String listTileText) async {
 
   // Find the SettingToggle widget within the ListTile
   final settingToggleFinder =
-  find.descendant(of: listTileFinder, matching: find.byType(SettingToggle));
+      find.descendant(of: listTileFinder, matching: find.byType(SettingToggle));
   expect(settingToggleFinder, findsOneWidget);
 
   // Retrieve the SettingToggle widget
@@ -222,7 +221,7 @@ Future<void> findAndToggleSettingsSwitch(
 
   // Find the SettingToggle widget within the ListTile
   final switchFinder =
-  find.descendant(of: listTileFinder, matching: find.byType(SettingToggle));
+      find.descendant(of: listTileFinder, matching: find.byType(SettingToggle));
   expect(switchFinder, findsOneWidget);
 
   // Tap the switch to toggle it
@@ -240,16 +239,16 @@ Future<void> fromSettingsToFiatDropdown(WidgetTester tester) async {
 }
 
 Future<void> scrollActivityAndCheckFiat(
-    WidgetTester tester,
-    String currentSettingsFiatCode,
-    ) async {
+  WidgetTester tester,
+  String currentSettingsFiatCode,
+) async {
   bool fiatCheckResult;
 
   // Loop until the check passes or until you cannot scroll anymore
   while (true) {
     // Check the result on the current screen
     fiatCheckResult =
-    await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+        await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
 
     // If the check is successful, exit the loop
     if (fiatCheckResult) {
@@ -263,7 +262,7 @@ Future<void> scrollActivityAndCheckFiat(
     // If it reaches the bottom and cannot scroll further, it will return
     final Finder scrollable = find.byType(CustomScrollView);
     final ScrollableState scrollableState =
-    tester.state<ScrollableState>(scrollable);
+        tester.state<ScrollableState>(scrollable);
     if (scrollableState.position.pixels >=
         scrollableState.position.maxScrollExtent) {
       break;
@@ -273,7 +272,6 @@ Future<void> scrollActivityAndCheckFiat(
   // Assert that the fiatCheckResult is true at the end of the scroll
   expect(fiatCheckResult, isTrue);
 }
-
 
 Future<void> goToSupport(WidgetTester tester) async {
   await tester.pump();
@@ -349,10 +347,10 @@ Future<void> exitEditName(WidgetTester tester) async {
 }
 
 Future<void> enterTextInField(
-    WidgetTester tester,
-    Finder fieldFinder,
-    String text,
-    ) async {
+  WidgetTester tester,
+  Finder fieldFinder,
+  String text,
+) async {
   await tester.pump();
 
   final nameField = fieldFinder;
@@ -382,7 +380,6 @@ Future<void> checkName(WidgetTester tester, String name) async {
   final nameText = find.text(name).first;
   expect(nameText, findsOneWidget);
 }
-
 
 Future<void> setUpWalletFromSeedViaMagicRecover(
     WidgetTester tester, List<String> seed) async {
@@ -474,8 +471,10 @@ Future<void> scrollHome(WidgetTester tester, double pixels) async {
   await tester.pump(Durations.long2);
 }
 
-Future<void> scrollUntilVisible(WidgetTester tester, Finder finder,
+Future<void> scrollUntilVisible(WidgetTester tester, String text,
     {int maxScrolls = 50, double scrollIncrement = -100}) async {
+  Finder finder = find.text(text);
+
   for (int i = 0; i < maxScrolls; i++) {
     // Try to find the widget
     if (finder.evaluate().isNotEmpty) {
@@ -486,7 +485,30 @@ Future<void> scrollUntilVisible(WidgetTester tester, Finder finder,
   }
 
   // Optionally, you could throw an exception if the widget isn't found after maxScrolls
-  throw Exception('Widget not found after scrolling $maxScrolls times.');
+  throw Exception(
+      'Widget with text "$text" not found after scrolling $maxScrolls times.');
+}
+
+Future<void> scrollFindAndTapText(WidgetTester tester, String text,
+    {int maxScrolls = 50, double scrollIncrement = -100}) async {
+  Finder finder = find.text(text);
+
+  for (int i = 0; i < maxScrolls; i++) {
+    // Try to find the widget
+    if (finder.evaluate().isNotEmpty) {
+      // Widget found, tap on the first instance
+      await tester.tap(finder);
+      await tester.pumpAndSettle(); // Ensure the tap action is completed
+      return;
+    }
+
+    // Scroll the view if the widget isn't found
+    await scrollHome(tester, scrollIncrement);
+  }
+
+  // Optionally, throw an exception if the widget isn't found after maxScrolls
+  throw Exception(
+      'Widget with text "$text" not found after scrolling $maxScrolls times.');
 }
 
 Future<void> findAndPressBuyOptions(WidgetTester tester) async {
@@ -550,11 +572,9 @@ Future<void> setUpFromStartNoAccounts(WidgetTester tester) async {
 }
 
 Future<void> checkForToast(WidgetTester tester) async {
-  //await tester.pumpAndSettle();
-
   final iconFinder = find.byWidgetPredicate(
-        (widget) =>
-    widget is EnvoyIcon &&
+    (widget) =>
+        widget is EnvoyIcon &&
         (widget.icon == EnvoyIcons.info || widget.icon == EnvoyIcons.alert),
   );
 
@@ -569,6 +589,32 @@ Future<void> checkForToast(WidgetTester tester) async {
   }
 }
 
+Future<void> findAndTapActivitySlideButton(WidgetTester tester) async {
+  // Find all GestureDetector widgets
+  final gestureDetectors = find.byType(GestureDetector);
+
+  // Iterate through each GestureDetector to find the one with the specific EnvoyIcon
+  for (final gestureDetector in gestureDetectors.evaluate()) {
+    final gestureDetectorWidget = gestureDetector.widget as GestureDetector;
+
+    // Check if this GestureDetector contains the specific EnvoyIcon
+    final iconFinder = find.descendant(
+      of: find.byWidget(gestureDetectorWidget),
+      matching: find.byWidgetPredicate(
+        (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.tag,
+      ),
+    );
+
+    // If the specific EnvoyIcon is found inside this GestureDetector, tap it
+    if (iconFinder.evaluate().isNotEmpty) {
+      await tester.tap(find.byWidget(gestureDetectorWidget));
+      await tester.pump();
+      return; // Exit after tapping
+    }
+  }
+
+  fail('No GestureDetector with the specified EnvoyIcon was found.');
+}
 
 Future<String> extractFiatAmountFromAccount(
     WidgetTester tester, String accountText) async {
@@ -576,7 +622,7 @@ Future<String> extractFiatAmountFromAccount(
 
   // Find the AccountListTile containing the specified accountText
   final accountListTileFinder =
-  find.widgetWithText(AccountListTile, accountText);
+      find.widgetWithText(AccountListTile, accountText);
   expect(accountListTileFinder.first, findsOneWidget);
 
   // Find the SecondaryAmountWidget within the AccountListTile
@@ -641,7 +687,7 @@ Future<void> checkAndWaitLoaderGhostInAccount(
 
   // Find the AccountListTile containing the specified accountText
   final accountListTileFinder =
-  find.widgetWithText(AccountListTile, accountText);
+      find.widgetWithText(AccountListTile, accountText);
   expect(accountListTileFinder.first, findsOneWidget);
 
   while (true) {
@@ -661,12 +707,12 @@ Future<void> checkAndWaitLoaderGhostInAccount(
   }
 }
 
-Future<bool> findTextOnScreen(WidgetTester tester, String buttonText) async {
+Future<bool> findTextOnScreen(WidgetTester tester, String text) async {
   await tester.pump(Durations.long2);
-  final textButton = find.text(buttonText);
+  final textFinder = find.text(text);
 
   // Check if the text is found and return true or false accordingly
-  return textButton.evaluate().isNotEmpty;
+  return textFinder.evaluate().isNotEmpty;
 }
 
 Future<void> findAndPressEnvoyIcon(
@@ -678,12 +724,21 @@ Future<void> findAndPressEnvoyIcon(
   await tester.pump(Durations.long2);
 }
 
+Future<void> findAndPressFirstEnvoyIcon(
+    WidgetTester tester, EnvoyIcons expectedIcon) async {
+  // Use the existing function to find the EnvoyIcon
+  final iconFinder = await checkForEnvoyIcon(tester, expectedIcon);
+
+  await tester.tap(iconFinder.first);
+  await tester.pump(Durations.long2);
+}
+
 Future<Finder> checkForEnvoyIcon(
     WidgetTester tester, EnvoyIcons expectedIcon) async {
   final iconFinder = find.byWidgetPredicate(
-        (widget) => widget is EnvoyIcon && widget.icon == expectedIcon,
+    (widget) => widget is EnvoyIcon && widget.icon == expectedIcon,
   );
-  await tester.pumpUntilFound(iconFinder, tries: 10, duration: Durations.long2);
+  await tester.pumpUntilFound(iconFinder, tries: 20, duration: Durations.long2);
 
   return iconFinder;
 }
@@ -724,6 +779,20 @@ Future<void> findAndPressWidget<T extends Widget>(WidgetTester tester) async {
   await tester.pump(Durations.long2);
 }
 
+Future<void> findLastTextButtonAndPress(
+    WidgetTester tester, String buttonText) async {
+  await tester.pump(Durations.long2);
+
+  // Find all widgets that match the text
+  final textButtons = find.text(buttonText);
+
+  // Ensure at least one widget is found
+  expect(textButtons, findsWidgets);
+
+  // Tap the first widget that matches
+  await tester.tap(textButtons.last);
+  await tester.pump(Durations.long2);
+}
 
 Future<void> findAndTapBigTab(WidgetTester tester, String label) async {
   await tester.pump();
@@ -807,7 +876,6 @@ Future<bool> checkTorShieldIcon(WidgetTester tester,
   }
 }
 
-
 Future<bool> isAccountTestnetTaproot(
     WidgetTester tester, Finder accountListTile,
     {bool isHotWallet = true}) async {
@@ -816,26 +884,26 @@ Future<bool> isAccountTestnetTaproot(
   // Check for the presence of 'Testnet' and 'Taproot' texts within the Account List.
   bool containsTestnet = find
       .descendant(
-    of: accountListTile,
-    matching: find.text('Testnet'),
-  )
+        of: accountListTile,
+        matching: find.text('Testnet'),
+      )
       .evaluate()
       .isNotEmpty;
 
   bool containsTaproot = find
       .descendant(
-    of: accountListTile,
-    matching: find.text('Taproot'),
-  )
+        of: accountListTile,
+        matching: find.text('Taproot'),
+      )
       .evaluate()
       .isNotEmpty;
 
   // Check for 'Envoy' if isHotWallet is true, otherwise check for 'Passport'.
   bool containsEnvoyOrPassport = find
       .descendant(
-    of: accountListTile,
-    matching: find.text(isHotWallet ? 'Envoy' : 'Passport'),
-  )
+        of: accountListTile,
+        matching: find.text(isHotWallet ? 'Envoy' : 'Passport'),
+      )
       .evaluate()
       .isNotEmpty;
 
@@ -853,18 +921,18 @@ Future<bool> isAccountTestnet(WidgetTester tester, Finder accountListTile,
   // Check for the presence of 'Testnet' text within the Account List.
   bool containsTestnet = find
       .descendant(
-    of: accountListTile,
-    matching: find.text('Testnet'),
-  )
+        of: accountListTile,
+        matching: find.text('Testnet'),
+      )
       .evaluate()
       .isNotEmpty;
 
   // Check for 'Envoy' if isHotWallet is true, otherwise check for 'Passport'.
   bool containsEnvoyOrPassport = find
       .descendant(
-    of: accountListTile,
-    matching: find.text(isHotWallet ? 'Envoy' : 'Passport'),
-  )
+        of: accountListTile,
+        matching: find.text(isHotWallet ? 'Envoy' : 'Passport'),
+      )
       .evaluate()
       .isNotEmpty;
 
@@ -882,17 +950,17 @@ Future<bool> isAccountTaproot(
   // Check for the presence of 'Taproot', and 'Envoy' texts within the Account List.
   bool containsTaproot = find
       .descendant(
-    of: accountListTile,
-    matching: find.text('Taproot'),
-  )
+        of: accountListTile,
+        matching: find.text('Taproot'),
+      )
       .evaluate()
       .isNotEmpty;
 
   bool containsEnvoy = find
       .descendant(
-    of: accountListTile,
-    matching: find.text('Envoy'),
-  )
+        of: accountListTile,
+        matching: find.text('Envoy'),
+      )
       .evaluate()
       .isNotEmpty;
 
@@ -954,6 +1022,25 @@ Future<void> slowSearchAndToggleText(
   await tester.pump(Durations.long2);
 }
 
+Future<void> findAndTapFirstAccText(
+    WidgetTester tester, String accountText) async {
+  await tester.pump(Durations.long2);
+
+  // Find the AccountListTile containing the specified accountText.
+  final accountListTileFinder =
+      find.widgetWithText(AccountListTile, accountText);
+
+  // Check if the widget is found.
+  if (accountListTileFinder.evaluate().isNotEmpty) {
+    // Tap on the first found widget.
+    await tester.tap(accountListTileFinder.first);
+    await tester.pump(Durations.long2);
+  } else {
+    throw Exception(
+        'No AccountListTile found with text containing $accountText');
+  }
+}
+
 Future<void> fromHomeToAdvancedMenu(WidgetTester tester) async {
   await pressHamburgerMenu(tester);
   await goToSettings(tester);
@@ -977,17 +1064,21 @@ Future<void> waitForTealTextAndTap(
   final Finder textFinder = find.text(textToFind);
 
   // Wait until the text is found initially
-  await tester.pumpUntilFound(textFinder, tries: 20, duration: Durations.long2);
+  await tester.pumpUntilFound(textFinder,
+      tries: 100, duration: Durations.long2);
 
   // Set the maximum number of retries to wait for the text to turn Teal
-  const int maxRetries = 10;
+  const int maxRetries = 20;
   int retryCount = 0;
 
   // Wait the text button to settle
-  await tester.pump(const Duration(milliseconds: 3000));
+  await tester.pump(const Duration(milliseconds: 3500));
   // Loop until the text's color is Teal or the maximum retries are reached
   bool isTeal = false;
   while (!isTeal && retryCount < maxRetries) {
+    // Find the text again
+    await tester.pumpUntilFound(textFinder,
+        tries: 100, duration: Durations.long2);
     // Get the Text widget
     final Text textWidget = tester.widget<Text>(textFinder);
 
@@ -1012,9 +1103,13 @@ Future<void> waitForTealTextAndTap(
   await tester.pump(Durations.long2);
 }
 
-Future<void> openPassportAccount(WidgetTester tester, String accountPassportName) async {
-  await tester.pump();
-  final hotWalletButton = find.text(accountPassportName);
+Future<void> openPassportAccount(
+    WidgetTester tester, String accountPassportName) async {
+  await tester.pump(Durations.long2);
+
+  // Find the first widget with the specified text
+  final hotWalletButton = find.text(accountPassportName).first;
+
   expect(hotWalletButton, findsOneWidget);
 
   await tester.tap(hotWalletButton);
@@ -1048,10 +1143,10 @@ extension PumpUntilFound on WidgetTester {
   /// present in the widget tree. It is especially handy when dealing with
   /// never-ending animations like a `CircularProgressIndicator`.
   Future<void> pumpUntilFound(
-      Finder finder, {
-        Duration duration = const Duration(milliseconds: 100),
-        int tries = 10,
-      }) async {
+    Finder finder, {
+    Duration duration = const Duration(milliseconds: 100),
+    int tries = 10,
+  }) async {
     for (var i = 0; i < tries; i++) {
       await pump(duration);
 
@@ -1062,4 +1157,71 @@ extension PumpUntilFound on WidgetTester {
       }
     }
   }
+}
+
+Future<bool> searchTaprootAccType(WidgetTester tester) async {
+// Find all AccountListTile widgets
+  var accountListTileFinder = find.byType(AccountListTile);
+
+// Flag to track if a matching account is found
+  bool foundTaprootAccount = false;
+
+// Iterate through each AccountListTile and verify the contents
+  for (var i = 0; i < accountListTileFinder.evaluate().length; i++) {
+    final accountBadge = accountListTileFinder.at(i);
+    bool isAccTaproot = await isAccountTaproot(tester, accountBadge);
+
+//if any account is Taproot, break
+    if (isAccTaproot) {
+      foundTaprootAccount = true;
+      break;
+    }
+  }
+
+  return foundTaprootAccount;
+}
+
+Future<bool> searchTestTaprootAccType(WidgetTester tester) async {
+// Find all AccountListTile widgets
+  var accountListTileFinder = find.byType(AccountListTile);
+
+// Flag to track if a matching account is found
+  bool foundTestnetTaprootAccount = false;
+
+// Iterate through each AccountListTile and verify the contents
+  for (var i = 0; i < accountListTileFinder.evaluate().length; i++) {
+    final accountBadge = accountListTileFinder.at(i);
+    bool isAccTestnetTaproot =
+        await isAccountTestnetTaproot(tester, accountBadge);
+
+//if any account is hot wallet for Testnet Taproot, break
+    if (isAccTestnetTaproot) {
+      foundTestnetTaprootAccount = true;
+      break;
+    }
+  }
+
+  return foundTestnetTaprootAccount;
+}
+
+Future<bool> searchTestnetAccType(WidgetTester tester) async {
+// Find all AccountListTile widgets
+  var accountListTileFinder = find.byType(AccountListTile);
+
+// Flag to track if a matching account is found
+  bool foundTestnetAccount = false;
+
+// Iterate through each AccountListTile and verify the contents
+  for (var i = 0; i < accountListTileFinder.evaluate().length; i++) {
+    final accountBadge = accountListTileFinder.at(i);
+    bool isAccTestnet = await isAccountTestnet(tester, accountBadge);
+
+//if any account is Testnet, break
+    if (isAccTestnet) {
+      foundTestnetAccount = true;
+      break;
+    }
+  }
+
+  return foundTestnetAccount;
 }
