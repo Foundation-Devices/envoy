@@ -25,7 +25,7 @@ Future<void> main() async {
   try {
     // Uncomment the line below if you want to start from the beginning,
     // but then you MUST call setAppFromStart or setUpWalletFromSeedViaMagicRecover.
-    //await resetEnvoyData();
+    await resetEnvoyData();
     await initSingletons();
 
     group('Hot wallet tests', () {
