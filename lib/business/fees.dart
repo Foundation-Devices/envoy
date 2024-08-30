@@ -94,11 +94,13 @@ class Fees {
   static const String FEE_RATE_PREFS = "fees";
   static final Fees _instance = Fees._internal();
 
-  static const _mempoolInstance = "https://mempool.space";
   static const mempoolFoundationInstance = "https://mempool.foundation.xyz";
+  static const testnetMempoolFoundationInstance =
+      "https://testnet-mempool.foundation.xyz";
   static const _mempoolRecommendedFeesEndpoints = {
     Network.Mainnet: "$mempoolFoundationInstance/api/v1/fees/recommended",
-    Network.Testnet: "$_mempoolInstance/testnet/api/v1/fees/recommended",
+    Network.Testnet:
+        "$testnetMempoolFoundationInstance/api/v1/fees/recommended",
     Network.Signet:
         "$mutinynetMempoolFoundationInstance/api/v1/fees/recommended"
   };
@@ -107,7 +109,8 @@ class Fees {
 
   static const _mempoolBlocksFeesEndpoints = {
     Network.Mainnet: "$mempoolFoundationInstance/api/v1/fees/mempool-blocks",
-    Network.Testnet: "$_mempoolInstance/testnet/api/v1/fees/mempool-blocks",
+    Network.Testnet:
+        "$testnetMempoolFoundationInstance/api/v1/fees/mempool-blocks",
     Network.Signet:
         "$mutinynetMempoolFoundationInstance/api/v1/fees/mempool-blocks"
   };
