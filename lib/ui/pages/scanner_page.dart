@@ -192,7 +192,10 @@ class ScannerPageState extends State<ScannerPage> {
         if (_lastScan == barcode.code) {
           return;
         }
-        _onDetect(barcode.code!, barcode.rawBytes, context);
+
+        if (context.mounted) {
+          _onDetect(barcode.code!, barcode.rawBytes, context);
+        }
         _lastScan = barcode.code ?? '';
       }
     });

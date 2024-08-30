@@ -114,7 +114,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) {},
+      onPopInvokedWithResult: (didPop, _) {},
       child: OnboardingPage(
           clipArt: Container(
             alignment: Alignment.topCenter,
@@ -203,7 +203,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
     bool isAndroid = Platform.isAndroid;
     return PopScope(
       canPop: false,
-      onPopInvoked: (_) async {
+      onPopInvokedWithResult: (_, __) async {
         if (_androidBackupInfoPage != 0) {
           setState(() {
             _androidBackupInfoPage = 0;

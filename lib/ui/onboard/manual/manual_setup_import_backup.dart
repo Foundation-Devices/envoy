@@ -91,7 +91,7 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
 
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, _) {
         if (!didPop) {
           setState(() {
             _isRecoveryInProgress = false;

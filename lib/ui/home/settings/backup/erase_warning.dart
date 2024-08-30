@@ -502,7 +502,7 @@ class AndroidBackupWarning extends StatelessWidget {
   Widget build(BuildContext context) {
     bool iphoneSE = MediaQuery.of(context).size.height < 700;
     return PopScope(
-      onPopInvoked: (_) {
+      onPopInvokedWithResult: (_, __) {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return const WalletSetupSuccess();
         }));

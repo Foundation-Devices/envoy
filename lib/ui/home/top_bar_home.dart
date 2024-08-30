@@ -40,9 +40,12 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 10)).then((value) {
-      _setOptionWidgetsForTabWidgets(
-          GoRouter.of(context).routerDelegate.currentConfiguration.fullPath);
+    Future.delayed(const Duration(milliseconds: 10)).then((_) {
+      if (context.mounted) {
+        _setOptionWidgetsForTabWidgets(
+            // ignore: use_build_context_synchronously
+            GoRouter.of(context).routerDelegate.currentConfiguration.fullPath);
+      }
     });
   }
 

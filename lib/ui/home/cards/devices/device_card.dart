@@ -79,7 +79,7 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
 
     return PopScope(
       canPop: !ref.watch(homePageOptionsVisibilityProvider),
-      onPopInvoked: (bool didPop) async {
+      onPopInvokedWithResult: (bool didPop, _) async {
         if (!didPop) {
           HomePageState.of(context)?.toggleOptions();
         }
@@ -156,7 +156,9 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                   if (!isKeyboardShown) {
                     Future.delayed(const Duration(milliseconds: 200))
                         .then((value) {
-                      FocusScope.of(context).requestFocus(focusNode);
+                      if (context.mounted) {
+                        FocusScope.of(context).requestFocus(focusNode);
+                      }
                     });
                     isKeyboardShown = true;
                     textEntry = TextEntry(

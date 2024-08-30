@@ -51,7 +51,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: _selectedCoin == null,
-      onPopInvoked: (bool didPop) async {
+      onPopInvokedWithResult: (bool didPop, _) async {
         if (_selectedCoin != null) {
           setState(() {
             _selectedCoin = null;

@@ -592,7 +592,7 @@ class _CancelTransactionProgressState
   Widget build(BuildContext context) {
     return PopScope(
       canPop: broadcastProgress != BroadcastProgress.inProgress,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, _) {
         clearSpendState(ProviderScope.containerOf(context));
       },
       child: background(
