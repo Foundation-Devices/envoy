@@ -116,7 +116,7 @@ class FadingEdgeScrollView extends StatefulWidget {
   }) {
     return FadingEdgeScrollView._internal(
       key: key,
-      scrollController: child.controller,
+      scrollController: child.controller!,
       scrollDirection: child.scrollDirection,
       reverse: child.reverse,
       gradientFractionOnStart: gradientFractionOnStart,
