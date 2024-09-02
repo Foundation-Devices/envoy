@@ -1225,3 +1225,48 @@ Future<bool> searchTestnetAccType(WidgetTester tester) async {
 
   return foundTestnetAccount;
 }
+
+Future<void> disableAllNetworks(WidgetTester tester) async {
+  await fromHomeToAdvancedMenu(tester);
+  // Check if "Testnet" is already enabled
+  bool testnetAlreadyEnabled = await isSlideSwitchOn(tester, "Testnet");
+  if (testnetAlreadyEnabled) {
+    // Disable "Testnet"
+    await findAndToggleSettingsSwitch(tester, "Testnet");
+  }
+
+  // Check if "Taproot" is already enabled
+  bool taprootAlreadyEnabled = await isSlideSwitchOn(tester, "Taproot");
+  if (taprootAlreadyEnabled) {
+    // Disable "Taproot"
+    await findAndToggleSettingsSwitch(tester, "Taproot");
+  }
+
+  // Check if "Signet" is already enabled
+  bool signetAlreadyEnabled = await isSlideSwitchOn(tester, "Signet");
+  if (signetAlreadyEnabled) {
+    // Disable "Signet"
+    await findAndToggleSettingsSwitch(tester, "Signet");
+  }
+  // back to home
+  await pressHamburgerMenu(tester);
+  await pressHamburgerMenu(tester);
+}
+
+Future<void> clearPromptStates(WidgetTester tester) async {
+  await pressHamburgerMenu(tester);
+  await goToSettings(tester);
+
+  final devOptions = find.text('Dev options');
+  expect(devOptions, findsOneWidget);
+  await tester.tap(devOptions);
+  await tester.pump(Durations.long2);
+
+  final clearPrompts = find.text('Clear Prompt states');
+  expect(clearPrompts, findsOneWidget);
+  await tester.tap(clearPrompts);
+  await tester.pump(Durations.long2);
+
+  await pressHamburgerMenu(tester);
+  await pressHamburgerMenu(tester);
+}

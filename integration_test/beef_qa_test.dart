@@ -113,6 +113,90 @@ Future<void> main() async {
         await enterTextInField(tester, find.byType(TextField), 'Mobile Wallet');
         await saveName(tester);
       });
+
+      testWidgets('Testing Prompts for Wallets with Balances', (tester) async {
+        await goBackHome(tester);
+
+        await clearPromptStates(tester);
+
+        String tapTheAboveCardPrompt = "Tap the above card to receive Bitcoin.";
+        Finder firstPrompt = find.text(tapTheAboveCardPrompt);
+        expect(firstPrompt, findsOneWidget);
+
+        // check Dismiss button functionality
+        final dismissButton = find.text('Dismiss');
+        await tester.tap(dismissButton);
+        await tester.pump(Durations.long2);
+        firstPrompt = find.text(tapTheAboveCardPrompt);
+        expect(firstPrompt, findsNothing);
+
+        // Clear prompt states
+        await clearPromptStates(tester);
+        firstPrompt = find.text(tapTheAboveCardPrompt);
+        expect(firstPrompt, findsOneWidget);
+
+        // Dismiss prompt via opening account
+        await fromHomeToHotWallet(tester);
+        // tap again to exit
+        await fromHomeToHotWallet(tester);
+        firstPrompt = find.text(tapTheAboveCardPrompt);
+        expect(firstPrompt, findsNothing);
+
+        // Clear prompt states
+        await clearPromptStates(tester);
+        firstPrompt = find.text(tapTheAboveCardPrompt);
+        expect(firstPrompt, findsOneWidget);
+
+        // Enable testnet
+        final continueButtonFromDialog = find.text('Continue');
+        await fromHomeToAdvancedMenu(tester);
+        await findAndToggleSettingsSwitch(tester, "Testnet");
+        await tester.tap(continueButtonFromDialog);
+        await tester.pump(Durations.long2);
+        await pressHamburgerMenu(tester); // back to settings menu
+        await pressHamburgerMenu(tester);
+
+        String tapTheAboveCardsPrompt =
+            "Tap any of the above cards to receive Bitcoin.";
+        Finder secondPrompt = find.text(tapTheAboveCardsPrompt);
+        expect(secondPrompt, findsOneWidget);
+
+        //Disable Testnet
+        await fromHomeToAdvancedMenu(tester);
+        await findAndToggleSettingsSwitch(tester, "Testnet");
+
+        //Enable Signet
+        await findAndToggleSettingsSwitch(tester, "Signet");
+        await tester.tap(continueButtonFromDialog);
+        await tester.pump(Durations.long2);
+        await pressHamburgerMenu(tester);
+        await pressHamburgerMenu(tester);
+
+        secondPrompt = find.text(tapTheAboveCardsPrompt);
+        expect(secondPrompt, findsOneWidget);
+
+        //Disable Signet
+        await fromHomeToAdvancedMenu(tester);
+        await findAndToggleSettingsSwitch(tester, "Signet");
+
+        //Enable Taproot
+        await findAndToggleSettingsSwitch(tester, "Taproot");
+        await pressHamburgerMenu(tester);
+        await pressHamburgerMenu(tester);
+
+        secondPrompt = find.text(tapTheAboveCardsPrompt);
+        expect(secondPrompt, findsOneWidget);
+
+        // check Dismiss button functionality
+        await tester.tap(dismissButton);
+        await tester.pump(Durations.long2);
+        secondPrompt = find.text(tapTheAboveCardsPrompt);
+        expect(secondPrompt, findsNothing);
+
+        // Disable Taproot
+        await fromHomeToAdvancedMenu(tester);
+        await findAndToggleSettingsSwitch(tester, "Taproot");
+      });
     });
 
     group('Passport wallet tests', () {
@@ -136,6 +220,86 @@ Future<void> main() async {
 
         await tester.pumpWidget(const EnvoyApp());
         await setUpWalletFromSeedViaMagicRecover(tester, seed);
+      });
+      testWidgets('Testing Prompts for Wallets with Balances', (tester) async {
+        await goBackHome(tester);
+
+        await disableAllNetworks(tester);
+        await clearPromptStates(tester);
+
+        String tapTheAboveCardsPrompt =
+            "Tap any of the above cards to receive Bitcoin.";
+        Finder tapCardsPromptFinder = find.text(tapTheAboveCardsPrompt);
+        expect(tapCardsPromptFinder, findsOneWidget);
+
+        // Dismiss prompt via opening account
+        await fromHomeToHotWallet(tester);
+        // tap again to exit
+        await fromHomeToHotWallet(tester);
+
+        tapCardsPromptFinder = find.text(tapTheAboveCardsPrompt);
+        expect(tapCardsPromptFinder, findsNothing);
+
+        String swipeBalancePrompt = "Swipe to show and hide your balance.";
+        Finder swipeBalancePromptFinder = find.text(swipeBalancePrompt);
+        expect(swipeBalancePromptFinder, findsOneWidget);
+
+        // check Dismiss button functionality
+        final dismissButton = find.text('Dismiss');
+        await tester.tap(dismissButton);
+        await tester.pump(Durations.long2);
+        swipeBalancePromptFinder = find.text(swipeBalancePrompt);
+        expect(swipeBalancePromptFinder, findsNothing);
+
+        await clearPromptStates(tester);
+
+        // Dismiss "Tap above card to receive bitcoin" prompt
+        await tester.tap(dismissButton);
+        await tester.pump(Durations.long2);
+        tapCardsPromptFinder = find.text(tapTheAboveCardsPrompt);
+        expect(tapCardsPromptFinder, findsNothing);
+
+        swipeBalancePromptFinder = find.text(swipeBalancePrompt);
+        expect(swipeBalancePromptFinder, findsOneWidget);
+
+        const String reorderPromptMessage =
+            "Hold to drag and reorder your accounts.";
+        Finder reorderPromptFinder = find.text(reorderPromptMessage);
+
+        final walletWithBalance = find.text("GH TEST ACC (#1)");
+        await tester.timedDrag(walletWithBalance, const Offset(-300, 0),
+            const Duration(seconds: 1));
+        await tester.pumpUntilFound(reorderPromptFinder);
+
+        swipeBalancePromptFinder = find.text(swipeBalancePrompt);
+        expect(swipeBalancePromptFinder, findsNothing);
+        await tester.timedDrag(walletWithBalance, const Offset(-300, 0),
+            const Duration(seconds: 1));
+
+        await tester.tap(dismissButton);
+        await tester.pump(Durations.long2);
+        reorderPromptFinder = find.text(reorderPromptMessage);
+        expect(tapCardsPromptFinder, findsNothing);
+
+        await clearPromptStates(tester);
+
+        await tester.tap(dismissButton);
+        await tester.pump(Durations.long2);
+        await tester.tap(dismissButton);
+        await tester.pump(Durations.long2);
+
+        reorderPromptFinder = find.text(reorderPromptMessage);
+        expect(reorderPromptFinder, findsOneWidget);
+
+        Finder dragIcon = find.byIcon(Icons.drag_handle);
+        await tester.timedDrag(
+            dragIcon.first, const Offset(0, 120), const Duration(seconds: 1));
+        await tester.pump(Durations.long2);
+        await Future.delayed(const Duration(seconds: 1));
+
+        await tester.pump(Durations.long2);
+        reorderPromptFinder = find.text(reorderPromptMessage);
+        expect(tapCardsPromptFinder, findsNothing);
       });
       testWidgets('Edit device name', (tester) async {
         await goBackHome(tester);
