@@ -38,6 +38,13 @@ class AddressWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextScaler textScaler = MediaQuery.of(context).textScaler.clamp(
+          minScaleFactor: 0.8,
+          maxScaleFactor: 1.8,
+        );
+    double baseFontScale = 1;
+    double textScaleFactor = textScaler.scale(baseFontScale);
+
     return GestureDetector(
       onLongPress: () async {
         bool dismissed = await EnvoyStorage()
@@ -53,6 +60,7 @@ class AddressWidget extends StatelessWidget {
         }
       },
       child: RichText(
+        textScaler: TextScaler.linear(textScaleFactor),
         text: TextSpan(
           children: short
               ? _buildShortAddressTextSpans(address)

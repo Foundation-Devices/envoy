@@ -74,6 +74,13 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
 
   @override
   Widget build(context) {
+    TextScaler textScaler = MediaQuery.of(context).textScaler.clamp(
+          minScaleFactor: 0.8,
+          maxScaleFactor: 1.8,
+        );
+    double baseFontScale = 1;
+    double textScaleFactor = textScaler.scale(baseFontScale);
+
     ref.listen(sendScreenUnitProvider, (_, AmountDisplayUnit next) {
       widget.setDisplayAmount(next);
 
@@ -128,32 +135,34 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
           isFormattedAmountEmpty
               ? const SizedBox.shrink()
               : RichText(
+                  textScaler: TextScaler.linear(textScaleFactor),
                   text: TextSpan(
                       style: Theme.of(context).textTheme.titleSmall!.copyWith(
                           color: EnvoyColors.accentPrimary, fontSize: 16),
                       children: [
-                      if (unit == AmountDisplayUnit.fiat)
-                        WidgetSpan(
-                          alignment: PlaceholderAlignment.middle,
-                          child: SizedBox(
-                              height: 20, child: getUnitIcon(widget.account!)),
+                        if (unit == AmountDisplayUnit.fiat)
+                          WidgetSpan(
+                            alignment: PlaceholderAlignment.middle,
+                            child: SizedBox(
+                                height: 20,
+                                child: getUnitIcon(widget.account!)),
+                          ),
+                        TextSpan(
+                          text: unit != AmountDisplayUnit.fiat
+                              ? ExchangeRate().getFormattedAmount(
+                                  widget.amountSats ?? 0,
+                                  wallet: widget.account?.wallet)
+                              : (Settings().displayUnit == DisplayUnit.btc
+                                  ? getDisplayAmount(
+                                      widget.amountSats ?? 0,
+                                      AmountDisplayUnit.btc,
+                                    )
+                                  : getDisplayAmount(
+                                      widget.amountSats ?? 0,
+                                      AmountDisplayUnit.sat,
+                                    )),
                         ),
-                      TextSpan(
-                        text: unit != AmountDisplayUnit.fiat
-                            ? ExchangeRate().getFormattedAmount(
-                                widget.amountSats ?? 0,
-                                wallet: widget.account?.wallet)
-                            : (Settings().displayUnit == DisplayUnit.btc
-                                ? getDisplayAmount(
-                                    widget.amountSats ?? 0,
-                                    AmountDisplayUnit.btc,
-                                  )
-                                : getDisplayAmount(
-                                    widget.amountSats ?? 0,
-                                    AmountDisplayUnit.sat,
-                                  )),
-                      ),
-                    ])),
+                      ])),
         ],
       ),
       onPressed: () {

@@ -11,6 +11,7 @@ import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
+import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -80,9 +81,13 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: EnvoySpacing.medium2,
-                                horizontal: optimalAddressHorizontalPadding),
+                            padding: EdgeInsets.only(
+                              top: context.isSmallScreen
+                                  ? EnvoySpacing.xs
+                                  : EnvoySpacing.small,
+                              left: optimalAddressHorizontalPadding * 0.5,
+                              right: optimalAddressHorizontalPadding * 0.5,
+                            ),
                             child: AddressWidget(
                               address: snapshot.data!,
                               short: false,
