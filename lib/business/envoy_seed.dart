@@ -261,6 +261,8 @@ class EnvoySeed {
     await removeSeedFromSecure();
     EnvoyReport().log("QA", "Removed seed from secure storage!");
 
+    //add minor delay to allow the seed to be removed from secure storage (specifically on iOS)
+    await Future.delayed(const Duration(milliseconds: 500));
     return Backup.delete(seed!, Settings().envoyServerAddress, Tor.instance);
   }
 
@@ -510,8 +512,8 @@ class EnvoySeed {
     }
   }
 
-  removeSeedFromSecure() {
-    LocalStorage().deleteSecure(SEED_KEY);
+  Future<void> removeSeedFromSecure() async {
+    await LocalStorage().deleteSecure(SEED_KEY);
   }
 
   Future<String?> _getNonSecure() async {
