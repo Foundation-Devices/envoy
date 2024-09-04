@@ -398,7 +398,7 @@ Future<void> setUpWalletFromSeedViaMagicRecover(
   final manuallyConfigureSeedWords = find.text('Manually Configure Seed Words');
   expect(manuallyConfigureSeedWords, findsOneWidget);
   await tester.tap(manuallyConfigureSeedWords);
-  await tester.pump(const Duration(milliseconds: 500));
+  await tester.pump(const Duration(milliseconds: 1000));
 
   final importSeedButton = find.text('Import Seed');
   expect(importSeedButton, findsOneWidget);
@@ -425,7 +425,7 @@ Future<void> setUpWalletFromSeedViaMagicRecover(
   expect(doneButton, findsOneWidget);
   await tester.tap(doneButton);
   await tester.pump(const Duration(milliseconds: 500));
-  await tester.pumpAndSettle();
+  //await tester.pumpAndSettle(); // never gonna settle cause things is spinning
 
   final restoreButtonFromDialog = find.text('Restore');
   await tester.pumpUntilFound(restoreButtonFromDialog,
