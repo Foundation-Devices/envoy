@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:envoy/business/devices.dart';
@@ -120,9 +119,8 @@ class _DevicesListState extends State<DevicesList> {
             padding: const EdgeInsets.all(EnvoySpacing.medium2),
             child: ScrollGradientMask(
               child: CustomScrollView(
-                physics: Platform.isIOS
-                    ? const BouncingScrollPhysics()
-                    : const ClampingScrollPhysics(),
+                shrinkWrap: true,
+                physics: const ClampingScrollPhysics(),
                 slivers: [
                   const SliverPadding(
                       padding:

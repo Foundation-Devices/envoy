@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:animations/animations.dart';
@@ -558,9 +557,7 @@ class _TransactionReviewScreenState
           ),
           Flexible(
             child: SingleChildScrollView(
-              physics: Platform.isIOS
-                  ? const BouncingScrollPhysics()
-                  : const ClampingScrollPhysics(),
+              physics: const ClampingScrollPhysics(),
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 160),
                 child: Column(

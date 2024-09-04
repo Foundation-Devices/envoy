@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 /// A scaffold that provides a consistent look and feel for the app.
@@ -80,9 +78,8 @@ class EnvoyScaffold extends StatelessWidget {
                 : null),
         //scrollable body
         body: CustomScrollView(
-          physics: Platform.isIOS
-              ? const BouncingScrollPhysics()
-              : const ClampingScrollPhysics(),
+          shrinkWrap: true,
+          physics: const ClampingScrollPhysics(),
           slivers: [
             SliverFillRemaining(
               hasScrollBody: hasScrollBody,
