@@ -961,10 +961,10 @@ packages:
     dependency: "direct main"
     description:
       name: path_provider
-      sha256: b27217933eeeba8ff24845c34003b003b2b22151de3c908d0e679e8fe1aa078b
+      sha256: fec0d61223fba3154d87759e3cc27fe2c8dc498f6386c6d6fc80d1afdd1bf378
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.2"
+    version: "2.1.4"
   path_provider_android:
     dependency: transitive
     description:
@@ -1496,10 +1496,10 @@ packages:
     dependency: "direct main"
     description:
       name: tor
-      sha256: "7f56272076c044231ffb32c162d381c287fceb7f3f0174ac7c512d60e141f138"
+      sha256: eeed80e5c912a1806c2f81825c12e84f4dc5a0b50aebedea59e3a8ba53df3142
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.6"
+    version: "0.0.8"
   typed_data:
     dependency: "direct main"
     description:
