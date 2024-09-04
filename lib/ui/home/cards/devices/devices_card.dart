@@ -119,8 +119,6 @@ class _DevicesListState extends State<DevicesList> {
             padding: const EdgeInsets.all(EnvoySpacing.medium2),
             child: ScrollGradientMask(
               child: CustomScrollView(
-                shrinkWrap: true,
-                physics: const ClampingScrollPhysics(),
                 slivers: [
                   const SliverPadding(
                       padding:

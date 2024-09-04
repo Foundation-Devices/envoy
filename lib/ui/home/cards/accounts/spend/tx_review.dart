@@ -557,7 +557,6 @@ class _TransactionReviewScreenState
           ),
           Flexible(
             child: SingleChildScrollView(
-              physics: const ClampingScrollPhysics(),
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 160),
                 child: Column(

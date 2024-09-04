@@ -78,8 +78,6 @@ class EnvoyScaffold extends StatelessWidget {
                 : null),
         //scrollable body
         body: CustomScrollView(
-          shrinkWrap: true,
-          physics: const ClampingScrollPhysics(),
           slivers: [
             SliverFillRemaining(
               hasScrollBody: hasScrollBody,
