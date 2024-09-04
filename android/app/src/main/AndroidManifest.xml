@@ -17,7 +17,8 @@
         android:requestLegacyExternalStorage="true"
         android:restoreAnyVersion="true"
         tools:replace="android:allowBackup"
-        tools:targetApi="tiramisu">
+        tools:targetApi="tiramisu"
+        android:enableOnBackInvokedCallback="true">
 
         <activity
             android:name=".MainActivity"
