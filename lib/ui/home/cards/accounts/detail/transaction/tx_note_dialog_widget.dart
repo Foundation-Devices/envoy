@@ -73,7 +73,7 @@ class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
             padding: const EdgeInsets.all(EnvoySpacing.xs),
             child: TextFormField(
               maxLines: 2,
-              maxLength: 34,
+              maxLength: 255,
               controller: _textEditingController,
               textAlign: TextAlign.center,
               textInputAction: TextInputAction.done,
