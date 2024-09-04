@@ -140,13 +140,18 @@ class EnvoyApp extends StatelessWidget {
             scaffoldBackgroundColor: envoyBaseColor,
             useMaterial3: false),
         routerConfig: mainRouter,
-        scrollBehavior: CustomScrollBehavior(),
+        scrollBehavior: GlobalScrollBehavior(),
       ),
     );
   }
 }
 
-class CustomScrollBehavior extends MaterialScrollBehavior {
+class GlobalScrollBehavior extends ScrollBehavior {
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    return const ClampingScrollPhysics();
+  }
+
   @override
   Widget buildOverscrollIndicator(
       BuildContext context, Widget child, ScrollableDetails details) {
