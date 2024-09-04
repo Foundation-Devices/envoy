@@ -117,7 +117,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "azteco_redeem_modal__voucher_code":
             MessageLookupByLibrary.simpleMessage("CÓDIGO DO VALE"),
         "azteco_redeem_modal_amount":
-            MessageLookupByLibrary.simpleMessage("Amount"),
+            MessageLookupByLibrary.simpleMessage("Quantia"),
         "azteco_redeem_modal_cta1":
             MessageLookupByLibrary.simpleMessage("Resgatar"),
         "azteco_redeem_modal_fail_heading":
@@ -127,7 +127,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "azteco_redeem_modal_heading":
             MessageLookupByLibrary.simpleMessage("Resgatar Vale?"),
         "azteco_redeem_modal_saleDate":
-            MessageLookupByLibrary.simpleMessage("Sale Date"),
+            MessageLookupByLibrary.simpleMessage("Data de Venda"),
         "azteco_redeem_modal_success_heading":
             MessageLookupByLibrary.simpleMessage("Vale Resgatado"),
         "azteco_redeem_modal_success_subheading":
@@ -171,10 +171,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "btcpay_redeem_modal_name":
             MessageLookupByLibrary.simpleMessage("Nome:"),
         "btcpay_redeem_modal_wrongNetwork_heading":
-            MessageLookupByLibrary.simpleMessage("Wrong Network"),
+            MessageLookupByLibrary.simpleMessage("Rede Errada"),
         "btcpay_redeem_modal_wrongNetwork_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "This is an on-chain voucher. It cannot be redeemed to a Testnet or Signet account."),
+                "Este é um voucher on-chain. Não pode ser resgatado para uma conta Testnet ou Signet."),
         "buy_bitcoin_accountSelection_chooseAccount":
             MessageLookupByLibrary.simpleMessage(
                 "Escolher uma conta diferente"),
@@ -209,7 +209,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "buy_bitcoin_buyOptions_card_commingSoon":
             MessageLookupByLibrary.simpleMessage("Brevemente na tua área."),
         "buy_bitcoin_buyOptions_card_disabledInSettings":
-            MessageLookupByLibrary.simpleMessage("Disabled in settings."),
+            MessageLookupByLibrary.simpleMessage("Desactivado nas definições."),
         "buy_bitcoin_buyOptions_card_inEnvoy_heading":
             MessageLookupByLibrary.simpleMessage("Comprar na Envoy"),
         "buy_bitcoin_buyOptions_card_inEnvoy_subheading":
@@ -308,7 +308,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "buy_bitcoin_purchaseError_heading":
             MessageLookupByLibrary.simpleMessage("Algo Correu Mal"),
         "buy_bitcoin_purchaseError_purchaseID":
-            MessageLookupByLibrary.simpleMessage("Purchase ID:"),
+            MessageLookupByLibrary.simpleMessage("ID de Compra:"),
         "card_coin_locked":
             MessageLookupByLibrary.simpleMessage("Moeda Bloqueada"),
         "card_coin_selected":
@@ -403,7 +403,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Algumas moedas mais pequenas foram excluídas desta transação. Com a taxa de comissão escolhida, o custo da sua inclusão é superior ao seu valor."),
         "coincontrol_tx_detail_newFee":
-            MessageLookupByLibrary.simpleMessage("New Fee"),
+            MessageLookupByLibrary.simpleMessage("Nova Taxa"),
         "coincontrol_tx_detail_no_change":
             MessageLookupByLibrary.simpleMessage("Sem troco"),
         "coincontrol_tx_detail_passport_cta2":
@@ -446,14 +446,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "coindetails_overlay_date":
             MessageLookupByLibrary.simpleMessage("Data"),
         "coindetails_overlay_explorer":
-            MessageLookupByLibrary.simpleMessage("Explorer"),
+            MessageLookupByLibrary.simpleMessage("Explorador"),
         "coindetails_overlay_heading":
             MessageLookupByLibrary.simpleMessage("DETALHES DA MOEDA"),
         "coindetails_overlay_modal_explorer_heading":
-            MessageLookupByLibrary.simpleMessage("Open in Explorer"),
+            MessageLookupByLibrary.simpleMessage("Abrir no Explorador"),
         "coindetails_overlay_modal_explorer_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "You are about to leave Envoy and view this transaction on a blockchain explorer hosted by Foundation. Ensure you understand the privacy trade-offs before continuing. "),
+                "Estás prestes a deixar a Envoy e consultar esta transacção num explorador de blocos alojado pela Foundation. Certifica-te que compreendes os compromissos de privacidade antes de continuar."),
         "coindetails_overlay_noBoostNoFunds_heading":
             MessageLookupByLibrary.simpleMessage(
                 "Não é possível Reforçar a Transacção"),
@@ -465,7 +465,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "coindetails_overlay_paymentID":
             MessageLookupByLibrary.simpleMessage("ID de Pagamento"),
         "coindetails_overlay_rampFee":
-            MessageLookupByLibrary.simpleMessage("Ramp Fees"),
+            MessageLookupByLibrary.simpleMessage("Taxas de Ramp"),
         "coindetails_overlay_rampID":
             MessageLookupByLibrary.simpleMessage("ID de Ramp"),
         "coindetails_overlay_status":
@@ -594,7 +594,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_faq_answer_23": MessageLookupByLibrary.simpleMessage(
             "Sim. A partir da versão 1.4.0, a Envoy permite personalizar na íntegra as taxas de envio e disponibiliza também duas opções de taxa para seleção rápida - \'Padrão\' e \'Rápida\'. A opção \'Padrão\' tem como objetivo finalizar a tua transação em 60 minutos e a opção \'Rápida\' em 10 minutos. Estas taxas são estimativas baseadas no congestionamento da rede no momento em que a transacção é construída e ser-te-á sempre mostrado o custo de ambas as opções antes de finalizares a transação."),
         "envoy_faq_answer_24": MessageLookupByLibrary.simpleMessage(
-            "Yes! From v1.7 you can now purchase Bitcoin within Envoy and have it automatically deposited to your mobile account, or any connected Passport accounts. Just click on the buy button from the main Accounts screen."),
+            "Sim! A partir da versão 1.7 podes comprar Bitcoin directamente na Envoy e tê-lo automaticamente depositado na tua conta móvel ou em qualquer conta Passport associada. Basta clicar no botão comprar no menu principal de Contas."),
         "envoy_faq_answer_3": MessageLookupByLibrary.simpleMessage(
             "A Envoy é uma carteira simples de Bitcoin com poderosas funcionalidades de gestão de contas e privacidade, incluindo as Cópias Mágicas de Segurança.Utiliza a Envoy em conjunto com a carteira física Passport para questões relacionadas com configurações, actualizações de firmware e muito mais."),
         "envoy_faq_answer_4": MessageLookupByLibrary.simpleMessage(
@@ -649,8 +649,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "A Envoy é compatível com gastos em Lote?"),
         "envoy_faq_question_23": MessageLookupByLibrary.simpleMessage(
             "A Envoy permite a selecção personalizada das taxas de envio?"),
-        "envoy_faq_question_24":
-            MessageLookupByLibrary.simpleMessage("Can I buy Bitcoin in Envoy?"),
+        "envoy_faq_question_24": MessageLookupByLibrary.simpleMessage(
+            "Posso comprar Bitcoin na Envoy?"),
         "envoy_faq_question_3": MessageLookupByLibrary.simpleMessage(
             "O que é que a Envoy pode fazer?"),
         "envoy_faq_question_4": MessageLookupByLibrary.simpleMessage(
@@ -1051,7 +1051,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_import_seed_subheading": MessageLookupByLibrary.simpleMessage(
             "Escolhe uma das seguintes opções para importar uma semente existente.\n\nIrá ser possível importar uma Cópia de Segurança da Envoy mais tarde."),
         "manual_setup_importingSeedLoadingInfo":
-            MessageLookupByLibrary.simpleMessage("Importing Seed"),
+            MessageLookupByLibrary.simpleMessage("A importar a Semente"),
         "manual_setup_magicBackupDetected_heading":
             MessageLookupByLibrary.simpleMessage(
                 "Cópia Mágica de Segurança Detectada"),
@@ -1347,26 +1347,26 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_edit_transaction_requiredAmount":
             MessageLookupByLibrary.simpleMessage("Necessário para Reforçar"),
         "replaceByFee_modal_deletedInactiveTX_ramp_heading":
-            MessageLookupByLibrary.simpleMessage("Transactions Removed"),
+            MessageLookupByLibrary.simpleMessage("Transacções Removidas"),
         "replaceByFee_modal_deletedInactiveTX_ramp_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Incomplete purchases with the following Ramp IDs were removed from activity after 5 days."),
+                "Compras incompletas com as seguintes identificações Ramp foram removidas da actividade após 5 dias."),
         "replaceByFee_newFee_modal_heading":
-            MessageLookupByLibrary.simpleMessage("New Transaction Fee "),
+            MessageLookupByLibrary.simpleMessage("Nova Taxa de Transacção"),
         "replaceByFee_newFee_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "To boost your original transaction, you are about to pay a new fee of:"),
+                "Para reforçar a transacção original, estás prestes a pagar uma nova taxa de:"),
         "replaceByFee_newFee_modal_subheading_replacing":
             MessageLookupByLibrary.simpleMessage(
-                "This will replace the original fee of:"),
+                "Esta operação vai substituir a taxa original de:"),
         "replaceByFee_ramp_incompleteTransactionAutodeleteWarning":
             MessageLookupByLibrary.simpleMessage(
                 "Compras incompletas serão automaticamente removidas após 5 dias"),
         "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "A taxa escolhida só pode ser atingida adicionando mais moedas. A Envoy faz essa operação automaticamente e nunca irá incluir moedas bloqueadas. \n\nEsta seleção pode ser revista ou editada no ecrã seguinte."),
-        "scv_checkingDeviceSecurity":
-            MessageLookupByLibrary.simpleMessage("Checking Device Security"),
+        "scv_checkingDeviceSecurity": MessageLookupByLibrary.simpleMessage(
+            "A Verificar Segurança do Dispositivo"),
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirmar"),
         "send_keyboard_address_loading":
@@ -1390,7 +1390,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "A enviar o Máximo:\nAs taxas são deduzidas da quantia a enviar."),
         "settings_advanced": MessageLookupByLibrary.simpleMessage("Avançado"),
         "settings_advanced_enableBuyRamp":
-            MessageLookupByLibrary.simpleMessage("Buy in Envoy"),
+            MessageLookupByLibrary.simpleMessage("Compra na Envoy"),
         "settings_advanced_enabled_signet_modal_link":
             MessageLookupByLibrary.simpleMessage(
                 "Aprende mais sobre a Signet [[aqui]]."),
