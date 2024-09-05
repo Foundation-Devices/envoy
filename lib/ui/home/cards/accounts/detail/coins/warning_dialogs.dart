@@ -42,13 +42,13 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
     return Container(
       //clamp the width so it doesn't stretch too much
       width: (MediaQuery.sizeOf(context).width * 0.75).clamp(280, 400),
-      height: 448,
+      height: 428,
       padding: const EdgeInsets.symmetric(
           horizontal: EnvoySpacing.medium1, vertical: EnvoySpacing.medium1),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
             height: 34,
@@ -120,15 +120,17 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
               ),
             ],
           ),
-          Column(
+          Expanded(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               EnvoyButton(
                 label: S().component_back,
                 onTap: () {
                   Navigator.pop(context);
                 },
-                height: 48,
-                type: ButtonType.tertiary,
+                type: ButtonType.secondary,
                 state: ButtonState.defaultState,
               ),
               const SizedBox(height: EnvoySpacing.small),
@@ -147,7 +149,7 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
                 type: ButtonType.primary,
               ),
             ],
-          ),
+          ))
         ],
       ),
     );
