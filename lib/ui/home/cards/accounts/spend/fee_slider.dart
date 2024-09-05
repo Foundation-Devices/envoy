@@ -86,10 +86,13 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
       selectFeeTab(next);
     });
 
+    TextScaler feeTextScaler = MediaQuery.textScalerOf(context)
+        .clamp(minScaleFactor: 1, maxScaleFactor: 1.1);
+
     return Container(
         constraints: const BoxConstraints(
-          maxWidth: 184,
-          minWidth: 184,
+          maxWidth: 194,
+          minWidth: 194,
           maxHeight: 24,
         ),
         child: Consumer(
@@ -100,6 +103,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
             );
           },
           child: TabBar(
+              textScaler: feeTextScaler,
               controller: _tabController,
               onTap: (index) {
                 switch (index) {
@@ -182,8 +186,6 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                   child: Text(
                     S().coincontrol_tx_detail_fee_standard,
                     maxLines: 1,
-                    textScaler: MediaQuery.textScalerOf(context)
-                        .clamp(minScaleFactor: 1, maxScaleFactor: 1),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -191,8 +193,6 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                   child: Text(
                     S().coincontrol_tx_detail_fee_faster,
                     maxLines: 1,
-                    textScaler: MediaQuery.textScalerOf(context)
-                        .clamp(minScaleFactor: 1, maxScaleFactor: 1.3),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -200,8 +200,6 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                   child: Text(
                     S().coincontrol_tx_detail_fee_custom,
                     maxLines: 1,
-                    textScaler: MediaQuery.textScalerOf(context)
-                        .clamp(minScaleFactor: 1, maxScaleFactor: 1.3),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),

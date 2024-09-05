@@ -644,6 +644,10 @@ class _SlidingToggleState extends State<SlidingToggle>
       ),
       maxLines: 1,
       textDirection: TextDirection.ltr,
+      textScaler: MediaQuery.textScalerOf(context).clamp(
+        minScaleFactor: 1,
+        maxScaleFactor: 1,
+      ),
     )..layout();
 
     final textPainter2 = TextPainter(
@@ -653,10 +657,14 @@ class _SlidingToggleState extends State<SlidingToggle>
       ),
       maxLines: 1,
       textDirection: TextDirection.ltr,
+      textScaler: MediaQuery.textScalerOf(context).clamp(
+        minScaleFactor: 1,
+        maxScaleFactor: 1,
+      ),
     )..layout();
 
-    double textWidth1 = textPainter1.width * 2 + 40; // + for compensation
-    double textWidth2 = textPainter2.width * 2 + 40;
+    double textWidth1 = textPainter1.width * 2 + 42; // + for compensation
+    double textWidth2 = textPainter2.width * 2 + 42;
 
     double maxWidth = max(textWidth1, textWidth2);
     if (maxWidth > 180) {
@@ -735,8 +743,8 @@ class _SlidingToggleState extends State<SlidingToggle>
                                       textScaler:
                                           MediaQuery.textScalerOf(context)
                                               .clamp(
-                                        minScaleFactor: 0.8,
-                                        maxScaleFactor: 1.2,
+                                        minScaleFactor: 1,
+                                        maxScaleFactor: 1,
                                       ),
                                       maxLines: 1,
                                       style: textTheme.copyWith(
