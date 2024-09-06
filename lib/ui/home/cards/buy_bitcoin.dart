@@ -122,7 +122,7 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
     } else if (!navigatingToRegion) {
       Future.delayed(Duration.zero, () {
         if (mounted) {
-          GoRouter.of(context).go(ROUTE_ACCOUNTS_HOME);
+          GoRouter.of(context).pushReplacement(ROUTE_ACCOUNTS_HOME);
         }
       });
     }
