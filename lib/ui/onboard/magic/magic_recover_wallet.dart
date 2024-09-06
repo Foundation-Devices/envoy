@@ -414,7 +414,8 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                                     builder: (context) =>
                                         const WalletSetupSuccess())).then((_) {
                               //Try automatic recovery if the user press back button
-                              if (mounted) {
+                              if (mounted &&
+                                  !ref.read(triedAutomaticRecovery)) {
                                 _tryAutomaticRecovery();
                               }
                             });
