@@ -63,6 +63,7 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
             Image.asset(
               "assets/exclamation_triangle.png",
               height: 54,
+              color: EnvoyColors.danger,
               width: 54,
             ),
             Column(
