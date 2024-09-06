@@ -156,7 +156,7 @@ Future<String?> findSymbolOnScreen(
 
 Future<void> pressHamburgerMenu(WidgetTester tester) async {
   // check if the toast pop-up is there before pressing on to the tob bar
-  // await checkForToast(tester); // Do we really need this check anymore?
+  await checkForToast(tester);
   // go with top bar hamburger button
   final hamburgerIcon = find.byType(HamburgerMenu);
   expect(hamburgerIcon, findsOneWidget);
