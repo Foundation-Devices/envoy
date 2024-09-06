@@ -276,266 +276,261 @@ class SpendRequirementOverlayState
     //hide when dialog is shown, we dont want to remove overlay from the widget tree
     //if the user chose to stay in the coin selection screen and we need to show the overlay again
 
-    return PopScope<void>(
-        canPop: true,
-        onPopInvokedWithResult: (didPop, result) {
-          if (didPop) {
-            cancel(context);
-          }
-        },
-        child: AnimatedOpacity(
-          opacity: _hideOverlay ? 0 : 1,
-          duration: const Duration(milliseconds: 120),
-          child: GestureDetector(
-            onPanDown: (details) {
-              _animationController!.stop();
-            },
-            onPanUpdate: (details) {
-              setState(() {
-                Alignment update = _dragAlignment;
-                update += Alignment(
-                  0,
-                  details.delta.dy / (size.height / 2),
-                );
-                if (update.y >= _endAlignment.y) {
-                  _dragAlignment = update;
-                }
-              });
-            },
-            onPanEnd: (details) {
+    return BackButtonListener(
+      onBackButtonPressed: () async {
+        if (inTagSelectionMode) {
+          await cancel(context); // Make sure to await the async call
+        }
+        // Return true to always intercept the back button and avoid app exit
+        return true;
+      },
+      child: AnimatedOpacity(
+        opacity: _hideOverlay ? 0 : 1,
+        duration: const Duration(milliseconds: 120),
+        child: GestureDetector(
+          onPanDown: (details) {
+            _animationController!.stop();
+          },
+          onPanUpdate: (details) {
+            setState(() {
+              Alignment update = _dragAlignment;
+              update += Alignment(
+                0,
+                details.delta.dy / (size.height / 2),
+              );
+              if (update.y >= _endAlignment.y) {
+                _dragAlignment = update;
+              }
+            });
+          },
+          onPanEnd: (details) {
+            _isInMinimizedState = false;
+
+            double currentY = _dragAlignment.y;
+            if (currentY < 1.5) {
+              _runSpringSimulation(
+                  details.velocity.pixelsPerSecond, _endAlignment, size);
+            }
+            final unitsPerSecondX =
+                details.velocity.pixelsPerSecond.dx / size.width;
+            final unitsPerSecondY =
+                details.velocity.pixelsPerSecond.dy / size.height;
+            final unitsPerSecond = Offset(unitsPerSecondX, unitsPerSecondY);
+            final unitVelocity = unitsPerSecond.distance;
+
+            if (unitVelocity >= 1.8) {
+              _runSpringSimulation(
+                  details.velocity.pixelsPerSecond, _endAlignment, size);
+            }
+            //threshold to show dismiss dialog
+            if (currentY >= 1.2) {
+              _isInMinimizedState = true;
+              _runSpringSimulation(
+                  details.velocity.pixelsPerSecond, _minimizedAlignment, size);
+            }
+          },
+          onTap: () {
+            if (_isInMinimizedState) {
               _isInMinimizedState = false;
-
-              double currentY = _dragAlignment.y;
-              if (currentY < 1.5) {
-                _runSpringSimulation(
-                    details.velocity.pixelsPerSecond, _endAlignment, size);
-              }
-              final unitsPerSecondX =
-                  details.velocity.pixelsPerSecond.dx / size.width;
-              final unitsPerSecondY =
-                  details.velocity.pixelsPerSecond.dy / size.height;
-              final unitsPerSecond = Offset(unitsPerSecondX, unitsPerSecondY);
-              final unitVelocity = unitsPerSecond.distance;
-
-              if (unitVelocity >= 1.8) {
-                _runSpringSimulation(
-                    details.velocity.pixelsPerSecond, _endAlignment, size);
-              }
-              //threshold to show dismiss dialog
-              if (currentY >= 1.2) {
-                _isInMinimizedState = true;
-                _runSpringSimulation(details.velocity.pixelsPerSecond,
-                    _minimizedAlignment, size);
-              }
-            },
-            onTap: () {
-              if (_isInMinimizedState) {
-                _isInMinimizedState = false;
-                _runSpringSimulation(const Offset(0, 0), _endAlignment, size);
-              } else {
-                _isInMinimizedState = true;
-                _runSpringSimulation(
-                    const Offset(0, 0), _minimizedAlignment, size);
-              }
-            },
-            child: Align(
-              alignment: _dragAlignment,
-              child: Transform.scale(
-                scale: 1.0,
-                child: SizedBox(
-                    height: 230,
-                    width: MediaQuery.of(context).size.width,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            spreadRadius: 0,
-                            blurRadius: 10,
-                            offset: const Offset(
-                                0, 0), // changes position of shadow
-                          ),
-                        ],
-                      ),
-                      child: Card(
-                        elevation: 100,
-                        shadowColor: Colors.black,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(EnvoySpacing.medium1),
-                          ),
+              _runSpringSimulation(const Offset(0, 0), _endAlignment, size);
+            } else {
+              _isInMinimizedState = true;
+              _runSpringSimulation(
+                  const Offset(0, 0), _minimizedAlignment, size);
+            }
+          },
+          child: Align(
+            alignment: _dragAlignment,
+            child: Transform.scale(
+              scale: 1.0,
+              child: SizedBox(
+                  height: 230,
+                  width: MediaQuery.of(context).size.width,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          spreadRadius: 0,
+                          blurRadius: 10,
+                          offset:
+                              const Offset(0, 0), // changes position of shadow
                         ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            //Handle
-                            Container(
-                                width: 40,
-                                height: 4,
-                                margin: const EdgeInsets.only(
-                                    top: EnvoySpacing.xs,
-                                    bottom: EnvoySpacing.small),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey,
-                                  borderRadius: BorderRadius.circular(2),
-                                )),
-                            Expanded(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
+                      ],
+                    ),
+                    child: Card(
+                      elevation: 100,
+                      shadowColor: Colors.black,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(EnvoySpacing.medium1),
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          //Handle
+                          Container(
+                              width: 40,
+                              height: 4,
+                              margin: const EdgeInsets.only(
+                                  top: EnvoySpacing.xs,
+                                  bottom: EnvoySpacing.small),
+                              decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(2),
+                              )),
+                          Expanded(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: EnvoySpacing.small,
+                                    vertical: EnvoySpacing.small,
+                                  ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: EnvoySpacing.xs)),
+                                      showRequiredAmount
+                                          ? Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal:
+                                                          EnvoySpacing.small),
+                                              child: Row(
+                                                children: [
+                                                  Text(S()
+                                                      .coincontrol_edit_transaction_requiredAmount),
+                                                  const Spacer(),
+                                                  EnvoyAmount(
+                                                      amountSats:
+                                                          requiredAmount,
+                                                      amountWidgetStyle:
+                                                          AmountWidgetStyle
+                                                              .sendScreen,
+                                                      account: widget.account)
+                                                ],
+                                              ),
+                                            )
+                                          : const SizedBox(),
+                                      const Padding(
+                                          padding:
+                                              EdgeInsets.all(EnvoySpacing.xs)),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: EnvoySpacing.small),
+                                        child: Builder(builder: (_) {
+                                          List<Widget> sheetOptions = [];
+                                          if (inTagSelectionMode) {
+                                            sheetOptions.add(GestureDetector(
+                                              onTap: () {
+                                                cancel(context);
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(4.0),
+                                                child: Container(
+                                                  height: 20,
+                                                  width: 20,
+                                                  margin: const EdgeInsets.only(
+                                                      right: EnvoySpacing.xs),
+                                                  decoration: BoxDecoration(
+                                                    color: EnvoyColors.surface2,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            EnvoySpacing
+                                                                .medium1),
+                                                  ),
+                                                  child: const Icon(Icons.close,
+                                                      size: 14),
+                                                ),
+                                              ),
+                                            ));
+                                          }
+
+                                          sheetOptions.addAll([
+                                            Text(
+                                              S().coincontrol_edit_transaction_selectedAmount,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleSmall,
+                                            ),
+                                            const Spacer(),
+                                            EnvoyAmount(
+                                                amountSats: totalSelectedAmount,
+                                                amountWidgetStyle:
+                                                    AmountWidgetStyle
+                                                        .sendScreen,
+                                                account: widget.account)
+                                          ]);
+                                          return Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: sheetOptions,
+                                          );
+                                        }),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                AnimatedOpacity(
+                                  duration: const Duration(milliseconds: 200),
+                                  opacity: _isInMinimizedState ? 0 : 1,
+                                  child: Container(
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: EnvoySpacing.small,
-                                      vertical: EnvoySpacing.small,
                                     ),
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
                                       children: [
-                                        const Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: EnvoySpacing.xs)),
-                                        showRequiredAmount
-                                            ? Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal:
-                                                            EnvoySpacing.small),
-                                                child: Row(
-                                                  children: [
-                                                    Text(S()
-                                                        .coincontrol_edit_transaction_requiredAmount),
-                                                    const Spacer(),
-                                                    EnvoyAmount(
-                                                        amountSats:
-                                                            requiredAmount,
-                                                        amountWidgetStyle:
-                                                            AmountWidgetStyle
-                                                                .sendScreen,
-                                                        account: widget.account)
-                                                  ],
-                                                ),
-                                              )
-                                            : const SizedBox(),
+                                        EnvoyButton(
+                                          enabled: valid,
+                                          type: EnvoyButtonTypes.primaryModal,
+                                          inTagSelectionMode
+                                              ? S().tagged_tagDetails_sheet_cta1
+                                              : S().component_continue,
+                                          onTap: () =>
+                                              onPrimaryButtonTap(context),
+                                        ),
                                         const Padding(
                                             padding: EdgeInsets.all(
                                                 EnvoySpacing.xs)),
+                                        inTagSelectionMode
+                                            ? coinSelectionButton(context,
+                                                valid, inTagSelectionMode)
+                                            : transactionEditButton(context),
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: EnvoySpacing.small),
-                                          child: Builder(builder: (_) {
-                                            List<Widget> sheetOptions = [];
-                                            if (inTagSelectionMode) {
-                                              sheetOptions.add(GestureDetector(
-                                                onTap: () {
-                                                  cancel(context);
-                                                },
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(4.0),
-                                                  child: Container(
-                                                    height: 20,
-                                                    width: 20,
-                                                    margin:
-                                                        const EdgeInsets.only(
-                                                            right: EnvoySpacing
-                                                                .xs),
-                                                    decoration: BoxDecoration(
-                                                      color:
-                                                          EnvoyColors.surface2,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              EnvoySpacing
-                                                                  .medium1),
-                                                    ),
-                                                    child: const Icon(
-                                                        Icons.close,
-                                                        size: 14),
-                                                  ),
-                                                ),
-                                              ));
-                                            }
-
-                                            sheetOptions.addAll([
-                                              Text(
-                                                S().coincontrol_edit_transaction_selectedAmount,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleSmall,
-                                              ),
-                                              const Spacer(),
-                                              EnvoyAmount(
-                                                  amountSats:
-                                                      totalSelectedAmount,
-                                                  amountWidgetStyle:
-                                                      AmountWidgetStyle
-                                                          .sendScreen,
-                                                  account: widget.account)
-                                            ]);
-                                            return Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: sheetOptions,
-                                            );
-                                          }),
-                                        ),
+                                            padding: EdgeInsets.only(
+                                                bottom: MediaQuery.of(context)
+                                                        .padding
+                                                        .bottom +
+                                                    4))
                                       ],
                                     ),
                                   ),
-                                  AnimatedOpacity(
-                                    duration: const Duration(milliseconds: 200),
-                                    opacity: _isInMinimizedState ? 0 : 1,
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: EnvoySpacing.small,
-                                      ),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          EnvoyButton(
-                                            enabled: valid,
-                                            type: EnvoyButtonTypes.primaryModal,
-                                            inTagSelectionMode
-                                                ? S()
-                                                    .tagged_tagDetails_sheet_cta1
-                                                : S().component_continue,
-                                            onTap: () =>
-                                                onPrimaryButtonTap(context),
-                                          ),
-                                          const Padding(
-                                              padding: EdgeInsets.all(
-                                                  EnvoySpacing.xs)),
-                                          inTagSelectionMode
-                                              ? coinSelectionButton(context,
-                                                  valid, inTagSelectionMode)
-                                              : transactionEditButton(context),
-                                          Padding(
-                                              padding: EdgeInsets.only(
-                                                  bottom: MediaQuery.of(context)
-                                                          .padding
-                                                          .bottom +
-                                                      4))
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
+                                )
+                              ],
+                            ),
+                          )
+                        ],
                       ),
-                    )),
-              ),
+                    ),
+                  )),
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   Future<void> onPrimaryButtonTap(BuildContext context) async {
