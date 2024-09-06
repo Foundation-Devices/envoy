@@ -336,6 +336,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_lock_coin_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Bloquear monedas evitará que se utilicen en transacciones."),
+        "coincontrol_switchActivity":
+            MessageLookupByLibrary.simpleMessage("Actividad"),
+        "coincontrol_switchTags":
+            MessageLookupByLibrary.simpleMessage("Etiquetas"),
         "coincontrol_txDetail_ReviewTransaction":
             MessageLookupByLibrary.simpleMessage("Revisar Transacción"),
         "coincontrol_txDetail_cta1_passport":

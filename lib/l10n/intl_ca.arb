@@ -141,6 +141,8 @@
   "coincontrol_edit_transaction_selectedAmount": "Quantitat Seleccionada",
   "coincontrol_lock_coin_modal_cta1": "Bloqueja",
   "coincontrol_lock_coin_modal_subheading": "Bloquejar les monedes evitarà que s'utilitzin en transaccions",
+  "coincontrol_switchActivity": "Activitat",
+  "coincontrol_switchTags": "Etiquetes",
   "coincontrol_txDetail_ReviewTransaction": "Revisa la Transacció",
   "coincontrol_txDetail_cta1_passport": "Signar amb Passaport",
   "coincontrol_txDetail_heading_passport": "La vostra transacció està a punt per ser signada",

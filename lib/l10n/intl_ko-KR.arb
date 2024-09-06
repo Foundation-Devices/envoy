@@ -141,6 +141,8 @@
   "coincontrol_edit_transaction_selectedAmount": "Selected Amount",
   "coincontrol_lock_coin_modal_cta1": "Lock",
   "coincontrol_lock_coin_modal_subheading": "Locking coins will prevent them from being used in transactions",
+  "coincontrol_switchActivity": "Activity",
+  "coincontrol_switchTags": "Tags",
   "coincontrol_txDetail_ReviewTransaction": "Review Transaction",
   "coincontrol_txDetail_cta1_passport": "Sign with Passport",
   "coincontrol_txDetail_heading_passport": "Your transaction is ready \nto be signed",
