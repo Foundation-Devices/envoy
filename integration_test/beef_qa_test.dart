@@ -398,6 +398,15 @@ Future<void> main() async {
         if (!isSettingsSignetSwitchOn) {
           // find And Toggle Signet Switch
           await findAndToggleSettingsSwitch(tester, 'Signet');
+          // find Signet text on that pop-up
+          final popUpText = find.text('Enabling Signet');
+          // Check that a pop up comes up
+          await tester.pumpUntilFound(popUpText, duration: Durations.long1);
+
+          // exit Signet pop-up
+          final closeDialogButton = find.byIcon(Icons.close);
+          await tester.tap(closeDialogButton.last);
+          await tester.pump(Durations.long2);
         }
 
         String? currentSettingsFiatCode =
@@ -564,16 +573,13 @@ Future<void> main() async {
               await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
           expect(fiatCheckResult, isTrue);
         }
-
-        // Note: The "ramp" widget is only supported on Android and iOS platforms,
-        // so there is no reliable way to verify its functionality in this test.
       });
       testWidgets('Fiat in App', (tester) async {
         await goBackHome(tester);
 
         String someValidReceiveAddress =
-            'tb1qp8zlptrw507rmgqc87strn67s32gjqpkmkz4hv';
-        const String accountPassportName = "Mobile Wallet";
+            'bc1qy5fx88kwxd05rg5yugqcsnese0mypcjxwfur84';
+        const String accountPassportName = "GH TEST ACC (#1)";
 
         /// 1) Go to settings
         await pressHamburgerMenu(tester);
@@ -619,6 +625,9 @@ Future<void> main() async {
 
         if (currentSettingsFiatCode != null) {
           await tester.pump(Durations.long2);
+          final receivedFinder = find.text("Received");
+          await tester.pumpUntilFound(receivedFinder,
+              tries: 100, duration: Durations.long2);
           bool fiatCheckResult =
               await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
           expect(fiatCheckResult, isTrue);
