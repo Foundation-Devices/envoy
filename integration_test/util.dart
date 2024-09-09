@@ -340,9 +340,10 @@ Future<void> fromDotsMenuToEditName(WidgetTester tester) async {
 Future<void> exitEditName(WidgetTester tester) async {
   await tester.pump();
   final exitButton = find.byIcon(Icons.close);
-  expect(exitButton, findsOneWidget);
+  // expect(exitButton, findsOneWidget);
+  // Disabled because if the toast is visible, there will be two "Close" icons on the screen.
 
-  await tester.tap(exitButton);
+  await tester.tap(exitButton.first);
   await tester.pump(Durations.long2);
 }
 
