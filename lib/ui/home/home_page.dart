@@ -172,7 +172,7 @@ class HomePageState extends ConsumerState<HomePage>
     });
 
     EnvoySeed().backupCompletedStream.stream.listen((bool success) {
-      if (_backupWarningDisplayedMoreThan2minAgo) {
+      if (_backupWarningDisplayedMoreThan2minAgo && mounted) {
         _displayBackupToast(success);
         _backupWarningDisplayedMoreThan2minAgo = false;
       }
