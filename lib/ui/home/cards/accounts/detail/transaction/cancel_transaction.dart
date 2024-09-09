@@ -592,7 +592,7 @@ class _CancelTransactionProgressState
   Widget build(BuildContext context) {
     return PopScope(
       canPop: broadcastProgress != BroadcastProgress.inProgress,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, _) {
         clearSpendState(ProviderScope.containerOf(context));
       },
       child: background(
@@ -656,7 +656,7 @@ class _CancelTransactionProgressState
                                 Text(
                                   title,
                                   textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.titleLarge,
+                                  style: EnvoyTypography.heading,
                                 ),
                                 const Padding(padding: EdgeInsets.all(18)),
                                 Text(subTitle,

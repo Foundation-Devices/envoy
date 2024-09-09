@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:envoy/ui/components/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
@@ -15,18 +16,19 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/components/select_dropdown.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/ui/routes/route_state.dart';
 
 GlobalKey<EnvoyDropdownState> dropdownDivisionKey =
     GlobalKey<EnvoyDropdownState>();
 
-class SelectRegion extends StatefulWidget {
+class SelectRegion extends ConsumerStatefulWidget {
   const SelectRegion({super.key});
 
   @override
-  State<SelectRegion> createState() => _SelectRegionState();
+  ConsumerState<SelectRegion> createState() => _SelectRegionState();
 }
 
-class _SelectRegionState extends State<SelectRegion> {
+class _SelectRegionState extends ConsumerState<SelectRegion> {
   Country? selectedCountry;
   List<Country> countries = [];
   bool _dataLoaded = false;
@@ -116,9 +118,24 @@ class _SelectRegionState extends State<SelectRegion> {
 
   @override
   Widget build(BuildContext context) {
-    return _dataLoaded
-        ? buildWidget()
-        : const Center(child: CircularProgressIndicator());
+    return BackButtonListener(
+      // Using BackButtonListener instead of PopScope due to compatibility issues with go_router.
+      // Refer to the Flutter GitHub issue for more details: https://github.com/flutter/flutter/issues/138737
+      onBackButtonPressed: () async {
+        String path = ref.read(routePathProvider);
+        if (path == ROUTE_SELECT_REGION &&
+            await EnvoyStorage().getCountry() != null) {
+          if (context.mounted) {
+            context.go(ROUTE_BUY_BITCOIN);
+          }
+          return true;
+        }
+        return false;
+      },
+      child: _dataLoaded
+          ? buildWidget()
+          : const Center(child: CircularProgressIndicator()),
+    );
   }
 
   Widget buildWidget() {

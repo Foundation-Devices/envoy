@@ -12,6 +12,7 @@ import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
 import 'package:envoy/ui/onboard/magic/magic_setup_generate.dart';
 import 'package:envoy/ui/onboard/magic/wallet_security/wallet_security_modal.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
+import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/build_context_extension.dart';
@@ -20,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MagicSetupTutorial extends StatefulWidget {
   const MagicSetupTutorial({super.key});
@@ -78,8 +80,7 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
             Text(
               S().magic_setup_tutorial_heading,
               textAlign: TextAlign.center,
-              style: EnvoyTypography.heading
-                  .copyWith(color: EnvoyColors.textPrimary),
+              style: EnvoyTypography.heading,
             ),
             Padding(
               padding:
@@ -104,20 +105,35 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
             ),
             Column(
               children: [
-                OnboardingButton(
-                    fontWeight: FontWeight.w600,
-                    type: EnvoyButtonTypes.secondary,
-                    label: S().magic_setup_tutorial_ios_CTA2,
-                    textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: EnvoyColors.accentPrimary,
-                        fontWeight: FontWeight.w600),
-                    onTap: () {
-                      _playerKey.currentState?.pause();
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return const MagicRecoverWallet();
-                      }));
-                    }),
+                Consumer(
+                  builder: (context, ref, child) {
+                    return OnboardingButton(
+                        fontWeight: FontWeight.w600,
+                        type: EnvoyButtonTypes.secondary,
+                        label: S().magic_setup_tutorial_ios_CTA2,
+                        textStyle: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(
+                                color: EnvoyColors.accentPrimary,
+                                fontWeight: FontWeight.w600),
+                        onTap: () {
+                          _playerKey.currentState?.pause();
+                          //reset flags since the user manually trying to recover
+                          ref.read(triedAutomaticRecovery.notifier).state =
+                              false;
+                          ref.read(successfulManualRecovery.notifier).state =
+                              false;
+                          ref.read(successfulSetupWallet.notifier).state =
+                              false;
+
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return const MagicRecoverWallet();
+                          }));
+                        });
+                  },
+                ),
                 OnboardingButton(
                     fontWeight: FontWeight.w600,
                     textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(

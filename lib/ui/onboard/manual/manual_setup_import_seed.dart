@@ -42,7 +42,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      onPopInvoked: (_) async {
+      onPopInvokedWithResult: (_, __) async {
         handleBackPress(context);
       },
       child: OnboardPageBackground(
@@ -70,8 +70,7 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                       alignment: Alignment.center,
                       child: Text(
                         S().manual_setup_import_seed_12_words_heading,
-                        style: EnvoyTypography.heading
-                            .copyWith(color: EnvoyColors.textPrimary),
+                        style: EnvoyTypography.heading,
                         textAlign: TextAlign.center,
                       )),
                 ],

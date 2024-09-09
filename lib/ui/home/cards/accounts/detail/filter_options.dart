@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:math';
+
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/filter_chip.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -16,6 +18,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 
 class FilterOptions extends ConsumerStatefulWidget {
   const FilterOptions({super.key});
@@ -522,6 +525,8 @@ class SlidingToggle extends StatefulWidget {
 
 class _SlidingToggleState extends State<SlidingToggle>
     with SingleTickerProviderStateMixin {
+  final textTheme = EnvoyTypography.info;
+
   String value = "Tx"; // TODO: FIGMA
 
   final Duration _duration = const Duration(milliseconds: 150);
@@ -531,7 +536,10 @@ class _SlidingToggleState extends State<SlidingToggle>
   late Animation<Color?> _activityIconColorAnimation;
   late Animation<Color?> _tagsIconColorAnimation;
   final Color _iconDisabledColor = new_color_scheme.EnvoyColors.textTertiary;
-  String _text = "Activity"; // TODO: FIGMA
+  final String _firstOptionText = "Activity"; // TODO: FIGMA
+  final String _secondOptionText = "Tags"; // TODO: FIGMA
+  late String _currentOptionText = _firstOptionText;
+  double _maxOptionWidth = 0.0;
 
   @override
   void initState() {
@@ -605,9 +613,9 @@ class _SlidingToggleState extends State<SlidingToggle>
     _animationController.addListener(() {
       setState(() {
         if (_animationController.value < 0.5) {
-          _text = "Activity"; // TODO: FIGMA
+          _currentOptionText = _firstOptionText;
         } else if (_animationController.value > 0.5) {
-          _text = "Tags"; // TODO: FIGMA
+          _currentOptionText = _secondOptionText;
         }
       });
     });
@@ -623,9 +631,50 @@ class _SlidingToggleState extends State<SlidingToggle>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _maxOptionWidth = getMaxOptionWidth(context);
+  }
+
+  double getMaxOptionWidth(BuildContext context) {
+    final textPainter1 = TextPainter(
+      text: TextSpan(
+        text: _firstOptionText,
+        style: textTheme,
+      ),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+      textScaler: MediaQuery.textScalerOf(context).clamp(
+        minScaleFactor: 1,
+        maxScaleFactor: 1,
+      ),
+    )..layout();
+
+    final textPainter2 = TextPainter(
+      text: TextSpan(
+        text: _secondOptionText,
+        style: textTheme,
+      ),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+      textScaler: MediaQuery.textScalerOf(context).clamp(
+        minScaleFactor: 1,
+        maxScaleFactor: 1,
+      ),
+    )..layout();
+
+    double textWidth1 = textPainter1.width * 2 + 42; // + for compensation
+    double textWidth2 = textPainter2.width * 2 + 42;
+
+    double maxWidth = max(textWidth1, textWidth2);
+    if (maxWidth > 180) {
+      maxWidth = 180;
+    }
+    return maxWidth;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme.bodyMedium?.copyWith(
-        fontWeight: FontWeight.w600, color: _textColorAnimation.value);
     return LayoutBuilder(
       builder: (context, constraints) {
         return GestureDetector(
@@ -642,34 +691,85 @@ class _SlidingToggleState extends State<SlidingToggle>
             }
             widget.onChange(value);
           },
-          child: Container(
-            constraints: BoxConstraints.tight(const Size(120, 34)),
+          child: SizedBox(
+            height: 34,
+            width: _maxOptionWidth,
             child: Container(
               decoration: BoxDecoration(
-                  color: new_color_scheme.EnvoyColors.solidWhite,
-                  borderRadius: BorderRadius.circular(EnvoySpacing.medium3)),
+                color: new_color_scheme.EnvoyColors.solidWhite,
+                borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
+              ),
               child: Stack(
                 children: [
-                  //Show selection background with 71% of width
+                  // Show selection background with 78% of width
                   AlignTransition(
                     alignment: _slidingSegmentAnimation,
                     child: FractionallySizedBox(
-                      widthFactor: 0.75,
+                      widthFactor: 0.78,
                       child: Container(
-                        margin: const EdgeInsets.all(2),
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: EnvoySpacing.small),
+                        margin: const EdgeInsets.all(EnvoySpacing.xs),
                         decoration: BoxDecoration(
-                            color: new_color_scheme.EnvoyColors.accentPrimary,
-                            borderRadius:
-                                BorderRadius.circular(EnvoySpacing.medium3)),
+                          color: new_color_scheme.EnvoyColors.accentPrimary,
+                          borderRadius:
+                              BorderRadius.circular(EnvoySpacing.medium1),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  EnvoyIcon(
+                                    value == "Tx"
+                                        ? EnvoyIcons.history
+                                        : EnvoyIcons.tag,
+                                    size: EnvoyIconSize.small,
+                                    color: value == "Tx"
+                                        ? _activityIconColorAnimation.value
+                                        : _tagsIconColorAnimation.value,
+                                  ),
+                                  const SizedBox(width: EnvoySpacing.small),
+                                  Flexible(
+                                    child: Text(
+                                      _currentOptionText,
+                                      key: ValueKey(_currentOptionText),
+                                      overflow: TextOverflow.ellipsis,
+                                      textScaler:
+                                          MediaQuery.textScalerOf(context)
+                                              .clamp(
+                                        minScaleFactor: 1,
+                                        maxScaleFactor: 1,
+                                      ),
+                                      maxLines: 1,
+                                      style: textTheme.copyWith(
+                                          color: _textColorAnimation.value),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: Icon(Icons.history,
-                          size: 18, color: _activityIconColorAnimation.value),
+                      padding: const EdgeInsets.only(left: EnvoySpacing.small),
+                      child: value == "Coins"
+                          ? EnvoyIcon(
+                              EnvoyIcons.history,
+                              size: EnvoyIconSize.small,
+                              color: _activityIconColorAnimation.value,
+                            )
+                          : const SizedBox.shrink(),
                     ),
                   ),
                   AlignTransition(
@@ -679,31 +779,18 @@ class _SlidingToggleState extends State<SlidingToggle>
                         .animate(CurvedAnimation(
                             parent: _animationController,
                             curve: Curves.easeInOutCubic)),
-                    child: Builder(builder: (context) {
-                      return SvgPicture.asset("assets/icons/ic_tag.svg",
-                          width: 18,
-                          height: 18,
-                          color: _tagsIconColorAnimation.value);
-                    }),
+                    child: Builder(
+                      builder: (context) {
+                        return value == "Tx"
+                            ? EnvoyIcon(
+                                EnvoyIcons.tag,
+                                size: EnvoyIconSize.small,
+                                color: _tagsIconColorAnimation.value,
+                              )
+                            : const SizedBox.shrink();
+                      },
+                    ),
                   ),
-                  AlignTransition(
-                      alignment: Tween(
-                              begin: const Alignment(-.12, 0.0),
-                              end: const Alignment(.45, 0))
-                          .animate(CurvedAnimation(
-                              parent: _animationController,
-                              curve: Curves.easeInOutCubic)),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 2),
-                        child: Text(
-                          _text,
-                          key: ValueKey(_text),
-                          //prevent unnecessary overflows, container size is fixed
-                          textScaler: const TextScaler.linear(1),
-                          textAlign: TextAlign.start,
-                          style: textTheme,
-                        ),
-                      )),
                 ],
               ),
             ),

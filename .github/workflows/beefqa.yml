@@ -37,7 +37,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: '3.19.5'
+          flutter-version: '3.24.1'
 
       - name: Install dependencies
         run: flutter pub get
@@ -45,5 +45,5 @@ jobs:
       - name: Build Rust libs
         run: cargo build
 
-      - name: QA map flow
-        run: xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test integration_test/flow_to_map_and_p2p_test.dart -d linux --verbose
+      - name: Run QA Tests in Specified Order
+        run: ./run_integration_tests.sh

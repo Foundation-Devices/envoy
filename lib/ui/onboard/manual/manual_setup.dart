@@ -83,8 +83,7 @@ class _ManualSetupState extends State<ManualSetup> {
             Text(
               S().manual_setup_tutorial_heading,
               textAlign: TextAlign.center,
-              style: EnvoyTypography.heading
-                  .copyWith(color: EnvoyColors.textPrimary),
+              style: EnvoyTypography.heading,
             ),
             Padding(
               padding:
@@ -206,8 +205,7 @@ class SeedIntroScreen extends StatelessWidget {
                                 ? S().manual_setup_generate_seed_heading
                                 : S().manual_setup_import_seed_heading,
                             textAlign: TextAlign.center,
-                            style: EnvoyTypography.heading
-                                .copyWith(color: EnvoyColors.textPrimary),
+                            style: EnvoyTypography.heading,
                           ),
                           const SizedBox(
                             height: EnvoySpacing.medium2,
@@ -324,11 +322,10 @@ class SeedIntroScreen extends StatelessWidget {
                                       }
 
                                       kPrint("isValid $isValid $seedWords");
-
-                                      //TODO: Passphrase
-
                                       Future.delayed(Duration.zero, () {
-                                        checkSeed(context, result);
+                                        if (context.mounted) {
+                                          checkSeed(context, result);
+                                        }
                                       });
                                     });
                                   }));

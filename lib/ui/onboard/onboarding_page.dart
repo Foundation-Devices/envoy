@@ -280,8 +280,13 @@ class OnboardingPage extends StatelessWidget {
 class OnboardingText extends StatelessWidget {
   final String? header;
   final String? text;
+  final double subtitleTopPadding;
 
-  const OnboardingText({this.header, this.text, super.key});
+  const OnboardingText(
+      {this.header,
+      this.text,
+      super.key,
+      this.subtitleTopPadding = EnvoySpacing.large2});
 
   @override
   Widget build(BuildContext context) {
@@ -296,13 +301,11 @@ class OnboardingText extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(header!,
                         textAlign: TextAlign.center,
-                        style: EnvoyTypography.heading
-                            .copyWith(color: EnvoyColors.textPrimary)))
+                        style: EnvoyTypography.heading))
                 : const SizedBox.shrink(),
-            const SizedBox(height: EnvoySpacing.medium1),
             text != null
                 ? Padding(
-                    padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
+                    padding: EdgeInsets.only(top: subtitleTopPadding),
                     child: Text(
                       text!,
                       textAlign: TextAlign.center,
@@ -340,11 +343,8 @@ class ActionText extends StatelessWidget {
           onTap: action,
           child: Column(
             children: [
-              Text(
-                header,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
+              Text(header,
+                  textAlign: TextAlign.center, style: EnvoyTypography.heading),
               Text(
                 text,
                 textAlign: TextAlign.center,

@@ -117,16 +117,18 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
                     S().export_seed_modal_QR_code_CTA2,
                     type: EnvoyButtonTypes.secondary,
                     onTap: () {
-                      EnvoySeed().get().then((value) async {
-                        enableSecureScreen();
-                        List<String> seed = value!.split(" ");
+                      EnvoySeed().get().then((seedString) async {
+                        if (context.mounted) {
+                          enableSecureScreen();
+                          List<String> seed = seedString!.split(" ");
 
-                        await showEnvoyDialog(
-                            context: context,
-                            dialog: ExportSeedModalWords(
-                              seed: seed,
-                              hasPassphrase: hasPassphrase,
-                            ));
+                          await showEnvoyDialog(
+                              context: context,
+                              dialog: ExportSeedModalWords(
+                                seed: seed,
+                                hasPassphrase: hasPassphrase,
+                              ));
+                        }
                       });
                     },
                   ),

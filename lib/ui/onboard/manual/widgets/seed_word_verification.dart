@@ -58,7 +58,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
         SliverToBoxAdapter(
           child: Text(
               S().manual_setup_generate_seed_verify_seed_quiz_1_4_heading,
-              style: Theme.of(context).textTheme.titleLarge,
+              style: EnvoyTypography.heading,
               textAlign: TextAlign.center),
         ),
         const SliverPadding(padding: EdgeInsets.all(EnvoySpacing.small)),
@@ -78,7 +78,8 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                 key: ValueKey(
                   "${_puzzleOptions[_pageIndex].seedIndex}",
                 ),
-                style: Theme.of(context).textTheme.titleSmall,
+                style: EnvoyTypography.info
+                    .copyWith(color: EnvoyColors.textTertiary),
                 textAlign: TextAlign.center),
           ),
         ),
@@ -144,7 +145,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
         SliverFillRemaining(
           hasScrollBody: false,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               const Padding(
                   padding: EdgeInsets.only(bottom: EnvoySpacing.medium1)),
@@ -282,6 +283,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                     }
                   },
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Container(
                         margin: const EdgeInsets.symmetric(vertical: 0),

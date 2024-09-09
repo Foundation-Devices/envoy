@@ -40,9 +40,12 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 10)).then((value) {
-      _setOptionWidgetsForTabWidgets(
-          GoRouter.of(context).routerDelegate.currentConfiguration.fullPath);
+    Future.delayed(const Duration(milliseconds: 10)).then((_) {
+      if (context.mounted) {
+        _setOptionWidgetsForTabWidgets(
+            // ignore: use_build_context_synchronously
+            GoRouter.of(context).routerDelegate.currentConfiguration.fullPath);
+      }
     });
   }
 
@@ -318,15 +321,19 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
           rightAction: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) {
-                  if (EnvoySeed().walletDerived()) {
-                    return const OnboardPassportWelcomeScreen();
-                  } else {
-                    return const WelcomeScreen();
-                  }
-                },
-              ));
+              Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) {
+                      if (EnvoySeed().walletDerived()) {
+                        return const OnboardPassportWelcomeScreen();
+                      } else {
+                        return const WelcomeScreen();
+                      }
+                    },
+                    reverseTransitionDuration: Duration.zero,
+                    transitionDuration: Duration.zero,
+                  ));
             },
             child: Container(
               height: 55,

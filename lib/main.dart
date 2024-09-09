@@ -65,7 +65,7 @@ Future<void> initSingletons() async {
   Tor.init(enabled: Settings().torEnabled());
   UpdatesManager.init();
   ScvServer.init();
-  EnvoySeed.init();
+  await EnvoySeed.init();
 
   // Start Tor regardless of whether we are using it or not
   try {
@@ -140,13 +140,18 @@ class EnvoyApp extends StatelessWidget {
             scaffoldBackgroundColor: envoyBaseColor,
             useMaterial3: false),
         routerConfig: mainRouter,
-        scrollBehavior: CustomScrollBehavior(),
+        scrollBehavior: GlobalScrollBehavior(),
       ),
     );
   }
 }
 
-class CustomScrollBehavior extends MaterialScrollBehavior {
+class GlobalScrollBehavior extends ScrollBehavior {
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    return const ClampingScrollPhysics();
+  }
+
   @override
   Widget buildOverscrollIndicator(
       BuildContext context, Widget child, ScrollableDetails details) {

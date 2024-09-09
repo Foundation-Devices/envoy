@@ -178,6 +178,7 @@ class EnvoyStorage {
       preferencesStoreName: preferencesStore,
       exchangeRateStoreName: exchangeRateStore,
       rbfBoostStoreName: rbfBoostStore,
+      canceledTxStoreName: canceledTxStore,
     };
 
     for (var store in storesToBackUp.values) {

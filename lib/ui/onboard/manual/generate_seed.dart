@@ -86,7 +86,7 @@ class _SeedScreenState extends State<SeedScreen> {
                   if (verified) {
                     if (widget.generate) {
                       EnvoySeed().create(seedList).then((success) {
-                        if (success) {
+                        if (success && context.mounted) {
                           Navigator.of(context, rootNavigator: true)
                               .push(MaterialPageRoute(builder: (context) {
                             return const ManualSetupCreateAndStoreBackup();
@@ -151,8 +151,7 @@ class _SeedScreenState extends State<SeedScreen> {
               ),
               const Padding(padding: EdgeInsets.all(14)),
               Text(S().manual_setup_generatingSeedLoadingInfo,
-                  style: EnvoyTypography.heading
-                      .copyWith(color: EnvoyColors.gray1000)),
+                  style: EnvoyTypography.heading),
             ],
           ),
         )

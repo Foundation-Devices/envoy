@@ -818,7 +818,7 @@ class Wallet {
           throw Exception(error);
         }
         if (feeRates.min_fee_rate == -1.1) {
-          throw Exception("Transaction cannot be boosted");
+          throw Exception("Transaction cannot be boosted,Error: ${error}");
         }
         if (feeRates.min_fee_rate == -1.6) {
           throw Exception("Unlock coin to boost transaction");
@@ -827,7 +827,7 @@ class Wallet {
           throw Exception("Insufficient balance to boost transaction");
         }
         if (feeRates.min_fee_rate == -1.5) {
-          throw Exception("Unable to boost transaction");
+          throw Exception("Insufficient balance to cover the boost fee");
         }
         if (feeRates.max_fee_rate == 0.404) {
           throw Exception("Transaction not found");

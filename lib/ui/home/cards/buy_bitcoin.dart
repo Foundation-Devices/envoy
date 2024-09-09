@@ -120,9 +120,9 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
     if (!didPop) {
       HomePageState.of(context)?.toggleOptions();
     } else if (!navigatingToRegion) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pop(context);
-      });
+      if (mounted) {
+        GoRouter.of(context).pushReplacement(ROUTE_ACCOUNTS_HOME);
+      }
     }
   }
 
@@ -131,7 +131,7 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
     bool isMenuOpen = ref.watch(homePageOptionsVisibilityProvider);
     return PopScope(
       canPop: !isMenuOpen,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, _) {
         onNativeBackPressed(didPop);
       },
       child: Padding(

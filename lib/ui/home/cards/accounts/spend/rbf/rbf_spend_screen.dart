@@ -115,7 +115,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       child: Builder(builder: (context) {
         return PopScope(
           canPop: canPop,
-          onPopInvoked: (didPop) {
+          onPopInvokedWithResult: (didPop, _) {
             //clear coins selection when exiting RBF screen
             ref.read(coinSelectionFromWallet.notifier).reset();
             ref.read(coinSelectionStateProvider.notifier).reset();
@@ -374,7 +374,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                         Text(
                           title,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleLarge,
+                          style: EnvoyTypography.heading,
                         ),
                         const Padding(padding: EdgeInsets.all(18)),
                         Text(subTitle,

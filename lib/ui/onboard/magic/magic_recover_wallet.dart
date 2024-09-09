@@ -26,7 +26,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
 
 class MagicRecoverWallet extends ConsumerStatefulWidget {
   const MagicRecoverWallet({super.key});
@@ -160,7 +159,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   Widget build(BuildContext context) {
     bool isThereBottomButtons = getBottomButtons() != null;
     return PopScope(
-      onPopInvoked: (_) {
+      onPopInvokedWithResult: (_, __) {
         _handleBackPress();
       },
       child: Material(
@@ -184,8 +183,8 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                         CupertinoNavigationBarBackButton(
                           color: Colors.black,
                           onPressed: () {
-                            _handleBackPress().then((value) {
-                              if (value) {
+                            _handleBackPress().then((proceed) {
+                              if (proceed && context.mounted) {
                                 Navigator.pop(context);
                               }
                             });
@@ -415,7 +414,8 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                                     builder: (context) =>
                                         const WalletSetupSuccess())).then((_) {
                               //Try automatic recovery if the user press back button
-                              if (mounted) {
+                              if (mounted &&
+                                  !ref.read(triedAutomaticRecovery)) {
                                 _tryAutomaticRecovery();
                               }
                             });
@@ -537,13 +537,11 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
         mainAxisSize: MainAxisSize.max,
         children: [
           DefaultTextStyle(
-            style: EnvoyTypography.heading
-                .copyWith(color: EnvoyColors.textPrimary),
+            style: EnvoyTypography.heading,
             child: Text(
               S().magic_setup_recovery_retry_header,
               textAlign: TextAlign.center,
-              style: EnvoyTypography.heading
-                  .copyWith(color: EnvoyColors.textPrimary),
+              style: EnvoyTypography.heading,
             ),
           ),
         ],
@@ -563,7 +561,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           children: [
             Text(
               S().wallet_setup_success_heading,
-              style: Theme.of(context).textTheme.titleLarge,
+              style: EnvoyTypography.heading,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 36),
@@ -590,7 +588,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           child: Text(
             S().magic_setup_recovery_fail_backup_heading,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
+            style: EnvoyTypography.heading,
           ),
         ),
         const Padding(padding: EdgeInsets.all(28)),
@@ -617,7 +615,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           child: Text(
             S().magic_setup_recovery_fail_connectivity_heading,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
+            style: EnvoyTypography.heading,
           ),
         ),
         const Padding(padding: EdgeInsets.all(28)),
@@ -644,8 +642,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           child: Text(
             S().magic_setup_recovery_fail_heading,
             textAlign: TextAlign.center,
-            style: EnvoyTypography.heading
-                .copyWith(color: EnvoyColors.textPrimary),
+            style: EnvoyTypography.heading,
           ),
         ),
         const Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
@@ -738,8 +735,10 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                         label: S().component_continue,
                         onTap: () {
                           EnvoySeed().get().then((seed) async {
-                            EnvoySeed().deriveAndAddWallets(seed!);
-                            OnboardingPage.popUntilHome(context);
+                            if (context.mounted) {
+                              EnvoySeed().deriveAndAddWallets(seed!);
+                              OnboardingPage.popUntilHome(context);
+                            }
                           });
                         });
                   },

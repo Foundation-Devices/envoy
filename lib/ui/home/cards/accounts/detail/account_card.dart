@@ -5,7 +5,6 @@
 import 'package:animations/animations.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/account_manager.dart';
-import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -50,6 +49,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:wallet/wallet.dart';
+import 'package:envoy/business/exchange_rate.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget {
@@ -133,6 +133,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(settingsProvider);
     account = ref.read(selectedAccountProvider) ?? AccountManager().accounts[0];
 
     List<Transaction> transactions =
@@ -150,7 +151,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
       child: Scaffold(
         body: PopScope(
           canPop: !isMenuOpen,
-          onPopInvoked: (bool didPop) async {
+          onPopInvokedWithResult: (bool didPop, _) async {
             if (!didPop) {
               HomePageState.of(context)?.toggleOptions();
             }
@@ -346,7 +347,6 @@ class _AccountCardState extends ConsumerState<AccountCard>
   Widget _buildTransactionListWidget(
       List<Transaction> transactions, bool txFiltersEnabled) {
     if (transactions.isEmpty) {
-      /// ovde ima
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -814,9 +814,10 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
               dialog: Builder(
                 builder: (context) {
                   if (!isKeyboardShown) {
-                    Future.delayed(const Duration(milliseconds: 200))
-                        .then((value) {
-                      FocusScope.of(context).requestFocus(focusNode);
+                    Future.delayed(const Duration(milliseconds: 200)).then((_) {
+                      if (context.mounted) {
+                        FocusScope.of(context).requestFocus(focusNode);
+                      }
                     });
                     isKeyboardShown = true;
                   }

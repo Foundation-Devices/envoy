@@ -16,6 +16,7 @@ import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -60,14 +61,15 @@ class _SendCardState extends ConsumerState<SendCard>
       onPaste: _onPaste,
       account: ref.read(selectedAccountProvider),
     );
-    Future.delayed(const Duration(milliseconds: 10)).then((value) {
+    Future.delayed(const Duration(milliseconds: 10)).then((_) {
       ref.read(homePageTitleProvider.notifier).state =
           S().receive_tx_list_send.toUpperCase();
       account = ref.read(selectedAccountProvider);
       if (ref.read(spendAmountProvider) != 0) {
         setAmount(ref.read(spendAmountProvider));
       }
-      if (account == null) {
+      if (account == null && context.mounted) {
+        // ignore: use_build_context_synchronously
         context.pop();
         return;
       }
@@ -149,12 +151,11 @@ class _SendCardState extends ConsumerState<SendCard>
                 ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                  bottom: width <= 380
-                      ? EnvoySpacing.medium1
-                      : EnvoySpacing.medium2,
-                  top: EnvoySpacing.small),
+            Container(
+              constraints: const BoxConstraints(minHeight: 64, maxHeight: 140),
+              height: MediaQuery.sizeOf(context).height * 0.1,
+              alignment: Alignment.topCenter,
+              padding: const EdgeInsets.only(top: EnvoySpacing.xs),
               child: Consumer(
                 builder: (context, ref, child) {
                   final isCoinSelected = ref.watch(isCoinsSelectedProvider);
@@ -251,7 +252,7 @@ class _SendCardState extends ConsumerState<SendCard>
                     },
                     error: !valid,
                     label: buttonText,
-                    isDisabled: !valid,
+                    isDisabled: !valid || tx.loading,
                   );
                 },
               ),

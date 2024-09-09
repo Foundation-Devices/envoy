@@ -444,10 +444,10 @@ void showNoBoostNoFundsDialog(BuildContext context) {
   showEnvoyDialog(
       context: context,
       dialog: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.8,
+        width: MediaQuery.of(context).size.width * 0.85,
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(EnvoySpacing.medium2),
+            padding: const EdgeInsets.all(EnvoySpacing.medium1),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -457,26 +457,32 @@ void showNoBoostNoFundsDialog(BuildContext context) {
                   child: IconButton(
                     icon: const Icon(Icons.close),
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      Navigator.of(context, rootNavigator: true).pop();
                     },
                   ),
                 ),
                 const Padding(
-                  padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium3),
+                  padding: EdgeInsets.only(
+                      bottom: EnvoySpacing.medium3, top: EnvoySpacing.xs),
                   child: EnvoyIcon(
                     EnvoyIcons.alert,
                     size: EnvoyIconSize.big,
                     color: EnvoyColors.danger,
                   ),
                 ),
-                Text(
-                  S().coindetails_overlay_noBoostNoFunds_heading,
-                  textAlign: TextAlign.center,
-                  style: EnvoyTypography.subheading,
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.small),
+                  child: Text(
+                    S().coindetails_overlay_noBoostNoFunds_heading,
+                    textAlign: TextAlign.center,
+                    style: EnvoyTypography.heading,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      vertical: EnvoySpacing.medium1),
+                      vertical: EnvoySpacing.medium1,
+                      horizontal: EnvoySpacing.small),
                   child: Text(
                     S().coindetails_overlay_noBoostNoFunds_subheading,
                     style: EnvoyTypography.info
@@ -484,25 +490,33 @@ void showNoBoostNoFundsDialog(BuildContext context) {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                GestureDetector(
-                  child: Text(
-                    S().component_learnMore,
-                    style: EnvoyTypography.button.copyWith(
-                      color: EnvoyColors.accentPrimary,
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.small),
+                  child: GestureDetector(
+                    child: Text(
+                      S().component_learnMore,
+                      style: EnvoyTypography.button.copyWith(
+                        color: EnvoyColors.accentPrimary,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
+                    onTap: () {
+                      launchUrl(Uri.parse(
+                          "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions"));
+                    },
                   ),
-                  onTap: () {
-                    launchUrl(Uri.parse(
-                        "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions"));
-                  },
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
+                  padding: const EdgeInsets.only(
+                      top: EnvoySpacing.medium3,
+                      bottom: EnvoySpacing.small,
+                      left: EnvoySpacing.small,
+                      right: EnvoySpacing.small),
                   child: EnvoyButton(
                     label: S().component_continue,
                     onTap: () {
-                      Navigator.pop(context);
+                      Navigator.of(context, rootNavigator: true).pop();
                     },
                     type: ButtonType.primary,
                     state: ButtonState.defaultState,

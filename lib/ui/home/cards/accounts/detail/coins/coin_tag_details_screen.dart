@@ -51,7 +51,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: _selectedCoin == null,
-      onPopInvoked: (bool didPop) async {
+      onPopInvokedWithResult: (bool didPop, _) async {
         if (_selectedCoin != null) {
           setState(() {
             _selectedCoin = null;
@@ -714,9 +714,7 @@ class DeleteTagDialog extends StatelessWidget {
               padding:
                   const EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
               child: Text(dialogSubheading,
-                  textAlign: TextAlign.center,
-                  style: EnvoyTypography.heading
-                      .copyWith(color: EnvoyColors.textPrimary)),
+                  textAlign: TextAlign.center, style: EnvoyTypography.heading),
             ),
             EnvoyButton(
               secondaryButtonText,

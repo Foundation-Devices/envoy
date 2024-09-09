@@ -192,7 +192,10 @@ class ScannerPageState extends State<ScannerPage> {
         if (_lastScan == barcode.code) {
           return;
         }
-        _onDetect(barcode.code!, barcode.rawBytes, context);
+
+        if (context.mounted) {
+          _onDetect(barcode.code!, barcode.rawBytes, context);
+        }
         _lastScan = barcode.code ?? '';
       }
     });
@@ -302,6 +305,8 @@ class ScannerPageState extends State<ScannerPage> {
       if (!await widget.account!.wallet.validateAddress(address)) {
         showSnackbar(invalidAddressSnackbar);
       } else {
+        // Convert the address to lowercase for consistent display in Envoy
+        address = address.toLowerCase();
         widget.onAddressValidated!(address, amount, message);
         navigator.pop();
         await Future.delayed(const Duration(milliseconds: 500));
@@ -325,7 +330,8 @@ class ScannerPageState extends State<ScannerPage> {
 
     if (_urDecoder.decoded != null && !_processing) {
       _processing = true;
-      if (widget._acceptableTypes.contains(ScannerType.scv)) {
+      if (widget._acceptableTypes.contains(ScannerType.scv) &&
+          _urDecoder.decoded is CryptoResponse) {
         if (context.mounted) {
           Navigator.of(context)
               .pushReplacement(MaterialPageRoute(builder: (context) {

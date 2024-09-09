@@ -15,6 +15,8 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/business/locale.dart';
 import 'package:envoy/ui/components/linear_gradient.dart';
+import 'package:envoy/business/settings.dart';
+import 'package:envoy/business/exchange_rate.dart';
 
 class ActivityCard extends StatefulWidget {
   const ActivityCard({super.key});
@@ -58,7 +60,25 @@ class TopLevelActivityCard extends ConsumerStatefulWidget {
 
 class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
   @override
+  void initState() {
+    super.initState();
+    // Redraw when we fetch exchange rate
+    ExchangeRate().addListener(_redraw);
+  }
+
+  @override
+  void dispose() {
+    ExchangeRate().removeListener(_redraw);
+    super.dispose();
+  }
+
+  _redraw() {
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
+    ref.watch(settingsProvider);
     List<EnvoyNotification> notifications =
         ref.watch(filteredNotificationStreamProvider);
     ref.read(notificationTypeFilterProvider.notifier).state = null;
@@ -143,13 +163,14 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
 }
 
 String getTransactionDateString(EnvoyNotification notification) {
-  return DateFormat.yMd(currentLocale).format(notification.date);
+  return DateFormat.yMd(currentLocale)
+      .format(notification.date ?? DateTime.now());
 }
 
 bool showHeader(EnvoyNotification notificationCurrent,
     EnvoyNotification notificationPrevious) {
-  return !DateUtils.isSameDay(
-      notificationCurrent.date, notificationPrevious.date);
+  return !DateUtils.isSameDay(notificationCurrent.date ?? DateTime.now(),
+      notificationPrevious.date ?? DateTime.now());
 }
 
 class ActivityGhostListTile extends StatelessWidget {

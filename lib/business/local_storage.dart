@@ -47,7 +47,7 @@ class LocalStorage {
   Future<bool> saveSecure(String key, String value) async {
     // Write to Keychain on iOS and Keystore on Android
     if (Platform.isAndroid || Platform.isIOS) {
-      secureStorage.write(key: key, value: value);
+      await secureStorage.write(key: key, value: value);
       return true;
     } else {
       return prefs.setString(key, value);
@@ -65,17 +65,17 @@ class LocalStorage {
 
   Future<void> deleteAllSecure() async {
     if (Platform.isAndroid || Platform.isIOS) {
-      secureStorage.deleteAll();
+      await secureStorage.deleteAll();
     } else {
-      prefs.clear();
+      await prefs.clear();
     }
   }
 
   Future<void> deleteSecure(String key) async {
     if (Platform.isAndroid || Platform.isIOS) {
-      secureStorage.delete(key: key);
+      await secureStorage.delete(key: key);
     } else {
-      prefs.remove(key);
+      await prefs.remove(key);
     }
   }
 
