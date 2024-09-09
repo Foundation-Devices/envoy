@@ -40,7 +40,7 @@ class AddressWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     TextScaler textScaler = MediaQuery.of(context).textScaler.clamp(
           minScaleFactor: 0.8,
-          maxScaleFactor: 1.8,
+          maxScaleFactor: 1.6,
         );
     double baseFontScale = 1;
     double textScaleFactor = textScaler.scale(baseFontScale);
