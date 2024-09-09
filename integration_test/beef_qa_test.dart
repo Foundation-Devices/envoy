@@ -367,6 +367,152 @@ Future<void> main() async {
             tester, find.byType(TextField), accountPassportName);
         await saveName(tester);
       });
+
+      testWidgets('Fiat in App', (tester) async {
+        await goBackHome(tester);
+
+        String someValidReceiveAddress =
+            'bc1qy5fx88kwxd05rg5yugqcsnese0mypcjxwfur84';
+        const String accountPassportName = "GH TEST ACC (#1)";
+
+        /// 1) Go to settings
+        await pressHamburgerMenu(tester);
+        await goToSettings(tester);
+
+        /// 2) Check that the fiat toggle exists
+        bool isSettingsFiatSwitchOn =
+            await isSlideSwitchOn(tester, 'Display Fiat Values');
+        bool isSettingsViewSatsSwitchOn =
+            await isSlideSwitchOn(tester, 'View Amount in Sats');
+
+        /// 3) Check that it can toggle just fine, leave it enabled (leave default fiat value)
+        if (!isSettingsFiatSwitchOn) {
+          // find And Toggle DisplayFiat Switch
+          await findAndToggleSettingsSwitch(tester, 'Display Fiat Values');
+        }
+
+        if (!isSettingsViewSatsSwitchOn) {
+          // find And Toggle DisplayFiat Switch
+          await findAndToggleSettingsSwitch(tester, 'View Amount in Sats');
+        }
+
+        String? currentSettingsFiatCode =
+            await findCurrentFiatInSettings(tester);
+
+        await pressHamburgerMenu(tester); // back to settings
+        await pressHamburgerMenu(tester); // back to home
+
+        // Wait for the LoaderGhost to disappear
+        await checkAndWaitLoaderGhostInAccount(tester, accountPassportName);
+
+        /// Check that this actions makes the fiat values display across the app
+        /// Home
+        if (currentSettingsFiatCode != null) {
+          await tester.pump(Durations.long2);
+          bool fiatCheckResult =
+              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+          expect(fiatCheckResult, isTrue);
+        }
+        await Future.delayed(const Duration(seconds: 10));
+
+        /// in Activity
+        await findAndPressTextButton(tester, 'Activity');
+        await findAndPressTextButton(tester, 'Accounts');
+        await findAndPressTextButton(tester, 'Activity');
+
+        await Future.delayed(const Duration(seconds: 10));
+
+        if (currentSettingsFiatCode != null) {
+          await tester.pump(Durations.long2);
+          final receivedFinder = find.text("Received");
+          await tester.pumpUntilFound(receivedFinder,
+              tries: 100, duration: Durations.long2);
+          bool fiatCheckResult =
+              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+          expect(fiatCheckResult, isTrue);
+        }
+
+        /// in Mainet Account
+        await findAndPressTextButton(tester, 'Accounts');
+
+        await findFirstTextButtonAndPress(tester, accountPassportName);
+
+        if (currentSettingsFiatCode != null) {
+          await tester.pump(Durations.long2);
+          bool fiatCheckResult =
+              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+          expect(fiatCheckResult, isTrue);
+        }
+
+        /// in Tags
+        await findAndTapActivitySlideButton(tester);
+
+        if (currentSettingsFiatCode != null) {
+          await tester.pump(Durations.long2);
+          bool fiatCheckResult =
+              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+          expect(fiatCheckResult, isTrue);
+        }
+
+        /// in Tag details
+        await findAndPressTextButton(tester, 'Untagged');
+
+        if (currentSettingsFiatCode != null) {
+          await tester.pump(Durations.long2);
+          bool fiatCheckResult =
+              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+          expect(fiatCheckResult, isTrue);
+        }
+
+        // back to home
+        await pressHamburgerMenu(tester);
+
+        /// in Send
+        await findAndPressTextButton(tester, 'Send');
+        // press the widget so it can circle to Sats
+        //   await findAndPressWidget<AmountDisplay>(tester);
+
+        if (currentSettingsFiatCode != null) {
+          await tester.pump(Durations.long2);
+          await findTextOnScreen(tester, "\$");
+        }
+
+        /// With the unit in fiat, paste a valid address, enter a valid amount, tap Confirm
+        await enterTextInField(
+            tester, find.byType(TextFormField), someValidReceiveAddress);
+
+        // enter amount
+        await findAndPressTextButton(tester, '5');
+        await findAndPressTextButton(tester, '6');
+        await findAndPressTextButton(tester, '7');
+
+        // go to staging
+        await waitForTealTextAndTap(tester, 'Confirm');
+
+        // now wait for it to go to staging
+        final textFinder = find.text("Fee");
+        await tester.pumpUntilFound(textFinder,
+            tries: 20, duration: Durations.long2);
+
+        if (currentSettingsFiatCode != null) {
+          await tester.pump(Durations.long2);
+          bool fiatCheckResult =
+              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+          expect(fiatCheckResult, isTrue);
+        }
+        await tester.pump(Durations.long2);
+
+        /// in staging details
+        // go to staging details
+        await findAndPressTextButton(tester, 'Show details');
+
+        if (currentSettingsFiatCode != null) {
+          await tester.pump(Durations.long2);
+          bool fiatCheckResult =
+              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+          expect(fiatCheckResult, isTrue);
+        }
+      });
       testWidgets('BTC/sats in App', (tester) async {
         await goBackHome(tester);
 
@@ -573,146 +719,11 @@ Future<void> main() async {
               await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
           expect(fiatCheckResult, isTrue);
         }
-      });
-      testWidgets('Fiat in App', (tester) async {
-        await goBackHome(tester);
 
-        String someValidReceiveAddress =
-            'bc1qy5fx88kwxd05rg5yugqcsnese0mypcjxwfur84';
-        const String accountPassportName = "GH TEST ACC (#1)";
-
-        /// 1) Go to settings
-        await pressHamburgerMenu(tester);
-        await goToSettings(tester);
-
-        /// 2) Check that the fiat toggle exists
-        bool isSettingsFiatSwitchOn =
-            await isSlideSwitchOn(tester, 'Display Fiat Values');
-        bool isSettingsViewSatsSwitchOn =
-            await isSlideSwitchOn(tester, 'View Amount in Sats');
-
-        /// 3) Check that it can toggle just fine, leave it enabled (leave default fiat value)
-        if (!isSettingsFiatSwitchOn) {
-          // find And Toggle DisplayFiat Switch
-          await findAndToggleSettingsSwitch(tester, 'Display Fiat Values');
-        }
-
-        if (!isSettingsViewSatsSwitchOn) {
-          // find And Toggle DisplayFiat Switch
-          await findAndToggleSettingsSwitch(tester, 'View Amount in Sats');
-        }
-
-        String? currentSettingsFiatCode =
-            await findCurrentFiatInSettings(tester);
-
-        await pressHamburgerMenu(tester); // back to settings
-        await pressHamburgerMenu(tester); // back to home
-
-        // Wait for the LoaderGhost to disappear
-        await checkAndWaitLoaderGhostInAccount(tester, accountPassportName);
-
-        /// Check that this actions makes the fiat values display across the app
-        /// Home
-        if (currentSettingsFiatCode != null) {
-          await tester.pump(Durations.long2);
-          bool fiatCheckResult =
-              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
-          expect(fiatCheckResult, isTrue);
-        }
-
-        /// in Activity
-        await findAndPressTextButton(tester, 'Activity');
-
-        if (currentSettingsFiatCode != null) {
-          await tester.pump(Durations.long2);
-          final receivedFinder = find.text("Received");
-          await tester.pumpUntilFound(receivedFinder,
-              tries: 100, duration: Durations.long2);
-          bool fiatCheckResult =
-              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
-          expect(fiatCheckResult, isTrue);
-        }
-
-        /// in Mainet Account
+        /// Cancel the transaction and go back to home
+        await findAndPressFirstEnvoyIcon(tester, EnvoyIcons.chevron_left);
+        await findAndTapPopUpText(tester, 'Cancel Transaction');
         await findAndPressTextButton(tester, 'Accounts');
-
-        await findFirstTextButtonAndPress(tester, accountPassportName);
-
-        if (currentSettingsFiatCode != null) {
-          await tester.pump(Durations.long2);
-          bool fiatCheckResult =
-              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
-          expect(fiatCheckResult, isTrue);
-        }
-
-        /// in Tags
-        await findAndTapActivitySlideButton(tester);
-
-        if (currentSettingsFiatCode != null) {
-          await tester.pump(Durations.long2);
-          bool fiatCheckResult =
-              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
-          expect(fiatCheckResult, isTrue);
-        }
-
-        /// in Tag details
-        await findAndPressTextButton(tester, 'Untagged');
-
-        if (currentSettingsFiatCode != null) {
-          await tester.pump(Durations.long2);
-          bool fiatCheckResult =
-              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
-          expect(fiatCheckResult, isTrue);
-        }
-
-        // back to home
-        await pressHamburgerMenu(tester);
-
-        /// in Send
-        await findAndPressTextButton(tester, 'Send');
-        // press the widget so it can circle to Sats
-        //   await findAndPressWidget<AmountDisplay>(tester);
-
-        if (currentSettingsFiatCode != null) {
-          await tester.pump(Durations.long2);
-          await findTextOnScreen(tester, "\$");
-        }
-
-        /// With the unit in fiat, paste a valid address, enter a valid amount, tap Confirm
-        await enterTextInField(
-            tester, find.byType(TextFormField), someValidReceiveAddress);
-
-        // enter amount
-        await findAndPressTextButton(tester, '5');
-        await findAndPressTextButton(tester, '6');
-        await findAndPressTextButton(tester, '7');
-
-        // go to staging
-        await waitForTealTextAndTap(tester, 'Confirm');
-
-        // now wait for it to go to staging
-        final textFinder = find.text("Fee");
-        await tester.pumpUntilFound(textFinder,
-            tries: 20, duration: Durations.long2);
-
-        if (currentSettingsFiatCode != null) {
-          await tester.pump(Durations.long2);
-          bool fiatCheckResult =
-              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
-          expect(fiatCheckResult, isTrue);
-        }
-        await tester.pump(Durations.long2);
-
-        /// in staging details
-        // go to staging details
-        await findAndPressTextButton(tester, 'Show details');
-
-        if (currentSettingsFiatCode != null) {
-          await tester.pump(Durations.long2);
-          bool fiatCheckResult =
-              await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
-          expect(fiatCheckResult, isTrue);
-        }
       });
       testWidgets('Enable testnet', (tester) async {
         await goBackHome(tester);
@@ -929,6 +940,8 @@ Future<void> main() async {
       testWidgets('Boost screen', (tester) async {
         await goBackHome(tester);
 
+        await disableAllNetworks(tester);
+
         const hotSignetAddress = 'tb1qt0h7r2hhphnsctj3akmusquszxvtkkupgmwrpq';
         const signetWalletAddress =
             'tb1p7n5z27jfsef6552q560y5z4a69c7ry9u5d74u0s2qelwa4dt7p5qs4ujrm';
@@ -946,6 +959,9 @@ Future<void> main() async {
         if (!isSettingsSignetSwitchOn) {
           // find And Toggle Signet Switch
           await findAndToggleSettingsSwitch(tester, 'Signet');
+          final closeDialogButton = find.byIcon(Icons.close);
+          await tester.tap(closeDialogButton.last);
+          await tester.pump(Durations.long2);
         }
 
         // go back to accounts
@@ -954,7 +970,10 @@ Future<void> main() async {
 
         await tester.pump(Durations.long2);
 
-        await findAndTapFirstAccText(tester, 'Signet');
+        final signetFinder = find.text("Signet");
+        expect(signetFinder, findsOneWidget);
+        await tester.tap(signetFinder);
+        await tester.pump(Durations.long2);
 
         // go to tags
         await findAndTapActivitySlideButton(tester);

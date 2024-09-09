@@ -134,13 +134,16 @@ class HomePageState extends ConsumerState<HomePage>
     ConnectivityManager().events.stream.listen((event) {
       // If Tor is broken surface a warning
       if (event == ConnectivityManagerEvent.torConnectedDoesntWork) {
-        if (_torWarningDisplayedMoreThan5minAgo && Settings().usingTor) {
+        if (_torWarningDisplayedMoreThan5minAgo &&
+            Settings().usingTor &&
+            mounted) {
           _notifyAboutTor();
           _torWarningDisplayedMoreThan5minAgo = false;
         }
       }
       if (event == ConnectivityManagerEvent.foundationServerDown &&
-          _serverDownWarningDisplayedMoreThan5minAgo) {
+          _serverDownWarningDisplayedMoreThan5minAgo &&
+          mounted) {
         _notifyAboutFoundationServerDown();
         _serverDownWarningDisplayedMoreThan5minAgo = false;
       }
@@ -178,7 +181,9 @@ class HomePageState extends ConsumerState<HomePage>
       }
     });
     isNewAppVersionAvailable.stream.listen((String newVersion) {
-      _notifyAboutNewAppVersion(newVersion);
+      if (mounted) {
+        _notifyAboutNewAppVersion(newVersion);
+      }
     });
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
