@@ -626,8 +626,19 @@ Future<void> checkForToast(WidgetTester tester) async {
     return; // Exit the test if the icon is not found initially
   } else {
     final closeToastButton = find.byIcon(Icons.close);
-    await tester.tap(closeToastButton.last);
-    await tester.pump(Durations.long2);
+    if (tester.any(closeToastButton)) {
+      final offset = tester.getTopLeft(closeToastButton.last);
+      // Check if the widget is within the 400x800 screen bounds
+      if (offset.dx >= 0 &&
+          offset.dy >= 0 &&
+          offset.dx <= 400 &&
+          offset.dy <= 800) {
+        await tester.tap(closeToastButton.last);
+        await tester.pump(Durations.long2);
+      } else {
+        kPrint('The close button is off-screen and cannot be tapped.');
+      }
+    }
   }
 }
 
