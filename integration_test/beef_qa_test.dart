@@ -414,14 +414,11 @@ Future<void> main() async {
               await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
           expect(fiatCheckResult, isTrue);
         }
-        await Future.delayed(const Duration(seconds: 10));
 
         /// in Activity
         await findAndPressTextButton(tester, 'Activity');
         await findAndPressTextButton(tester, 'Accounts');
         await findAndPressTextButton(tester, 'Activity');
-
-        await Future.delayed(const Duration(seconds: 10));
 
         if (currentSettingsFiatCode != null) {
           await tester.pump(Durations.long2);
