@@ -583,6 +583,7 @@ class Wallet {
     final dartFunction = rustFunction.asFunction<WalletDropDart>();
 
     dartFunction(_self);
+    _self = nullptr;
   }
 
   Future<String> getAddress() async {
@@ -595,7 +596,7 @@ class Wallet {
 
   // Returns true if there have been changes
   Future<bool?> sync(String electrumAddress, int torPort) async {
-    if (_currentlySyncing) {
+    if (_currentlySyncing || _self == nullptr) {
       return null;
     }
 
