@@ -96,7 +96,7 @@ class Fees {
 
   static const mempoolFoundationInstance = "https://mempool.foundation.xyz";
   static const testnetMempoolFoundationInstance =
-      "https://testnet-mempool.foundation.xyz";
+      "https://mempool.foundation.xyz/testnet";
   static const _mempoolRecommendedFeesEndpoints = {
     Network.Mainnet: "$mempoolFoundationInstance/api/v1/fees/recommended",
     Network.Testnet:
