@@ -5,6 +5,7 @@
 import 'package:envoy/business/faucet.dart';
 import 'package:envoy/main.dart';
 import 'package:envoy/ui/amount_display.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -993,8 +994,11 @@ Future<void> main() async {
         await findAndPressTextButton(tester, 'Untagged');
         await tester.pump(Durations.long2);
 
-        // unlock one Coin
-        await findAndTapCoinLockButton(tester);
+        // unlock the first Coin
+        final Finder lockButtonFinder = find.byType(CoinLockButton);
+        await tester.tap(lockButtonFinder.at(2));
+        await tester.pump();
+        await tester.pump(Durations.long2);
         await findAndPressTextButton(tester, 'Unlock');
 
         // toggle that coin for Send

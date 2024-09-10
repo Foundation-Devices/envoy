@@ -1059,7 +1059,7 @@ Future<void> findAndToggleCoinTagSwitch(WidgetTester tester) async {
       reason: "No CoinTagSwitch found on the screen");
 
   // Select the last CoinTagSwitch
-  final Finder specificSwitchFinder = switchFinder.last;
+  final Finder specificSwitchFinder = switchFinder.at(2);
 
   // Tap the selected switch to toggle it
   await tester.tap(specificSwitchFinder);
