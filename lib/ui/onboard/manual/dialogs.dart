@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:io';
+
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:file_picker/file_picker.dart';
@@ -109,6 +111,38 @@ Future<void> openBackupFile(BuildContext buildContext) async {
         showRestoreFailedDialog(context);
       }
     }
+  } else {
+    if (context.mounted) {
+      showRestoreFailedDialog(context);
+    }
+  }
+}
+
+Future<void> openBeefQABackupFile(BuildContext buildContext) async {
+  final navigator = Navigator.of(buildContext);
+  final context = buildContext;
+
+  String path = 'integration_test/assets/beefqa_backup.mla.txt';
+
+  var result = FilePickerResult([
+    PlatformFile(
+      name: 'testfile.backup',
+      size: File(path).lengthSync(),
+      path: path,
+    ),
+  ]);
+
+  var success = false;
+  try {
+    success =
+        await EnvoySeed().restoreData(filePath: result.files.single.path!);
+  } catch (e) {
+    success = false;
+  }
+  if (success) {
+    navigator.push(MaterialPageRoute(builder: (context) {
+      return const WalletSetupSuccess();
+    }));
   } else {
     if (context.mounted) {
       showRestoreFailedDialog(context);

@@ -46,6 +46,15 @@ final showTaprootAccountsProvider = Provider((ref) {
 
 @JsonSerializable()
 class Settings extends ChangeNotifier {
+  @override
+  // ignore: must_call_super
+  void dispose({bool? force}) {
+    // prevents riverpods StateNotifierProvider from disposing it
+    if (force == true) {
+      super.dispose();
+    }
+  }
+
   static const String SETTINGS_PREFS = "settings";
 
   static const String MAINNET_ONION_ELECTRUM_SERVER =
