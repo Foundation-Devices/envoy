@@ -10,7 +10,7 @@ on:
 
 jobs:
   beef-qa:
-    runs-on: [self-hosted, linux, x64]
+    runs-on: ubuntu-latest
 
     steps:
       - uses: extractions/setup-just@v1
