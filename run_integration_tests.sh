@@ -12,7 +12,7 @@ for group_name in "${test_groups[@]}"; do
   echo "Running tests for group: $group_name"
 
   # Run the test for the current group
-  if ! xvfb-run -a -s '-screen 0 2000x2000x24 +extension GLX' flutter test --plain-name "$group_name" -d linux integration_test/beef_qa_test.dart --verbose; then
+  if ! xvfb-run -s '-screen 0 2000x2000x24 +extension GLX' flutter test --plain-name "$group_name" -d linux integration_test/beef_qa_test.dart --verbose; then
     echo "Test failed in group: $group_name"
     exit 1 # Exit immediately on failure
   fi
