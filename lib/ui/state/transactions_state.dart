@@ -91,6 +91,20 @@ final walletTransactionsProvider =
   return ref.watch(accountStateProvider(accountId))?.wallet.transactions ?? [];
 });
 
+final allTxProvider = Provider<List<Transaction>>((ref) {
+  final accountManager = ref.watch(accountManagerProvider);
+  final allTransactions = <Transaction>[];
+
+  for (var account in accountManager.accounts) {
+    final transactions = ref.watch(transactionsProvider(account.id));
+
+    allTransactions.addAll(transactions);
+  }
+
+  allTransactions.ancestralSort();
+  return allTransactions;
+});
+
 final transactionsProvider =
     Provider.family<List<Transaction>, String?>((ref, String? accountId) {
   List<Transaction> pendingTransactions =

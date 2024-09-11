@@ -17,6 +17,8 @@ import 'package:envoy/business/locale.dart';
 import 'package:envoy/ui/components/linear_gradient.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/exchange_rate.dart';
+import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/state/transactions_state.dart';
 
 class ActivityCard extends StatefulWidget {
   const ActivityCard({super.key});
@@ -79,15 +81,18 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
   @override
   Widget build(BuildContext context) {
     ref.watch(settingsProvider);
-    List<EnvoyNotification> notifications =
-        ref.watch(filteredNotificationStreamProvider);
-    ref.read(notificationTypeFilterProvider.notifier).state = null;
+    List<EnvoyNotification> nonTxNotifications =
+        ref.watch(nonTxNotificationStreamProvider);
+    List<Transaction> transactions = ref.watch(allTxProvider);
+
+    List<CombinedNotifications> combinedNotifications =
+        combineAndSortByDate(nonTxNotifications, transactions);
 
     return ScrollGradientMask(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
         child: CustomScrollView(slivers: [
-          notifications.isEmpty
+          combinedNotifications.isEmpty
               ? SliverFillRemaining(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -130,8 +135,8 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
                             return Column(
                               children: [
                                 if (index == 0 ||
-                                    showHeader(notifications[index],
-                                        notifications[index - 1]))
+                                    showHeader(combinedNotifications[index],
+                                        combinedNotifications[index - 1]))
                                   Column(
                                     children: [
                                       if (index != 0)
@@ -144,14 +149,14 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
                                         ),
                                       ListHeader(
                                           title: getTransactionDateString(
-                                              notifications[index])),
+                                              combinedNotifications[index])),
                                     ],
                                   ),
-                                ActivityListTile(notifications[index]),
+                                ActivityListTile(combinedNotifications[index]),
                               ],
                             );
                           },
-                          itemCount: notifications.length),
+                          itemCount: combinedNotifications.length),
                       const SizedBox(height: EnvoySpacing.large2)
                     ],
                   ),
@@ -162,13 +167,49 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
   }
 }
 
-String getTransactionDateString(EnvoyNotification notification) {
+class CombinedNotifications {
+  final DateTime? date;
+  final Transaction? transaction;
+  final EnvoyNotification? notification;
+
+  CombinedNotifications(
+      {required this.date, this.transaction, this.notification});
+}
+
+List<CombinedNotifications> combineAndSortByDate(
+    List<EnvoyNotification> envoyNotifications,
+    List<Transaction> transactions) {
+  List<CombinedNotifications> combinedItems = [];
+
+  for (var notification in envoyNotifications) {
+    combinedItems.add(CombinedNotifications(
+        date: notification.date ?? DateTime.now(), notification: notification));
+  }
+
+  for (var transaction in transactions) {
+    combinedItems.add(CombinedNotifications(
+        date: transaction.isConfirmed ? transaction.date : null,
+        transaction: transaction));
+  }
+
+  combinedItems.sort((a, b) {
+    if (b.date == null && a.date == null) return 0;
+    // Sort null dates (indicating pending transactions) to the top
+    if (b.date == null) return 1;
+    if (a.date == null) return -1;
+    return b.date!.compareTo(a.date!);
+  });
+
+  return combinedItems;
+}
+
+String getTransactionDateString(CombinedNotifications notification) {
   return DateFormat.yMd(currentLocale)
       .format(notification.date ?? DateTime.now());
 }
 
-bool showHeader(EnvoyNotification notificationCurrent,
-    EnvoyNotification notificationPrevious) {
+bool showHeader(CombinedNotifications notificationCurrent,
+    CombinedNotifications notificationPrevious) {
   return !DateUtils.isSameDay(notificationCurrent.date ?? DateTime.now(),
       notificationPrevious.date ?? DateTime.now());
 }
