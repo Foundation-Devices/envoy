@@ -48,7 +48,7 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
     }
     Future.delayed(Duration.zero).then((value) {
       if (ref.read(torEnabledProvider)) {
-        _controller.text = Settings.TOR_ONION_ELECTRUM_SERVER;
+        _controller.text = Settings.MAINNET_ONION_ELECTRUM_SERVER;
       }
       _updateTorEnabledStatus();
     });
