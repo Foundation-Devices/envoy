@@ -639,6 +639,8 @@ Future<void> main() async {
         await findAndPressFirstEnvoyIcon(tester, EnvoyIcons.chevron_left);
 
         await findAndTapPopUpText(tester, 'Cancel Transaction');
+        await tester.pumpAndSettle(); // Ensure the dialog is closed completely
+
         // go to home
         await findAndPressTextButton(tester, 'Accounts');
         await pressHamburgerMenu(tester);
@@ -721,6 +723,7 @@ Future<void> main() async {
         /// Cancel the transaction and go back to home
         await findAndPressFirstEnvoyIcon(tester, EnvoyIcons.chevron_left);
         await findAndTapPopUpText(tester, 'Cancel Transaction');
+        await tester.pumpAndSettle(); // Ensure the dialog is closed completely
         await findAndPressTextButton(tester, 'Accounts');
       });
       testWidgets('Enable testnet', (tester) async {
