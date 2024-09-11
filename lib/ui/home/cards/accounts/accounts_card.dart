@@ -193,6 +193,7 @@ class _AccountsListState extends ConsumerState<AccountsList> {
           child: const AccountPrompts(),
         ),
         shrinkWrap: true,
+        padding: const EdgeInsets.all(20),
         scrollController: _scrollController,
         //proxyDecorator is the widget that is shown when dragging
         proxyDecorator: (widget, index, animation) {
@@ -243,7 +244,7 @@ class _AccountsListState extends ConsumerState<AccountsList> {
             padding: const EdgeInsets.all(EnvoySpacing.medium2),
             child: EmptyAccountsCard(),
           )
-        : Padding(padding: const EdgeInsets.all(20), child: scrollView);
+        : scrollView;
   }
 }
 
