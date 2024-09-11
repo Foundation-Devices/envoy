@@ -99,5 +99,5 @@ docker-beef: docker-build-linux
     docker run --mount type=bind,source="$(pwd)"/release,target=/root/release {{docker_v4l2}} {{docker_image_beefbench}}
 
 qa:
-    ./run_integration_tests.sh
+    xvfb-run -s '-screen 0 2000x2000x24 +extension GLX' ./run_integration_tests.sh
 
