@@ -1324,3 +1324,17 @@ Future<void> clearPromptStates(WidgetTester tester) async {
   await pressHamburgerMenu(tester);
   await pressHamburgerMenu(tester);
 }
+
+Future<void> findAndPressIcon(WidgetTester tester, IconData iconData) async {
+  final iconFinder = find.byIcon(iconData);
+
+  // Check if the icon is found
+  final iconWidgets = iconFinder.evaluate();
+  if (iconWidgets.isEmpty) {
+    throw Exception('Icon not found');
+  }
+
+  // Tap the first occurrence of the widget
+  await tester.tap(iconFinder.first);
+  await tester.pump(Durations.long2);
+}

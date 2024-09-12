@@ -1467,6 +1467,26 @@ Future<void> main() async {
       // Check if the numbers differ from different Fiats
       expect(newFiatAmount != usdFiatAmount, isTrue);
     });
+    testWidgets('Logs freeze', (tester) async {
+      await goBackHome(tester);
+
+      await fromHomeToAdvancedMenu(tester);
+      await tester.pump(Durations.long2);
+
+      await findAndPressTextButton(tester, 'View Envoy Logs');
+      await tester.pump(Durations.long2);
+
+      await findAndPressIcon(tester, Icons.copy);
+
+      // Perform an action that should trigger a UI update
+      await findAndPressEnvoyIcon(tester, EnvoyIcons.chevron_left);
+      await tester.pump(Durations.long2);
+
+      final newElementFinder = find.text('View Envoy Logs');
+
+      await tester.pumpUntilFound(newElementFinder,
+          duration: Durations.long1, tries: 100);
+    });
   });
 
   group('No account tests', () {
