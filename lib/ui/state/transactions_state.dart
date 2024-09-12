@@ -105,6 +105,17 @@ final allTxProvider = Provider<List<Transaction>>((ref) {
   return allTransactions;
 });
 
+final combinedNotificationsProvider = Provider<List<EnvoyNotification>>((ref) {
+  List<EnvoyNotification> nonTxNotifications =
+      ref.watch(nonTxNotificationStreamProvider);
+  List<Transaction> transactions = ref.watch(allTxProvider);
+
+  List<EnvoyNotification> combinedItems =
+      combineNotifications(nonTxNotifications, transactions);
+
+  return combinedItems;
+});
+
 final transactionsProvider =
     Provider.family<List<Transaction>, String?>((ref, String? accountId) {
   List<Transaction> pendingTransactions =

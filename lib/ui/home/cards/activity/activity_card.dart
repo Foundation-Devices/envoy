@@ -81,12 +81,8 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
   @override
   Widget build(BuildContext context) {
     ref.watch(settingsProvider);
-    List<EnvoyNotification> nonTxNotifications =
-        ref.watch(nonTxNotificationStreamProvider);
-    List<Transaction> transactions = ref.watch(allTxProvider);
-
     List<EnvoyNotification> envoyNotification =
-        combineNotifications(nonTxNotifications, transactions);
+        ref.watch(combinedNotificationsProvider);
 
     return ScrollGradientMask(
       child: Padding(
