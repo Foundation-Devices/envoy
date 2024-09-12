@@ -10,6 +10,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/util/console.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -1479,7 +1480,7 @@ Future<void> main() async {
       await findAndPressIcon(tester, Icons.copy);
 
       // Perform an action that should trigger a UI update
-      await findAndPressEnvoyIcon(tester, EnvoyIcons.chevron_left);
+      await findAndPressWidget<CupertinoNavigationBarBackButton>(tester);
       await tester.pump(Durations.long2);
 
       final newElementFinder = find.text('View Envoy Logs');
