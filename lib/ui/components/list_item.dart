@@ -20,7 +20,6 @@ import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transacti
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/account.dart';
-import 'package:envoy/ui/home/cards/activity/activity_card.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 
 class EnvoyListTile extends StatelessWidget {
@@ -122,9 +121,9 @@ class ListHeader extends StatelessWidget {
 }
 
 class ActivityListTile extends ConsumerStatefulWidget {
-  const ActivityListTile(this.item, {super.key});
+  const ActivityListTile(this.notification, {super.key});
 
-  final CombinedNotifications item;
+  final EnvoyNotification notification;
 
   @override
   ActivityListTileState createState() => ActivityListTileState();
@@ -134,16 +133,14 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (context, ref, _) {
-      final combinedItem = widget.item;
-      final transaction = combinedItem.transaction;
-      final notification = combinedItem.notification;
-
       String titleText = "";
       String? subtitleText;
       EnvoyIcons? txIcon;
       Color? iconColor;
       Widget? unitIcon;
       final Locale activeLocale = Localizations.localeOf(context);
+      final notification = widget.notification;
+      final transaction = notification.transaction;
 
       if (transaction != null) {
         bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
@@ -257,22 +254,22 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
 
       iconColor = EnvoyColors.textTertiary;
 
-      if (notification?.type == EnvoyNotificationType.firmware) {
+      if (notification.type == EnvoyNotificationType.firmware) {
         txIcon = EnvoyIcons.tool;
         titleText = S().activity_passportUpdate;
         subtitleText = timeago
-            .format(notification?.date ?? DateTime.now(),
+            .format(notification.date ?? DateTime.now(),
                 locale: activeLocale.languageCode)
             .capitalize();
 
         iconColor = EnvoyColors.textTertiary;
       }
 
-      if (notification?.type == EnvoyNotificationType.envoyUpdate) {
+      if (notification.type == EnvoyNotificationType.envoyUpdate) {
         txIcon = EnvoyIcons.download;
         titleText = S().activity_envoyUpdateAvailable;
         subtitleText = timeago
-            .format(notification?.date ?? DateTime.now(),
+            .format(notification.date ?? DateTime.now(),
                 locale: activeLocale.languageCode)
             .capitalize();
 

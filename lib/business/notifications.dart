@@ -19,6 +19,7 @@ import 'package:tor/tor.dart';
 import 'dart:convert';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/scheduler.dart';
+import 'package:wallet/wallet.dart';
 
 part 'notifications.g.dart';
 
@@ -37,8 +38,10 @@ class EnvoyNotification {
   final String id;
   final int? amount;
   final String? accountId;
+  final Transaction? transaction;
 
-  EnvoyNotification(this.title, this.date, this.type, this.body, this.id,
+  EnvoyNotification(
+      this.title, this.date, this.type, this.body, this.id, this.transaction,
       {this.amount, this.accountId});
 
   // Serialisation
@@ -68,6 +71,41 @@ final nonTxNotificationStreamProvider =
           notification.type != EnvoyNotificationType.transaction)
       .toList();
 });
+
+EnvoyNotification transactionToEnvoyNotification(Transaction transaction) {
+  return EnvoyNotification(
+    "Transaction Notification",
+    transaction.isConfirmed ? transaction.date : null,
+    EnvoyNotificationType.transaction,
+    "Transaction details",
+    transaction.txId,
+    transaction,
+    amount: transaction.amount,
+  );
+}
+
+List<EnvoyNotification> combineNotifications(
+    List<EnvoyNotification> envoyNotifications,
+    List<Transaction> transactions) {
+  List<EnvoyNotification> transactionNotifications =
+      transactions.map((transaction) {
+    return transactionToEnvoyNotification(transaction);
+  }).toList();
+
+  List<EnvoyNotification> combinedItems = [
+    ...envoyNotifications,
+    ...transactionNotifications
+  ];
+
+  combinedItems.sort((a, b) {
+    if (b.date == null && a.date == null) return 0;
+    if (b.date == null) return 1;
+    if (a.date == null) return -1;
+    return b.date!.compareTo(a.date!);
+  });
+
+  return combinedItems;
+}
 
 class Notifications {
   int unread = 0;
@@ -165,12 +203,12 @@ class Notifications {
 
         if (fwUpdateAvailable) {
           add(EnvoyNotification(
-            "Firmware", // TODO: FIGMA
-            DateTime.now(),
-            EnvoyNotificationType.firmware,
-            newVersion!,
-            device.type.toString().split('.').last,
-          ));
+              "Firmware", // TODO: FIGMA
+              DateTime.now(),
+              EnvoyNotificationType.firmware,
+              newVersion!,
+              device.type.toString().split('.').last,
+              null));
         }
       }
     }
@@ -187,12 +225,12 @@ class Notifications {
       }
       if (!skip) {
         add(EnvoyNotification(
-          "App Update", // TODO: FIGMA
-          DateTime.now(),
-          EnvoyNotificationType.envoyUpdate,
-          latestEnvoyVersion,
-          EnvoyNotificationType.envoyUpdate.name,
-        ));
+            "App Update", // TODO: FIGMA
+            DateTime.now(),
+            EnvoyNotificationType.envoyUpdate,
+            latestEnvoyVersion,
+            EnvoyNotificationType.envoyUpdate.name,
+            null));
         if (!isNewAppVersionAvailable.isClosed) {
           isNewAppVersionAvailable.add(latestEnvoyVersion);
         }

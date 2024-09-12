@@ -85,14 +85,14 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
         ref.watch(nonTxNotificationStreamProvider);
     List<Transaction> transactions = ref.watch(allTxProvider);
 
-    List<CombinedNotifications> combinedNotifications =
-        combineAndSortByDate(nonTxNotifications, transactions);
+    List<EnvoyNotification> envoyNotification =
+        combineNotifications(nonTxNotifications, transactions);
 
     return ScrollGradientMask(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
         child: CustomScrollView(slivers: [
-          combinedNotifications.isEmpty
+          envoyNotification.isEmpty
               ? SliverFillRemaining(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -135,8 +135,8 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
                             return Column(
                               children: [
                                 if (index == 0 ||
-                                    showHeader(combinedNotifications[index],
-                                        combinedNotifications[index - 1]))
+                                    showHeader(envoyNotification[index],
+                                        envoyNotification[index - 1]))
                                   Column(
                                     children: [
                                       if (index != 0)
@@ -149,14 +149,14 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
                                         ),
                                       ListHeader(
                                           title: getTransactionDateString(
-                                              combinedNotifications[index])),
+                                              envoyNotification[index])),
                                     ],
                                   ),
-                                ActivityListTile(combinedNotifications[index]),
+                                ActivityListTile(envoyNotification[index]),
                               ],
                             );
                           },
-                          itemCount: combinedNotifications.length),
+                          itemCount: envoyNotification.length),
                       const SizedBox(height: EnvoySpacing.large2)
                     ],
                   ),
@@ -167,51 +167,15 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
   }
 }
 
-class CombinedNotifications {
-  final DateTime? date;
-  final Transaction? transaction;
-  final EnvoyNotification? notification;
-
-  CombinedNotifications(
-      {required this.date, this.transaction, this.notification});
-}
-
-List<CombinedNotifications> combineAndSortByDate(
-    List<EnvoyNotification> envoyNotifications,
-    List<Transaction> transactions) {
-  List<CombinedNotifications> combinedItems = [];
-
-  for (var notification in envoyNotifications) {
-    combinedItems.add(CombinedNotifications(
-        date: notification.date ?? DateTime.now(), notification: notification));
-  }
-
-  for (var transaction in transactions) {
-    combinedItems.add(CombinedNotifications(
-        date: transaction.isConfirmed ? transaction.date : null,
-        transaction: transaction));
-  }
-
-  combinedItems.sort((a, b) {
-    if (b.date == null && a.date == null) return 0;
-    // Sort null dates (indicating pending transactions) to the top
-    if (b.date == null) return 1;
-    if (a.date == null) return -1;
-    return b.date!.compareTo(a.date!);
-  });
-
-  return combinedItems;
-}
-
-String getTransactionDateString(CombinedNotifications notification) {
+String getTransactionDateString(EnvoyNotification notification) {
   return DateFormat.yMd(currentLocale)
       .format(notification.date ?? DateTime.now());
 }
 
-bool showHeader(CombinedNotifications notificationCurrent,
-    CombinedNotifications notificationPrevious) {
-  return !DateUtils.isSameDay(notificationCurrent.date ?? DateTime.now(),
-      notificationPrevious.date ?? DateTime.now());
+bool showHeader(EnvoyNotification currentNotification,
+    EnvoyNotification previousNotification) {
+  return !DateUtils.isSameDay(currentNotification.date ?? DateTime.now(),
+      previousNotification.date ?? DateTime.now());
 }
 
 class ActivityGhostListTile extends StatelessWidget {
