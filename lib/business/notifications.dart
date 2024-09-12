@@ -82,6 +82,7 @@ EnvoyNotification transactionToEnvoyNotification(Transaction transaction) {
     transaction.txId,
     transaction,
     amount: transaction.amount,
+    accountId: AccountManager().getAccountIdByTransaction(transaction.txId),
   );
 }
 

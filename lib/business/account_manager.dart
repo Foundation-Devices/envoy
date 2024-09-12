@@ -662,4 +662,23 @@ class AccountManager extends ChangeNotifier {
     }
     return null;
   }
+
+  Transaction? getTransactionById(Account account, String txId) {
+    for (var transaction in account.wallet.transactions) {
+      if (transaction.txId == txId) {
+        return transaction;
+      }
+    }
+    return null;
+  }
+
+  String? getAccountIdByTransaction(String txId) {
+    for (var account in accounts) {
+      var transaction = getTransactionById(account, txId);
+      if (transaction != null) {
+        return account.id;
+      }
+    }
+    return null;
+  }
 }
