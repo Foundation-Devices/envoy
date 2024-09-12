@@ -17,7 +17,6 @@ import 'package:envoy/business/locale.dart';
 import 'package:envoy/ui/components/linear_gradient.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/exchange_rate.dart';
-import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 
 class ActivityCard extends StatefulWidget {
