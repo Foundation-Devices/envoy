@@ -482,12 +482,12 @@ class TransactionListTile extends StatelessWidget {
           // Avoids unintended behavior, prevents list item disappearance
           child: Row(
             children: [
-              transactionIcon(context),
+              transactionIcon(context, transaction),
               Expanded(
                 child: ListTile(
                   minLeadingWidth: 0,
                   horizontalTitleGap: EnvoySpacing.small,
-                  title: transactionTitle(context),
+                  title: transactionTitle(context, transaction),
                   subtitle: FittedBox(
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerLeft,
@@ -547,9 +547,11 @@ class TransactionListTile extends StatelessWidget {
         return TransactionsDetailsWidget(
             account: account,
             tx: transaction,
-            iconTitleWidget: transactionIcon(context, iconColor: _detailsColor),
+            iconTitleWidget:
+                transactionIcon(context, transaction, iconColor: _detailsColor),
             titleWidget: transactionTitle(
               context,
+              transaction,
               txTitleStyle: _detailsHeadingStyle,
             ));
       },
@@ -594,103 +596,103 @@ class TransactionListTile extends StatelessWidget {
       );
     }
   }
+}
 
-  Widget transactionIcon(
-    BuildContext context, {
-    Color iconColor = EnvoyColors.textTertiary,
-  }) {
-    return FittedBox(
-      alignment: Alignment.centerLeft,
-      fit: BoxFit.scaleDown,
-      child: Consumer(
-        builder: (context, ref, child) {
-          bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
-          final cancelState =
-              ref.watch(cancelTxStateProvider(transaction.txId));
-          EnvoyIcons txIcon =
-              transaction.amount < 0 ? EnvoyIcons.spend : EnvoyIcons.receive;
-          if (cancelState != null) {
+Widget transactionTitle(BuildContext context, Transaction transaction,
+    {TextStyle? txTitleStyle}) {
+  final TextStyle? defaultStyle = Theme.of(context)
+      .textTheme
+      .bodyLarge
+      ?.copyWith(fontWeight: FontWeight.w500, fontSize: 14);
+
+  return FittedBox(
+    fit: BoxFit.scaleDown,
+    alignment: Alignment.centerLeft,
+    child: Consumer(
+      builder: (context, ref, child) {
+        bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
+        String txTitle = transaction.type == TransactionType.ramp
+            ? S().activity_incomingPurchase
+            : (transaction.amount < 0
+                ? S().activity_sent
+                : S().activity_received);
+        RBFState? cancelState =
+            ref.watch(cancelTxStateProvider(transaction.txId));
+        if (cancelState != null) {
+          if (cancelState.originalTxId == transaction.txId) {
             if (!transaction.isConfirmed) {
-              txIcon = EnvoyIcons.alert;
-            } else if (cancelState.newTxId == transaction.txId) {
-              txIcon = EnvoyIcons.close;
+              txTitle = S().activity_canceling;
+            }
+          }
+          if (cancelState.newTxId == transaction.txId) {
+            if (transaction.isConfirmed) {
+              txTitle = S().activity_sent_canceled;
             } else {
-              txIcon = transaction.amount < 0
-                  ? EnvoyIcons.spend
-                  : EnvoyIcons.receive;
+              txTitle = S().activity_canceling;
             }
-          } else if (isBoosted == true) {
-            txIcon = EnvoyIcons.rbf_boost;
           }
-          return Container(
-            padding: const EdgeInsets.only(
-              top: EnvoySpacing.small,
-              bottom: EnvoySpacing.small,
-              right: EnvoySpacing.xs,
-              left: EnvoySpacing.xs,
-            ),
-            child: Transform.scale(
-              scale: 1.1,
-              child: EnvoyIcon(
-                txIcon,
-                color: iconColor,
-                size: EnvoyIconSize.normal,
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget transactionTitle(BuildContext context, {TextStyle? txTitleStyle}) {
-    final TextStyle? defaultStyle = Theme.of(context)
-        .textTheme
-        .bodyLarge
-        ?.copyWith(fontWeight: FontWeight.w500, fontSize: 14);
-
-    return FittedBox(
-      fit: BoxFit.scaleDown,
-      alignment: Alignment.centerLeft,
-      child: Consumer(
-        builder: (context, ref, child) {
-          bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
-          String txTitle = transaction.type == TransactionType.ramp
-              ? S().activity_incomingPurchase
-              : (transaction.amount < 0
-                  ? S().activity_sent
-                  : S().activity_received);
-          RBFState? cancelState =
-              ref.watch(cancelTxStateProvider(transaction.txId));
-          if (cancelState != null) {
-            if (cancelState.originalTxId == transaction.txId) {
-              if (!transaction.isConfirmed) {
-                txTitle = S().activity_canceling;
-              }
+        } else {
+          if (isBoosted == true) {
+            if (transaction.isConfirmed) {
+              txTitle = S().activity_sent_boosted;
             }
-            if (cancelState.newTxId == transaction.txId) {
-              if (transaction.isConfirmed) {
-                txTitle = S().activity_sent_canceled;
-              } else {
-                txTitle = S().activity_canceling;
-              }
-            }
+            txTitle = S().activity_boosted;
+          }
+        }
+        return Text(
+          txTitle,
+          style: txTitleStyle ?? defaultStyle,
+        );
+      },
+    ),
+  );
+}
+
+Widget transactionIcon(
+  BuildContext context,
+  Transaction transaction, {
+  Color iconColor = EnvoyColors.textTertiary,
+}) {
+  return FittedBox(
+    alignment: Alignment.centerLeft,
+    fit: BoxFit.scaleDown,
+    child: Consumer(
+      builder: (context, ref, child) {
+        bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
+        final cancelState = ref.watch(cancelTxStateProvider(transaction.txId));
+        EnvoyIcons txIcon =
+            transaction.amount < 0 ? EnvoyIcons.spend : EnvoyIcons.receive;
+        if (cancelState != null) {
+          if (!transaction.isConfirmed) {
+            txIcon = EnvoyIcons.alert;
+          } else if (cancelState.newTxId == transaction.txId) {
+            txIcon = EnvoyIcons.close;
           } else {
-            if (isBoosted == true) {
-              if (transaction.isConfirmed) {
-                txTitle = S().activity_sent_boosted;
-              }
-              txTitle = S().activity_boosted;
-            }
+            txIcon =
+                transaction.amount < 0 ? EnvoyIcons.spend : EnvoyIcons.receive;
           }
-          return Text(
-            txTitle,
-            style: txTitleStyle ?? defaultStyle,
-          );
-        },
-      ),
-    );
-  }
+        } else if (isBoosted == true) {
+          txIcon = EnvoyIcons.rbf_boost;
+        }
+        return Container(
+          padding: const EdgeInsets.only(
+            top: EnvoySpacing.small,
+            bottom: EnvoySpacing.small,
+            right: EnvoySpacing.xs,
+            left: EnvoySpacing.xs,
+          ),
+          child: Transform.scale(
+            scale: 1.1,
+            child: EnvoyIcon(
+              txIcon,
+              color: iconColor,
+              size: EnvoyIconSize.normal,
+            ),
+          ),
+        );
+      },
+    ),
+  );
 }
 
 Future<void> copyTxId(
