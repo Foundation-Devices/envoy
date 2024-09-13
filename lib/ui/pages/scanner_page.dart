@@ -304,6 +304,7 @@ class ScannerPageState extends State<ScannerPage> {
 
       if (!await widget.account!.wallet.validateAddress(address)) {
         showSnackbar(invalidAddressSnackbar);
+        return;
       } else {
         // Convert the address to lowercase for consistent display in Envoy
         address = address.toLowerCase();
