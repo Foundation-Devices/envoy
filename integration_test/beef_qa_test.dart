@@ -1475,7 +1475,7 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
 
       await findAndPressTextButton(tester, 'View Envoy Logs');
-      await tester.pump(Durations.long2);
+      await tester.pumpAndSettle();
 
       await findAndPressIcon(tester, Icons.copy);
 
