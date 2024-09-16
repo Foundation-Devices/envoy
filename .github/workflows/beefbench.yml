@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: just docker-beef
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: envoy-screenshot
           path: release/screenshot.png
