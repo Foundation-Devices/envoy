@@ -17,6 +17,7 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/btcpay_voucher.dart';
 import 'package:envoy/business/notifications.dart';
+import 'package:envoy/business/account_manager.dart';
 
 final pendingTransactionsProvider =
     Provider.family<List<Transaction>, String?>((ref, String? accountId) {
@@ -86,18 +87,68 @@ final filteredTransactionsProvider =
 
 //We keep a cache of RBFed transactions so that we can remove the original tx from the list unless they are confirmed
 final rbfBroadCastedTxProvider = StateProvider<List<String>>((ref) => []);
+
+class Equal<T> {
+  Equal(this.value, this._equal, [this._hashCode]);
+
+  final T value;
+  final bool Function(T value, Object other) _equal;
+  final int Function(T value)? _hashCode;
+
+  @override
+  bool operator ==(Object other) => _equal(value, other);
+
+  @override
+  int get hashCode {
+    return _hashCode != null ? _hashCode!(value) : super.hashCode;
+  }
+}
+
 final walletTransactionsProvider =
     Provider.family<List<Transaction>, String?>((ref, String? accountId) {
-  return ref.watch(accountStateProvider(accountId))?.wallet.transactions ?? [];
+  return ref
+          .watch(accountStateProvider(accountId).select(
+              (account) => Equal(account?.wallet.transactions, (one, other) {
+                    if (other is Equal) {
+                      final transactionListEqual =
+                          other as Equal<List<Transaction>?>;
+                      final otherList = transactionListEqual.value;
+                      if (one == null && otherList == null) {
+                        return true;
+                      }
+
+                      if (one == null && otherList != null) {
+                        return false;
+                      }
+
+                      if (one != null && otherList == null) {
+                        return false;
+                      }
+
+                      if (one!.length != otherList!.length) {
+                        return false;
+                      }
+
+                      // Beyond this point they're the same length
+                      // So let's naively compare the txids
+                      for (int i = 0; i < one.length; i++) {
+                        if (one[i].txId != otherList[i].txId) {
+                          return false;
+                        }
+                      }
+                    }
+
+                    return true;
+                  })))
+          .value ??
+      [];
 });
 
 final allTxProvider = Provider<List<Transaction>>((ref) {
-  final accountManager = ref.watch(accountManagerProvider);
   final allTransactions = <Transaction>[];
 
-  for (var account in accountManager.accounts) {
+  for (var account in AccountManager().accounts) {
     final transactions = ref.watch(transactionsProvider(account.id));
-
     allTransactions.addAll(transactions);
   }
 
