@@ -30,6 +30,12 @@ import 'package:wallet/wallet.dart';
 
 class AccountAlreadyPaired implements Exception {}
 
+class AccountRenamed implements Exception {
+  final Wallet wallet;
+
+  AccountRenamed(this.wallet);
+}
+
 class AccountManager extends ChangeNotifier {
   @override
   // ignore: must_call_super
@@ -258,6 +264,7 @@ class AccountManager extends ChangeNotifier {
       // New format can handle multiple accounts
       List<Account> newAccounts = await getPassportAccountsFromJson(json);
       int alreadyPairedAccountsCount = 0;
+      Account? renamedAccount;
 
       newAccountsLoop:
       for (var (index, newAccount) in newAccounts.indexed) {
@@ -266,6 +273,7 @@ class AccountManager extends ChangeNotifier {
           if (account.wallet.name == newAccount.wallet.name) {
             if (account.name != newAccount.name) {
               renameAccount(account, newAccount.name);
+              renamedAccount = account;
             }
             // Don't add this one
             alreadyPairedAccountsCount++;
@@ -280,7 +288,9 @@ class AccountManager extends ChangeNotifier {
         addAccount(newAccount);
       }
 
-      if (newAccounts.length == alreadyPairedAccountsCount) {
+      if (renamedAccount != null) {
+        throw AccountRenamed(renamedAccount.wallet);
+      } else if (newAccounts.length == alreadyPairedAccountsCount) {
         throw AccountAlreadyPaired();
       } else {
         // We will verify the address on WPKH account only
@@ -324,11 +334,16 @@ class AccountManager extends ChangeNotifier {
   }
 
   Future<Account> getPassportAccountJson(dynamic json) async {
+    bool accountRenamed = false;
     // Check if account already present
     for (var account in accounts) {
       if (account.wallet.name == json["xpub"].toString()) {
         if (account.name != json["acct_name"].toString()) {
           renameAccount(account, json["acct_name"].toString());
+          accountRenamed = true;
+        }
+        if (accountRenamed) {
+          throw AccountRenamed(account.wallet);
         }
         throw AccountAlreadyPaired();
       }
