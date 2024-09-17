@@ -34,6 +34,7 @@ void showEnvoyPopUp(
   bool? checkedValue,
   bool dismissible = true,
   String? learnMoreLink,
+  bool? showCloseButton,
 }) =>
     showEnvoyDialog(
         context: context,
@@ -51,25 +52,28 @@ void showEnvoyPopUp(
           onCheckBoxChanged: onCheckBoxChanged,
           checkedValue: checkedValue ?? true,
           learnMoreLink: learnMoreLink,
+          showCloseButton: showCloseButton ?? true,
         ),
         dismissible: dismissible);
 
 //ignore: must_be_immutable
 class EnvoyPopUp extends StatefulWidget {
-  EnvoyPopUp(
-      {super.key,
-      this.icon,
-      this.title,
-      required this.content,
-      required this.primaryButtonLabel,
-      this.secondaryButtonLabel,
-      this.onPrimaryButtonTap,
-      this.onSecondaryButtonTap,
-      this.typeOfMessage = PopUpState.deafult,
-      this.checkBoxText,
-      this.onCheckBoxChanged,
-      this.checkedValue = true,
-      this.learnMoreLink});
+  EnvoyPopUp({
+    super.key,
+    this.icon,
+    this.title,
+    required this.content,
+    required this.primaryButtonLabel,
+    this.secondaryButtonLabel,
+    this.onPrimaryButtonTap,
+    this.onSecondaryButtonTap,
+    this.typeOfMessage = PopUpState.deafult,
+    this.checkBoxText,
+    this.onCheckBoxChanged,
+    this.checkedValue = true,
+    this.learnMoreLink,
+    this.showCloseButton = true,
+  });
 
   final String? title;
   final String content;
@@ -83,6 +87,7 @@ class EnvoyPopUp extends StatefulWidget {
   final Function(bool checked)? onCheckBoxChanged;
   bool? checkedValue;
   final String? learnMoreLink;
+  final bool showCloseButton;
 
   @override
   State<EnvoyPopUp> createState() => _EnvoyPopUpState();
@@ -139,18 +144,19 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+              if (widget.showCloseButton)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
                   ),
                 ),
-              ),
               if (widget.icon != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
