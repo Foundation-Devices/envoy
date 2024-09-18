@@ -34,6 +34,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/notifications.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 
 final _fullScreenProvider = Provider((ref) {
   bool fullScreen = ref.watch(hideBottomNavProvider);
@@ -125,6 +126,13 @@ class HomePageState extends ConsumerState<HomePage>
     _resetServerDownWarningTimer();
     _resetBackupWarningTimer();
 
+    isNewExpiredBuyTxAvailable.stream
+        .listen((List<Transaction> newExpiredBuyTx) {
+      if (mounted && newExpiredBuyTx.isNotEmpty) {
+        _notifyAboutRemovedRampTx(newExpiredBuyTx, context);
+      }
+    });
+
     Future.delayed(const Duration(milliseconds: 10), () {
       ///register for back button press
       backButtonDispatcher.addCallback(_handleHomePageBackPress);
@@ -190,6 +198,35 @@ class HomePageState extends ConsumerState<HomePage>
       final router = Navigator.of(context);
       SessionManager().bind(router);
     });
+  }
+
+  void _notifyAboutRemovedRampTx(
+      List<Transaction> expiredTransactions, context) async {
+    bool dismissed = await EnvoyStorage()
+        .checkPromptDismissed(DismissiblePrompt.buyTxWarning);
+
+    if (!dismissed && context.mounted) {
+      showEnvoyPopUp(
+          context,
+          title: S().replaceByFee_modal_deletedInactiveTX_ramp_heading,
+          S().replaceByFee_modal_deletedInactiveTX_ramp_subheading,
+          S().send_keyboard_address_confirm,
+          expiredTransactions: expiredTransactions,
+          (BuildContext context) {
+            Navigator.pop(context);
+            isNewExpiredBuyTxAvailable.add([]); // reset stream after pop
+          },
+          icon: EnvoyIcons.info,
+          checkBoxText: S().component_dontShowAgain,
+          checkedValue: dismissed,
+          onCheckBoxChanged: (checkedValue) {
+            if (!checkedValue) {
+              EnvoyStorage().addPromptState(DismissiblePrompt.buyTxWarning);
+            } else if (checkedValue) {
+              EnvoyStorage().removePromptState(DismissiblePrompt.buyTxWarning);
+            }
+          });
+    }
   }
 
   _notifyAboutNewAppVersion(String newVersion) {
@@ -323,6 +360,7 @@ class HomePageState extends ConsumerState<HomePage>
     _torWarningTimer?.cancel();
     _serverDownWarningTimer?.cancel();
     _backupWarningTimer?.cancel();
+    isNewExpiredBuyTxAvailable.close();
     backButtonDispatcher.removeCallback(_handleHomePageBackPress);
     super.dispose();
   }

@@ -323,6 +323,7 @@ Future prunePendingTransactions(
       String? state =
           await checkPurchase(pendingTx.txId, pendingTx.purchaseViewToken!);
       if (state == "EXPIRED" || state == "CANCELLED") {
+        isNewExpiredBuyTxAvailable.add([pendingTx]);
         EnvoyStorage().deleteTxNote(pendingTx.txId);
         EnvoyStorage().deletePendingTx(pendingTx.txId);
       }

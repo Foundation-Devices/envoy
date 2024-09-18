@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:ui';
+
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -12,6 +14,10 @@ import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/checkbox.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:wallet/wallet.dart';
+import 'package:envoy/util/amount.dart';
+import 'package:envoy/util/easing.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 
 enum PopUpState {
   deafult,
@@ -34,6 +40,7 @@ void showEnvoyPopUp(
   bool? checkedValue,
   bool dismissible = true,
   String? learnMoreLink,
+  List<Transaction>? expiredTransactions,
 }) =>
     showEnvoyDialog(
         context: context,
@@ -51,6 +58,7 @@ void showEnvoyPopUp(
           onCheckBoxChanged: onCheckBoxChanged,
           checkedValue: checkedValue ?? true,
           learnMoreLink: learnMoreLink,
+          expiredTransactions: expiredTransactions,
         ),
         dismissible: dismissible);
 
@@ -69,7 +77,8 @@ class EnvoyPopUp extends StatefulWidget {
       this.checkBoxText,
       this.onCheckBoxChanged,
       this.checkedValue = true,
-      this.learnMoreLink});
+      this.learnMoreLink,
+      this.expiredTransactions});
 
   final String? title;
   final String content;
@@ -83,6 +92,7 @@ class EnvoyPopUp extends StatefulWidget {
   final Function(bool checked)? onCheckBoxChanged;
   bool? checkedValue;
   final String? learnMoreLink;
+  final List<Transaction>? expiredTransactions;
 
   @override
   State<EnvoyPopUp> createState() => _EnvoyPopUpState();
@@ -90,6 +100,8 @@ class EnvoyPopUp extends StatefulWidget {
 
 class _EnvoyPopUpState extends State<EnvoyPopUp> {
   Color _color = EnvoyColors.accentPrimary;
+  bool showTxIdExpanded = false;
+  final Map<String, bool> _expandedStates = {};
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +185,8 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                 ),
               Padding(
                 padding: EdgeInsets.only(
-                    bottom: widget.learnMoreLink == null
+                    bottom: widget.learnMoreLink == null &&
+                            widget.expiredTransactions == null
                         ? EnvoySpacing.medium3
                         : EnvoySpacing.medium1),
                 child: Text(
@@ -195,6 +208,12 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                           .copyWith(color: EnvoyColors.accentPrimary),
                     ),
                   ),
+                ),
+              if (widget.expiredTransactions != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                  child: _buildRemovedTransactionsList(
+                      widget.expiredTransactions!),
                 ),
               if (widget.checkBoxText != null)
                 Padding(
@@ -236,6 +255,54 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                   }),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRemovedTransactionsList(List<Transaction> expiredTransactions) {
+    return Container(
+      constraints: const BoxConstraints(
+        maxHeight: 60.0,
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: expiredTransactions.map((tx) {
+            bool showTxIdExpanded = _expandedStates[tx.txId] ?? false;
+            return GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onLongPress: () {
+                if (tx.type != TransactionType.ramp) {
+                  copyTxId(context, tx.txId, tx.type);
+                }
+              },
+              onTap: () {
+                if (tx.type != TransactionType.ramp) {
+                  setState(() {
+                    _expandedStates[tx.txId] = !showTxIdExpanded;
+                  });
+                }
+              },
+              child: TweenAnimationBuilder<double>(
+                curve: EnvoyEasing.easeInOut,
+                tween: Tween<double>(begin: 0, end: showTxIdExpanded ? 1 : 0),
+                duration: const Duration(milliseconds: 200),
+                builder: (context, value, child) {
+                  return Text(
+                    truncateWithEllipsisInCenter(tx.txId,
+                        lerpDouble(16, tx.txId.length, value)!.toInt()),
+                    style: EnvoyTypography.body
+                        .copyWith(color: EnvoyColors.textSecondary),
+                    textAlign: TextAlign.center,
+                    maxLines: 4,
+                  );
+                },
+              ),
+            );
+          }).toList(),
         ),
       ),
     );
