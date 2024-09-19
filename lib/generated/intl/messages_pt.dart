@@ -75,7 +75,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "activity_canceling":
             MessageLookupByLibrary.simpleMessage("A cancelar"),
         "activity_emptyState_label": MessageLookupByLibrary.simpleMessage(
-            "Não existe actividade para apresentar."),
+            "Não existe atividade para apresentar."),
         "activity_envoyUpdate":
             MessageLookupByLibrary.simpleMessage("Aplicação Envoy Actualizada"),
         "activity_envoyUpdateAvailable": MessageLookupByLibrary.simpleMessage(
@@ -148,8 +148,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "backups_erase_wallets_and_backups_show_seed_CTA":
             MessageLookupByLibrary.simpleMessage("Mostrar Semente"),
         "bottomNav_accounts": MessageLookupByLibrary.simpleMessage("Contas"),
-        "bottomNav_activity":
-            MessageLookupByLibrary.simpleMessage("Actividade"),
+        "bottomNav_activity": MessageLookupByLibrary.simpleMessage("Atividade"),
         "bottomNav_devices":
             MessageLookupByLibrary.simpleMessage("Dispositivos"),
         "bottomNav_learn": MessageLookupByLibrary.simpleMessage("Aprender"),
@@ -341,6 +340,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_lock_coin_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "O bloqueio das moedas impossibilita o seu uso em transacções"),
+        "coincontrol_switchActivity":
+            MessageLookupByLibrary.simpleMessage("Atividade"),
+        "coincontrol_switchTags":
+            MessageLookupByLibrary.simpleMessage("Etiquetas"),
         "coincontrol_txDetail_ReviewTransaction":
             MessageLookupByLibrary.simpleMessage("Rever Transacção"),
         "coincontrol_txDetail_cta1_passport":
@@ -513,6 +516,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_update": MessageLookupByLibrary.simpleMessage("Actualizar"),
         "component_warning": MessageLookupByLibrary.simpleMessage("AVISO"),
         "component_yes": MessageLookupByLibrary.simpleMessage("Sim"),
+        "contactRampForSupport":
+            MessageLookupByLibrary.simpleMessage("Contact Ramp for support"),
         "copyToClipboard_address": MessageLookupByLibrary.simpleMessage(
             "O teu endereço será copiado para a área de transferência e poderá ficar visível para outras aplicações no teu telemóvel."),
         "copyToClipboard_txid": MessageLookupByLibrary.simpleMessage(
@@ -1350,7 +1355,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Transacções Removidas"),
         "replaceByFee_modal_deletedInactiveTX_ramp_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Compras incompletas com as seguintes identificações Ramp foram removidas da actividade após 5 dias."),
+                "Compras incompletas com as seguintes identificações Ramp foram removidas da atividade após 5 dias."),
         "replaceByFee_newFee_modal_heading":
             MessageLookupByLibrary.simpleMessage("Nova Taxa de Transacção"),
         "replaceByFee_newFee_modal_subheading":

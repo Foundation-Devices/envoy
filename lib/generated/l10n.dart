@@ -1464,6 +1464,26 @@ class S {
     );
   }
 
+  /// `Activity`
+  String get coincontrol_switchActivity {
+    return Intl.message(
+      'Activity',
+      name: 'coincontrol_switchActivity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tags`
+  String get coincontrol_switchTags {
+    return Intl.message(
+      'Tags',
+      name: 'coincontrol_switchTags',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Review Transaction`
   String get coincontrol_txDetail_ReviewTransaction {
     return Intl.message(
@@ -2381,6 +2401,16 @@ class S {
     return Intl.message(
       'Yes',
       name: 'component_yes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contact Ramp for support`
+  String get contactRampForSupport {
+    return Intl.message(
+      'Contact Ramp for support',
+      name: 'contactRampForSupport',
       desc: '',
       args: [],
     );

@@ -331,6 +331,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_lock_coin_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Locking coins will prevent them from being used in transactions"),
+        "coincontrol_switchActivity":
+            MessageLookupByLibrary.simpleMessage("Activity"),
+        "coincontrol_switchTags": MessageLookupByLibrary.simpleMessage("Tags"),
         "coincontrol_txDetail_ReviewTransaction":
             MessageLookupByLibrary.simpleMessage("Review Transaction"),
         "coincontrol_txDetail_cta1_passport":
@@ -499,6 +502,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_update": MessageLookupByLibrary.simpleMessage("Update"),
         "component_warning": MessageLookupByLibrary.simpleMessage("WARNING"),
         "component_yes": MessageLookupByLibrary.simpleMessage("Yes"),
+        "contactRampForSupport":
+            MessageLookupByLibrary.simpleMessage("Contact Ramp for support"),
         "copyToClipboard_address": MessageLookupByLibrary.simpleMessage(
             "Your address will be copied to the clipboard and may be visible to other apps on your phone."),
         "copyToClipboard_txid": MessageLookupByLibrary.simpleMessage(

@@ -340,6 +340,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_lock_coin_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Bloquejar les monedes evitarà que s\'utilitzin en transaccions"),
+        "coincontrol_switchActivity":
+            MessageLookupByLibrary.simpleMessage("Activitat"),
+        "coincontrol_switchTags":
+            MessageLookupByLibrary.simpleMessage("Etiquetes"),
         "coincontrol_txDetail_ReviewTransaction":
             MessageLookupByLibrary.simpleMessage("Revisa la Transacció"),
         "coincontrol_txDetail_cta1_passport":
@@ -514,6 +518,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_warning":
             MessageLookupByLibrary.simpleMessage("ADVERTÈNCIA"),
         "component_yes": MessageLookupByLibrary.simpleMessage("Sí"),
+        "contactRampForSupport":
+            MessageLookupByLibrary.simpleMessage("Contact Ramp for support"),
         "copyToClipboard_address": MessageLookupByLibrary.simpleMessage(
             "La teva adreça es copiarà al porta-retalls i pot ser que la puguin veure altres aplicacions del teu telèfon."),
         "copyToClipboard_txid": MessageLookupByLibrary.simpleMessage(

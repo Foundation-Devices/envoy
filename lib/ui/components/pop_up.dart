@@ -40,6 +40,7 @@ void showEnvoyPopUp(
   bool? checkedValue,
   bool dismissible = true,
   String? learnMoreLink,
+  String? linkTitle,
   List<Transaction>? expiredTransactions,
 }) =>
     showEnvoyDialog(
@@ -58,27 +59,30 @@ void showEnvoyPopUp(
           onCheckBoxChanged: onCheckBoxChanged,
           checkedValue: checkedValue ?? true,
           learnMoreLink: learnMoreLink,
+          linkTitle: linkTitle ?? '',
           expiredTransactions: expiredTransactions,
         ),
         dismissible: dismissible);
 
 //ignore: must_be_immutable
 class EnvoyPopUp extends StatefulWidget {
-  EnvoyPopUp(
-      {super.key,
-      this.icon,
-      this.title,
-      required this.content,
-      required this.primaryButtonLabel,
-      this.secondaryButtonLabel,
-      this.onPrimaryButtonTap,
-      this.onSecondaryButtonTap,
-      this.typeOfMessage = PopUpState.deafult,
-      this.checkBoxText,
-      this.onCheckBoxChanged,
-      this.checkedValue = true,
-      this.learnMoreLink,
-      this.expiredTransactions});
+  EnvoyPopUp({
+    super.key,
+    this.icon,
+    this.title,
+    required this.content,
+    required this.primaryButtonLabel,
+    this.secondaryButtonLabel,
+    this.onPrimaryButtonTap,
+    this.onSecondaryButtonTap,
+    this.typeOfMessage = PopUpState.deafult,
+    this.checkBoxText,
+    this.onCheckBoxChanged,
+    this.checkedValue = true,
+    this.learnMoreLink,
+    this.linkTitle = '',
+    this.expiredTransactions,
+  });
 
   final String? title;
   final String content;
@@ -92,6 +96,7 @@ class EnvoyPopUp extends StatefulWidget {
   final Function(bool checked)? onCheckBoxChanged;
   bool? checkedValue;
   final String? learnMoreLink;
+  final String linkTitle;
   final List<Transaction>? expiredTransactions;
 
   @override
@@ -195,6 +200,12 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                   textAlign: TextAlign.center,
                 ),
               ),
+              if (widget.expiredTransactions != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                  child: _buildRemovedTransactionsList(
+                      widget.expiredTransactions!),
+                ),
               if (widget.learnMoreLink != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
@@ -203,17 +214,13 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                       launchUrl(Uri.parse(widget.learnMoreLink!));
                     },
                     child: Text(
-                      S().component_learnMore,
+                      widget.linkTitle.isEmpty
+                          ? S().component_learnMore
+                          : widget.linkTitle,
                       style: EnvoyTypography.button
                           .copyWith(color: EnvoyColors.accentPrimary),
                     ),
                   ),
-                ),
-              if (widget.expiredTransactions != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-                  child: _buildRemovedTransactionsList(
-                      widget.expiredTransactions!),
                 ),
               if (widget.checkBoxText != null)
                 Padding(

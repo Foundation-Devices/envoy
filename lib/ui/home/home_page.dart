@@ -126,10 +126,9 @@ class HomePageState extends ConsumerState<HomePage>
     _resetServerDownWarningTimer();
     _resetBackupWarningTimer();
 
-    isNewExpiredBuyTxAvailable.stream
-        .listen((List<Transaction> newExpiredBuyTx) {
-      if (mounted && newExpiredBuyTx.isNotEmpty) {
-        _notifyAboutRemovedRampTx(newExpiredBuyTx, context);
+    isNewExpiredBuyTxAvailable.stream.listen((List<Transaction> expiredBuyTx) {
+      if (mounted && expiredBuyTx.isNotEmpty) {
+        _notifyAboutRemovedRampTx(expiredBuyTx, context);
       }
     });
 
@@ -216,6 +215,9 @@ class HomePageState extends ConsumerState<HomePage>
             Navigator.pop(context);
             isNewExpiredBuyTxAvailable.add([]); // reset stream after pop
           },
+          linkTitle: S().contactRampForSupport,
+          learnMoreLink:
+              "https://support.ramp.network/en/collections/6690-customer-support-help-center",
           icon: EnvoyIcons.info,
           checkBoxText: S().component_dontShowAgain,
           checkedValue: dismissed,
