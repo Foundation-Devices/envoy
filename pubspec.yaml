@@ -103,7 +103,6 @@ dependencies:
   freezed_annotation: ^2.2.0
   go_router: ^10.2.0
   wakelock_plus: ^1.1.1
-  map: ^2.0.2
   cached_network_image: ^3.3.1
 
   path: any
@@ -113,6 +112,9 @@ dependencies:
   typed_data: any
   latlng: any
   http: ^1.2.1
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
+  vector_map_tiles: ^8.0.0
 dependency_overrides:
   watcher: ^1.1.0
   win32: ^5.5.4 # https://stackoverflow.com/questions/69553108/flutter-error-unmodifiableuint8listview-is-restricted-and-cant-be-extended-o
