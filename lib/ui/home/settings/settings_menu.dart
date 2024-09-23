@@ -21,7 +21,6 @@ import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
 
 class SettingsMenu extends ConsumerStatefulWidget {
   const SettingsMenu({super.key});
@@ -49,16 +48,13 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
       canPop: false,
       onPopInvokedWithResult: (bool didPop, _) async {
         if (!didPop) {
-          if (_currentPage is! SettingsMenuWidget &&
-              _currentPage is SettingsPage) {
+          if (_currentPage is! SettingsMenuWidget) {
             _goBackToMenu();
           } else if (ref.read(homePageBackgroundProvider) ==
               HomePageBackgroundState.menu) {
-            if (context.mounted) {
-              OnboardingPage.popUntilHome(context, resetHomeProviders: true);
-            }
-          } else {
-            Navigator.pop(context);
+            ref.read(homePageBackgroundProvider.notifier).state =
+                HomePageBackgroundState.hidden;
+            ref.read(homePageTitleProvider.notifier).state = "";
           }
         }
       },
