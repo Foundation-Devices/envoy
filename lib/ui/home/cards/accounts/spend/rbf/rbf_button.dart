@@ -153,28 +153,34 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
             fasterFeeRate = (minRate + 1).clamp(minRate, maxRate);
           }
         }
-        ref.read(feeChooserStateProvider.notifier).state = FeeChooserState(
-          standardFeeRate: minFeeRate,
-          fasterFeeRate: fasterFeeRate,
-          minFeeRate: rates.min_fee_rate.ceil().toInt(),
-          maxFeeRate: rates.max_fee_rate.floor().toInt(),
-        );
-        ref.read(rbfSpendStateProvider.notifier).state = rbfSpendState;
-        setState(() {
-          _isLoading = false;
-        });
+        if (mounted) {
+          ref.read(feeChooserStateProvider.notifier).state = FeeChooserState(
+            standardFeeRate: minFeeRate,
+            fasterFeeRate: fasterFeeRate,
+            minFeeRate: rates.min_fee_rate.ceil().toInt(),
+            maxFeeRate: rates.max_fee_rate.floor().toInt(),
+          );
+          ref.read(rbfSpendStateProvider.notifier).state = rbfSpendState;
+          setState(() {
+            _isLoading = false;
+          });
+        }
         return;
       }
 
       if (rates.min_fee_rate > 0) {
-        setState(() {
-          _isLoading = false;
-        });
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
         return;
       } else {
-        setState(() {
-          _isLoading = false;
-        });
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -207,9 +213,11 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
           color: EnvoyColors.solidWhite,
         ),
       ).show(context);
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
       return;
     }
     if (ref.read(rbfSpendStateProvider) != null) {
