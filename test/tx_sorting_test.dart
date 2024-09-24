@@ -1,6 +1,9 @@
+// SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:envoy/util/console.dart';
 import 'package:flutter_test/flutter_test.dart';
