@@ -27,6 +27,9 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/business/account.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/seed_qr_extract.dart';
+import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 
 enum ScannerType {
   generic,
@@ -182,6 +185,7 @@ class ScannerPageState extends State<ScannerPage> {
 
   void _onQRViewCreated(QRViewController controller, BuildContext context) {
     this.controller = controller;
+    final NavigatorState navigator = Navigator.of(context);
     controller.scannedDataStream.listen((barcode) {
       if ((barcode.code != null && barcode.code != _lastCodeDetected) ||
           (barcode.rawBytes != null &&
@@ -193,9 +197,36 @@ class ScannerPageState extends State<ScannerPage> {
           return;
         }
 
-        if (context.mounted) {
-          _onDetect(barcode.code!, barcode.rawBytes, context);
+        if (barcode.code!.length > 62) {
+          if (context.mounted) {
+            controller.pauseCamera();
+            showEnvoyPopUp(
+              context,
+              title: S().component_warning,
+              S().qrTooBig_warning_subheading,
+              S().component_confirm,
+              (context) {
+                navigator.pop();
+                if (context.mounted) {
+                  _onDetect(barcode.code!, barcode.rawBytes, context);
+                }
+              },
+              typeOfMessage: PopUpState.danger,
+              icon: EnvoyIcons.alert,
+              secondaryButtonLabel: S().component_back,
+              onSecondaryButtonTap: (BuildContext context) {
+                navigator.pop();
+                navigator.pop();
+                return;
+              },
+            );
+          }
+        } else {
+          if (context.mounted) {
+            _onDetect(barcode.code!, barcode.rawBytes, context);
+          }
         }
+
         _lastScan = barcode.code ?? '';
       }
     });
@@ -261,7 +292,7 @@ class ScannerPageState extends State<ScannerPage> {
     if (widget._acceptableTypes.contains(ScannerType.btcPay)) {
       if (BtcPayVoucher.isVoucher(code)) {
         final voucher = BtcPayVoucher(code);
-        Navigator.of(context).pop();
+        navigator.pop();
         showEnvoyDialog(
             context: context, dialog: BtcPayDialog(voucher, widget.account!));
         return;
