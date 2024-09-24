@@ -69,7 +69,7 @@ jobs:
         run: |
           flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: envoy-ipa
           path: build/ios/ipa/envoy.ipa
