@@ -15,6 +15,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:envoy/business/scheduler.dart';
+import 'package:envoy/generated/l10n.dart';
 
 class FullScreenVideoPlayer extends StatefulWidget {
   final Video video;
@@ -341,8 +342,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                                         !ConnectivityManager()
                                             .torCircuitEstablished
                                     ? "Connecting to the Tor Network" // TODO: FIGMA
-                                    : "Envoy is loading your video over the Tor Network",
-                                // TODO: FIGMA
+                                    : S().video_loadingTorText,
                                 style: const TextStyle(
                                   color: Colors.white70,
                                 ),
