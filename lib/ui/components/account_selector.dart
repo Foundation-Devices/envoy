@@ -59,7 +59,7 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      for (var element in widget.accounts) {
+      for (final element in widget.accounts) {
         _cardStackKeys[element.id!] = GlobalKey();
       }
     });
