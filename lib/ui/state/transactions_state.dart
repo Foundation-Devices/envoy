@@ -57,11 +57,11 @@ final filteredTransactionsProvider =
 
   switch (txSortState) {
     case TransactionSortTypes.newestFirst:
-      transactions.ancestralSort();
-      transactions = transactions.reversed.toList();
+      transactions.sort();
       break;
     case TransactionSortTypes.oldestFirst:
-      transactions.ancestralSort();
+      transactions.sort();
+      transactions = transactions.reversed.toList();
       break;
     case TransactionSortTypes.amountLowToHigh:
       transactions.sort(
@@ -152,8 +152,8 @@ final allTxProvider = Provider<List<Transaction>>((ref) {
     allTransactions.addAll(transactions);
   }
 
-  allTransactions.ancestralSort();
-  return allTransactions;
+  allTransactions.sort();
+  return allTransactions.reversed.toList();
 });
 
 final combinedNotificationsProvider = Provider<List<EnvoyNotification>>((ref) {
