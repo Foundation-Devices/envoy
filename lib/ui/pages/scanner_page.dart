@@ -211,6 +211,7 @@ class ScannerPageState extends State<ScannerPage> {
                   _onDetect(barcode.code!, barcode.rawBytes, context);
                 }
               },
+              isXiconVisible: false,
               typeOfMessage: PopUpState.danger,
               icon: EnvoyIcons.alert,
               secondaryButtonLabel: S().component_back,
