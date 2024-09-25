@@ -144,11 +144,8 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
 
       if (transaction != null) {
         bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
-        titleText = transaction.type == TransactionType.ramp
-            ? S().activity_incomingPurchase
-            : (transaction.amount < 0
-                ? S().activity_sent
-                : S().activity_received);
+        titleText =
+            transaction.amount < 0 ? S().activity_sent : S().activity_received;
         RBFState? cancelState =
             ref.watch(cancelTxStateProvider(transaction.txId));
         if (cancelState != null) {
@@ -178,7 +175,7 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
         } else if (transaction.type == TransactionType.btcPay) {
           subtitleText = S().btcpay_pendingVoucher;
         } else if (transaction.type == TransactionType.ramp) {
-          subtitleText = S().activity_pending;
+          subtitleText = S().ramp_pendingVoucher;
         } else if (transaction.type == TransactionType.normal &&
             transaction.isConfirmed) {
           subtitleText = timeago

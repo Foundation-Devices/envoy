@@ -572,7 +572,7 @@ class TransactionListTile extends StatelessWidget {
     }
     if (transaction.type == TransactionType.ramp) {
       return Text(
-        S().activity_pending,
+        S().ramp_pendingVoucher,
         style: _transactionTextStyleInfo,
       );
     }
@@ -655,11 +655,9 @@ class TransactionListTile extends StatelessWidget {
       child: Consumer(
         builder: (context, ref, child) {
           bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
-          String txTitle = transaction.type == TransactionType.ramp
-              ? S().activity_incomingPurchase
-              : (transaction.amount < 0
-                  ? S().activity_sent
-                  : S().activity_received);
+          String txTitle = transaction.amount < 0
+              ? S().activity_sent
+              : S().activity_received;
           RBFState? cancelState =
               ref.watch(cancelTxStateProvider(transaction.txId));
           if (cancelState != null) {

@@ -113,6 +113,8 @@ class _TransactionsDetailsWidgetState
       rbfPossible = false;
     }
 
+    bool showTxInfo = showTxId(tx.type);
+
     return GestureDetector(
       onTapUp: (details) {
         final RenderBox box =
@@ -246,12 +248,12 @@ class _TransactionsDetailsWidgetState
                   trailing: GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onLongPress: () {
-                      if (tx.type != TransactionType.ramp) {
+                      if (showTxInfo) {
                         copyTxId(context, tx.txId, tx.type);
                       }
                     },
                     onTap: () {
-                      if (tx.type != TransactionType.ramp) {
+                      if (showTxInfo) {
                         setState(() {
                           showTxIdExpanded = !showTxIdExpanded;
                           showAddressExpanded = false;
@@ -265,13 +267,12 @@ class _TransactionsDetailsWidgetState
                           begin: 0, end: showTxIdExpanded ? 1 : 0),
                       duration: const Duration(milliseconds: 200),
                       builder: (context, value, child) {
-                        String txId = tx.type == TransactionType.ramp
-                            ? "loading"
-                            : tx.txId; // TODO: Figma
+                        String txId =
+                            showTxInfo ? tx.txId : S().activity_pending;
                         return Text(
                           truncateWithEllipsisInCenter(txId,
                               lerpDouble(16, txId.length, value)!.toInt()),
-                          style: idTextStyle,
+                          style: showTxInfo ? idTextStyle : trailingTextStyle,
                           textAlign: TextAlign.end,
                           maxLines: 4,
                         );
@@ -606,5 +607,13 @@ String? getBaseUrlForNetwork(Network network) {
       return Fees.testnetMempoolFoundationInstance;
     case Network.Regtest:
       return null;
+  }
+}
+
+bool showTxId(TransactionType type) {
+  if (type == TransactionType.pending || type == TransactionType.normal) {
+    return true;
+  } else {
+    return false;
   }
 }
