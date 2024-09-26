@@ -92,21 +92,23 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
   bool _isPressed = false;
   bool _loading = false;
   bool _canCancel = false;
+  late Psbt psbt;
+  late RawTransaction rawTx;
+  late RawTransaction originalTxRaw;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance
-        .addPostFrameCallback((timeStamp) => _checkIfCanCancel());
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) => checkCancel());
   }
 
-  Future<void> _checkIfCanCancel() async {
+  Future<void> checkCancel() async {
     setState(() {
       _loading = true;
+      _canCancel = false;
     });
 
     final selectedAccount = ref.read(selectedAccountProvider);
-
     if (selectedAccount == null) {
       setState(() {
         _loading = false;
@@ -119,8 +121,17 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
     final feeRate = Fees().fastRate(selectedAccount.wallet.network);
 
     try {
-      await selectedAccount.wallet
+      psbt = await selectedAccount.wallet
           .cancelTx(widget.transaction.txId, doNotSpend, feeRate);
+
+      rawTx = await selectedAccount.wallet
+          .decodeWalletRawTx(psbt.rawTx, selectedAccount.wallet.network);
+
+      final originalTxRawHex = await selectedAccount.wallet
+          .getRawTxFromTxId(widget.transaction.txId);
+
+      originalTxRaw = await selectedAccount.wallet
+          .decodeWalletRawTx(originalTxRawHex, selectedAccount.wallet.network);
 
       setState(() {
         _canCancel = true;
@@ -158,7 +169,16 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
               });
             },
             onTapUp: (_) {
-              checkCancel(context);
+                _canCancel
+                    ? showEnvoyDialog(
+                        context: context,
+                        builder: Builder(
+                            builder: (context) => TxCancelDialog(
+                                originalTx: widget.transaction,
+                                cancelRawTx: rawTx,
+                                originalRawTx: originalTxRaw,
+                                cancelTx: psbt)))
+                    : showNoCancelNoFundsDialog(context);
               _isPressed = false;
             },
             onTapCancel: () {
@@ -205,55 +225,6 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
         ],
       ),
     );
-  }
-
-  checkCancel(BuildContext context) async {
-    setState(() {
-      _loading = true;
-    });
-    final selectedAccount = ref.read(selectedAccountProvider);
-    if (selectedAccount == null) {
-      return;
-    }
-    final doNotSpend = ref.read(lockedUtxosProvider(selectedAccount.id!));
-    final feeRate = Fees().fastRate(selectedAccount.wallet.network);
-
-    try {
-      final psbt = await selectedAccount.wallet
-          .cancelTx(widget.transaction.txId, doNotSpend, feeRate);
-
-      final rawTx = await selectedAccount.wallet
-          .decodeWalletRawTx(psbt.rawTx, selectedAccount.wallet.network);
-      final originalTxRawHex = await selectedAccount.wallet
-          .getRawTxFromTxId(widget.transaction.txId);
-
-      final originalTxRaw = await selectedAccount.wallet
-          .decodeWalletRawTx(originalTxRawHex, selectedAccount.wallet.network);
-
-      if (context.mounted) {
-        showEnvoyDialog(
-            context: context,
-            builder: Builder(
-                builder: (context) => TxCancelDialog(
-                    originalTx: widget.transaction,
-                    cancelRawTx: rawTx,
-                    originalRawTx: originalTxRaw,
-                    cancelTx: psbt)));
-      }
-    } catch (e, s) {
-      debugPrintStack(stackTrace: s);
-      kPrint(e);
-
-      if (context.mounted) {
-        showNoCancelNoFundsDialog(context);
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _loading = false;
-        });
-      }
-    }
   }
 }
 
