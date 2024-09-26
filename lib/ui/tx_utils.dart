@@ -14,8 +14,9 @@ import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transacti
 
 String getTransactionTitleText(
     Transaction transaction, RBFState? cancelState, bool? isBoosted) {
-  if (transaction.type == TransactionType.ramp)
+  if (transaction.type == TransactionType.ramp) {
     return S().activity_incomingPurchase;
+  }
 
   if (cancelState != null) {
     if (cancelState.originalTxId == transaction.txId) {
