@@ -28,11 +28,10 @@ import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart' as rive;
-
 import 'package:url_launcher/url_launcher.dart';
-import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 
 class RBFState {
   final String originalTxId;
@@ -92,6 +91,54 @@ class CancelTxButton extends ConsumerStatefulWidget {
 class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
   bool _isPressed = false;
   bool _loading = false;
+  bool _canCancel = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfTxIsCancelable();
+  }
+
+  Future<void> _checkIfTxIsCancelable() async {
+    setState(() {
+      _loading = true;
+    });
+
+    final selectedAccount = ref.read(selectedAccountProvider);
+
+    if (selectedAccount == null) {
+      setState(() {
+        _loading = false;
+        _canCancel = false;
+      });
+      return;
+    }
+
+    final doNotSpend = ref.read(lockedUtxosProvider(selectedAccount.id!));
+    final feeRate = Fees().fastRate(selectedAccount.wallet.network);
+
+    try {
+      await selectedAccount.wallet
+          .cancelTx(widget.transaction.txId, doNotSpend, feeRate);
+
+      setState(() {
+        _canCancel = true;
+      });
+    } catch (e, s) {
+      debugPrintStack(stackTrace: s);
+      kPrint(e);
+
+      setState(() {
+        _canCancel = false;
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _loading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,8 +169,8 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
             child: Container(
               height: EnvoySpacing.medium2,
               decoration: BoxDecoration(
-                  color:
-                      EnvoyColors.chilli500.withOpacity(_isPressed ? 0.5 : 1),
+                  color: EnvoyColors.chilli500
+                      .withOpacity(_canCancel ? (_isPressed ? 0.5 : 1) : 0.5),
                   borderRadius: BorderRadius.circular(EnvoySpacing.small)),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
@@ -194,21 +241,9 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
     } catch (e, s) {
       debugPrintStack(stackTrace: s);
       kPrint(e);
-      String message = "$e";
-      if (e is InsufficientFunds) {
-        message = S().send_keyboard_amount_insufficient_funds_info;
-      }
+
       if (context.mounted) {
-        EnvoyToast(
-          backgroundColor: EnvoyColors.danger,
-          replaceExisting: true,
-          duration: const Duration(seconds: 4),
-          message: message,
-          icon: const Icon(
-            Icons.info_outline,
-            color: EnvoyColors.solidWhite,
-          ),
-        ).show(context);
+        showNoCancelNoFundsDialog(context);
       }
     } finally {
       if (mounted) {
@@ -751,5 +786,21 @@ Widget background({required Widget child, required BuildContext context}) {
         )
       ],
     ),
+  );
+}
+
+void showNoCancelNoFundsDialog(BuildContext context) {
+  showEnvoyPopUp(
+    context,
+    title: S().coindetails_overlay_noCancelNoFunds_heading,
+    S().coindetails_overlay_noCanceltNoFunds_subheading,
+    S().component_continue,
+    learnMoreLink:
+        "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions",
+    (BuildContext context) {
+      Navigator.pop(context);
+    },
+    icon: EnvoyIcons.alert,
+    typeOfMessage: PopUpState.danger,
   );
 }
