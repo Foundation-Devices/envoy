@@ -223,11 +223,11 @@ final isThereAnyTransactionsProvider = Provider<bool>((ref) {
 });
 
 final getTransactionProvider = Provider.family<Transaction?, String>(
-  (ref, param) {
+  (ref, txId) {
     final selectedAccount = ref.watch(selectedAccountProvider);
     final tx = ref
         .watch(transactionsProvider(selectedAccount?.id ?? ""))
-        .firstWhereOrNull((element) => element.txId == param);
+        .firstWhereOrNull((element) => element.txId == txId);
 
     if (tx == null) {
       return null;
@@ -237,21 +237,17 @@ final getTransactionProvider = Provider.family<Transaction?, String>(
 );
 
 final rbfTxStateProvider = FutureProvider.family<RBFState?, String>(
-  (ref, param) {
-    final account = ref.watch(selectedAccountProvider);
-    if (account == null) {
-      return null;
-    }
-    return EnvoyStorage().getRBFBoostState(param, account.id!);
+  (ref, txId) {
+    return EnvoyStorage().getRBFBoostState(txId);
   },
 );
 
 final isTxBoostedProvider = Provider.family<bool?, String>(
-  (ref, param) {
-    return ref.watch(rbfTxStateProvider(param)).when(
+  (ref, txId) {
+    return ref.watch(rbfTxStateProvider(txId)).when(
           data: (data) {
             if (data != null) {
-              if (data.newTxId == param) {
+              if (data.newTxId == txId) {
                 return true;
               } else {
                 return false;
@@ -269,18 +265,14 @@ final isTxBoostedProvider = Provider.family<bool?, String>(
 );
 
 final cancelTxStateFutureProvider = FutureProvider.family<RBFState?, String>(
-  (ref, param) {
-    final account = ref.watch(selectedAccountProvider);
-    if (account == null) {
-      return null;
-    }
-    return EnvoyStorage().getCancelTxState(account.id!, param);
+  (ref, txId) {
+    return EnvoyStorage().getCancelTxState(txId);
   },
 );
 
 final cancelTxStateProvider = Provider.family<RBFState?, String>(
-  (ref, param) {
-    return ref.watch(cancelTxStateFutureProvider(param)).when(
+  (ref, txId) {
+    return ref.watch(cancelTxStateFutureProvider(txId)).when(
           data: (data) {
             if (data != null) {
               return data;
