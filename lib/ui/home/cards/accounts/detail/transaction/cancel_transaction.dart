@@ -91,15 +91,15 @@ class CancelTxButton extends ConsumerStatefulWidget {
 class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
   bool _isPressed = false;
   bool _loading = false;
-  bool _canCancel = false;
 
   @override
   void initState() {
     super.initState();
-    _checkIfTxIsCancelable();
+    WidgetsBinding.instance
+        .addPostFrameCallback((timeStamp) => _checkIfCanCancel());
   }
 
-  Future<void> _checkIfTxIsCancelable() async {
+  Future<void> _checkIfCanCancel() async {
     setState(() {
       _loading = true;
     });
@@ -109,7 +109,6 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
     if (selectedAccount == null) {
       setState(() {
         _loading = false;
-        _canCancel = false;
       });
       return;
     }
@@ -120,17 +119,9 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
     try {
       await selectedAccount.wallet
           .cancelTx(widget.transaction.txId, doNotSpend, feeRate);
-
-      setState(() {
-        _canCancel = true;
-      });
     } catch (e, s) {
       debugPrintStack(stackTrace: s);
       kPrint(e);
-
-      setState(() {
-        _canCancel = false;
-      });
     } finally {
       if (mounted) {
         setState(() {
@@ -170,7 +161,7 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
               height: EnvoySpacing.medium2,
               decoration: BoxDecoration(
                   color: EnvoyColors.chilli500
-                      .withOpacity(_canCancel ? (_isPressed ? 0.5 : 1) : 0.5),
+                      .withOpacity(_loading ? (_isPressed ? 0.5 : 1) : 0.5),
                   borderRadius: BorderRadius.circular(EnvoySpacing.small)),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
