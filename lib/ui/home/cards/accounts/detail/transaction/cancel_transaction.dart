@@ -169,16 +169,16 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
               });
             },
             onTapUp: (_) {
-                _canCancel
-                    ? showEnvoyDialog(
-                        context: context,
-                        builder: Builder(
-                            builder: (context) => TxCancelDialog(
-                                originalTx: widget.transaction,
-                                cancelRawTx: rawTx,
-                                originalRawTx: originalTxRaw,
-                                cancelTx: psbt)))
-                    : showNoCancelNoFundsDialog(context);
+              _canCancel
+                  ? showEnvoyDialog(
+                      context: context,
+                      builder: Builder(
+                          builder: (context) => TxCancelDialog(
+                              originalTx: widget.transaction,
+                              cancelRawTx: rawTx,
+                              originalRawTx: originalTxRaw,
+                              cancelTx: psbt)))
+                  : showNoCancelNoFundsDialog(context);
               _isPressed = false;
             },
             onTapCancel: () {
