@@ -89,17 +89,23 @@ class MarkersPageState extends State<MarkersPage> {
     _scaleStart = 1.0;
   }
 
-  Future<Coordinates?> getCoordinatesFromJson(String divisionName) async {
+  Future<Coordinates?> getCoordinatesFromJson(
+      String countryCode, String divisionName) async {
     try {
       final String response =
           await rootBundle.loadString('assets/divisions-with-coordinates.json');
-      final List<dynamic> divisions = jsonDecode(response);
+      final Map<String, dynamic> countries = jsonDecode(response);
 
-      for (var division in divisions) {
-        if (division['division'] == divisionName) {
-          double lat = division['coordinates']['lat'];
-          double lon = division['coordinates']['lon'];
-          return Coordinates(lat, lon);
+      if (countries.containsKey(countryCode)) {
+        var country = countries[countryCode];
+        var divisions = country['divisions'];
+
+        for (var division in divisions) {
+          if (division['division'] == divisionName) {
+            double lat = division['coordinates']['lat'];
+            double lon = division['coordinates']['lon'];
+            return Coordinates(lat, lon);
+          }
         }
       }
     } catch (_) {
@@ -111,8 +117,9 @@ class MarkersPageState extends State<MarkersPage> {
   Future<void> goToHome() async {
     try {
       var country = await EnvoyStorage().getCountry();
-      if (country?.division != null) {
-        var coordinates = await getCoordinatesFromJson(country!.division);
+      if (country?.division != null && country?.code != null) {
+        var coordinates =
+            await getCoordinatesFromJson(country!.code, country.division);
         if (coordinates != null &&
             coordinates.lat != null &&
             coordinates.lon != null) {
