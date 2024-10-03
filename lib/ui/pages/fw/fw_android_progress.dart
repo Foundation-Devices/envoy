@@ -66,6 +66,7 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
             if (done!) {
               Devices().markDeviceUpdated(
                   widget.deviceId, fwInfo.value!.storedVersion);
+              refreshFirmwareUpdateDot();
             }
           });
         }
@@ -146,7 +147,6 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
                 Navigator.of(context)
                     .pushReplacement(MaterialPageRoute(builder: (context) {
                   if (done!) {
-                    refreshFirmwareUpdateDot();
                     return FwPassportPage(
                       onboarding: widget.onboarding,
                     );
