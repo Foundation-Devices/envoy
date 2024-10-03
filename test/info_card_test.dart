@@ -114,15 +114,19 @@ class DetailsWidgetTestCases extends StatelessWidget {
               title: S().coindetails_overlay_transactionID,
               icon: const EnvoyIcon(EnvoyIcons.compass,
                   color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
-              trailing: Text(
-                "e0fe6c3e08a30b62314f7d20f66007ee440fff975491665c9d255315a0f66ecc",
-                style: EnvoyTypography.body
-                    .copyWith(
-                      color: EnvoyColors.textTertiary,
-                    )
-                    .setWeight(FontWeight.w400),
-                textAlign: TextAlign.end,
-                maxLines: 4,
+              trailing: Container(
+                constraints: const BoxConstraints(
+                  maxHeight: 80,
+                ),
+                child: SingleChildScrollView(
+                  child: Text(
+                    "e0fe6c3e08a30b62314f7d20f66007ee440fff975491665c9d255315a0f66ecc",
+                    style: EnvoyTypography.body
+                        .copyWith(color: EnvoyColors.textSecondary),
+                    textAlign: TextAlign.end,
+                    maxLines: 4,
+                  ),
+                ),
               )),
           EnvoyInfoCardListItem(
               centerSingleLineTitle: true,
