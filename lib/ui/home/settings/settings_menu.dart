@@ -44,24 +44,9 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
       selectPage(next, context);
     });
 
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (bool didPop, _) async {
-        if (!didPop) {
-          if (_currentPage is! SettingsMenuWidget) {
-            _goBackToMenu();
-          } else if (ref.read(homePageBackgroundProvider) ==
-              HomePageBackgroundState.menu) {
-            ref.read(homePageBackgroundProvider.notifier).state =
-                HomePageBackgroundState.hidden;
-            ref.read(homePageTitleProvider.notifier).state = "";
-          }
-        }
-      },
-      child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 250),
-        child: _currentPage,
-      ),
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 250),
+      child: _currentPage,
     );
   }
 
