@@ -17,6 +17,8 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/components/select_dropdown.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/routes/route_state.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/home/home_state.dart';
 
 GlobalKey<EnvoyDropdownState> dropdownDivisionKey =
     GlobalKey<EnvoyDropdownState>();
@@ -51,9 +53,11 @@ class _SelectRegionState extends ConsumerState<SelectRegion> {
         _divisionSelected = true;
       }
 
-      setState(() {
-        _dataLoaded = true;
-      });
+      if (mounted) {
+        setState(() {
+          _dataLoaded = true;
+        });
+      }
     });
   }
 
@@ -116,21 +120,40 @@ class _SelectRegionState extends ConsumerState<SelectRegion> {
     return foundCountry;
   }
 
+  onNativeBackPressed(bool didPop) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      String path = ref.read(routePathProvider);
+
+      if (path == ROUTE_SELECT_REGION &&
+          await EnvoyStorage().getCountry() != null) {
+        if (mounted) {
+          context.go(ROUTE_BUY_BITCOIN);
+        }
+      }
+      // if First time in app and no country selected ˇˇˇ
+      else {
+        ref.read(buyBTCPageProvider.notifier).state = false;
+        ref.read(homePageBackgroundProvider.notifier).state =
+            HomePageBackgroundState.hidden;
+        ref.read(homePageTabProvider.notifier).state =
+            HomePageTabState.accounts;
+        ref.read(homePageTitleProvider.notifier).state = "";
+
+        if (mounted) {
+          GoRouter.of(context).go(ROUTE_ACCOUNTS_HOME);
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BackButtonListener(
-      // Using BackButtonListener instead of PopScope due to compatibility issues with go_router.
-      // Refer to the Flutter GitHub issue for more details: https://github.com/flutter/flutter/issues/138737
-      onBackButtonPressed: () async {
-        String path = ref.read(routePathProvider);
-        if (path == ROUTE_SELECT_REGION &&
-            await EnvoyStorage().getCountry() != null) {
-          if (context.mounted) {
-            context.go(ROUTE_BUY_BITCOIN);
-          }
-          return true;
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) {
+          onNativeBackPressed(didPop);
         }
-        return false;
       },
       child: _dataLoaded
           ? buildWidget()
