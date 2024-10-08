@@ -144,7 +144,7 @@ class IconTabState extends State<IconTab> {
                                 left: EnvoySpacing.xs / 2),
                             child: EnvoyIcon(
                               icon,
-                              size: EnvoyIconSize.superSmall,
+                              size: EnvoyIconSize.extraSmall,
                               color: poweredByIconColor,
                             ),
                           )),

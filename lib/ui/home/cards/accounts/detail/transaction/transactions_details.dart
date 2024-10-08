@@ -355,7 +355,7 @@ class _TransactionsDetailsWidgetState
                     centerSingleLineTitle: true,
                     icon: const EnvoyIcon(
                       EnvoyIcons.ramp_without_name,
-                      size: EnvoyIconSize.normal,
+                      size: EnvoyIconSize.small,
                       color: EnvoyColors.textPrimary,
                     ),
                     trailing: GestureDetector(
@@ -377,7 +377,7 @@ class _TransactionsDetailsWidgetState
                     centerSingleLineTitle: true,
                     icon: const EnvoyIcon(
                       EnvoyIcons.ramp_without_name,
-                      size: EnvoyIconSize.normal,
+                      size: EnvoyIconSize.small,
                       color: EnvoyColors.textPrimary,
                     ),
                     trailing: hideBalance
