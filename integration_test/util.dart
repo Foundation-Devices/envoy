@@ -120,7 +120,7 @@ Future<void> goToAbout(WidgetTester tester) async {
 }
 
 FiatCurrency? getFiatCurrencyByCode(String code) {
-  for (var fiatCurrency in supportedFiat) {
+  for (var fiatCurrency in ExchangeRate().supportedFiat) {
     if (fiatCurrency.code == code) {
       return fiatCurrency;
     }
