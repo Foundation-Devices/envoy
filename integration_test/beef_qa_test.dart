@@ -1324,7 +1324,7 @@ Future<void> main() async {
       // Check Fiat and set it to USD before testing
       bool textIsOnScreen = await findTextOnScreen(tester, 'USD');
       if (!textIsOnScreen) {
-        await fromSettingsToFiatDropdown(tester);
+        await fromSettingsToFiatBottomSheet(tester);
         await findAndPressTextButton(tester, 'USD');
       }
 
@@ -1367,7 +1367,7 @@ Future<void> main() async {
       await pressHamburgerMenu(tester);
       await goToSettings(tester);
 
-      await fromSettingsToFiatDropdown(tester);
+      await fromSettingsToFiatBottomSheet(tester);
       await findAndPressTextButton(tester, 'JPY');
       currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
 
@@ -1408,7 +1408,7 @@ Future<void> main() async {
       await goToSettings(tester);
 
       // Check Fiat and set it to USD before testing
-      await fromSettingsToFiatDropdown(tester);
+      await fromSettingsToFiatBottomSheet(tester);
       await findAndPressTextButton(tester, 'USD');
       currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
 
@@ -1443,7 +1443,7 @@ Future<void> main() async {
       await pressHamburgerMenu(tester);
       await goToSettings(tester);
 
-      await fromSettingsToFiatDropdown(tester);
+      await fromSettingsToFiatBottomSheet(tester);
       await findAndPressTextButton(tester, 'JPY');
       currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
 

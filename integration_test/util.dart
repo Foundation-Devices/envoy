@@ -176,18 +176,19 @@ Future<void> goToSettings(WidgetTester tester) async {
 
 Future<String?> findCurrentFiatInSettings(WidgetTester tester) async {
   await tester.pump();
-  final dropdownFiatFinder = find.byType(DropdownButton<String>);
-  expect(dropdownFiatFinder, findsOneWidget);
-
-  // Retrieve the DropdownButton widget
-  final dropdownFiatWidget =
-      tester.widget<DropdownButton<String>>(dropdownFiatFinder);
-
-  // Get the currently selected value
-  final currentFiat = dropdownFiatWidget.value;
+  final currencyListTile =
+      find.ancestor(of: find.text("Currency"), matching: find.byType(ListTile));
+  expect(currencyListTile, findsOneWidget);
+  String currentSelection = "USD";
+  for (var element in ExchangeRate().supportedFiat) {
+    if (find.text(element.code).hasFound) {
+      if (await findTextOnScreen(tester, element.code)) {
+        currentSelection = element.code;
+      }
+    }
+  }
   await tester.pump(Durations.long2);
-
-  return currentFiat;
+  return currentSelection;
 }
 
 Future<bool> isSlideSwitchOn(WidgetTester tester, String listTileText) async {
@@ -229,13 +230,14 @@ Future<void> findAndToggleSettingsSwitch(
   await tester.pump(Durations.long2);
 }
 
-Future<void> fromSettingsToFiatDropdown(WidgetTester tester) async {
+Future<void> fromSettingsToFiatBottomSheet(WidgetTester tester) async {
   await tester.pump();
-  final dropdownButton = find.byType(DropdownButton<String>);
-  expect(dropdownButton, findsOneWidget);
+  //s
+  final fiatOptionButton = find.text('USD');
+  expect(fiatOptionButton, findsOneWidget);
 
-  await tester.tap(dropdownButton);
-  await tester.pump(Durations.long2);
+  await tester.tap(fiatOptionButton);
+  await tester.pump(Durations.long3);
 }
 
 Future<void> scrollActivityAndCheckFiat(
