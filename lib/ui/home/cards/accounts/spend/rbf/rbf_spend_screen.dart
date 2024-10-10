@@ -294,8 +294,8 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                     psbtFinalized: finalizedPsbt != null,
                                     hideTxDetailsDialog: true,
                                     loading: _rebuildingTx,
-                                    feeTitle:
-                                        S().replaceByFee_boost_tx_boostFee,
+                                    feeTitle: S().coincontrol_tx_detail_newFee,
+                                    feeTitleIconButton: EnvoyIcons.info,
                                     address: rbfState.receiveAddress,
                                     feeChooserWidget: FeeChooser(
                                       onFeeSelect: (int fee,
