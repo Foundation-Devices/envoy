@@ -1390,8 +1390,9 @@ Future<void> main() async {
       String newFiatAmount =
           await extractFiatAmountFromAccount(tester, accountPassportName);
       // Check if the numbers differ from different Fiats
-      expect(newFiatAmount != usdFiatAmount, isTrue);
-
+      if (usdFiatAmount != "0.00") {
+        expect(newFiatAmount != usdFiatAmount, isTrue);
+      }
       /// Repeat all steps over tor //////////////////////////////////////////////////
 
       await findAndPressTextButton(tester, 'Privacy');

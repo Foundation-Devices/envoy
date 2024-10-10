@@ -211,9 +211,7 @@ class ExchangeRate extends ChangeNotifier {
 
   Future<double> _getRateForCode(String currencyCode) async {
     try {
-      kPrint("Getting rate for $currencyCode");
       final response = await _http.get('$_serverAddress/price/$currencyCode');
-      kPrint("Getting rate for ${response.code}");
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         var rate = json['reply']['BTC$currencyCode']["last"];

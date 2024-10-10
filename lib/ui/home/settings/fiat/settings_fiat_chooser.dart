@@ -168,7 +168,7 @@ class _FiatCurrencyChooserState extends ConsumerState<FiatCurrencyChooser> {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       trailing: SizedBox(
-                                        width: 64,
+                                        width: 72,
                                         child: Row(
                                           mainAxisSize: MainAxisSize.max,
                                           crossAxisAlignment:
@@ -183,11 +183,9 @@ class _FiatCurrencyChooserState extends ConsumerState<FiatCurrencyChooser> {
                                                     ?.copyWith(
                                                         fontWeight:
                                                             FontWeight.w500),
-                                                textAlign: TextAlign.end,
+                                                textAlign: TextAlign.right,
                                                 overflow:
                                                     TextOverflow.ellipsis),
-                                            const SizedBox(
-                                                width: EnvoySpacing.small),
                                             Text(item.code,
                                                 style: Theme.of(context)
                                                     .textTheme
