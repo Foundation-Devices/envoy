@@ -163,7 +163,10 @@ class _FiatCurrencyChooserState extends ConsumerState<FiatCurrencyChooser> {
                                           ?.copyWith(
                                               fontWeight: FontWeight.w500,
                                               fontSize: 14),
-                                      title: Text(item.title),
+                                      title: Text(
+                                        item.title,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                       trailing: SizedBox(
                                         width: 64,
                                         child: Row(
@@ -173,16 +176,16 @@ class _FiatCurrencyChooserState extends ConsumerState<FiatCurrencyChooser> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text(
-                                              item.symbol,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyMedium
-                                                  ?.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                              textAlign: TextAlign.end,
-                                            ),
+                                            Text(item.symbol,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium
+                                                    ?.copyWith(
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                textAlign: TextAlign.end,
+                                                overflow:
+                                                    TextOverflow.ellipsis),
                                             const SizedBox(
                                                 width: EnvoySpacing.small),
                                             Text(item.code,
@@ -192,7 +195,9 @@ class _FiatCurrencyChooserState extends ConsumerState<FiatCurrencyChooser> {
                                                     ?.copyWith(
                                                       fontWeight:
                                                           FontWeight.w500,
-                                                    )),
+                                                    ),
+                                                overflow:
+                                                    TextOverflow.ellipsis),
                                           ],
                                         ),
                                       ),
