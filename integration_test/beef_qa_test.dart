@@ -1409,8 +1409,9 @@ Future<void> main() async {
       await goToSettings(tester);
 
       // Check Fiat and set it to USD before testing
-      await fromSettingsToFiatBottomSheet(tester);
-      await findAndPressTextButton(tester, 'JPY');
+      await fromSettingsToFiatBottomSheet(tester,
+          currentSelection: currentSettingsFiatCode);
+      await findAndPressTextButton(tester, 'USD');
       currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
 
       isSettingsFiatSwitchOn =

@@ -225,9 +225,10 @@ Future<void> findAndToggleSettingsSwitch(
   await tester.pump(Durations.long2);
 }
 
-Future<void> fromSettingsToFiatBottomSheet(WidgetTester tester) async {
+Future<void> fromSettingsToFiatBottomSheet(WidgetTester tester,
+    {String? currentSelection}) async {
   await tester.pump();
-  final fiatOptionButton = find.text('USD');
+  final fiatOptionButton = find.text(currentSelection ?? 'USD');
   expect(fiatOptionButton, findsOneWidget);
 
   await tester.tap(fiatOptionButton);
