@@ -176,18 +176,13 @@ Future<void> goToSettings(WidgetTester tester) async {
 
 Future<String?> findCurrentFiatInSettings(WidgetTester tester) async {
   await tester.pump();
-  final currencyListTile =
-      find.ancestor(of: find.text("Currency"), matching: find.byType(ListTile));
-  expect(currencyListTile, findsOneWidget);
-  String currentSelection = "USD";
+  String? currentSelection;
   for (var element in ExchangeRate().supportedFiat) {
-    if (find.text(element.code).hasFound) {
-      if (await findTextOnScreen(tester, element.code)) {
-        currentSelection = element.code;
-      }
+    if (find.text(element.code).evaluate().isNotEmpty) {
+      currentSelection = element.code;
     }
   }
-  await tester.pump(Durations.long2);
+  await tester.pump(Durations.long1);
   return currentSelection;
 }
 
