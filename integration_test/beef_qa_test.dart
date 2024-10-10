@@ -1468,8 +1468,10 @@ Future<void> main() async {
 
       newFiatAmount =
           await extractFiatAmountFromAccount(tester, accountPassportName);
-      // Check if the numbers differ from different Fiats
-      expect(newFiatAmount != usdFiatAmount, isTrue);
+      if (usdFiatAmount != "0.00") {
+        // Check if the numbers differ from different Fiats
+        expect(newFiatAmount != usdFiatAmount, isTrue);
+      }
     });
     testWidgets('Logs freeze', (tester) async {
       await goBackHome(tester);
