@@ -1393,6 +1393,7 @@ Future<void> main() async {
       if (usdFiatAmount != "0.00") {
         expect(newFiatAmount != usdFiatAmount, isTrue);
       }
+
       /// Repeat all steps over tor //////////////////////////////////////////////////
 
       await findAndPressTextButton(tester, 'Privacy');
