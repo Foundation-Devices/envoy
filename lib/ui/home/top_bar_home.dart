@@ -359,6 +359,9 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       case ROUTE_LEARN:
         optionsState.state = null;
         break;
+      case ROUTE_LEARN_BLOG:
+        optionsState.state = null;
+        break;
       // default:
       //   optionsState.state = null;
       //   break;

@@ -116,7 +116,6 @@ class AccountManager extends ChangeNotifier {
                   dateSynced: syncedAccount.dateSynced);
             }
 
-            notifyListeners();
             storeAccounts();
 
             if (!isAccountBalanceHigherThanUsd1000Stream.isClosed) {
@@ -191,8 +190,14 @@ class AccountManager extends ChangeNotifier {
       Fees().fees[account.wallet.network]!.electrumSlowRate =
           account.wallet.feeRateSlow;
 
+      final firstTimeSync = account.dateSynced == null;
+
       // This does away with amounts "ghosting" in UI
       account = account.copyWith(dateSynced: DateTime.now());
+
+      if (changed || firstTimeSync) {
+        notifyListeners();
+      }
     }
 
     return account;

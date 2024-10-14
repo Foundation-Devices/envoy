@@ -114,6 +114,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "azteco_connection_modal_fail_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "A Envoy não consegue estabelecer ligação com a Azteco.\n\nPor favor entra em contacto com support@azte.co ou tenta novamente mais tarde."),
+        "azteco_note": MessageLookupByLibrary.simpleMessage("Azteco Voucher"),
+        "azteco_pendingVoucher":
+            MessageLookupByLibrary.simpleMessage("Pending Azteco Voucher"),
         "azteco_redeem_modal__voucher_code":
             MessageLookupByLibrary.simpleMessage("CÓDIGO DO VALE"),
         "azteco_redeem_modal_amount":
@@ -163,6 +166,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "btcpay_connection_modal_onchainOnly_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "O vale digitalizado não foi criado com suporte onchain.\n\nPor favor entra em contacto com o criador do vale."),
+        "btcpay_note": MessageLookupByLibrary.simpleMessage("BTCPay voucher"),
         "btcpay_pendingVoucher":
             MessageLookupByLibrary.simpleMessage("Vale BYCPay Pendente"),
         "btcpay_redeem_modal_description":
@@ -1286,6 +1290,9 @@ class MessageLookup extends MessageLookupByLibrary {
                 "De que forma é que gostarias que a Envoy se ligasse à Internet?"),
         "qrTooBig_warning_subheading": MessageLookupByLibrary.simpleMessage(
             "The scanned QR code contains a large amount of data and could make Envoy unstable. Are you sure you want to continue?"),
+        "ramp_note": MessageLookupByLibrary.simpleMessage("Ramp Purchase"),
+        "ramp_pendingVoucher":
+            MessageLookupByLibrary.simpleMessage("Pending Ramp Purchase"),
         "receive_QR_code_receive_QR_code_taproot_on_taproot_toggle":
             MessageLookupByLibrary.simpleMessage("Utilizar Endereço Taproot"),
         "receive_qr_code_heading":

@@ -482,6 +482,26 @@ class S {
     );
   }
 
+  /// `Azteco Voucher`
+  String get azteco_note {
+    return Intl.message(
+      'Azteco Voucher',
+      name: 'azteco_note',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending Azteco Voucher`
+  String get azteco_pendingVoucher {
+    return Intl.message(
+      'Pending Azteco Voucher',
+      name: 'azteco_pendingVoucher',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `VOUCHER CODE`
   String get azteco_redeem_modal__voucher_code {
     return Intl.message(
@@ -707,6 +727,16 @@ class S {
     return Intl.message(
       'The scanned voucher was not created with onchain support.\n\nPlease contact the voucher creator.',
       name: 'btcpay_connection_modal_onchainOnly_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `BTCPay voucher`
+  String get btcpay_note {
+    return Intl.message(
+      'BTCPay voucher',
+      name: 'btcpay_note',
       desc: '',
       args: [],
     );
@@ -5853,6 +5883,26 @@ class S {
     return Intl.message(
       'The scanned QR code contains a large amount of data and could make Envoy unstable. Are you sure you want to continue?',
       name: 'qrTooBig_warning_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ramp Purchase`
+  String get ramp_note {
+    return Intl.message(
+      'Ramp Purchase',
+      name: 'ramp_note',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending Ramp Purchase`
+  String get ramp_pendingVoucher {
+    return Intl.message(
+      'Pending Ramp Purchase',
+      name: 'ramp_pendingVoucher',
       desc: '',
       args: [],
     );
