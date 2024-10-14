@@ -4,18 +4,18 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# Iterate over each test file in integration_test_order
-while IFS= read -r test_file; do
-  # Skip lines that start with whitespace, #, or are empty
-  if [[ -z "$test_file" ]] || [[ $test_file =~ ^[[:space:]] ]] || [[ $test_file =~ ^# ]]; then
-    continue
-  fi
+# Define the list of test groups
+test_groups=( "No account tests" "Hot wallet tests" "Passport wallet tests")
 
-  # Run the test for the current file
-  if ! xvfb-run -a -s '-screen 0 1024x768x24 +extension GLX' flutter test "$test_file" -d linux --verbose; then
-    echo "Test failed: $test_file"
+# Iterate over each test group
+for group_name in "${test_groups[@]}"; do
+  echo "Running tests for group: $group_name"
+
+  # Run the test for the current group
+  if ! flutter test --plain-name "$group_name" -d linux integration_test/beef_qa_test.dart; then
+    echo "Test failed in group: $group_name"
     exit 1 # Exit immediately on failure
   fi
-done <integration_test_order
+done
 
 exit 0

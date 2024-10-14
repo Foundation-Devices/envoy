@@ -31,6 +31,15 @@ import 'package:wallet/wallet.dart';
 class AccountAlreadyPaired implements Exception {}
 
 class AccountManager extends ChangeNotifier {
+  @override
+  // ignore: must_call_super
+  void dispose({bool? force}) {
+    // prevents riverpods StateNotifierProvider from disposing it
+    if (force == true) {
+      super.dispose();
+    }
+  }
+
   List<Account> accounts = [];
   final LocalStorage _ls = LocalStorage();
   var s = Settings();
@@ -107,7 +116,6 @@ class AccountManager extends ChangeNotifier {
                   dateSynced: syncedAccount.dateSynced);
             }
 
-            notifyListeners();
             storeAccounts();
 
             if (!isAccountBalanceHigherThanUsd1000Stream.isClosed) {
@@ -120,7 +128,7 @@ class AccountManager extends ChangeNotifier {
   }
 
   StreamController<bool> isAccountBalanceHigherThanUsd1000Stream =
-      StreamController();
+      StreamController.broadcast();
 
   notifyIfAccountBalanceHigherThanUsd1000() {
     for (var account in accounts) {
@@ -182,8 +190,14 @@ class AccountManager extends ChangeNotifier {
       Fees().fees[account.wallet.network]!.electrumSlowRate =
           account.wallet.feeRateSlow;
 
+      final firstTimeSync = account.dateSynced == null;
+
       // This does away with amounts "ghosting" in UI
       account = account.copyWith(dateSynced: DateTime.now());
+
+      if (changed || firstTimeSync) {
+        notifyListeners();
+      }
     }
 
     return account;
@@ -649,6 +663,25 @@ class AccountManager extends ChangeNotifier {
     for (var account in accounts) {
       if (account.id == accountId) {
         return account;
+      }
+    }
+    return null;
+  }
+
+  Transaction? getTransactionById(Account account, String txId) {
+    for (var transaction in account.wallet.transactions) {
+      if (transaction.txId == txId) {
+        return transaction;
+      }
+    }
+    return null;
+  }
+
+  String? getAccountIdByTransaction(String txId) {
+    for (var account in accounts) {
+      var transaction = getTransactionById(account, txId);
+      if (transaction != null) {
+        return account.id;
       }
     }
     return null;

@@ -46,10 +46,25 @@ final showTaprootAccountsProvider = Provider((ref) {
 
 @JsonSerializable()
 class Settings extends ChangeNotifier {
+  @override
+  // ignore: must_call_super
+  void dispose({bool? force}) {
+    // prevents riverpods StateNotifierProvider from disposing it
+    if (force == true) {
+      super.dispose();
+    }
+  }
+
   static const String SETTINGS_PREFS = "settings";
 
-  static const String TOR_ONION_ELECTRUM_SERVER =
+  static const String MAINNET_ONION_ELECTRUM_SERVER =
       "mocmguuik7rws4bclpcoz2ldfzesjolatrzggaxfl37hjpreap777yqd.onion:50001";
+
+  static const String TESTNET_ONION_ELECTRUM_SERVER =
+      "5qr5mhxle4z6gjpngg5cb4v6cbxvnkccb5s5own5l7wg2tvggjqvltad.onion:50001";
+
+  static const String MUTINYNET_ONION_ELECTRUM_SERVER =
+      "zal4yu74bpyjm4enzxgo42ev34usyag5cmfn3ej6q5sf72urpfbej6ad.onion:50001";
 
   static final List<String> defaultServers = getDefaultFulcrumServers();
   static String currentDefaultServer = selectRandomDefaultServer();
@@ -135,16 +150,24 @@ class Settings extends ChangeNotifier {
 
   String electrumAddress(Network network) {
     if (network == Network.Testnet) {
-      return TESTNET_ELECTRUM_SERVER;
+      if (usingTor) {
+        return TESTNET_ONION_ELECTRUM_SERVER;
+      } else {
+        return TESTNET_ELECTRUM_SERVER;
+      }
     }
 
     if (network == Network.Signet) {
-      return MUTINYNET_ELECTRUM_SERVER;
+      if (usingTor) {
+        return MUTINYNET_ONION_ELECTRUM_SERVER;
+      } else {
+        return MUTINYNET_ELECTRUM_SERVER;
+      }
     }
 
     if (usingDefaultElectrumServer) {
       if (usingTor) {
-        return TOR_ONION_ELECTRUM_SERVER;
+        return MAINNET_ONION_ELECTRUM_SERVER;
       } else {
         return currentDefaultServer;
       }
@@ -337,7 +360,8 @@ class Settings extends ChangeNotifier {
       return "USD";
     }
 
-    if (supportedFiat.contains(FiatCurrency(currencyCode, ""))) {
+    if (ExchangeRate().supportedFiat.contains(
+        FiatCurrency(code: currencyCode, title: "", flag: "", symbol: ""))) {
       return currencyCode;
     }
 

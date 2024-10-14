@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/string_utils.dart';
 import 'package:flutter/material.dart';
@@ -19,20 +18,23 @@ import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
+import 'package:envoy/business/account.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
+import 'package:envoy/ui/tx_utils.dart';
 
 class EnvoyListTile extends StatelessWidget {
   const EnvoyListTile({
     super.key,
-    required this.textLeft1,
-    this.textLeft2,
-    this.leftIcon,
+    required this.titleText,
+    this.subtitleText,
+    this.txIcon,
     this.iconColor = EnvoyColors.textPrimary,
     this.unitIcon,
   });
 
-  final String textLeft1;
-  final String? textLeft2;
-  final EnvoyIcons? leftIcon;
+  final String titleText;
+  final String? subtitleText;
+  final EnvoyIcons? txIcon;
   final Color? iconColor;
   final Widget? unitIcon;
 
@@ -47,26 +49,26 @@ class EnvoyListTile extends StatelessWidget {
           title: Padding(
             padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
             child: Text(
-              textLeft1,
+              titleText,
               style:
                   EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary),
             ),
           ),
-          subtitle: textLeft2 == null
+          subtitle: subtitleText == null
               ? const Text("")
               : Text(
-                  textLeft2!,
+                  subtitleText!,
                   style: EnvoyTypography.info
                       .copyWith(color: EnvoyColors.textSecondary),
                 ),
-          leading: leftIcon == null
+          leading: txIcon == null
               ? null
               : Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     EnvoyIcon(
-                      leftIcon!,
+                      txIcon!,
                       color: iconColor,
                       size: EnvoyIconSize.small,
                     ),
@@ -118,82 +120,58 @@ class ListHeader extends StatelessWidget {
   }
 }
 
-class ActivityListTile extends StatelessWidget {
-  const ActivityListTile(
-    this.notification, {
-    super.key,
-  });
+class ActivityListTile extends ConsumerStatefulWidget {
+  const ActivityListTile(this.notification, {super.key});
 
   final EnvoyNotification notification;
 
   @override
+  ActivityListTileState createState() => ActivityListTileState();
+}
+
+class ActivityListTileState extends ConsumerState<ActivityListTile> {
+  @override
   Widget build(BuildContext context) {
     return Consumer(builder: (context, ref, _) {
-      String textLeft1 = "";
-      String? textLeft2;
-      EnvoyIcons? leftIcon;
+      String titleText = "";
+      String? subtitleText;
+      EnvoyIcons? txIcon;
       Color? iconColor;
       Widget? unitIcon;
       final Locale activeLocale = Localizations.localeOf(context);
-      final accountId = notification.accountId;
-      bool hide = false;
+      final notification = widget.notification;
+      final transaction = notification.transaction;
 
-      if (accountId != null) {
-        hide = ref.watch(balanceHideStateStatusProvider(accountId));
-      }
+      if (transaction != null) {
+        bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
+        RBFState? cancelState =
+            ref.watch(cancelTxStateProvider(transaction.txId));
 
-      if (notification.type == EnvoyNotificationType.transaction) {
-        leftIcon = notification.amount! >= 0
-            ? EnvoyIcons.arrow_down_left
-            : EnvoyIcons.arrow_up_right;
-        bool? isBoosted = ref.watch(isTxBoostedProvider(notification.id));
-        bool isConfirmed = notification.date != null;
-
-        textLeft1 = notification.amount! >= 0
-            ? S().activity_received
-            : S().activity_sent;
-        if (notification.amount! < 0) {
-          RBFState? cancelState =
-              ref.watch(cancelTxStateProvider(notification.id));
-          if (cancelState != null) {
-            if (!isConfirmed) {
-              leftIcon = EnvoyIcons.alert;
-            }
-            if (cancelState.originalTxId == notification.id) {
-              if (!isConfirmed) {
-                textLeft1 = S().activity_canceling;
-              }
-            }
-            if (cancelState.newTxId == notification.id) {
-              if (isConfirmed) {
-                textLeft1 = S().activity_sent_canceled;
-                leftIcon = EnvoyIcons.close;
-              } else {
-                textLeft1 = S().activity_canceling;
-              }
-            }
-          } else {
-            if (isBoosted == true) {
-              leftIcon = EnvoyIcons.rbf_boost;
-              if (isConfirmed) {
-                textLeft1 = S().activity_sent_boosted;
-              }
-              textLeft1 = S().activity_boosted;
-            }
-          }
-        }
-        textLeft2 = notification.date == null
-            ? (notification.amount! >= 0
-                ? S().receive_tx_list_awaitingConfirmation
-                : S().activity_pending)
-            : timeago
-                .format(notification.date!, locale: activeLocale.languageCode)
-                .capitalize();
-        iconColor = EnvoyColors.textTertiary;
+        titleText =
+            getTransactionTitleText(transaction, cancelState, isBoosted);
+        subtitleText = getTransactionSubtitleText(transaction, activeLocale);
+        txIcon = getTransactionIcon(transaction, cancelState, isBoosted);
 
         unitIcon = () {
-          if (hide ||
-              AccountManager().getAccountById(accountId!)!.dateSynced == null) {
+          final accountManager = ref.watch(accountManagerProvider);
+          bool isTransactionHidden = false;
+          Account? transactionAccount;
+
+          // Check if the account of the current transaction is hidden
+          for (var account in accountManager.accounts) {
+            final transactions = ref.watch(transactionsProvider(account.id));
+            for (var tx in transactions) {
+              if (tx.txId == transaction.txId) {
+                transactionAccount = account;
+                isTransactionHidden =
+                    ref.watch(balanceHideStateStatusProvider(account.id));
+                break;
+              }
+            }
+            if (isTransactionHidden) break;
+          }
+
+          if (isTransactionHidden) {
             return const Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -214,8 +192,8 @@ class ActivityListTile extends StatelessWidget {
           } else {
             return FittedBox(
               child: EnvoyAmount(
-                account: AccountManager().getAccountById(accountId)!,
-                amountSats: notification.amount!,
+                account: transactionAccount!,
+                amountSats: transaction.amount,
                 amountWidgetStyle: AmountWidgetStyle.normal,
                 alignToEnd: true,
               ),
@@ -224,10 +202,12 @@ class ActivityListTile extends StatelessWidget {
         }();
       }
 
+      iconColor = EnvoyColors.textTertiary;
+
       if (notification.type == EnvoyNotificationType.firmware) {
-        leftIcon = EnvoyIcons.tool;
-        textLeft1 = S().activity_passportUpdate;
-        textLeft2 = timeago
+        txIcon = EnvoyIcons.tool;
+        titleText = S().activity_passportUpdate;
+        subtitleText = timeago
             .format(notification.date ?? DateTime.now(),
                 locale: activeLocale.languageCode)
             .capitalize();
@@ -236,9 +216,9 @@ class ActivityListTile extends StatelessWidget {
       }
 
       if (notification.type == EnvoyNotificationType.envoyUpdate) {
-        leftIcon = EnvoyIcons.download;
-        textLeft1 = S().activity_envoyUpdateAvailable;
-        textLeft2 = timeago
+        txIcon = EnvoyIcons.download;
+        titleText = S().activity_envoyUpdateAvailable;
+        subtitleText = timeago
             .format(notification.date ?? DateTime.now(),
                 locale: activeLocale.languageCode)
             .capitalize();
@@ -247,9 +227,9 @@ class ActivityListTile extends StatelessWidget {
       }
 
       return EnvoyListTile(
-        textLeft1: textLeft1,
-        textLeft2: textLeft2,
-        leftIcon: leftIcon,
+        titleText: titleText,
+        subtitleText: subtitleText,
+        txIcon: txIcon,
         iconColor: iconColor,
         unitIcon: unitIcon,
       );

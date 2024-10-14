@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:io';
+
 import 'package:backup/backup.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -108,10 +110,25 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: EnvoySpacing.large3),
-              child: Image.asset(
-                "assets/fw_intro.png",
-                width: 150,
-                height: 150,
+              child: GestureDetector(
+                onLongPress: () {
+                  // BeefQA test: Only execute if the platform is Linux
+                  if (Platform.isLinux) {
+                    setState(() {
+                      _isRecoveryInProgress = true;
+                    });
+                    openBeefQABackupFile(context).then((value) {
+                      setState(() {
+                        _isRecoveryInProgress = false;
+                      });
+                    });
+                  }
+                },
+                child: Image.asset(
+                  "assets/fw_intro.png",
+                  width: 150,
+                  height: 150,
+                ),
               ),
             ),
             const SizedBox(height: EnvoySpacing.medium1),

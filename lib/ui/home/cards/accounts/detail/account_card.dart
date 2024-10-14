@@ -38,16 +38,15 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/tx_utils.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/blur_container_transform.dart';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:envoy/util/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/exchange_rate.dart';
 
@@ -553,52 +552,12 @@ class TransactionListTile extends StatelessWidget {
   }
 
   Widget txSubtitle(Locale activeLocale) {
-    if (transaction.type == TransactionType.azteco) {
-      return Text(
-        S().azteco_account_tx_history_pending_voucher,
-        style: _transactionTextStyleInfo,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-      );
-    }
-
-    if (transaction.type == TransactionType.btcPay) {
-      return Text(
-        S().btcpay_pendingVoucher,
-        style: _transactionTextStyleInfo,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-      );
-    }
-    if (transaction.type == TransactionType.ramp) {
-      return Text(
-        S().activity_pending,
-        style: _transactionTextStyleInfo,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-      );
-    }
-
-    if (transaction.type == TransactionType.normal && transaction.isConfirmed) {
-      return Builder(builder: (context) {
-        String time = timeago
-            .format(transaction.date, locale: activeLocale.languageCode)
-            .capitalize();
-        return Text(
-          time,
-          style: _transactionTextStyleInfo,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        );
-      });
-    } else {
-      return Text(
-        S().receive_tx_list_awaitingConfirmation,
-        style: _transactionTextStyleInfo,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-      );
-    }
+    return Text(
+      getTransactionSubtitleText(transaction, activeLocale),
+      style: _transactionTextStyleInfo,
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+    );
   }
 
   Widget transactionIcon(
@@ -613,21 +572,6 @@ class TransactionListTile extends StatelessWidget {
           bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
           final cancelState =
               ref.watch(cancelTxStateProvider(transaction.txId));
-          EnvoyIcons txIcon =
-              transaction.amount < 0 ? EnvoyIcons.spend : EnvoyIcons.receive;
-          if (cancelState != null) {
-            if (!transaction.isConfirmed) {
-              txIcon = EnvoyIcons.alert;
-            } else if (cancelState.newTxId == transaction.txId) {
-              txIcon = EnvoyIcons.close;
-            } else {
-              txIcon = transaction.amount < 0
-                  ? EnvoyIcons.spend
-                  : EnvoyIcons.receive;
-            }
-          } else if (isBoosted == true) {
-            txIcon = EnvoyIcons.rbf_boost;
-          }
           return Container(
             padding: const EdgeInsets.only(
               top: EnvoySpacing.small,
@@ -638,7 +582,7 @@ class TransactionListTile extends StatelessWidget {
             child: Transform.scale(
               scale: 1.1,
               child: EnvoyIcon(
-                txIcon,
+                getTransactionIcon(transaction, cancelState, isBoosted)!,
                 color: iconColor,
                 size: EnvoyIconSize.normal,
               ),
@@ -661,36 +605,10 @@ class TransactionListTile extends StatelessWidget {
       child: Consumer(
         builder: (context, ref, child) {
           bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
-          String txTitle = transaction.type == TransactionType.ramp
-              ? S().activity_incomingPurchase
-              : (transaction.amount < 0
-                  ? S().activity_sent
-                  : S().activity_received);
           RBFState? cancelState =
               ref.watch(cancelTxStateProvider(transaction.txId));
-          if (cancelState != null) {
-            if (cancelState.originalTxId == transaction.txId) {
-              if (!transaction.isConfirmed) {
-                txTitle = S().activity_canceling;
-              }
-            }
-            if (cancelState.newTxId == transaction.txId) {
-              if (transaction.isConfirmed) {
-                txTitle = S().activity_sent_canceled;
-              } else {
-                txTitle = S().activity_canceling;
-              }
-            }
-          } else {
-            if (isBoosted == true) {
-              if (transaction.isConfirmed) {
-                txTitle = S().activity_sent_boosted;
-              }
-              txTitle = S().activity_boosted;
-            }
-          }
           return Text(
-            txTitle,
+            getTransactionTitleText(transaction, cancelState, isBoosted),
             style: txTitleStyle ?? defaultStyle,
           );
         },

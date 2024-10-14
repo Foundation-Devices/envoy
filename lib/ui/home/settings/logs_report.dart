@@ -111,11 +111,13 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                   return const Center(
                       child: Text("No logs found")); // TODO: FIGMA
                 }
+                final latestLogs = logs.reversed.toList();
+
                 return CustomScrollView(
                   slivers: [
                     SliverList.builder(
                       itemBuilder: (context, index) {
-                        Map log = logs[index];
+                        Map log = latestLogs[index];
                         String category = (log["category"] ?? "None") as String;
                         String message = (log["message"] ?? "None") as String;
                         String occurrences =
@@ -244,7 +246,7 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                           ],
                         );
                       },
-                      itemCount: logs.length,
+                      itemCount: latestLogs.length,
                     )
                   ],
                 );

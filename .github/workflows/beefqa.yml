@@ -2,17 +2,18 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-name: BEEFQA
+name: BeefQA
 
 on:
   pull_request:
     branches: [ main ]
 
 jobs:
-  check:
-    runs-on: ubuntu-latest
+  beef-qa:
+    runs-on: [ gcp-vm-runner ]
 
     steps:
+      - uses: extractions/setup-just@v1
       - uses: actions/checkout@v2
 
       - name: Install Ninja
@@ -45,5 +46,5 @@ jobs:
       - name: Build Rust libs
         run: cargo build
 
-      - name: Run QA Tests in Specified Order
-        run: ./run_integration_tests.sh
+      - name: Run BeefQA Tests
+        run: just qa

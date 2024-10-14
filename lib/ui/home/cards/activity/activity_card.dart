@@ -17,6 +17,7 @@ import 'package:envoy/business/locale.dart';
 import 'package:envoy/ui/components/linear_gradient.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/ui/state/transactions_state.dart';
 
 class ActivityCard extends StatefulWidget {
   const ActivityCard({super.key});
@@ -79,15 +80,14 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
   @override
   Widget build(BuildContext context) {
     ref.watch(settingsProvider);
-    List<EnvoyNotification> notifications =
-        ref.watch(filteredNotificationStreamProvider);
-    ref.read(notificationTypeFilterProvider.notifier).state = null;
+    List<EnvoyNotification> envoyNotification =
+        ref.watch(combinedNotificationsProvider);
 
     return ScrollGradientMask(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
         child: CustomScrollView(slivers: [
-          notifications.isEmpty
+          envoyNotification.isEmpty
               ? SliverFillRemaining(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -130,8 +130,8 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
                             return Column(
                               children: [
                                 if (index == 0 ||
-                                    showHeader(notifications[index],
-                                        notifications[index - 1]))
+                                    showHeader(envoyNotification[index],
+                                        envoyNotification[index - 1]))
                                   Column(
                                     children: [
                                       if (index != 0)
@@ -144,14 +144,14 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
                                         ),
                                       ListHeader(
                                           title: getTransactionDateString(
-                                              notifications[index])),
+                                              envoyNotification[index])),
                                     ],
                                   ),
-                                ActivityListTile(notifications[index]),
+                                ActivityListTile(envoyNotification[index]),
                               ],
                             );
                           },
-                          itemCount: notifications.length),
+                          itemCount: envoyNotification.length),
                       const SizedBox(height: EnvoySpacing.large2)
                     ],
                   ),
@@ -167,10 +167,10 @@ String getTransactionDateString(EnvoyNotification notification) {
       .format(notification.date ?? DateTime.now());
 }
 
-bool showHeader(EnvoyNotification notificationCurrent,
-    EnvoyNotification notificationPrevious) {
-  return !DateUtils.isSameDay(notificationCurrent.date ?? DateTime.now(),
-      notificationPrevious.date ?? DateTime.now());
+bool showHeader(EnvoyNotification currentNotification,
+    EnvoyNotification previousNotification) {
+  return !DateUtils.isSameDay(currentNotification.date ?? DateTime.now(),
+      previousNotification.date ?? DateTime.now());
 }
 
 class ActivityGhostListTile extends StatelessWidget {

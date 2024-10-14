@@ -13,6 +13,15 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 
 class HideStateNotifier extends ChangeNotifier {
+  @override
+  // ignore: must_call_super
+  void dispose({bool? force}) {
+    // prevents riverpods StateNotifierProvider from disposing it
+    if (force == true) {
+      super.dispose();
+    }
+  }
+
   Set<String> amountHiddenAccounts = {};
 
   HideStateNotifier() {
