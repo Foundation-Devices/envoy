@@ -207,11 +207,12 @@ class ScannerPageState extends State<ScannerPage> {
               S().component_confirm,
               (context) {
                 navigator.pop();
+                controller.resumeCamera();
                 if (context.mounted) {
                   _onDetect(barcode.code!, barcode.rawBytes, context);
                 }
               },
-              isXiconVisible: false,
+              showCloseButton: false,
               typeOfMessage: PopUpState.danger,
               icon: EnvoyIcons.alert,
               secondaryButtonLabel: S().component_back,

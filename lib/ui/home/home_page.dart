@@ -34,12 +34,16 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/notifications.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 
 final _fullScreenProvider = Provider((ref) {
   bool fullScreen = ref.watch(hideBottomNavProvider);
   Set selections = ref.watch(coinSelectionStateProvider);
   return fullScreen || selections.isNotEmpty;
 });
+
+StreamController<bool> isCurrentVersionDeprecated =
+    StreamController.broadcast();
 
 class HomePageNotification extends Notification {
   final String? title;
@@ -183,6 +187,12 @@ class HomePageState extends ConsumerState<HomePage>
     isNewAppVersionAvailable.stream.listen((String newVersion) {
       if (mounted) {
         _notifyAboutNewAppVersion(newVersion);
+      }
+    });
+
+    isCurrentVersionDeprecated.stream.listen((bool isDeprecated) {
+      if (mounted && isDeprecated) {
+        showForceUpdateDialog();
       }
     });
 
@@ -340,6 +350,22 @@ class HomePageState extends ConsumerState<HomePage>
   void toggleOptions() {
     ref.read(homePageOptionsVisibilityProvider.notifier).state =
         !ref.read(homePageOptionsVisibilityProvider);
+  }
+
+  void showForceUpdateDialog() {
+    showEnvoyPopUp(
+      context,
+      S().accounts_forceUpdate_subheading,
+      S().accounts_forceUpdate_cta,
+      (context) {
+        final appStoreUrl = _getAppStoreUrl();
+        launchUrlString(appStoreUrl);
+      },
+      title: S().accounts_forceUpdate_heading,
+      icon: EnvoyIcons.download,
+      dismissible: false,
+      showCloseButton: false,
+    );
   }
 
   @override

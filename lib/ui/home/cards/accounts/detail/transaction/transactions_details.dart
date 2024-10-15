@@ -300,7 +300,7 @@ class _TransactionsDetailsWidgetState
                       color: EnvoyColors.textPrimary,
                       size: EnvoyIconSize.small),
                   trailing: Text(getTransactionDateAndTimeString(tx),
-                      style: trailingTextStyle),
+                      textAlign: TextAlign.end, style: trailingTextStyle),
                 ),
                 EnvoyInfoCardListItem(
                   title: S().coindetails_overlay_status,
@@ -352,9 +352,10 @@ class _TransactionsDetailsWidgetState
                 if (tx.rampId != null)
                   EnvoyInfoCardListItem(
                     title: S().coindetails_overlay_rampID,
+                    centerSingleLineTitle: true,
                     icon: const EnvoyIcon(
                       EnvoyIcons.ramp_without_name,
-                      size: EnvoyIconSize.extraSmall,
+                      size: EnvoyIconSize.small,
                       color: EnvoyColors.textPrimary,
                     ),
                     trailing: GestureDetector(
@@ -366,16 +367,17 @@ class _TransactionsDetailsWidgetState
                         tx.rampId!,
                         style: idTextStyle,
                         textAlign: TextAlign.end,
-                        maxLines: 4,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ),
                 if (tx.rampFee != null)
                   EnvoyInfoCardListItem(
                     title: S().coindetails_overlay_rampFee,
+                    centerSingleLineTitle: true,
                     icon: const EnvoyIcon(
                       EnvoyIcons.ramp_without_name,
-                      size: EnvoyIconSize.extraSmall,
+                      size: EnvoyIconSize.small,
                       color: EnvoyColors.textPrimary,
                     ),
                     trailing: hideBalance
@@ -438,12 +440,14 @@ class _TransactionsDetailsWidgetState
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text(note,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            style: EnvoyTypography.body
-                                .copyWith(color: EnvoyColors.textPrimary),
-                            textAlign: TextAlign.end),
+                        Flexible(
+                          child: Text(note,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: EnvoyTypography.body
+                                  .copyWith(color: EnvoyColors.textPrimary),
+                              textAlign: TextAlign.end),
+                        ),
                         const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                         note.trim().isNotEmpty
                             ? SvgPicture.asset(

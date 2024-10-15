@@ -12,6 +12,7 @@ import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:flutter/services.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:intl/intl.dart';
 import 'package:tor/tor.dart';
@@ -21,10 +22,18 @@ import 'package:envoy/business/locale.dart';
 
 class FiatCurrency {
   final String code;
+  final String title;
   final String symbol;
   final int decimalPoints;
+  final String flag;
 
-  FiatCurrency(this.code, this.symbol, {this.decimalPoints = 2});
+  FiatCurrency({
+    this.decimalPoints = 2,
+    required this.title,
+    required this.code,
+    required this.symbol,
+    required this.flag,
+  });
 
   @override
   bool operator ==(Object other) =>
@@ -35,23 +44,34 @@ class FiatCurrency {
 
   @override
   int get hashCode => code.hashCode;
+
+  static fromCode(String code) {
+    return FiatCurrency(
+        code: code, title: "", symbol: "", flag: "", decimalPoints: 2);
+  }
+
+  static FiatCurrency fromJson(Map<String, dynamic> json) {
+    return FiatCurrency(
+      code: json['code'],
+      title: json['title'],
+      symbol: json['symbol'],
+      flag: json['flag'],
+    );
+  }
 }
 
-final List<FiatCurrency> supportedFiat = [
-  FiatCurrency('USD', '\$'),
-  FiatCurrency('EUR', '€'),
-  FiatCurrency('GBP', '£'),
-  FiatCurrency('JPY', '¥', decimalPoints: 0),
-  FiatCurrency('AUD', '\$'),
-  FiatCurrency('CAD', '\$'),
-  FiatCurrency('CHF', 'fr.'),
-  FiatCurrency('MYR', 'RM'),
-  FiatCurrency('BRL', 'R\$'),
-  FiatCurrency('NOK', 'kr'),
-  FiatCurrency('NZD', '\$')
-];
+// default/fallback fiat
 
 class ExchangeRate extends ChangeNotifier {
+  List<FiatCurrency> _supportedFiat = [
+    FiatCurrency(title: "US Dollar", code: 'USD', symbol: '\$', flag: "🇺🇸"),
+    FiatCurrency(title: "Euro", code: 'EUR', symbol: '€', flag: "🇪🇺"),
+    FiatCurrency(
+        title: "British Pound", code: 'GBP', symbol: '£', flag: "🇬🇧"),
+  ];
+
+  List<FiatCurrency> get supportedFiat => _supportedFiat;
+
   @override
   // ignore: must_call_super
   void dispose({bool? force}) {
@@ -91,8 +111,19 @@ class ExchangeRate extends ChangeNotifier {
   ExchangeRate._internal() {
     kPrint("Instance of ExchangeRate created!");
 
-    // Get rate from storage and set currency from Settings
-    restore();
+    //load supported currencies
+    rootBundle.loadString("assets/currencies.json").then((value) {
+      final List<dynamic> json = jsonDecode(value);
+      _supportedFiat = json.map((e) => FiatCurrency.fromJson(e)).toList();
+      kPrint("Currencies loaded");
+      // Get rate from storage and set currency from Settings
+      restore();
+    }, onError: (e, stackTrace) {
+      kPrint("ExchangeRate", stackTrace: stackTrace);
+      EnvoyReport().log("ExchangeRate", "Error loading currencies: $e");
+      // Get rate from storage and set currency from Settings
+      restore();
+    });
 
     // Refresh from time to time
     Timer.periodic(const Duration(seconds: 30), (_) {
@@ -100,10 +131,9 @@ class ExchangeRate extends ChangeNotifier {
     });
   }
 
-  restore() {
+  restore() async {
     // First get whatever we saved last
     _restoreRate();
-
     // Double check that that's still the choice
     setCurrency(Settings().selectedFiat);
   }
@@ -118,7 +148,7 @@ class ExchangeRate extends ChangeNotifier {
     }
   }
 
-  void setCurrency(String? currencyCode) {
+  void setCurrency(String? currencyCode) async {
     if (_currency == null || currencyCode != _currency?.code) {
       _selectedCurrencyRate = null;
     }
@@ -128,7 +158,6 @@ class ExchangeRate extends ChangeNotifier {
       notifyListeners();
       return;
     }
-
     _currency = supportedFiat.firstWhere(
       (element) => element.code == currencyCode,
       // If code is wrong (for whatever reason) go with default
@@ -192,6 +221,7 @@ class ExchangeRate extends ChangeNotifier {
         throw Exception("Couldn't get exchange rate");
       }
     } catch (e) {
+      kPrint("Couldn't get exchange rate: $e");
       ConnectivityManager().nguFailure();
       rethrow;
     }

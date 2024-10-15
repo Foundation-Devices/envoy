@@ -536,8 +536,8 @@ class _SlidingToggleState extends State<SlidingToggle>
   late Animation<Color?> _activityIconColorAnimation;
   late Animation<Color?> _tagsIconColorAnimation;
   final Color _iconDisabledColor = new_color_scheme.EnvoyColors.textTertiary;
-  final String _firstOptionText = "Activity"; // TODO: FIGMA
-  final String _secondOptionText = "Tags"; // TODO: FIGMA
+  final String _firstOptionText = S().coincontrol_switchActivity;
+  final String _secondOptionText = S().coincontrol_switchTags;
   late String _currentOptionText = _firstOptionText;
   double _maxOptionWidth = 0.0;
 

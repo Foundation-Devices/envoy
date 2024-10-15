@@ -34,7 +34,7 @@ void showEnvoyPopUp(
   bool? checkedValue,
   bool dismissible = true,
   String? learnMoreLink,
-  bool isXiconVisible = true,
+  bool? showCloseButton,
 }) =>
     showEnvoyDialog(
         context: context,
@@ -52,7 +52,7 @@ void showEnvoyPopUp(
           onCheckBoxChanged: onCheckBoxChanged,
           checkedValue: checkedValue ?? true,
           learnMoreLink: learnMoreLink,
-          isXiconVisible: isXiconVisible,
+          showCloseButton: showCloseButton ?? true,
         ),
         dismissible: dismissible);
 
@@ -72,7 +72,7 @@ class EnvoyPopUp extends StatefulWidget {
     this.onCheckBoxChanged,
     this.checkedValue = true,
     this.learnMoreLink,
-    this.isXiconVisible = true,
+    this.showCloseButton = true,
   });
 
   final String? title;
@@ -87,7 +87,7 @@ class EnvoyPopUp extends StatefulWidget {
   final Function(bool checked)? onCheckBoxChanged;
   bool? checkedValue;
   final String? learnMoreLink;
-  final bool isXiconVisible;
+  final bool showCloseButton;
 
   @override
   State<EnvoyPopUp> createState() => _EnvoyPopUpState();
@@ -130,7 +130,7 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
         break;
     }
     return Container(
-      width: MediaQuery.of(context).size.width * 0.75,
+      width: MediaQuery.of(context).size.width * 0.85,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(
           Radius.circular(EnvoySpacing.medium2),
@@ -144,20 +144,19 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              widget.isXiconVisible
-                  ? Padding(
-                      padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
-                      child: Align(
-                        alignment: Alignment.topRight,
-                        child: IconButton(
-                          icon: const Icon(Icons.close),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ),
-                    )
-                  : const SizedBox.shrink(),
+              if (widget.showCloseButton)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                ),
               if (widget.icon != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),

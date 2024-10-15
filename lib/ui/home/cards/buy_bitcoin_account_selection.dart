@@ -3,20 +3,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:ui';
+import 'package:envoy/ui/components/account_selector.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/envoy_loader.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
-import 'package:envoy/ui/widgets/material_transparent_router.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/account.dart';
-import 'package:envoy/ui/components/account_selector.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -39,8 +38,10 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
   Account? selectedAccount;
   GestureTapCallback? onTap;
   String? address;
+  bool _canPop = true;
   final Map<String, String?> accountAddressCache = {};
-  bool isChooseAccountOpen = false;
+
+  GlobalKey<StackedAccountChooserState> accountChooserKey = GlobalKey();
 
   @override
   void initState() {
@@ -70,7 +71,6 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
     setState(() {
       selectedAccount = account;
       address = null;
-      isChooseAccountOpen = false;
     });
     if (accountAddressCache.containsKey(selectedAccount?.id!) &&
         accountAddressCache[selectedAccount?.id!] != null) {
@@ -90,8 +90,6 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
   @override
   Widget build(BuildContext context) {
     List<Account> filteredAccounts = [];
-    List<Account> mainnetAccounts = ref.read(mainnetAccountsProvider(
-        null)); // This list is used for choosing accounts, maintaining the same order as displayed in the home screen.
     if (selectedAccount != null) {
       filteredAccounts = ref.watch(mainnetAccountsProvider(selectedAccount));
     }
@@ -99,13 +97,10 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
       return const Center(child: CircularProgressIndicator());
     } else {
       return PopScope(
-        canPop: !isChooseAccountOpen,
+        canPop: _canPop,
         onPopInvokedWithResult: (didPop, _) {
           if (!didPop) {
-            Navigator.of(context).pop();
-            setState(() {
-              isChooseAccountOpen = false;
-            });
+            accountChooserKey.currentState?.dismiss();
           }
         },
         child: Padding(
@@ -127,12 +122,17 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                       const SizedBox(
                         height: EnvoySpacing.medium2,
                       ),
-                      StackedAccountTile(
-                        selectedAccount!,
-                        filteredAccounts: filteredAccounts,
-                        onTap: (Account account) {
+                      StackedAccountChooser(
+                        key: accountChooserKey,
+                        account: selectedAccount ?? filteredAccounts.first,
+                        accounts: filteredAccounts,
+                        onOverlayChanges: (bool visible) {
+                          setState(() {
+                            _canPop = !visible;
+                          });
+                        },
+                        onAccountSelected: (Account account) {
                           updateSelectedAccount(account);
-                          chooseAccount(context, mainnetAccounts, account);
                         },
                       ),
                       const SizedBox(
@@ -147,8 +147,8 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                             textAlign: TextAlign.center,
                           ),
                           onTap: () {
-                            chooseAccount(
-                                context, mainnetAccounts, selectedAccount!);
+                            accountChooserKey.currentState
+                                ?.openChooserOverlay(context);
                           },
                         );
                       }),
@@ -252,33 +252,6 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
     }
   }
 
-  void chooseAccount(BuildContext context, List<Account> filteredAccounts,
-      Account selectedAccount) {
-    setState(() {
-      isChooseAccountOpen = true;
-    });
-    Navigator.of(rootNavigator: true, context).push(MaterialTransparentRoute(
-      builder: (context) {
-        return PopScope(
-          onPopInvokedWithResult: (_, __) {
-            setState(() {
-              isChooseAccountOpen = false;
-            });
-            chooseAccountKey.currentState?.moveAccountToEnd(selectedAccount);
-          },
-          child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-              child: ChooseAccount(
-                accounts: filteredAccounts,
-                onSelectAccount: updateSelectedAccount,
-                selectedAccount: selectedAccount,
-                key: chooseAccountKey,
-              )),
-        );
-      },
-    ));
-  }
-
   Widget getAddressWidget(String? address) {
     return address != null
         ? Padding(
@@ -315,6 +288,8 @@ class ChooseAccount extends StatefulWidget {
 class ChooseAccountState extends State<ChooseAccount> {
   late List<Account> accounts;
   late Account _currentSelectedAccount;
+  //to improve shadow animation, bool
+  bool _exiting = false;
 
   @override
   void initState() {
@@ -334,7 +309,7 @@ class ChooseAccountState extends State<ChooseAccount> {
           }
         },
         child: TweenAnimationBuilder(
-          duration: const Duration(milliseconds: 300),
+          duration: Duration(milliseconds: _exiting ? 100 : 300),
           builder: (context, value, child) {
             return Container(
               width: MediaQuery.of(context).size.width,
@@ -347,50 +322,72 @@ class ChooseAccountState extends State<ChooseAccount> {
               child: child,
             );
           },
-          tween: ColorTween(begin: Colors.transparent, end: Colors.black),
-          child: Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              centerTitle: true,
-              title: Text(
-                S().header_chooseAccount,
-                style: EnvoyTypography.subheading.copyWith(color: Colors.white),
+          tween: _exiting
+              ? ColorTween(begin: Colors.black, end: Colors.transparent)
+              : ColorTween(begin: Colors.transparent, end: Colors.black),
+          child: TweenAnimationBuilder(
+            duration: Duration(milliseconds: _exiting ? 100 : 300),
+            tween: _exiting
+                ? Tween<double>(begin: 5, end: 0)
+                : Tween<double>(begin: 0, end: 5),
+            builder: (context, value, child) {
+              return BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: value, sigmaY: value),
+                  child: child);
+            },
+            child: Scaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                centerTitle: true,
+                title: AnimatedOpacity(
+                  duration: Duration(milliseconds: _exiting ? 100 : 300),
+                  opacity: _exiting ? 0 : 1,
+                  child: Text(
+                    S().header_chooseAccount,
+                    style: EnvoyTypography.subheading
+                        .copyWith(color: Colors.white),
+                  ),
+                ),
+                leading: AnimatedOpacity(
+                  duration: Duration(milliseconds: _exiting ? 100 : 300),
+                  opacity: _exiting ? 0 : 1,
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
               ),
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-            body: Padding(
-              padding: const EdgeInsets.symmetric(
-                  vertical: EnvoySpacing.medium1,
-                  horizontal: EnvoySpacing.medium1),
-              child: ShaderMask(
-                shaderCallback: (Rect rect) {
-                  return const LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      EnvoyColors.solidWhite,
-                      Colors.transparent,
-                      Colors.transparent,
-                      EnvoyColors.solidWhite,
-                    ],
-                    stops: [0.0, 0.05, 0.95, 1.0],
-                  ).createShader(rect);
-                },
-                blendMode: BlendMode.dstOut,
-                child: ReorderableListView.builder(
-                  shrinkWrap: true,
-                  buildDefaultDragHandles: false,
-                  itemCount: accounts.length,
-                  onReorder: (oldIndex, newIndex) {},
-                  itemBuilder: (context, index) {
-                    return _buildAccountItem(context, accounts[index]);
+              body: Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: EnvoySpacing.medium1,
+                    horizontal: EnvoySpacing.medium1),
+                child: ShaderMask(
+                  shaderCallback: (Rect rect) {
+                    return const LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        EnvoyColors.solidWhite,
+                        Colors.transparent,
+                        Colors.transparent,
+                        EnvoyColors.solidWhite,
+                      ],
+                      stops: [0.0, 0.05, 0.95, 1.0],
+                    ).createShader(rect);
                   },
+                  blendMode: BlendMode.dstOut,
+                  child: ReorderableListView.builder(
+                    shrinkWrap: true,
+                    buildDefaultDragHandles: false,
+                    itemCount: accounts.length,
+                    onReorder: (oldIndex, newIndex) {},
+                    itemBuilder: (context, index) {
+                      return _buildAccountItem(context, accounts[index]);
+                    },
+                  ),
                 ),
               ),
             ),
@@ -420,17 +417,25 @@ class ChooseAccountState extends State<ChooseAccount> {
       child: Hero(
         transitionOnUserGestures: true,
         tag: account.id!,
-        child: AccountListTile(
-          account,
-          onTap: () async {
-            final navigator = Navigator.of(context);
-            _currentSelectedAccount = account;
-            widget.onSelectAccount(account);
-            moveAccountToEnd(account);
-            navigator.pop();
-          },
-          draggable: false,
-        ),
+        child: Consumer(builder: (context, ref, child) {
+          return AccountListTile(
+            account,
+            onTap: () async {
+              final navigator = Navigator.of(context);
+              setState(() {
+                _exiting = true;
+              });
+              await Future.delayed(const Duration(milliseconds: 100));
+
+              _currentSelectedAccount = account;
+              widget.onSelectAccount(account);
+              // moveAccountToEnd(account);
+              await Future.delayed(const Duration(milliseconds: 100));
+              navigator.pop();
+            },
+            draggable: false,
+          );
+        }),
       ),
     );
   }

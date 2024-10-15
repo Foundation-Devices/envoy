@@ -14,7 +14,6 @@ import 'package:envoy/generated/l10n.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:envoy/business/devices.dart';
 import 'package:envoy/ui/pages/fw/fw_ios_success.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 
@@ -62,9 +61,6 @@ class FwMicrosdPage extends ConsumerWidget {
                 File firmwareFile =
                     await UpdatesManager().getStoredFw(deviceId);
                 await FwUploader(firmwareFile).upload();
-
-                Devices()
-                    .markDeviceUpdated(deviceId, fwInfo.value!.storedVersion);
 
                 if (Platform.isIOS && context.mounted) {
                   Navigator.of(context)
