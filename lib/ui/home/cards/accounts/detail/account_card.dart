@@ -487,11 +487,7 @@ class TransactionListTile extends StatelessWidget {
                   minLeadingWidth: 0,
                   horizontalTitleGap: EnvoySpacing.small,
                   title: transactionTitle(context),
-                  subtitle: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.centerLeft,
-                    child: txSubtitle(activeLocale),
-                  ),
+                  subtitle: txSubtitle(activeLocale),
                   contentPadding: const EdgeInsets.all(0),
                   trailing: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -559,6 +555,8 @@ class TransactionListTile extends StatelessWidget {
     return Text(
       getTransactionSubtitleText(transaction, activeLocale),
       style: _transactionTextStyleInfo,
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
     );
   }
 
