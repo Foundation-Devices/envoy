@@ -389,17 +389,29 @@ class _AccountCardState extends ConsumerState<AccountCard>
 
 class GhostListTile extends StatelessWidget {
   final bool animate;
+  final bool diagonal;
+  final double leadingHeight;
+  final double minLeadingWidth;
+  final double titleRightPadding;
+  final double subtitleRightPadding;
 
   const GhostListTile({
     this.animate = true,
+    this.diagonal = true,
+    this.leadingHeight = 50.0,
+    this.minLeadingWidth = 40.0,
+    this.titleRightPadding = 50.0,
+    this.subtitleRightPadding = 80.0,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      titleAlignment: ListTileTitleAlignment.center,
+      minLeadingWidth: minLeadingWidth,
       title: Padding(
-        padding: const EdgeInsets.only(top: 2, right: 50),
+        padding: EdgeInsets.only(top: 2, right: titleRightPadding),
         child: LoaderGhost(
           width: 10,
           height: 15,
@@ -407,7 +419,7 @@ class GhostListTile extends StatelessWidget {
         ),
       ),
       subtitle: Padding(
-        padding: const EdgeInsets.only(top: 3.0, right: 80),
+        padding: EdgeInsets.only(top: 3.0, right: subtitleRightPadding),
         child: LoaderGhost(
           width: 30,
           height: 15,
@@ -415,9 +427,9 @@ class GhostListTile extends StatelessWidget {
         ),
       ),
       leading: LoaderGhost(
-        width: 50,
-        height: 50,
-        diagonal: true,
+        width: leadingHeight,
+        height: leadingHeight,
+        diagonal: diagonal,
         animate: animate,
       ),
       trailing: Column(

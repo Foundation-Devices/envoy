@@ -350,6 +350,13 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                           children: [
                                             const GhostListTile(
                                               animate: false,
+                                              diagonal: false,
+                                              leadingHeight:
+                                                  EnvoySpacing.medium2,
+                                              minLeadingWidth:
+                                                  EnvoySpacing.small,
+                                              subtitleRightPadding:
+                                                  EnvoySpacing.xl,
                                             ),
                                             const Padding(
                                                 padding: EdgeInsets.only(
