@@ -142,7 +142,7 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
         break;
     }
     return Container(
-      width: MediaQuery.of(context).size.width * 0.75,
+      width: MediaQuery.of(context).size.width * 0.85,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(
           Radius.circular(EnvoySpacing.medium2),

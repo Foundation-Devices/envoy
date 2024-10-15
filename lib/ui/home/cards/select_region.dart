@@ -81,12 +81,18 @@ class _SelectRegionState extends ConsumerState<SelectRegion> {
     countryData.forEach((countryCode, countryInfo) {
       String countryName = countryInfo['name'];
       List<String> divisions = [];
+
       countryInfo['divisions'].forEach((code, divisionName) {
         divisions.add(divisionName);
       });
 
+      divisions.sort((a, b) => a.compareTo(b));
+
       countries.add(Country(countryCode, countryName, divisions));
     });
+
+    countries.sort((a, b) => a.name.compareTo(b.name));
+
     setState(() {
       selectedCountry = getCountryByCode(Platform.localeName);
       _dataLoaded = true;
