@@ -94,7 +94,7 @@ final accountsRouter = StatefulShellBranch(
               wrapWithVerticalAxisAnimation(const AccountsCard()),
           routes: [
             GoRoute(
-              onExit: (context) async {
+              onExit: (context,GoRouterState state) async {
                 ProviderContainer providerContainer =
                     ProviderScope.containerOf(context);
                 bool isInEdit = providerContainer.read(spendEditModeProvider) !=
@@ -119,7 +119,7 @@ final accountsRouter = StatefulShellBranch(
               routes: [
                 GoRoute(
                     path: _ACCOUNT_SEND,
-                    onExit: (context) {
+                    onExit: (context,GoRouterState state) {
                       /// if we are exiting the send screen, we need to clear the spend state
                       /// but only if we are not in edit mode
                       clearSpendState(ProviderScope.containerOf(context));
@@ -131,7 +131,7 @@ final accountsRouter = StatefulShellBranch(
                     routes: [
                       GoRoute(
                         name: "spend_confirm",
-                        onExit: (context) async {
+                        onExit: (context,GoRouterState state) async {
                           ProviderContainer providerContainer =
                               ProviderScope.containerOf(context);
 
@@ -170,7 +170,7 @@ final accountsRouter = StatefulShellBranch(
                         routes: [
                           GoRoute(
                             name: "spend_review",
-                            onExit: (context) {
+                            onExit: (context,GoRouterState state) {
                               /// if we are exiting the send screen, we need to clear the spend state
                               /// but only if we are not in edit mode
                               if (ProviderScope.containerOf(context)
@@ -232,7 +232,7 @@ final accountsRouter = StatefulShellBranch(
                 routes: [
                   GoRoute(
                       path: _BUY_BITCOIN,
-                      onExit: (context) {
+                      onExit: (context,GoRouterState state) {
                         ProviderScope.containerOf(context)
                             .read(buyBTCPageProvider.notifier)
                             .state = false;
