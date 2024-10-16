@@ -75,7 +75,10 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
               builder: (context, snapshot) {
                 bool countryRestricted =
                     snapshot.data != null && snapshot.data!;
-                bool disabled = countryRestricted || mainNetAccounts.isEmpty;
+                bool disabled = mainNetAccounts.isEmpty;
+                if (countryRestricted) {
+                  return const SizedBox.shrink();
+                }
                 return GestureDetector(
                   onTap: () async {
                     if (countryRestricted) {
