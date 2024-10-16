@@ -268,12 +268,20 @@ class _TransactionsDetailsWidgetState
                         String txId = tx.type == TransactionType.ramp
                             ? "loading"
                             : tx.txId; // TODO: Figma
-                        return Text(
-                          truncateWithEllipsisInCenter(txId,
-                              lerpDouble(16, txId.length, value)!.toInt()),
-                          style: idTextStyle,
-                          textAlign: TextAlign.end,
-                          maxLines: 4,
+                        return Container(
+                          constraints: const BoxConstraints(
+                            maxHeight: 80,
+                          ),
+                          child: SingleChildScrollView(
+                            child: Text(
+                              truncateWithEllipsisInCenter(
+                                txId,
+                                lerpDouble(16, txId.length, value)!.toInt(),
+                              ),
+                              style: idTextStyle,
+                              textAlign: TextAlign.end,
+                            ),
+                          ),
                         );
                       },
                     ),
