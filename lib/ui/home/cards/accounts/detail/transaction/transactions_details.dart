@@ -300,7 +300,7 @@ class _TransactionsDetailsWidgetState
                       color: EnvoyColors.textPrimary,
                       size: EnvoyIconSize.small),
                   trailing: Text(getTransactionDateAndTimeString(tx),
-                      style: trailingTextStyle),
+                      textAlign: TextAlign.end, style: trailingTextStyle),
                 ),
                 EnvoyInfoCardListItem(
                   title: S().coindetails_overlay_status,
@@ -440,12 +440,14 @@ class _TransactionsDetailsWidgetState
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text(note,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            style: EnvoyTypography.body
-                                .copyWith(color: EnvoyColors.textPrimary),
-                            textAlign: TextAlign.end),
+                        Flexible(
+                          child: Text(note,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: EnvoyTypography.body
+                                  .copyWith(color: EnvoyColors.textPrimary),
+                              textAlign: TextAlign.end),
+                        ),
                         const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                         note.trim().isNotEmpty
                             ? SvgPicture.asset(

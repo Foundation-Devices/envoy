@@ -42,6 +42,7 @@ void showEnvoyPopUp(
   String? learnMoreLink,
   String? linkTitle,
   List<Transaction>? expiredTransactions,
+  bool? showCloseButton,
 }) =>
     showEnvoyDialog(
         context: context,
@@ -61,6 +62,7 @@ void showEnvoyPopUp(
           learnMoreLink: learnMoreLink,
           linkTitle: linkTitle ?? '',
           expiredTransactions: expiredTransactions,
+          showCloseButton: showCloseButton ?? true,
         ),
         dismissible: dismissible);
 
@@ -82,6 +84,7 @@ class EnvoyPopUp extends StatefulWidget {
     this.learnMoreLink,
     this.linkTitle = '',
     this.expiredTransactions,
+    this.showCloseButton = true,
   });
 
   final String? title;
@@ -98,6 +101,7 @@ class EnvoyPopUp extends StatefulWidget {
   final String? learnMoreLink;
   final String linkTitle;
   final List<Transaction>? expiredTransactions;
+  final bool showCloseButton;
 
   @override
   State<EnvoyPopUp> createState() => _EnvoyPopUpState();
@@ -156,18 +160,19 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+              if (widget.showCloseButton)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
                   ),
                 ),
-              ),
               if (widget.icon != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),

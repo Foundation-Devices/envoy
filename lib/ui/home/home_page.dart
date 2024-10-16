@@ -42,6 +42,9 @@ final _fullScreenProvider = Provider((ref) {
   return fullScreen || selections.isNotEmpty;
 });
 
+StreamController<bool> isCurrentVersionDeprecated =
+    StreamController.broadcast();
+
 class HomePageNotification extends Notification {
   final String? title;
   final Function()? leftFunction;
@@ -190,6 +193,12 @@ class HomePageState extends ConsumerState<HomePage>
     isNewAppVersionAvailable.stream.listen((String newVersion) {
       if (mounted) {
         _notifyAboutNewAppVersion(newVersion);
+      }
+    });
+
+    isCurrentVersionDeprecated.stream.listen((bool isDeprecated) {
+      if (mounted && isDeprecated) {
+        showForceUpdateDialog();
       }
     });
 
@@ -380,6 +389,22 @@ class HomePageState extends ConsumerState<HomePage>
   void toggleOptions() {
     ref.read(homePageOptionsVisibilityProvider.notifier).state =
         !ref.read(homePageOptionsVisibilityProvider);
+  }
+
+  void showForceUpdateDialog() {
+    showEnvoyPopUp(
+      context,
+      S().accounts_forceUpdate_subheading,
+      S().accounts_forceUpdate_cta,
+      (context) {
+        final appStoreUrl = _getAppStoreUrl();
+        launchUrlString(appStoreUrl);
+      },
+      title: S().accounts_forceUpdate_heading,
+      icon: EnvoyIcons.download,
+      dismissible: false,
+      showCloseButton: false,
+    );
   }
 
   @override

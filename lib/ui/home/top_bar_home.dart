@@ -177,7 +177,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         const SizedBox(height: 50, child: IndicatorShield())
       ]),
       actions: [
-// Right action
+        // Right action
         Opacity(
           opacity: (inEditMode || backDropEnabled) ? 0.0 : 1.0,
           child: AnimatedSwitcher(
