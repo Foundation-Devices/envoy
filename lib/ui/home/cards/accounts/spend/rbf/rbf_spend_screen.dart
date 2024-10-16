@@ -261,51 +261,69 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                 ),
                               ),
                               SliverToBoxAdapter(
-                                child: Consumer(builder: (context, ref, child) {
-                                  return TransactionReviewCard(
-                                    psbt: psbt,
-                                    amountToSend: rbfState.originalAmount.abs(),
-                                    onTxDetailTap: () {
-                                      Navigator.of(context, rootNavigator: true)
-                                          .push(PageRouteBuilder(
-                                              pageBuilder: (context, animation,
-                                                  secondaryAnimation) {
-                                                return StagingTxDetails(
-                                                  psbt: psbt,
-                                                  previousTransaction:
-                                                      rbfState.originalTx,
-                                                );
+                                child: SingleChildScrollView(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 160),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Consumer(
+                                            builder: (context, ref, child) {
+                                          return TransactionReviewCard(
+                                            psbt: psbt,
+                                            amountToSend:
+                                                rbfState.originalAmount.abs(),
+                                            onTxDetailTap: () {
+                                              Navigator.of(context,
+                                                      rootNavigator: true)
+                                                  .push(PageRouteBuilder(
+                                                      pageBuilder: (context,
+                                                          animation,
+                                                          secondaryAnimation) {
+                                                        return StagingTxDetails(
+                                                          psbt: psbt,
+                                                          previousTransaction:
+                                                              rbfState
+                                                                  .originalTx,
+                                                        );
+                                                      },
+                                                      transitionDuration: const Duration(
+                                                          milliseconds: 100),
+                                                      transitionsBuilder:
+                                                          (context,
+                                                              animation,
+                                                              secondaryAnimation,
+                                                              child) {
+                                                        return FadeTransition(
+                                                          opacity: animation,
+                                                          child: child,
+                                                        );
+                                                      },
+                                                      opaque: false,
+                                                      fullscreenDialog: true));
+                                            },
+                                            psbtFinalized:
+                                                finalizedPsbt != null,
+                                            hideTxDetailsDialog: true,
+                                            loading: _rebuildingTx,
+                                            feeTitleIconButton: EnvoyIcons.info,
+                                            feeTitle: S()
+                                                .replaceByFee_boost_tx_boostFee,
+                                            address: rbfState.receiveAddress,
+                                            feeChooserWidget: FeeChooser(
+                                              onFeeSelect: (int fee,
+                                                  BuildContext context,
+                                                  bool customFee) {
+                                                _setFee(
+                                                    fee, context, customFee);
                                               },
-                                              transitionDuration:
-                                                  const Duration(
-                                                      milliseconds: 100),
-                                              transitionsBuilder: (context,
-                                                  animation,
-                                                  secondaryAnimation,
-                                                  child) {
-                                                return FadeTransition(
-                                                  opacity: animation,
-                                                  child: child,
-                                                );
-                                              },
-                                              opaque: false,
-                                              fullscreenDialog: true));
-                                    },
-                                    psbtFinalized: finalizedPsbt != null,
-                                    hideTxDetailsDialog: true,
-                                    loading: _rebuildingTx,
-                                    feeTitle: S().coincontrol_tx_detail_newFee,
-                                    feeTitleIconButton: EnvoyIcons.info,
-                                    address: rbfState.receiveAddress,
-                                    feeChooserWidget: FeeChooser(
-                                      onFeeSelect: (int fee,
-                                          BuildContext context,
-                                          bool customFee) {
-                                        _setFee(fee, context, customFee);
-                                      },
+                                            ),
+                                          );
+                                        }),
+                                      ],
                                     ),
-                                  );
-                                }),
+                                  ),
+                                ),
                               ),
                             ],
                           ),

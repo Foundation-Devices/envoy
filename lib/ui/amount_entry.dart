@@ -301,26 +301,66 @@ class SpendableAmountWidget extends ConsumerWidget {
     final totalAmount = ref.watch(totalSpendableAmountProvider);
     final isCoinsSelected = ref.watch(isCoinsSelectedProvider);
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          isCoinsSelected
-              ? S().coincontrol_edit_transaction_selectedAmount
-              : S().coincontrol_edit_transaction_available_balance,
-          style:
-              EnvoyTypography.info.copyWith(color: EnvoyColors.textSecondary),
-        ),
-        EnvoyAmount(
-          unit: sendScreenUnit,
-          amountSats: totalAmount,
-          amountWidgetStyle: AmountWidgetStyle.sendScreen,
-          account: account,
-          alignToEnd: true,
-        )
-      ],
-    );
+    String text = isCoinsSelected
+        ? S().coincontrol_edit_transaction_selectedAmount
+        : S().coincontrol_edit_transaction_available_balance;
+
+    TextStyle textStyle =
+        EnvoyTypography.info.copyWith(color: EnvoyColors.textSecondary);
+
+    double infoTextHeight = 15.0;
+    TextScaler textScaler = MediaQuery.of(context).textScaler;
+    double textHeight = calculateTextHeight(text, textStyle, textScaler);
+
+    bool isBoomerMode = textHeight > infoTextHeight;
+
+    return isBoomerMode
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                text,
+                style: textStyle,
+              ),
+              EnvoyAmount(
+                unit: sendScreenUnit,
+                amountSats: totalAmount,
+                amountWidgetStyle: AmountWidgetStyle.sendScreen,
+                account: account,
+                alignToEnd: true,
+              )
+            ],
+          )
+        : Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                text,
+                style: textStyle,
+              ),
+              EnvoyAmount(
+                unit: sendScreenUnit,
+                amountSats: totalAmount,
+                amountWidgetStyle: AmountWidgetStyle.sendScreen,
+                account: account,
+                alignToEnd: true,
+              )
+            ],
+          );
+  }
+
+  double calculateTextHeight(
+      String text, TextStyle style, TextScaler textScaler) {
+    final TextPainter textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    )..layout();
+
+    // Apply the text scaling
+    return textScaler.scale(textPainter.size.height);
   }
 }
 

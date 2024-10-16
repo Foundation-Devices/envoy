@@ -268,12 +268,20 @@ class _TransactionsDetailsWidgetState
                         String txId = tx.type == TransactionType.ramp
                             ? "loading"
                             : tx.txId; // TODO: Figma
-                        return Text(
-                          truncateWithEllipsisInCenter(txId,
-                              lerpDouble(16, txId.length, value)!.toInt()),
-                          style: idTextStyle,
-                          textAlign: TextAlign.end,
-                          maxLines: 4,
+                        return Container(
+                          constraints: const BoxConstraints(
+                            maxHeight: 80,
+                          ),
+                          child: SingleChildScrollView(
+                            child: Text(
+                              truncateWithEllipsisInCenter(
+                                txId,
+                                lerpDouble(16, txId.length, value)!.toInt(),
+                              ),
+                              style: idTextStyle,
+                              textAlign: TextAlign.end,
+                            ),
+                          ),
                         );
                       },
                     ),
@@ -300,7 +308,7 @@ class _TransactionsDetailsWidgetState
                       color: EnvoyColors.textPrimary,
                       size: EnvoyIconSize.small),
                   trailing: Text(getTransactionDateAndTimeString(tx),
-                      style: trailingTextStyle),
+                      textAlign: TextAlign.end, style: trailingTextStyle),
                 ),
                 EnvoyInfoCardListItem(
                   title: S().coindetails_overlay_status,
@@ -440,12 +448,14 @@ class _TransactionsDetailsWidgetState
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text(note,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            style: EnvoyTypography.body
-                                .copyWith(color: EnvoyColors.textPrimary),
-                            textAlign: TextAlign.end),
+                        Flexible(
+                          child: Text(note,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: EnvoyTypography.body
+                                  .copyWith(color: EnvoyColors.textPrimary),
+                              textAlign: TextAlign.end),
+                        ),
                         const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                         note.trim().isNotEmpty
                             ? SvgPicture.asset(
@@ -493,7 +503,8 @@ class _TransactionsDetailsWidgetState
   }
 
   Widget _renderFeeWidget(BuildContext context, Transaction tx) {
-    final isBoosted = ref.watch(isTxBoostedProvider(tx.txId)) ?? false;
+    final isBoosted =
+        (ref.watch(isTxBoostedProvider(tx.txId)) ?? false) && tx.amount < 0;
     final cancelState = ref.watch(cancelTxStateProvider(tx.txId));
     final hideBalance =
         ref.watch(balanceHideStateStatusProvider(widget.account.id));

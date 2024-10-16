@@ -116,23 +116,38 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
   }
 
   onNativeBackPressed(bool didPop) {
-    bool navigatingToRegion = ref.read(navigatingToEditRegionProvider);
-    if (!didPop) {
-      HomePageState.of(context)?.toggleOptions();
-    } else if (!navigatingToRegion) {
-      if (mounted) {
-        GoRouter.of(context).pushReplacement(ROUTE_ACCOUNTS_HOME);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      String path = ref.read(routePathProvider);
+      bool navigatingToRegion = ref.read(navigatingToEditRegionProvider);
+      bool isMenuOpen = ref.read(homePageOptionsVisibilityProvider);
+
+      if (isMenuOpen) {
+        HomePageState.of(context)?.toggleOptions();
+      } else if (path == ROUTE_BUY_BITCOIN) {
+        ref.read(buyBTCPageProvider.notifier).state = false;
+        ref.read(homePageBackgroundProvider.notifier).state =
+            HomePageBackgroundState.hidden;
+        ref.read(homePageTabProvider.notifier).state =
+            HomePageTabState.accounts;
+        ref.read(homePageTitleProvider.notifier).state = "";
+
+        if (mounted) {
+          GoRouter.of(context).go(ROUTE_ACCOUNTS_HOME);
+        }
+      } else if (navigatingToRegion) {
+        context.go(ROUTE_SELECT_REGION);
       }
-    }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isMenuOpen = ref.watch(homePageOptionsVisibilityProvider);
     return PopScope(
-      canPop: !isMenuOpen,
+      canPop: false,
       onPopInvokedWithResult: (didPop, _) {
-        onNativeBackPressed(didPop);
+        if (!didPop) {
+          onNativeBackPressed(didPop);
+        }
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(

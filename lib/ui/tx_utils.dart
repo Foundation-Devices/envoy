@@ -14,6 +14,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transacti
 
 String getTransactionTitleText(
     Transaction transaction, RBFState? cancelState, bool? isBoosted) {
+  bool isSent = transaction.amount < 0;
   if (transaction.type == TransactionType.ramp) {
     return S().activity_incomingPurchase;
   }
@@ -32,7 +33,7 @@ String getTransactionTitleText(
       }
     }
   } else {
-    if (isBoosted == true) {
+    if (isBoosted == true && isSent) {
       if (transaction.isConfirmed) {
         return S().activity_sent_boosted;
       }
@@ -40,7 +41,7 @@ String getTransactionTitleText(
     }
   }
 
-  return transaction.amount < 0 ? S().activity_sent : S().activity_received;
+  return isSent ? S().activity_sent : S().activity_received;
 }
 
 String getTransactionSubtitleText(Transaction transaction, Locale locale) {

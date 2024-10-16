@@ -239,7 +239,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                             widget.feeTitleIconButton != null
                                 ? GestureDetector(
                                     onTap: () {
-                                      newTransactionDialog(context, account,
+                                      showNewTransactionDialog(context, account,
                                           psbt.fee, originalTx!.fee);
                                     },
                                     child: Padding(
@@ -362,7 +362,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
     });
   }
 
-  void newTransactionDialog(
+  void showNewTransactionDialog(
       BuildContext context, Account account, int newFee, int oldFee) {
     showEnvoyDialog(
         context: context,
