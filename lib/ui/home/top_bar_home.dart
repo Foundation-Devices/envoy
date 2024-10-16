@@ -146,7 +146,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                     context.go(ROUTE_BUY_BITCOIN);
                   }
                 } else {
-                  if (context.mounted) {
+                  if (context.mounted && GoRouter.of(context).canPop()) {
                     GoRouter.of(context).pop();
                   }
                 }

@@ -5,7 +5,10 @@
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/ui/home/cards/devices/device_card.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
+import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 const ROUTE_DEVICES = '/devices';
@@ -17,6 +20,14 @@ final devicesRouter =
     StatefulShellBranch(restorationScopeId: 'devicesScopeId', routes: [
   GoRoute(
       path: ROUTE_DEVICES,
+      onExit: (context, state) {
+        final container = ProviderScope.containerOf(context);
+        if(container.read(homePageOptionsVisibilityProvider) == true) {
+          container.read(homePageOptionsVisibilityProvider.notifier).state = false;
+          return false;
+        }
+        return true;
+      },
       pageBuilder: (context, state) =>
           wrapWithVerticalAxisAnimation(const DevicesCard()),
       routes: [

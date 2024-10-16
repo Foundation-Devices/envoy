@@ -46,8 +46,11 @@ class ActivityCardState extends State<ActivityCard> {
 
   @override
   Widget build(BuildContext context) {
-    return const AnimatedSwitcher(
-        duration: Duration(milliseconds: 250), child: TopLevelActivityCard());
+    return const PopScope(
+      canPop: false,
+      child: AnimatedSwitcher(
+          duration: Duration(milliseconds: 250), child: TopLevelActivityCard()),
+    );
   }
 }
 

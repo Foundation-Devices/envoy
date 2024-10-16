@@ -29,16 +29,16 @@ final homeRouter = StatefulShellRoute.indexedStack(
     restorationScopeId: "homeShellNavRoot",
     parentNavigatorKey: mainNavigatorKey,
     builder: (context, state, navigationShell) {
-      return HomePage(mainNavigationShell: navigationShell);
+      return PopScope(canPop: false,child: HomePage(mainNavigationShell: navigationShell) );
     },
     branches: <StatefulShellBranch>[
       devicesRouter,
       StatefulShellBranch(restorationScopeId: "privacyScopeId", routes: [
         GoRoute(
-          path: ROUTE_PRIVACY,
-          pageBuilder: (context, state) =>
-              const MaterialPage(child: PrivacyCard()),
-        ),
+            path: ROUTE_PRIVACY,
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: PrivacyCard());
+            }),
       ]),
       accountsRouter,
       StatefulShellBranch(restorationScopeId: 'activityScopeId', routes: [
