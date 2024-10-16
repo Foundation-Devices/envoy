@@ -495,7 +495,8 @@ class _TransactionsDetailsWidgetState
   }
 
   Widget _renderFeeWidget(BuildContext context, Transaction tx) {
-    final isBoosted = ref.watch(isTxBoostedProvider(tx.txId)) ?? false;
+    final isBoosted =
+        (ref.watch(isTxBoostedProvider(tx.txId)) ?? false) && tx.amount < 0;
     final cancelState = ref.watch(cancelTxStateProvider(tx.txId));
     final hideBalance =
         ref.watch(balanceHideStateStatusProvider(widget.account.id));
