@@ -19,7 +19,6 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/ui/components/linear_gradient.dart';
 
 //ignore: must_be_immutable
