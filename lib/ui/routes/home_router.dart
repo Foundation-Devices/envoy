@@ -29,7 +29,8 @@ final homeRouter = StatefulShellRoute.indexedStack(
     restorationScopeId: "homeShellNavRoot",
     parentNavigatorKey: mainNavigatorKey,
     builder: (context, state, navigationShell) {
-      return PopScope(canPop: false,child: HomePage(mainNavigationShell: navigationShell) );
+      return PopScope(
+          canPop: false, child: HomePage(mainNavigationShell: navigationShell));
     },
     branches: <StatefulShellBranch>[
       devicesRouter,

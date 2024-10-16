@@ -21,8 +21,9 @@ final devicesRouter =
       path: ROUTE_DEVICES,
       onExit: (context, state) {
         final container = ProviderScope.containerOf(context);
-        if(container.read(homePageOptionsVisibilityProvider) == true) {
-          container.read(homePageOptionsVisibilityProvider.notifier).state = false;
+        if (container.read(homePageOptionsVisibilityProvider) == true) {
+          container.read(homePageOptionsVisibilityProvider.notifier).state =
+              false;
           return false;
         }
         return true;

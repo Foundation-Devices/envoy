@@ -114,8 +114,8 @@ class _DevicesListState extends State<DevicesList> {
                 child: CustomScrollView(
                   slivers: [
                     const SliverPadding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: EnvoySpacing.xs / 2)),
+                        padding: EdgeInsets.symmetric(
+                            vertical: EnvoySpacing.xs / 2)),
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
@@ -142,8 +142,8 @@ class _DevicesListState extends State<DevicesList> {
                       ),
                     ),
                     const SliverPadding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: EnvoySpacing.medium2)),
+                        padding: EdgeInsets.symmetric(
+                            vertical: EnvoySpacing.medium2)),
                   ],
                 ),
               ),
