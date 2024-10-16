@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:ui';
-
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -14,10 +12,6 @@ import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/checkbox.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:wallet/wallet.dart';
-import 'package:envoy/util/amount.dart';
-import 'package:envoy/util/easing.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 
 enum PopUpState {
   deafult,
@@ -40,8 +34,8 @@ void showEnvoyPopUp(
   bool? checkedValue,
   bool dismissible = true,
   String? learnMoreLink,
-  String? linkTitle,
-  List<Transaction>? expiredTransactions,
+  String? learnMoreText,
+  Widget? customWidget,
   bool? showCloseButton,
 }) =>
     showEnvoyDialog(
@@ -59,9 +53,9 @@ void showEnvoyPopUp(
           checkBoxText: checkBoxText,
           onCheckBoxChanged: onCheckBoxChanged,
           checkedValue: checkedValue ?? true,
-          learnMoreLink: learnMoreLink,
-          linkTitle: linkTitle ?? '',
-          expiredTransactions: expiredTransactions,
+          linkUrl: learnMoreLink,
+          learnMoreText: learnMoreText ?? '',
+          customWidget: customWidget,
           showCloseButton: showCloseButton ?? true,
         ),
         dismissible: dismissible);
@@ -81,9 +75,9 @@ class EnvoyPopUp extends StatefulWidget {
     this.checkBoxText,
     this.onCheckBoxChanged,
     this.checkedValue = true,
-    this.learnMoreLink,
-    this.linkTitle = '',
-    this.expiredTransactions,
+    this.linkUrl,
+    this.learnMoreText = '',
+    this.customWidget,
     this.showCloseButton = true,
   });
 
@@ -98,9 +92,9 @@ class EnvoyPopUp extends StatefulWidget {
   final String? checkBoxText;
   final Function(bool checked)? onCheckBoxChanged;
   bool? checkedValue;
-  final String? learnMoreLink;
-  final String linkTitle;
-  final List<Transaction>? expiredTransactions;
+  final String? linkUrl;
+  final String learnMoreText;
+  final Widget? customWidget;
   final bool showCloseButton;
 
   @override
@@ -109,8 +103,6 @@ class EnvoyPopUp extends StatefulWidget {
 
 class _EnvoyPopUpState extends State<EnvoyPopUp> {
   Color _color = EnvoyColors.accentPrimary;
-  bool showTxIdExpanded = false;
-  final Map<String, bool> _expandedStates = {};
 
   @override
   Widget build(BuildContext context) {
@@ -195,33 +187,32 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                 ),
               Padding(
                 padding: EdgeInsets.only(
-                    bottom: widget.learnMoreLink == null &&
-                            widget.expiredTransactions == null
-                        ? EnvoySpacing.medium3
-                        : EnvoySpacing.medium1),
+                    bottom:
+                        widget.linkUrl == null && widget.customWidget == null
+                            ? EnvoySpacing.medium3
+                            : EnvoySpacing.medium1),
                 child: Text(
                   widget.content,
                   style: EnvoyTypography.info,
                   textAlign: TextAlign.center,
                 ),
               ),
-              if (widget.expiredTransactions != null)
+              if (widget.customWidget != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-                  child: _buildRemovedTransactionsList(
-                      widget.expiredTransactions!),
+                  child: widget.customWidget!,
                 ),
-              if (widget.learnMoreLink != null)
+              if (widget.linkUrl != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
                   child: GestureDetector(
                     onTap: () {
-                      launchUrl(Uri.parse(widget.learnMoreLink!));
+                      launchUrl(Uri.parse(widget.linkUrl!));
                     },
                     child: Text(
-                      widget.linkTitle.isEmpty
+                      widget.learnMoreText.isEmpty
                           ? S().component_learnMore
-                          : widget.linkTitle,
+                          : widget.learnMoreText,
                       style: EnvoyTypography.button
                           .copyWith(color: EnvoyColors.accentPrimary),
                     ),
@@ -267,54 +258,6 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                   }),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRemovedTransactionsList(List<Transaction> expiredTransactions) {
-    return Container(
-      constraints: const BoxConstraints(
-        maxHeight: 60.0,
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: expiredTransactions.map((tx) {
-            bool showTxIdExpanded = _expandedStates[tx.txId] ?? false;
-            return GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onLongPress: () {
-                if (tx.type != TransactionType.ramp) {
-                  copyTxId(context, tx.txId, tx.type);
-                }
-              },
-              onTap: () {
-                if (tx.type != TransactionType.ramp) {
-                  setState(() {
-                    _expandedStates[tx.txId] = !showTxIdExpanded;
-                  });
-                }
-              },
-              child: TweenAnimationBuilder<double>(
-                curve: EnvoyEasing.easeInOut,
-                tween: Tween<double>(begin: 0, end: showTxIdExpanded ? 1 : 0),
-                duration: const Duration(milliseconds: 200),
-                builder: (context, value, child) {
-                  return Text(
-                    truncateWithEllipsisInCenter(tx.txId,
-                        lerpDouble(16, tx.txId.length, value)!.toInt()),
-                    style: EnvoyTypography.body
-                        .copyWith(color: EnvoyColors.textSecondary),
-                    textAlign: TextAlign.center,
-                    maxLines: 4,
-                  );
-                },
-              ),
-            );
-          }).toList(),
         ),
       ),
     );

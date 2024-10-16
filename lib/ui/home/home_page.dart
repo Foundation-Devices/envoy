@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
@@ -35,6 +36,9 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/util/amount.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 
 final _fullScreenProvider = Provider((ref) {
   bool fullScreen = ref.watch(hideBottomNavProvider);
@@ -80,6 +84,7 @@ final backButtonDispatcher = RootBackButtonDispatcher();
 
 class HomePageState extends ConsumerState<HomePage>
     with TickerProviderStateMixin {
+  final Map<String, bool> expandedStates = {};
   bool _backgroundShown = false;
   final bool _modalShown = false;
 
@@ -213,18 +218,22 @@ class HomePageState extends ConsumerState<HomePage>
     bool dismissed = await EnvoyStorage()
         .checkPromptDismissed(DismissiblePrompt.buyTxWarning);
 
+    for (var tx in expiredTransactions) {
+      expandedStates[tx.txId] = expandedStates[tx.txId] ?? false;
+    }
+
     if (!dismissed && context.mounted) {
       showEnvoyPopUp(
           context,
           title: S().replaceByFee_modal_deletedInactiveTX_ramp_heading,
           S().replaceByFee_modal_deletedInactiveTX_ramp_subheading,
           S().send_keyboard_address_confirm,
-          expiredTransactions: expiredTransactions,
+          customWidget: _buildRemovedTransactionsList(expiredTransactions),
           (BuildContext context) {
             Navigator.pop(context);
             isNewExpiredBuyTxAvailable.add([]); // reset stream after pop
           },
-          linkTitle: S().contactRampForSupport,
+          learnMoreText: S().contactRampForSupport,
           learnMoreLink:
               "https://support.ramp.network/en/collections/6690-customer-support-help-center",
           icon: EnvoyIcons.info,
@@ -238,6 +247,63 @@ class HomePageState extends ConsumerState<HomePage>
             }
           });
     }
+  }
+
+  Widget _buildRemovedTransactionsList(List<Transaction> expiredTransactions) {
+    return Container(
+      constraints: const BoxConstraints(maxHeight: 60.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: expiredTransactions.map((tx) {
+            // Check current expanded state
+            //bool showTxIdExpanded = expandedStates[tx.txId] ?? false;
+
+            return GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onLongPress: () {
+                if (tx.type != TransactionType.ramp) {
+                  copyTxId(context, tx.txId, tx.type);
+                }
+              },
+              onTap: () {
+                if (tx.type != TransactionType.ramp) {
+                  setState(() {
+                    expandedStates[tx.txId] =
+                        !(expandedStates[tx.txId] ?? false);
+                  });
+                }
+              },
+              child: TweenAnimationBuilder<double>(
+                curve: EnvoyEasing.easeInOut,
+                tween: Tween<double>(
+                    begin: 0, end: (expandedStates[tx.txId] ?? false) ? 1 : 0),
+                duration: const Duration(milliseconds: 200),
+                builder: (context, value, child) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 2.0),
+                    child: Text(
+                      truncateWithEllipsisInCenter(
+                        tx.txId,
+                        lerpDouble(16, tx.txId.length, value)!.toInt(),
+                      ),
+                      style: EnvoyTypography.body.copyWith(
+                        color: EnvoyColors.textSecondary,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 4,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
+                },
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
   }
 
   _notifyAboutNewAppVersion(String newVersion) {
