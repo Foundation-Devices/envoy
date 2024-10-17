@@ -129,15 +129,23 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                   tween: Tween<double>(begin: 0, end: showExpandedTxId ? 1 : 0),
                   duration: const Duration(milliseconds: 200),
                   builder: (context, value, child) {
-                    return Text(
-                      truncateWithEllipsisInCenter(
-                          widget.coin.utxo.txid,
-                          lerpDouble(16, widget.coin.utxo.txid.length, value)!
-                              .toInt()),
-                      style: EnvoyTypography.info
-                          .copyWith(color: EnvoyColors.textPrimary),
-                      textAlign: TextAlign.end,
-                      maxLines: 4,
+                    return Container(
+                      constraints: const BoxConstraints(
+                        maxHeight: 80,
+                      ),
+                      child: SingleChildScrollView(
+                        child: Text(
+                          truncateWithEllipsisInCenter(
+                              widget.coin.utxo.txid,
+                              lerpDouble(
+                                      16, widget.coin.utxo.txid.length, value)!
+                                  .toInt()),
+                          style: EnvoyTypography.body
+                              .copyWith(color: EnvoyColors.textSecondary),
+                          textAlign: TextAlign.end,
+                          maxLines: 4,
+                        ),
+                      ),
                     );
                   },
                 )),

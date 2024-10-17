@@ -112,6 +112,7 @@ dependencies:
   typed_data: any
   latlng: any
   http: ^1.2.1
+  in_app_purchase: ^3.2.0
 dependency_overrides:
   watcher: ^1.1.0
   win32: ^5.5.4 # https://stackoverflow.com/questions/69553108/flutter-error-unmodifiableuint8listview-is-restricted-and-cant-be-extended-o

@@ -34,6 +34,9 @@ void showEnvoyPopUp(
   bool? checkedValue,
   bool dismissible = true,
   String? learnMoreLink,
+  String? learnMoreText,
+  Widget? customWidget,
+  bool? showCloseButton,
 }) =>
     showEnvoyDialog(
         context: context,
@@ -50,26 +53,33 @@ void showEnvoyPopUp(
           checkBoxText: checkBoxText,
           onCheckBoxChanged: onCheckBoxChanged,
           checkedValue: checkedValue ?? true,
-          learnMoreLink: learnMoreLink,
+          linkUrl: learnMoreLink,
+          learnMoreText: learnMoreText ?? '',
+          customWidget: customWidget,
+          showCloseButton: showCloseButton ?? true,
         ),
         dismissible: dismissible);
 
 //ignore: must_be_immutable
 class EnvoyPopUp extends StatefulWidget {
-  EnvoyPopUp(
-      {super.key,
-      this.icon,
-      this.title,
-      required this.content,
-      required this.primaryButtonLabel,
-      this.secondaryButtonLabel,
-      this.onPrimaryButtonTap,
-      this.onSecondaryButtonTap,
-      this.typeOfMessage = PopUpState.deafult,
-      this.checkBoxText,
-      this.onCheckBoxChanged,
-      this.checkedValue = true,
-      this.learnMoreLink});
+  EnvoyPopUp({
+    super.key,
+    this.icon,
+    this.title,
+    required this.content,
+    required this.primaryButtonLabel,
+    this.secondaryButtonLabel,
+    this.onPrimaryButtonTap,
+    this.onSecondaryButtonTap,
+    this.typeOfMessage = PopUpState.deafult,
+    this.checkBoxText,
+    this.onCheckBoxChanged,
+    this.checkedValue = true,
+    this.linkUrl,
+    this.learnMoreText = '',
+    this.customWidget,
+    this.showCloseButton = true,
+  });
 
   final String? title;
   final String content;
@@ -82,7 +92,10 @@ class EnvoyPopUp extends StatefulWidget {
   final String? checkBoxText;
   final Function(bool checked)? onCheckBoxChanged;
   bool? checkedValue;
-  final String? learnMoreLink;
+  final String? linkUrl;
+  final String learnMoreText;
+  final Widget? customWidget;
+  final bool showCloseButton;
 
   @override
   State<EnvoyPopUp> createState() => _EnvoyPopUpState();
@@ -139,18 +152,19 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+              if (widget.showCloseButton)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
                   ),
                 ),
-              ),
               if (widget.icon != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
@@ -173,24 +187,32 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                 ),
               Padding(
                 padding: EdgeInsets.only(
-                    bottom: widget.learnMoreLink == null
-                        ? EnvoySpacing.medium3
-                        : EnvoySpacing.medium1),
+                    bottom:
+                        widget.linkUrl == null && widget.customWidget == null
+                            ? EnvoySpacing.medium3
+                            : EnvoySpacing.medium1),
                 child: Text(
                   widget.content,
                   style: EnvoyTypography.info,
                   textAlign: TextAlign.center,
                 ),
               ),
-              if (widget.learnMoreLink != null)
+              if (widget.customWidget != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                  child: widget.customWidget!,
+                ),
+              if (widget.linkUrl != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
                   child: GestureDetector(
                     onTap: () {
-                      launchUrl(Uri.parse(widget.learnMoreLink!));
+                      launchUrl(Uri.parse(widget.linkUrl!));
                     },
                     child: Text(
-                      S().component_learnMore,
+                      widget.learnMoreText.isEmpty
+                          ? S().component_learnMore
+                          : widget.learnMoreText,
                       style: EnvoyTypography.button
                           .copyWith(color: EnvoyColors.accentPrimary),
                     ),
