@@ -32,6 +32,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_spend_screen.dart';
 
 class RBFState {
   final String originalTxId;
@@ -103,17 +104,21 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
   }
 
   Future<void> checkCancel() async {
-    setState(() {
-      _loading = true;
-      _canCancel = false;
-    });
+    if (mounted) {
+      setState(() {
+        _loading = true;
+        _canCancel = false;
+      });
+    }
 
     final selectedAccount = ref.read(selectedAccountProvider);
     if (selectedAccount == null) {
-      setState(() {
-        _loading = false;
-        _canCancel = false;
-      });
+      if (mounted) {
+        setState(() {
+          _loading = false;
+          _canCancel = false;
+        });
+      }
       return;
     }
 
@@ -133,16 +138,19 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
       originalTxRaw = await selectedAccount.wallet
           .decodeWalletRawTx(originalTxRawHex, selectedAccount.wallet.network);
 
-      setState(() {
-        _canCancel = true;
-      });
+      if (mounted) {
+        setState(() {
+          _canCancel = true;
+        });
+      }
     } catch (e, s) {
       debugPrintStack(stackTrace: s);
       kPrint(e);
-
-      setState(() {
-        _canCancel = false;
-      });
+      if (mounted) {
+        setState(() {
+          _canCancel = false;
+        });
+      }
     } finally {
       if (mounted) {
         setState(() {
@@ -169,7 +177,7 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
               });
             },
             onTapUp: (_) {
-              _canCancel
+              ref.watch(rbfSpendStateProvider) != null && _canCancel
                   ? showEnvoyDialog(
                       context: context,
                       builder: Builder(
@@ -190,9 +198,10 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
             child: Container(
               height: EnvoySpacing.medium2,
               decoration: BoxDecoration(
-                  color: EnvoyColors.chilli500.withOpacity(_canCancel
-                      ? (_isPressed ? 0.5 : 1)
-                      : (_loading ? 1 : 0.5)),
+                  color: EnvoyColors.chilli500.withOpacity(
+                      ref.watch(rbfSpendStateProvider) != null && _canCancel
+                          ? (_isPressed ? 0.5 : 1)
+                          : (_loading ? 1 : 0.5)),
                   borderRadius: BorderRadius.circular(EnvoySpacing.small)),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
@@ -224,6 +233,22 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
           ),
         ],
       ),
+    );
+  }
+
+  void showNoCancelNoFundsDialog(BuildContext context) {
+    showEnvoyPopUp(
+      context,
+      title: S().coindetails_overlay_noCancelNoFunds_heading,
+      S().coindetails_overlay_noCanceltNoFunds_subheading,
+      S().component_continue,
+      learnMoreLink:
+          "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions",
+      (BuildContext context) {
+        Navigator.pop(context);
+      },
+      icon: EnvoyIcons.alert,
+      typeOfMessage: PopUpState.danger,
     );
   }
 }
@@ -759,21 +784,5 @@ Widget background({required Widget child, required BuildContext context}) {
         )
       ],
     ),
-  );
-}
-
-void showNoCancelNoFundsDialog(BuildContext context) {
-  showEnvoyPopUp(
-    context,
-    title: S().coindetails_overlay_noCancelNoFunds_heading,
-    S().coindetails_overlay_noCanceltNoFunds_subheading,
-    S().component_continue,
-    learnMoreLink:
-        "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions",
-    (BuildContext context) {
-      Navigator.pop(context);
-    },
-    icon: EnvoyIcons.alert,
-    typeOfMessage: PopUpState.danger,
   );
 }
