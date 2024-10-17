@@ -34,6 +34,8 @@ void showEnvoyPopUp(
   bool? checkedValue,
   bool dismissible = true,
   String? learnMoreLink,
+  String? learnMoreText,
+  Widget? customWidget,
   bool? showCloseButton,
 }) =>
     showEnvoyDialog(
@@ -51,7 +53,9 @@ void showEnvoyPopUp(
           checkBoxText: checkBoxText,
           onCheckBoxChanged: onCheckBoxChanged,
           checkedValue: checkedValue ?? true,
-          learnMoreLink: learnMoreLink,
+          linkUrl: learnMoreLink,
+          learnMoreText: learnMoreText ?? '',
+          customWidget: customWidget,
           showCloseButton: showCloseButton ?? true,
         ),
         dismissible: dismissible);
@@ -71,7 +75,9 @@ class EnvoyPopUp extends StatefulWidget {
     this.checkBoxText,
     this.onCheckBoxChanged,
     this.checkedValue = true,
-    this.learnMoreLink,
+    this.linkUrl,
+    this.learnMoreText = '',
+    this.customWidget,
     this.showCloseButton = true,
   });
 
@@ -86,7 +92,9 @@ class EnvoyPopUp extends StatefulWidget {
   final String? checkBoxText;
   final Function(bool checked)? onCheckBoxChanged;
   bool? checkedValue;
-  final String? learnMoreLink;
+  final String? linkUrl;
+  final String learnMoreText;
+  final Widget? customWidget;
   final bool showCloseButton;
 
   @override
@@ -179,24 +187,32 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                 ),
               Padding(
                 padding: EdgeInsets.only(
-                    bottom: widget.learnMoreLink == null
-                        ? EnvoySpacing.medium3
-                        : EnvoySpacing.medium1),
+                    bottom:
+                        widget.linkUrl == null && widget.customWidget == null
+                            ? EnvoySpacing.medium3
+                            : EnvoySpacing.medium1),
                 child: Text(
                   widget.content,
                   style: EnvoyTypography.info,
                   textAlign: TextAlign.center,
                 ),
               ),
-              if (widget.learnMoreLink != null)
+              if (widget.customWidget != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                  child: widget.customWidget!,
+                ),
+              if (widget.linkUrl != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
                   child: GestureDetector(
                     onTap: () {
-                      launchUrl(Uri.parse(widget.learnMoreLink!));
+                      launchUrl(Uri.parse(widget.linkUrl!));
                     },
                     child: Text(
-                      S().component_learnMore,
+                      widget.learnMoreText.isEmpty
+                          ? S().component_learnMore
+                          : widget.learnMoreText,
                       style: EnvoyTypography.button
                           .copyWith(color: EnvoyColors.accentPrimary),
                     ),
