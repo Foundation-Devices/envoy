@@ -27,6 +27,9 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/business/account.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/seed_qr_extract.dart';
+import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 
 enum ScannerType {
   generic,
@@ -196,6 +199,7 @@ class ScannerPageState extends State<ScannerPage> {
         if (context.mounted) {
           _onDetect(barcode.code!, barcode.rawBytes, context);
         }
+
         _lastScan = barcode.code ?? '';
       }
     });
@@ -204,6 +208,39 @@ class ScannerPageState extends State<ScannerPage> {
     if (Platform.isAndroid) {
       controller.pauseCamera();
       controller.resumeCamera();
+    }
+  }
+
+  // ignore: unused_element
+  void _showQrScannerWarningPopup(
+      BuildContext context, String barcodeCode, List<int>? rawBytes) {
+    final NavigatorState navigator = Navigator.of(context);
+
+    if (context.mounted) {
+      controller?.pauseCamera();
+
+      showEnvoyPopUp(
+        context,
+        title: S().component_warning,
+        S().qrTooBig_warning_subheading,
+        S().component_confirm,
+        (context) {
+          navigator.pop();
+          controller?.resumeCamera();
+          if (context.mounted) {
+            _onDetect(barcodeCode, rawBytes, context);
+          }
+        },
+        showCloseButton: false,
+        typeOfMessage: PopUpState.danger,
+        icon: EnvoyIcons.alert,
+        secondaryButtonLabel: S().component_back,
+        onSecondaryButtonTap: (BuildContext context) {
+          navigator.pop();
+          navigator.pop();
+          return;
+        },
+      );
     }
   }
 
@@ -261,7 +298,7 @@ class ScannerPageState extends State<ScannerPage> {
     if (widget._acceptableTypes.contains(ScannerType.btcPay)) {
       if (BtcPayVoucher.isVoucher(code)) {
         final voucher = BtcPayVoucher(code);
-        Navigator.of(context).pop();
+        navigator.pop();
         showEnvoyDialog(
             context: context, dialog: BtcPayDialog(voucher, widget.account!));
         return;
@@ -304,6 +341,7 @@ class ScannerPageState extends State<ScannerPage> {
 
       if (!await widget.account!.wallet.validateAddress(address)) {
         showSnackbar(invalidAddressSnackbar);
+        return;
       } else {
         // Convert the address to lowercase for consistent display in Envoy
         address = address.toLowerCase();
