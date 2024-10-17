@@ -185,7 +185,6 @@ class ScannerPageState extends State<ScannerPage> {
 
   void _onQRViewCreated(QRViewController controller, BuildContext context) {
     this.controller = controller;
-    final NavigatorState navigator = Navigator.of(context);
     controller.scannedDataStream.listen((barcode) {
       if ((barcode.code != null && barcode.code != _lastCodeDetected) ||
           (barcode.rawBytes != null &&
@@ -197,36 +196,8 @@ class ScannerPageState extends State<ScannerPage> {
           return;
         }
 
-        if (barcode.code!.length > 62) {
-          if (context.mounted) {
-            controller.pauseCamera();
-            showEnvoyPopUp(
-              context,
-              title: S().component_warning,
-              S().qrTooBig_warning_subheading,
-              S().component_confirm,
-              (context) {
-                navigator.pop();
-                controller.resumeCamera();
-                if (context.mounted) {
-                  _onDetect(barcode.code!, barcode.rawBytes, context);
-                }
-              },
-              showCloseButton: false,
-              typeOfMessage: PopUpState.danger,
-              icon: EnvoyIcons.alert,
-              secondaryButtonLabel: S().component_back,
-              onSecondaryButtonTap: (BuildContext context) {
-                navigator.pop();
-                navigator.pop();
-                return;
-              },
-            );
-          }
-        } else {
-          if (context.mounted) {
-            _onDetect(barcode.code!, barcode.rawBytes, context);
-          }
+        if (context.mounted) {
+          _onDetect(barcode.code!, barcode.rawBytes, context);
         }
 
         _lastScan = barcode.code ?? '';
@@ -237,6 +208,38 @@ class ScannerPageState extends State<ScannerPage> {
     if (Platform.isAndroid) {
       controller.pauseCamera();
       controller.resumeCamera();
+    }
+  }
+
+  void _showQrScannerWarningPopup(
+      BuildContext context, String barcodeCode, List<int>? rawBytes) {
+    final NavigatorState navigator = Navigator.of(context);
+
+    if (context.mounted) {
+      controller?.pauseCamera();
+
+      showEnvoyPopUp(
+        context,
+        title: S().component_warning,
+        S().qrTooBig_warning_subheading,
+        S().component_confirm,
+        (context) {
+          navigator.pop();
+          controller?.resumeCamera();
+          if (context.mounted) {
+            _onDetect(barcodeCode, rawBytes, context);
+          }
+        },
+        showCloseButton: false,
+        typeOfMessage: PopUpState.danger,
+        icon: EnvoyIcons.alert,
+        secondaryButtonLabel: S().component_back,
+        onSecondaryButtonTap: (BuildContext context) {
+          navigator.pop();
+          navigator.pop();
+          return;
+        },
+      );
     }
   }
 
