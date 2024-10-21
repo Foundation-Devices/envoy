@@ -42,6 +42,13 @@ class AmountWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextScaler textScaler = MediaQuery.of(context).textScaler.clamp(
+          minScaleFactor: 0.8,
+          maxScaleFactor: 1.6,
+        );
+    double baseFontScale = 1;
+    double textScaleFactor = textScaler.scale(baseFontScale);
+
     String getDecimalSeparator(String locale) {
       // Get the decimal separator for the specified locale
       NumberFormat numberFormat = NumberFormat.decimalPattern(locale);
@@ -71,7 +78,8 @@ class AmountWidget extends StatelessWidget {
                 fxRateFiat: fxRateFiat,
                 badgeColor: badgeColor,
                 network: network,
-                locale: locale),
+                locale: locale,
+                textScaleFactor: textScaleFactor),
             if (secondaryUnit != null)
               SecondaryAmountWidget(
                   unit: secondaryUnit!,
@@ -82,7 +90,8 @@ class AmountWidget extends StatelessWidget {
                   decimalSeparator: decimalSeparator,
                   groupSeparator: groupSeparator,
                   network: network,
-                  locale: locale),
+                  locale: locale,
+                  textScaleFactor: textScaleFactor),
           ],
         );
       case AmountWidgetStyle.normal:
@@ -100,7 +109,8 @@ class AmountWidget extends StatelessWidget {
                 fxRateFiat: fxRateFiat,
                 badgeColor: badgeColor,
                 network: network,
-                locale: locale),
+                locale: locale,
+                textScaleFactor: textScaleFactor),
             if (secondaryUnit != null)
               Padding(
                 padding: const EdgeInsets.only(top: EnvoySpacing.xs),
@@ -113,7 +123,8 @@ class AmountWidget extends StatelessWidget {
                     decimalSeparator: decimalSeparator,
                     groupSeparator: groupSeparator,
                     network: network,
-                    locale: locale),
+                    locale: locale,
+                    textScaleFactor: textScaleFactor),
               ),
           ],
         );
@@ -133,7 +144,8 @@ class AmountWidget extends StatelessWidget {
                 fxRateFiat: fxRateFiat,
                 badgeColor: badgeColor,
                 network: network,
-                locale: locale),
+                locale: locale,
+                textScaleFactor: textScaleFactor),
             if (secondaryUnit != null)
               Padding(
                 padding: const EdgeInsets.only(left: EnvoySpacing.small),
@@ -146,25 +158,26 @@ class AmountWidget extends StatelessWidget {
                     decimalSeparator: decimalSeparator,
                     groupSeparator: groupSeparator,
                     network: network,
-                    locale: locale),
+                    locale: locale,
+                    textScaleFactor: textScaleFactor),
               ),
           ],
         );
 
       case AmountWidgetStyle.sendScreen:
         return PrimaryAmountWidget(
-          unit: primaryUnit,
-          style: PrimaryAmountWidgetStyle.normal,
-          amountSats: amountSats,
-          decimalSeparator: decimalSeparator,
-          groupSeparator: groupSeparator,
-          symbolFiat: symbolFiat,
-          fxRateFiat: fxRateFiat,
-          badgeColor: badgeColor,
-          network: network,
-          locale: locale,
-          sendScreen: true,
-        );
+            unit: primaryUnit,
+            style: PrimaryAmountWidgetStyle.normal,
+            amountSats: amountSats,
+            decimalSeparator: decimalSeparator,
+            groupSeparator: groupSeparator,
+            symbolFiat: symbolFiat,
+            fxRateFiat: fxRateFiat,
+            badgeColor: badgeColor,
+            network: network,
+            locale: locale,
+            sendScreen: true,
+            textScaleFactor: textScaleFactor);
     }
   }
 }
@@ -184,6 +197,7 @@ class PrimaryAmountWidget extends StatelessWidget {
   final Network? network;
   final bool sendScreen;
   final String locale;
+  final double textScaleFactor;
 
   final EnvoyIcons iconBtc = EnvoyIcons.btc;
   final EnvoyIcons iconSat = EnvoyIcons.sats;
@@ -204,6 +218,7 @@ class PrimaryAmountWidget extends StatelessWidget {
     this.badgeColor,
     this.network,
     this.sendScreen = false,
+    this.textScaleFactor = 1,
   });
 
   @override
@@ -266,6 +281,7 @@ class PrimaryAmountWidget extends StatelessWidget {
                     : getNonMainnetIcon(unit, badgeColor!, network!,
                         iconSize: iconSize, iconColor: iconColor))),
         RichText(
+          textScaler: TextScaler.linear(textScaleFactor),
           text: TextSpan(
             children: unit == AmountDisplayUnit.btc
                 ? buildPrimaryBtcTextSpans(amountSats, decimalSeparator,
@@ -302,6 +318,7 @@ class SecondaryAmountWidget extends StatelessWidget {
   final Network? network;
   final String locale;
   final EnvoyIcons iconBtc = EnvoyIcons.btc;
+  final double textScaleFactor;
 
   const SecondaryAmountWidget({
     super.key,
@@ -315,6 +332,7 @@ class SecondaryAmountWidget extends StatelessWidget {
     this.style = SecondaryAmountWidgetStyle.normal,
     this.badgeColor,
     this.network,
+    this.textScaleFactor = 1,
   });
 
   @override
@@ -361,6 +379,7 @@ class SecondaryAmountWidget extends StatelessWidget {
                     style: textStyle,
                   )),
         RichText(
+          textScaler: TextScaler.linear(textScaleFactor),
           text: TextSpan(
               children: unit == AmountDisplayUnit.fiat
                   ? buildSecondaryFiatTextSpans(

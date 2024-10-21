@@ -18,9 +18,9 @@ import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
-import 'package:wallet/wallet.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
+import 'package:envoy/ui/tx_utils.dart';
 
 class EnvoyListTile extends StatelessWidget {
   const EnvoyListTile({
@@ -144,60 +144,13 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
 
       if (transaction != null) {
         bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
-        titleText =
-            transaction.amount < 0 ? S().activity_sent : S().activity_received;
         RBFState? cancelState =
             ref.watch(cancelTxStateProvider(transaction.txId));
-        if (cancelState != null) {
-          if (cancelState.originalTxId == transaction.txId) {
-            if (!transaction.isConfirmed) {
-              titleText = S().activity_canceling;
-            }
-          }
-          if (cancelState.newTxId == transaction.txId) {
-            if (transaction.isConfirmed) {
-              titleText = S().activity_sent_canceled;
-            } else {
-              titleText = S().activity_canceling;
-            }
-          }
-        } else {
-          if (isBoosted == true) {
-            if (transaction.isConfirmed) {
-              titleText = S().activity_sent_boosted;
-            }
-            titleText = S().activity_boosted;
-          }
-        }
 
-        if (transaction.type == TransactionType.azteco) {
-          subtitleText = S().azteco_account_tx_history_pending_voucher;
-        } else if (transaction.type == TransactionType.btcPay) {
-          subtitleText = S().btcpay_pendingVoucher;
-        } else if (transaction.type == TransactionType.ramp) {
-          subtitleText = S().ramp_pendingVoucher;
-        } else if (transaction.type == TransactionType.normal &&
-            transaction.isConfirmed) {
-          subtitleText = timeago
-              .format(transaction.date, locale: activeLocale.languageCode)
-              .capitalize();
-        } else {
-          subtitleText = S().receive_tx_list_awaitingConfirmation;
-        }
-
-        txIcon = transaction.amount < 0 ? EnvoyIcons.spend : EnvoyIcons.receive;
-        if (cancelState != null) {
-          if (!transaction.isConfirmed) {
-            txIcon = EnvoyIcons.alert;
-          } else if (cancelState.newTxId == transaction.txId) {
-            txIcon = EnvoyIcons.close;
-          } else {
-            txIcon =
-                transaction.amount < 0 ? EnvoyIcons.spend : EnvoyIcons.receive;
-          }
-        } else if (isBoosted == true) {
-          txIcon = EnvoyIcons.rbf_boost;
-        }
+        titleText =
+            getTransactionTitleText(transaction, cancelState, isBoosted);
+        subtitleText = getTransactionSubtitleText(transaction, activeLocale);
+        txIcon = getTransactionIcon(transaction, cancelState, isBoosted);
 
         unitIcon = () {
           final accountManager = ref.watch(accountManagerProvider);

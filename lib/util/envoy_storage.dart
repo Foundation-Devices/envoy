@@ -688,7 +688,7 @@ class EnvoyStorage {
         record.map((e) => InputCoinHistory.fromJson(e.value)).toList());
   }
 
-  Future<RBFState?> getRBFBoostState(String txId, String accountId) async {
+  Future<RBFState?> getRBFBoostState(String txId) async {
     RecordSnapshot? data =
         await rbfBoostStore.findFirst(_db, finder: Finder(filter: Filter.custom(
       (record) {
@@ -704,16 +704,11 @@ class EnvoyStorage {
         return false;
       },
     )));
-    if (data != null) {
-      RBFState rbf = RBFState.fromJson(data.value as Map<String, Object?>);
-      if (rbf.accountId == accountId) {
-        return rbf;
-      } else {
-        return null;
-      }
-    } else {
-      return null;
-    }
+
+    if (data == null) return null;
+
+    RBFState rbf = RBFState.fromJson(data.value as Map<String, Object?>);
+    return rbf;
   }
 
   Future addCancelState(Map<String, dynamic> payload) async {
@@ -723,7 +718,7 @@ class EnvoyStorage {
 
   /// Returns the cancel state for a given txId
   /// If the txId matches with originalTxId or newTxId.
-  Future<RBFState?> getCancelTxState(String accountId, String txId) async {
+  Future<RBFState?> getCancelTxState(String txId) async {
     RecordSnapshot? data = await canceledTxStore.findFirst(_db,
         finder: Finder(filter: Filter.custom(
       (record) {
@@ -739,16 +734,13 @@ class EnvoyStorage {
         return false;
       },
     )));
-    if (data != null) {
-      RBFState rbf = RBFState.fromJson(data.value as Map<String, Object?>);
-      if (rbf.accountId == accountId) {
-        return rbf;
-      } else {
-        return null;
-      }
-    } else {
+
+    if (data == null) {
       return null;
     }
+
+    RBFState rbf = RBFState.fromJson(data.value as Map<String, Object?>);
+    return rbf;
   }
 
   Future<bool> clearLocationStore() async {
