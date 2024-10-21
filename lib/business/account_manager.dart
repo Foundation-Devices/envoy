@@ -30,12 +30,6 @@ import 'package:wallet/wallet.dart';
 
 class AccountAlreadyPaired implements Exception {}
 
-class AccountRenamed implements Exception {
-  final Wallet wallet;
-
-  AccountRenamed(this.wallet);
-}
-
 class AccountManager extends ChangeNotifier {
   @override
   // ignore: must_call_super
@@ -258,7 +252,6 @@ class AccountManager extends ChangeNotifier {
     if (oldJsonFormat) {
       // Old format with single WPKH account
       Account newAccount = await getPassportAccountJson(json);
-      addAccount(newAccount);
       return newAccount;
     } else {
       // New format can handle multiple accounts
@@ -285,11 +278,13 @@ class AccountManager extends ChangeNotifier {
         }
 
         _initWallet(newAccount.wallet);
-        addAccount(newAccount);
+        if (renamedAccount == null) {
+          addAccount(newAccount);
+        }
       }
 
       if (renamedAccount != null) {
-        throw AccountRenamed(renamedAccount.wallet);
+        return renamedAccount;
       } else if (newAccounts.length == alreadyPairedAccountsCount) {
         throw AccountAlreadyPaired();
       } else {
@@ -343,7 +338,7 @@ class AccountManager extends ChangeNotifier {
           accountRenamed = true;
         }
         if (accountRenamed) {
-          throw AccountRenamed(account.wallet);
+          return account;
         }
         throw AccountAlreadyPaired();
       }
@@ -366,6 +361,8 @@ class AccountManager extends ChangeNotifier {
         number: accountNumber,
         id: Account.generateNewId(),
         dateSynced: null);
+
+    addAccount(account);
     return account;
   }
 

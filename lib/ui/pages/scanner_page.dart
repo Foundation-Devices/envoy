@@ -397,11 +397,6 @@ class ScannerPageState extends State<ScannerPage> {
         OnboardingPage.popUntilGoRoute(context);
       }
       return;
-    } on AccountRenamed catch (renamedAccount) {
-      navigator.pushReplacement(MaterialPageRoute(builder: (context) {
-        return SingleWalletPairSuccessPage(renamedAccount.wallet);
-      }));
-      return;
     }
 
     if (pairedAccount == null) {
