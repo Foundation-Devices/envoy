@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("What is Envoy?"),
+        "_": MessageLookupByLibrary.simpleMessage("Secondary action"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences":
             MessageLookupByLibrary.simpleMessage("Open Source Licences"),
@@ -112,6 +112,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "azteco_connection_modal_fail_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy is unable to connect with Azteco.\n\nPlease contact support@azte.co or try again later."),
+        "azteco_note": MessageLookupByLibrary.simpleMessage("Azteco Voucher"),
+        "azteco_pendingVoucher":
+            MessageLookupByLibrary.simpleMessage("Pending Azteco Voucher"),
         "azteco_redeem_modal__voucher_code":
             MessageLookupByLibrary.simpleMessage("VOUCHER CODE"),
         "azteco_redeem_modal_amount":
@@ -158,6 +161,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "btcpay_connection_modal_onchainOnly_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "The scanned voucher was not created with onchain support.\n\nPlease contact the voucher creator."),
+        "btcpay_note": MessageLookupByLibrary.simpleMessage("BTCPay voucher"),
         "btcpay_pendingVoucher":
             MessageLookupByLibrary.simpleMessage("Pending BTCPay Voucher"),
         "btcpay_redeem_modal_description":
@@ -331,6 +335,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_lock_coin_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Locking coins will prevent them from being used in transactions"),
+        "coincontrol_switchActivity":
+            MessageLookupByLibrary.simpleMessage("Activity"),
+        "coincontrol_switchTags": MessageLookupByLibrary.simpleMessage("Tags"),
         "coincontrol_txDetail_ReviewTransaction":
             MessageLookupByLibrary.simpleMessage("Review Transaction"),
         "coincontrol_txDetail_cta1_passport":
@@ -450,6 +457,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "coindetails_overlay_noBoostNoFunds_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "This is because there are not enough confirmed or unlocked coins to choose from. \n\nWhere possible, allow pending coins to confirm or unlock some coins and try again."),
+        "coindetails_overlay_noCancelNoFunds_heading":
+            MessageLookupByLibrary.simpleMessage("Cannot Cancel Transaction"),
+        "coindetails_overlay_noCanceltNoFunds_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Not enough confirmed or unlocked coins available to cancel this transaction. \n\nWhere possible, allow pending coins to confirm, or unlock some coins and try again."),
         "coindetails_overlay_notes":
             MessageLookupByLibrary.simpleMessage("Note"),
         "coindetails_overlay_paymentID":
@@ -470,6 +482,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_Apply": MessageLookupByLibrary.simpleMessage("Apply"),
         "component_back": MessageLookupByLibrary.simpleMessage("Back"),
         "component_cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "component_confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
         "component_content": MessageLookupByLibrary.simpleMessage("Content"),
         "component_continue": MessageLookupByLibrary.simpleMessage("Continue"),
         "component_delete": MessageLookupByLibrary.simpleMessage("Delete"),
@@ -499,6 +512,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_update": MessageLookupByLibrary.simpleMessage("Update"),
         "component_warning": MessageLookupByLibrary.simpleMessage("WARNING"),
         "component_yes": MessageLookupByLibrary.simpleMessage("Yes"),
+        "contactRampForSupport":
+            MessageLookupByLibrary.simpleMessage("Contact Ramp for support"),
         "copyToClipboard_address": MessageLookupByLibrary.simpleMessage(
             "Your address will be copied to the clipboard and may be visible to other apps on your phone."),
         "copyToClipboard_txid": MessageLookupByLibrary.simpleMessage(
@@ -1241,6 +1256,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_setting_perfomance_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "How would you like Envoy to connect to the Internet?"),
+        "qrTooBig_warning_subheading": MessageLookupByLibrary.simpleMessage(
+            "The scanned QR code contains a large amount of data and could make Envoy unstable. Are you sure you want to continue?"),
+        "ramp_note": MessageLookupByLibrary.simpleMessage("Ramp Purchase"),
+        "ramp_pendingVoucher":
+            MessageLookupByLibrary.simpleMessage("Pending Ramp Purchase"),
         "receive_QR_code_receive_QR_code_taproot_on_taproot_toggle":
             MessageLookupByLibrary.simpleMessage("Use Taproot Address"),
         "receive_qr_code_heading":
@@ -1459,6 +1479,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "You may experience degraded app performance until Envoy can re-establish a connection to Tor.\n\nDisabling Tor will establish a direct connection with the Envoy server, but comes with privacy [[tradeoffs]]."),
         "tor_connectivity_toast_warning": MessageLookupByLibrary.simpleMessage(
             "Issue establishing Tor connectivity"),
+        "video_loadingTorText": MessageLookupByLibrary.simpleMessage(
+            "Envoy is loading your video over the Tor Network"),
         "wallet_security_modal_1_4_android_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy securely and automatically backs up your wallet seed with [[Android Auto Backup]].\n\nYour seed is always end-to-end encrypted and is never visible to Google."),

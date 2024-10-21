@@ -297,11 +297,8 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
     required Widget child,
     bool active = true,
   }) {
-    Color buttonColor = active
-        ? (_isPressed
-            ? EnvoyColors.teal500.withOpacity(0.8)
-            : EnvoyColors.teal500)
-        : Colors.grey;
+    Color buttonColor =
+        EnvoyColors.teal500.withOpacity(active ? (_isPressed ? 0.5 : 1) : 0.5);
 
     return AnimatedContainer(
         duration: const Duration(milliseconds: 200),

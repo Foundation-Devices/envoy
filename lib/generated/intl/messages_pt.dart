@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("What is Envoy?"),
+        "_": MessageLookupByLibrary.simpleMessage("Secondary action"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versão da Aplicação"),
         "about_openSourceLicences":
@@ -75,7 +75,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "activity_canceling":
             MessageLookupByLibrary.simpleMessage("A cancelar"),
         "activity_emptyState_label": MessageLookupByLibrary.simpleMessage(
-            "Não existe actividade para apresentar."),
+            "Não existe atividade para apresentar."),
         "activity_envoyUpdate":
             MessageLookupByLibrary.simpleMessage("Aplicação Envoy Actualizada"),
         "activity_envoyUpdateAvailable": MessageLookupByLibrary.simpleMessage(
@@ -114,6 +114,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "azteco_connection_modal_fail_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "A Envoy não consegue estabelecer ligação com a Azteco.\n\nPor favor entra em contacto com support@azte.co ou tenta novamente mais tarde."),
+        "azteco_note": MessageLookupByLibrary.simpleMessage("Azteco Voucher"),
+        "azteco_pendingVoucher":
+            MessageLookupByLibrary.simpleMessage("Pending Azteco Voucher"),
         "azteco_redeem_modal__voucher_code":
             MessageLookupByLibrary.simpleMessage("CÓDIGO DO VALE"),
         "azteco_redeem_modal_amount":
@@ -148,8 +151,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "backups_erase_wallets_and_backups_show_seed_CTA":
             MessageLookupByLibrary.simpleMessage("Mostrar Semente"),
         "bottomNav_accounts": MessageLookupByLibrary.simpleMessage("Contas"),
-        "bottomNav_activity":
-            MessageLookupByLibrary.simpleMessage("Actividade"),
+        "bottomNav_activity": MessageLookupByLibrary.simpleMessage("Atividade"),
         "bottomNav_devices":
             MessageLookupByLibrary.simpleMessage("Dispositivos"),
         "bottomNav_learn": MessageLookupByLibrary.simpleMessage("Aprender"),
@@ -164,6 +166,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "btcpay_connection_modal_onchainOnly_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "O vale digitalizado não foi criado com suporte onchain.\n\nPor favor entra em contacto com o criador do vale."),
+        "btcpay_note": MessageLookupByLibrary.simpleMessage("BTCPay voucher"),
         "btcpay_pendingVoucher":
             MessageLookupByLibrary.simpleMessage("Vale BYCPay Pendente"),
         "btcpay_redeem_modal_description":
@@ -341,6 +344,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_lock_coin_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "O bloqueio das moedas impossibilita o seu uso em transacções"),
+        "coincontrol_switchActivity":
+            MessageLookupByLibrary.simpleMessage("Atividade"),
+        "coincontrol_switchTags":
+            MessageLookupByLibrary.simpleMessage("Etiquetas"),
         "coincontrol_txDetail_ReviewTransaction":
             MessageLookupByLibrary.simpleMessage("Rever Transacção"),
         "coincontrol_txDetail_cta1_passport":
@@ -460,6 +467,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "coindetails_overlay_noBoostNoFunds_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Isto deve-se ao facto de não existirem moedas confirmadas ou desbloqueadas suficientes para escolher. \n\nSempre que possível permite que as moedas pendentes sejam confirmadas ou deslobqueia algumas moedas e tenta novamente."),
+        "coindetails_overlay_noCancelNoFunds_heading":
+            MessageLookupByLibrary.simpleMessage("Cannot Cancel Transaction"),
+        "coindetails_overlay_noCanceltNoFunds_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Not enough confirmed or unlocked coins available to cancel this transaction. \n\nWhere possible, allow pending coins to confirm, or unlock some coins and try again."),
         "coindetails_overlay_notes":
             MessageLookupByLibrary.simpleMessage("Nota"),
         "coindetails_overlay_paymentID":
@@ -481,6 +493,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_Apply": MessageLookupByLibrary.simpleMessage("Aplicar"),
         "component_back": MessageLookupByLibrary.simpleMessage("Voltar"),
         "component_cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
+        "component_confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
         "component_content": MessageLookupByLibrary.simpleMessage("Conteúdo"),
         "component_continue": MessageLookupByLibrary.simpleMessage("Continuar"),
         "component_delete": MessageLookupByLibrary.simpleMessage("Eliminar"),
@@ -513,6 +526,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_update": MessageLookupByLibrary.simpleMessage("Actualizar"),
         "component_warning": MessageLookupByLibrary.simpleMessage("AVISO"),
         "component_yes": MessageLookupByLibrary.simpleMessage("Sim"),
+        "contactRampForSupport":
+            MessageLookupByLibrary.simpleMessage("Contact Ramp for support"),
         "copyToClipboard_address": MessageLookupByLibrary.simpleMessage(
             "O teu endereço será copiado para a área de transferência e poderá ficar visível para outras aplicações no teu telemóvel."),
         "copyToClipboard_txid": MessageLookupByLibrary.simpleMessage(
@@ -1273,6 +1288,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_setting_perfomance_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "De que forma é que gostarias que a Envoy se ligasse à Internet?"),
+        "qrTooBig_warning_subheading": MessageLookupByLibrary.simpleMessage(
+            "The scanned QR code contains a large amount of data and could make Envoy unstable. Are you sure you want to continue?"),
+        "ramp_note": MessageLookupByLibrary.simpleMessage("Ramp Purchase"),
+        "ramp_pendingVoucher":
+            MessageLookupByLibrary.simpleMessage("Pending Ramp Purchase"),
         "receive_QR_code_receive_QR_code_taproot_on_taproot_toggle":
             MessageLookupByLibrary.simpleMessage("Utilizar Endereço Taproot"),
         "receive_qr_code_heading":
@@ -1350,7 +1370,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Transacções Removidas"),
         "replaceByFee_modal_deletedInactiveTX_ramp_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Compras incompletas com as seguintes identificações Ramp foram removidas da actividade após 5 dias."),
+                "Compras incompletas com as seguintes identificações Ramp foram removidas da atividade após 5 dias."),
         "replaceByFee_newFee_modal_heading":
             MessageLookupByLibrary.simpleMessage("Nova Taxa de Transacção"),
         "replaceByFee_newFee_modal_subheading":
@@ -1491,6 +1511,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Podes experienciar um desempenho degradado da aplicação até que a Envoy consiga restabelecer a ligação à rede Tor.\n\nAo desactivares o Tor irás estabelecer uma ligação directa ao servidor da Envoy, mas com [[contrapartidas]] na vertente de privacidade."),
         "tor_connectivity_toast_warning": MessageLookupByLibrary.simpleMessage(
             "Erro ao estabelecer ligação à rede Tor"),
+        "video_loadingTorText": MessageLookupByLibrary.simpleMessage(
+            "Envoy is loading your video over the Tor Network"),
         "wallet_security_modal_1_4_android_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "A Envoy faz a cópia de segurança da semente da tua carteira de uma forma segura e automática através da [[Cópia de Segurança do Android]].\n\nA tua semente está sempre encriptada ponta a ponta e nunca é tornada visível para o Google."),
