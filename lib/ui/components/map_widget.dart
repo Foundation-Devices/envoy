@@ -16,6 +16,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:envoy/business/venue.dart';
 import 'package:envoy/business/map_data.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
@@ -23,9 +24,6 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:envoy/business/coordinates.dart';
-
-// import 'package:vector_map_tiles/vector_map_tiles.dart' as vector;
-// import 'package:path/path.dart' as path;
 
 const String mapType = "positron";
 
@@ -276,6 +274,9 @@ class MarkersPageState extends State<MarkersPage> {
                   mapController: mapController,
                   options: MapOptions(
                       initialCenter: currentCenter,
+                      interactionOptions: const InteractionOptions(
+                        flags: InteractiveFlag.drag | InteractiveFlag.pinchZoom,
+                      ),
                       onMapReady: () {
                         _showLocallyVenues();
                       },
@@ -317,10 +318,10 @@ class MarkersPageState extends State<MarkersPage> {
                           });
                         }
                       },
+                      tileProvider:
+                          const FMTCStore('mapStore').getTileProvider(),
                     ),
                     MarkerLayer(markers: showLocalMarkers()),
-                    // if(!areMapTilesLoaded)
-                    //   path.VectorTileLayer(tileProviders: tileProviders, theme:style.theme)
                   ],
                 ),
               ],
