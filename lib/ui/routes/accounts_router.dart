@@ -93,10 +93,6 @@ final accountsRouter = StatefulShellBranch(
           onExit: (context, state) {
             final scope = ProviderScope.containerOf(context);
             final shellMenuOpened = scope.read(homePageBackgroundProvider);
-            if (state.fullPath != ROUTE_ACCOUNTS_HOME) {
-              GoRouter.of(context).go(ROUTE_ACCOUNTS_HOME);
-              return false;
-            }
             if (shellMenuOpened == HomePageBackgroundState.hidden) {
               return true;
             } else {

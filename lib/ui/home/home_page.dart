@@ -551,7 +551,8 @@ class HomePageState extends ConsumerState<HomePage>
                       ignoring: _backgroundShown || modalShown || fullScreen,
                       child: EnvoyBottomNavigation(
                         onIndexChanged: (selectedIndex) {
-                          widget.mainNavigationShell.goBranch(selectedIndex);
+                          widget.mainNavigationShell
+                              .goBranch(selectedIndex, initialLocation: true);
                         },
                       ),
                     ),
