@@ -100,8 +100,13 @@ final accountsRouter = StatefulShellBranch(
             if (shellMenuOpened == HomePageBackgroundState.hidden) {
               return true;
             } else {
-              scope.read(homePageBackgroundProvider.notifier).state =
-                  HomePageBackgroundState.hidden;
+              if (shellMenuOpened == HomePageBackgroundState.menu) {
+                scope.read(homePageBackgroundProvider.notifier).state =
+                    HomePageBackgroundState.hidden;
+              } else {
+                scope.read(homePageBackgroundProvider.notifier).state =
+                    HomePageBackgroundState.menu;
+              }
               return false;
             }
           },

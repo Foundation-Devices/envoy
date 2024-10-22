@@ -81,8 +81,6 @@ class HomePage extends ConsumerStatefulWidget {
   ConsumerState<HomePage> createState() => HomePageState();
 }
 
-final backButtonDispatcher = RootBackButtonDispatcher();
-
 class HomePageState extends ConsumerState<HomePage>
     with TickerProviderStateMixin {
   final Map<String, bool> transactionIdExpandedState = {};
@@ -92,6 +90,7 @@ class HomePageState extends ConsumerState<HomePage>
   final _optionsKey = GlobalKey();
   final bool _optionsShown = false;
   double _optionsHeight = 0;
+  final backButtonDispatcher = RootBackButtonDispatcher();
 
   final double _bottomTabBarHeight = 70.0;
 
@@ -140,9 +139,9 @@ class HomePageState extends ConsumerState<HomePage>
         _notifyAboutRemovedRampTx(expiredBuyTx, context);
       }
     });
-
     Future.delayed(const Duration(milliseconds: 10), () {
       ///register for back button press
+      backButtonDispatcher.takePriority();
       backButtonDispatcher.addCallback(_handleHomePageBackPress);
     });
 

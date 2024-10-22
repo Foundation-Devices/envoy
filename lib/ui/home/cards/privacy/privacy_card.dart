@@ -65,6 +65,7 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
     var keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     var bottomPadding = keyboardHeight - 10 * EnvoySpacing.medium2;
     var s = Settings();
+    //popscope added to not popback when pressing back,since theis widget will be in a shell route
     return PopScope(
       canPop: false,
       child: Align(
