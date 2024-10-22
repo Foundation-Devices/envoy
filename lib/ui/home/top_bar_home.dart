@@ -145,6 +145,10 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                   if (context.mounted) {
                     context.go(ROUTE_BUY_BITCOIN);
                   }
+                } else if (path == ROUTE_BUY_BITCOIN) {
+                  if (context.mounted) {
+                    context.go(ROUTE_ACCOUNTS_HOME);
+                  }
                 } else {
                   if (context.mounted) {
                     GoRouter.of(context).pop();
@@ -177,7 +181,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         const SizedBox(height: 50, child: IndicatorShield())
       ]),
       actions: [
-// Right action
+        // Right action
         Opacity(
           opacity: (inEditMode || backDropEnabled) ? 0.0 : 1.0,
           child: AnimatedSwitcher(
@@ -357,6 +361,9 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         optionsState.state = null;
         break;
       case ROUTE_LEARN:
+        optionsState.state = null;
+        break;
+      case ROUTE_LEARN_BLOG:
         optionsState.state = null;
         break;
       // default:

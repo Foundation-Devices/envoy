@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.8.3+1
+version: 1.8.3+24
 
 environment:
   sdk: ">=3.0.0"
@@ -29,7 +29,6 @@ dependencies:
     sdk: flutter
   ramp_flutter: ^3.0.0
   flutter_platform_widgets: ^6.0.2
-  flutter_local_notifications: ^17.2.2
   flutter_localizations:
     sdk: flutter
   intl: ^0.19.0
@@ -49,19 +48,19 @@ dependencies:
   qr_code_scanner:
     git:
       url: https://github.com/foundation-devices/qr_code_scanner.git
-      ref: 71db8c9dcb3ed56cc55f86caf1044ef2068603b7
+      ref: 5af7a54f9af712e9512382093d6928ed0f766379
 
   # flutter_vlc_player fork
   flutter_vlc_player:
     git:
       url: https://github.com/foundation-devices/flutter_vlc_player.git
-      ref: 405f0341c86f8f676cdca39115ea055ec7239346
+      ref: f4140425a5510c8059db6915bde8eab8031870fe
       path: flutter_vlc_player
 
   tor: 0.0.8
   qr_flutter: ^4.1.0
   dots_indicator: ^2.0.0
-  flutter_secure_storage: ^5.0.2
+  flutter_secure_storage: ^9.2.2
   shared_preferences: ^2.0.11
   cbor: ^4.1.0
   uuid: ^3.0.5
@@ -80,7 +79,7 @@ dependencies:
   flutter_svg: ^1.0.3
   bip32: ^2.0.0
   package_info_plus: ^6.0.0
-  permission_handler: ^9.2.0
+  permission_handler: ^11.3.1
   flutter_html:
     git:
       url: https://github.com/foundation-devices/flutter_html.git
@@ -101,7 +100,7 @@ dependencies:
   path_provider: ^2.1.2
   stack_trace: ^1.11.0
   freezed_annotation: ^2.2.0
-  go_router: ^10.2.0
+  go_router: ^14.3.0
   wakelock_plus: ^1.1.1
   cached_network_image: ^3.3.1
 
@@ -115,6 +114,7 @@ dependencies:
   flutter_map: ^7.0.2
   latlong2: ^0.9.1
   vector_map_tiles: ^8.0.0
+  in_app_purchase: ^3.2.0
 dependency_overrides:
   watcher: ^1.1.0
   win32: ^5.5.4 # https://stackoverflow.com/questions/69553108/flutter-error-unmodifiableuint8listview-is-restricted-and-cant-be-extended-o

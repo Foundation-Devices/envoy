@@ -52,10 +52,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `What is Envoy?`
+  /// `Secondary action`
   String get _ {
     return Intl.message(
-      'What is Envoy?',
+      'Secondary action',
       name: '_',
       desc: '',
       args: [],
@@ -482,6 +482,26 @@ class S {
     );
   }
 
+  /// `Azteco Voucher`
+  String get azteco_note {
+    return Intl.message(
+      'Azteco Voucher',
+      name: 'azteco_note',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending Azteco Voucher`
+  String get azteco_pendingVoucher {
+    return Intl.message(
+      'Pending Azteco Voucher',
+      name: 'azteco_pendingVoucher',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `VOUCHER CODE`
   String get azteco_redeem_modal__voucher_code {
     return Intl.message(
@@ -707,6 +727,16 @@ class S {
     return Intl.message(
       'The scanned voucher was not created with onchain support.\n\nPlease contact the voucher creator.',
       name: 'btcpay_connection_modal_onchainOnly_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `BTCPay voucher`
+  String get btcpay_note {
+    return Intl.message(
+      'BTCPay voucher',
+      name: 'btcpay_note',
       desc: '',
       args: [],
     );
@@ -1464,6 +1494,26 @@ class S {
     );
   }
 
+  /// `Activity`
+  String get coincontrol_switchActivity {
+    return Intl.message(
+      'Activity',
+      name: 'coincontrol_switchActivity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tags`
+  String get coincontrol_switchTags {
+    return Intl.message(
+      'Tags',
+      name: 'coincontrol_switchTags',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Review Transaction`
   String get coincontrol_txDetail_ReviewTransaction {
     return Intl.message(
@@ -2016,6 +2066,26 @@ class S {
     );
   }
 
+  /// `Cannot Cancel Transaction`
+  String get coindetails_overlay_noCancelNoFunds_heading {
+    return Intl.message(
+      'Cannot Cancel Transaction',
+      name: 'coindetails_overlay_noCancelNoFunds_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not enough confirmed or unlocked coins available to cancel this transaction. \n\nWhere possible, allow pending coins to confirm, or unlock some coins and try again.`
+  String get coindetails_overlay_noCanceltNoFunds_subheading {
+    return Intl.message(
+      'Not enough confirmed or unlocked coins available to cancel this transaction. \n\nWhere possible, allow pending coins to confirm, or unlock some coins and try again.',
+      name: 'coindetails_overlay_noCanceltNoFunds_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Note`
   String get coindetails_overlay_notes {
     return Intl.message(
@@ -2131,6 +2201,16 @@ class S {
     return Intl.message(
       'Cancel',
       name: 'component_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm`
+  String get component_confirm {
+    return Intl.message(
+      'Confirm',
+      name: 'component_confirm',
       desc: '',
       args: [],
     );
@@ -2381,6 +2461,16 @@ class S {
     return Intl.message(
       'Yes',
       name: 'component_yes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contact Ramp for support`
+  String get contactRampForSupport {
+    return Intl.message(
+      'Contact Ramp for support',
+      name: 'contactRampForSupport',
       desc: '',
       args: [],
     );
@@ -5788,6 +5878,36 @@ class S {
     );
   }
 
+  /// `The scanned QR code contains a large amount of data and could make Envoy unstable. Are you sure you want to continue?`
+  String get qrTooBig_warning_subheading {
+    return Intl.message(
+      'The scanned QR code contains a large amount of data and could make Envoy unstable. Are you sure you want to continue?',
+      name: 'qrTooBig_warning_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ramp Purchase`
+  String get ramp_note {
+    return Intl.message(
+      'Ramp Purchase',
+      name: 'ramp_note',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending Ramp Purchase`
+  String get ramp_pendingVoucher {
+    return Intl.message(
+      'Pending Ramp Purchase',
+      name: 'ramp_pendingVoucher',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Use Taproot Address`
   String get receive_QR_code_receive_QR_code_taproot_on_taproot_toggle {
     return Intl.message(
@@ -6753,6 +6873,16 @@ class S {
     return Intl.message(
       'Issue establishing Tor connectivity',
       name: 'tor_connectivity_toast_warning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy is loading your video over the Tor Network`
+  String get video_loadingTorText {
+    return Intl.message(
+      'Envoy is loading your video over the Tor Network',
+      name: 'video_loadingTorText',
       desc: '',
       args: [],
     );
