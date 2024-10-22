@@ -30,6 +30,9 @@ const String updateAppId = "updateApp";
 StreamController<String> isNewAppVersionAvailable =
     StreamController.broadcast();
 
+final isNewExpiredBuyTxAvailable =
+    StreamController<List<Transaction>>.broadcast();
+
 @JsonSerializable()
 class EnvoyNotification {
   final String title;

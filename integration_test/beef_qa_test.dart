@@ -1324,7 +1324,7 @@ Future<void> main() async {
       // Check Fiat and set it to USD before testing
       bool textIsOnScreen = await findTextOnScreen(tester, 'USD');
       if (!textIsOnScreen) {
-        await fromSettingsToFiatDropdown(tester);
+        await fromSettingsToFiatBottomSheet(tester);
         await findAndPressTextButton(tester, 'USD');
       }
 
@@ -1367,7 +1367,7 @@ Future<void> main() async {
       await pressHamburgerMenu(tester);
       await goToSettings(tester);
 
-      await fromSettingsToFiatDropdown(tester);
+      await fromSettingsToFiatBottomSheet(tester);
       await findAndPressTextButton(tester, 'JPY');
       currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
 
@@ -1390,7 +1390,9 @@ Future<void> main() async {
       String newFiatAmount =
           await extractFiatAmountFromAccount(tester, accountPassportName);
       // Check if the numbers differ from different Fiats
-      expect(newFiatAmount != usdFiatAmount, isTrue);
+      if (usdFiatAmount != "0.00") {
+        expect(newFiatAmount != usdFiatAmount, isTrue);
+      }
 
       /// Repeat all steps over tor //////////////////////////////////////////////////
 
@@ -1408,7 +1410,8 @@ Future<void> main() async {
       await goToSettings(tester);
 
       // Check Fiat and set it to USD before testing
-      await fromSettingsToFiatDropdown(tester);
+      await fromSettingsToFiatBottomSheet(tester,
+          currentSelection: currentSettingsFiatCode);
       await findAndPressTextButton(tester, 'USD');
       currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
 
@@ -1443,7 +1446,7 @@ Future<void> main() async {
       await pressHamburgerMenu(tester);
       await goToSettings(tester);
 
-      await fromSettingsToFiatDropdown(tester);
+      await fromSettingsToFiatBottomSheet(tester);
       await findAndPressTextButton(tester, 'JPY');
       currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
 
@@ -1465,8 +1468,10 @@ Future<void> main() async {
 
       newFiatAmount =
           await extractFiatAmountFromAccount(tester, accountPassportName);
-      // Check if the numbers differ from different Fiats
-      expect(newFiatAmount != usdFiatAmount, isTrue);
+      if (usdFiatAmount != "0.00") {
+        // Check if the numbers differ from different Fiats
+        expect(newFiatAmount != usdFiatAmount, isTrue);
+      }
     });
     testWidgets('Logs freeze', (tester) async {
       await goBackHome(tester);
@@ -1475,7 +1480,7 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
 
       await findAndPressTextButton(tester, 'View Envoy Logs');
-      await tester.pump(Durations.long2);
+      await tester.pumpAndSettle();
 
       await findAndPressIcon(tester, Icons.copy);
 

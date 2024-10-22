@@ -474,6 +474,13 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                     context: context,
                                     dialog: TxNoteDialog(
                                       onAdd: (note) {
+                                        if (widget.previousTransaction !=
+                                            null) {
+                                          EnvoyStorage().addTxNote(
+                                              note: note,
+                                              key: widget
+                                                  .previousTransaction!.txId);
+                                        }
                                         ref
                                             .read(
                                                 stagingTxNoteProvider.notifier)

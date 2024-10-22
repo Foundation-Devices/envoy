@@ -50,6 +50,8 @@ class EnvoyReport {
   }
 
   writeReport(FlutterErrorDetails? details) async {
+    await _ensureDbInitialized();
+
     Map<String, String?> report = {};
     if (details != null) {
       report["exception"] = details.exceptionAsString();
@@ -69,18 +71,30 @@ class EnvoyReport {
     }
   }
 
-  log(String category, String message) {
-    Map<String, String?> report = {};
-    report["category"] = category;
-    report["message"] = message;
-    report["time"] = DateTime.now().toIso8601String();
+  Future<void> log(String category, String message) async {
+    await _ensureDbInitialized();
 
     if (_db != null) {
+      Map<String, String?> report = {
+        "category": category,
+        "message": message,
+        "time": DateTime.now().toIso8601String()
+      };
       _logsStore.add(_db!, report);
     }
   }
 
+  Future<void> _ensureDbInitialized() async {
+    if (_db == null) {
+      await init(); // Call init if the database is not initialized
+    }
+  }
+
   Future<List<Map<String, Object?>>> getAllLogs() async {
+    await _ensureDbInitialized(); // Ensure the database is ready
+    if (_db == null) {
+      return []; // Return an empty list if the database is still null
+    }
     var log = await _logsStore.find(_db!,
         finder: Finder(
           limit: _logCapacity,

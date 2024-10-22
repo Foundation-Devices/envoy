@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:envoy/business/account.dart';
@@ -28,6 +29,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/components/linear_gradient.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 
 class AccountsCard extends ConsumerStatefulWidget {
   const AccountsCard({
@@ -36,6 +38,18 @@ class AccountsCard extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<AccountsCard> createState() => _AccountsCardState();
+}
+
+//IOS app store restricted countries
+const buyDisabled = ["IND", "GBR"];
+
+Future<bool> checkBuyDisabled() async {
+  if (Platform.isIOS) {
+    return InAppPurchase.instance.countryCode().then(
+          (value) => buyDisabled.contains(value),
+        );
+  }
+  return false;
 }
 
 // The keep alive mixin is necessary to maintain state when widget is not visible
@@ -47,8 +61,7 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
     super.build(context);
     // ignore: unused_local_variable
 
-    final mainnetAccounts = ref.watch(mainnetAccountsProvider(null));
-    final bool noMainnetAccounts = mainnetAccounts.isEmpty;
+    final mainNetAccounts = ref.watch(mainnetAccountsProvider(null));
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -57,48 +70,59 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
         const Flexible(child: AccountsList()),
         Padding(
           padding: const EdgeInsets.only(bottom: 10),
-          child: GestureDetector(
-            onTap: () async {
-              if (noMainnetAccounts) {
-                return;
-              }
-              context.go(
-                await EnvoyStorage().getCountry() != null
-                    ? ROUTE_BUY_BITCOIN
-                    : ROUTE_SELECT_REGION,
-              );
-            },
-            child: QrShield(
-              arcSizeRatio: 15.0,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.large3,
-                    vertical: EnvoySpacing.small),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    EnvoyIcon(
-                      EnvoyIcons.btc,
-                      color: noMainnetAccounts
-                          ? EnvoyColors.textTertiary
-                          : EnvoyColors.accentPrimary,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
-                      child: Text(
-                        S().component_minishield_buy,
-                        style: EnvoyTypography.label.copyWith(
-                          color: noMainnetAccounts
-                              ? EnvoyColors.textTertiary
-                              : EnvoyColors.accentPrimary,
-                        ),
+          child: FutureBuilder(
+              future: checkBuyDisabled(),
+              builder: (context, snapshot) {
+                bool countryRestricted =
+                    snapshot.data != null && snapshot.data!;
+                bool disabled = mainNetAccounts.isEmpty;
+                if (countryRestricted) {
+                  return const SizedBox.shrink();
+                }
+                return GestureDetector(
+                  onTap: () async {
+                    if (countryRestricted) {
+                      return;
+                    }
+                    context.go(
+                      await EnvoyStorage().getCountry() != null
+                          ? ROUTE_BUY_BITCOIN
+                          : ROUTE_SELECT_REGION,
+                    );
+                  },
+                  child: QrShield(
+                    arcSizeRatio: 15.0,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.large3,
+                          vertical: EnvoySpacing.small),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          EnvoyIcon(
+                            EnvoyIcons.btc,
+                            color: disabled
+                                ? EnvoyColors.textTertiary
+                                : EnvoyColors.accentPrimary,
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: EnvoySpacing.xs),
+                            child: Text(
+                              S().component_minishield_buy,
+                              style: EnvoyTypography.label.copyWith(
+                                color: disabled
+                                    ? EnvoyColors.textTertiary
+                                    : EnvoyColors.accentPrimary,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+                  ),
+                );
+              }),
         )
       ],
     );
