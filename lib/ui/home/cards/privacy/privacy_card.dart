@@ -65,24 +65,87 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
     var keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     var bottomPadding = keyboardHeight - 10 * EnvoySpacing.medium2;
     var s = Settings();
-    return Align(
-      alignment: Alignment.topCenter,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-        child: FadingEdgeScrollView.fromSingleChildScrollView(
-            gradientFractionOnStart: 0.03,
-            gradientFractionOnEnd: 0.06,
-            child: SingleChildScrollView(
-              reverse: true,
-              controller: _scrollController,
-              child: Padding(
-                padding: const EdgeInsets.all(EnvoySpacing.medium1),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
-                      child: SettingsHeader(
-                        title: S().privacy_privacyMode_title,
+    //popscope added to not popback when pressing back,since theis widget will be in a shell route
+    return PopScope(
+      canPop: false,
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+          child: FadingEdgeScrollView.fromSingleChildScrollView(
+              gradientFractionOnStart: 0.03,
+              gradientFractionOnEnd: 0.06,
+              child: SingleChildScrollView(
+                reverse: true,
+                controller: _scrollController,
+                child: Padding(
+                  padding: const EdgeInsets.all(EnvoySpacing.medium1),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(top: EnvoySpacing.medium1),
+                        child: SettingsHeader(
+                          title: S().privacy_privacyMode_title,
+                          linkText: S().component_learnMore,
+                          onTap: () {
+                            launchUrl(
+                                Uri.parse(
+                                    "https://docs.foundation.xyz/envoy/envoy-menu/privacy"),
+                                mode: LaunchMode.externalApplication);
+                          },
+                          icon: EnvoyIcons.privacy,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: EnvoySpacing.medium2),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            BigTab(
+                              label: S().privacy_privacyMode_betterPerformance,
+                              icon: EnvoyIcons.performance,
+                              isActive: _betterPerformance,
+                              onSelect: (isActive) {
+                                setState(() {
+                                  _betterPerformance = true;
+                                });
+                                ref.read(torEnabledProvider.notifier).state =
+                                    !_betterPerformance;
+                                Settings().setTorEnabled(!_betterPerformance);
+                              },
+                            ),
+                            BigTab(
+                              label: S().privacy_privacyMode_improvedPrivacy,
+                              icon: EnvoyIcons.privacy,
+                              isActive: !_betterPerformance,
+                              onSelect: (isActive) {
+                                setState(() {
+                                  _betterPerformance = false;
+                                });
+                                ref.read(torEnabledProvider.notifier).state =
+                                    !_betterPerformance;
+                                Settings().setTorEnabled(!_betterPerformance);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      LinkText(
+                          textAlign: TextAlign.start,
+                          text: _betterPerformance
+                              ? S().privacy_privacyMode_torSuggestionOff
+                              : S().privacy_privacyMode_torSuggestionOn,
+                          textStyle: EnvoyTypography.info
+                              .copyWith(color: EnvoyColors.textSecondary),
+                          linkStyle: EnvoyTypography.info.copyWith(
+                              color: _betterPerformance
+                                  ? EnvoyColors.accentSecondary
+                                  : EnvoyColors.accentPrimary)),
+                      buildDivider(),
+                      SettingsHeader(
+                        title: S().privacy_node_title,
                         linkText: S().component_learnMore,
                         onTap: () {
                           launchUrl(
@@ -90,189 +153,132 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
                                   "https://docs.foundation.xyz/envoy/envoy-menu/privacy"),
                               mode: LaunchMode.externalApplication);
                         },
-                        icon: EnvoyIcons.privacy,
+                        icon: EnvoyIcons.node,
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: EnvoySpacing.medium2),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          BigTab(
-                            label: S().privacy_privacyMode_betterPerformance,
-                            icon: EnvoyIcons.performance,
-                            isActive: _betterPerformance,
-                            onSelect: (isActive) {
-                              setState(() {
-                                _betterPerformance = true;
-                              });
-                              ref.read(torEnabledProvider.notifier).state =
-                                  !_betterPerformance;
-                              Settings().setTorEnabled(!_betterPerformance);
-                            },
-                          ),
-                          BigTab(
-                            label: S().privacy_privacyMode_improvedPrivacy,
-                            icon: EnvoyIcons.privacy,
-                            isActive: !_betterPerformance,
-                            onSelect: (isActive) {
-                              setState(() {
-                                _betterPerformance = false;
-                              });
-                              ref.read(torEnabledProvider.notifier).state =
-                                  !_betterPerformance;
-                              Settings().setTorEnabled(!_betterPerformance);
-                            },
-                          ),
+                      const SizedBox(height: EnvoySpacing.medium2),
+                      EnvoyDropdown(
+                        initialIndex:
+                            ConnectivityManager().usingDefaultServer ? 0 : 1,
+                        options: [
+                          EnvoyDropdownOption(
+                              S().privacy_node_nodeType_foundation),
+                          EnvoyDropdownOption(
+                              S().privacy_node_nodeType_personal,
+                              type: EnvoyDropdownOptionType.personalNode),
                         ],
-                      ),
-                    ),
-                    LinkText(
-                        textAlign: TextAlign.start,
-                        text: _betterPerformance
-                            ? S().privacy_privacyMode_torSuggestionOff
-                            : S().privacy_privacyMode_torSuggestionOn,
-                        textStyle: EnvoyTypography.info
-                            .copyWith(color: EnvoyColors.textSecondary),
-                        linkStyle: EnvoyTypography.info.copyWith(
-                            color: _betterPerformance
-                                ? EnvoyColors.accentSecondary
-                                : EnvoyColors.accentPrimary)),
-                    buildDivider(),
-                    SettingsHeader(
-                      title: S().privacy_node_title,
-                      linkText: S().component_learnMore,
-                      onTap: () {
-                        launchUrl(
-                            Uri.parse(
-                                "https://docs.foundation.xyz/envoy/envoy-menu/privacy"),
-                            mode: LaunchMode.externalApplication);
-                      },
-                      icon: EnvoyIcons.node,
-                    ),
-                    const SizedBox(height: EnvoySpacing.medium2),
-                    EnvoyDropdown(
-                      initialIndex:
-                          ConnectivityManager().usingDefaultServer ? 0 : 1,
-                      options: [
-                        EnvoyDropdownOption(
-                            S().privacy_node_nodeType_foundation),
-                        EnvoyDropdownOption(S().privacy_node_nodeType_personal,
-                            type: EnvoyDropdownOptionType.personalNode),
-                      ],
-                      onOptionChanged: (selectedOption) {
-                        if (selectedOption != null) {
-                          setState(() {
-                            _handleDropdownChange(selectedOption);
-                            if (!(selectedOption.type ==
-                                EnvoyDropdownOptionType.personalNode)) {
-                              s.useDefaultElectrumServer(true);
-                            }
-                          });
-                        }
-                      },
-                    ),
-                    if (!ConnectivityManager().usingDefaultServer ||
-                        _showPersonalNodeTextField)
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(top: EnvoySpacing.medium1),
-                        child: SingleChildScrollView(
-                            child: ElectrumServerEntry(s.customElectrumAddress,
-                                s.setCustomElectrumAddress)),
-                      ),
-                    if (!Platform.isLinux)
-                      FutureBuilder<bool>(
-                        future: _auth.isDeviceSupported(),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
-                            return const SizedBox();
+                        onOptionChanged: (selectedOption) {
+                          if (selectedOption != null) {
+                            setState(() {
+                              _handleDropdownChange(selectedOption);
+                              if (!(selectedOption.type ==
+                                  EnvoyDropdownOptionType.personalNode)) {
+                                s.useDefaultElectrumServer(true);
+                              }
+                            });
                           }
-                          if (snapshot.hasData && snapshot.data! == false) {
-                            return const SizedBox();
-                          }
-
-                          return Column(
-                            children: [
-                              buildDivider(),
-                              Row(
-                                children: [
-                                  const EnvoyIcon(EnvoyIcons.biometrics,
-                                      size: EnvoyIconSize.normal),
-                                  const SizedBox(
-                                    width: EnvoySpacing.small,
-                                  ),
-                                  Text(
-                                    S().privacy_applicationLock_title,
-                                    style: EnvoyTypography.body.copyWith(
-                                        color: EnvoyColors.textPrimary),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: EnvoySpacing.medium2),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Flexible(
-                                    flex: 4,
-                                    child: Text(
-                                      S().privacy_applicationLock_unlock,
-                                      style: EnvoyTypography.body.copyWith(
-                                        color: EnvoyColors.textPrimary,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ),
-                                  Flexible(
-                                    flex: 1,
-                                    child: EnvoyToggle(
-                                      value: _useLocalAuth ?? false,
-                                      onChanged: (bool value) async {
-                                        try {
-                                          bool authSuccess =
-                                              await _auth.authenticate(
-                                            options:
-                                                const AuthenticationOptions(
-                                              biometricOnly: false,
-                                            ),
-                                            localizedReason:
-                                                "Authenticate to Enable Biometrics", // TODO: Figma
-                                          );
-
-                                          if (authSuccess) {
-                                            LocalStorage()
-                                                .prefs
-                                                .setBool("useLocalAuth", value);
-                                            setState(() {
-                                              _useLocalAuth = value;
-                                            });
-                                          }
-                                        } catch (e) {
-                                          kPrint(e);
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          );
                         },
                       ),
-                    if (keyboardHeight != 0.0 && bottomPadding > 0)
-                      Padding(
-                        padding: EdgeInsets.only(bottom: bottomPadding),
-                      ),
-                    Container(
-                      height: 40,
-                      color: Colors.transparent,
-                    )
-                  ],
+                      if (!ConnectivityManager().usingDefaultServer ||
+                          _showPersonalNodeTextField)
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(top: EnvoySpacing.medium1),
+                          child: SingleChildScrollView(
+                              child: ElectrumServerEntry(
+                                  s.customElectrumAddress,
+                                  s.setCustomElectrumAddress)),
+                        ),
+                      if (!Platform.isLinux)
+                        FutureBuilder<bool>(
+                          future: _auth.isDeviceSupported(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return const SizedBox();
+                            }
+                            if (snapshot.hasData && snapshot.data! == false) {
+                              return const SizedBox();
+                            }
+
+                            return Column(
+                              children: [
+                                buildDivider(),
+                                Row(
+                                  children: [
+                                    const EnvoyIcon(EnvoyIcons.biometrics,
+                                        size: EnvoyIconSize.normal),
+                                    const SizedBox(
+                                      width: EnvoySpacing.small,
+                                    ),
+                                    Text(
+                                      S().privacy_applicationLock_title,
+                                      style: EnvoyTypography.body.copyWith(
+                                          color: EnvoyColors.textPrimary),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: EnvoySpacing.medium2),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Flexible(
+                                      flex: 4,
+                                      child: Text(
+                                        S().privacy_applicationLock_unlock,
+                                        style: EnvoyTypography.body.copyWith(
+                                          color: EnvoyColors.textPrimary,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      flex: 1,
+                                      child: EnvoyToggle(
+                                        value: _useLocalAuth ?? false,
+                                        onChanged: (bool value) async {
+                                          try {
+                                            bool authSuccess =
+                                                await _auth.authenticate(
+                                              options:
+                                                  const AuthenticationOptions(
+                                                biometricOnly: false,
+                                              ),
+                                              localizedReason:
+                                                  "Authenticate to Enable Biometrics", // TODO: Figma
+                                            );
+
+                                            if (authSuccess) {
+                                              LocalStorage().prefs.setBool(
+                                                  "useLocalAuth", value);
+                                              setState(() {
+                                                _useLocalAuth = value;
+                                              });
+                                            }
+                                          } catch (e) {
+                                            kPrint(e);
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      if (keyboardHeight != 0.0 && bottomPadding > 0)
+                        Padding(
+                          padding: EdgeInsets.only(bottom: bottomPadding),
+                        ),
+                      Container(
+                        height: 40,
+                        color: Colors.transparent,
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            )),
+              )),
+        ),
       ),
     );
   }
