@@ -137,8 +137,8 @@ class EnvoyApp extends StatelessWidget {
             }),
             primaryColor: envoyAccentColor,
             brightness: Brightness.light,
-            appBarTheme:
-                const AppBarTheme(backgroundColor: Colors.black, elevation: 0),
+            appBarTheme: const AppBarTheme(
+                backgroundColor: Colors.black, elevation: 0, centerTitle: true),
             scaffoldBackgroundColor: envoyBaseColor,
             useMaterial3: false),
         routerConfig: mainRouter,
