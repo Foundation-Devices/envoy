@@ -32,7 +32,7 @@ class HomeAppBar extends ConsumerStatefulWidget {
   ConsumerState createState() => _HomeAppBarState();
 }
 
-const _animationsDuration = Duration(milliseconds: 350);
+const _animationsDuration = Duration(milliseconds: 100);
 
 class _HomeAppBarState extends ConsumerState<HomeAppBar> {
   HamburgerState state = HamburgerState.idle;
@@ -69,6 +69,19 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     bool backDropEnabled = homePageDropState != HomePageBackgroundState.hidden;
 
     String homePageTitle = ref.watch(homePageTitleProvider);
+
+    ref.listen(
+      homePageBackgroundProvider,
+      (previous, next) {
+        if (previous != HomePageBackgroundState.hidden &&
+            next == HomePageBackgroundState.hidden) {
+          final paths = mainRouter.routerDelegate.currentConfiguration.fullPath;
+          if (homeTabRoutes.contains(paths)) {
+            ref.read(homePageTitleProvider.notifier).state = "";
+          }
+        }
+      },
+    );
     ref.listen(
       routePathProvider,
       (previous, nextPath) {
@@ -129,8 +142,8 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                 ref.read(homePageBackgroundProvider.notifier).state =
                     HomePageBackgroundState.menu;
               } else {
-                ref.read(homePageBackgroundProvider.notifier).state =
-                    HomePageBackgroundState.hidden;
+                // ref.read(homePageBackgroundProvider.notifier).state =
+                //     HomePageBackgroundState.hidden;
                 ref.read(homePageTitleProvider.notifier).state = "";
               }
             } else {
@@ -150,7 +163,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                     context.go(ROUTE_ACCOUNTS_HOME);
                   }
                 } else {
-                  if (context.mounted) {
+                  if (context.mounted && GoRouter.of(context).canPop()) {
                     GoRouter.of(context).pop();
                   }
                 }

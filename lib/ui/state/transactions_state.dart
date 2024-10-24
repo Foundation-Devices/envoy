@@ -2,6 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/business/btcpay_voucher.dart';
+import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/notifications.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/components/ramp_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
@@ -13,11 +18,6 @@ import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/wallet.dart';
-import 'package:envoy/business/exchange_rate.dart';
-import 'package:envoy/business/settings.dart';
-import 'package:envoy/business/btcpay_voucher.dart';
-import 'package:envoy/business/notifications.dart';
-import 'package:envoy/business/account_manager.dart';
 
 final pendingTransactionsProvider =
     Provider.family<List<Transaction>, String?>((ref, String? accountId) {

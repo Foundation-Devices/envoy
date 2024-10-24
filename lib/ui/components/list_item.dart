@@ -11,6 +11,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -21,6 +22,13 @@ import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/tx_utils.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+import 'package:wallet/wallet.dart';
+import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/util/blur_container_transform.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
+import 'package:envoy/ui/routes/devices_router.dart';
 
 class EnvoyListTile extends StatelessWidget {
   const EnvoyListTile({
@@ -40,49 +48,46 @@ class EnvoyListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {},
-      child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-          minLeadingWidth: 0,
-          horizontalTitleGap: EnvoySpacing.medium1,
-          title: Padding(
-            padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-            child: Text(
-              titleText,
-              style:
-                  EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary),
-            ),
+    return ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+        minLeadingWidth: 0,
+        horizontalTitleGap: EnvoySpacing.medium1,
+        title: Padding(
+          padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
+          child: Text(
+            titleText,
+            style:
+                EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary),
           ),
-          subtitle: subtitleText == null
-              ? const Text("")
-              : Text(
-                  subtitleText!,
-                  style: EnvoyTypography.info
-                      .copyWith(color: EnvoyColors.textSecondary),
-                ),
-          leading: txIcon == null
-              ? null
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    EnvoyIcon(
-                      txIcon!,
-                      color: iconColor,
-                      size: EnvoyIconSize.small,
-                    ),
-                  ],
-                ),
-          trailing: unitIcon == null
-              ? const Text("")
-              : Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    unitIcon!,
-                  ],
-                )),
-    );
+        ),
+        subtitle: subtitleText == null
+            ? const Text("")
+            : Text(
+                subtitleText!,
+                style: EnvoyTypography.info
+                    .copyWith(color: EnvoyColors.textSecondary),
+              ),
+        leading: txIcon == null
+            ? null
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  EnvoyIcon(
+                    txIcon!,
+                    color: iconColor,
+                    size: EnvoyIconSize.small,
+                  ),
+                ],
+              ),
+        trailing: unitIcon == null
+            ? const Text("")
+            : Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  unitIcon!,
+                ],
+              ));
   }
 }
 
@@ -226,13 +231,74 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
         iconColor = EnvoyColors.textTertiary;
       }
 
-      return EnvoyListTile(
-        titleText: titleText,
-        subtitleText: subtitleText,
-        txIcon: txIcon,
-        iconColor: iconColor,
-        unitIcon: unitIcon,
-      );
+      return notification.transaction != null
+          ? BlurContainerTransform(
+              useRootNavigator: true,
+              closedBuilder: (context, action) {
+                return GestureDetector(
+                    onTap: () {
+                      action();
+                    },
+                    child: EnvoyListTile(
+                      titleText: titleText,
+                      subtitleText: subtitleText,
+                      txIcon: txIcon,
+                      iconColor: iconColor,
+                      unitIcon: unitIcon,
+                    ));
+              },
+              openBuilder: (context, action) {
+                return openTransactionDetails(context, transaction!);
+              },
+            )
+          : GestureDetector(
+              onTap: () {
+                openNotificationEvent(context);
+              },
+              child: EnvoyListTile(
+                titleText: titleText,
+                subtitleText: subtitleText,
+                txIcon: txIcon,
+                iconColor: iconColor,
+                unitIcon: unitIcon,
+              ),
+            );
     });
+  }
+
+  Widget openTransactionDetails(BuildContext context, Transaction transaction) {
+    if (widget.notification.accountId != null) {
+      Account? account =
+          AccountManager().getAccountById(widget.notification.accountId!);
+      if (account != null) {
+        return TransactionsDetailsWidget(
+          account: account,
+          tx: transaction,
+          iconTitleWidget: transactionIcon(context, transaction,
+              iconColor: EnvoyColors.textPrimaryInverse),
+          titleWidget: transactionTitle(
+            context,
+            transaction,
+            txTitleStyle: EnvoyTypography.subheading
+                .copyWith(color: EnvoyColors.textPrimaryInverse),
+          ),
+        );
+      }
+    }
+    return const SizedBox.shrink();
+  }
+
+  void openNotificationEvent(BuildContext context) {
+    switch (widget.notification.type) {
+      case EnvoyNotificationType.firmware:
+        context.go(ROUTE_DEVICES);
+      case EnvoyNotificationType.transaction:
+        break;
+      case EnvoyNotificationType.security:
+        break;
+      case EnvoyNotificationType.envoyUpdate:
+        launchUrlString(
+            "https://github.com/Foundation-Devices/envoy/releases/tag/${widget.notification.body}");
+    }
   }
 }

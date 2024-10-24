@@ -143,13 +143,20 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
   Widget build(BuildContext context) {
     final double additionalBottomPadding =
         MediaQuery.viewPaddingOf(context).bottom;
+
+    // listen to route changes and update selected index
     ref.listen<List<String>>(routeMatchListProvider, (previous, next) {
-      for (var homeRoute in homeTabRoutes) {
-        if (next.contains(homeRoute)) {
-          if (homeTabRoutes.indexOf(homeRoute) != _selectedIndex) {
-            setState(() {
-              _selectedIndex = homeTabRoutes.indexOf(homeRoute);
-            });
+      // Iterate through the next routes. If it contains homeTabRoutes,
+      // update the selected bottom navigation index.
+      // homeTabRoutes are defined in the same order as the bottom navigation bar.
+      for (var nextRoute in next) {
+        for (var homeRoute in homeTabRoutes) {
+          if (nextRoute.startsWith(homeRoute) && homeRoute != "/") {
+            if (homeTabRoutes.indexOf(homeRoute) != _selectedIndex) {
+              setState(() {
+                _selectedIndex = homeTabRoutes.indexOf(homeRoute);
+              });
+            }
           }
         }
       }
