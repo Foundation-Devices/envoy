@@ -142,8 +142,8 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                 ref.read(homePageBackgroundProvider.notifier).state =
                     HomePageBackgroundState.menu;
               } else {
-                // ref.read(homePageBackgroundProvider.notifier).state =
-                //     HomePageBackgroundState.hidden;
+                ref.read(homePageBackgroundProvider.notifier).state =
+                    HomePageBackgroundState.hidden;
                 ref.read(homePageTitleProvider.notifier).state = "";
               }
             } else {
