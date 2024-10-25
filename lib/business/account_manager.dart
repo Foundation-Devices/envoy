@@ -27,6 +27,8 @@ import 'package:envoy/util/xfp_endian.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/storage/coins_repository.dart';
+import 'bip329.dart';
 
 class AccountAlreadyPaired implements Exception {}
 
@@ -685,5 +687,42 @@ class AccountManager extends ChangeNotifier {
       }
     }
     return null;
+  }
+
+  // This function is currently used for testing purposes only
+  Future<void> exportBIP329() async {
+    for (Account account in accounts) {
+      Wallet wallet = account.wallet;
+
+      // Get xpub for each wallet and create JSON data
+      String xpub = getXpub(wallet);
+      // ignore: unused_local_variable
+      String data = buildKeyJson("xpub", xpub, account.name);
+      //print(data);
+
+      // Process each UTXO to get info and determine spendability
+      List<Utxo> utxos = wallet.utxos;
+      List<String> locked = await CoinRepository().getBlockedCoins();
+
+      for (Utxo utxo in utxos) {
+        String utxoInfo = "${utxo.txid}:${utxo.vout}";
+        bool isSpendable = !locked.contains(utxoInfo);
+        // ignore: unused_local_variable
+        String utxoData =
+            buildKeyJson("output", utxoInfo, "Tag", spendable: isSpendable);
+        //  print(utxoData);
+      }
+
+      // Generate JSON data for each transaction
+      List<Transaction> transactions = wallet.transactions;
+      String origin = extractDescriptor(wallet.externalDescriptor ?? "");
+      for (Transaction tx in transactions) {
+        // ignore: unused_local_variable
+        String txData = buildKeyJson(
+            "tx", tx.txId, "${account.name} Transaction",
+            origin: origin);
+        // print(txData);
+      }
+    }
   }
 }
