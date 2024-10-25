@@ -15,9 +15,6 @@ import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transacti
 String getTransactionTitleText(
     Transaction transaction, RBFState? cancelState, bool? isBoosted) {
   bool isSent = transaction.amount < 0;
-  if (transaction.type == TransactionType.ramp) {
-    return S().activity_incomingPurchase;
-  }
 
   if (cancelState != null) {
     if (cancelState.originalTxId == transaction.txId) {
@@ -50,7 +47,7 @@ String getTransactionSubtitleText(Transaction transaction, Locale locale) {
   } else if (transaction.type == TransactionType.btcPay) {
     return S().btcpay_pendingVoucher;
   } else if (transaction.type == TransactionType.ramp) {
-    return S().activity_pending;
+    return S().ramp_pendingVoucher;
   } else if (transaction.type == TransactionType.normal &&
       transaction.isConfirmed) {
     return timeago
