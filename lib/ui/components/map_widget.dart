@@ -4,28 +4,26 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 import 'dart:core';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:envoy/business/keys_manager.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:latlng/latlng.dart';
-import 'package:map/map.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:envoy/business/venue.dart';
 import 'package:envoy/business/map_data.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/util/envoy_storage.dart';
-
-import '../../business/coordinates.dart';
+import 'package:flutter/material.dart' as material;
+import 'package:envoy/business/coordinates.dart';
 
 const String mapType = "positron";
 
@@ -37,13 +35,12 @@ class MarkersPage extends StatefulWidget {
 }
 
 class MarkersPageState extends State<MarkersPage> {
-  // Default location set to Montgomery, Alabama if the selected country cannot be found
-  MapController controller = MapController(
-      location:
-          const LatLng(Angle.degree(32.361668), Angle.degree(-86.279167)));
+  double currentZoom = 13.0;
+  MapController mapController = MapController();
+  LatLng currentCenter = const LatLng(32.361668, -86.279167);
 
   final List<Venue> venueMarkers = [];
-  MapTransformer? localTransformer;
+
   bool areMapTilesLoaded = true;
   bool errorModalShown = false;
   bool _dataLoaded = false;
@@ -51,42 +48,19 @@ class MarkersPageState extends State<MarkersPage> {
   @override
   void initState() {
     goToHome();
-    _showLocallyVenues();
     super.initState();
   }
 
-  void _onDoubleTap(MapTransformer transformer, Offset position) {
-    const delta = 0.5;
-    final zoom = (controller.zoom + delta).clamp(2, 18).toDouble();
-
-    transformer.setZoomInPlace(zoom, position);
+  void _zoomIn() {
+    currentZoom = currentZoom + 1;
+    mapController.move(mapController.camera.center, currentZoom);
     setState(() {});
   }
 
-  void _zoomIn(MapTransformer transformer) {
-    const delta = 0.5;
-    final zoom = (controller.zoom + delta).clamp(2, 18).toDouble();
-    final offset = transformer.toOffset(
-        LatLng(controller.center.latitude, controller.center.longitude));
-    transformer.setZoomInPlace(zoom, offset);
+  void _zoomOut() {
+    currentZoom = currentZoom - 1;
+    mapController.move(mapController.camera.center, currentZoom);
     setState(() {});
-  }
-
-  void _zoomOut(MapTransformer transformer) {
-    const delta = 0.5;
-    final zoom = (controller.zoom - delta).clamp(2, 18).toDouble();
-    final offset = transformer.toOffset(
-        LatLng(controller.center.latitude, controller.center.longitude));
-    transformer.setZoomInPlace(zoom, offset);
-    setState(() {});
-  }
-
-  Offset? _dragStart;
-  double _scaleStart = 1.0;
-
-  void _onScaleStart(ScaleStartDetails details) {
-    _dragStart = details.focalPoint;
-    _scaleStart = 1.0;
   }
 
   Future<Coordinates?> getCoordinatesFromJson(
@@ -123,7 +97,7 @@ class MarkersPageState extends State<MarkersPage> {
         if (coordinates != null &&
             coordinates.lat != null &&
             coordinates.lon != null) {
-          goTo(coordinates.lat!, coordinates.lon!);
+          currentCenter = LatLng(coordinates.lat!, coordinates.lon!);
           setState(() {
             _dataLoaded = true;
           });
@@ -146,19 +120,10 @@ class MarkersPageState extends State<MarkersPage> {
     });
   }
 
-  void goTo(double latitude, double longitude) {
-    setState(() {
-      controller = MapController(
-        location: LatLng(Angle.degree(latitude), Angle.degree(longitude)),
-      );
-      _dataLoaded = true;
-    });
-  }
-
   void _showLocallyVenues() {
-    var center = controller.center;
-    double longitude = center.longitude.degrees;
-    double latitude = center.latitude.degrees;
+    var center = mapController.camera.center;
+    double longitude = center.longitude;
+    double latitude = center.latitude;
     List<Venue> locallyVenues =
         MapData().getLocallyVenues(0.25, longitude, latitude);
     if (locallyVenues.isNotEmpty) {
@@ -175,128 +140,115 @@ class MarkersPageState extends State<MarkersPage> {
     }
   }
 
-  void _onScaleUpdate(ScaleUpdateDetails details, MapTransformer transformer) {
-    final scaleDiff = details.scale - _scaleStart;
-    _scaleStart = details.scale;
-
-    if (scaleDiff > 0) {
-      controller.zoom += 0.02;
-      setState(() {});
-    } else if (scaleDiff < 0) {
-      controller.zoom -= 0.02;
-      setState(() {});
-    } else {
-      final now = details.focalPoint;
-      final diff = now - _dragStart!;
-      _dragStart = now;
-      transformer.drag(diff.dx, diff.dy);
-      setState(() {});
-    }
-  }
-
-  String _getTileUrl(int z, int x, int y) {
+  String _getTileUrl() {
     final mapApiKey = KeysManager().keys?.mapsKey;
     if (mapApiKey == null) {
       return "";
     }
 
-    return "https://maps.geoapify.com/v1/tile/$mapType/$z/$x/$y.png?&apiKey=$mapApiKey";
+    return "https://maps.geoapify.com/v1/tile/$mapType/{z}/{x}/{y}.png?&apiKey=$mapApiKey";
   }
 
   Widget _buildVenueMarkerWidget(
     Venue venue,
-    MapTransformer transformer,
   ) {
-    var pos = transformer.toOffset(LatLng.degree(venue.lat, venue.lon));
-    return Positioned(
-      left: pos.dx - 24,
-      top: pos.dy - 24,
-      width: 48,
-      height: 48,
-      child: GestureDetector(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const EnvoyIcon(
-              EnvoyIcons.location,
-              color: EnvoyColors.copper500,
+    return GestureDetector(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const EnvoyIcon(
+            EnvoyIcons.location,
+            color: EnvoyColors.copper500,
+          ),
+          CustomPaint(
+            size: const Size(EnvoySpacing.medium2, 6),
+            painter: TriangleShadow(),
+          )
+        ],
+      ),
+      onTap: () async {
+        if (mounted) {
+          showEnvoyDialog(
+            context: context,
+            blurColor: Colors.black,
+            linearGradient: true,
+            dialog: const Padding(
+              padding: EdgeInsets.all(EnvoySpacing.medium3),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(), // Loading spinner
+                ],
+              ),
             ),
-            CustomPaint(
-              size: const Size(EnvoySpacing.medium2, EnvoySpacing.small),
-              painter: TriangleShadow(),
-            )
-          ],
-        ),
-        onTap: () async {
+          );
+        }
+        try {
+          final response = await MapData().getVenueInfo(venue.id);
+          final data = json.decode(response.body);
+          final venueInfo = data["venue"];
+          String? name = venueInfo["name"];
+          final String? description = venueInfo["description"];
+          final String? openingHours = venueInfo["opening_hours"];
+          final String? website = venueInfo["website"];
+          final String? street = venueInfo["street"];
+          final String? houseNo = venueInfo["houseno"];
+          final String? city = venueInfo["city"];
+          String? address;
+
+          if (street != null || houseNo != null || city != null) {
+            final String houseNoAndStreet = [
+              if (street != null && street.isNotEmpty) street,
+              if (houseNo != null && houseNo.isNotEmpty) houseNo
+            ].join(' ');
+
+            address = [
+              if (houseNoAndStreet.isNotEmpty) houseNoAndStreet,
+              if (city != null && city.isNotEmpty) city
+            ].join(', ');
+          }
           if (mounted) {
+            Navigator.pop(context);
             showEnvoyDialog(
               context: context,
               blurColor: Colors.black,
               linearGradient: true,
-              dialog: const Padding(
-                padding: EdgeInsets.all(EnvoySpacing.medium3),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CircularProgressIndicator(), // Loading spinner
-                  ],
+              dialog: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: AtmDialogInfo(
+                  name: name,
+                  address: address,
+                  website: website,
+                  description: description,
+                  openingHours: openingHours,
                 ),
               ),
             );
           }
-          try {
-            final response = await MapData().getVenueInfo(venue.id);
-            final data = json.decode(response.body);
-            final venueInfo = data["venue"];
-            String? name = venueInfo["name"];
-            final String? description = venueInfo["description"];
-            final String? openingHours = venueInfo["opening_hours"];
-            final String? website = venueInfo["website"];
-            final String? street = venueInfo["street"];
-            final String? houseNo = venueInfo["houseno"];
-            final String? city = venueInfo["city"];
-            String? address;
-
-            if (street != null || houseNo != null || city != null) {
-              final String houseNoAndStreet = [
-                if (street != null && street.isNotEmpty) street,
-                if (houseNo != null && houseNo.isNotEmpty) houseNo
-              ].join(' ');
-
-              address = [
-                if (houseNoAndStreet.isNotEmpty) houseNoAndStreet,
-                if (city != null && city.isNotEmpty) city
-              ].join(', ');
-            }
-            if (mounted) {
-              Navigator.pop(context);
-              showEnvoyDialog(
-                context: context,
-                blurColor: Colors.black,
-                linearGradient: true,
-                dialog: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: AtmDialogInfo(
-                    name: name,
-                    address: address,
-                    website: website,
-                    description: description,
-                    openingHours: openingHours,
-                  ),
-                ),
-              );
-            }
-          } catch (error) {
-            if (mounted) Navigator.pop(context);
-          }
-        },
-      ),
+        } catch (error) {
+          if (mounted) Navigator.pop(context);
+        }
+      },
     );
+  }
+
+  List<Marker> showLocalMarkers() {
+    List<Marker> localMarkers = [];
+
+    for (Venue venue in venueMarkers) {
+      localMarkers.add(
+        Marker(
+          point: LatLng(venue.lat, venue.lon),
+          child: _buildVenueMarkerWidget(venue),
+        ),
+      );
+    }
+
+    return localMarkers;
   }
 
   @override
   Widget build(BuildContext context) {
-    _showLocallyVenues();
     return _dataLoaded
         ? Scaffold(
             extendBodyBehindAppBar: true,
@@ -316,108 +268,63 @@ class MarkersPageState extends State<MarkersPage> {
                 ),
               ],
             ),
-            body: MapLayout(
-              controller: controller,
-              builder: (context, transformer) {
-                final markerVenueWidgets = [];
-                localTransformer = transformer;
-                for (var venue in venueMarkers) {
-                  var venueMarker = _buildVenueMarkerWidget(venue, transformer);
-                  markerVenueWidgets.add(venueMarker);
-                }
-                return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onDoubleTapDown: (details) => _onDoubleTap(
-                    transformer,
-                    details.localPosition,
-                  ),
-                  onScaleStart: _onScaleStart,
-                  onScaleUpdate: (details) =>
-                      _onScaleUpdate(details, transformer),
-                  child: Listener(
-                    behavior: HitTestBehavior.opaque,
-                    onPointerSignal: (event) {
-                      if (event is PointerScrollEvent) {
-                        final delta = event.scrollDelta.dy / -1000.0;
-                        final zoom =
-                            (controller.zoom + delta).clamp(2, 18).toDouble();
-
-                        transformer.setZoomInPlace(zoom, event.localPosition);
-                        setState(() {});
-                      }
-                    },
-                    child: Stack(
-                      children: [
-                        TileLayer(
-                          builder: (context, x, y, z) {
-                            final tilesInZoom = pow(2.0, z).floor();
-                            while (x < 0) {
-                              x += tilesInZoom;
-                            }
-                            while (y < 0) {
-                              y += tilesInZoom;
-                            }
-                            x %= tilesInZoom;
-                            y %= tilesInZoom;
-                            return CachedNetworkImage(
-                              imageUrl: _getTileUrl(z, x, y),
-                              fit: BoxFit.cover,
-                              errorListener: (e) {
+            body: Stack(
+              children: [
+                FlutterMap(
+                  mapController: mapController,
+                  options: MapOptions(
+                      initialCenter: currentCenter,
+                      interactionOptions: const InteractionOptions(
+                        flags: InteractiveFlag.drag | InteractiveFlag.pinchZoom,
+                      ),
+                      onMapReady: () {
+                        _showLocallyVenues();
+                      },
+                      onMapEvent: (mapEvent) {
+                        if (mapEvent is MapEventMove) {
+                          _showLocallyVenues();
+                        }
+                      }),
+                  children: [
+                    TileLayer(
+                      urlTemplate: _getTileUrl(),
+                      userAgentPackageName: 'Foundation Envoy',
+                      errorTileCallback: (tile, error, stackTrace) {
+                        setState(() {
+                          areMapTilesLoaded = false;
+                        });
+                        if (!errorModalShown) {
+                          showEnvoyPopUp(
+                              context,
+                              S().buy_bitcoin_mapLoadingError_subheader,
+                              S().component_ok,
+                              (BuildContext context) {
+                                Navigator.pop(context);
+                              },
+                              icon: EnvoyIcons.alert,
+                              typeOfMessage: PopUpState.danger,
+                              title: S().buy_bitcoin_mapLoadingError_header,
+                              secondaryButtonLabel: S().component_retry,
+                              onSecondaryButtonTap: (BuildContext context) {
+                                Navigator.pop(context);
                                 setState(() {
-                                  areMapTilesLoaded = false;
+                                  // trigger build
                                 });
-                                if (!errorModalShown) {
-                                  showEnvoyPopUp(
-                                      context,
-                                      S().buy_bitcoin_mapLoadingError_subheader,
-                                      S().component_ok,
-                                      (BuildContext context) {
-                                        Navigator.pop(context);
-                                      },
-                                      icon: EnvoyIcons.alert,
-                                      typeOfMessage: PopUpState.danger,
-                                      title: S()
-                                          .buy_bitcoin_mapLoadingError_header,
-                                      secondaryButtonLabel: S().component_retry,
-                                      onSecondaryButtonTap:
-                                          (BuildContext context) {
-                                        Navigator.pop(context);
-                                        setState(() {
-                                          // trigger build
-                                        });
-                                      },
-                                      onCheckBoxChanged: (_) {});
+                              },
+                              onCheckBoxChanged: (_) {});
 
-                                  setState(() {
-                                    errorModalShown = true;
-                                  });
-                                }
-                              },
-                              errorWidget: (context, url, error) {
-                                return Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const EnvoyIcon(
-                                      EnvoyIcons.alert,
-                                      color: Colors.red,
-                                    ),
-                                    Text(
-                                      S().buy_bitcoin_mapLoadingError_header,
-                                      style: EnvoyTypography.explainer
-                                          .copyWith(color: Colors.red),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                        ),
-                        if (areMapTilesLoaded) ...markerVenueWidgets,
-                      ],
+                          setState(() {
+                            errorModalShown = true;
+                          });
+                        }
+                      },
+                      tileProvider:
+                          const FMTCStore('mapStore').getTileProvider(),
                     ),
-                  ),
-                );
-              },
+                    MarkerLayer(markers: showLocalMarkers()),
+                  ],
+                ),
+              ],
             ),
             floatingActionButton: Padding(
               padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
@@ -427,13 +334,13 @@ class MarkersPageState extends State<MarkersPage> {
                   MapButton(
                       icon: EnvoyIcons.plus,
                       onTap: () {
-                        _zoomIn(localTransformer!);
+                        _zoomIn();
                       }),
                   const SizedBox(height: EnvoySpacing.small),
                   MapButton(
                       icon: EnvoyIcons.minus,
                       onTap: () {
-                        _zoomOut(localTransformer!);
+                        _zoomOut();
                       }),
                 ],
               ),
@@ -579,7 +486,7 @@ class TriangleShadow extends CustomPainter {
         ],
       ).createShader(Rect.fromLTWH(-0.3, -1.9, size.width, size.height));
 
-    Path path = Path();
+    material.Path path = material.Path();
     path.moveTo(size.width / 2, size.height); // Bottom point
     path.lineTo(size.width, 0); // Top-right point
     path.lineTo(0, 0); // Top-left point

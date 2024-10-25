@@ -102,7 +102,6 @@ dependencies:
   freezed_annotation: ^2.2.0
   go_router: ^14.3.0
   wakelock_plus: ^1.1.1
-  map: ^2.0.2
   cached_network_image: ^3.3.1
 
   path: any
@@ -112,6 +111,9 @@ dependencies:
   typed_data: any
   latlng: any
   http: ^1.2.1
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
+  flutter_map_tile_caching: ^9.1.3
   in_app_purchase: ^3.2.0
 dependency_overrides:
   watcher: ^1.1.0
