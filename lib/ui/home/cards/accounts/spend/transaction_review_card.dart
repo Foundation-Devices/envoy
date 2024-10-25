@@ -188,6 +188,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           account: account,
                           unit: formatUnit,
                           amountSats: amount,
+                          millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                   Padding(
                     padding: const EdgeInsets.only(
@@ -287,6 +288,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           unit: formatUnit,
                           account: account,
                           amountSats: psbt.fee,
+                          millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -330,6 +332,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           account: account,
                           unit: formatUnit,
                           amountSats: totalSpendAmount,
+                          millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                 ],
               ),
@@ -411,6 +414,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                       account: account,
                       amountSats: newFee,
                       amountWidgetStyle: AmountWidgetStyle.normal,
+                      millionaireMode: false,
                       alignToEnd: false,
                     ),
                   ),
@@ -429,6 +433,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                     account: account,
                     amountSats: oldFee,
                     amountWidgetStyle: AmountWidgetStyle.normal,
+                    millionaireMode: false,
                     alignToEnd: false,
                   ),
                   Padding(

@@ -122,6 +122,8 @@ class _EnvoyInfoCardListItemState extends State<EnvoyInfoCardListItem> {
                                 widget.title,
                                 key: _titleTextKey,
                                 style: titleTextStyle,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],
