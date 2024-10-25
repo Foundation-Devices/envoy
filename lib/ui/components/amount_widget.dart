@@ -25,6 +25,7 @@ class AmountWidget extends StatelessWidget {
   final Network? network;
   final bool alignToEnd;
   final String locale;
+  final bool millionaireMode;
 
   const AmountWidget({
     super.key,
@@ -38,6 +39,7 @@ class AmountWidget extends StatelessWidget {
     this.network = Network.Mainnet,
     this.alignToEnd = true,
     required this.locale,
+    this.millionaireMode = true,
   });
 
   @override
@@ -79,7 +81,8 @@ class AmountWidget extends StatelessWidget {
                 badgeColor: badgeColor,
                 network: network,
                 locale: locale,
-                textScaleFactor: textScaleFactor),
+                textScaleFactor: textScaleFactor,
+                millionaireMode: millionaireMode),
             if (secondaryUnit != null)
               SecondaryAmountWidget(
                   unit: secondaryUnit!,
@@ -91,7 +94,8 @@ class AmountWidget extends StatelessWidget {
                   groupSeparator: groupSeparator,
                   network: network,
                   locale: locale,
-                  textScaleFactor: textScaleFactor),
+                  textScaleFactor: textScaleFactor,
+                  millionaireMode: millionaireMode),
           ],
         );
       case AmountWidgetStyle.normal:
@@ -110,7 +114,8 @@ class AmountWidget extends StatelessWidget {
                 badgeColor: badgeColor,
                 network: network,
                 locale: locale,
-                textScaleFactor: textScaleFactor),
+                textScaleFactor: textScaleFactor,
+                millionaireMode: millionaireMode),
             if (secondaryUnit != null)
               Padding(
                 padding: const EdgeInsets.only(top: EnvoySpacing.xs),
@@ -124,7 +129,8 @@ class AmountWidget extends StatelessWidget {
                     groupSeparator: groupSeparator,
                     network: network,
                     locale: locale,
-                    textScaleFactor: textScaleFactor),
+                    textScaleFactor: textScaleFactor,
+                    millionaireMode: millionaireMode),
               ),
           ],
         );
@@ -145,7 +151,8 @@ class AmountWidget extends StatelessWidget {
                 badgeColor: badgeColor,
                 network: network,
                 locale: locale,
-                textScaleFactor: textScaleFactor),
+                textScaleFactor: textScaleFactor,
+                millionaireMode: millionaireMode),
             if (secondaryUnit != null)
               Padding(
                 padding: const EdgeInsets.only(left: EnvoySpacing.small),
@@ -159,7 +166,8 @@ class AmountWidget extends StatelessWidget {
                     groupSeparator: groupSeparator,
                     network: network,
                     locale: locale,
-                    textScaleFactor: textScaleFactor),
+                    textScaleFactor: textScaleFactor,
+                    millionaireMode: millionaireMode),
               ),
           ],
         );
@@ -177,7 +185,8 @@ class AmountWidget extends StatelessWidget {
             network: network,
             locale: locale,
             sendScreen: true,
-            textScaleFactor: textScaleFactor);
+            textScaleFactor: textScaleFactor,
+            millionaireMode: millionaireMode);
     }
   }
 }
@@ -198,6 +207,7 @@ class PrimaryAmountWidget extends StatelessWidget {
   final bool sendScreen;
   final String locale;
   final double textScaleFactor;
+  final bool millionaireMode;
 
   final EnvoyIcons iconBtc = EnvoyIcons.btc;
   final EnvoyIcons iconSat = EnvoyIcons.sats;
@@ -205,21 +215,21 @@ class PrimaryAmountWidget extends StatelessWidget {
   final TextStyle textStyleFiatSymbol = EnvoyTypography.digitsMedium
       .copyWith(color: EnvoyColors.textPrimary, fontSize: 24);
 
-  PrimaryAmountWidget({
-    super.key,
-    required this.unit,
-    required this.amountSats,
-    required this.locale,
-    this.decimalSeparator = ".",
-    this.groupSeparator = ",",
-    this.symbolFiat = "",
-    this.fxRateFiat,
-    this.style = PrimaryAmountWidgetStyle.normal,
-    this.badgeColor,
-    this.network,
-    this.sendScreen = false,
-    this.textScaleFactor = 1,
-  });
+  PrimaryAmountWidget(
+      {super.key,
+      required this.unit,
+      required this.amountSats,
+      required this.locale,
+      this.decimalSeparator = ".",
+      this.groupSeparator = ",",
+      this.symbolFiat = "",
+      this.fxRateFiat,
+      this.style = PrimaryAmountWidgetStyle.normal,
+      this.badgeColor,
+      this.network,
+      this.sendScreen = false,
+      this.textScaleFactor = 1,
+      required this.millionaireMode});
 
   @override
   Widget build(BuildContext context) {
@@ -287,14 +297,14 @@ class PrimaryAmountWidget extends StatelessWidget {
                 ? buildPrimaryBtcTextSpans(amountSats, decimalSeparator,
                     groupSeparator, textStyleBlack, textStyleGray)
                 : unit == AmountDisplayUnit.fiat
-                    ? buildPrimaryFiatTextSpans(
+                    ? buildFiatTextSpans(
                         amountSats,
                         fxRateFiat!,
                         textStyleBlack,
-                        textStyleGray,
                         locale,
                         decimalSeparator,
-                        groupSeparator)
+                        groupSeparator,
+                        millionaireMode: millionaireMode)
                     : buildPrimarySatsTextSpans(amountSats, groupSeparator,
                         textStyleBlack, textStyleGray),
           ),
@@ -319,21 +329,22 @@ class SecondaryAmountWidget extends StatelessWidget {
   final String locale;
   final EnvoyIcons iconBtc = EnvoyIcons.btc;
   final double textScaleFactor;
+  final bool millionaireMode;
 
-  const SecondaryAmountWidget({
-    super.key,
-    required this.unit,
-    required this.amountSats,
-    required this.locale,
-    this.symbolFiat = "",
-    this.fxRateFiat,
-    this.decimalSeparator = ".",
-    this.groupSeparator = ",",
-    this.style = SecondaryAmountWidgetStyle.normal,
-    this.badgeColor,
-    this.network,
-    this.textScaleFactor = 1,
-  });
+  const SecondaryAmountWidget(
+      {super.key,
+      required this.unit,
+      required this.amountSats,
+      required this.locale,
+      this.symbolFiat = "",
+      this.fxRateFiat,
+      this.decimalSeparator = ".",
+      this.groupSeparator = ",",
+      this.style = SecondaryAmountWidgetStyle.normal,
+      this.badgeColor,
+      this.network,
+      this.textScaleFactor = 1,
+      required this.millionaireMode});
 
   @override
   Widget build(BuildContext context) {
@@ -382,8 +393,9 @@ class SecondaryAmountWidget extends StatelessWidget {
           textScaler: TextScaler.linear(textScaleFactor),
           text: TextSpan(
               children: unit == AmountDisplayUnit.fiat
-                  ? buildSecondaryFiatTextSpans(
-                      amountSats, fxRateFiat!, textStyle, locale)
+                  ? buildFiatTextSpans(amountSats, fxRateFiat!, textStyle,
+                      locale, decimalSeparator, groupSeparator,
+                      millionaireMode: millionaireMode)
                   : buildSecondaryBtcTextSpans(amountSats, decimalSeparator,
                       groupSeparator, textStyle, textStyle)),
         ),
@@ -559,14 +571,14 @@ List<TextSpan> buildPrimarySatsTextSpans(int amountSats, String groupSeparator,
   return textSpans;
 }
 
-List<TextSpan> buildPrimaryFiatTextSpans(
+List<TextSpan> buildFiatTextSpans(
     int amountSats,
     double fxRateFiat,
-    TextStyle? textStyleBlack,
-    TextStyle? textStyleGray,
+    TextStyle? textStyle,
     String locale,
     String decimalSeparator,
-    String groupSeparator) {
+    String groupSeparator,
+    {required bool millionaireMode}) {
   List<TextSpan> textSpans = [];
 
   String amountFiatString =
@@ -575,37 +587,30 @@ List<TextSpan> buildPrimaryFiatTextSpans(
   double amountFiatValue = convertFiatStringToFiat(
       amountFiatString, decimalSeparator, groupSeparator);
 
-  if (amountFiatValue >= 1000000000) {
-    // Convert to billions and round to 1 decimal point
-    double valueInBillion = amountFiatValue / 1000000000.0;
-    String formattedValue = '${valueInBillion.toStringAsFixed(1)} B';
-    textSpans.add(_createTextSpan(formattedValue, textStyleBlack!));
-  } else if (amountFiatValue >= 1000000) {
-    // Convert to millions and round to 1 decimal point
-    double valueInMillion = amountFiatValue / 1000000.0;
-    String formattedValue = '${valueInMillion.toStringAsFixed(1)} M';
-    textSpans.add(_createTextSpan(formattedValue, textStyleBlack!));
+  if (millionaireMode) {
+    if (amountFiatValue >= 1000000000) {
+      // Convert to billions and round to 2 decimal points
+      double valueInBillion = amountFiatValue / 1000000000.0;
+      String formattedValue = '${valueInBillion.toStringAsFixed(2)} B';
+      textSpans.add(_createTextSpan(formattedValue, textStyle!));
+    } else if (amountFiatValue >= 1000000) {
+      // Convert to millions and round to 2 decimal points
+      double valueInMillion = amountFiatValue / 1000000.0;
+      String formattedValue = '${valueInMillion.toStringAsFixed(2)} M';
+      textSpans.add(_createTextSpan(formattedValue, textStyle!));
+    } else {
+      // Display the original amount
+      for (int i = 0; i < amountFiatString.length; i++) {
+        String char = amountFiatString[i];
+        textSpans.add(_createTextSpan(char, textStyle!));
+      }
+    }
   } else {
     // Display the original amount
     for (int i = 0; i < amountFiatString.length; i++) {
       String char = amountFiatString[i];
-      textSpans.add(_createTextSpan(char, textStyleBlack!));
+      textSpans.add(_createTextSpan(char, textStyle!));
     }
-  }
-
-  return textSpans;
-}
-
-List<TextSpan> buildSecondaryFiatTextSpans(int amountSats, double fxRateFiat,
-    TextStyle? textStyleTeal, String locale) {
-  List<TextSpan> textSpans = [];
-
-  String amountFiatString =
-      convertSatsToFiatString(amountSats, fxRateFiat, locale);
-
-  for (int i = 0; i < amountFiatString.length; i++) {
-    String char = amountFiatString[i];
-    textSpans.add(_createTextSpan(char, textStyleTeal!));
   }
 
   return textSpans;

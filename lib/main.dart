@@ -24,6 +24,7 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tor/tor.dart';
@@ -68,6 +69,8 @@ Future<void> initSingletons() async {
   UpdatesManager.init();
   ScvServer.init();
   await EnvoySeed.init();
+  await FMTCObjectBoxBackend().initialise();
+  await const FMTCStore('mapStore').manage.create();
 
   // Start Tor regardless of whether we are using it or not
   try {
