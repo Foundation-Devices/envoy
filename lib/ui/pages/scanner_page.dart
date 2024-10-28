@@ -302,7 +302,7 @@ class ScannerPageState extends State<ScannerPage> {
 
       // Remove bitcoin: prefix in case BIP-21 parsing failed
       address = address.replaceFirst("bitcoin:", "").trim();
-      print("address scanned ${address}");
+      kPrint("address scanned $address");
 
       if (!await widget.account!.wallet.validateAddress(address)) {
         showSnackbar(invalidAddressSnackbar);
