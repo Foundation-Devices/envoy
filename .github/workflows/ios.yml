@@ -12,13 +12,6 @@ jobs:
     runs-on: [ self-hosted, macOS, ARM64 ]
 
     steps:
-      - name: 'Cleanup build folder'
-        run: |
-          ls -la ./
-          rm -rf ./* || true
-          rm -rf ./.??* || true
-          ls -la ./
-
       - uses: actions/checkout@v2
 
       - uses: actions-rs/toolchain@v1
