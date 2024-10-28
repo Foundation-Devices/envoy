@@ -18,7 +18,7 @@ func getSdCardBookmark() -> URL {
     return URL.init(fileURLWithPath: paths[0].path + "/sd_card")
 }
 
-@UIApplicationMain
+@main
 @objc class AppDelegate: FlutterAppDelegate, UIDocumentPickerDelegate, FlutterStreamHandler {
     
     let secureTextField = UITextField()

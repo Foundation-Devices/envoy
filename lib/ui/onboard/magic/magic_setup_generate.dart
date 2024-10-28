@@ -114,7 +114,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) {},
+      onPopInvokedWithResult: (didPop, _) {},
       child: OnboardingPage(
           clipArt: Container(
             alignment: Alignment.topCenter,
@@ -203,7 +203,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
     bool isAndroid = Platform.isAndroid;
     return PopScope(
       canPop: false,
-      onPopInvoked: (_) async {
+      onPopInvokedWithResult: (_, __) async {
         if (_androidBackupInfoPage != 0) {
           setState(() {
             _androidBackupInfoPage = 0;
@@ -249,8 +249,8 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                 Padding(
                   padding: const EdgeInsets.only(
                       bottom: EnvoySpacing.medium2,
-                      left: EnvoySpacing.small,
-                      right: EnvoySpacing.small),
+                      left: EnvoySpacing.xs,
+                      right: EnvoySpacing.xs),
                   child: OnboardingButton(
                     label: S().component_continue,
                     onTap: () {
@@ -290,9 +290,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(S().recovery_scenario_heading,
-              textAlign: TextAlign.center,
-              style: EnvoyTypography.heading
-                  .copyWith(color: EnvoyColors.textPrimary)),
+              textAlign: TextAlign.center, style: EnvoyTypography.heading),
           const SizedBox(height: EnvoySpacing.medium2),
           Text(
             S().recovery_scenario_subheading,
@@ -408,8 +406,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                     Text(
                       S().android_backup_info_heading,
                       textAlign: TextAlign.center,
-                      style: EnvoyTypography.heading
-                          .copyWith(color: EnvoyColors.textPrimary),
+                      style: EnvoyTypography.heading,
                     ),
                     const Padding(
                         padding: EdgeInsets.symmetric(

@@ -285,7 +285,11 @@ pub unsafe extern "C" fn wallet_init(
 
 #[no_mangle]
 pub unsafe extern "C" fn wallet_drop(wallet: *mut Mutex<bdk::Wallet<Tree>>) {
-    drop(wallet);
+    if !wallet.is_null() {
+        // Convert the raw pointer back to a Box and let it drop naturally
+        let _ = Box::from_raw(wallet);
+        // The Box will be dropped here, and Rust will handle memory deallocation
+    }
 }
 
 // Get wallet public/private pair from seed words, path and network

@@ -27,10 +27,9 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/business/account.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/seed_qr_extract.dart';
-import 'package:envoy/business/bluetooth_manager.dart';
-
-import '../components/pop_up.dart';
-import '../prime/onboard_prime_communication_intro.dart';
+import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 
 enum ScannerType {
   generic,
@@ -43,7 +42,6 @@ enum ScannerType {
   seed,
   azteco,
   btcPay,
-  discovery
 }
 
 const SnackBar invalidAddressSnackbar = SnackBar(
@@ -197,7 +195,11 @@ class ScannerPageState extends State<ScannerPage> {
         if (_lastScan == barcode.code) {
           return;
         }
-        _onDetect(barcode.code!, barcode.rawBytes, context);
+
+        if (context.mounted) {
+          _onDetect(barcode.code!, barcode.rawBytes, context);
+        }
+
         _lastScan = barcode.code ?? '';
       }
     });
@@ -206,6 +208,39 @@ class ScannerPageState extends State<ScannerPage> {
     if (Platform.isAndroid) {
       controller.pauseCamera();
       controller.resumeCamera();
+    }
+  }
+
+  // ignore: unused_element
+  void _showQrScannerWarningPopup(
+      BuildContext context, String barcodeCode, List<int>? rawBytes) {
+    final NavigatorState navigator = Navigator.of(context);
+
+    if (context.mounted) {
+      controller?.pauseCamera();
+
+      showEnvoyPopUp(
+        context,
+        title: S().component_warning,
+        S().qrTooBig_warning_subheading,
+        S().component_confirm,
+        (context) {
+          navigator.pop();
+          controller?.resumeCamera();
+          if (context.mounted) {
+            _onDetect(barcodeCode, rawBytes, context);
+          }
+        },
+        showCloseButton: false,
+        typeOfMessage: PopUpState.danger,
+        icon: EnvoyIcons.alert,
+        secondaryButtonLabel: S().component_back,
+        onSecondaryButtonTap: (BuildContext context) {
+          navigator.pop();
+          navigator.pop();
+          return;
+        },
+      );
     }
   }
 
@@ -251,7 +286,6 @@ class ScannerPageState extends State<ScannerPage> {
   _onDetect(String code, List<int>? rawBytes, BuildContext context) async {
     final NavigatorState navigator = Navigator.of(context);
     final scaffold = ScaffoldMessenger.of(context);
-
     if (widget._acceptableTypes.contains(ScannerType.azteco)) {
       if (AztecoVoucher.isVoucher(code)) {
         final voucher = AztecoVoucher(code);
@@ -261,11 +295,10 @@ class ScannerPageState extends State<ScannerPage> {
         return;
       }
     }
-
     if (widget._acceptableTypes.contains(ScannerType.btcPay)) {
       if (BtcPayVoucher.isVoucher(code)) {
         final voucher = BtcPayVoucher(code);
-        Navigator.of(context).pop();
+        navigator.pop();
         showEnvoyDialog(
             context: context, dialog: BtcPayDialog(voucher, widget.account!));
         return;
@@ -308,7 +341,10 @@ class ScannerPageState extends State<ScannerPage> {
 
       if (!await widget.account!.wallet.validateAddress(address)) {
         showSnackbar(invalidAddressSnackbar);
+        return;
       } else {
+        // Convert the address to lowercase for consistent display in Envoy
+        address = address.toLowerCase();
         widget.onAddressValidated!(address, amount, message);
         navigator.pop();
         await Future.delayed(const Duration(milliseconds: 500));
@@ -332,7 +368,8 @@ class ScannerPageState extends State<ScannerPage> {
 
     if (_urDecoder.decoded != null && !_processing) {
       _processing = true;
-      if (widget._acceptableTypes.contains(ScannerType.scv)) {
+      if (widget._acceptableTypes.contains(ScannerType.scv) &&
+          _urDecoder.decoded is CryptoResponse) {
         if (context.mounted) {
           Navigator.of(context)
               .pushReplacement(MaterialPageRoute(builder: (context) {
@@ -356,12 +393,6 @@ class ScannerPageState extends State<ScannerPage> {
           scaffold.showSnackBar(const SnackBar(
             content: Text("Please use Testnet"), // TODO: FIGMA
           ));
-        }
-      } else if (widget._acceptableTypes.contains(ScannerType.discovery)) {
-        if (_validatePairData(_urDecoder.decoded) &&
-            _urDecoder.decoded is Binary) {
-          final discoveryQr = (_urDecoder.decoded as Binary).decoded;
-          _connectOverBluetooth(discoveryQr);
         }
       }
     }
@@ -414,29 +445,6 @@ class ScannerPageState extends State<ScannerPage> {
       navigator.pushReplacement(MaterialPageRoute(builder: (context) {
         return SingleWalletPairSuccessPage(pairedAccount!.wallet);
       }));
-    }
-  }
-
-  void _connectOverBluetooth(String discoveryCode) async {
-    int foundPeripherals = 0;
-    while (foundPeripherals <= 1) {
-      await BluetoothManager().scan();
-      foundPeripherals = BluetoothManager().peripherals.length;
-      kPrint("Found devices: $foundPeripherals");
-      await Future.delayed(const Duration(milliseconds: 500));
-    }
-
-    if (await BluetoothManager().connectToPrime()) {
-      Navigator.pop(context);
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-        return OnboardPrimeQuantumLink(discoveryQr: discoveryCode);
-      }));
-    } else {
-      showEnvoyPopUp(context, "Couldn't connect to Prime", "OK",
-          (BuildContext context) {
-        Navigator.pop(context);
-        Navigator.pop(context);
-      });
     }
   }
 }

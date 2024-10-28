@@ -13,8 +13,7 @@ import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-
-import '../pages/scanner_page.dart';
+import 'package:envoy/ui/pages/legal/passport_tou.dart';
 
 class OnboardPassportWelcomeScreen extends StatelessWidget {
   const OnboardPassportWelcomeScreen({super.key});
@@ -41,7 +40,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                     Text(
                       S().passport_welcome_screen_heading,
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge,
+                      style: EnvoyTypography.heading,
                     ),
                     const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                     Text(
@@ -254,17 +253,9 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                         EnvoyButton(
                           S().passport_welcome_screen_cta1,
                           onTap: () async {
-                            // removed for PRIME-DEMO
-                            //
-                            // Navigator.of(context)
-                            //     .push(MaterialPageRoute(builder: (context) {
-                            //   return const TouPage();
-                            // }));
-
-                            // Do the QR scan first then move to BL pair screen
                             Navigator.of(context)
                                 .push(MaterialPageRoute(builder: (context) {
-                              return ScannerPage(const [ScannerType.discovery]);
+                              return const TouPage();
                             }));
                           },
                         ),

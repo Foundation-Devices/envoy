@@ -86,3 +86,11 @@ License: GPL-3.0-or-later
 Files: test/*.png
 Copyright: 2024 Foundation Devices Inc.
 License: GPL-3.0-or-later
+
+Files: integration_test/assets/beefqa_backup.mla.txt
+Copyright: 2024 Foundation Devices Inc.
+License: GPL-3.0-or-later
+
+Files: test/assets/*
+Copyright: 2024 Foundation Devices Inc.
+License: GPL-3.0-or-later

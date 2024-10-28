@@ -434,8 +434,7 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
                         Text(
                           title,
                           textAlign: TextAlign.center,
-                          style: EnvoyTypography.heading
-                              .copyWith(color: EnvoyColors.textPrimary),
+                          style: EnvoyTypography.heading,
                         ),
                         const Padding(padding: EdgeInsets.all(18)),
                       ],
@@ -503,7 +502,7 @@ class AndroidBackupWarning extends StatelessWidget {
   Widget build(BuildContext context) {
     bool iphoneSE = MediaQuery.of(context).size.height < 700;
     return PopScope(
-      onPopInvoked: (_) {
+      onPopInvokedWithResult: (_, __) {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return const WalletSetupSuccess();
         }));
@@ -535,8 +534,7 @@ class AndroidBackupWarning extends StatelessWidget {
                         Text(
                           S().android_backup_info_heading,
                           textAlign: TextAlign.center,
-                          style: EnvoyTypography.heading
-                              .copyWith(color: EnvoyColors.textPrimary),
+                          style: EnvoyTypography.heading,
                         ),
                         const Padding(padding: EdgeInsets.all(12)),
                         LinkText(

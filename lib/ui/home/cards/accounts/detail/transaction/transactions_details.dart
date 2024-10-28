@@ -25,6 +25,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/amount.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -111,6 +112,8 @@ class _TransactionsDetailsWidgetState
     if (cancelState?.newTxId == tx.txId) {
       rbfPossible = false;
     }
+
+    bool showTxInfo = showTxId(tx.type);
 
     return GestureDetector(
       onTapUp: (details) {
@@ -245,12 +248,12 @@ class _TransactionsDetailsWidgetState
                   trailing: GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onLongPress: () {
-                      if (tx.type != TransactionType.ramp) {
+                      if (showTxInfo) {
                         copyTxId(context, tx.txId, tx.type);
                       }
                     },
                     onTap: () {
-                      if (tx.type != TransactionType.ramp) {
+                      if (showTxInfo) {
                         setState(() {
                           showTxIdExpanded = !showTxIdExpanded;
                           showAddressExpanded = false;
@@ -264,22 +267,28 @@ class _TransactionsDetailsWidgetState
                           begin: 0, end: showTxIdExpanded ? 1 : 0),
                       duration: const Duration(milliseconds: 200),
                       builder: (context, value, child) {
-                        String txId = tx.type == TransactionType.ramp
-                            ? "loading"
-                            : tx.txId; // TODO: Figma
-                        return Text(
-                          truncateWithEllipsisInCenter(txId,
-                              lerpDouble(16, txId.length, value)!.toInt()),
-                          style: idTextStyle,
-                          textAlign: TextAlign.end,
-                          maxLines: 4,
+                        String txId =
+                            showTxInfo ? tx.txId : S().activity_pending;
+                        return Container(
+                          constraints: const BoxConstraints(
+                            maxHeight: 80,
+                          ),
+                          child: SingleChildScrollView(
+                            child: Text(
+                              truncateWithEllipsisInCenter(
+                                txId,
+                                lerpDouble(16, txId.length, value)!.toInt(),
+                              ),
+                              style:
+                                  showTxInfo ? idTextStyle : trailingTextStyle,
+                              textAlign: TextAlign.end,
+                            ),
+                          ),
                         );
                       },
                     ),
                   ),
-                  button: (showTxIdExpanded &&
-                          widget.account.wallet.network ==
-                              Network.Mainnet) // Only for Mainnet for now
+                  button: (showTxIdExpanded)
                       ? EnvoyButton(
                           height: EnvoySpacing.medium3,
                           icon: EnvoyIcons.externalLink,
@@ -287,7 +296,8 @@ class _TransactionsDetailsWidgetState
                           type: ButtonType.primary,
                           state: ButtonState.defaultState,
                           onTap: () {
-                            openTxDetailsInExplorer(context, tx.txId);
+                            openTxDetailsInExplorer(context, tx.txId,
+                                widget.account.wallet.network);
                           },
                           edgeInsets: const EdgeInsets.symmetric(
                               horizontal: EnvoySpacing.medium1),
@@ -300,7 +310,7 @@ class _TransactionsDetailsWidgetState
                       color: EnvoyColors.textPrimary,
                       size: EnvoyIconSize.small),
                   trailing: Text(getTransactionDateAndTimeString(tx),
-                      style: trailingTextStyle),
+                      textAlign: TextAlign.end, style: trailingTextStyle),
                 ),
                 EnvoyInfoCardListItem(
                   title: S().coindetails_overlay_status,
@@ -352,9 +362,10 @@ class _TransactionsDetailsWidgetState
                 if (tx.rampId != null)
                   EnvoyInfoCardListItem(
                     title: S().coindetails_overlay_rampID,
+                    centerSingleLineTitle: true,
                     icon: const EnvoyIcon(
                       EnvoyIcons.ramp_without_name,
-                      size: EnvoyIconSize.extraSmall,
+                      size: EnvoyIconSize.small,
                       color: EnvoyColors.textPrimary,
                     ),
                     trailing: GestureDetector(
@@ -366,16 +377,17 @@ class _TransactionsDetailsWidgetState
                         tx.rampId!,
                         style: idTextStyle,
                         textAlign: TextAlign.end,
-                        maxLines: 4,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ),
                 if (tx.rampFee != null)
                   EnvoyInfoCardListItem(
                     title: S().coindetails_overlay_rampFee,
+                    centerSingleLineTitle: true,
                     icon: const EnvoyIcon(
                       EnvoyIcons.ramp_without_name,
-                      size: EnvoyIconSize.extraSmall,
+                      size: EnvoyIconSize.small,
                       color: EnvoyColors.textPrimary,
                     ),
                     trailing: hideBalance
@@ -438,12 +450,14 @@ class _TransactionsDetailsWidgetState
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text(note,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            style: EnvoyTypography.body
-                                .copyWith(color: EnvoyColors.textPrimary),
-                            textAlign: TextAlign.end),
+                        Flexible(
+                          child: Text(note,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: EnvoyTypography.body
+                                  .copyWith(color: EnvoyColors.textPrimary),
+                              textAlign: TextAlign.end),
+                        ),
                         const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                         note.trim().isNotEmpty
                             ? SvgPicture.asset(
@@ -491,7 +505,8 @@ class _TransactionsDetailsWidgetState
   }
 
   Widget _renderFeeWidget(BuildContext context, Transaction tx) {
-    final isBoosted = ref.watch(isTxBoostedProvider(tx.txId)) ?? false;
+    final isBoosted =
+        (ref.watch(isTxBoostedProvider(tx.txId)) ?? false) && tx.amount < 0;
     final cancelState = ref.watch(cancelTxStateProvider(tx.txId));
     final hideBalance =
         ref.watch(balanceHideStateStatusProvider(widget.account.id));
@@ -551,17 +566,18 @@ String getTransactionStatusString(Transaction tx) {
       : S().activity_pending;
 }
 
-Future<void> openTxDetailsInExplorer(BuildContext context, String txId) async {
-  bool dismissed = await EnvoyStorage()
+Future<void> openTxDetailsInExplorer(
+    BuildContext context, String txId, Network network) async {
+  bool isDismissed = await EnvoyStorage()
       .checkPromptDismissed(DismissiblePrompt.openTxDetailsInExplorer);
-  if (!dismissed && context.mounted) {
+  if (!isDismissed && context.mounted) {
     showEnvoyPopUp(
         context,
         S().coindetails_overlay_modal_explorer_subheading,
         S().component_continue,
         (context) {
           Navigator.pop(context);
-          launchUrlString("${Fees.mempoolFoundationInstance}/tx/$txId");
+          openTxDetailPage(network, txId);
         },
         title: S().coindetails_overlay_modal_explorer_heading,
         learnMoreLink: "https://docs.foundation.xyz/faq/home/#envoy-privacy",
@@ -582,6 +598,36 @@ Future<void> openTxDetailsInExplorer(BuildContext context, String txId) async {
           }
         });
   } else {
-    launchUrlString("${Fees.mempoolFoundationInstance}/tx/$txId");
+    openTxDetailPage(network, txId);
+  }
+}
+
+void openTxDetailPage(Network network, String txId) {
+  final baseUrl = getBaseUrlForNetwork(network);
+  if (baseUrl != null) {
+    launchUrlString("$baseUrl/tx/$txId");
+  } else {
+    kPrint("Regtest not implemented");
+  }
+}
+
+String? getBaseUrlForNetwork(Network network) {
+  switch (network) {
+    case Network.Mainnet:
+      return Fees.mempoolFoundationInstance;
+    case Network.Signet:
+      return Fees.mutinynetMempoolFoundationInstance;
+    case Network.Testnet:
+      return Fees.testnetMempoolFoundationInstance;
+    case Network.Regtest:
+      return null;
+  }
+}
+
+bool showTxId(TransactionType type) {
+  if (type == TransactionType.pending || type == TransactionType.normal) {
+    return true;
+  } else {
+    return false;
   }
 }

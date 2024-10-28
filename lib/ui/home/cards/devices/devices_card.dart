@@ -19,7 +19,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/home/home_page.dart';
+import 'package:envoy/ui/components/linear_gradient.dart';
 
 //ignore: must_be_immutable
 class DevicesCard extends ConsumerStatefulWidget {
@@ -60,15 +60,7 @@ class DevicesCardState extends ConsumerState<DevicesCard>
     super.build(context);
     // ignore: unused_local_variable
 
-    return PopScope(
-      canPop: !ref.watch(homePageOptionsVisibilityProvider),
-      onPopInvoked: (bool didPop) async {
-        if (!didPop) {
-          HomePageState.of(context)?.toggleOptions();
-        }
-      },
-      child: DevicesList(),
-    );
+    return DevicesList();
   }
 
   @override
@@ -105,69 +97,58 @@ class _DevicesListState extends State<DevicesList> {
 
   @override
   Widget build(BuildContext context) {
-    return Devices().devices.isEmpty
-        ? Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: GhostDevice(),
-              ),
-            ],
-          )
-        : Padding(
-            padding: const EdgeInsets.all(EnvoySpacing.medium2),
-            child: ShaderMask(
-              shaderCallback: (Rect rect) {
-                return const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    EnvoyColors.solidWhite,
-                    Colors.transparent,
-                    Colors.transparent,
-                    EnvoyColors.solidWhite,
-                  ],
-                  stops: [0.0, 0.01, 0.97, 1.0],
-                ).createShader(rect);
-              },
-              blendMode: BlendMode.dstOut,
-              child: CustomScrollView(
-                slivers: [
-                  const SliverPadding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: EnvoySpacing.xs / 2)),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                        var device = Devices().devices[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(
-                              bottom: EnvoySpacing.medium1),
-                          child: DeviceListTile(
-                            device,
-                            onTap: () {
-                              context.go(ROUTE_DEVICE_DETAIL, extra: device);
-                              // widget.navigator!.push(DeviceCard(
-                              //     device,
-                              //     widget.navigator,
-                              //     DeviceOptions(
-                              //       device,
-                              //       navigator: widget.navigator,
-                              //     )));
-                            },
-                          ),
-                        );
-                      },
-                      childCount: Devices().devices.length,
+    return PopScope(
+      canPop: false,
+      child: Devices().devices.isEmpty
+          ? Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: GhostDevice(),
+                ),
+              ],
+            )
+          : Padding(
+              padding: const EdgeInsets.all(EnvoySpacing.medium2),
+              child: ScrollGradientMask(
+                child: CustomScrollView(
+                  slivers: [
+                    const SliverPadding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: EnvoySpacing.xs / 2)),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                          var device = Devices().devices[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: EnvoySpacing.medium1),
+                            child: DeviceListTile(
+                              device,
+                              onTap: () {
+                                context.go(ROUTE_DEVICE_DETAIL, extra: device);
+                                // widget.navigator!.push(DeviceCard(
+                                //     device,
+                                //     widget.navigator,
+                                //     DeviceOptions(
+                                //       device,
+                                //       navigator: widget.navigator,
+                                //     )));
+                              },
+                            ),
+                          );
+                        },
+                        childCount: Devices().devices.length,
+                      ),
                     ),
-                  ),
-                  const SliverPadding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: EnvoySpacing.medium2)),
-                ],
+                    const SliverPadding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: EnvoySpacing.medium2)),
+                  ],
+                ),
               ),
             ),
-          );
+    );
   }
 }
 
@@ -190,9 +171,18 @@ class DevicesOptions extends ConsumerWidget {
           ),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return const SingleImportPpIntroPage();
-            }));
+            // Delay navigation to allow the UI to update
+            Future.delayed(const Duration(milliseconds: 200), () {
+              if (context.mounted) {
+                Navigator.of(context).push(PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) {
+                    return const SingleImportPpIntroPage();
+                  },
+                  reverseTransitionDuration: Duration.zero,
+                  transitionDuration: Duration.zero,
+                ));
+              }
+            });
           },
         ),
         const SizedBox(
@@ -203,9 +193,18 @@ class DevicesOptions extends ConsumerWidget {
               style: const TextStyle(color: EnvoyColors.accentSecondary)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return const TouPage();
-            }));
+            // Delay navigation to allow the UI to update
+            Future.delayed(const Duration(milliseconds: 200), () {
+              if (context.mounted) {
+                Navigator.of(context).push(PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) {
+                    return const TouPage();
+                  },
+                  reverseTransitionDuration: Duration.zero,
+                  transitionDuration: Duration.zero,
+                ));
+              }
+            });
           },
         ),
       ],

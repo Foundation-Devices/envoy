@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:io';
+
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:file_picker/file_picker.dart';
@@ -11,6 +13,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 
 void showRestoreFailedDialog(BuildContext context) {
   showEnvoyDialog(
@@ -54,7 +57,7 @@ void showRestoreFailedDialog(BuildContext context) {
                       child: Text(
                           S().manual_setup_import_backup_fails_modal_heading,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleLarge),
+                          style: EnvoyTypography.heading),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -85,17 +88,18 @@ void showRestoreFailedDialog(BuildContext context) {
   );
 }
 
-Future<void> openBackupFile(BuildContext buildContext) async {
+Future<void> openBackupFile(BuildContext buildContext,
+    {FilePickerResult? fileResult}) async {
   final navigator = Navigator.of(buildContext);
   final context = buildContext;
-  var result = await FilePicker.platform.pickFiles();
+  fileResult ??= await FilePicker.platform.pickFiles();
 
-  if (result != null) {
+  if (fileResult != null) {
     var success = false;
 
     try {
-      success =
-          await EnvoySeed().restoreData(filePath: result.files.single.path!);
+      success = await EnvoySeed()
+          .restoreData(filePath: fileResult.files.single.path!);
     } catch (e) {
       success = false;
     }
@@ -108,6 +112,38 @@ Future<void> openBackupFile(BuildContext buildContext) async {
         showRestoreFailedDialog(context);
       }
     }
+  } else {
+    if (context.mounted) {
+      showRestoreFailedDialog(context);
+    }
+  }
+}
+
+Future<void> openBeefQABackupFile(BuildContext buildContext) async {
+  final navigator = Navigator.of(buildContext);
+  final context = buildContext;
+
+  String path = 'integration_test/assets/beefqa_backup.mla.txt';
+
+  var result = FilePickerResult([
+    PlatformFile(
+      name: 'testfile.backup',
+      size: File(path).lengthSync(),
+      path: path,
+    ),
+  ]);
+
+  var success = false;
+  try {
+    success =
+        await EnvoySeed().restoreData(filePath: result.files.single.path!);
+  } catch (e) {
+    success = false;
+  }
+  if (success) {
+    navigator.push(MaterialPageRoute(builder: (context) {
+      return const WalletSetupSuccess();
+    }));
   } else {
     if (context.mounted) {
       showRestoreFailedDialog(context);

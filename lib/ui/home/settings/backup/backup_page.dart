@@ -323,8 +323,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                   child: Text(
                       S().manual_toggle_on_seed_backup_now_modal_heading,
                       textAlign: TextAlign.center,
-                      style: EnvoyTypography.heading
-                          .copyWith(color: EnvoyColors.textPrimary)),
+                      style: EnvoyTypography.heading),
                 ),
                 const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 Flexible(

@@ -2,6 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/business/btcpay_voucher.dart';
+import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/notifications.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/components/ramp_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
@@ -13,10 +18,6 @@ import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/wallet.dart';
-import 'package:envoy/business/exchange_rate.dart';
-import 'package:envoy/business/settings.dart';
-import 'package:envoy/business/btcpay_voucher.dart';
-import 'package:envoy/business/notifications.dart';
 
 final pendingTransactionsProvider =
     Provider.family<List<Transaction>, String?>((ref, String? accountId) {
@@ -56,11 +57,11 @@ final filteredTransactionsProvider =
 
   switch (txSortState) {
     case TransactionSortTypes.newestFirst:
-      transactions.ancestralSort();
-      transactions = transactions.reversed.toList();
+      transactions.sort();
       break;
     case TransactionSortTypes.oldestFirst:
-      transactions.ancestralSort();
+      transactions.sort();
+      transactions = transactions.reversed.toList();
       break;
     case TransactionSortTypes.amountLowToHigh:
       transactions.sort(
@@ -86,9 +87,84 @@ final filteredTransactionsProvider =
 
 //We keep a cache of RBFed transactions so that we can remove the original tx from the list unless they are confirmed
 final rbfBroadCastedTxProvider = StateProvider<List<String>>((ref) => []);
+
+class Equal<T> {
+  Equal(this.value, this._equal, [this._hashCode]);
+
+  final T value;
+  final bool Function(T value, Object other) _equal;
+  final int Function(T value)? _hashCode;
+
+  @override
+  bool operator ==(Object other) => _equal(value, other);
+
+  @override
+  int get hashCode {
+    return _hashCode != null ? _hashCode!(value) : super.hashCode;
+  }
+}
+
 final walletTransactionsProvider =
     Provider.family<List<Transaction>, String?>((ref, String? accountId) {
-  return ref.watch(accountStateProvider(accountId))?.wallet.transactions ?? [];
+  return ref
+          .watch(accountStateProvider(accountId).select(
+              (account) => Equal(account?.wallet.transactions, (one, other) {
+                    if (other is Equal) {
+                      final transactionListEqual =
+                          other as Equal<List<Transaction>?>;
+                      final otherList = transactionListEqual.value;
+                      if (one == null && otherList == null) {
+                        return true;
+                      }
+
+                      if (one == null && otherList != null) {
+                        return false;
+                      }
+
+                      if (one != null && otherList == null) {
+                        return false;
+                      }
+
+                      if (one!.length != otherList!.length) {
+                        return false;
+                      }
+
+                      // Beyond this point they're the same length
+                      // So let's naively compare the txids
+                      for (int i = 0; i < one.length; i++) {
+                        if (one[i].txId != otherList[i].txId) {
+                          return false;
+                        }
+                      }
+                    }
+
+                    return true;
+                  })))
+          .value ??
+      [];
+});
+
+final allTxProvider = Provider<List<Transaction>>((ref) {
+  final allTransactions = <Transaction>[];
+
+  for (var account in AccountManager().accounts) {
+    final transactions = ref.watch(transactionsProvider(account.id));
+    allTransactions.addAll(transactions);
+  }
+
+  allTransactions.sort();
+  return allTransactions.reversed.toList();
+});
+
+final combinedNotificationsProvider = Provider<List<EnvoyNotification>>((ref) {
+  List<EnvoyNotification> nonTxNotifications =
+      ref.watch(nonTxNotificationStreamProvider);
+  List<Transaction> transactions = ref.watch(allTxProvider);
+
+  List<EnvoyNotification> combinedItems =
+      combineNotifications(nonTxNotifications, transactions);
+
+  return combinedItems;
 });
 
 final transactionsProvider =
@@ -103,8 +179,8 @@ final transactionsProvider =
   for (var pending in pendingTransactions) {
     final tx = transactions
         .firstWhereOrNull((element) => element.txId == pending.txId);
-    final rbfOriginals = ref.watch(rbfBroadCastedTxProvider);
-    if (tx == null && !rbfOriginals.contains(pending.txId)) {
+    final recentRBFs = ref.watch(rbfBroadCastedTxProvider);
+    if (tx == null && !recentRBFs.contains(pending.txId)) {
       transactions.add(pending);
     }
   }
@@ -112,7 +188,8 @@ final transactionsProvider =
   ref.watch(rbfBroadCastedTxProvider).forEach((txId) {
     final tx = transactions.firstWhereOrNull((element) => element.txId == txId);
     if (tx != null && !tx.isConfirmed) {
-      Notifications().deleteNotification(tx.txId, accountId: accountId);
+      Notifications().deleteNotification(tx.txId,
+          accountId: accountId, delay: const Duration(seconds: 30));
       transactions.remove(tx);
     }
   });
@@ -146,11 +223,11 @@ final isThereAnyTransactionsProvider = Provider<bool>((ref) {
 });
 
 final getTransactionProvider = Provider.family<Transaction?, String>(
-  (ref, param) {
+  (ref, txId) {
     final selectedAccount = ref.watch(selectedAccountProvider);
     final tx = ref
         .watch(transactionsProvider(selectedAccount?.id ?? ""))
-        .firstWhereOrNull((element) => element.txId == param);
+        .firstWhereOrNull((element) => element.txId == txId);
 
     if (tx == null) {
       return null;
@@ -160,21 +237,17 @@ final getTransactionProvider = Provider.family<Transaction?, String>(
 );
 
 final rbfTxStateProvider = FutureProvider.family<RBFState?, String>(
-  (ref, param) {
-    final account = ref.watch(selectedAccountProvider);
-    if (account == null) {
-      return null;
-    }
-    return EnvoyStorage().getRBFBoostState(param, account.id!);
+  (ref, txId) {
+    return EnvoyStorage().getRBFBoostState(txId);
   },
 );
 
 final isTxBoostedProvider = Provider.family<bool?, String>(
-  (ref, param) {
-    return ref.watch(rbfTxStateProvider(param)).when(
+  (ref, txId) {
+    return ref.watch(rbfTxStateProvider(txId)).when(
           data: (data) {
             if (data != null) {
-              if (data.newTxId == param) {
+              if (data.newTxId == txId) {
                 return true;
               } else {
                 return false;
@@ -192,18 +265,14 @@ final isTxBoostedProvider = Provider.family<bool?, String>(
 );
 
 final cancelTxStateFutureProvider = FutureProvider.family<RBFState?, String>(
-  (ref, param) {
-    final account = ref.watch(selectedAccountProvider);
-    if (account == null) {
-      return null;
-    }
-    return EnvoyStorage().getCancelTxState(account.id!, param);
+  (ref, txId) {
+    return EnvoyStorage().getCancelTxState(txId);
   },
 );
 
 final cancelTxStateProvider = Provider.family<RBFState?, String>(
-  (ref, param) {
-    return ref.watch(cancelTxStateFutureProvider(param)).when(
+  (ref, txId) {
+    return ref.watch(cancelTxStateFutureProvider(txId)).when(
           data: (data) {
             if (data != null) {
               return data;
@@ -288,7 +357,7 @@ Future prunePendingTransactions(
             ExchangeRate().convertFiatStringToSats(pendingTx.currencyAmount!);
         EnvoyStorage().updatePendingTx(pendingTx.txId, amount: amountSats);
       } catch (e) {
-        return;
+        kPrint("Error converting fiat to sats: $e");
       }
     }
   }
@@ -297,6 +366,7 @@ Future prunePendingTransactions(
       String? state =
           await checkPurchase(pendingTx.txId, pendingTx.purchaseViewToken!);
       if (state == "EXPIRED" || state == "CANCELLED") {
+        isNewExpiredBuyTxAvailable.add([pendingTx]);
         EnvoyStorage().deleteTxNote(pendingTx.txId);
         EnvoyStorage().deletePendingTx(pendingTx.txId);
       }
@@ -339,6 +409,14 @@ Future prunePendingTransactions(
           if (kDebugMode) {
             kPrint("Pruning orphan RBF tx : ${pendingTx.txId} ");
           }
+          EnvoyStorage().deletePendingTx(pendingTx.txId);
+        }
+      } else {
+        // Remove dangling pending transactions
+        // Since RBFState is not available and the transaction is not found in the mempool list,
+        // this means the transaction didn't hit the mempool,
+        // and we can remove it if it is older than 2 days.
+        if (DateTime.now().difference(pendingTx.date).inDays > 2) {
           EnvoyStorage().deletePendingTx(pendingTx.txId);
         }
       }

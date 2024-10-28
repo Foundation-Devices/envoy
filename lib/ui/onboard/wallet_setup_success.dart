@@ -34,7 +34,7 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      onPopInvoked: (_) async {
+      onPopInvokedWithResult: (_, __) async {
         OnboardingPage.popUntilHome(context);
       },
       child: OnboardPageBackground(
@@ -65,8 +65,7 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                       children: [
                         Text(
                           S().wallet_setup_success_heading,
-                          style: EnvoyTypography.heading
-                              .copyWith(color: EnvoyColors.textPrimary),
+                          style: EnvoyTypography.heading,
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: EnvoySpacing.large2),
@@ -82,10 +81,10 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
               const SizedBox(height: EnvoySpacing.medium1),
               Padding(
                 padding: const EdgeInsets.only(
-                    left: EnvoySpacing.medium1,
-                    right: EnvoySpacing.medium1,
-                    bottom: EnvoySpacing.medium2,
-                    top: EnvoySpacing.small),
+                  left: EnvoySpacing.xs,
+                  right: EnvoySpacing.xs,
+                  bottom: EnvoySpacing.medium2,
+                ),
                 child: Consumer(
                   builder: (context, ref, child) {
                     return OnboardingButton(

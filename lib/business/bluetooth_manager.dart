@@ -39,7 +39,7 @@ class BluetoothManager {
   Future<bool> connectToPrime() async {
     for (final peripheral in peripherals) {
       final name = await getNameFromPerihperal(peripheral: peripheral);
-      print("Found $name");
+      kPrint("Found $name");
       if (name.contains("Prime")) {
         await connectPeripheral(peripheral: peripheral);
         connected = peripheral;
@@ -72,7 +72,7 @@ class BluetoothManager {
 
       peripherals = result;
     } catch (e) {
-      print('Error searching for devices: $e');
+      kPrint('Error searching for devices: $e');
     }
   }
 
@@ -84,7 +84,7 @@ class BluetoothManager {
   }
 
   writeData(List<int> data) async {
-    print("data to transmit2: ${data.length}");
+    kPrint("data to transmit2: ${data.length}");
     List<int> dataToWrite = [...numberToByteList(data.length), ...data];
 
     // Can't do more than 256 at a time? Find out why
@@ -98,7 +98,7 @@ class BluetoothManager {
           rxCharacteristic: rxCharacteristic);
 
       lenWritten += 256;
-      print("written $lenWritten!");
+      kPrint("written $lenWritten!");
     }
   }
 

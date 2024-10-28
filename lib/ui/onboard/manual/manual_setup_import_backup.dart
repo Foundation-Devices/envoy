@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:io';
+
 import 'package:backup/backup.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -11,6 +13,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/manual/dialogs.dart';
 import 'package:rive/rive.dart';
@@ -68,13 +71,22 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
           const SizedBox(
             height: EnvoySpacing.xl * 2,
           ),
-          Text(S().magic_setup_recovery_retry_header,
-              textAlign: TextAlign.center,
-              style: EnvoyTypography.heading
-                  .copyWith(color: EnvoyColors.textPrimary)),
+          DefaultTextStyle(
+            style: EnvoyTypography.heading,
+            child: Text(S().magic_setup_recovery_retry_header,
+                textAlign: TextAlign.center, style: EnvoyTypography.heading),
+          ),
         ],
       ),
     );
+  }
+
+  Future<FilePickerResult?> _pickFileForRecovery() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    setState(() {
+      _isRecoveryInProgress = true;
+    });
+    return result;
   }
 
   @override
@@ -90,7 +102,7 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
 
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, _) {
         if (!didPop) {
           setState(() {
             _isRecoveryInProgress = false;
@@ -107,10 +119,25 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: EnvoySpacing.large3),
-              child: Image.asset(
-                "assets/fw_intro.png",
-                width: 150,
-                height: 150,
+              child: GestureDetector(
+                onLongPress: () {
+                  // BeefQA test: Only execute if the platform is Linux
+                  if (Platform.isLinux) {
+                    setState(() {
+                      _isRecoveryInProgress = true;
+                    });
+                    openBeefQABackupFile(context).then((value) {
+                      setState(() {
+                        _isRecoveryInProgress = false;
+                      });
+                    });
+                  }
+                },
+                child: Image.asset(
+                  "assets/fw_intro.png",
+                  width: 150,
+                  height: 150,
+                ),
               ),
             ),
             const SizedBox(height: EnvoySpacing.medium1),
@@ -123,8 +150,7 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                           horizontal: EnvoySpacing.small),
                       child: Text(S().manual_setup_import_backup_CTA2,
                           textAlign: TextAlign.center,
-                          style: EnvoyTypography.heading
-                              .copyWith(color: EnvoyColors.textPrimary)),
+                          style: EnvoyTypography.heading),
                     ),
                     const SizedBox(height: EnvoySpacing.medium3),
                     Padding(
@@ -142,27 +168,27 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
             const SizedBox(height: EnvoySpacing.medium1),
             Padding(
               padding: const EdgeInsets.only(
-                  left: EnvoySpacing.medium1,
-                  right: EnvoySpacing.medium1,
-                  bottom: EnvoySpacing.medium2,
-                  top: EnvoySpacing.small),
+                left: EnvoySpacing.xs,
+                right: EnvoySpacing.xs,
+                bottom: EnvoySpacing.medium2,
+              ),
               child: Column(
                 children: [
                   OnboardingButton(
                       type: EnvoyButtonTypes.secondary,
                       label: S().manual_setup_import_backup_CTA2,
-                      onTap: () {
-                        Future.delayed(const Duration(seconds: 2), () {
-                          setState(() {
-                            _isRecoveryInProgress = true;
-                          });
-                        });
+                      onTap: () async {
+                        FilePickerResult? fileResult =
+                            await _pickFileForRecovery();
 
-                        openBackupFile(context).then((value) {
-                          setState(() {
-                            _isRecoveryInProgress = false;
+                        if (context.mounted) {
+                          openBackupFile(context, fileResult: fileResult)
+                              .then((value) {
+                            setState(() {
+                              _isRecoveryInProgress = false;
+                            });
                           });
-                        });
+                        }
                       }),
                   OnboardingButton(
                       type: EnvoyButtonTypes.primary,
@@ -257,13 +283,9 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
         Padding(
           padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
           child: DefaultTextStyle(
-            style: EnvoyTypography.heading
-                .copyWith(color: EnvoyColors.textPrimary),
-            child: Text(
-              S().manual_setup_importingSeedLoadingInfo,
-              style: EnvoyTypography.heading
-                  .copyWith(color: EnvoyColors.textPrimary),
-            ),
+            style: EnvoyTypography.heading,
+            child: Text(S().manual_setup_importingSeedLoadingInfo,
+                style: EnvoyTypography.heading),
           ),
         )
       ],
@@ -279,6 +301,7 @@ Future<void> tryMagicRecover(List<String> seedList, String seed,
 
   if (success) {
     Settings().syncToCloud = true;
+    EnvoySeed().copySeedToNonSecure();
     navigator.push(MaterialPageRoute(builder: (context) {
       return const WalletSetupSuccess();
     }));

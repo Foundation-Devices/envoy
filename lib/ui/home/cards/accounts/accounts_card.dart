@@ -2,13 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
@@ -28,6 +28,8 @@ import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/shield.dart';
+import 'package:envoy/ui/components/linear_gradient.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 
 class AccountsCard extends ConsumerStatefulWidget {
   const AccountsCard({
@@ -36,6 +38,18 @@ class AccountsCard extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<AccountsCard> createState() => _AccountsCardState();
+}
+
+//IOS app store restricted countries
+const buyDisabled = ["IND", "GBR"];
+
+Future<bool> checkBuyDisabled() async {
+  if (Platform.isIOS) {
+    return InAppPurchase.instance.countryCode().then(
+          (value) => buyDisabled.contains(value),
+        );
+  }
+  return false;
 }
 
 // The keep alive mixin is necessary to maintain state when widget is not visible
@@ -47,8 +61,7 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
     super.build(context);
     // ignore: unused_local_variable
 
-    final mainnetAccounts = ref.watch(mainnetAccountsProvider(null));
-    final bool noMainnetAccounts = mainnetAccounts.isEmpty;
+    final mainNetAccounts = ref.watch(mainnetAccountsProvider(null));
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -57,48 +70,59 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
         const Flexible(child: AccountsList()),
         Padding(
           padding: const EdgeInsets.only(bottom: 10),
-          child: GestureDetector(
-            onTap: () async {
-              if (noMainnetAccounts) {
-                return;
-              }
-              context.go(
-                await EnvoyStorage().getCountry() != null
-                    ? ROUTE_BUY_BITCOIN
-                    : ROUTE_SELECT_REGION,
-              );
-            },
-            child: QrShield(
-              arcSizeRatio: 15.0,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.large3,
-                    vertical: EnvoySpacing.small),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    EnvoyIcon(
-                      EnvoyIcons.btc,
-                      color: noMainnetAccounts
-                          ? EnvoyColors.textTertiary
-                          : EnvoyColors.accentPrimary,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
-                      child: Text(
-                        S().component_minishield_buy,
-                        style: EnvoyTypography.label.copyWith(
-                          color: noMainnetAccounts
-                              ? EnvoyColors.textTertiary
-                              : EnvoyColors.accentPrimary,
-                        ),
+          child: FutureBuilder(
+              future: checkBuyDisabled(),
+              builder: (context, snapshot) {
+                bool countryRestricted =
+                    snapshot.data != null && snapshot.data!;
+                bool disabled = mainNetAccounts.isEmpty;
+                if (countryRestricted) {
+                  return const SizedBox.shrink();
+                }
+                return GestureDetector(
+                  onTap: () async {
+                    if (countryRestricted) {
+                      return;
+                    }
+                    context.go(
+                      await EnvoyStorage().getCountry() != null
+                          ? ROUTE_BUY_BITCOIN
+                          : ROUTE_SELECT_REGION,
+                    );
+                  },
+                  child: QrShield(
+                    arcSizeRatio: 15.0,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.large3,
+                          vertical: EnvoySpacing.small),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          EnvoyIcon(
+                            EnvoyIcons.btc,
+                            color: disabled
+                                ? EnvoyColors.textTertiary
+                                : EnvoyColors.accentPrimary,
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: EnvoySpacing.xs),
+                            child: Text(
+                              S().component_minishield_buy,
+                              style: EnvoyTypography.label.copyWith(
+                                color: disabled
+                                    ? EnvoyColors.textTertiary
+                                    : EnvoyColors.accentPrimary,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+                  ),
+                );
+              }),
         )
       ],
     );
@@ -147,12 +171,10 @@ class _AccountsListState extends ConsumerState<AccountsList> {
   final ScrollController _scrollController = ScrollController();
   final double _accountHeight = 124;
   bool _onReOrderStart = false;
-  double _listWidgetHeight = 0;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(_afterLayout);
   }
 
   @override
@@ -161,29 +183,10 @@ class _AccountsListState extends ConsumerState<AccountsList> {
     super.dispose();
   }
 
-  void _afterLayout(_) {
-    if (mounted) {
-      setState(() {
-        _listWidgetHeight = _getListHeight();
-      });
-    }
-  }
-
-  double _getListHeight() {
-    if (context.findRenderObject() == null) {
-      return 0.0;
-    }
-
-    final RenderBox listRenderBox = context.findRenderObject() as RenderBox;
-    return listRenderBox.size.height;
-  }
-
   @override
   Widget build(BuildContext context) {
     final accounts = ref.watch(accountsProvider);
     final listContentHeight = accounts.length * _accountHeight;
-
-    final isFadingEnabled = listContentHeight > _listWidgetHeight;
 
     ref.listen(accountsProvider, (List<Account>? previous, List<Account> next) {
       if (previous!.length < next.length) {
@@ -207,16 +210,14 @@ class _AccountsListState extends ConsumerState<AccountsList> {
       }
     });
 
-    final scrollView = FadingEdgeScrollView.fromScrollView(
-      scrollController: _scrollController,
-      gradientFractionOnStart: isFadingEnabled ? 0.03 : 0.0,
-      gradientFractionOnEnd: isFadingEnabled ? 0.06 : 0.0,
+    final scrollView = ScrollGradientMask(
       child: ReorderableListView(
         footer: Opacity(
           opacity: _onReOrderStart ? 0.0 : 1.0,
           child: const AccountPrompts(),
         ),
         shrinkWrap: true,
+        padding: const EdgeInsets.all(20),
         scrollController: _scrollController,
         //proxyDecorator is the widget that is shown when dragging
         proxyDecorator: (widget, index, animation) {
@@ -267,7 +268,7 @@ class _AccountsListState extends ConsumerState<AccountsList> {
             padding: const EdgeInsets.all(EnvoySpacing.medium2),
             child: EmptyAccountsCard(),
           )
-        : Padding(padding: const EdgeInsets.all(20), child: scrollView);
+        : scrollView;
   }
 }
 
@@ -287,15 +288,15 @@ class AccountPrompts extends ConsumerWidget {
     var accounts = ref.watch(accountsProvider);
     var accountsHaveZeroBalance = ref.watch(accountsZeroBalanceProvider);
 
-    //Show if the user never visited account detail screen, has no balance
-    // and there is only one account visible
-    if (!userInteractedWithAccDetail &&
-        accountsHaveZeroBalance &&
-        accounts.length == 1) {
+    //Show if the user never visited account detail screen
+    if (!userInteractedWithAccDetail) {
       return Center(
           child: Wrap(alignment: WrapAlignment.center, spacing: 5, children: [
         Text(
-          S().hot_wallet_accounts_creation_done_text_explainer,
+          accounts.length == 1
+              ? S().hot_wallet_accounts_creation_done_text_explainer
+              : S()
+                  .hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt,
           style: EnvoyTypography.explainer,
         ),
         GestureDetector(
@@ -363,7 +364,13 @@ class AccountPrompts extends ConsumerWidget {
                       .copyWith(color: EnvoyColors.accentPrimary),
                 ),
                 onTap: () {
-                  EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
+                  if (userInteractedWithAccDetail) {
+                    EnvoyStorage()
+                        .addPromptState(DismissiblePrompt.dragAndDrop);
+                  } else {
+                    EnvoyStorage().addPromptState(
+                        DismissiblePrompt.userInteractedWithAccDetail);
+                  }
                 },
               ),
               Container(
@@ -424,7 +431,7 @@ void showSecurityDialog(BuildContext context) {
                         vertical: EnvoySpacing.small, horizontal: 12),
                     child: Text(S().wallet_security_modal__heading,
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleLarge),
+                        style: EnvoyTypography.heading),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(

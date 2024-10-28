@@ -23,13 +23,13 @@ jobs:
           ALIAS_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: echo -n $KEY_JKS | base64 -di > android/key.jks && just docker-build-android-sign
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: envoy-apk
           path: release/app-release.apk
 
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: envoy-aab
           path: release/app-release.aab

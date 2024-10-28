@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:envoy/ui/components/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
@@ -15,18 +16,21 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/components/select_dropdown.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/ui/routes/route_state.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/home/home_state.dart';
 
 GlobalKey<EnvoyDropdownState> dropdownDivisionKey =
     GlobalKey<EnvoyDropdownState>();
 
-class SelectRegion extends StatefulWidget {
+class SelectRegion extends ConsumerStatefulWidget {
   const SelectRegion({super.key});
 
   @override
-  State<SelectRegion> createState() => _SelectRegionState();
+  ConsumerState<SelectRegion> createState() => _SelectRegionState();
 }
 
-class _SelectRegionState extends State<SelectRegion> {
+class _SelectRegionState extends ConsumerState<SelectRegion> {
   Country? selectedCountry;
   List<Country> countries = [];
   bool _dataLoaded = false;
@@ -49,9 +53,11 @@ class _SelectRegionState extends State<SelectRegion> {
         _divisionSelected = true;
       }
 
-      setState(() {
-        _dataLoaded = true;
-      });
+      if (mounted) {
+        setState(() {
+          _dataLoaded = true;
+        });
+      }
     });
   }
 
@@ -79,12 +85,18 @@ class _SelectRegionState extends State<SelectRegion> {
     countryData.forEach((countryCode, countryInfo) {
       String countryName = countryInfo['name'];
       List<String> divisions = [];
+
       countryInfo['divisions'].forEach((code, divisionName) {
         divisions.add(divisionName);
       });
 
+      divisions.sort((a, b) => a.compareTo(b));
+
       countries.add(Country(countryCode, countryName, divisions));
     });
+
+    countries.sort((a, b) => a.name.compareTo(b.name));
+
     setState(() {
       selectedCountry = getCountryByCode(Platform.localeName);
       _dataLoaded = true;
@@ -114,11 +126,45 @@ class _SelectRegionState extends State<SelectRegion> {
     return foundCountry;
   }
 
+  onNativeBackPressed(bool didPop) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      String path = ref.read(routePathProvider);
+
+      if (path == ROUTE_SELECT_REGION &&
+          await EnvoyStorage().getCountry() != null) {
+        if (mounted) {
+          context.go(ROUTE_BUY_BITCOIN);
+        }
+      }
+      // if First time in app and no country selected ˇˇˇ
+      else {
+        ref.read(buyBTCPageProvider.notifier).state = false;
+        ref.read(homePageBackgroundProvider.notifier).state =
+            HomePageBackgroundState.hidden;
+        ref.read(homePageTabProvider.notifier).state =
+            HomePageTabState.accounts;
+        ref.read(homePageTitleProvider.notifier).state = "";
+
+        if (mounted) {
+          GoRouter.of(context).go(ROUTE_ACCOUNTS_HOME);
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return _dataLoaded
-        ? buildWidget()
-        : const Center(child: CircularProgressIndicator());
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) {
+          onNativeBackPressed(didPop);
+        }
+      },
+      child: _dataLoaded
+          ? buildWidget()
+          : const Center(child: CircularProgressIndicator()),
+    );
   }
 
   Widget buildWidget() {

@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
@@ -34,12 +35,20 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/business/notifications.dart';
+import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/util/amount.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 final _fullScreenProvider = Provider((ref) {
   bool fullScreen = ref.watch(hideBottomNavProvider);
   Set selections = ref.watch(coinSelectionStateProvider);
   return fullScreen || selections.isNotEmpty;
 });
+
+StreamController<bool> isCurrentVersionDeprecated =
+    StreamController.broadcast();
 
 class HomePageNotification extends Notification {
   final String? title;
@@ -72,16 +81,16 @@ class HomePage extends ConsumerStatefulWidget {
   ConsumerState<HomePage> createState() => HomePageState();
 }
 
-final backButtonDispatcher = RootBackButtonDispatcher();
-
 class HomePageState extends ConsumerState<HomePage>
     with TickerProviderStateMixin {
+  final Map<String, bool> transactionIdExpandedState = {};
   bool _backgroundShown = false;
   final bool _modalShown = false;
 
   final _optionsKey = GlobalKey();
   final bool _optionsShown = false;
   double _optionsHeight = 0;
+  final backButtonDispatcher = RootBackButtonDispatcher();
 
   final double _bottomTabBarHeight = 70.0;
 
@@ -125,8 +134,14 @@ class HomePageState extends ConsumerState<HomePage>
     _resetServerDownWarningTimer();
     _resetBackupWarningTimer();
 
+    isNewExpiredBuyTxAvailable.stream.listen((List<Transaction> expiredBuyTx) {
+      if (mounted && expiredBuyTx.isNotEmpty) {
+        _notifyAboutRemovedRampTx(expiredBuyTx, context);
+      }
+    });
     Future.delayed(const Duration(milliseconds: 10), () {
       ///register for back button press
+      backButtonDispatcher.takePriority();
       backButtonDispatcher.addCallback(_handleHomePageBackPress);
     });
 
@@ -134,13 +149,16 @@ class HomePageState extends ConsumerState<HomePage>
     ConnectivityManager().events.stream.listen((event) {
       // If Tor is broken surface a warning
       if (event == ConnectivityManagerEvent.torConnectedDoesntWork) {
-        if (_torWarningDisplayedMoreThan5minAgo && Settings().usingTor) {
+        if (_torWarningDisplayedMoreThan5minAgo &&
+            Settings().usingTor &&
+            mounted) {
           _notifyAboutTor();
           _torWarningDisplayedMoreThan5minAgo = false;
         }
       }
       if (event == ConnectivityManagerEvent.foundationServerDown &&
-          _serverDownWarningDisplayedMoreThan5minAgo) {
+          _serverDownWarningDisplayedMoreThan5minAgo &&
+          mounted) {
         _notifyAboutFoundationServerDown();
         _serverDownWarningDisplayedMoreThan5minAgo = false;
       }
@@ -172,13 +190,21 @@ class HomePageState extends ConsumerState<HomePage>
     });
 
     EnvoySeed().backupCompletedStream.stream.listen((bool success) {
-      if (_backupWarningDisplayedMoreThan2minAgo) {
+      if (_backupWarningDisplayedMoreThan2minAgo && mounted) {
         _displayBackupToast(success);
         _backupWarningDisplayedMoreThan2minAgo = false;
       }
     });
     isNewAppVersionAvailable.stream.listen((String newVersion) {
-      _notifyAboutNewAppVersion(newVersion);
+      if (mounted) {
+        _notifyAboutNewAppVersion(newVersion);
+      }
+    });
+
+    isCurrentVersionDeprecated.stream.listen((bool isDeprecated) {
+      if (mounted && isDeprecated) {
+        showForceUpdateDialog();
+      }
     });
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -187,22 +213,59 @@ class HomePageState extends ConsumerState<HomePage>
     });
   }
 
+  void _notifyAboutRemovedRampTx(
+      List<Transaction> expiredTransactions, context) async {
+    bool dismissed = await EnvoyStorage()
+        .checkPromptDismissed(DismissiblePrompt.buyTxWarning);
+
+    if (!dismissed && context.mounted) {
+      showEnvoyPopUp(
+          context,
+          title: S().replaceByFee_modal_deletedInactiveTX_ramp_heading,
+          S().replaceByFee_modal_deletedInactiveTX_ramp_subheading,
+          S().send_keyboard_address_confirm,
+          customWidget: RemovedBuyTransactionsList(
+            expiredTransactions: expiredTransactions,
+            transactionIdExpandedState: transactionIdExpandedState,
+          ),
+          (BuildContext context) {
+            Navigator.pop(context);
+            isNewExpiredBuyTxAvailable.add([]); // reset stream after pop
+          },
+          learnMoreText: S().contactRampForSupport,
+          learnMoreLink:
+              "https://support.ramp.network/en/collections/6690-customer-support-help-center",
+          icon: EnvoyIcons.info,
+          checkBoxText: S().component_dontShowAgain,
+          checkedValue: dismissed,
+          onCheckBoxChanged: (checkedValue) {
+            if (!checkedValue) {
+              EnvoyStorage().addPromptState(DismissiblePrompt.buyTxWarning);
+            } else if (checkedValue) {
+              EnvoyStorage().removePromptState(DismissiblePrompt.buyTxWarning);
+            }
+          });
+    }
+  }
+
   _notifyAboutNewAppVersion(String newVersion) {
-    EnvoyToast(
-      backgroundColor: Colors.lightBlue,
-      replaceExisting: true,
-      message: S().toast_newEnvoyUpdateAvailable,
-      icon: const EnvoyIcon(
-        EnvoyIcons.info,
-        color: EnvoyColors.accentPrimary,
-      ),
-      actionButtonText: S().component_update,
-      onActionTap: () {
-        EnvoyToast.dismissPreviousToasts(context);
-        final appStoreUrl = _getAppStoreUrl();
-        launchUrlString(appStoreUrl);
-      },
-    ).show(context);
+    if (context.mounted) {
+      EnvoyToast(
+        backgroundColor: Colors.lightBlue,
+        replaceExisting: true,
+        message: S().toast_newEnvoyUpdateAvailable,
+        icon: const EnvoyIcon(
+          EnvoyIcons.info,
+          color: EnvoyColors.accentPrimary,
+        ),
+        actionButtonText: S().component_update,
+        onActionTap: () {
+          EnvoyToast.dismissPreviousToasts(context);
+          final appStoreUrl = _getAppStoreUrl();
+          launchUrlString(appStoreUrl);
+        },
+      ).show(context);
+    }
     isNewAppVersionAvailable.close();
   }
 
@@ -215,58 +278,64 @@ class HomePageState extends ConsumerState<HomePage>
   }
 
   _notifyAboutTor() {
-    EnvoyToast(
-      backgroundColor: Colors.lightBlue,
-      replaceExisting: true,
-      message: S().tor_connectivity_toast_warning,
-      icon: const EnvoyIcon(
-        EnvoyIcons.info,
-        color: EnvoyColors.accentPrimary,
-      ),
-      actionButtonText: S().component_learnMore,
-      onActionTap: () {
-        EnvoyToast.dismissPreviousToasts(context);
-        showEnvoyDialog(dialog: const TorWarning(), context: context);
-      },
-    ).show(context);
+    if (context.mounted) {
+      EnvoyToast(
+        backgroundColor: Colors.lightBlue,
+        replaceExisting: true,
+        message: S().tor_connectivity_toast_warning,
+        icon: const EnvoyIcon(
+          EnvoyIcons.info,
+          color: EnvoyColors.accentPrimary,
+        ),
+        actionButtonText: S().component_learnMore,
+        onActionTap: () {
+          EnvoyToast.dismissPreviousToasts(context);
+          showEnvoyDialog(dialog: const TorWarning(), context: context);
+        },
+      ).show(context);
+    }
   }
 
   _notifyAboutFoundationServerDown() {
-    EnvoyToast(
-      backgroundColor: Colors.lightBlue,
-      replaceExisting: true,
-      message: S().toast_foundationServersDown,
-      icon: const EnvoyIcon(
-        EnvoyIcons.info,
-        color: EnvoyColors.accentPrimary,
-      ),
-      actionButtonText: S().component_retry,
-      onActionTap: () {
-        EnvoyToast.dismissPreviousToasts(context);
-        Settings().switchToNextDefaultServer();
-      },
-    ).show(context);
+    if (context.mounted) {
+      EnvoyToast(
+        backgroundColor: Colors.lightBlue,
+        replaceExisting: true,
+        message: S().toast_foundationServersDown,
+        icon: const EnvoyIcon(
+          EnvoyIcons.info,
+          color: EnvoyColors.accentPrimary,
+        ),
+        actionButtonText: S().component_retry,
+        onActionTap: () {
+          EnvoyToast.dismissPreviousToasts(context);
+          Settings().switchToNextDefaultServer();
+        },
+      ).show(context);
+    }
   }
 
   _displayBackupToast(bool success) {
-    EnvoyToast(
-      backgroundColor: Colors.lightBlue,
-      replaceExisting: true,
-      duration:
-          success ? const Duration(seconds: 4) : const Duration(seconds: 3),
-      message: success
-          ? S().manual_toggle_on_seed_backup_in_progress_toast_heading
-          : S().manualToggleOnSeed_toastHeading_failedText,
-      icon: success
-          ? const EnvoyIcon(
-              EnvoyIcons.info,
-              color: EnvoyColors.accentPrimary,
-            )
-          : const EnvoyIcon(
-              EnvoyIcons.alert,
-              color: EnvoyColors.accentSecondary,
-            ),
-    ).show(context);
+    if (context.mounted) {
+      EnvoyToast(
+        backgroundColor: Colors.lightBlue,
+        replaceExisting: true,
+        duration:
+            success ? const Duration(seconds: 4) : const Duration(seconds: 3),
+        message: success
+            ? S().manual_toggle_on_seed_backup_in_progress_toast_heading
+            : S().manualToggleOnSeed_toastHeading_failedText,
+        icon: success
+            ? const EnvoyIcon(
+                EnvoyIcons.info,
+                color: EnvoyColors.accentPrimary,
+              )
+            : const EnvoyIcon(
+                EnvoyIcons.alert,
+                color: EnvoyColors.accentSecondary,
+              ),
+      ).show(context);
+    }
   }
 
   /// Handle the back button press behavior
@@ -310,6 +379,7 @@ class HomePageState extends ConsumerState<HomePage>
     _torWarningTimer?.cancel();
     _serverDownWarningTimer?.cancel();
     _backupWarningTimer?.cancel();
+    isNewExpiredBuyTxAvailable.close();
     backButtonDispatcher.removeCallback(_handleHomePageBackPress);
     super.dispose();
   }
@@ -327,6 +397,22 @@ class HomePageState extends ConsumerState<HomePage>
   void toggleOptions() {
     ref.read(homePageOptionsVisibilityProvider.notifier).state =
         !ref.read(homePageOptionsVisibilityProvider);
+  }
+
+  void showForceUpdateDialog() {
+    showEnvoyPopUp(
+      context,
+      S().accounts_forceUpdate_subheading,
+      S().accounts_forceUpdate_cta,
+      (context) {
+        final appStoreUrl = _getAppStoreUrl();
+        launchUrlString(appStoreUrl);
+      },
+      title: S().accounts_forceUpdate_heading,
+      icon: EnvoyIcons.download,
+      dismissible: false,
+      showCloseButton: false,
+    );
   }
 
   @override
@@ -465,7 +551,8 @@ class HomePageState extends ConsumerState<HomePage>
                       ignoring: _backgroundShown || modalShown || fullScreen,
                       child: EnvoyBottomNavigation(
                         onIndexChanged: (selectedIndex) {
-                          widget.mainNavigationShell.goBranch(selectedIndex);
+                          widget.mainNavigationShell
+                              .goBranch(selectedIndex, initialLocation: true);
                         },
                       ),
                     ),
@@ -543,5 +630,79 @@ class ShieldFadeInAnimationCurve extends Curve {
     } else {
       return (t - 0.5) * 2 * t;
     }
+  }
+}
+
+class RemovedBuyTransactionsList extends StatefulWidget {
+  final List<Transaction> expiredTransactions;
+  final Map<String, bool> transactionIdExpandedState;
+
+  const RemovedBuyTransactionsList({
+    super.key,
+    required this.expiredTransactions,
+    required this.transactionIdExpandedState,
+  });
+
+  @override
+  State<RemovedBuyTransactionsList> createState() =>
+      _RemovedBuyTransactionsListState();
+}
+
+class _RemovedBuyTransactionsListState
+    extends State<RemovedBuyTransactionsList> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(maxHeight: 60.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: widget.expiredTransactions.map((tx) {
+            bool showTxIdExpanded =
+                widget.transactionIdExpandedState[tx.txId] ?? false;
+            return GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onLongPress: () {
+                if (tx.type != TransactionType.ramp) {
+                  copyTxId(context, tx.txId, tx.type);
+                }
+              },
+              onTap: () {
+                if (tx.type != TransactionType.ramp) {
+                  setState(() {
+                    widget.transactionIdExpandedState[tx.txId] =
+                        !showTxIdExpanded;
+                  });
+                }
+              },
+              child: TweenAnimationBuilder<double>(
+                curve: EnvoyEasing.easeInOut,
+                tween: Tween<double>(begin: 0, end: showTxIdExpanded ? 1 : 0),
+                duration: const Duration(milliseconds: 200),
+                builder: (context, value, child) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
+                    child: Text(
+                      truncateWithEllipsisInCenter(
+                        tx.txId,
+                        lerpDouble(16, tx.txId.length, value)!.toInt(),
+                      ),
+                      style: EnvoyTypography.body.copyWith(
+                        color: EnvoyColors.textSecondary,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 4,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
+                },
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
   }
 }

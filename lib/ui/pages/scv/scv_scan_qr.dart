@@ -38,19 +38,19 @@ class ScvScanQrPage extends StatelessWidget {
         }));
       },
       buttons: [
-        Padding(
-          padding: const EdgeInsets.only(
-            bottom: EnvoySpacing.medium2,
-          ),
-          child: OnboardingButton(
-              label: S().component_continue,
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return ScannerPage.scv(challenge);
-                }));
-              }),
-        ),
+        OnboardingButton(
+            label: S().component_continue,
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return ScannerPage(
+                  challengeToValidate: challenge,
+                  const [
+                    ScannerType.scv,
+                    ScannerType.pair,
+                  ],
+                );
+              }));
+            }),
       ],
     );
   }

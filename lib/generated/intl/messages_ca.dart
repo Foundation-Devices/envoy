@@ -24,14 +24,14 @@ class MessageLookup extends MessageLookupByLibrary {
       "Aquest val va caducar el dia {període} . Si us plau, poseu-vos en contacte amb l\'emissor amb qualsevol pregunta relacionada amb el val.";
 
   static String m1(AccountName) =>
-      "Navigate to ${AccountName} on Passport, choose ‘Verify Address’, then scan the QR code.";
+      "Ves a {Nom del compte} del Passaport, selecciona \"Verificar l\'adreça\" i escaneja el codi QR.";
 
   static String m2(tagName) =>
       "La teva etiqueta ${tagName} està buida. Vols eliminar-la?";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("What is Envoy?"),
+        "_": MessageLookupByLibrary.simpleMessage("Secondary action"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versió de l\'aplicació"),
         "about_openSourceLicences":
@@ -60,11 +60,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "accounts_empty_text_learn_more":
             MessageLookupByLibrary.simpleMessage("Comença"),
         "accounts_forceUpdate_cta":
-            MessageLookupByLibrary.simpleMessage("Update Envoy"),
-        "accounts_forceUpdate_heading":
-            MessageLookupByLibrary.simpleMessage("Envoy Update Required"),
+            MessageLookupByLibrary.simpleMessage("Actualitza Envoy"),
+        "accounts_forceUpdate_heading": MessageLookupByLibrary.simpleMessage(
+            "Es requereix l\'actualització d\'Envoy"),
         "accounts_forceUpdate_subheading": MessageLookupByLibrary.simpleMessage(
-            "A new Envoy update is available that contains important upgrades and fixes. \n\nTo continue using Envoy, please update to the latest version. Thank you."),
+            "Hi ha disponible una nova actualització d\'Envoy que conté actualitzacions i correccions importants. \n\nPer continuar utilitzant Envoy, actualitzeu-lo a la versió més recent. Gràcies."),
         "accounts_screen_walletType_Envoy":
             MessageLookupByLibrary.simpleMessage("Envoy"),
         "accounts_screen_walletType_Passport":
@@ -78,16 +78,16 @@ class MessageLookup extends MessageLookupByLibrary {
             "No hi ha cap activitat per mostrar."),
         "activity_envoyUpdate": MessageLookupByLibrary.simpleMessage(
             "S\'ha actualitzat l\'Aplicació Envoy"),
-        "activity_envoyUpdateAvailable":
-            MessageLookupByLibrary.simpleMessage("Envoy update available"),
+        "activity_envoyUpdateAvailable": MessageLookupByLibrary.simpleMessage(
+            "Actualització d\'Envoy disponible"),
         "activity_firmwareUpdate": MessageLookupByLibrary.simpleMessage(
             "Actualització del firmware disponible"),
         "activity_incomingPurchase":
-            MessageLookupByLibrary.simpleMessage("Incoming Purchase"),
+            MessageLookupByLibrary.simpleMessage("Compra Entrant"),
         "activity_listHeader_Today":
             MessageLookupByLibrary.simpleMessage("Avui"),
-        "activity_passportUpdate":
-            MessageLookupByLibrary.simpleMessage("Passport update available"),
+        "activity_passportUpdate": MessageLookupByLibrary.simpleMessage(
+            "Actualització de Passaport disponible"),
         "activity_pending": MessageLookupByLibrary.simpleMessage("Pendent"),
         "activity_received": MessageLookupByLibrary.simpleMessage("Rebut"),
         "activity_sent": MessageLookupByLibrary.simpleMessage("Enviats"),
@@ -115,10 +115,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "azteco_connection_modal_fail_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy no pot connectar amb Azteco.\n\nPoseu-vos en contacte amb support@azte.co o torneu-ho a provar més tard."),
+        "azteco_note": MessageLookupByLibrary.simpleMessage("Azteco Voucher"),
+        "azteco_pendingVoucher":
+            MessageLookupByLibrary.simpleMessage("Pending Azteco Voucher"),
         "azteco_redeem_modal__voucher_code":
             MessageLookupByLibrary.simpleMessage("CODI DE CUPÓ"),
         "azteco_redeem_modal_amount":
-            MessageLookupByLibrary.simpleMessage("Amount"),
+            MessageLookupByLibrary.simpleMessage("Quantitat"),
         "azteco_redeem_modal_cta1":
             MessageLookupByLibrary.simpleMessage("Bescanvia"),
         "azteco_redeem_modal_fail_heading":
@@ -128,7 +131,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "azteco_redeem_modal_heading":
             MessageLookupByLibrary.simpleMessage("Bescanviar el Cupó?"),
         "azteco_redeem_modal_saleDate":
-            MessageLookupByLibrary.simpleMessage("Sale Date"),
+            MessageLookupByLibrary.simpleMessage("Data de Venda"),
         "azteco_redeem_modal_success_heading":
             MessageLookupByLibrary.simpleMessage("Val Bescanviat"),
         "azteco_redeem_modal_success_subheading":
@@ -163,148 +166,151 @@ class MessageLookup extends MessageLookupByLibrary {
         "btcpay_connection_modal_onchainOnly_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "El val escanejat no s\'ha creat amb suport onchain. Poseu-vos en contacte amb el creador del val."),
+        "btcpay_note": MessageLookupByLibrary.simpleMessage("BTCPay voucher"),
         "btcpay_pendingVoucher":
-            MessageLookupByLibrary.simpleMessage("Pending BTCPay Voucher"),
+            MessageLookupByLibrary.simpleMessage("Val BTCPay pendent"),
         "btcpay_redeem_modal_description":
             MessageLookupByLibrary.simpleMessage("Descripció:"),
         "btcpay_redeem_modal_name":
             MessageLookupByLibrary.simpleMessage("Nom:"),
         "btcpay_redeem_modal_wrongNetwork_heading":
-            MessageLookupByLibrary.simpleMessage("Wrong Network"),
+            MessageLookupByLibrary.simpleMessage("Xarxa incorrecta"),
         "btcpay_redeem_modal_wrongNetwork_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "This is an on-chain voucher. It cannot be redeemed to a Testnet or Signet account."),
+                "Aquest és un val on-chain. No es pot bescanviar en un compte de Testnet o Signet."),
         "buy_bitcoin_accountSelection_chooseAccount":
-            MessageLookupByLibrary.simpleMessage("Choose different account"),
+            MessageLookupByLibrary.simpleMessage("Tria un altre compte"),
         "buy_bitcoin_accountSelection_heading":
             MessageLookupByLibrary.simpleMessage(
-                "Where should the Bitcoin be sent?"),
+                "On s\'ha d\'enviar el Bitcoin?"),
         "buy_bitcoin_accountSelection_modal_heading":
-            MessageLookupByLibrary.simpleMessage("Leaving Envoy"),
+            MessageLookupByLibrary.simpleMessage("Sortint d\'Envoy"),
         "buy_bitcoin_accountSelection_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "You are about to leave Envoy for our partner service to purchase Bitcoin. Foundation never learns any purchase information."),
+                "Esteu a punt de deixar Envoy per al nostre servei de socis per comprar Bitcoin. Foundation mai s\'assabenta de cap informació de compra."),
         "buy_bitcoin_accountSelection_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Your Bitcoin will be sent to this address:"),
+                "El vostre Bitcoin s\'enviarà a aquesta adreça:"),
         "buy_bitcoin_accountSelection_verify":
             MessageLookupByLibrary.simpleMessage(
-                "Verify Address with Passport"),
+                "Verifiqueu l\'adreça amb Passport"),
         "buy_bitcoin_accountSelection_verify_modal_heading": m1,
         "buy_bitcoin_buyOptions_atms_heading":
-            MessageLookupByLibrary.simpleMessage("How would you like to buy?"),
+            MessageLookupByLibrary.simpleMessage("Com t\'agradaria comprar?"),
         "buy_bitcoin_buyOptions_atms_map_modal_openingHours":
-            MessageLookupByLibrary.simpleMessage("Opening Hours:"),
+            MessageLookupByLibrary.simpleMessage("Horari d\'obertura:"),
         "buy_bitcoin_buyOptions_atms_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Different ATM providers require varying amounts of personal information. This info is never shared with Foundation."),
+                "Els diferents proveïdors de caixers automàtics requereixen quantitats variables d\'informació personal. Aquesta informació no es comparteix mai amb Foundation."),
         "buy_bitcoin_buyOptions_atms_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Find a Bitcoin ATM in your local area to purchase Bitcoin with cash."),
+                "Trobeu un caixer automàtic de Bitcoin a la vostra àrea local per comprar Bitcoin amb efectiu."),
         "buy_bitcoin_buyOptions_card_atms":
-            MessageLookupByLibrary.simpleMessage("ATMs"),
+            MessageLookupByLibrary.simpleMessage("Caixers automàtics"),
         "buy_bitcoin_buyOptions_card_commingSoon":
-            MessageLookupByLibrary.simpleMessage("Coming soon in your area."),
+            MessageLookupByLibrary.simpleMessage("Pròximament a la teva zona."),
         "buy_bitcoin_buyOptions_card_disabledInSettings":
-            MessageLookupByLibrary.simpleMessage("Disabled in settings."),
+            MessageLookupByLibrary.simpleMessage(
+                "Desactivada a la configuració."),
         "buy_bitcoin_buyOptions_card_inEnvoy_heading":
-            MessageLookupByLibrary.simpleMessage("Buy in Envoy"),
+            MessageLookupByLibrary.simpleMessage("Compra a Envoy"),
         "buy_bitcoin_buyOptions_card_inEnvoy_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Buy Bitcoin in seconds, directly to your Passport accounts or mobile wallet."),
+                "Compreu Bitcoin en qüestió de segons, directament al vostre compte de Passport o cartera mòbil."),
         "buy_bitcoin_buyOptions_card_peerToPeer":
             MessageLookupByLibrary.simpleMessage("Peer to Peer"),
         "buy_bitcoin_buyOptions_card_vouchers":
-            MessageLookupByLibrary.simpleMessage("Vouchers"),
+            MessageLookupByLibrary.simpleMessage("Vals"),
         "buy_bitcoin_buyOptions_inEnvoy_heading":
-            MessageLookupByLibrary.simpleMessage("How would you like to buy?"),
+            MessageLookupByLibrary.simpleMessage("Com t\'agradaria comprar?"),
         "buy_bitcoin_buyOptions_inEnvoy_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Info shared with Ramp when you purchase Bitcoin using this method. This info is never shared with Foundation."),
+                "Informació compartida amb Ramp quan compreu Bitcoin mitjançant aquest mètode. Aquesta informació no es comparteix mai amb Foundation.."),
         "buy_bitcoin_buyOptions_inEnvoy_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Buy with credit card, Apple Pay, Google Pay or bank transfer, directly into your Passport accounts or mobile wallet."),
+                "Compra amb targeta de crèdit, Apple Pay, Google Pay o transferència bancària directament al teu compte Passport o a la cartera mòbil."),
         "buy_bitcoin_buyOptions_modal_address":
-            MessageLookupByLibrary.simpleMessage("Address"),
+            MessageLookupByLibrary.simpleMessage("Direcció"),
         "buy_bitcoin_buyOptions_modal_bankingInfo":
-            MessageLookupByLibrary.simpleMessage("Banking Info"),
+            MessageLookupByLibrary.simpleMessage("Informació bancària"),
         "buy_bitcoin_buyOptions_modal_email":
-            MessageLookupByLibrary.simpleMessage("Email"),
+            MessageLookupByLibrary.simpleMessage("Correu electrònic"),
         "buy_bitcoin_buyOptions_modal_identification":
-            MessageLookupByLibrary.simpleMessage("Identification"),
+            MessageLookupByLibrary.simpleMessage("Identificació"),
         "buy_bitcoin_buyOptions_modal_poweredBy":
-            MessageLookupByLibrary.simpleMessage("Powered by "),
+            MessageLookupByLibrary.simpleMessage("Impulsat per "),
         "buy_bitcoin_buyOptions_notSupported_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Check out these other ways to purchase Bitcoin."),
+                "Fes una ullada a aquestes altres formes de comprar Bitcoin."),
         "buy_bitcoin_buyOptions_peerToPeer_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Most trades require no info sharing, but your trade partner may learn your banking info. This info is never shared with Foundation."),
+                "La majoria de les operacions no requereixen compartir informació, però el vostre soci comercial pot conèixer la vostra informació bancària. Aquesta informació mai es comparteix amb Foundation."),
         "buy_bitcoin_buyOptions_peerToPeer_options_agoraDesk":
             MessageLookupByLibrary.simpleMessage("AgoraDesk"),
         "buy_bitcoin_buyOptions_peerToPeer_options_agoraDesk_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Non-custodial, peer-to-peer Bitcoin purchases."),
+                "Compres de Bitcoin sense custòdia, peer-to-peer."),
         "buy_bitcoin_buyOptions_peerToPeer_options_bisq":
             MessageLookupByLibrary.simpleMessage("Bisq"),
         "buy_bitcoin_buyOptions_peerToPeer_options_bisq_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Non-custodial, peer-to-peer Bitcoin purchases."),
+                "Compres de Bitcoin sense custòdia, peer-to-peer."),
         "buy_bitcoin_buyOptions_peerToPeer_options_card_hodlHodl":
             MessageLookupByLibrary.simpleMessage("Hodl Hodl"),
         "buy_bitcoin_buyOptions_peerToPeer_options_card_hodlHodl_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Non-custodial, peer-to-peer Bitcoin purchases."),
+                "Compres de Bitcoin sense custòdia, peer-to-peer."),
         "buy_bitcoin_buyOptions_peerToPeer_options_heading":
-            MessageLookupByLibrary.simpleMessage("Select an option"),
+            MessageLookupByLibrary.simpleMessage("Selecciona una opció"),
         "buy_bitcoin_buyOptions_peerToPeer_options_peach":
             MessageLookupByLibrary.simpleMessage("Peach"),
         "buy_bitcoin_buyOptions_peerToPeer_options_peach_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Non-custodial, peer-to-peer Bitcoin purchases."),
+                "Compres de Bitcoin sense custòdia, peer-to-peer."),
         "buy_bitcoin_buyOptions_peerToPeer_options_robosats":
             MessageLookupByLibrary.simpleMessage("Robosats"),
         "buy_bitcoin_buyOptions_peerToPeer_options_robosats_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Non-custodial, Lightning native, peer-to-peer Bitcoin purchases."),
+                "Compres de Bitcoin sense custòdia, natives de Lightning, peer-to-peer."),
         "buy_bitcoin_buyOptions_peerToPeer_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Buy Bitcoin outside of Envoy, without middlemen. Requires more steps, but can be more private."),
+                "Comprar Bitcoin fora d\'Envoy, sense intermediaris. Requereix més passos, però pot ser més privat."),
         "buy_bitcoin_buyOptions_vouchers_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Different vendors will require varying amounts of personal information. This info is never shared with Foundation."),
+                "Els diferents proveïdors requeriran quantitats variables d\'informació personal. Aquesta informació no es comparteix mai amb Foundation."),
         "buy_bitcoin_buyOptions_vouchers_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Purchase Bitcoin vouchers online or in person. Redeem using the scanner inside any account."),
+                "Compra vals de Bitcoin en línia o en persona. Bescanvia amb l\'escàner des de qualsevol compte."),
         "buy_bitcoin_defineLocation_heading":
-            MessageLookupByLibrary.simpleMessage("Your Region"),
+            MessageLookupByLibrary.simpleMessage("La teva Regió"),
         "buy_bitcoin_defineLocation_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Select your region so Envoy can display the purchase options available to you.  This info will never leave Envoy."),
+                "Seleccioneu la vostra regió perquè Envoy pugui mostrar les opcions de compra disponibles.  Aquesta informació no sortirà mai d\'Envoy."),
         "buy_bitcoin_details_menu_editRegion":
-            MessageLookupByLibrary.simpleMessage("EDIT REGION"),
+            MessageLookupByLibrary.simpleMessage("EDITA LA REGIÓ"),
         "buy_bitcoin_exit_modal_heading":
-            MessageLookupByLibrary.simpleMessage("Cancel Buying Process"),
+            MessageLookupByLibrary.simpleMessage("Cancel·lar Procés de Compra"),
         "buy_bitcoin_exit_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "You are about to cancel the buying process. Are you sure?"),
+                "Estàs a punt de cancel·lar el procés de compra. Estàs segur?"),
         "buy_bitcoin_mapLoadingError_header":
-            MessageLookupByLibrary.simpleMessage("Couldn\'t load map"),
+            MessageLookupByLibrary.simpleMessage(
+                "No s\'ha pogut carregar el mapa"),
         "buy_bitcoin_mapLoadingError_subheader":
             MessageLookupByLibrary.simpleMessage(
-                "Envoy is currently unable to load map data. Check your connection or try again later."),
+                "Actualment, Envoy no pot carregar les dades del mapa. Comprova la teva connexió o torna-ho a provar més tard."),
         "buy_bitcoin_purchaseComplete_heading":
-            MessageLookupByLibrary.simpleMessage("Purchase Complete"),
+            MessageLookupByLibrary.simpleMessage("Compra Finalitzada"),
         "buy_bitcoin_purchaseComplete_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Finalization may take some time depending on\npayment method and network congestion."),
+                "La finalització pot trigar un temps depenent de la forma de pagament i congestió de la xarxa."),
         "buy_bitcoin_purchaseError_contactRamp":
             MessageLookupByLibrary.simpleMessage(
-                "Please contact Ramp for support."),
+                "Poseu-vos en contacte amb Ramp per obtenir assistència."),
         "buy_bitcoin_purchaseError_heading":
-            MessageLookupByLibrary.simpleMessage("Something Went Wrong"),
+            MessageLookupByLibrary.simpleMessage("S\'ha produït un error"),
         "buy_bitcoin_purchaseError_purchaseID":
-            MessageLookupByLibrary.simpleMessage("Purchase ID:"),
+            MessageLookupByLibrary.simpleMessage("ID de Compra:"),
         "card_coin_locked":
             MessageLookupByLibrary.simpleMessage("Moneda Bloquejada"),
         "card_coin_selected":
@@ -338,6 +344,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_lock_coin_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Bloquejar les monedes evitarà que s\'utilitzin en transaccions"),
+        "coincontrol_switchActivity":
+            MessageLookupByLibrary.simpleMessage("Activitat"),
+        "coincontrol_switchTags":
+            MessageLookupByLibrary.simpleMessage("Etiquetes"),
         "coincontrol_txDetail_ReviewTransaction":
             MessageLookupByLibrary.simpleMessage("Revisa la Transacció"),
         "coincontrol_txDetail_cta1_passport":
@@ -400,7 +410,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Algunes monedes més petites s\'han exclòs d\'aquesta transacció. A la tarifa escollida, costen més d\'incloure del que valen."),
         "coincontrol_tx_detail_newFee":
-            MessageLookupByLibrary.simpleMessage("New Fee"),
+            MessageLookupByLibrary.simpleMessage("Nova Tarifa"),
         "coincontrol_tx_detail_no_change":
             MessageLookupByLibrary.simpleMessage("Sense canvis"),
         "coincontrol_tx_detail_passport_cta2":
@@ -443,28 +453,33 @@ class MessageLookup extends MessageLookupByLibrary {
         "coindetails_overlay_date":
             MessageLookupByLibrary.simpleMessage("Data"),
         "coindetails_overlay_explorer":
-            MessageLookupByLibrary.simpleMessage("Explorer"),
+            MessageLookupByLibrary.simpleMessage("Explorador"),
         "coindetails_overlay_heading":
             MessageLookupByLibrary.simpleMessage("DETALLS DE LA MONEDA"),
         "coindetails_overlay_modal_explorer_heading":
-            MessageLookupByLibrary.simpleMessage("Open in Explorer"),
+            MessageLookupByLibrary.simpleMessage("Obre a l\'explorador"),
         "coindetails_overlay_modal_explorer_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "You are about to leave Envoy and view this transaction on a blockchain explorer hosted by Foundation. Ensure you understand the privacy trade-offs before continuing. "),
+                "Esteu a punt de deixar Envoy i veure aquesta transacció en un explorador de blockchain allotjat per la Fundació. Assegureu-vos d\'entendre les compensacions de privacitat abans de continuar. "),
         "coindetails_overlay_noBoostNoFunds_heading":
             MessageLookupByLibrary.simpleMessage(
                 "No es pot augmentar la transacció"),
         "coindetails_overlay_noBoostNoFunds_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Això es deu al fet que no hi ha prou monedes confirmades o desbloquejades per triar. Permet que les monedes pendents confirmin o desbloquegin algunes i torneu-ho a provar."),
+                "Això es deu al fet que no hi ha prou monedes confirmades o desbloquejades per triar. \n\nSempre que sigui possible, permeteu que les monedes pendents confirmin o desbloquegin algunes monedes i torneu-ho a provar."),
+        "coindetails_overlay_noCancelNoFunds_heading":
+            MessageLookupByLibrary.simpleMessage("Cannot Cancel Transaction"),
+        "coindetails_overlay_noCanceltNoFunds_subheading":
+            MessageLookupByLibrary.simpleMessage(
+                "Not enough confirmed or unlocked coins available to cancel this transaction. \n\nWhere possible, allow pending coins to confirm, or unlock some coins and try again."),
         "coindetails_overlay_notes":
             MessageLookupByLibrary.simpleMessage("Notes"),
         "coindetails_overlay_paymentID":
             MessageLookupByLibrary.simpleMessage("ID de pagament"),
         "coindetails_overlay_rampFee":
-            MessageLookupByLibrary.simpleMessage("Ramp Fees"),
+            MessageLookupByLibrary.simpleMessage("Tarifes de Ramp"),
         "coindetails_overlay_rampID":
-            MessageLookupByLibrary.simpleMessage("Ramp ID"),
+            MessageLookupByLibrary.simpleMessage("ID de Ramp"),
         "coindetails_overlay_status":
             MessageLookupByLibrary.simpleMessage("Estat"),
         "coindetails_overlay_status_confirmed":
@@ -478,42 +493,47 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_Apply": MessageLookupByLibrary.simpleMessage("Aplica"),
         "component_back": MessageLookupByLibrary.simpleMessage("Enrere"),
         "component_cancel": MessageLookupByLibrary.simpleMessage("Cancel·la"),
-        "component_content": MessageLookupByLibrary.simpleMessage("Content"),
+        "component_confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
+        "component_content": MessageLookupByLibrary.simpleMessage("Contingut"),
         "component_continue": MessageLookupByLibrary.simpleMessage("Continuar"),
         "component_delete": MessageLookupByLibrary.simpleMessage("Esborrar"),
-        "component_device": MessageLookupByLibrary.simpleMessage("Device"),
+        "component_device": MessageLookupByLibrary.simpleMessage("Dispositiu"),
         "component_dismiss": MessageLookupByLibrary.simpleMessage("Descarta"),
         "component_done": MessageLookupByLibrary.simpleMessage("Fet"),
         "component_dontShowAgain":
             MessageLookupByLibrary.simpleMessage("No ho tornis a mostrar"),
         "component_filter": MessageLookupByLibrary.simpleMessage("Filtra"),
         "component_filter_button_all":
-            MessageLookupByLibrary.simpleMessage("All"),
+            MessageLookupByLibrary.simpleMessage("Tot"),
         "component_goToSettings":
-            MessageLookupByLibrary.simpleMessage("Go to Settings"),
+            MessageLookupByLibrary.simpleMessage("Vés a Configuració"),
         "component_learnMore":
             MessageLookupByLibrary.simpleMessage("Més informació"),
-        "component_minishield_buy": MessageLookupByLibrary.simpleMessage("Buy"),
+        "component_minishield_buy":
+            MessageLookupByLibrary.simpleMessage("Comprar"),
         "component_next": MessageLookupByLibrary.simpleMessage("Següent"),
         "component_no": MessageLookupByLibrary.simpleMessage("No"),
-        "component_ok": MessageLookupByLibrary.simpleMessage("OK"),
+        "component_ok": MessageLookupByLibrary.simpleMessage("D\'ACORD"),
         "component_redeem": MessageLookupByLibrary.simpleMessage("Bescanviar"),
         "component_reset": MessageLookupByLibrary.simpleMessage("Reinicia"),
         "component_retry":
             MessageLookupByLibrary.simpleMessage("Torna-ho a provar"),
         "component_save": MessageLookupByLibrary.simpleMessage("Guardar"),
         "component_skip": MessageLookupByLibrary.simpleMessage("Saltar"),
-        "component_sortBy": MessageLookupByLibrary.simpleMessage("Sort by"),
+        "component_sortBy": MessageLookupByLibrary.simpleMessage("Ordena per"),
         "component_tryAgain":
             MessageLookupByLibrary.simpleMessage("Torna-ho a Provar"),
-        "component_update": MessageLookupByLibrary.simpleMessage("Update"),
+        "component_update":
+            MessageLookupByLibrary.simpleMessage("Actualització"),
         "component_warning":
             MessageLookupByLibrary.simpleMessage("ADVERTÈNCIA"),
         "component_yes": MessageLookupByLibrary.simpleMessage("Sí"),
+        "contactRampForSupport":
+            MessageLookupByLibrary.simpleMessage("Contact Ramp for support"),
         "copyToClipboard_address": MessageLookupByLibrary.simpleMessage(
-            "Your address will be copied to the clipboard and may be visible to other apps on your phone."),
+            "La teva adreça es copiarà al porta-retalls i pot ser que la puguin veure altres aplicacions del teu telèfon."),
         "copyToClipboard_txid": MessageLookupByLibrary.simpleMessage(
-            "Your transaction ID will be copied to the clipboard and may be visible to other apps on your phone."),
+            "L\'identificador de la transacció es copiarà al porta-retalls i és possible que sigui visible per a altres aplicacions del telèfon."),
         "create_first_tag_modal_1_2_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Les etiquetes són una manera útil d\'organitzar les teves monedes."),
@@ -556,9 +576,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_account_tos_subheading": MessageLookupByLibrary.simpleMessage(
             "Last updated: May 16, 2021.\r\n\r\nBy purchasing, using or continuing to use a Passport hardware wallet (“Passport“), you, the purchaser of Passport, agree to be bound by these terms of and use (the “Passport Terms of Use” or “Terms”).\r\n\r\n1. Use of Passport\n\nPassport includes functionality to store and facilitate the transfer of bitcoin (“Bitcoin”) and which may be used to facilitate various types of transactions and other activities (“Transactions”). You understand and agree that Foundation Devices (“Foundation”, “We”, or “Us“) is not responsible for, and has no obligation or liability to you or others in respect of any Transactions. You agree to comply with all applicable laws in your use of Products (including all Transactions), including without limitation any anti-money laundering laws or regulations.\r\n\r\n2. Security\n\r\nYou understand and agree that control and access to Bitcoin stored on any Product is based upon physical possession and control of such Product and that any person given physical possession of the Product may remove or transfer any or all Bitcoin stored on such Product.\r\n\r\n3. BACKUPS\r\nYou are solely responsible for generating and making backups of your recovery phrase and for preserving and maintaining the security and confidentiality of your recovery phrase and your PIN. You acknowledge and agree that failure to do so may result in the complete loss of all Bitcoin stored on Passport and that we have no obligation to liability whatsoever for any such loss.\r\n\r\n4. MODIFICATIONS\r\nYou acknowledge and agree that any modifications to Passport, the installation of any additional software or firmware on a Passport or the use of Passport in connection with any other software or equipment are at your sole risk, and that we have no obligation or liability in respect thereof or in respect of any resulting loss of Bitcoin, damage to Passport, failure of the Passport or errors in storing Bitcoin or processing Transactions;\r\n\r\n5. OPEN SOURCE LICENSES\r\nPassport includes software licensed under the GNU General Public License v3 and other open source licenses, as identified in documentation provided with Passport. Your use of such software is subject to the applicable open source licenses and, to the extent such open source licenses conflicts with this Agreement, the terms of such licenses will prevail.\r\n\r\n6. ACKNOWLEDGEMENT AND ASSUMPTION OF RISK\r\nYou understand and agree that:\r\n\r\n(a) there are risks associated with the use and holding of Bitcoin and you represent and warrant that you are knowledgeable and/or experienced in matters relating to the use of Bitcoin and are capable of evaluating the benefits and risks of using and holding Bitcoin and fully understand the nature of Bitcoin, the limitations and restrictions on its liquidity and transferability and are capable of bearing the economic risk of holding and transacting using Bitcoin;\r\n\r\n(b) the continued ability to use Bitcoin is dependent on many elements beyond our control, including without limitation the publication of blocks, network connectivity, hacking or changes in the technical and other standards, policies and procedures applicable to Bitcoin;\r\n\r\n(c) no regulatory authority has reviewed or passed on the merits, legality or fungibility of Bitcoin;\r\n\r\n(d) there is no government or other insurance covering Bitcoin, the loss or theft of Bitcoin, or any loss in the value of Bitcoin;\r\n\r\n(e) the use of Bitcoin or the Products may become subject to regulatory controls that limit, restrict, prohibit or otherwise impose conditions on your use of same;\r\n\r\n(f) Bitcoin do not constitute a currency, asset, security, negotiable instrument, or other form of property and do not have any intrinsic or inherent value;\r\n\r\n(g) the value of and/or exchange rates for Bitcoin may fluctuate significantly and may result in you incurring significant losses;\r\n\r\n(h) Transactions may have tax consequences (including obligations to report, collect or remit taxes) and you are solely responsible for understanding and complying with all applicable tax laws and regulations; and\r\n\r\n(i) the use of Bitcoin or Products may be illegal or subject to regulation in certain jurisdictions, and it is your responsibility to ensure that you comply with the laws of any jurisdiction in which you use Bitcoin or Products.\r\n\r\n7. TRANSFER OF PASSPORT\r\nYou may transfer or sell Passport to others on the condition that you ensure that the transferee or purchaser agrees to be bound by the then-current form of these Terms available on our website at the time of transfer.\r\n\r\n8. RESTRICTIONS\r\nYou shall not:\r\n\r\n(a) use Passport in a manner or for a purpose that: (i) is illegal or otherwise contravenes applicable law (including the facilitation or furtherance of any criminal or fraudulent activity or the violation of any anti-money laundering legislation); or (ii) infringes upon the lawful rights of others;\r\n\r\n(b) interfere with the security or integrity of Passport;\r\n\r\n(c) remove, destroy, cover, obfuscate or alter in any manner any notices, legends, trademarks, branding or logos appearing on or contained in Passport; or\r\n\r\n(d) attempt, or cause, permit or encourage any other person, to do any of the foregoing.\r\n\r\nNotwithstanding the foregoing, you may investigate security and other vulnerabilities, provided you do so in a reasonable and responsible manner in compliance with applicable law and our responsible disclosure policy and otherwise use good faith efforts to minimize or avoid contravention of any of the foregoing.\r\n\r\n9. REPRESENTATIONS AND WARRANTIES\r\nYou represent, warrant and covenant that:\r\n\r\n(a) you have the capacity to, and are and will be free to, enter into and to fully perform your obligations under these Terms and that no agreement or understanding with any other person exists or will exist which would interfere with such obligations; and\r\n\r\n(b) these Terms constitute a legal, valid and binding obligation upon you.\r\n\r\n10. OWNERSHIP\r\nExcept for the limited rights of use expressly granted to you under these Terms, all right, title and interest (including all copyrights, trademarks, service marks, patents, inventions, trade secrets, intellectual property rights and other proprietary rights) in and to Passport are and shall remain exclusively owned by us and our licensors. All trade names, company names, trademarks, service marks and other names and logos are the proprietary marks of us or our licensors, and are protected by law and may not be copied, imitated or used, in whole or in part, without the consent of their respective owners. These Terms do not grant you any rights in respect of any such marks. You understand and agree that any feedback, input, suggestions, recommendations, improvements, changes, specifications, test results, or other data or information that you provide or make available to us arising from or related to your use of the Products or Software shall become our exclusive property and may be used by us to modify, enhance, maintain and improve Passport without any obligation or payment to you whatsoever.\r\n\r\n11. THIRD PARTY PRODUCTS\r\nYou acknowledge and agree that you will require certain third party equipment, products, software and services in order to use the Products and may also use optional third party equipment, products, software and services that enhance or complement such use (collectively, “Third Party Products”). You acknowledge and agree that failure to use or procure Third Party Products that meet the minimum requirements for Products, or failure to properly configure or setup Third Party Products may result in the inability to use the Products and/or processing failures or errors. Third Party Products include, without limitation, computers, mobile devices, networking equipment, operating system software, web browsers and internet connectivity. We may also identify, recommend, reference or link to optional Third Party Products on our website. You acknowledge and agree that: (a) Third Party Products are be governed by separate licenses, agreements or terms and conditions and we have no obligation or liability to you in respect thereof; and (b) you are solely responsible for procuring any Third Party Products at your cost and expense, and are solely responsible for compliance with any applicable licenses, agreements or terms and conditions governing same. \r\n\r\n12. INDEMNITY\r\nYou agree to indemnify and hold Foundation Devices (and our officers, employees, and agents) harmless, including costs and attorneys’ fees, from any claim or demand due to or arising out of (a) your use of Passport, (b) your violation of this Agreement or (c) your violation of applicable laws or regulations. We reserve the right, at your expense, to assume the exclusive defense and control of any matter for which you are required to indemnify us and you agree to cooperate with our defense of these claims. You agree not to settle any matter without our prior written consent. We will use reasonable efforts to notify you of any such claim, action or proceeding upon becoming aware of it.\r\n\r\n13. DISCLAIMERS\r\nPASSPORT IS PROVIDED “AS-IS” AND “AS AVAILABLE” AND WE (AND OUR SUPPLIERS) EXPRESSLY DISCLAIM ANY WARRANTIES AND CONDITIONS OF ANY KIND, WHETHER EXPRESS OR IMPLIED, INCLUDING THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, QUIET ENJOYMENT, ACCURACY, OR NON-INFRINGEMENT. WE (AND OUR SUPPLIERS) MAKE NO WARRANTY THAT PASSPORT: (A) WILL MEET YOUR REQUIREMENTS; (B) WILL BE AVAILABLE ON AN UNINTERRUPTED, TIMELY, SECURE, OR ERROR-FREE BASIS; OR (C) WILL BE ACCURATE, RELIABLE, FREE OF VIRUSES OR OTHER HARMFUL CODE, COMPLETE, LEGAL, OR SAFE.\r\n\r\nSOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF IMPLIED WARRANTIES, SO THE ABOVE EXCLUSION MAY NOT APPLY TO YOU.\r\n\r\n14. LIMITATION ON LIABILITY\r\nYOU AGREE THAT, TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, OUR AGGREGATE LIABILITY ARISING FROM OR RELATED TO THESE TERMS OR PASSPORT IN ANY MANNER WILL BE LIMITED TO DIRECT DAMAGES NOT TO EXCEED THE PURCHASE PRICE YOU HAVE PAID TO US FOR PASSPORT (EXCLUDING SHIPPING CHARGES AND TAXES). TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL WE (AND OUR SUPPLIERS) BE LIABLE FOR ANY CONSEQUENTIAL, INCIDENTAL, INDIRECT, SPECIAL, PUNITIVE, OR OTHER DAMAGES WHATSOEVER (INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF REVENUE, PROFITS, OR EXPECTED SAVINGS, BUSINESS INTERRUPTION, PERSONAL INJURY, LOSS OF PRIVACY, LOSS OF DATA OR INFORMATION OR OTHER PECUNIARY OR INTANGIBLE LOSS) ARISING OUT OF THESE TERMS OR THE USE OF OR INABILITY TO USE PASSPORT, EVEN IF WE FORESEE OR HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.\r\n\r\nSOME JURISDICTIONS DO NOT ALLOW THE LIMITATION OR EXCLUSION OF LIABILITY FOR INCIDENTAL OF CONSEQUENTIAL DAMAGES, SO THE ABOVE LIMITATION OR EXCLUSION MAY NOT APPLY TO YOU.\r\n\r\n15. RELEASE\r\nYou hereby release and forever discharge us (and our officers, employees, agents, successors, and assigns) from, and hereby waive and relinquish, each and every past, present and future dispute, claim, controversy, demand, right, obligation, liability, action and cause of action of every kind and nature (including personal injuries, death, and property damage), that has arisen or arises directly or indirectly out of, or relates directly or indirectly to, use of Passport. IF YOU ARE A CALIFORNIA RESIDENT, YOU HEREBY WAIVE CALIFORNIA CIVIL CODE SECTION 1542 IN CONNECTION WITH THE FOREGOING, WHICH STATES: “A GENERAL RELEASE DOES NOT EXTEND TO CLAIMS WHICH THE CREDITOR DOES NOT KNOW OR SUSPECT TO EXIST IN HIS OR HER FAVOR AT THE TIME OF EXECUTING THE RELEASE, WHICH IF KNOWN BY HIM OR HER MUST HAVE MATERIALLY AFFECTED HIS OR HER SETTLEMENT WITH THE DEBTOR.”\r\n\r\n16. SURVIVAL\r\nNeither the expiration nor the earlier termination of your account will release you from any obligation or liability that accrued prior to such expiration or termination. The provisions of these Terms requiring performance or fulfilment after the expiration or earlier termination of your account and any other provisions hereof, the nature and intent of which is to survive termination or expiration, will survive.\r\n\r\n17. PRIVACY POLICY\r\nPlease review our Privacy Policy, located at https://foundationdevices.com/privacy, which governs the use of personal information.\r\n\r\n18. DISPUTE RESOLUTION\r\nPlease read the following arbitration agreement in this section (“Arbitration Agreement”) carefully. It requires U.S. users to arbitrate disputes with Foundation Devices and limits the manner in which you can seek relief from us.\r\n\r\n(a) Applicability of Arbitration Agreement. You agree that any dispute, claim, or request for relief relating in any way to your use of Passport will be resolved by binding arbitration, rather than in court, except that (a) you may assert claims or seek relief in small claims court if your claims qualify; and (b) you or we may seek equitable relief in court for infringement or other misuse of intellectual property rights (such as trademarks, trade dress, domain names, trade secrets, copyrights, and patents). This Arbitration Agreement shall apply, without limitation, to all disputes or claims and requests for relief that arose or were asserted before the effective date of this Agreement or any prior version of this Agreement.\r\n\r\n(b) Arbitration Rules and Forum. The Federal Arbitration Act governs the interpretation and enforcement of this Arbitration Agreement. To begin an arbitration proceeding, you must send a letter requesting arbitration and describing your dispute or claim or request for relief to our registered agent. The arbitration will be conducted by JAMS, an established alternative dispute resolution provider. Disputes involving claims, counterclaims, or request for relief under \$250,000, not inclusive of attorneys’ fees and interest, shall be subject to JAMS’s most current version of the Streamlined Arbitration Rules and procedures available at https://jamsadr.com/rules-streamlined-arbitration/; all other disputes shall be subject to JAMS’s most current version of the Comprehensive Arbitration Rules and Procedures, available at https://jamsadr.com/rules-comprehensive-arbitration/. JAMS’s rules are also available at https://jamsadr.com or by calling JAMS at 800-352-5267. If JAMS is not available to arbitrate, the parties will select an alternative arbitral forum. If the arbitrator finds that you cannot afford to pay JAMS’s filing, administrative, hearing and/or other fees and cannot obtain a waiver from JAMS, Company will pay them for you. In addition, Company will reimburse all such JAMS’s filing, administrative, hearing and/or other fees for disputes, claims, or requests for relief totaling less than \$10,000 unless the arbitrator determines the claims are frivolous.\r\n\r\nYou may choose to have the arbitration conducted by telephone, based on written submissions, or in person in the country where you live or at another mutually agreed location. Any judgment on the award rendered by the arbitrator may be entered in any court of competent jurisdiction.\r\n\r\n(c) Authority of Arbitrator. The arbitrator shall have exclusive authority to (a) determine the scope and enforceability of this Arbitration Agreement and (b) resolve any dispute related to the interpretation, applicability, enforceability or formation of this Arbitration Agreement including, but not limited to, any assertion that all or any part of this Arbitration Agreement is void or voidable. The arbitration will decide the rights and liabilities, if any, of you and Company. The arbitration proceeding will not be consolidated with any other matters or joined with any other cases or parties. The arbitrator shall have the authority to grant motions dispositive of all or part of any claim. The arbitrator shall have the authority to award monetary damages and to grant any non-monetary remedy or relief available to an individual under applicable law, the arbitral forum’s rules, and the Agreement (including the Arbitration Agreement). The arbitrator shall issue a written award and statement of decision describing the essential findings and conclusions on which the award is based, including the calculation of any damages awarded. The arbitrator has the same authority to award relief on an individual basis that a judge in a court of law would have. The award of the arbitrator is final and binding upon you and us.\r\n\r\n(d) Waiver of Jury Trial. YOU AND COMPANY HEREBY WAIVE ANY CONSTITUTIONAL AND STATUTORY RIGHTS TO SUE IN COURT AND HAVE A TRIAL IN FRONT OF A JUDGE OR A JURY. You and Company are instead electing that all disputes, claims, or requests for relief shall be resolved by arbitration under this Arbitration Agreement, except as specified in Section 10(a) (Application of Arbitration Agreement) above. An arbitrator can award on an individual basis the same damages and relief as a court and must follow this Agreement as a court would. However, there is no judge or jury in arbitration, and court review of an arbitration award is subject to very limited review.\r\n\r\n(e) Waiver of Class or Other Non-Individualized Relief. ALL DISPUTES, CLAIMS, AND REQUESTS FOR RELIEF WITHIN THE SCOPE OF THIS ARBITRATION AGREEMENT MUST BE ARBITRATED ON AN INDIVIDUAL BASIS AND NOT ON A CLASS OR COLLECTIVE BASIS, ONLY INDIVIDUAL RELIEF IS AVAILABLE, AND CLAIMS OF MORE THAN ONE CUSTOMER OR USER CANNOT BE ARBITRATED OR CONSOLIDATED WITH THOSE OF ANY OTHER CUSTOMER OR USER. If a decision is issued stating that applicable law precludes enforcement of any of this section’s limitations as to a given dispute, claim, or request for relief, then such aspect must be severed from the arbitration and brought into the State or Federal Courts located in the Commonwealth of Massachusetts. All other disputes, claims, or requests for relief shall be arbitrated.\r\n\r\n(f) 30-Day Right to Opt Out. You have the right to opt out of the provisions of this Arbitration Agreement by sending written notice of your decision to opt out to: hello@foundationdevices.com, within thirty (30) days after first becoming subject to this Arbitration Agreement. Your notice must include your name and address, your Company username (if any), the email address you used to set up your Company account (if you have one), and an unequivocal statement that you want to opt out of this Arbitration Agreement. If you opt out of this Arbitration Agreement, all other parts of this Agreement will continue to apply to you. Opting out of this Arbitration Agreement has no effect on any other arbitration agreements that you may currently have, or may enter in the future, with us.\r\n\r\n(g) Severability. Except as provided in Section 10(e)(Waiver of Class or Other Non-Individualized Relief), if any part or parts of this Arbitration Agreement are found under the law to be invalid or unenforceable, then such specific part or parts shall be of no force and effect and shall be severed and the remainder of the Arbitration Agreement shall continue in full force and effect.\r\n\r\n(h) Survival of Agreement. This Arbitration Agreement will survive the termination of your relationship with Company.\r\n\r\nModification. Notwithstanding any provision in this Agreement to the contrary, we agree that if Company makes any future material change to this Arbitration Agreement, you may reject that change within thirty (30) days of such change becoming effective by writing Company at the following address: Foundation Devices, Inc., 6 Liberty Square #6018, Boston, MA 02109, Attn: CEO.\r\n\r\n19. GENERAL\r\n(a) Changes to Terms of Use. This Agreement is subject to occasional revision, and if we make any substantial changes, we may notify you by sending you an e-mail to the last e-mail address you provided to us (if any) and/or by prominently posting notice of the changes on our website. Any changes to this agreement will be effective upon the earlier of thirty (30) calendar days following our dispatch of an e-mail notice to you (if applicable) or thirty (30) calendar days following our posting of notice of the changes on our website. These changes will be effective immediately for new users of our website. You are responsible for providing us with your most current e-mail address. In the event that the last e-mail address that you have provided us is not valid, or for any reason is not capable of delivering to you the notice described above, our dispatch of the e-mail containing such notice will nonetheless constitute effective notice of the changes described in the notice. Continued use of Passport following notice of such changes will indicate your acknowledgement of such changes and agreement to be bound by the terms and conditions of such changes.\r\n\r\nChoice Of Law. The Agreement is made under and will be governed by and construed in accordance with the laws of the Commonwealth of Massachusetts, consistent with the Federal Arbitration Act, without giving effect to any principles that provide for the application of the law of another jurisdiction.\r\n\r\n(b) Entire Agreement. This Agreement constitutes the entire agreement between you and us regarding the use of Passport. Our failure to exercise or enforce any right or provision of this Agreement will not operate as a waiver of such right or provision. The section titles in this Agreement are for convenience only and have no legal or contractual effect. The word including means including without limitation. If any provision of this Agreement is, for any reason, held to be invalid or unenforceable, the other provisions of this Agreement will be unimpaired and the invalid or unenforceable provision will be deemed modified so that it is valid and enforceable to the maximum extent permitted by law. Your relationship to us is that of an independent contractor, and neither party is an agent or partner of the other. This Agreement, and your rights and obligations herein, may not be assigned, subcontracted, delegated, or otherwise transferred by you without our prior written consent, and any attempted assignment, subcontract, delegation, or transfer in violation of the foregoing will be null and void. The terms of this Agreement will be binding upon assignees.\r\n\r\n(c) Copyright/Trademark Information. Copyright © 2020, Foundation Devices, Inc. All rights reserved. All trademarks, logos and service marks displayed on the Site are our property or the property of other third parties. You are not permitted to use such trademarks, logos and service marks without our prior written consent or the consent of such third party which may own the Marks.\r\n\r\nContact Information:\r\n\r\nFoundation Devices, Inc.\r\n6 Liberty Square #6018\r\nBoston, MA 02109\r\nhello@foundationdevices.com"),
         "envoy_cameraPermissionRequest": MessageLookupByLibrary.simpleMessage(
-            "Envoy requires camera access to scan QR codes. Please go to settings and grant camera permissions."),
+            "Envoy requereix accés a la càmera per escanejar codis QR. Si us plau, aneu a la configuració i concediu els permisos de la càmera."),
         "envoy_cameraPermissionRequest_Header":
-            MessageLookupByLibrary.simpleMessage("Permission required"),
+            MessageLookupByLibrary.simpleMessage("Permís necessari"),
         "envoy_faq_answer_1": MessageLookupByLibrary.simpleMessage(
             "Envoy és una aplicació de cartera mòbil de Bitcoin i Passport, disponible a iOS i Android."),
         "envoy_faq_answer_10": MessageLookupByLibrary.simpleMessage(
@@ -580,7 +600,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_faq_answer_18": MessageLookupByLibrary.simpleMessage(
             "Si s\'utilitza amb un Passport, Envoy actua com a moneder \'només per a visualització\' connectat al teu Hardware Wallet. Això significa que Envoy pot construir transaccions, però són inútils sense l\'autorització pertinent, que només Passport pot proporcionar. Passport és l\'emmagatzematge en fred i Envoy és simplement la interfície connectada a Internet! Si utilitzes Envoy per crear un moneder mòbil, on les claus es guarden de manera segura al teu telèfon, aquest moneder mòbil no es consideraria emmagatzematge en fred. Això no té cap efecte sobre la seguretat de cap compte connectat a Passport."),
         "envoy_faq_answer_19": MessageLookupByLibrary.simpleMessage(
-            "Sí, Envoy es connecta utilitzant el protocol del servidor Electrum. Per connectar amb el teu propi servidor Electrum, escaneja el codi QR o introdueix l\'URL proporcionada a la configuració de xarxa en Envoy."),
+            "Sí, Envoy es connecta utilitzant el protocol del servidor Electrum. Per connectar amb el teu propi servidor Electrum, escaneja el codi QR o introdueix l\'URL proporcionat a la configuració de xarxa en Envoy."),
         "envoy_faq_answer_2": MessageLookupByLibrary.simpleMessage(
             "Envoy està dissenyat per oferir l\'experiència més fàcil d\'utilitzar de qualsevol cartera Bitcoin, sense comprometre la vostra privacitat. Amb les Còpies de Seguretat d\'Envoy, configureu una cartera mòbil de Bitcoin amb custòdia pròpia en 60 segons, sense paraules inicials! Els usuaris de Passport poden connectar els seus dispositius a Envoy per a una fàcil configuració, actualitzacions de firmware i una experiència senzilla de cartera de Bitcoin."),
         "envoy_faq_answer_20": MessageLookupByLibrary.simpleMessage(
@@ -592,7 +612,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_faq_answer_23": MessageLookupByLibrary.simpleMessage(
             "Sí. A partir de la versió 1.4.0, Envoy permet personalitzar totalment les comissions dels miners, així com dues opcions ràpides de selecció de comissions: \'Estàndard\' i \'Més ràpid\'. \'Estàndard\' té com a objectiu finalitzar la teva transacció en un termini de 60 minuts i \'Més ràpid\' en 10 minuts. Aquestes són estimacions basades en la congestió de la xarxa en el moment de construir la transacció i sempre et mostrarem el cost de les dues opcions abans de finalitzar la transacció."),
         "envoy_faq_answer_24": MessageLookupByLibrary.simpleMessage(
-            "Yes! From v1.7 you can now purchase Bitcoin within Envoy and have it automatically deposited to your mobile account, or any connected Passport accounts. Just click on the buy button from the main Accounts screen."),
+            "Sí! A partir de la v1.7 ara podeu comprar Bitcoin dins d\'Envoy i dipositar-lo automàticament al vostre compte mòbil o a qualsevol compte de Passport connectat. Només cal que feu clic al botó de compra des de la pantalla principal de comptes."),
         "envoy_faq_answer_3": MessageLookupByLibrary.simpleMessage(
             "Envoy és una cartera Bitcoin senzilla amb potents funcions de privacitat i gestió de comptes, com ara les Còpies de Seguretat Màgiques. Utilitzeu Envoy juntament amb la vostra cartera Passport per a la configuració, actualitzacions de firmware i molt més."),
         "envoy_faq_answer_4": MessageLookupByLibrary.simpleMessage(
@@ -647,8 +667,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Envoy admet les despeses per lots?"),
         "envoy_faq_question_23": MessageLookupByLibrary.simpleMessage(
             "Envoy permet la selecció personalitzada de tarifes de miners?"),
-        "envoy_faq_question_24":
-            MessageLookupByLibrary.simpleMessage("Can I buy Bitcoin in Envoy?"),
+        "envoy_faq_question_24": MessageLookupByLibrary.simpleMessage(
+            "Puc comprar Bitcoin a Envoy?"),
         "envoy_faq_question_3":
             MessageLookupByLibrary.simpleMessage("Què pot fer Envoy?"),
         "envoy_faq_question_4": MessageLookupByLibrary.simpleMessage(
@@ -828,9 +848,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_sortBy_zToA":
             MessageLookupByLibrary.simpleMessage("De la Z a la A."),
         "header_buyBitcoin":
-            MessageLookupByLibrary.simpleMessage("BUY BITCOIN"),
+            MessageLookupByLibrary.simpleMessage("COMPRA BITCOIN"),
         "header_chooseAccount":
-            MessageLookupByLibrary.simpleMessage("CHOOSE ACCOUNT"),
+            MessageLookupByLibrary.simpleMessage("TRIA UN COMPTE"),
         "hide_amount_first_time_text": MessageLookupByLibrary.simpleMessage(
             "Feu lliscar el dit per mostrar i amagar el vostre saldo."),
         "hot_wallet_accounts_creation_done_text_explainer":
@@ -849,7 +869,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Bloquejat"),
         "launch_screen_lockedout_wait_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Autenticació biomètrica desactivada temporalment. Espereu 30 segons i torneu-ho a provar."),
+                "L\'autenticació biomètrica està desactivada. Tanqueu l\'aplicació, espereu 30 segons i torneu-ho a provar."),
         "learning_center_device_defender":
             MessageLookupByLibrary.simpleMessage("Defender"),
         "learning_center_device_envoy":
@@ -860,7 +880,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Passport Prime"),
         "learning_center_filterEmpty_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Applied filters are hiding all search results.\nUpdate or reset filters to view more results."),
+                "Els filtres aplicats amaguen tots els resultats de la cerca.\nActualitzeu o restabliu els filtres per veure més resultats."),
         "learning_center_filter_all":
             MessageLookupByLibrary.simpleMessage("Totes"),
         "learning_center_results_title":
@@ -1017,7 +1037,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_generate_seed_write_words_heading":
             MessageLookupByLibrary.simpleMessage("Escriu Aquestes 12 Paraules"),
         "manual_setup_generatingSeedLoadingInfo":
-            MessageLookupByLibrary.simpleMessage("Generating Seed"),
+            MessageLookupByLibrary.simpleMessage("Generant Clau Privada"),
         "manual_setup_import_backup_CTA1": MessageLookupByLibrary.simpleMessage(
             "Crear Còpia de Seguretat D\'Envoy"),
         "manual_setup_import_backup_CTA2": MessageLookupByLibrary.simpleMessage(
@@ -1053,7 +1073,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_setup_import_seed_subheading": MessageLookupByLibrary.simpleMessage(
             "Continueu a continuació per importar una clau existent.\n\nMés endavant tindreu l\'opció d\'importar un fitxer de còpia de seguretat d\'Envoy."),
         "manual_setup_importingSeedLoadingInfo":
-            MessageLookupByLibrary.simpleMessage("Importing Seed"),
+            MessageLookupByLibrary.simpleMessage("Importació de Clau Privada"),
         "manual_setup_magicBackupDetected_heading":
             MessageLookupByLibrary.simpleMessage(
                 "S\'ha detectat una Còpia de Seguretat"),
@@ -1223,12 +1243,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_node_configure": MessageLookupByLibrary.simpleMessage(
             "Millora la teva privacitat executant el teu propi node. Toca per obtenir més informació."),
         "privacy_node_configure_blockHeight":
-            MessageLookupByLibrary.simpleMessage("Block height:"),
+            MessageLookupByLibrary.simpleMessage("Alçada del bloc:"),
         "privacy_node_configure_connectedToEsplora":
-            MessageLookupByLibrary.simpleMessage("Connected to Esplora server"),
+            MessageLookupByLibrary.simpleMessage(
+                "Connectat al servidor Esplora"),
         "privacy_node_configure_noConnectionEsplora":
             MessageLookupByLibrary.simpleMessage(
-                "Could not connect to Esplora server."),
+                "No s\'ha pogut connectar al servidor Esplora."),
         "privacy_node_connectedTo":
             MessageLookupByLibrary.simpleMessage("Connectat a"),
         "privacy_node_connection_couldNotReach":
@@ -1236,7 +1257,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "No s\'ha pogut conectar al node."),
         "privacy_node_connection_localAddress_warning":
             MessageLookupByLibrary.simpleMessage(
-                "Even with ‘Improved Privacy’ active, Envoy cannot prevent interference by compromised devices on your local network."),
+                "Fins i tot amb \"Privacitat millorada\" activa, Envoy no pot evitar interferències de dispositius compromesos a la vostra xarxa local."),
         "privacy_node_nodeAddress": MessageLookupByLibrary.simpleMessage(
             "Introduïu la direcció del vostre node"),
         "privacy_node_nodeType_foundation":
@@ -1277,6 +1298,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_setting_perfomance_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Com voleu que Envoy es connecti a Internet?"),
+        "qrTooBig_warning_subheading": MessageLookupByLibrary.simpleMessage(
+            "The scanned QR code contains a large amount of data and could make Envoy unstable. Are you sure you want to continue?"),
+        "ramp_note": MessageLookupByLibrary.simpleMessage("Ramp Purchase"),
+        "ramp_pendingVoucher":
+            MessageLookupByLibrary.simpleMessage("Pending Ramp Purchase"),
         "receive_QR_code_receive_QR_code_taproot_on_taproot_toggle":
             MessageLookupByLibrary.simpleMessage(
                 "Utilitzeu una Adreça Taproot"),
@@ -1318,10 +1344,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_boost_tx_heading": MessageLookupByLibrary.simpleMessage(
             "La vostra transacció està a punt per ser impulsada"),
         "replaceByFee_cancelAmountNone_None":
-            MessageLookupByLibrary.simpleMessage("None"),
+            MessageLookupByLibrary.simpleMessage("Cap"),
         "replaceByFee_cancelAmountNone_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "The network fee for cancelling this transaction means no funds will be sent back to your wallet.\n\nAre you sure you want to cancel?"),
+                "La tarifa de xarxa per cancel·lar aquesta transacció significa que no s\'enviaran fons a la cartera.\n\nEstàs segur que vols cancel·lar?"),
         "replaceByFee_cancel_confirm_heading":
             MessageLookupByLibrary.simpleMessage(
                 "S\'està cancel·lant la transacció"),
@@ -1354,26 +1380,26 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_edit_transaction_requiredAmount":
             MessageLookupByLibrary.simpleMessage("Necessari per Augmentar"),
         "replaceByFee_modal_deletedInactiveTX_ramp_heading":
-            MessageLookupByLibrary.simpleMessage("Transactions Removed"),
+            MessageLookupByLibrary.simpleMessage("Transaccions Eliminades"),
         "replaceByFee_modal_deletedInactiveTX_ramp_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Incomplete purchases with the following Ramp IDs were removed from activity after 5 days."),
+                "Les compres incompletes amb els identificadors de Ramp següents s\'han eliminat de l\'activitat al cap de 5 dies."),
         "replaceByFee_newFee_modal_heading":
-            MessageLookupByLibrary.simpleMessage("New Transaction Fee "),
+            MessageLookupByLibrary.simpleMessage("Nova Tarifa de Transacció "),
         "replaceByFee_newFee_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "To boost your original transaction, you are about to pay a new fee of:"),
+                "Per augmentar la vostra transacció original, esteu a punt de pagar una nova tarifa de:"),
         "replaceByFee_newFee_modal_subheading_replacing":
             MessageLookupByLibrary.simpleMessage(
-                "This will replace the original fee of:"),
+                "Això substituirà la tarifa original de:"),
         "replaceByFee_ramp_incompleteTransactionAutodeleteWarning":
             MessageLookupByLibrary.simpleMessage(
-                "Incomplete purchases will be automatically removed after 5 days"),
+                "Les compres incompletes se suprimiran automàticament al cap de 5 dies"),
         "replaceByFee_warning_extraUTXO_overlay_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "La tarifa escollida només es pot aconseguir afegint més monedes. Envoy ho fa automàticament i mai inclourà cap moneda bloquejada. "),
-        "scv_checkingDeviceSecurity":
-            MessageLookupByLibrary.simpleMessage("Checking Device Security"),
+                "La tarifa escollida només es pot aconseguir afegint més monedes. L\'enviat ho fa automàticament i mai no inclourà cap moneda bloquejada. \n\nAquesta selecció es pot revisar o editar a la pantalla següent."),
+        "scv_checkingDeviceSecurity": MessageLookupByLibrary.simpleMessage(
+            "Comprovació de la Seguretat del Dispositiu"),
         "send_keyboard_address_confirm":
             MessageLookupByLibrary.simpleMessage("Confirmar"),
         "send_keyboard_address_loading":
@@ -1399,13 +1425,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_advanced":
             MessageLookupByLibrary.simpleMessage("Opcions Avançades"),
         "settings_advanced_enableBuyRamp":
-            MessageLookupByLibrary.simpleMessage("Buy in Envoy"),
+            MessageLookupByLibrary.simpleMessage("Compra a Envoy"),
         "settings_advanced_enabled_signet_modal_link":
             MessageLookupByLibrary.simpleMessage(
-                "Learn more about Signet [[here]]."),
+                "Obteniu més informació sobre Signet [[aquí]]."),
         "settings_advanced_enabled_signet_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Enabling Signet adds a Signet version of your Envoy Wallet. This feature is primarily used by developers or testers and has zero value."),
+                "Si activeu Signet, s\'afegeix una versió Signet de l\'Envoy Wallet. Aquesta funció és utilitzada principalment per desenvolupadors o provadors i té un valor zero."),
         "settings_advanced_enabled_testnet_modal_link":
             MessageLookupByLibrary.simpleMessage("Apreneu a fer-ho [[aqui]] ."),
         "settings_advanced_enabled_testnet_modal_subheading":
@@ -1488,9 +1514,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "taproot_passport_dialog_subheading": MessageLookupByLibrary.simpleMessage(
             "Per habilitar un compte de Passport Taproot, assegureu-vos que esteu executant el firmware 2.3.0 o posterior i torneu a connectar el vostre Passport."),
         "toast_foundationServersDown": MessageLookupByLibrary.simpleMessage(
-            "Foundation servers are not reachable"),
-        "toast_newEnvoyUpdateAvailable":
-            MessageLookupByLibrary.simpleMessage("New Envoy update available"),
+            "No es pot accedir als servidors de Foundation"),
+        "toast_newEnvoyUpdateAvailable": MessageLookupByLibrary.simpleMessage(
+            "Nova actualització d\'Envoy disponible"),
         "torToast_learnMore_retryTorConnection":
             MessageLookupByLibrary.simpleMessage("Reintentar Tor"),
         "torToast_learnMore_temporarilyDisableTor":
@@ -1499,6 +1525,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "És possible que experimenteu un rendiment de l\'aplicació degradat fins que Envoy pugui restablir una connexió amb Tor. La desactivació de Tor establirà una connexió directa amb el servidor Envoy, però inclou privacitat [[tradeoffs]] ."),
         "tor_connectivity_toast_warning": MessageLookupByLibrary.simpleMessage(
             "Problema per establir la connectivitat amb Tor"),
+        "video_loadingTorText": MessageLookupByLibrary.simpleMessage(
+            "Envoy is loading your video over the Tor Network"),
         "wallet_security_modal_1_4_android_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy fa una còpia de seguretat automàtica i segura de la llavor de la cartera amb [[Còpia de Seguretat Automàtica d\'Android]]. La vostra llavor sempre està xifrada d\'extrem a extrem i mai és visible per a Google."),

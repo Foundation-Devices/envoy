@@ -10,7 +10,6 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:stack_trace/stack_trace.dart';
 
 class EnvoyReport {
@@ -22,7 +21,8 @@ class EnvoyReport {
     return _instance;
   }
 
-  final int _logCapacity = 50;
+  // The maximum number of logs to keep in the database
+  final int _logCapacity = 25;
   Database? _db;
   final StoreRef<int, Map<String, Object?>> _logsStore =
       intMapStoreFactory.store("logs");
@@ -30,7 +30,8 @@ class EnvoyReport {
   init() async {
     DatabaseFactory dbFactory = databaseFactoryIo;
     final appDocumentDir = await getApplicationDocumentsDirectory();
-    _db = await dbFactory.openDatabase(join(appDocumentDir.path, "logs.db"));
+    _db = await dbFactory.openDatabase(join(appDocumentDir.path, "logs.db"),
+        version: 2);
     FlutterError.onError = (FlutterErrorDetails details) {
       if (kDebugMode) {
         FlutterError.dumpErrorToConsole(details);
@@ -48,7 +49,9 @@ class EnvoyReport {
     }
   }
 
-  writeReport(FlutterErrorDetails? details) {
+  writeReport(FlutterErrorDetails? details) async {
+    await _ensureDbInitialized();
+
     Map<String, String?> report = {};
     if (details != null) {
       report["exception"] = details.exceptionAsString();
@@ -68,19 +71,35 @@ class EnvoyReport {
     }
   }
 
-  log(String category, String message) {
-    Map<String, String?> report = {};
-    report["category"] = category;
-    report["message"] = message;
-    report["time"] = DateTime.now().toIso8601String();
+  Future<void> log(String category, String message) async {
+    await _ensureDbInitialized();
 
     if (_db != null) {
+      Map<String, String?> report = {
+        "category": category,
+        "message": message,
+        "time": DateTime.now().toIso8601String()
+      };
       _logsStore.add(_db!, report);
     }
   }
 
+  Future<void> _ensureDbInitialized() async {
+    if (_db == null) {
+      await init(); // Call init if the database is not initialized
+    }
+  }
+
   Future<List<Map<String, Object?>>> getAllLogs() async {
-    var log = await _logsStore.find(_db!);
+    await _ensureDbInitialized(); // Ensure the database is ready
+    if (_db == null) {
+      return []; // Return an empty list if the database is still null
+    }
+    var log = await _logsStore.find(_db!,
+        finder: Finder(
+          limit: _logCapacity,
+          sortOrders: [SortOrder(Field.key, false)],
+        ));
     var logs = log.map((e) => e.value).toList().reversed.toList();
     return logs;
   }
@@ -94,8 +113,6 @@ class EnvoyReport {
     }
     Iterable<String> lines = stackTrace.toString().trimRight().split('\n');
     if (kIsWeb && lines.isNotEmpty) {
-      // Remove extra call to StackTrace.current for web platform.
-      // TODO(ferhat): remove when https://github.com/flutter/flutter/issues/37635
       // is addressed.
       lines = lines.skipWhile((String line) {
         return line.contains('StackTrace.current') ||
@@ -106,6 +123,10 @@ class EnvoyReport {
     if (maxFrames != null) {
       lines = lines.take(maxFrames);
     }
+    // skip empty lines
+    lines = lines.skipWhile((value) => value.trim().isEmpty);
+    // only show the first 50 lines
+    // lines = lines.toList().reversed.take(50).toList().reversed;
     return lines.toList();
   }
 
@@ -153,17 +174,16 @@ class EnvoyReport {
     return logs;
   }
 
-  void share() async {
+  Future<String> share() async {
     final Directory tempDir = await getTemporaryDirectory();
     final File file = File(join(tempDir.path, "logs.txt"));
     String logs = await getLogAsString();
     await file.writeAsString(logs);
     // ignore: deprecated_member_use
-    await Share.shareFiles([file.path],
-        text: 'Envoy Log Report', mimeTypes: ["text/plain"]);
+    return file.path;
   }
 
-  clearAll() {
-    _logsStore.delete(_db!);
+  clearAll() async {
+    await _logsStore.delete(_db!);
   }
 }

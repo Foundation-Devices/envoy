@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/string_utils.dart';
 import 'package:flutter/material.dart';
@@ -12,73 +11,83 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
+import 'package:envoy/ui/state/transactions_state.dart';
+import 'package:envoy/business/account.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
+import 'package:envoy/ui/tx_utils.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+import 'package:wallet/wallet.dart';
+import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/util/blur_container_transform.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
+import 'package:envoy/ui/routes/devices_router.dart';
 
 class EnvoyListTile extends StatelessWidget {
   const EnvoyListTile({
     super.key,
-    required this.textLeft1,
-    this.textLeft2,
-    this.leftIcon,
+    required this.titleText,
+    this.subtitleText,
+    this.txIcon,
     this.iconColor = EnvoyColors.textPrimary,
     this.unitIcon,
   });
 
-  final String textLeft1;
-  final String? textLeft2;
-  final EnvoyIcons? leftIcon;
+  final String titleText;
+  final String? subtitleText;
+  final EnvoyIcons? txIcon;
   final Color? iconColor;
   final Widget? unitIcon;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {},
-      child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-          minLeadingWidth: 0,
-          horizontalTitleGap: EnvoySpacing.medium1,
-          title: Padding(
-            padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-            child: Text(
-              textLeft1,
-              style:
-                  EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary),
-            ),
+    return ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+        minLeadingWidth: 0,
+        horizontalTitleGap: EnvoySpacing.medium1,
+        title: Padding(
+          padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
+          child: Text(
+            titleText,
+            style:
+                EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary),
           ),
-          subtitle: textLeft2 == null
-              ? const Text("")
-              : Text(
-                  textLeft2!,
-                  style: EnvoyTypography.info
-                      .copyWith(color: EnvoyColors.textSecondary),
-                ),
-          leading: leftIcon == null
-              ? null
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    EnvoyIcon(
-                      leftIcon!,
-                      color: iconColor,
-                      size: EnvoyIconSize.small,
-                    ),
-                  ],
-                ),
-          trailing: unitIcon == null
-              ? const Text("")
-              : Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    unitIcon!,
-                  ],
-                )),
-    );
+        ),
+        subtitle: subtitleText == null
+            ? const Text("")
+            : Text(
+                subtitleText!,
+                style: EnvoyTypography.info
+                    .copyWith(color: EnvoyColors.textSecondary),
+              ),
+        leading: txIcon == null
+            ? null
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  EnvoyIcon(
+                    txIcon!,
+                    color: iconColor,
+                    size: EnvoyIconSize.small,
+                  ),
+                ],
+              ),
+        trailing: unitIcon == null
+            ? const Text("")
+            : Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  unitIcon!,
+                ],
+              ));
   }
 }
 
@@ -116,45 +125,58 @@ class ListHeader extends StatelessWidget {
   }
 }
 
-class ActivityListTile extends StatelessWidget {
-  const ActivityListTile(
-    this.notification, {
-    super.key,
-  });
+class ActivityListTile extends ConsumerStatefulWidget {
+  const ActivityListTile(this.notification, {super.key});
 
   final EnvoyNotification notification;
 
   @override
+  ActivityListTileState createState() => ActivityListTileState();
+}
+
+class ActivityListTileState extends ConsumerState<ActivityListTile> {
+  @override
   Widget build(BuildContext context) {
     return Consumer(builder: (context, ref, _) {
-      String textLeft1 = "";
-      String? textLeft2;
-      EnvoyIcons? leftIcon;
+      String titleText = "";
+      String? subtitleText;
+      EnvoyIcons? txIcon;
       Color? iconColor;
       Widget? unitIcon;
       final Locale activeLocale = Localizations.localeOf(context);
-      final accountId = notification.accountId;
-      bool hide = false;
+      final notification = widget.notification;
+      final transaction = notification.transaction;
 
-      if (accountId != null) {
-        hide = ref.watch(balanceHideStateStatusProvider(accountId));
-      }
+      if (transaction != null) {
+        bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
+        RBFState? cancelState =
+            ref.watch(cancelTxStateProvider(transaction.txId));
 
-      if (notification.type == EnvoyNotificationType.transaction) {
-        leftIcon = notification.amount! >= 0
-            ? EnvoyIcons.arrow_down_left
-            : EnvoyIcons.arrow_up_right;
-        textLeft1 = notification.amount! >= 0
-            ? S().activity_received
-            : S().activity_sent;
-        textLeft2 = timeago
-            .format(notification.date, locale: activeLocale.languageCode)
-            .capitalize();
-        iconColor = EnvoyColors.textTertiary;
+        titleText =
+            getTransactionTitleText(transaction, cancelState, isBoosted);
+        subtitleText = getTransactionSubtitleText(transaction, activeLocale);
+        txIcon = getTransactionIcon(transaction, cancelState, isBoosted);
 
         unitIcon = () {
-          if (hide ||
-              AccountManager().getAccountById(accountId!)!.dateSynced == null) {
+          final accountManager = ref.watch(accountManagerProvider);
+          bool isTransactionHidden = false;
+          Account? transactionAccount;
+
+          // Check if the account of the current transaction is hidden
+          for (var account in accountManager.accounts) {
+            final transactions = ref.watch(transactionsProvider(account.id));
+            for (var tx in transactions) {
+              if (tx.txId == transaction.txId) {
+                transactionAccount = account;
+                isTransactionHidden =
+                    ref.watch(balanceHideStateStatusProvider(account.id));
+                break;
+              }
+            }
+            if (isTransactionHidden) break;
+          }
+
+          if (isTransactionHidden) {
             return const Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -175,8 +197,8 @@ class ActivityListTile extends StatelessWidget {
           } else {
             return FittedBox(
               child: EnvoyAmount(
-                account: AccountManager().getAccountById(accountId)!,
-                amountSats: notification.amount!,
+                account: transactionAccount!,
+                amountSats: transaction.amount,
                 amountWidgetStyle: AmountWidgetStyle.normal,
                 alignToEnd: true,
               ),
@@ -185,33 +207,98 @@ class ActivityListTile extends StatelessWidget {
         }();
       }
 
+      iconColor = EnvoyColors.textTertiary;
+
       if (notification.type == EnvoyNotificationType.firmware) {
-        leftIcon = EnvoyIcons.tool;
-        textLeft1 = S().activity_passportUpdate;
-        textLeft2 = timeago
-            .format(notification.date, locale: activeLocale.languageCode)
+        txIcon = EnvoyIcons.tool;
+        titleText = S().activity_passportUpdate;
+        subtitleText = timeago
+            .format(notification.date ?? DateTime.now(),
+                locale: activeLocale.languageCode)
             .capitalize();
 
         iconColor = EnvoyColors.textTertiary;
       }
 
       if (notification.type == EnvoyNotificationType.envoyUpdate) {
-        leftIcon = EnvoyIcons.download;
-        textLeft1 = S().activity_envoyUpdateAvailable;
-        textLeft2 = timeago
-            .format(notification.date, locale: activeLocale.languageCode)
+        txIcon = EnvoyIcons.download;
+        titleText = S().activity_envoyUpdateAvailable;
+        subtitleText = timeago
+            .format(notification.date ?? DateTime.now(),
+                locale: activeLocale.languageCode)
             .capitalize();
 
         iconColor = EnvoyColors.textTertiary;
       }
 
-      return EnvoyListTile(
-        textLeft1: textLeft1,
-        textLeft2: textLeft2,
-        leftIcon: leftIcon,
-        iconColor: iconColor,
-        unitIcon: unitIcon,
-      );
+      return notification.transaction != null
+          ? BlurContainerTransform(
+              useRootNavigator: true,
+              closedBuilder: (context, action) {
+                return GestureDetector(
+                    onTap: () {
+                      action();
+                    },
+                    child: EnvoyListTile(
+                      titleText: titleText,
+                      subtitleText: subtitleText,
+                      txIcon: txIcon,
+                      iconColor: iconColor,
+                      unitIcon: unitIcon,
+                    ));
+              },
+              openBuilder: (context, action) {
+                return openTransactionDetails(context, transaction!);
+              },
+            )
+          : GestureDetector(
+              onTap: () {
+                openNotificationEvent(context);
+              },
+              child: EnvoyListTile(
+                titleText: titleText,
+                subtitleText: subtitleText,
+                txIcon: txIcon,
+                iconColor: iconColor,
+                unitIcon: unitIcon,
+              ),
+            );
     });
+  }
+
+  Widget openTransactionDetails(BuildContext context, Transaction transaction) {
+    if (widget.notification.accountId != null) {
+      Account? account =
+          AccountManager().getAccountById(widget.notification.accountId!);
+      if (account != null) {
+        return TransactionsDetailsWidget(
+          account: account,
+          tx: transaction,
+          iconTitleWidget: transactionIcon(context, transaction,
+              iconColor: EnvoyColors.textPrimaryInverse),
+          titleWidget: transactionTitle(
+            context,
+            transaction,
+            txTitleStyle: EnvoyTypography.subheading
+                .copyWith(color: EnvoyColors.textPrimaryInverse),
+          ),
+        );
+      }
+    }
+    return const SizedBox.shrink();
+  }
+
+  void openNotificationEvent(BuildContext context) {
+    switch (widget.notification.type) {
+      case EnvoyNotificationType.firmware:
+        context.go(ROUTE_DEVICES);
+      case EnvoyNotificationType.transaction:
+        break;
+      case EnvoyNotificationType.security:
+        break;
+      case EnvoyNotificationType.envoyUpdate:
+        launchUrlString(
+            "https://github.com/Foundation-Devices/envoy/releases/tag/${widget.notification.body}");
+    }
   }
 }

@@ -6,6 +6,7 @@ import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:envoy/ui/pages/fw/fw_intro.dart';
@@ -39,6 +40,14 @@ class DeviceListTile extends ConsumerStatefulWidget {
 }
 
 class _DeviceListTileState extends ConsumerState<DeviceListTile> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      ref.invalidate(shouldUpdateProvider(widget.device));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var fwShouldUpdate = ref.watch(shouldUpdateProvider(widget.device));

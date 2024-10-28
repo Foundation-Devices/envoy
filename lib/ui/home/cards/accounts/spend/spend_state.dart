@@ -296,6 +296,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
               state.broadcastProgress != BroadcastProgress.inProgress))) {
         return;
       }
+      state = state.clone()..broadcastProgress = BroadcastProgress.inProgress;
+
       final coins = ref.read(coinsProvider(account.id!));
       final coinTags = ref.read(coinsTagProvider(account.id!));
       final rawTx = state.rawTransaction!;
@@ -306,7 +308,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
       // Increment the change index before broadcasting
       await account.wallet.getChangeAddress();
-      state = state.clone()..broadcastProgress = BroadcastProgress.inProgress;
+
       Psbt psbt = state.psbt!;
       //Broadcast transaction
       int port = Settings().getPort(account.wallet.network);

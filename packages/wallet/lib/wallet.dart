@@ -28,28 +28,6 @@ enum TransactionType { normal, azteco, pending, btcPay, ramp }
 
 enum WalletType { witnessPublicKeyHash, taproot, superWallet }
 
-/// Sort transactions by time and ancestry
-extension AncestralSort on List<Transaction> {
-  void ancestralSort() {
-    for (var end = this.length - 1; end > 0; end--) {
-      var swapped = false;
-      for (var current = 0; current < end; current++) {
-        if (this[current].compareTo(this[current + 1]) > 0) {
-          this.swap(current, current + 1);
-          swapped = true;
-        }
-
-        if (this[current].compareTo(this[current + 1]) < 0) {
-          this.swap(current + 1, current);
-          swapped = true;
-        }
-      }
-
-      if (!swapped) return;
-    }
-  }
-}
-
 @JsonSerializable()
 class Transaction extends Comparable {
   final String memo;
@@ -118,39 +96,50 @@ class Transaction extends Comparable {
 
   @override
   int compareTo(other) {
-    // Mempool transactions go on top
+    // 1. if both are in mempool
     if ((date.isBefore(DateTime(2008)) &&
-            other.date.isBefore(DateTime(2008))) ||
-        (blockHeight == other.blockHeight)) {
+        other.date.isBefore(DateTime(2008)))) {
+      // If inputs are missing for other tx put it on top
       if (other.inputs == null) {
         return 1;
       }
 
+      // If we're missing inputs put us on top
       if (inputs == null) {
         return -1;
       }
 
       // Transactions whose input is other's txid go above that transaction
       if (other.inputs!.contains(txId)) {
-        return 1;
+        return 1; // other way
       }
 
+      // Transactions whose txid is other's input go below that transaction
       if (inputs!.contains(other.txId)) {
-        return -1;
+        return -1; // we in
       }
 
-      return 0;
+      // If all else fails do alphabetic ordering of txid
+      return other.txId.compareTo(txId);
     }
 
+    // 2. if other tx is in mempool it goes on top
     if (other.date.isBefore(DateTime(2008))) {
       return 1;
     }
 
+    // 3. if this tx is in the mempool it goes on top
     if (date.isBefore(DateTime(2008))) {
       return -1;
     }
 
-    return other.date.compareTo(date);
+    // 4. all else fails compare the date
+    final dateComparison = other.date.compareTo(date);
+    if (dateComparison == 0) {
+      return other.txId.compareTo(txId);
+    } else {
+      return dateComparison;
+    }
   }
 
   void setPullPaymentId(String? newPullPaymentId) {
@@ -583,6 +572,7 @@ class Wallet {
     final dartFunction = rustFunction.asFunction<WalletDropDart>();
 
     dartFunction(_self);
+    _self = nullptr;
   }
 
   Future<String> getAddress() async {
@@ -595,7 +585,7 @@ class Wallet {
 
   // Returns true if there have been changes
   Future<bool?> sync(String electrumAddress, int torPort) async {
-    if (_currentlySyncing) {
+    if (_currentlySyncing || _self == nullptr) {
       return null;
     }
 
@@ -818,7 +808,7 @@ class Wallet {
           throw Exception(error);
         }
         if (feeRates.min_fee_rate == -1.1) {
-          throw Exception("Transaction cannot be boosted");
+          throw Exception("Transaction cannot be boosted,Error: ${error}");
         }
         if (feeRates.min_fee_rate == -1.6) {
           throw Exception("Unlock coin to boost transaction");
@@ -827,7 +817,7 @@ class Wallet {
           throw Exception("Insufficient balance to boost transaction");
         }
         if (feeRates.min_fee_rate == -1.5) {
-          throw Exception("Unable to boost transaction");
+          throw Exception("Insufficient balance to cover the boost fee");
         }
         if (feeRates.max_fee_rate == 0.404) {
           throw Exception("Transaction not found");

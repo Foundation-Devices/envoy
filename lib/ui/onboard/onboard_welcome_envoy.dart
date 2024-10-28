@@ -144,14 +144,9 @@ class _OnboardEnvoyWelcomeScreenState
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,
                                       children: [
-                                        Text(
-                                          S().envoy_welcome_screen_heading,
-                                          textAlign: TextAlign.center,
-                                          style: EnvoyTypography.heading
-                                              .copyWith(
-                                                  color:
-                                                      EnvoyColors.textPrimary),
-                                        ),
+                                        Text(S().envoy_welcome_screen_heading,
+                                            textAlign: TextAlign.center,
+                                            style: EnvoyTypography.heading),
                                         const SizedBox(
                                             height: EnvoySpacing.small),
                                         LinkText(

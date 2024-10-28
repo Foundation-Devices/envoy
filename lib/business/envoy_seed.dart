@@ -45,6 +45,15 @@ class EnvoySeed {
 
   static Future<EnvoySeed> init() async {
     var singleton = EnvoySeed._instance;
+    // After a fresh install of Envoy following an Envoy erase,
+    // the keychain may still retain the seed for a brief period.
+    // To ensure the seed is fully removed, set the flag during the erase flow
+    // to delete the seed upon the next installation.
+    if (await LocalStorage().readSecure("seed_cleared") == "1") {
+      await LocalStorage().deleteSecure(SEED_KEY);
+      await LocalStorage().deleteFile(LOCAL_SECRET_FILE_NAME);
+      await LocalStorage().deleteSecure("seed_cleared");
+    }
     return singleton;
   }
 
@@ -260,7 +269,10 @@ class EnvoySeed {
 
     await removeSeedFromSecure();
     EnvoyReport().log("QA", "Removed seed from secure storage!");
+    await LocalStorage().saveSecure("seed_cleared", "1");
 
+    //add minor delay to allow the seed to be removed from secure storage (specifically on iOS)
+    await Future.delayed(const Duration(milliseconds: 500));
     return Backup.delete(seed!, Settings().envoyServerAddress, Tor.instance);
   }
 
@@ -510,8 +522,8 @@ class EnvoySeed {
     }
   }
 
-  removeSeedFromSecure() {
-    LocalStorage().deleteSecure(SEED_KEY);
+  Future<void> removeSeedFromSecure() async {
+    await LocalStorage().deleteSecure(SEED_KEY);
   }
 
   Future<String?> _getNonSecure() async {

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/util/console.dart';
 import 'package:test/test.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:foundation_api/src/rust/api/api.dart';
@@ -18,7 +19,7 @@ void main() async {
     final stream = pairStream(discoveryQr: qrCode);
 
     stream.listen((data) {
-      print(data);
+      kPrint(data);
     });
 
     await Future.delayed(const Duration(seconds: 30));

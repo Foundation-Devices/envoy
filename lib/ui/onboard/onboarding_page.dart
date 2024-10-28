@@ -13,6 +13,7 @@ import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
+import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -238,7 +239,12 @@ class OnboardingPage extends StatelessWidget {
             ]),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.only(
+                left: EnvoySpacing.xs,
+                right: EnvoySpacing.xs,
+                bottom: context.isSmallScreen
+                    ? EnvoySpacing.medium1
+                    : EnvoySpacing.medium2),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -274,8 +280,13 @@ class OnboardingPage extends StatelessWidget {
 class OnboardingText extends StatelessWidget {
   final String? header;
   final String? text;
+  final double subtitleTopPadding;
 
-  const OnboardingText({this.header, this.text, super.key});
+  const OnboardingText(
+      {this.header,
+      this.text,
+      super.key,
+      this.subtitleTopPadding = EnvoySpacing.large2});
 
   @override
   Widget build(BuildContext context) {
@@ -290,13 +301,11 @@ class OnboardingText extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(header!,
                         textAlign: TextAlign.center,
-                        style: EnvoyTypography.heading
-                            .copyWith(color: EnvoyColors.textPrimary)))
+                        style: EnvoyTypography.heading))
                 : const SizedBox.shrink(),
-            const SizedBox(height: EnvoySpacing.medium1),
             text != null
                 ? Padding(
-                    padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
+                    padding: EdgeInsets.only(top: subtitleTopPadding),
                     child: Text(
                       text!,
                       textAlign: TextAlign.center,
@@ -334,11 +343,8 @@ class ActionText extends StatelessWidget {
           onTap: action,
           child: Column(
             children: [
-              Text(
-                header,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
+              Text(header,
+                  textAlign: TextAlign.center, style: EnvoyTypography.heading),
               Text(
                 text,
                 textAlign: TextAlign.center,

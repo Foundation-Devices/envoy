@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.foundationdevices.envoy">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -17,7 +16,8 @@
         android:requestLegacyExternalStorage="true"
         android:restoreAnyVersion="true"
         tools:replace="android:allowBackup"
-        tools:targetApi="tiramisu">
+        tools:targetApi="tiramisu"
+        android:enableOnBackInvokedCallback="true">
 
         <activity
             android:name=".MainActivity"

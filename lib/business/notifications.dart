@@ -8,6 +8,7 @@ import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/util/list_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -18,6 +19,7 @@ import 'package:tor/tor.dart';
 import 'dart:convert';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/scheduler.dart';
+import 'package:wallet/wallet.dart';
 
 part 'notifications.g.dart';
 
@@ -25,19 +27,25 @@ enum EnvoyNotificationType { firmware, transaction, security, envoyUpdate }
 
 const String updateAppId = "updateApp";
 
-StreamController<String> isNewAppVersionAvailable = StreamController();
+StreamController<String> isNewAppVersionAvailable =
+    StreamController.broadcast();
+
+final isNewExpiredBuyTxAvailable =
+    StreamController<List<Transaction>>.broadcast();
 
 @JsonSerializable()
 class EnvoyNotification {
   final String title;
-  final DateTime date;
+  final DateTime? date;
   final EnvoyNotificationType type;
   final String body;
   final String id;
   final int? amount;
   final String? accountId;
+  final Transaction? transaction;
 
-  EnvoyNotification(this.title, this.date, this.type, this.body, this.id,
+  EnvoyNotification(
+      this.title, this.date, this.type, this.body, this.id, this.transaction,
       {this.amount, this.accountId});
 
   // Serialisation
@@ -57,33 +65,62 @@ final notificationTypeFilterProvider =
 // order provider for notification sort. 0 for descending, 1 for ascending
 final notificationOrderProvider = StateProvider<int>((ref) => 0);
 
-final filteredNotificationStreamProvider =
-    Provider.autoDispose<List<EnvoyNotification>>((ref) {
-  List<EnvoyNotification> notifications =
-      ref.watch(notificationStreamProvider).valueOrNull ?? [];
-  EnvoyNotificationType? filter = ref.watch(notificationTypeFilterProvider);
-  int order = ref.watch(notificationOrderProvider);
+final nonTxNotificationStreamProvider =
+    Provider<List<EnvoyNotification>>((ref) {
+  // Get all notifications from the notificationStreamProvider
+  final notifications = ref.watch(notificationStreamProvider).valueOrNull ?? [];
 
-  if (order == 0) {
-    notifications.sort((a, b) => b.date.compareTo(a.date));
-  }
-  if (filter == null) {
-    return List<EnvoyNotification>.from(notifications);
-  } else {
-    return notifications.where((element) => element.type == filter).toList();
-  }
+  return notifications
+      .where((notification) =>
+          notification.type != EnvoyNotificationType.transaction)
+      .toList();
 });
+
+EnvoyNotification transactionToEnvoyNotification(Transaction transaction) {
+  return EnvoyNotification(
+    "Transaction Notification",
+    transaction.isConfirmed ? transaction.date : null,
+    EnvoyNotificationType.transaction,
+    "Transaction details",
+    transaction.txId,
+    transaction,
+    amount: transaction.amount,
+    accountId: AccountManager().getAccountIdByTransaction(transaction.txId),
+  );
+}
+
+List<EnvoyNotification> combineNotifications(
+    List<EnvoyNotification> envoyNotifications,
+    List<Transaction> transactions) {
+  List<EnvoyNotification> transactionNotifications =
+      transactions.map((transaction) {
+    return transactionToEnvoyNotification(transaction);
+  }).toList();
+
+  List<EnvoyNotification> combinedItems = [
+    ...envoyNotifications,
+    ...transactionNotifications
+  ];
+
+  combinedItems.sort((a, b) {
+    if (b.date == null && a.date == null) return 0;
+    if (b.date == null) return 1;
+    if (a.date == null) return -1;
+    return b.date!.compareTo(a.date!);
+  });
+
+  return combinedItems;
+}
 
 class Notifications {
   int unread = 0;
-  late DateTime lastUpdated = DateTime.now();
   Timer? _syncTimer;
   bool _githubVersionChecked = false;
 
   StreamController<List<EnvoyNotification>> streamController =
       StreamController();
   List<EnvoyNotification> notifications = [];
-  List<EnvoyNotification> suppressedNotifications = [];
+  List<EnvoyNotification> notificationsThatWillBeSuppressed = [];
 
   final LocalStorage _ls = LocalStorage();
 
@@ -112,58 +149,47 @@ class Notifications {
     sync();
   }
 
-  deleteNotification(String id, {String? accountId}) {
-    notifications.removeWhere((notification) {
-      if (id == notification.id && accountId == notification.accountId) {
-        suppressedNotifications.add(notification);
-        return true;
-      }
-      return false;
-    });
-    _storeNotifications();
-    sync();
+  void deleteNotification(String id,
+      {String? accountId, Duration delay = Duration.zero}) {
+    // Find the notification immediately and put it in notificationsThatWillBeSuppressed
+    EnvoyNotification? notificationToSuppress = notifications.firstWhereOrNull(
+      (notification) =>
+          notification.id == id && notification.accountId == accountId,
+    );
+
+    if (notificationToSuppress != null) {
+      notificationsThatWillBeSuppressed.add(notificationToSuppress);
+
+      // Schedule the deletion from notifications after the delay
+      Future.delayed(delay, () {
+        notifications.removeWhere((notification) =>
+            notification.id == id && notification.accountId == accountId);
+        notificationsThatWillBeSuppressed.removeWhere((notification) =>
+            notification.id == id && notification.accountId == accountId);
+        _storeNotifications();
+        sync();
+      });
+    }
+  }
+
+  void deleteSuppressedNotifications(String? accountId) {
+    var suppressedNotificationsToDelete = notificationsThatWillBeSuppressed
+        .where(
+          (notification) => notification.accountId == accountId,
+        )
+        .toList();
+
+    for (var notification in suppressedNotificationsToDelete) {
+      deleteNotification(notification.id, accountId: notification.accountId);
+    }
   }
 
   // TODO: refactor this to monstrosity to use composable providers
   _checkForNotificationsToAdd() async {
-    bool notificationsAdded = false;
     bool newEnvoyVersionAvailable = false;
     if (!_githubVersionChecked) {
       newEnvoyVersionAvailable = await isThereNewEnvoyVersion();
       _githubVersionChecked = true;
-    }
-
-    for (var account in AccountManager().accounts) {
-      for (var tx in account.wallet.transactions) {
-        if ((tx.date.isAfter(lastUpdated) || !tx.isConfirmed)) {
-          bool skip = false;
-
-          for (var notification in notifications) {
-            if (notification.id == tx.txId &&
-                notification.amount == tx.amount) {
-              skip = true;
-            }
-          }
-          for (var suppressedNotification in suppressedNotifications) {
-            if (suppressedNotification.id == tx.txId &&
-                suppressedNotification.accountId == account.id) {
-              skip = true;
-            }
-          }
-
-          if (!skip) {
-            add(EnvoyNotification(
-                "Transaction",
-                tx.isConfirmed ? tx.date : DateTime.now(),
-                EnvoyNotificationType.transaction,
-                tx.txId,
-                tx.txId,
-                amount: tx.amount,
-                accountId: account.id));
-            notificationsAdded = true;
-          }
-        }
-      }
     }
 
     for (var device in Devices().devices) {
@@ -182,13 +208,12 @@ class Notifications {
 
         if (fwUpdateAvailable) {
           add(EnvoyNotification(
-            "Firmware", // TODO: FIGMA
-            DateTime.now(),
-            EnvoyNotificationType.firmware,
-            newVersion!,
-            device.type.toString().split('.').last,
-          ));
-          notificationsAdded = true;
+              "Firmware", // TODO: FIGMA
+              DateTime.now(),
+              EnvoyNotificationType.firmware,
+              newVersion!,
+              device.type.toString().split('.').last,
+              null));
         }
       }
     }
@@ -205,21 +230,16 @@ class Notifications {
       }
       if (!skip) {
         add(EnvoyNotification(
-          "App Update", // TODO: FIGMA
-          DateTime.now(),
-          EnvoyNotificationType.envoyUpdate,
-          latestEnvoyVersion,
-          EnvoyNotificationType.envoyUpdate.name,
-        ));
-        notificationsAdded = true;
+            "App Update", // TODO: FIGMA
+            DateTime.now(),
+            EnvoyNotificationType.envoyUpdate,
+            latestEnvoyVersion,
+            EnvoyNotificationType.envoyUpdate.name,
+            null));
         if (!isNewAppVersionAvailable.isClosed) {
           isNewAppVersionAvailable.add(latestEnvoyVersion);
         }
       }
-    }
-
-    if (notificationsAdded) {
-      lastUpdated = DateTime.now();
     }
   }
 
@@ -243,10 +263,7 @@ class Notifications {
   }
 
   _storeNotifications() {
-    var jsonMap = {
-      "last_updated": lastUpdated.toIso8601String(),
-      "notifications": notifications
-    };
+    var jsonMap = {"notifications": notifications};
 
     String json = jsonEncode(jsonMap);
     _ls.prefs.setString(notificationPrefs, json);
@@ -260,20 +277,17 @@ class Notifications {
     notifications.clear();
 
     if (_ls.prefs.containsKey(notificationPrefs)) {
-      var jsonMap = jsonDecode(_ls.prefs.getString(notificationPrefs)!);
+      String? jsonString = _ls.prefs.getString(notificationPrefs);
+      if (jsonString != null) {
+        var jsonMap = jsonDecode(jsonString);
+        for (var notification in jsonMap["notifications"]) {
+          EnvoyNotification notificationToRestore =
+              EnvoyNotification.fromJson(notification);
 
-      lastUpdated = DateTime.parse(jsonMap["last_updated"]);
-
-      for (var notification in jsonMap["notifications"]) {
-        EnvoyNotification notificationToRestore =
-            EnvoyNotification.fromJson(notification);
-
-        // Migration: tx notifications previously didn't have account data
-        notificationToRestore = addMissingAccountId(notificationToRestore);
-
-        // Only add tx notifications that link to an account
-        if (!_shouldBeRemoved(notificationToRestore)) {
-          add(notificationToRestore);
+          // Only add tx notifications that link to an account
+          if (!_shouldBeRemoved(notificationToRestore)) {
+            add(notificationToRestore);
+          }
         }
       }
     }
@@ -282,32 +296,12 @@ class Notifications {
     _startPeriodicSync();
   }
 
-  EnvoyNotification addMissingAccountId(
-      EnvoyNotification notificationToRestore) {
-    if (notificationToRestore.accountId == null &&
-        notificationToRestore.type == EnvoyNotificationType.transaction) {
-      for (var account in AccountManager().accounts) {
-        for (var tx in account.wallet.transactions) {
-          if (tx.txId == notificationToRestore.id) {
-            notificationToRestore = EnvoyNotification(
-                "Transaction",
-                tx.isConfirmed ? tx.date : DateTime.now(),
-                EnvoyNotificationType.transaction,
-                tx.txId,
-                tx.txId,
-                amount: tx.amount,
-                accountId: account.id);
-          }
-        }
-      }
-    }
-    return notificationToRestore;
-  }
-
   bool _shouldBeRemoved(EnvoyNotification notification) {
-    if (notification.type != EnvoyNotificationType.transaction &&
-        notification.type != EnvoyNotificationType.firmware) {
+    if (notification.type != EnvoyNotificationType.firmware) {
       return false;
+    }
+    if (notification.type == EnvoyNotificationType.transaction) {
+      return true;
     }
     // Remove notification if already has been stored version with same firmware version
     if (notification.type == EnvoyNotificationType.firmware) {

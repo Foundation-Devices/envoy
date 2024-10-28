@@ -15,6 +15,9 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/business/locale.dart';
 import 'package:envoy/ui/components/linear_gradient.dart';
+import 'package:envoy/business/settings.dart';
+import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/ui/state/transactions_state.dart';
 
 class ActivityCard extends StatefulWidget {
   const ActivityCard({super.key});
@@ -43,8 +46,11 @@ class ActivityCardState extends State<ActivityCard> {
 
   @override
   Widget build(BuildContext context) {
-    return const AnimatedSwitcher(
-        duration: Duration(milliseconds: 250), child: TopLevelActivityCard());
+    return const PopScope(
+      canPop: false,
+      child: AnimatedSwitcher(
+          duration: Duration(milliseconds: 250), child: TopLevelActivityCard()),
+    );
   }
 }
 
@@ -58,16 +64,33 @@ class TopLevelActivityCard extends ConsumerStatefulWidget {
 
 class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
   @override
+  void initState() {
+    super.initState();
+    // Redraw when we fetch exchange rate
+    ExchangeRate().addListener(_redraw);
+  }
+
+  @override
+  void dispose() {
+    ExchangeRate().removeListener(_redraw);
+    super.dispose();
+  }
+
+  _redraw() {
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
-    List<EnvoyNotification> notifications =
-        ref.watch(filteredNotificationStreamProvider);
-    ref.read(notificationTypeFilterProvider.notifier).state = null;
+    ref.watch(settingsProvider);
+    List<EnvoyNotification> envoyNotification =
+        ref.watch(combinedNotificationsProvider);
 
     return ScrollGradientMask(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
         child: CustomScrollView(slivers: [
-          notifications.isEmpty
+          envoyNotification.isEmpty
               ? SliverFillRemaining(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -110,8 +133,8 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
                             return Column(
                               children: [
                                 if (index == 0 ||
-                                    showHeader(notifications[index],
-                                        notifications[index - 1]))
+                                    showHeader(envoyNotification[index],
+                                        envoyNotification[index - 1]))
                                   Column(
                                     children: [
                                       if (index != 0)
@@ -124,14 +147,14 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
                                         ),
                                       ListHeader(
                                           title: getTransactionDateString(
-                                              notifications[index])),
+                                              envoyNotification[index])),
                                     ],
                                   ),
-                                ActivityListTile(notifications[index]),
+                                ActivityListTile(envoyNotification[index]),
                               ],
                             );
                           },
-                          itemCount: notifications.length),
+                          itemCount: envoyNotification.length),
                       const SizedBox(height: EnvoySpacing.large2)
                     ],
                   ),
@@ -143,13 +166,14 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
 }
 
 String getTransactionDateString(EnvoyNotification notification) {
-  return DateFormat.yMd(currentLocale).format(notification.date);
+  return DateFormat.yMd(currentLocale)
+      .format(notification.date ?? DateTime.now());
 }
 
-bool showHeader(EnvoyNotification notificationCurrent,
-    EnvoyNotification notificationPrevious) {
-  return !DateUtils.isSameDay(
-      notificationCurrent.date, notificationPrevious.date);
+bool showHeader(EnvoyNotification currentNotification,
+    EnvoyNotification previousNotification) {
+  return !DateUtils.isSameDay(currentNotification.date ?? DateTime.now(),
+      previousNotification.date ?? DateTime.now());
 }
 
 class ActivityGhostListTile extends StatelessWidget {

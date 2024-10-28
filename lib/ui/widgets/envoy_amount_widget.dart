@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/business/locale.dart';
@@ -18,6 +19,7 @@ class EnvoyAmount extends StatelessWidget {
     required this.amountWidgetStyle,
     required this.account,
     this.alignToEnd = true,
+    this.millionaireMode = true,
     this.unit,
   });
 
@@ -26,6 +28,7 @@ class EnvoyAmount extends StatelessWidget {
   final Account account;
   final bool alignToEnd;
   final AmountDisplayUnit? unit;
+  final bool millionaireMode;
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +47,8 @@ class EnvoyAmount extends StatelessWidget {
     }
 
     String? selectedFiat = Settings().selectedFiat;
-    bool showFiat =
-        selectedFiat != null && account.wallet.network == Network.Mainnet;
+    bool showFiat = selectedFiat != null &&
+        (kDebugMode || account.wallet.network == Network.Mainnet);
     AmountDisplayUnit primaryUnit = mainUnit;
     AmountDisplayUnit? secondaryUnit = showFiat ? AmountDisplayUnit.fiat : null;
     String symbolFiat = ExchangeRate().getSymbol();
@@ -62,6 +65,7 @@ class EnvoyAmount extends StatelessWidget {
       network: account.wallet.network,
       alignToEnd: alignToEnd,
       locale: currentLocale,
+      millionaireMode: millionaireMode,
     );
   }
 }

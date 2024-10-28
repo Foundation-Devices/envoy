@@ -5,7 +5,6 @@
 import 'package:animations/animations.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/account_manager.dart';
-import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -39,17 +38,17 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/tx_utils.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/blur_container_transform.dart';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:envoy/util/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import 'package:wallet/wallet.dart';
+import 'package:envoy/business/exchange_rate.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget {
@@ -133,6 +132,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(settingsProvider);
     account = ref.read(selectedAccountProvider) ?? AccountManager().accounts[0];
 
     List<Transaction> transactions =
@@ -150,7 +150,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
       child: Scaffold(
         body: PopScope(
           canPop: !isMenuOpen,
-          onPopInvoked: (bool didPop) async {
+          onPopInvokedWithResult: (bool didPop, _) async {
             if (!didPop) {
               HomePageState.of(context)?.toggleOptions();
             }
@@ -346,7 +346,6 @@ class _AccountCardState extends ConsumerState<AccountCard>
   Widget _buildTransactionListWidget(
       List<Transaction> transactions, bool txFiltersEnabled) {
     if (transactions.isEmpty) {
-      /// ovde ima
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -390,17 +389,29 @@ class _AccountCardState extends ConsumerState<AccountCard>
 
 class GhostListTile extends StatelessWidget {
   final bool animate;
+  final bool diagonal;
+  final double leadingHeight;
+  final double minLeadingWidth;
+  final double titleRightPadding;
+  final double subtitleRightPadding;
 
   const GhostListTile({
     this.animate = true,
+    this.diagonal = true,
+    this.leadingHeight = 50.0,
+    this.minLeadingWidth = 40.0,
+    this.titleRightPadding = 50.0,
+    this.subtitleRightPadding = 80.0,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      titleAlignment: ListTileTitleAlignment.center,
+      minLeadingWidth: minLeadingWidth,
       title: Padding(
-        padding: const EdgeInsets.only(top: 2, right: 50),
+        padding: EdgeInsets.only(top: 2, right: titleRightPadding),
         child: LoaderGhost(
           width: 10,
           height: 15,
@@ -408,7 +419,7 @@ class GhostListTile extends StatelessWidget {
         ),
       ),
       subtitle: Padding(
-        padding: const EdgeInsets.only(top: 3.0, right: 80),
+        padding: EdgeInsets.only(top: 3.0, right: subtitleRightPadding),
         child: LoaderGhost(
           width: 30,
           height: 15,
@@ -416,9 +427,9 @@ class GhostListTile extends StatelessWidget {
         ),
       ),
       leading: LoaderGhost(
-        width: 50,
-        height: 50,
-        diagonal: true,
+        width: leadingHeight,
+        height: leadingHeight,
+        diagonal: diagonal,
         animate: animate,
       ),
       trailing: Column(
@@ -482,17 +493,13 @@ class TransactionListTile extends StatelessWidget {
           // Avoids unintended behavior, prevents list item disappearance
           child: Row(
             children: [
-              transactionIcon(context),
+              transactionIcon(context, transaction),
               Expanded(
                 child: ListTile(
                   minLeadingWidth: 0,
                   horizontalTitleGap: EnvoySpacing.small,
-                  title: transactionTitle(context),
-                  subtitle: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.centerLeft,
-                    child: txSubtitle(activeLocale),
-                  ),
+                  title: transactionTitle(context, transaction),
+                  subtitle: txSubtitle(activeLocale),
                   contentPadding: const EdgeInsets.all(0),
                   trailing: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -547,9 +554,11 @@ class TransactionListTile extends StatelessWidget {
         return TransactionsDetailsWidget(
             account: account,
             tx: transaction,
-            iconTitleWidget: transactionIcon(context, iconColor: _detailsColor),
+            iconTitleWidget:
+                transactionIcon(context, transaction, iconColor: _detailsColor),
             titleWidget: transactionTitle(
               context,
+              transaction,
               txTitleStyle: _detailsHeadingStyle,
             ));
       },
@@ -557,140 +566,70 @@ class TransactionListTile extends StatelessWidget {
   }
 
   Widget txSubtitle(Locale activeLocale) {
-    if (transaction.type == TransactionType.azteco) {
-      return Text(
-        S().azteco_account_tx_history_pending_voucher,
-        style: _transactionTextStyleInfo,
-      );
-    }
+    return Text(
+      getTransactionSubtitleText(transaction, activeLocale),
+      style: _transactionTextStyleInfo,
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+}
 
-    if (transaction.type == TransactionType.btcPay) {
-      return Text(
-        S().btcpay_pendingVoucher,
-        style: _transactionTextStyleInfo,
-      );
-    }
-    if (transaction.type == TransactionType.ramp) {
-      return Text(
-        S().activity_pending,
-        style: _transactionTextStyleInfo,
-      );
-    }
+Widget transactionTitle(BuildContext context, Transaction transaction,
+    {TextStyle? txTitleStyle}) {
+  final TextStyle? defaultStyle = Theme.of(context)
+      .textTheme
+      .bodyLarge
+      ?.copyWith(fontWeight: FontWeight.w500, fontSize: 14);
 
-    if (transaction.type == TransactionType.normal && transaction.isConfirmed) {
-      return Builder(builder: (context) {
-        String time = timeago
-            .format(transaction.date, locale: activeLocale.languageCode)
-            .capitalize();
+  return FittedBox(
+    fit: BoxFit.scaleDown,
+    alignment: Alignment.centerLeft,
+    child: Consumer(
+      builder: (context, ref, child) {
+        bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
+        RBFState? cancelState =
+            ref.watch(cancelTxStateProvider(transaction.txId));
         return Text(
-          time,
-          style: _transactionTextStyleInfo,
+          getTransactionTitleText(transaction, cancelState, isBoosted),
+          style: txTitleStyle ?? defaultStyle,
         );
-      });
-    } else {
-      return Text(
-        S().receive_tx_list_awaitingConfirmation,
-        style: _transactionTextStyleInfo,
-      );
-    }
-  }
+      },
+    ),
+  );
+}
 
-  Widget transactionIcon(
-    BuildContext context, {
-    Color iconColor = EnvoyColors.textTertiary,
-  }) {
-    return FittedBox(
-      alignment: Alignment.centerLeft,
-      fit: BoxFit.scaleDown,
-      child: Consumer(
-        builder: (context, ref, child) {
-          bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
-          final cancelState =
-              ref.watch(cancelTxStateProvider(transaction.txId));
-          EnvoyIcons txIcon =
-              transaction.amount < 0 ? EnvoyIcons.spend : EnvoyIcons.receive;
-          if (cancelState != null) {
-            if (!transaction.isConfirmed) {
-              txIcon = EnvoyIcons.alert;
-            } else if (cancelState.newTxId == transaction.txId) {
-              txIcon = EnvoyIcons.close;
-            } else {
-              txIcon = transaction.amount < 0
-                  ? EnvoyIcons.spend
-                  : EnvoyIcons.receive;
-            }
-          } else if (isBoosted == true) {
-            txIcon = EnvoyIcons.rbf_boost;
-          }
-          return Container(
-            padding: const EdgeInsets.only(
-              top: EnvoySpacing.small,
-              bottom: EnvoySpacing.small,
-              right: EnvoySpacing.xs,
-              left: EnvoySpacing.xs,
+Widget transactionIcon(
+  BuildContext context,
+  Transaction transaction, {
+  Color iconColor = EnvoyColors.textTertiary,
+}) {
+  return FittedBox(
+    alignment: Alignment.centerLeft,
+    fit: BoxFit.scaleDown,
+    child: Consumer(
+      builder: (context, ref, child) {
+        bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
+        final cancelState = ref.watch(cancelTxStateProvider(transaction.txId));
+        return Container(
+          padding: const EdgeInsets.only(
+            top: EnvoySpacing.small,
+            bottom: EnvoySpacing.small,
+            right: EnvoySpacing.xs,
+            left: EnvoySpacing.xs,
+          ),
+          child: Transform.scale(
+            scale: 1.1,
+            child: EnvoyIcon(
+              getTransactionIcon(transaction, cancelState, isBoosted)!,
+              color: iconColor,
+              size: EnvoyIconSize.normal,
             ),
-            child: Transform.scale(
-              scale: 1.1,
-              child: EnvoyIcon(
-                txIcon,
-                color: iconColor,
-                size: EnvoyIconSize.normal,
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget transactionTitle(BuildContext context, {TextStyle? txTitleStyle}) {
-    final TextStyle? defaultStyle = Theme.of(context)
-        .textTheme
-        .bodyLarge
-        ?.copyWith(fontWeight: FontWeight.w500, fontSize: 14);
-
-    return FittedBox(
-      fit: BoxFit.scaleDown,
-      alignment: Alignment.centerLeft,
-      child: Consumer(
-        builder: (context, ref, child) {
-          bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
-          String txTitle = transaction.type == TransactionType.ramp
-              ? S().activity_incomingPurchase
-              : (transaction.amount < 0
-                  ? S().activity_sent
-                  : S().activity_received);
-          RBFState? cancelState =
-              ref.watch(cancelTxStateProvider(transaction.txId));
-          if (cancelState != null) {
-            if (cancelState.originalTxId == transaction.txId) {
-              if (!transaction.isConfirmed) {
-                txTitle = S().activity_canceling;
-              }
-            }
-            if (cancelState.newTxId == transaction.txId) {
-              if (transaction.isConfirmed) {
-                txTitle = S().activity_sent_canceled;
-              } else {
-                txTitle = S().activity_canceling;
-              }
-            }
-          } else {
-            if (isBoosted == true) {
-              if (transaction.isConfirmed) {
-                txTitle = S().activity_sent_boosted;
-              }
-              txTitle = S().activity_boosted;
-            }
-          }
-          return Text(
-            txTitle,
-            style: txTitleStyle ?? defaultStyle,
-          );
-        },
-      ),
-    );
-  }
+          ),
+        );
+      },
+    ),
+  );
 }
 
 Future<void> copyTxId(
@@ -808,9 +747,10 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
               dialog: Builder(
                 builder: (context) {
                   if (!isKeyboardShown) {
-                    Future.delayed(const Duration(milliseconds: 200))
-                        .then((value) {
-                      FocusScope.of(context).requestFocus(focusNode);
+                    Future.delayed(const Duration(milliseconds: 200)).then((_) {
+                      if (context.mounted) {
+                        FocusScope.of(context).requestFocus(focusNode);
+                      }
                     });
                     isKeyboardShown = true;
                   }

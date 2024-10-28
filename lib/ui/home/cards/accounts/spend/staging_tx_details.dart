@@ -276,6 +276,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                           unit: formatUnit,
                           account: account,
                           amountSats: totalReceiveAmount,
+                          millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine),
                       bottomWidgets: [
                         EnvoyInfoCardListItem(
@@ -289,6 +290,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                               unit: formatUnit,
                               account: account,
                               amountSats: totalInputAmount,
+                              millionaireMode: false,
                               amountWidgetStyle: AmountWidgetStyle.normal),
                         ),
                         const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
@@ -349,6 +351,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                 unit: formatUnit,
                                                 account: account,
                                                 amountSats: totalChangeAmount,
+                                                millionaireMode: false,
                                                 amountWidgetStyle:
                                                     AmountWidgetStyle.normal),
                                       ),
@@ -474,6 +477,13 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                     context: context,
                                     dialog: TxNoteDialog(
                                       onAdd: (note) {
+                                        if (widget.previousTransaction !=
+                                            null) {
+                                          EnvoyStorage().addTxNote(
+                                              note: note,
+                                              key: widget
+                                                  .previousTransaction!.txId);
+                                        }
                                         ref
                                             .read(
                                                 stagingTxNoteProvider.notifier)

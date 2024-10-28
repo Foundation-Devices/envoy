@@ -16,8 +16,8 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: ^2.0.11
-  tor:
-    path: ../../../tor
+  tor: 0.0.8
+
 
 
 dev_dependencies:

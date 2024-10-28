@@ -39,6 +39,15 @@ class Device {
 }
 
 class Devices extends ChangeNotifier {
+  @override
+  // ignore: must_call_super
+  void dispose({bool? force}) {
+    // prevents riverpods StateNotifierProvider from disposing it
+    if (force == true) {
+      super.dispose();
+    }
+  }
+
   List<Device> devices = [];
   final LocalStorage _ls = LocalStorage();
 

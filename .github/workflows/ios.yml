@@ -61,7 +61,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: '3.19.5'
+          flutter-version: '3.24.1'
 
       - name: Install dependencies
         run: flutter pub get
@@ -76,7 +76,7 @@ jobs:
         run: |
           flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: envoy-ipa
           path: build/ios/ipa/envoy.ipa

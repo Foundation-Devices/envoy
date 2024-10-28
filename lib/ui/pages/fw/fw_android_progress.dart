@@ -14,7 +14,6 @@ import 'package:envoy/business/devices.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'fw_intro.dart';
 import 'package:envoy/ui/home/cards/devices/device_list_tile.dart';
@@ -67,6 +66,7 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
             if (done!) {
               Devices().markDeviceUpdated(
                   widget.deviceId, fwInfo.value!.storedVersion);
+              refreshFirmwareUpdateDot();
             }
           });
         }
@@ -141,27 +141,23 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
       navigationDotsIndex: currentDotIndex,
       buttons: [
         if (done != null)
-          Padding(
-            padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
-            child: OnboardingButton(
-                label: done! ? S().component_continue : S().component_tryAgain,
-                onTap: () {
-                  Navigator.of(context)
-                      .pushReplacement(MaterialPageRoute(builder: (context) {
-                    if (done!) {
-                      refreshFirmwareUpdateDot();
-                      return FwPassportPage(
-                        onboarding: widget.onboarding,
-                      );
-                    } else {
-                      return FwIntroPage(
-                        deviceId: widget.deviceId,
-                        onboarding: widget.onboarding,
-                      );
-                    }
-                  }));
-                }),
-          )
+          OnboardingButton(
+              label: done! ? S().component_continue : S().component_tryAgain,
+              onTap: () {
+                Navigator.of(context)
+                    .pushReplacement(MaterialPageRoute(builder: (context) {
+                  if (done!) {
+                    return FwPassportPage(
+                      onboarding: widget.onboarding,
+                    );
+                  } else {
+                    return FwIntroPage(
+                      deviceId: widget.deviceId,
+                      onboarding: widget.onboarding,
+                    );
+                  }
+                }));
+              })
       ],
     );
   }

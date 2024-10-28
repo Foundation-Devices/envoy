@@ -32,7 +32,7 @@ class HomeAppBar extends ConsumerStatefulWidget {
   ConsumerState createState() => _HomeAppBarState();
 }
 
-const _animationsDuration = Duration(milliseconds: 350);
+const _animationsDuration = Duration(milliseconds: 100);
 
 class _HomeAppBarState extends ConsumerState<HomeAppBar> {
   HamburgerState state = HamburgerState.idle;
@@ -40,9 +40,12 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 10)).then((value) {
-      _setOptionWidgetsForTabWidgets(
-          GoRouter.of(context).routerDelegate.currentConfiguration.fullPath);
+    Future.delayed(const Duration(milliseconds: 10)).then((_) {
+      if (context.mounted) {
+        _setOptionWidgetsForTabWidgets(
+            // ignore: use_build_context_synchronously
+            GoRouter.of(context).routerDelegate.currentConfiguration.fullPath);
+      }
     });
   }
 
@@ -66,6 +69,19 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     bool backDropEnabled = homePageDropState != HomePageBackgroundState.hidden;
 
     String homePageTitle = ref.watch(homePageTitleProvider);
+
+    ref.listen(
+      homePageBackgroundProvider,
+      (previous, next) {
+        if (previous != HomePageBackgroundState.hidden &&
+            next == HomePageBackgroundState.hidden) {
+          final paths = mainRouter.routerDelegate.currentConfiguration.fullPath;
+          if (homeTabRoutes.contains(paths)) {
+            ref.read(homePageTitleProvider.notifier).state = "";
+          }
+        }
+      },
+    );
     ref.listen(
       routePathProvider,
       (previous, nextPath) {
@@ -142,8 +158,12 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                   if (context.mounted) {
                     context.go(ROUTE_BUY_BITCOIN);
                   }
-                } else {
+                } else if (path == ROUTE_BUY_BITCOIN) {
                   if (context.mounted) {
+                    context.go(ROUTE_ACCOUNTS_HOME);
+                  }
+                } else {
+                  if (context.mounted && GoRouter.of(context).canPop()) {
                     GoRouter.of(context).pop();
                   }
                 }
@@ -174,7 +194,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         const SizedBox(height: 50, child: IndicatorShield())
       ]),
       actions: [
-// Right action
+        // Right action
         Opacity(
           opacity: (inEditMode || backDropEnabled) ? 0.0 : 1.0,
           child: AnimatedSwitcher(
@@ -318,15 +338,19 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
           rightAction: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) {
-                  if (EnvoySeed().walletDerived()) {
-                    return const OnboardPassportWelcomeScreen();
-                  } else {
-                    return const WelcomeScreen();
-                  }
-                },
-              ));
+              Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) {
+                      if (EnvoySeed().walletDerived()) {
+                        return const OnboardPassportWelcomeScreen();
+                      } else {
+                        return const WelcomeScreen();
+                      }
+                    },
+                    reverseTransitionDuration: Duration.zero,
+                    transitionDuration: Duration.zero,
+                  ));
             },
             child: Container(
               height: 55,
@@ -350,6 +374,9 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         optionsState.state = null;
         break;
       case ROUTE_LEARN:
+        optionsState.state = null;
+        break;
+      case ROUTE_LEARN_BLOG:
         optionsState.state = null;
         break;
       // default:
