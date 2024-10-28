@@ -78,7 +78,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       bool newRegionCanBuy =
           await AllowedRegions.isRegionAllowed(region.code, region.division);
       setState(() {
-        canBuy = newRegionCanBuy && Settings().allowBuyInEnvoy;
+        canBuy = newRegionCanBuy;
       });
     } else {
       setState(() {
