@@ -69,6 +69,19 @@ class CoinRepository {
     });
   }
 
+  Future<List<CoinTag>> getCoinTags({String? accountId}) async {
+    final finder = accountId != null
+        ? Finder(filter: Filter.equals('account', accountId))
+        : Finder();
+
+    // Run the query and get the list of results
+    final records =
+        await storage.tagStore.query(finder: finder).getSnapshots(db);
+
+    // Transform the records to a list of CoinTag objects
+    return records.map((record) => CoinTag.fromJson(record.value)).toList();
+  }
+
   Future addCoinTag(CoinTag tag) async {
     await storage.tagStore.record(tag.id).put(db, tag.toJson());
   }

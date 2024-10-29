@@ -7,7 +7,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
+import 'dart:typed_data';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/devices.dart';
@@ -24,11 +24,11 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/xfp_endian.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
-import 'package:envoy/ui/storage/coins_repository.dart';
-import 'bip329.dart';
+import 'package:envoy/business/bip329.dart';
 
 class AccountAlreadyPaired implements Exception {}
 
@@ -689,40 +689,35 @@ class AccountManager extends ChangeNotifier {
     return null;
   }
 
-  // This function is currently used for testing purposes only
   Future<void> exportBIP329() async {
+    List<String> allData = [];
+
     for (Account account in accounts) {
       Wallet wallet = account.wallet;
 
-      // Get xpub for each wallet and create JSON data
+      // Get xpub and create JSON data
       String xpub = getXpub(wallet);
-      // ignore: unused_local_variable
-      String data = buildKeyJson("xpub", xpub, account.name);
-      //print(data);
+      String xpubData = buildKeyJson("xpub", xpub, account.name);
+      allData.add(xpubData);
 
-      // Process each UTXO to get info and determine spendability
-      List<Utxo> utxos = wallet.utxos;
-      List<String> locked = await CoinRepository().getBlockedCoins();
+      // Get output data and add each entry to allData
+      List<String> outputData = await getUtxosData(account);
+      allData.addAll(outputData);
 
-      for (Utxo utxo in utxos) {
-        String utxoInfo = "${utxo.txid}:${utxo.vout}";
-        bool isSpendable = !locked.contains(utxoInfo);
-        // ignore: unused_local_variable
-        String utxoData =
-            buildKeyJson("output", utxoInfo, "Tag", spendable: isSpendable);
-        //  print(utxoData);
-      }
-
-      // Generate JSON data for each transaction
-      List<Transaction> transactions = wallet.transactions;
-      String origin = extractDescriptor(wallet.externalDescriptor ?? "");
-      for (Transaction tx in transactions) {
-        // ignore: unused_local_variable
-        String txData = buildKeyJson(
-            "tx", tx.txId, "${account.name} Transaction",
-            origin: origin);
-        // print(txData);
-      }
+      // Get transaction data and add each entry to allData
+      List<String> txData = await getTxData(wallet);
+      allData.addAll(txData);
     }
+
+    // Join each JSON string with a newline character
+    String fileContent = allData.join('\n');
+    Uint8List fileContentBytes = Uint8List.fromList(utf8.encode(fileContent));
+
+    // Save the file
+    await FileSaver.instance.saveAs(
+        mimeType: MimeType.json,
+        name: 'bip329_export',
+        bytes: fileContentBytes,
+        ext: 'json');
   }
 }

@@ -3,8 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:convert';
-
+import 'package:collection/collection.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/storage/coins_repository.dart';
+import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/business/account.dart';
+import 'package:envoy/business/coin_tag.dart';
 
 String getXpub(Wallet wallet) {
   // Check if the wallet is hot
@@ -54,4 +58,43 @@ String extractDescriptor(String input) {
   } else {
     return ''; // Return an empty string if the format is not as expected
   }
+}
+
+Future<List<String>> getTxData(Wallet wallet) async {
+  List<Transaction> transactions = wallet.transactions;
+  String origin = extractDescriptor(wallet.externalDescriptor ?? "");
+  List<String> txDataList = [];
+
+  for (Transaction tx in transactions) {
+    String note = await EnvoyStorage().getTxNote(tx.txId) ?? "";
+    String txData = buildKeyJson("tx", tx.txId, note, origin: origin);
+    txDataList.add(txData);
+  }
+
+  return txDataList;
+}
+
+Future<List<String>> getUtxosData(Account account) async {
+  List<Utxo> utxos = account.wallet.utxos;
+  List<String> locked = await CoinRepository().getBlockedCoins();
+  List<CoinTag> tags =
+      await CoinRepository().getCoinTags(accountId: account.id);
+  List<String> utxoDataList = [];
+
+  for (Utxo utxo in utxos) {
+    String utxoInfo = "${utxo.txid}:${utxo.vout}";
+
+    // Set label based on whether utxoInfo is in coinsId
+    String label =
+        tags.firstWhereOrNull((tag) => tag.coinsId.contains(utxoInfo))?.name ??
+            "";
+    bool isSpendable = !locked.contains(utxoInfo);
+
+    // Generate utxoData and add it to the list
+    String utxoData =
+        buildKeyJson("output", utxoInfo, label, spendable: isSpendable);
+    utxoDataList.add(utxoData);
+  }
+
+  return utxoDataList;
 }

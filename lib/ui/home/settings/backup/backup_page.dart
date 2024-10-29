@@ -266,7 +266,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(S().settings_advanced,
-                          style: EnvoyTypography.info
+                          style: EnvoyTypography.body
                               .copyWith(color: Colors.white)),
                       AnimatedRotation(
                         duration: const Duration(milliseconds: 200),
@@ -287,7 +287,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                       onTap: () {},
                       contentPadding: const EdgeInsets.all(0),
                       title: SettingText(
-                          "Download BIP-329 Backup File", // TODO: localazy
+                          "Download BIP-329 Backup File", // TODO: Figma
                           onTap: () {
                         AccountManager().exportBIP329();
                       }),
