@@ -592,6 +592,16 @@ class S {
     );
   }
 
+  /// `Download BIP-329 Backup File`
+  String get backups_downloadBIP329BackupFile {
+    return Intl.message(
+      'Download BIP-329 Backup File',
+      name: 'backups_downloadBIP329BackupFile',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Erase Wallets and Backups`
   String get backups_erase_wallets_and_backups {
     return Intl.message(
@@ -852,10 +862,10 @@ class S {
     );
   }
 
-  /// `Navigate to {AccountName} on Passport, choose ‘Verify Address’, then scan the QR code.`
+  /// `Navigate to {AccountName} on Passport, choose ‘Account Tools’ > ‘Verify Address’, then scan the QR code below.`
   String buy_bitcoin_accountSelection_verify_modal_heading(Object AccountName) {
     return Intl.message(
-      'Navigate to $AccountName on Passport, choose ‘Verify Address’, then scan the QR code.',
+      'Navigate to $AccountName on Passport, choose ‘Account Tools’ > ‘Verify Address’, then scan the QR code below.',
       name: 'buy_bitcoin_accountSelection_verify_modal_heading',
       desc: '',
       args: [AccountName],
@@ -2858,10 +2868,10 @@ class S {
     );
   }
 
-  /// `Yes! From v1.7 you can now purchase Bitcoin within Envoy and have it automatically deposited to your mobile account, or any connected Passport accounts. Just click on the buy button from the main Accounts screen.`
+  /// `Yes! From v1.7.0 you can now purchase Bitcoin within Envoy and have it automatically deposited to your mobile account, or any connected Passport accounts. Just click on the buy button from the main Accounts screen.`
   String get envoy_faq_answer_24 {
     return Intl.message(
-      'Yes! From v1.7 you can now purchase Bitcoin within Envoy and have it automatically deposited to your mobile account, or any connected Passport accounts. Just click on the buy button from the main Accounts screen.',
+      'Yes! From v1.7.0 you can now purchase Bitcoin within Envoy and have it automatically deposited to your mobile account, or any connected Passport accounts. Just click on the buy button from the main Accounts screen.',
       name: 'envoy_faq_answer_24',
       desc: '',
       args: [],
@@ -6873,6 +6883,16 @@ class S {
     return Intl.message(
       'Issue establishing Tor connectivity',
       name: 'tor_connectivity_toast_warning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connecting to the Tor Network`
+  String get video_connectingToTorNetwork {
+    return Intl.message(
+      'Connecting to the Tor Network',
+      name: 'video_connectingToTorNetwork',
       desc: '',
       args: [],
     );

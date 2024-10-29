@@ -286,8 +286,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                       dense: true,
                       onTap: () {},
                       contentPadding: const EdgeInsets.all(0),
-                      title: SettingText(
-                          "Download BIP-329 Backup File", // TODO: Figma
+                      title: SettingText(S().backups_downloadBIP329BackupFile,
                           onTap: () {
                         AccountManager().exportBIP329();
                       }),
