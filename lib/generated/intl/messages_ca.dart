@@ -24,7 +24,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Aquest val va caducar el dia {període} . Si us plau, poseu-vos en contacte amb l\'emissor amb qualsevol pregunta relacionada amb el val.";
 
   static String m1(AccountName) =>
-      "Ves a {Nom del compte} del Passaport, selecciona \"Verificar l\'adreça\" i escaneja el codi QR.";
+      "Ves a ${AccountName} del Passport, selecciona ‘Account Tools’ > ‘Verify Address’ i escaneja el codi QR.";
 
   static String m2(tagName) =>
       "La teva etiqueta ${tagName} està buida. Vols eliminar-la?";
@@ -612,7 +612,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_faq_answer_23": MessageLookupByLibrary.simpleMessage(
             "Sí. A partir de la versió 1.4.0, Envoy permet personalitzar totalment les comissions dels miners, així com dues opcions ràpides de selecció de comissions: \'Estàndard\' i \'Més ràpid\'. \'Estàndard\' té com a objectiu finalitzar la teva transacció en un termini de 60 minuts i \'Més ràpid\' en 10 minuts. Aquestes són estimacions basades en la congestió de la xarxa en el moment de construir la transacció i sempre et mostrarem el cost de les dues opcions abans de finalitzar la transacció."),
         "envoy_faq_answer_24": MessageLookupByLibrary.simpleMessage(
-            "Sí! A partir de la v1.7 ara podeu comprar Bitcoin dins d\'Envoy i dipositar-lo automàticament al vostre compte mòbil o a qualsevol compte de Passport connectat. Només cal que feu clic al botó de compra des de la pantalla principal de comptes."),
+            "Sí! A partir de la v1.7.0 ara podeu comprar Bitcoin dins d\'Envoy i dipositar-lo automàticament al vostre compte mòbil o a qualsevol compte de Passport connectat. Només cal que feu clic al botó de compra des de la pantalla principal de comptes."),
         "envoy_faq_answer_3": MessageLookupByLibrary.simpleMessage(
             "Envoy és una cartera Bitcoin senzilla amb potents funcions de privacitat i gestió de comptes, com ara les Còpies de Seguretat Màgiques. Utilitzeu Envoy juntament amb la vostra cartera Passport per a la configuració, actualitzacions de firmware i molt més."),
         "envoy_faq_answer_4": MessageLookupByLibrary.simpleMessage(
