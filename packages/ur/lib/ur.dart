@@ -127,6 +127,11 @@ class UrDecoder {
   }
 
   Uint8List receive(String value) {
+    String urnScheme = "bytes";
+    if (value.indexOf(urnScheme) != 0 || value[urnScheme.length] != ":") {
+      throw ("Invalid BIP21 URI");
+    }
+
     final output = NativeLibrary(_lib).ur_decoder_receive(
         Pointer<Int>.fromAddress(_self.address),
         value.toNativeUtf8() as Pointer<Char>);
