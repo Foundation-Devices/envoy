@@ -69,7 +69,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    _checkCanBuy();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkCanBuy();
+    });
   }
 
   Future<void> _checkCanBuy() async {
