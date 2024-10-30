@@ -24,7 +24,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Este vale expirou a ${period}.\n\n\nPor favor entra em contacto com o emissor para quaisquer questões relacionadas com o vale.";
 
   static String m1(AccountName) =>
-      "Acede a ${AccountName} no Passport, escolhe \"Verificar Endereço\" e digitaliza o código QR.";
+      "Acede a ${AccountName} no Passport, escolhe ‘Account Tools’ > ‘Verify Address’ e digitaliza o código QR.";
 
   static String m2(tagName) =>
       "A tua etiqueta ${tagName} está vazia. Pretendes eliminá-la?";
@@ -609,7 +609,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_faq_answer_23": MessageLookupByLibrary.simpleMessage(
             "Sim. A partir da versão 1.4.0, a Envoy permite personalizar na íntegra as taxas de envio e disponibiliza também duas opções de taxa para seleção rápida - \'Padrão\' e \'Rápida\'. A opção \'Padrão\' tem como objetivo finalizar a tua transação em 60 minutos e a opção \'Rápida\' em 10 minutos. Estas taxas são estimativas baseadas no congestionamento da rede no momento em que a transacção é construída e ser-te-á sempre mostrado o custo de ambas as opções antes de finalizares a transação."),
         "envoy_faq_answer_24": MessageLookupByLibrary.simpleMessage(
-            "Sim! A partir da versão 1.7 podes comprar Bitcoin directamente na Envoy e tê-lo automaticamente depositado na tua conta móvel ou em qualquer conta Passport associada. Basta clicar no botão comprar no menu principal de Contas."),
+            "Sim! A partir da versão 1.7.0 podes comprar Bitcoin directamente na Envoy e tê-lo automaticamente depositado na tua conta móvel ou em qualquer conta Passport associada. Basta clicar no botão comprar no menu principal de Contas."),
         "envoy_faq_answer_3": MessageLookupByLibrary.simpleMessage(
             "A Envoy é uma carteira simples de Bitcoin com poderosas funcionalidades de gestão de contas e privacidade, incluindo as Cópias Mágicas de Segurança.Utiliza a Envoy em conjunto com a carteira física Passport para questões relacionadas com configurações, actualizações de firmware e muito mais."),
         "envoy_faq_answer_4": MessageLookupByLibrary.simpleMessage(

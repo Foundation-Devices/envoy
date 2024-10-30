@@ -24,7 +24,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "This voucher expired on ${period}.\n\n\nPlease contact the issuer with any voucher-related questions.";
 
   static String m1(AccountName) =>
-      "Navigate to ${AccountName} on Passport, choose ‘Verify Address’, then scan the QR code.";
+      "Navigate to ${AccountName} on Passport, choose ‘Account Tools’ > ‘Verify Address’, then scan the QR code below.";
 
   static String m2(tagName) =>
       "Your ${tagName} tag is now empty. Would you like to delete it?";
@@ -595,7 +595,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_faq_answer_23": MessageLookupByLibrary.simpleMessage(
             "Yes. From version 1.4.0, Envoy allows for fully customized miner fees as well as two quick select fee options of ‘Standard’ and ‘Faster’. \'Standard\' aims to get your transaction finalized within 60 minutes and \'Faster\' within 10 minutes. These are estimates based on the network congestion at the time the transaction is built and you will always be shown the cost of both options before finalizing the transaction."),
         "envoy_faq_answer_24": MessageLookupByLibrary.simpleMessage(
-            "Yes! From v1.7 you can now purchase Bitcoin within Envoy and have it automatically deposited to your mobile account, or any connected Passport accounts. Just click on the buy button from the main Accounts screen."),
+            "Yes! From v1.7.0 you can now purchase Bitcoin within Envoy and have it automatically deposited to your mobile account, or any connected Passport accounts. Just click on the buy button from the main Accounts screen."),
         "envoy_faq_answer_3": MessageLookupByLibrary.simpleMessage(
             "Envoy is a simple Bitcoin wallet with powerful account management and privacy features, including Magic Backups.Use Envoy alongside your Passport hardware wallet for setup, firmware updates, and more."),
         "envoy_faq_answer_4": MessageLookupByLibrary.simpleMessage(
