@@ -276,11 +276,7 @@ class UniformResourceReader {
     if (!multipart) {
       payload = Ur.decodeSinglePart(data);
     } else {
-      try {
-        payload = urDecoder.receive(data);
-      } on Exception catch (_) {
-        kPrint("Couldn't decode UR!");
-      }
+      payload = urDecoder.receive(data);
     }
 
     if (payload.isNotEmpty) {

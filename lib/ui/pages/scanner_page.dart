@@ -382,6 +382,7 @@ class ScannerPageState extends State<ScannerPage> {
     } catch (e) {
       _processing = false;
       showSnackbar(invalidPassportQRSnackbar);
+      kPrint("Couldn't decode UR!");
       return;
     }
 

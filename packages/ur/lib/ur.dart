@@ -127,9 +127,27 @@ class UrDecoder {
   }
 
   Uint8List receive(String value) {
-    String urnScheme = "bytes";
-    if (value.indexOf(urnScheme) != 0 || value[urnScheme.length] != ":") {
-      throw ("Invalid BIP21 URI");
+    List<String> allowedSchemes = [
+      "bytes",
+      "crypto-response",
+      "crypto-hdkey",
+      "crypto-request",
+      "crypto-psbt"
+    ];
+
+    bool isValidScheme = false;
+
+    if (value.startsWith("ur:")) {
+      // Extract the scheme by splitting at '/'
+      String scheme = value.substring(3).split('/').first;
+
+      if (allowedSchemes.contains(scheme)) {
+        isValidScheme = true;
+      }
+    }
+
+    if (!isValidScheme) {
+      throw Exception("Invalid BIP21 URI");
     }
 
     final output = NativeLibrary(_lib).ur_decoder_receive(
