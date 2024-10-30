@@ -6,6 +6,7 @@
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/keys_manager.dart';
 import 'package:envoy/business/map_data.dart';
 import 'package:envoy/business/scheduler.dart';
@@ -23,6 +24,7 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tor/tor.dart';
@@ -60,12 +62,15 @@ Future<void> initSingletons() async {
   await LocalStorage.init();
   EnvoyScheduler.init();
   await KeysManager.init();
+  await ExchangeRate.init();
   EnvoyReport().init();
   Settings.restore();
   Tor.init(enabled: Settings().torEnabled());
   UpdatesManager.init();
   ScvServer.init();
   await EnvoySeed.init();
+  await FMTCObjectBoxBackend().initialise();
+  await const FMTCStore('mapStore').manage.create();
 
   // Start Tor regardless of whether we are using it or not
   try {
@@ -135,8 +140,8 @@ class EnvoyApp extends StatelessWidget {
             }),
             primaryColor: envoyAccentColor,
             brightness: Brightness.light,
-            appBarTheme:
-                const AppBarTheme(backgroundColor: Colors.black, elevation: 0),
+            appBarTheme: const AppBarTheme(
+                backgroundColor: Colors.black, elevation: 0, centerTitle: true),
             scaffoldBackgroundColor: envoyBaseColor,
             useMaterial3: false),
         routerConfig: mainRouter,

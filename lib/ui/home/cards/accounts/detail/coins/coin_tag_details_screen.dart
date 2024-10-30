@@ -243,6 +243,9 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                     ]),
               ),
               child: Container(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.78,
+                ),
                 decoration: BoxDecoration(
                     borderRadius:
                         const BorderRadius.all(Radius.circular(cardRadius - 3)),
@@ -350,6 +353,13 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                           children: [
                                             const GhostListTile(
                                               animate: false,
+                                              diagonal: false,
+                                              leadingHeight:
+                                                  EnvoySpacing.medium2,
+                                              minLeadingWidth:
+                                                  EnvoySpacing.small,
+                                              subtitleRightPadding:
+                                                  EnvoySpacing.xl,
                                             ),
                                             const Padding(
                                                 padding: EdgeInsets.only(

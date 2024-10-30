@@ -5,6 +5,7 @@
 
 import 'package:envoy/business/blog_post.dart';
 import 'package:envoy/ui/home/cards/activity/activity_card.dart';
+import 'package:envoy/ui/home/cards/learn/components/blog_post_card.dart';
 import 'package:envoy/ui/home/cards/learn/learn_card.dart';
 import 'package:envoy/ui/home/cards/privacy/privacy_card.dart';
 import 'package:envoy/ui/home/home_page.dart';
@@ -13,7 +14,6 @@ import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:envoy/ui/home/cards/learn/components/blog_post_card.dart';
 
 const ROUTE_PRIVACY = '/privacy';
 const ROUTE_ACTIVITY = '/activity';
@@ -29,16 +29,17 @@ final homeRouter = StatefulShellRoute.indexedStack(
     restorationScopeId: "homeShellNavRoot",
     parentNavigatorKey: mainNavigatorKey,
     builder: (context, state, navigationShell) {
-      return HomePage(mainNavigationShell: navigationShell);
+      return PopScope(
+          canPop: false, child: HomePage(mainNavigationShell: navigationShell));
     },
     branches: <StatefulShellBranch>[
       devicesRouter,
       StatefulShellBranch(restorationScopeId: "privacyScopeId", routes: [
         GoRoute(
-          path: ROUTE_PRIVACY,
-          pageBuilder: (context, state) =>
-              const MaterialPage(child: PrivacyCard()),
-        ),
+            path: ROUTE_PRIVACY,
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: PrivacyCard());
+            }),
       ]),
       accountsRouter,
       StatefulShellBranch(restorationScopeId: 'activityScopeId', routes: [

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:envoy/business/account.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class QrTab extends StatelessWidget {
   final String title;
@@ -63,54 +64,57 @@ class QrTab extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(2.0),
-                      child: ListTile(
-                        leading: Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.6),
-                              borderRadius: BorderRadius.circular(50),
-                              border: Border.all(
-                                  color: account.color,
-                                  width: 3,
-                                  style: BorderStyle.solid)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: SvgPicture.asset(
-                              "assets/i.svg",
-                            ),
+                    ListTile(
+                      leading: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.6),
+                            borderRadius: BorderRadius.circular(36),
+                            border: Border.all(
+                                color: account.color,
+                                width: 3,
+                                style: BorderStyle.solid)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: SvgPicture.asset(
+                            "assets/i.svg",
                           ),
                         ),
-                        title: ConstrainedBox(
-                          constraints: const BoxConstraints(
-                            maxHeight: 200,
-                          ),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  title,
-                                  style: EnvoyTypography.body.copyWith(
-                                      color:
-                                          design_system.EnvoyColors.solidWhite),
-                                ),
-                                Text(
-                                  subtitle,
-                                  style: EnvoyTypography.label
-                                      .copyWith(color: Colors.white),
-                                ),
-                              ],
-                            ),
+                      ),
+                      title: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          maxHeight: 200,
+                        ),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                title,
+                                style: EnvoyTypography.body.copyWith(
+                                    color:
+                                        design_system.EnvoyColors.solidWhite),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 5),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: EnvoySpacing.medium1,
+                        right: EnvoySpacing.medium1,
+                        bottom: EnvoySpacing.small,
+                      ),
+                      child: Text(
+                        subtitle,
+                        style:
+                            EnvoyTypography.label.copyWith(color: Colors.white),
+                      ),
+                    ),
                     Flexible(
                       child: Container(
                         width: double.infinity,
@@ -123,7 +127,7 @@ class QrTab extends StatelessWidget {
                           child: Align(
                             alignment: Alignment.topCenter,
                             child: Padding(
-                              padding: const EdgeInsets.all(4.0),
+                              padding: const EdgeInsets.all(EnvoySpacing.xs),
                               child: qr,
                             ),
                           ),

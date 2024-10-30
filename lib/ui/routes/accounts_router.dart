@@ -17,6 +17,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
 import 'package:envoy/ui/home/cards/buy_bitcoin_account_selection.dart';
 import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -89,12 +90,38 @@ final accountsRouter = StatefulShellBranch(
     initialLocation: ROUTE_ACCOUNTS_HOME,
     routes: [
       GoRoute(
+          onExit: (context, state) {
+            final scope = ProviderScope.containerOf(context);
+            final shellMenuOpened = scope.read(homePageBackgroundProvider);
+            if (shellMenuOpened == HomePageBackgroundState.hidden) {
+              return true;
+            } else {
+              if (shellMenuOpened == HomePageBackgroundState.menu) {
+                scope.read(homePageBackgroundProvider.notifier).state =
+                    HomePageBackgroundState.hidden;
+              } else {
+                scope.read(homePageBackgroundProvider.notifier).state =
+                    HomePageBackgroundState.menu;
+              }
+              return false;
+            }
+          },
           path: ROUTE_ACCOUNTS_HOME,
-          pageBuilder: (context, state) =>
-              wrapWithVerticalAxisAnimation(const AccountsCard()),
+          pageBuilder: (context, state) {
+            return wrapWithVerticalAxisAnimation(Consumer(
+              builder: (context, ref, child) {
+                final shellMenuOpened = ref.watch(homePageBackgroundProvider);
+                return PopScope(
+                  canPop: shellMenuOpened == HomePageBackgroundState.hidden,
+                  child: child!,
+                );
+              },
+              child: const AccountsCard(),
+            ));
+          },
           routes: [
             GoRoute(
-              onExit: (context) async {
+              onExit: (context, GoRouterState state) async {
                 ProviderContainer providerContainer =
                     ProviderScope.containerOf(context);
                 bool isInEdit = providerContainer.read(spendEditModeProvider) !=
@@ -119,7 +146,7 @@ final accountsRouter = StatefulShellBranch(
               routes: [
                 GoRoute(
                     path: _ACCOUNT_SEND,
-                    onExit: (context) {
+                    onExit: (context, GoRouterState state) {
                       /// if we are exiting the send screen, we need to clear the spend state
                       /// but only if we are not in edit mode
                       clearSpendState(ProviderScope.containerOf(context));
@@ -131,7 +158,7 @@ final accountsRouter = StatefulShellBranch(
                     routes: [
                       GoRoute(
                         name: "spend_confirm",
-                        onExit: (context) async {
+                        onExit: (context, GoRouterState state) async {
                           ProviderContainer providerContainer =
                               ProviderScope.containerOf(context);
 
@@ -170,7 +197,7 @@ final accountsRouter = StatefulShellBranch(
                         routes: [
                           GoRoute(
                             name: "spend_review",
-                            onExit: (context) {
+                            onExit: (context, GoRouterState state) {
                               /// if we are exiting the send screen, we need to clear the spend state
                               /// but only if we are not in edit mode
                               if (ProviderScope.containerOf(context)
@@ -232,7 +259,7 @@ final accountsRouter = StatefulShellBranch(
                 routes: [
                   GoRoute(
                       path: _BUY_BITCOIN,
-                      onExit: (context) {
+                      onExit: (context, GoRouterState state) {
                         ProviderScope.containerOf(context)
                             .read(buyBTCPageProvider.notifier)
                             .state = false;

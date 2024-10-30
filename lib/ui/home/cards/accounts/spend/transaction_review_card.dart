@@ -7,6 +7,8 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_button.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_spend_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
@@ -21,6 +23,9 @@ import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';
+import 'package:envoy/ui/components/button.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
 
 class TransactionReviewCard extends ConsumerStatefulWidget {
   final Psbt psbt;
@@ -32,6 +37,7 @@ class TransactionReviewCard extends ConsumerStatefulWidget {
   final bool hideTxDetailsDialog;
   final GestureTapCallback onTxDetailTap;
   final String feeTitle;
+  final EnvoyIcons? feeTitleIconButton;
 
   const TransactionReviewCard({
     super.key,
@@ -45,6 +51,7 @@ class TransactionReviewCard extends ConsumerStatefulWidget {
     required this.feeChooserWidget,
     this.hideTxDetailsDialog = false,
     required this.feeTitle,
+    this.feeTitleIconButton,
   });
 
   @override
@@ -91,6 +98,9 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
 
     AmountDisplayUnit formatUnit =
         unit == DisplayUnit.btc ? AmountDisplayUnit.btc : AmountDisplayUnit.sat;
+
+    RBFSpendState? rbfSpendState = ref.read(rbfSpendStateProvider);
+    Transaction? originalTx = rbfSpendState?.originalTx;
 
     return Container(
       decoration: BoxDecoration(
@@ -178,6 +188,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           account: account,
                           unit: formatUnit,
                           amountSats: amount,
+                          millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                   Padding(
                     padding: const EdgeInsets.only(
@@ -220,9 +231,29 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text(
-                          widget.feeTitle,
-                          style: titleStyle,
+                        Row(
+                          children: [
+                            Text(
+                              widget.feeTitle,
+                              style: titleStyle,
+                            ),
+                            widget.feeTitleIconButton != null
+                                ? GestureDetector(
+                                    onTap: () {
+                                      showNewTransactionDialog(context, account,
+                                          psbt.fee, originalTx!.fee);
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: EnvoySpacing.xs),
+                                      child: EnvoyIcon(
+                                          widget.feeTitleIconButton!,
+                                          color: EnvoyColors.textPrimaryInverse,
+                                          size: EnvoyIconSize.small),
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
+                          ],
                         ),
                         Expanded(
                           child: Row(
@@ -257,6 +288,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           unit: formatUnit,
                           account: account,
                           amountSats: psbt.fee,
+                          millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -300,6 +332,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           account: account,
                           unit: formatUnit,
                           amountSats: totalSpendAmount,
+                          millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                 ],
               ),
@@ -330,5 +363,96 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
         ),
       );
     });
+  }
+
+  void showNewTransactionDialog(
+      BuildContext context, Account account, int newFee, int oldFee) {
+    showEnvoyDialog(
+        context: context,
+        dialog: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.85,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(EnvoySpacing.medium2),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: EnvoySpacing.medium3),
+                    child: EnvoyIcon(
+                      EnvoyIcons.info,
+                      size: EnvoyIconSize.big,
+                      color: EnvoyColors.accentPrimary,
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                    child: Text(
+                      S().replaceByFee_newFee_modal_heading,
+                      textAlign: TextAlign.center,
+                      style: EnvoyTypography.heading,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: EnvoySpacing.small,
+                    ),
+                    child: Text(
+                      S().replaceByFee_newFee_modal_subheading,
+                      style: EnvoyTypography.info
+                          .copyWith(color: EnvoyColors.textSecondary),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: EnvoySpacing.small,
+                    ),
+                    child: EnvoyAmount(
+                      account: account,
+                      amountSats: newFee,
+                      amountWidgetStyle: AmountWidgetStyle.normal,
+                      millionaireMode: false,
+                      alignToEnd: false,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: EnvoySpacing.small,
+                    ),
+                    child: Text(
+                      S().replaceByFee_newFee_modal_subheading_replacing,
+                      style: EnvoyTypography.info
+                          .copyWith(color: EnvoyColors.textSecondary),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  EnvoyAmount(
+                    account: account,
+                    amountSats: oldFee,
+                    amountWidgetStyle: AmountWidgetStyle.normal,
+                    millionaireMode: false,
+                    alignToEnd: false,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: EnvoySpacing.medium3,
+                    ),
+                    child: EnvoyButton(
+                      label: S().component_continue,
+                      onTap: () {
+                        Navigator.of(context, rootNavigator: true).pop();
+                      },
+                      type: ButtonType.primary,
+                      state: ButtonState.defaultState,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ));
   }
 }

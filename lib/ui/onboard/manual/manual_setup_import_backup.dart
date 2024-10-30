@@ -13,6 +13,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/manual/dialogs.dart';
 import 'package:rive/rive.dart';
@@ -78,6 +79,14 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
         ],
       ),
     );
+  }
+
+  Future<FilePickerResult?> _pickFileForRecovery() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    setState(() {
+      _isRecoveryInProgress = true;
+    });
+    return result;
   }
 
   @override
@@ -168,18 +177,18 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                   OnboardingButton(
                       type: EnvoyButtonTypes.secondary,
                       label: S().manual_setup_import_backup_CTA2,
-                      onTap: () {
-                        Future.delayed(const Duration(seconds: 2), () {
-                          setState(() {
-                            _isRecoveryInProgress = true;
-                          });
-                        });
+                      onTap: () async {
+                        FilePickerResult? fileResult =
+                            await _pickFileForRecovery();
 
-                        openBackupFile(context).then((value) {
-                          setState(() {
-                            _isRecoveryInProgress = false;
+                        if (context.mounted) {
+                          openBackupFile(context, fileResult: fileResult)
+                              .then((value) {
+                            setState(() {
+                              _isRecoveryInProgress = false;
+                            });
                           });
-                        });
+                        }
                       }),
                   OnboardingButton(
                       type: EnvoyButtonTypes.primary,

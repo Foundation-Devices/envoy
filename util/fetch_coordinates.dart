@@ -77,7 +77,7 @@ void main() async {
   final Map<String, dynamic> countries = jsonDecode(jsonString);
 
   // Prepare the result list
-  final List<Map<String, dynamic>> result = [];
+  final Map<String, dynamic> result = {};
 
   int notFoundCount = 0;
   Map<String, Coordinates> lastKnownCoordinates = {};
@@ -89,6 +89,8 @@ void main() async {
     bool firstDivision = true;
 
     kPrint('Processing country: $countryName');
+
+    List<Map<String, dynamic>> divisionsWithCoordinates = [];
 
     for (var divisionCode in divisions.keys) {
       var divisionName = divisions[divisionCode];
@@ -109,6 +111,7 @@ void main() async {
           kPrint(
               'Coordinates not found for first division $divisionName, searching by country: $countryName');
           coordinates = await getCoordinatesByCountryOpenStreetMap(countryName);
+          lastKnownCoordinates[countryName] = coordinates;
         }
         if (coordinates.lat == 0 && coordinates.lon == 0) {
           notFoundCount++;
@@ -120,7 +123,7 @@ void main() async {
         lastKnownCoordinates[countryName] = coordinates;
       }
 
-      result.add({
+      divisionsWithCoordinates.add({
         'division': divisionName,
         'coordinates': coordinates.toJson(),
       });
@@ -128,6 +131,11 @@ void main() async {
       firstDivision =
           false; // After processing the first division, set this to false
     }
+
+    result[countryCode] = {
+      'country_name': countryName,
+      'divisions': divisionsWithCoordinates,
+    };
   }
 
   // Write the result to a new JSON file

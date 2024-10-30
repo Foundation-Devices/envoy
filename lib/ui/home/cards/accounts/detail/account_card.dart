@@ -389,17 +389,29 @@ class _AccountCardState extends ConsumerState<AccountCard>
 
 class GhostListTile extends StatelessWidget {
   final bool animate;
+  final bool diagonal;
+  final double leadingHeight;
+  final double minLeadingWidth;
+  final double titleRightPadding;
+  final double subtitleRightPadding;
 
   const GhostListTile({
     this.animate = true,
+    this.diagonal = true,
+    this.leadingHeight = 50.0,
+    this.minLeadingWidth = 40.0,
+    this.titleRightPadding = 50.0,
+    this.subtitleRightPadding = 80.0,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      titleAlignment: ListTileTitleAlignment.center,
+      minLeadingWidth: minLeadingWidth,
       title: Padding(
-        padding: const EdgeInsets.only(top: 2, right: 50),
+        padding: EdgeInsets.only(top: 2, right: titleRightPadding),
         child: LoaderGhost(
           width: 10,
           height: 15,
@@ -407,7 +419,7 @@ class GhostListTile extends StatelessWidget {
         ),
       ),
       subtitle: Padding(
-        padding: const EdgeInsets.only(top: 3.0, right: 80),
+        padding: EdgeInsets.only(top: 3.0, right: subtitleRightPadding),
         child: LoaderGhost(
           width: 30,
           height: 15,
@@ -415,9 +427,9 @@ class GhostListTile extends StatelessWidget {
         ),
       ),
       leading: LoaderGhost(
-        width: 50,
-        height: 50,
-        diagonal: true,
+        width: leadingHeight,
+        height: leadingHeight,
+        diagonal: diagonal,
         animate: animate,
       ),
       trailing: Column(
@@ -481,17 +493,13 @@ class TransactionListTile extends StatelessWidget {
           // Avoids unintended behavior, prevents list item disappearance
           child: Row(
             children: [
-              transactionIcon(context),
+              transactionIcon(context, transaction),
               Expanded(
                 child: ListTile(
                   minLeadingWidth: 0,
                   horizontalTitleGap: EnvoySpacing.small,
-                  title: transactionTitle(context),
-                  subtitle: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.centerLeft,
-                    child: txSubtitle(activeLocale),
-                  ),
+                  title: transactionTitle(context, transaction),
+                  subtitle: txSubtitle(activeLocale),
                   contentPadding: const EdgeInsets.all(0),
                   trailing: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -546,9 +554,11 @@ class TransactionListTile extends StatelessWidget {
         return TransactionsDetailsWidget(
             account: account,
             tx: transaction,
-            iconTitleWidget: transactionIcon(context, iconColor: _detailsColor),
+            iconTitleWidget:
+                transactionIcon(context, transaction, iconColor: _detailsColor),
             titleWidget: transactionTitle(
               context,
+              transaction,
               txTitleStyle: _detailsHeadingStyle,
             ));
       },
@@ -559,64 +569,67 @@ class TransactionListTile extends StatelessWidget {
     return Text(
       getTransactionSubtitleText(transaction, activeLocale),
       style: _transactionTextStyleInfo,
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
     );
   }
+}
 
-  Widget transactionIcon(
-    BuildContext context, {
-    Color iconColor = EnvoyColors.textTertiary,
-  }) {
-    return FittedBox(
-      alignment: Alignment.centerLeft,
-      fit: BoxFit.scaleDown,
-      child: Consumer(
-        builder: (context, ref, child) {
-          bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
-          final cancelState =
-              ref.watch(cancelTxStateProvider(transaction.txId));
-          return Container(
-            padding: const EdgeInsets.only(
-              top: EnvoySpacing.small,
-              bottom: EnvoySpacing.small,
-              right: EnvoySpacing.xs,
-              left: EnvoySpacing.xs,
+Widget transactionTitle(BuildContext context, Transaction transaction,
+    {TextStyle? txTitleStyle}) {
+  final TextStyle? defaultStyle = Theme.of(context)
+      .textTheme
+      .bodyLarge
+      ?.copyWith(fontWeight: FontWeight.w500, fontSize: 14);
+
+  return FittedBox(
+    fit: BoxFit.scaleDown,
+    alignment: Alignment.centerLeft,
+    child: Consumer(
+      builder: (context, ref, child) {
+        bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
+        RBFState? cancelState =
+            ref.watch(cancelTxStateProvider(transaction.txId));
+        return Text(
+          getTransactionTitleText(transaction, cancelState, isBoosted),
+          style: txTitleStyle ?? defaultStyle,
+        );
+      },
+    ),
+  );
+}
+
+Widget transactionIcon(
+  BuildContext context,
+  Transaction transaction, {
+  Color iconColor = EnvoyColors.textTertiary,
+}) {
+  return FittedBox(
+    alignment: Alignment.centerLeft,
+    fit: BoxFit.scaleDown,
+    child: Consumer(
+      builder: (context, ref, child) {
+        bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
+        final cancelState = ref.watch(cancelTxStateProvider(transaction.txId));
+        return Container(
+          padding: const EdgeInsets.only(
+            top: EnvoySpacing.small,
+            bottom: EnvoySpacing.small,
+            right: EnvoySpacing.xs,
+            left: EnvoySpacing.xs,
+          ),
+          child: Transform.scale(
+            scale: 1.1,
+            child: EnvoyIcon(
+              getTransactionIcon(transaction, cancelState, isBoosted)!,
+              color: iconColor,
+              size: EnvoyIconSize.normal,
             ),
-            child: Transform.scale(
-              scale: 1.1,
-              child: EnvoyIcon(
-                getTransactionIcon(transaction, cancelState, isBoosted)!,
-                color: iconColor,
-                size: EnvoyIconSize.normal,
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget transactionTitle(BuildContext context, {TextStyle? txTitleStyle}) {
-    final TextStyle? defaultStyle = Theme.of(context)
-        .textTheme
-        .bodyLarge
-        ?.copyWith(fontWeight: FontWeight.w500, fontSize: 14);
-
-    return FittedBox(
-      fit: BoxFit.scaleDown,
-      alignment: Alignment.centerLeft,
-      child: Consumer(
-        builder: (context, ref, child) {
-          bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
-          RBFState? cancelState =
-              ref.watch(cancelTxStateProvider(transaction.txId));
-          return Text(
-            getTransactionTitleText(transaction, cancelState, isBoosted),
-            style: txTitleStyle ?? defaultStyle,
-          );
-        },
-      ),
-    );
-  }
+          ),
+        );
+      },
+    ),
+  );
 }
 
 Future<void> copyTxId(

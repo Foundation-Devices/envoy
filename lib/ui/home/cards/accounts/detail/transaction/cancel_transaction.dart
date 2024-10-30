@@ -28,11 +28,11 @@ import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart' as rive;
-
 import 'package:url_launcher/url_launcher.dart';
-import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
 import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_spend_screen.dart';
 
 class RBFState {
   final String originalTxId;
@@ -92,6 +92,73 @@ class CancelTxButton extends ConsumerStatefulWidget {
 class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
   bool _isPressed = false;
   bool _loading = false;
+  bool _canCancel = false;
+  late Psbt psbt;
+  late RawTransaction rawTx;
+  late RawTransaction originalTxRaw;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) => checkCancel());
+  }
+
+  Future<void> checkCancel() async {
+    if (mounted) {
+      setState(() {
+        _loading = true;
+        _canCancel = false;
+      });
+    }
+
+    final selectedAccount = ref.read(selectedAccountProvider);
+    if (selectedAccount == null) {
+      if (mounted) {
+        setState(() {
+          _loading = false;
+          _canCancel = false;
+        });
+      }
+      return;
+    }
+
+    final doNotSpend = ref.read(lockedUtxosProvider(selectedAccount.id!));
+    final feeRate = Fees().fastRate(selectedAccount.wallet.network);
+
+    try {
+      psbt = await selectedAccount.wallet
+          .cancelTx(widget.transaction.txId, doNotSpend, feeRate);
+
+      rawTx = await selectedAccount.wallet
+          .decodeWalletRawTx(psbt.rawTx, selectedAccount.wallet.network);
+
+      final originalTxRawHex = await selectedAccount.wallet
+          .getRawTxFromTxId(widget.transaction.txId);
+
+      originalTxRaw = await selectedAccount.wallet
+          .decodeWalletRawTx(originalTxRawHex, selectedAccount.wallet.network);
+
+      if (mounted) {
+        setState(() {
+          _canCancel = true;
+        });
+      }
+    } catch (e, s) {
+      debugPrintStack(stackTrace: s);
+      kPrint(e);
+      if (mounted) {
+        setState(() {
+          _canCancel = false;
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _loading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +177,16 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
               });
             },
             onTapUp: (_) {
-              checkCancel(context);
+              ref.watch(rbfSpendStateProvider) != null && _canCancel
+                  ? showEnvoyDialog(
+                      context: context,
+                      builder: Builder(
+                          builder: (context) => TxCancelDialog(
+                              originalTx: widget.transaction,
+                              cancelRawTx: rawTx,
+                              originalRawTx: originalTxRaw,
+                              cancelTx: psbt)))
+                  : showNoCancelNoFundsDialog(context);
               _isPressed = false;
             },
             onTapCancel: () {
@@ -122,8 +198,10 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
             child: Container(
               height: EnvoySpacing.medium2,
               decoration: BoxDecoration(
-                  color:
-                      EnvoyColors.chilli500.withOpacity(_isPressed ? 0.5 : 1),
+                  color: EnvoyColors.chilli500.withOpacity(
+                      ref.watch(rbfSpendStateProvider) != null && _canCancel
+                          ? (_isPressed ? 0.5 : 1)
+                          : (_loading ? 1 : 0.5)),
                   borderRadius: BorderRadius.circular(EnvoySpacing.small)),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
@@ -158,65 +236,20 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
     );
   }
 
-  checkCancel(BuildContext context) async {
-    setState(() {
-      _loading = true;
-    });
-    final selectedAccount = ref.read(selectedAccountProvider);
-    if (selectedAccount == null) {
-      return;
-    }
-    final doNotSpend = ref.read(lockedUtxosProvider(selectedAccount.id!));
-    final feeRate = Fees().fastRate(selectedAccount.wallet.network);
-
-    try {
-      final psbt = await selectedAccount.wallet
-          .cancelTx(widget.transaction.txId, doNotSpend, feeRate);
-
-      final rawTx = await selectedAccount.wallet
-          .decodeWalletRawTx(psbt.rawTx, selectedAccount.wallet.network);
-      final originalTxRawHex = await selectedAccount.wallet
-          .getRawTxFromTxId(widget.transaction.txId);
-
-      final originalTxRaw = await selectedAccount.wallet
-          .decodeWalletRawTx(originalTxRawHex, selectedAccount.wallet.network);
-
-      if (context.mounted) {
-        showEnvoyDialog(
-            context: context,
-            builder: Builder(
-                builder: (context) => TxCancelDialog(
-                    originalTx: widget.transaction,
-                    cancelRawTx: rawTx,
-                    originalRawTx: originalTxRaw,
-                    cancelTx: psbt)));
-      }
-    } catch (e, s) {
-      debugPrintStack(stackTrace: s);
-      kPrint(e);
-      String message = "$e";
-      if (e is InsufficientFunds) {
-        message = S().send_keyboard_amount_insufficient_funds_info;
-      }
-      if (context.mounted) {
-        EnvoyToast(
-          backgroundColor: EnvoyColors.danger,
-          replaceExisting: true,
-          duration: const Duration(seconds: 4),
-          message: message,
-          icon: const Icon(
-            Icons.info_outline,
-            color: EnvoyColors.solidWhite,
-          ),
-        ).show(context);
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _loading = false;
-        });
-      }
-    }
+  void showNoCancelNoFundsDialog(BuildContext context) {
+    showEnvoyPopUp(
+      context,
+      title: S().coindetails_overlay_noCancelNoFunds_heading,
+      S().coindetails_overlay_noCanceltNoFunds_subheading,
+      S().component_continue,
+      learnMoreLink:
+          "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions",
+      (BuildContext context) {
+        Navigator.pop(context);
+      },
+      icon: EnvoyIcons.alert,
+      typeOfMessage: PopUpState.danger,
+    );
   }
 }
 

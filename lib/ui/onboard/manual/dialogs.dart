@@ -88,17 +88,18 @@ void showRestoreFailedDialog(BuildContext context) {
   );
 }
 
-Future<void> openBackupFile(BuildContext buildContext) async {
+Future<void> openBackupFile(BuildContext buildContext,
+    {FilePickerResult? fileResult}) async {
   final navigator = Navigator.of(buildContext);
   final context = buildContext;
-  var result = await FilePicker.platform.pickFiles();
+  fileResult ??= await FilePicker.platform.pickFiles();
 
-  if (result != null) {
+  if (fileResult != null) {
     var success = false;
 
     try {
-      success =
-          await EnvoySeed().restoreData(filePath: result.files.single.path!);
+      success = await EnvoySeed()
+          .restoreData(filePath: fileResult.files.single.path!);
     } catch (e) {
       success = false;
     }
