@@ -207,60 +207,56 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                               ),
                             ),
                           ),
-                          child: CustomScrollView(
-                            slivers: [
-                              SliverToBoxAdapter(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Flexible(
-                                        flex: 1,
-                                        child: BackButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          color: Colors.black,
-                                        ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Flexible(
+                                      flex: 1,
+                                      child: BackButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        color: Colors.black,
                                       ),
-                                      Expanded(
-                                        flex: 3,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                              S().replaceByFee_boost_tx_heading,
-                                              textAlign: TextAlign.center,
-                                              style:
-                                                  EnvoyTypography.subheading),
-                                        ),
+                                    ),
+                                    Expanded(
+                                      flex: 3,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                            S().replaceByFee_boost_tx_heading,
+                                            textAlign: TextAlign.center,
+                                            style: EnvoyTypography.subheading),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              SliverToBoxAdapter(
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: EnvoySpacing.small,
+                                    horizontal: EnvoySpacing.medium1),
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      vertical: EnvoySpacing.small,
-                                      horizontal: EnvoySpacing.medium1),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: EnvoySpacing.small),
-                                    child: Text(
-                                      subHeading,
-                                      textAlign: TextAlign.center,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w400),
-                                    ),
+                                      vertical: EnvoySpacing.small),
+                                  child: Text(
+                                    subHeading,
+                                    textAlign: TextAlign.center,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w400),
                                   ),
                                 ),
                               ),
-                              SliverToBoxAdapter(
+                              Flexible(
                                 child: SingleChildScrollView(
                                   child: Padding(
                                     padding: const EdgeInsets.only(bottom: 160),
