@@ -54,6 +54,7 @@
   "azteco_redeem_modal_saleDate": "Fecha de venta",
   "azteco_redeem_modal_success_heading": "Cupón Canjeado",
   "azteco_redeem_modal_success_subheading": "En breve aparecerá una transacción entrante en tu cuenta.",
+  "backups_downloadBIP329BackupFile": "Descargar copia de seguridad BIP-329",
   "backups_erase_wallets_and_backups": "Eliminar Carteras y Copias de Seguridad",
   "backups_erase_wallets_and_backups_modal_1_2_android_subheading": "Estás a punto de eliminar permanentemente tu Cartera Envoy. \n\nSi utilizas la Copia de Seguridad Mágica, tu Semilla Envoy también se eliminará de la Copia de Seguridad de Android. ",
   "backups_erase_wallets_and_backups_modal_1_2_ios_subheading": "Estás a punto de eliminar permanentemente tu Cartera Envoy.\n\nSi utilizas la Copia de Seguridad Mágica, tu Semilla Envoy también se eliminará del llavero iCloud. ",
@@ -682,6 +683,7 @@
   "torToast_learnMore_temporarilyDisableTor": "Desactivar Tor temporalmente",
   "torToast_learnMore_warningBody": "Es posible que experimentes un rendimiento degradado de la aplicación hasta que Envoy pueda restablecer una conexión con Tor.\n\nDesactivando Tor se establecerá una conexión directa con el servidor de Envoy, [[a cambio]] de reducir la privacidad.",
   "tor_connectivity_toast_warning": "Problema de conectividad Tor",
+  "video_connectingToTorNetwork": "Conectando a la Red Tor",
   "video_loadingTorText": "Envoy está cargando el vídeo seleccionado a través de la red Tor",
   "wallet_security_modal_1_4_android_subheading": "Envoy realiza una copia de seguridad automática de tu semilla en la [[Copia de Seguridad de Android]].\n\nTu semilla siempre está encriptada de extremo a extremo y nunca es visible para Google.",
   "wallet_security_modal_1_4_ios_subheading": "Envoy realiza una copia de seguridad automática de tu semilla en tu [[llavero iCloud.]]\n\nTu semilla siempre está encriptada de extremo a extremo y nunca es visible para Apple.",

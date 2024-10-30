@@ -54,6 +54,7 @@
   "azteco_redeem_modal_saleDate": "Sale Date",
   "azteco_redeem_modal_success_heading": "Voucher Redeemed",
   "azteco_redeem_modal_success_subheading": "An incoming transaction will appear in your account shortly.",
+  "backups_downloadBIP329BackupFile": "Download BIP-329 Backup File",
   "backups_erase_wallets_and_backups": "Erase Wallets and Backups",
   "backups_erase_wallets_and_backups_modal_1_2_android_subheading": "You’re about to permanently delete your Envoy Wallet. \n\nIf you are using Magic Backups, your Envoy Seed will also be deleted from Android Auto Backup. ",
   "backups_erase_wallets_and_backups_modal_1_2_ios_subheading": "You’re about to permanently delete your Envoy Wallet.\n\nIf you are using Magic Backups, your Envoy Seed will also be deleted from iCloud Keychain. ",
@@ -682,6 +683,7 @@
   "torToast_learnMore_temporarilyDisableTor": "Temporarily Disable Tor",
   "torToast_learnMore_warningBody": "You may experience degraded app performance until Envoy can re-establish a connection to Tor.\n\nDisabling Tor will establish a direct connection with the Envoy server, but comes with privacy [[tradeoffs]].",
   "tor_connectivity_toast_warning": "Issue establishing Tor connectivity",
+  "video_connectingToTorNetwork": "Connecting to the Tor Network",
   "video_loadingTorText": "Envoy is loading your video over the Tor Network",
   "wallet_security_modal_1_4_android_subheading": "Envoy securely and automatically backs up your wallet seed with [[Android Auto Backup]].\n\nYour seed is always end-to-end encrypted and is never visible to Google.",
   "wallet_security_modal_1_4_ios_subheading": "Envoy securely and automatically backs up your wallet seed to [[iCloud Keychain.]]\n\nYour seed is always end-to-end encrypted and is never visible to Apple.",
