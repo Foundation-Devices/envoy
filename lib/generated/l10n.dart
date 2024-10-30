@@ -6878,6 +6878,16 @@ class S {
     );
   }
 
+  /// `Connecting to the Tor Network`
+  String get video_connectingToTorNetwork {
+    return Intl.message(
+      'Connecting to the Tor Network',
+      name: 'video_connectingToTorNetwork',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Envoy is loading your video over the Tor Network`
   String get video_loadingTorText {
     return Intl.message(

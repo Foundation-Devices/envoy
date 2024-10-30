@@ -1479,6 +1479,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "You may experience degraded app performance until Envoy can re-establish a connection to Tor.\n\nDisabling Tor will establish a direct connection with the Envoy server, but comes with privacy [[tradeoffs]]."),
         "tor_connectivity_toast_warning": MessageLookupByLibrary.simpleMessage(
             "Issue establishing Tor connectivity"),
+        "video_connectingToTorNetwork": MessageLookupByLibrary.simpleMessage(
+            "Connecting to the Tor Network"),
         "video_loadingTorText": MessageLookupByLibrary.simpleMessage(
             "Envoy is loading your video over the Tor Network"),
         "wallet_security_modal_1_4_android_subheading":
