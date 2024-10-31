@@ -15,16 +15,16 @@ import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/send_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
+import 'package:envoy/ui/home/cards/buy_bitcoin.dart';
 import 'package:envoy/ui/home/cards/buy_bitcoin_account_selection.dart';
+import 'package:envoy/ui/home/cards/peer_to_peer_options.dart';
+import 'package:envoy/ui/home/cards/select_region.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:envoy/ui/home/cards/buy_bitcoin.dart';
-import 'package:envoy/ui/home/cards/peer_to_peer_options.dart';
-import 'package:envoy/ui/home/cards/select_region.dart';
 
 /// Different routes for accounts.
 /// The nested routes cannot start with a slash,
@@ -68,11 +68,12 @@ const ROUTE_ACCOUNT_SEND_REVIEW =
     '$ROUTE_ACCOUNT_SEND_CONFIRM/$_ACCOUNT_SEND_REVIEW';
 
 /// simple wrapper to add page animation
-Page wrapWithVerticalAxisAnimation(
-  Widget child,
-) {
+Page wrapWithEnvoyPageAnimation(
+    {required Widget child,
+    Duration reverseTransitionDuration = const Duration(milliseconds: 360)}) {
   return CustomTransitionPage(
     child: child,
+    reverseTransitionDuration: reverseTransitionDuration,
     restorationId: child.toStringShort(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       return SharedAxisTransition(
@@ -80,6 +81,7 @@ Page wrapWithVerticalAxisAnimation(
           fillColor: Colors.transparent,
           secondaryAnimation: secondaryAnimation,
           transitionType: SharedAxisTransitionType.vertical,
+          key: child.key,
           child: child);
     },
   );
@@ -108,7 +110,8 @@ final accountsRouter = StatefulShellBranch(
           },
           path: ROUTE_ACCOUNTS_HOME,
           pageBuilder: (context, state) {
-            return wrapWithVerticalAxisAnimation(Consumer(
+            return wrapWithEnvoyPageAnimation(
+                child: Consumer(
               builder: (context, ref, child) {
                 final shellMenuOpened = ref.watch(homePageBackgroundProvider);
                 return PopScope(
@@ -153,7 +156,7 @@ final accountsRouter = StatefulShellBranch(
                       return true;
                     },
                     pageBuilder: (context, state) {
-                      return wrapWithVerticalAxisAnimation(SendCard());
+                      return wrapWithEnvoyPageAnimation(child: SendCard());
                     },
                     routes: [
                       GoRoute(
@@ -210,12 +213,13 @@ final accountsRouter = StatefulShellBranch(
                             },
                             path: _ACCOUNT_SEND_REVIEW,
                             pageBuilder: (context, state) {
-                              return wrapWithVerticalAxisAnimation(TxReview());
+                              return wrapWithEnvoyPageAnimation(
+                                  child: TxReview());
                             },
                           ),
                         ],
                         pageBuilder: (context, state) {
-                          return wrapWithVerticalAxisAnimation(TxReview());
+                          return wrapWithEnvoyPageAnimation(child: TxReview());
                         },
                       ),
                     ]),
@@ -229,7 +233,8 @@ final accountsRouter = StatefulShellBranch(
                     } else {
                       account = state.extra as Account;
                     }
-                    return wrapWithVerticalAxisAnimation(AddressCard(account));
+                    return wrapWithEnvoyPageAnimation(
+                        child: AddressCard(account));
                   },
                 ),
                 GoRoute(
@@ -242,19 +247,21 @@ final accountsRouter = StatefulShellBranch(
                     } else {
                       account = state.extra as Account;
                     }
-                    return wrapWithVerticalAxisAnimation(
-                        DescriptorCard(account));
+                    return wrapWithEnvoyPageAnimation(
+                        child: DescriptorCard(account));
                   },
                 ),
               ],
               pageBuilder: (context, state) {
-                return wrapWithVerticalAxisAnimation(AccountCard());
+                return wrapWithEnvoyPageAnimation(child: AccountCard());
               },
             ),
             GoRoute(
                 path: _SELECT_REGION,
                 pageBuilder: (context, state) {
-                  return wrapWithVerticalAxisAnimation(const SelectRegion());
+                  return wrapWithEnvoyPageAnimation(
+                    child: const SelectRegion(),
+                  );
                 },
                 routes: [
                   GoRoute(
@@ -266,22 +273,22 @@ final accountsRouter = StatefulShellBranch(
                         return true;
                       },
                       pageBuilder: (context, state) {
-                        return wrapWithVerticalAxisAnimation(
-                            const BuyBitcoinCard());
+                        return wrapWithEnvoyPageAnimation(
+                            child: const BuyBitcoinCard());
                       },
                       routes: [
                         GoRoute(
                           path: _PEER_TO_PEER,
                           pageBuilder: (context, state) {
-                            return wrapWithVerticalAxisAnimation(
-                                const PeerToPeerCard());
+                            return wrapWithEnvoyPageAnimation(
+                                child: const PeerToPeerCard());
                           },
                         ),
                         GoRoute(
                           path: _SELECT_ACCOUNT,
                           pageBuilder: (context, state) {
-                            return wrapWithVerticalAxisAnimation(
-                                const SelectAccount());
+                            return wrapWithEnvoyPageAnimation(
+                                child: const SelectAccount());
                           },
                         ),
                       ]),
