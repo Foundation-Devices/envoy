@@ -7,7 +7,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
+import 'dart:typed_data';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/devices.dart';
@@ -24,9 +24,11 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/xfp_endian.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/business/bip329.dart';
 
 class AccountAlreadyPaired implements Exception {}
 
@@ -685,5 +687,37 @@ class AccountManager extends ChangeNotifier {
       }
     }
     return null;
+  }
+
+  Future<void> exportBIP329() async {
+    List<String> allData = [];
+
+    for (Account account in accounts) {
+      Wallet wallet = account.wallet;
+
+      // Get xpub and create JSON data
+      String xpub = getXpub(wallet);
+      String xpubData = buildKeyJson("xpub", xpub, account.name);
+      allData.add(xpubData);
+
+      // Get output data and add each entry to allData
+      List<String> outputData = await getUtxosData(account);
+      allData.addAll(outputData);
+
+      // Get transaction data and add each entry to allData
+      List<String> txData = await getTxData(wallet);
+      allData.addAll(txData);
+    }
+
+    // Join each JSON string with a newline character
+    String fileContent = allData.join('\n');
+    Uint8List fileContentBytes = Uint8List.fromList(utf8.encode(fileContent));
+
+    // Save the file
+    await FileSaver.instance.saveAs(
+        mimeType: MimeType.json,
+        name: 'bip329_export',
+        bytes: fileContentBytes,
+        ext: 'json');
   }
 }
