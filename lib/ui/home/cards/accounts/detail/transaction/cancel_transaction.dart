@@ -199,7 +199,7 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _loading
+                  _loading && ref.watch(rbfSpendStateProvider) == null
                       ? const SizedBox.square(
                           dimension: EnvoySpacing.medium1,
                           child: CircularProgressIndicator(
