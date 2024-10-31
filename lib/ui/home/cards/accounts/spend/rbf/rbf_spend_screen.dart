@@ -308,7 +308,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                             loading: _rebuildingTx,
                                             feeTitleIconButton: EnvoyIcons.info,
                                             feeTitle: S()
-                                                .replaceByFee_boost_tx_boostFee,
+                                                .coincontrol_tx_detail_newFee,
                                             address: rbfState.receiveAddress,
                                             feeChooserWidget: FeeChooser(
                                               onFeeSelect: (int fee,
