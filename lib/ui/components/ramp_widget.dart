@@ -19,6 +19,7 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/home/cards/purchase_completed.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/business/scheduler.dart';
+import 'package:envoy/generated/l10n.dart';
 
 class RampWidget {
   static void showRamp(BuildContext context, Account account, String address) {
@@ -75,7 +76,7 @@ class RampWidget {
         purchaseViewToken: purchaseViewToken,
         rampId: purchase.id,
         rampFee: rampFee);
-    EnvoyStorage().addTxNote(note: "Ramp Purchase", key: txID); //TODO: figma
+    EnvoyStorage().addTxNote(note: S().ramp_note, key: txID);
     if (context.mounted) {
       Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(builder: (context) {

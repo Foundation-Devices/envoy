@@ -134,6 +134,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "azteco_redeem_modal_success_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "An incoming transaction will appear in your account shortly."),
+        "backups_downloadBIP329BackupFile":
+            MessageLookupByLibrary.simpleMessage(
+                "Download BIP-329 Backup File"),
         "backups_erase_wallets_and_backups":
             MessageLookupByLibrary.simpleMessage("Erase Wallets and Backups"),
         "backups_erase_wallets_and_backups_modal_1_2_android_subheading":

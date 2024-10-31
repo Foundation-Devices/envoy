@@ -5,6 +5,7 @@
 import 'dart:convert';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/scheduler.dart';
@@ -201,8 +202,7 @@ void addPendingTx(
       currencyAmount: currencyAmount,
       payoutId: payoutId,
       btcPayVoucherUri: btcPayVoucherUri);
-  EnvoyStorage()
-      .addTxNote(note: "BTCPay voucher", key: pullPaymentId); // TODO: FIGMA
+  EnvoyStorage().addTxNote(note: S().btcpay_note, key: pullPaymentId);
 }
 
 DateTime? convertUnixTimestampToDateTime(int? unixTimestamp) {

@@ -592,6 +592,16 @@ class S {
     );
   }
 
+  /// `Download BIP-329 Backup File`
+  String get backups_downloadBIP329BackupFile {
+    return Intl.message(
+      'Download BIP-329 Backup File',
+      name: 'backups_downloadBIP329BackupFile',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Erase Wallets and Backups`
   String get backups_erase_wallets_and_backups {
     return Intl.message(
