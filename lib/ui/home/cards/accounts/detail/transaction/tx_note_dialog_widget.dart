@@ -53,59 +53,71 @@ class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return EnvoyDialog(
-      title: widget.noteTitle,
-      dismissible: false,
-      content:
-          Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text(
-          widget.noteSubTitle,
-          style: Theme.of(context).textTheme.bodyLarge,
-          textAlign: TextAlign.center,
-          //maxLines: 2,
-        ),
-        Container(
-          margin: const EdgeInsets.only(top: EnvoySpacing.medium1),
-          decoration: BoxDecoration(
-              color: EnvoyColors.gray200,
-              borderRadius: BorderRadius.circular(15)),
-          padding: const EdgeInsets.all(EnvoySpacing.xs),
-          child: TextFormField(
-            maxLines: null,
-            minLines: null,
-            maxLength: 255,
-            controller: _textEditingController,
-            textAlign: TextAlign.center,
-            textInputAction: TextInputAction.done,
-            style:
-                Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14),
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.all(EnvoySpacing.medium1),
-              hintText: widget.noteHintText,
-              labelStyle: EnvoyTypography.body
-                  .copyWith(color: EnvoyColors.textTertiary),
-              border: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              errorBorder: InputBorder.none,
-              disabledBorder: InputBorder.none,
-              focusedErrorBorder: InputBorder.none,
-            ),
-          ),
-        ),
-      ]),
-      actions: [
-        EnvoyButton(S().component_cancel, onTap: () {
-          Navigator.of(context).pop();
-        }, type: EnvoyButtonTypes.tertiary),
-        EnvoyButton(
-          S().component_save,
-          onTap: () {
-            widget.onAdd(_textEditingController.text);
-          },
-          type: EnvoyButtonTypes.primaryModal,
-        )
-      ],
+    return Container(
+      constraints: const BoxConstraints(
+        maxHeight: 450,
+      ),
+      child: EnvoyDialog(
+        title: widget.noteTitle,
+        dismissible: false,
+        isScrollable: false,
+        content: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                widget.noteSubTitle,
+                style: Theme.of(context).textTheme.bodyLarge,
+                textAlign: TextAlign.center,
+                //maxLines: 2,
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: EnvoySpacing.medium1),
+                decoration: BoxDecoration(
+                    color: EnvoyColors.gray200,
+                    borderRadius: BorderRadius.circular(15)),
+                constraints: const BoxConstraints(
+                  maxHeight: 150,
+                ),
+                padding: const EdgeInsets.all(EnvoySpacing.xs),
+                child: TextFormField(
+                  maxLines: null,
+                  minLines: null,
+                  maxLength: 255,
+                  controller: _textEditingController,
+                  textAlign: TextAlign.center,
+                  textInputAction: TextInputAction.done,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(fontSize: 14),
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(EnvoySpacing.medium1),
+                    hintText: widget.noteHintText,
+                    labelStyle: EnvoyTypography.body
+                        .copyWith(color: EnvoyColors.textTertiary),
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    focusedErrorBorder: InputBorder.none,
+                  ),
+                ),
+              ),
+            ]),
+        actions: [
+          EnvoyButton(S().component_cancel, onTap: () {
+            Navigator.of(context).pop();
+          }, type: EnvoyButtonTypes.tertiary),
+          EnvoyButton(
+            S().component_save,
+            onTap: () {
+              widget.onAdd(_textEditingController.text);
+            },
+            type: EnvoyButtonTypes.primaryModal,
+          )
+        ],
+      ),
     );
   }
 }
