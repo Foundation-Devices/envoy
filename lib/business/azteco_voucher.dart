@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:tor/tor.dart';
@@ -83,5 +84,5 @@ class AztecoVoucher {
 void addPendingTx(String address, Account account) {
   EnvoyStorage().addPendingTx(address, account.id ?? "", DateTime.now(),
       TransactionType.azteco, 0, 0, address);
-  EnvoyStorage().addTxNote(note: "Azteco voucher", key: address); // TODO: FIGMA
+  EnvoyStorage().addTxNote(note: S().azteco_note, key: address);
 }

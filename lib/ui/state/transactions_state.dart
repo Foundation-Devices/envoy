@@ -18,6 +18,7 @@ import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/generated/l10n.dart';
 
 final pendingTransactionsProvider =
     Provider.family<List<Transaction>, String?>((ref, String? accountId) {
@@ -320,8 +321,7 @@ Future prunePendingTransactions(
         .where((tx) => tx.outputs!.contains(pendingTx.address))
         .forEach((actualAztecoTx) {
       kPrint("Pruning Azteco tx: ${actualAztecoTx.txId}");
-      EnvoyStorage().addTxNote(
-          note: "Azteco voucher", key: actualAztecoTx.txId); // TODO: FIGMA
+      EnvoyStorage().addTxNote(note: S().azteco_note, key: actualAztecoTx.txId);
       EnvoyStorage().deleteTxNote(pendingTx.address!);
       EnvoyStorage().deletePendingTx(pendingTx.address!);
     });
@@ -342,8 +342,7 @@ Future prunePendingTransactions(
         .where((tx) => tx.outputs!.contains(pendingTx.address))
         .forEach((actualBtcPayTx) {
       kPrint("Pruning BtcPay tx: ${actualBtcPayTx.txId}");
-      EnvoyStorage().addTxNote(
-          note: "BTCPay voucher", key: actualBtcPayTx.txId); // TODO: FIGMA
+      EnvoyStorage().addTxNote(note: S().btcpay_note, key: actualBtcPayTx.txId);
       actualBtcPayTx.setPullPaymentId(pendingTx.pullPaymentId);
       EnvoyStorage().deleteTxNote(pendingTx.pullPaymentId!);
       EnvoyStorage().deletePendingTx(pendingTx.txId);
@@ -378,8 +377,7 @@ Future prunePendingTransactions(
       kPrint("Pruning Ramp tx: ${actualRampTx.txId}");
       actualRampTx.setRampFee(pendingTx.rampFee);
       actualRampTx.setRampId(pendingTx.rampId);
-      EnvoyStorage().addTxNote(
-          note: "Ramp Purchase", key: actualRampTx.txId); // TODO: FIGMA
+      EnvoyStorage().addTxNote(note: S().ramp_note, key: actualRampTx.txId);
       EnvoyStorage().deleteTxNote(pendingTx.address!);
       EnvoyStorage().deletePendingTx(pendingTx.txId);
     });
