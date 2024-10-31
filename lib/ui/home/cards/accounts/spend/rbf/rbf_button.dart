@@ -71,7 +71,6 @@ class TxRBFButton extends ConsumerStatefulWidget {
 }
 
 class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
-  bool _isPressed = false;
   bool _isLoading = false;
 
   @override
@@ -235,19 +234,9 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTapDown: (_) {
-        setState(() {
-          _isPressed = true;
-        });
-      },
       onTap: () {
         if (_isLoading) return;
         _showRBFDialog(context);
-      },
-      onTapCancel: () {
-        setState(() {
-          _isPressed = false;
-        });
       },
       child: _buildButtonContainer(
           active: ref.watch(rbfSpendStateProvider) != null || _isLoading,
@@ -297,8 +286,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
     required Widget child,
     bool active = true,
   }) {
-    Color buttonColor =
-        EnvoyColors.teal500.withOpacity(active ? (_isPressed ? 0.5 : 1) : 0.5);
+    Color buttonColor = EnvoyColors.teal500.withOpacity(active ? 1 : 0.5);
 
     return AnimatedContainer(
         duration: const Duration(milliseconds: 200),

@@ -90,7 +90,6 @@ class CancelTxButton extends ConsumerStatefulWidget {
 }
 
 class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
-  bool _isPressed = false;
   bool _loading = false;
   bool _canCancel = false;
   late Psbt psbt;
@@ -172,7 +171,6 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
           GestureDetector(
             onTapDown: (_) {
               setState(() {
-                _isPressed = true;
                 Haptics.lightImpact();
               });
             },
@@ -187,21 +185,15 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
                               originalRawTx: originalTxRaw,
                               cancelTx: psbt)))
                   : showNoCancelNoFundsDialog(context);
-              _isPressed = false;
-            },
-            onTapCancel: () {
-              setState(() {
-                _isPressed = false;
-                Haptics.lightImpact();
-              });
             },
             child: Container(
               height: EnvoySpacing.medium2,
               decoration: BoxDecoration(
-                  color: EnvoyColors.chilli500.withOpacity(
-                      ref.watch(rbfSpendStateProvider) != null && _canCancel
-                          ? (_isPressed ? 0.5 : 1)
-                          : (_loading ? 1 : 0.5)),
+                  color: EnvoyColors.chilli500.withOpacity(_loading
+                      ? 1
+                      : (ref.watch(rbfSpendStateProvider) != null && _canCancel
+                          ? 1
+                          : 0.5)),
                   borderRadius: BorderRadius.circular(EnvoySpacing.small)),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
@@ -237,6 +229,10 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
   }
 
   void showNoCancelNoFundsDialog(BuildContext context) {
+    if (_loading) {
+      return;
+    }
+
     showEnvoyPopUp(
       context,
       title: S().coindetails_overlay_noCancelNoFunds_heading,
