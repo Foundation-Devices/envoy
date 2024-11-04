@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
+
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';

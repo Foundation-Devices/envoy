@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import 'package:animations/animations.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/envoy_colors.dart';
