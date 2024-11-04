@@ -8,5 +8,5 @@ crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
 flutter_rust_bridge = "=2.2.0"
-btleplug = {path = "../../../../btleplug"}
+btleplug = "^0.11.6"
 uuid = "^1.6.0"
