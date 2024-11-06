@@ -60,7 +60,7 @@ class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
       child: EnvoyDialog(
         title: widget.noteTitle,
         dismissible: false,
-        isScrollable: false,
+        scrollable: false,
         content: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
