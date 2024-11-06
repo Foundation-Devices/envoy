@@ -135,19 +135,13 @@ class UrDecoder {
       "crypto-psbt"
     ];
 
-    bool isValidScheme = false;
-
     if (value.startsWith("ur:")) {
       // Extract the scheme by splitting at '/'
       String scheme = value.substring(3).split('/').first;
 
-      if (allowedSchemes.contains(scheme)) {
-        isValidScheme = true;
+      if (!allowedSchemes.contains(scheme)) {
+        throw Exception("Invalid BIP21 URI");
       }
-    }
-
-    if (!isValidScheme) {
-      throw Exception("Invalid BIP21 URI");
     }
 
     final output = NativeLibrary(_lib).ur_decoder_receive(
