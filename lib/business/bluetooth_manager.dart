@@ -5,12 +5,10 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:envoy/util/console.dart';
-import 'package:bluart/src/rust/frb_generated.dart';
-import 'package:bluart/src/rust/api/bluart.dart';
+import 'package:bluart/bluart.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/uuid_value.dart';
-import 'package:foundation_api/src/rust/api/api.dart' as api;
-import 'package:foundation_api/src/rust/frb_generated.dart' as api_lib;
+import 'package:foundation_api/foundation_api.dart' as api;
 
 class BluetoothManager {
   static final BluetoothManager _instance = BluetoothManager._internal();
@@ -28,7 +26,7 @@ class BluetoothManager {
   static Future<BluetoothManager> init() async {
     var singleton = BluetoothManager._instance;
     await RustLib.init();
-    await api_lib.RustLib.init();
+    await api.RustLib.init();
     return singleton;
   }
 
@@ -79,7 +77,7 @@ class BluetoothManager {
   pair(String scannedQr) async {
     // get binary pairing envelope and send
     //ur:discovery/1-1/lpadadcfadcycyknksdpfehkadcytpsplftpsplrtpsotansfginieinjkiajlkoihjpkkoytpsotansfljoidjzkpihjyjljljyisguihjpkoiniaihtpsotpdagdnthsghbybecffwbalevtsffwdiwensesoytpsotansflktidjzkpihjyjljljyisfxishsjphsiajyihjpinjkjyiniatpsotpdagdfwrovebnrpchfwnllsbwrygahnjllpbtoytpsotansfliyjkihjtieihjptpsotansgylftanshfhdcxinayhnkkpmjnssfeaetesomyrksgtbwtwsaxkokspmynltrhzsbklebgyahsjonstansgrhdcxkedlaxgyetdifhzekogelfkbfhssnsotsnrphhsaiosetodtrfotfngyglclwzkpoyaxtpsotansghhdfzdpytswheemhphpdwbnisisjsondlkglaiyylplyahygdaowfaovoiogyztgrfhonwtaylgmnlgahdslaiohylffrdyfliyrsdwetcwbdjoaowpmuvdjymyoyqzvecsnlbgreyncp
-    final data = await api.pair(discoveryQr: scannedQr);
+    final data = await pair(scannedQr);
     writeData(data);
   }
 

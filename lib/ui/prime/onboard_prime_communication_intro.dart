@@ -90,12 +90,13 @@ class _OnboardPrimeQuantumLinkState extends State<OnboardPrimeQuantumLink> {
                   onTap: () async {
                     // Send pairing code here
                     await BluetoothManager().pair(widget.discoveryQr);
-
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (context) {
-                        return const OnboardPrime();
-                      },
-                    ));
+                    if (context.mounted) {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return const OnboardPrime();
+                        },
+                      ));
+                    }
                   },
                 ),
               ),

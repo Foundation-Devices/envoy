@@ -6,7 +6,6 @@ import 'package:envoy/util/console.dart';
 import 'package:test/test.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:foundation_api/src/rust/api/api.dart';
-import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 void main() async {
   test("Test BLE stream", () async {
