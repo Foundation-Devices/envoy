@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // The Android Gradle Plugin builds the native code with the Android NDK.
 
 group 'com.flutter_rust_bridge.foundation_api'

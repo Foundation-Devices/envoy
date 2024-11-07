@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 use anyhow::{bail, Error};
 use bc_components::ARID;
 use bc_envelope::{Envelope, Expression, ResponseBehavior, SealedRequest, SealedResponse};

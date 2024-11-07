@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
+
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 # Launch Screen Assets
 
 You can customize the launch screen with your own desired assets by replacing the image files in this directory.

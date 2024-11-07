@@ -1,5 +1,9 @@
 #![allow(dead_code)]
 
+// SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 use {
     anyhow::Result,
     bc_components::{PrivateKeyBase, PublicKeyBase, ARID},

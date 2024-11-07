@@ -1,5 +1,9 @@
 #![allow(unused_imports)]
 
+// SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 use btleplug::api::{Central, Manager as _, Peripheral, ScanFilter};
 pub use btleplug::platform::{Adapter, Manager};
 

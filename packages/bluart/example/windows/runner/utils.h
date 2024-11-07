@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #ifndef RUNNER_UTILS_H_
 #define RUNNER_UTILS_H_
 
