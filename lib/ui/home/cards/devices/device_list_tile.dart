@@ -293,15 +293,12 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
   }
 
   String getProductImage(DeviceType type) {
-    //TODO: remove this, show prime based on the device type
-    return "assets/prime_device_tile.png";
     switch (type) {
       case DeviceType.passportGen1:
         return "assets/passport1.png";
       case DeviceType.passportGen12:
         return "assets/passport12.png";
-      //TODO: prime device tile type check
-      case DeviceType.passportGen2:
+      case DeviceType.passportPrime:
         return "assets/prime_device_tile.png";
     }
   }
