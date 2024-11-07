@@ -294,6 +294,8 @@ class UniformResourceReader {
         decoded = Binary.fromPayload(payload);
       } else if (type == "crypto-psbt") {
         decoded = CryptoPsbt.fromCbor(payload);
+      } else if (type == "discovery") {
+        decoded = Binary.fromPayload(payload);
       }
     }
   }

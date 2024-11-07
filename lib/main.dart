@@ -30,6 +30,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tor/tor.dart';
 import 'package:tor/util.dart';
 
+import 'package:envoy/business/bluetooth_manager.dart';
+
 import 'business/fees.dart';
 import 'business/scv_server.dart';
 import 'business/feed_manager.dart';
@@ -71,6 +73,7 @@ Future<void> initSingletons() async {
   await EnvoySeed.init();
   await FMTCObjectBoxBackend().initialise();
   await const FMTCStore('mapStore').manage.create();
+  BluetoothManager.init();
 
   // Start Tor regardless of whether we are using it or not
   try {
