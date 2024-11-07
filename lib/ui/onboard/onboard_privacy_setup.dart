@@ -529,7 +529,8 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
   rive.StateMachineController? _privacyIconController;
   rive.Artboard? _privacyIconArtBoard, _performanceArtBoard;
 
-  double iconSize = 38.0;
+  double iconSizePerformance = 38.0;
+  double iconSizePrivacy = 49.0;
 
   @override
   void initState() {
@@ -555,9 +556,6 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
 
   @override
   Widget build(BuildContext context) {
-    if (MediaQuery.sizeOf(context).width < 350) {
-      iconSize = 28.0;
-    }
     //turns off the flag that enables tor. this wont affect tor process if it is already running
     ref.listen<bool>(privacyOnboardSelectionProvider, (previous, next) {
       if (mounted) {
@@ -606,19 +604,28 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   SizedBox(
-                    height: iconSize,
-                    width: iconSize,
+                    height: _betterPerformance
+                        ? iconSizePerformance
+                        : iconSizePrivacy,
+                    width: _betterPerformance
+                        ? iconSizePerformance
+                        : iconSizePrivacy,
                     child: icon,
                   ),
-                  const Padding(padding: EdgeInsets.all(4)),
+                  const SizedBox(height: EnvoySpacing.xs),
                   SizedBox(
                     width: 90,
                     child: Text(
                       text,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontSize: 8.5,
-                          ),
+                      style: EnvoyTypography.label.copyWith(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w600,
+                          color: EnvoyColors.accentPrimary),
                       textAlign: TextAlign.center,
+                      textScaler: MediaQuery.of(context).textScaler.clamp(
+                            minScaleFactor: 0.8,
+                            maxScaleFactor: 1.6,
+                          ),
                       maxLines: 2,
                     ),
                   )
@@ -649,19 +656,21 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   SizedBox(
-                    height: iconSize,
-                    width: iconSize,
+                    height: iconSizePerformance,
+                    width: iconSizePerformance,
                     child: _performanceArtBoard == null
                         ? Container()
                         : rive.Rive(artboard: _performanceArtBoard!),
                   ),
-                  const Padding(padding: EdgeInsets.all(4)),
+                  const SizedBox(height: EnvoySpacing.xs),
                   Text(
                     S().privacy_privacyMode_betterPerformance,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(fontSize: 10.5),
+                    style: EnvoyTypography.label.copyWith(
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w600,
+                        color: _betterPerformance
+                            ? EnvoyColors.accentPrimary
+                            : EnvoyColors.textTertiary),
                     textAlign: TextAlign.center,
                     textScaler: MediaQuery.of(context).textScaler.clamp(
                           minScaleFactor: 0.8,
@@ -692,23 +701,25 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   SizedBox(
-                    height: iconSize,
-                    width: iconSize,
+                    height: iconSizePrivacy,
+                    width: iconSizePrivacy,
                     child: _privacyIconArtBoard == null
                         ? Container()
                         : rive.Rive(
                             artboard: _privacyIconArtBoard!,
                           ),
                   ),
-                  const Padding(padding: EdgeInsets.all(2)),
+                  const SizedBox(height: EnvoySpacing.xs),
                   SizedBox(
                     width: 90,
                     child: Text(
                       S().privacy_privacyMode_improvedPrivacy,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(fontSize: 10.5),
+                      style: EnvoyTypography.label.copyWith(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w600,
+                          color: _betterPerformance
+                              ? EnvoyColors.textTertiary
+                              : EnvoyColors.accentPrimary),
                       textScaler: MediaQuery.of(context).textScaler.clamp(
                             minScaleFactor: 0.8,
                             maxScaleFactor: 1.5,
