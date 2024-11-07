@@ -103,9 +103,7 @@ class BluetoothManager {
   }
 
   Future<List<int>> readData() async {
-    return readFrom(
-    peripheral: connected!,
-    characteristic: rxCharacteristic);
+    return readFrom(peripheral: connected!, characteristic: rxCharacteristic);
   }
 }
 
