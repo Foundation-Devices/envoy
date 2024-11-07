@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // These are all because of FFI's inherent unsafety
-#![allow(clippy::drop_copy, clippy::forget_copy, clippy::mut_mutex_lock)]
+#![allow(dropping_copy_types, forgetting_copy_types, clippy::mut_mutex_lock)]
 
 #[macro_use]
 extern crate log;
