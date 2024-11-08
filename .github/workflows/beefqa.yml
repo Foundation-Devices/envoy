@@ -16,6 +16,10 @@ jobs:
       - uses: extractions/setup-just@v1
       - uses: actions/checkout@v2
 
+      - uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY_DEPLOY_FOUNDATION_API }}
+
       - name: Install Ninja
         run: sudo apt-get install -y ninja-build
 
