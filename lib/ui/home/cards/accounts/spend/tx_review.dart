@@ -17,6 +17,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/choose_coins_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_spend_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
@@ -449,6 +450,7 @@ class _TransactionReviewScreenState
     final transactionInputsChanged =
         ref.watch(transactionInputsChangedProvider);
     final userHasChangedFees = ref.watch(userHasChangedFeesProvider);
+    final rbfSpendState = ref.read(rbfSpendStateProvider);
 
     final showFeeChangeNotice = userSelectedCoinsThisSession &&
         coinSelectionChanged &&
@@ -480,15 +482,17 @@ class _TransactionReviewScreenState
       extendBody: true,
       extendBodyBehindAppBar: true,
       removeAppBarPadding: true,
-      topBarLeading: IconButton(
-        icon: const EnvoyIcon(
-          EnvoyIcons.chevron_left,
-          color: EnvoyColors.textPrimary,
-        ),
-        onPressed: () {
-          GoRouter.of(context).pop();
-        },
-      ),
+      topBarLeading: rbfSpendState != null
+          ? IconButton(
+              icon: const EnvoyIcon(
+                EnvoyIcons.chevron_left,
+                color: EnvoyColors.textPrimary,
+              ),
+              onPressed: () {
+                GoRouter.of(context).pop();
+              },
+            )
+          : const SizedBox.shrink(),
       bottom: ClipRRect(
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(8),
