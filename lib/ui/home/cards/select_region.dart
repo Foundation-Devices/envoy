@@ -97,8 +97,11 @@ class _SelectRegionState extends ConsumerState<SelectRegion> {
 
     countries.sort((a, b) => a.name.compareTo(b.name));
 
-    setState(() {
+    if (await EnvoyStorage().getCountry() == null) {
       selectedCountry = getCountryByCode(Platform.localeName);
+    }
+
+    setState(() {
       _dataLoaded = true;
     });
   }
