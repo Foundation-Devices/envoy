@@ -43,6 +43,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
 import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/home/home_state.dart';
 
 //ignore: must_be_immutable
 class TxReview extends ConsumerStatefulWidget {
@@ -55,6 +56,18 @@ class TxReview extends ConsumerStatefulWidget {
 class _TxReviewState extends ConsumerState<TxReview> {
   //TODO: disable note
   // String _txNote = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    Future(() {
+      ref.read(fullscreenHomePageProvider.notifier).state = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -482,17 +495,15 @@ class _TransactionReviewScreenState
       extendBody: true,
       extendBodyBehindAppBar: true,
       removeAppBarPadding: true,
-      topBarLeading: rbfSpendState != null
-          ? IconButton(
-              icon: const EnvoyIcon(
-                EnvoyIcons.chevron_left,
-                color: EnvoyColors.textPrimary,
-              ),
-              onPressed: () {
-                GoRouter.of(context).pop();
-              },
-            )
-          : const SizedBox.shrink(),
+      topBarLeading: IconButton(
+        icon: const EnvoyIcon(
+          EnvoyIcons.chevron_left,
+          color: EnvoyColors.textPrimary,
+        ),
+        onPressed: () {
+          GoRouter.of(context).pop();
+        },
+      ),
       bottom: ClipRRect(
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(8),
