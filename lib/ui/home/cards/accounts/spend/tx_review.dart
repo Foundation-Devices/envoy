@@ -17,7 +17,6 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/choose_coins_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_spend_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
@@ -43,7 +42,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
 import 'package:wallet/wallet.dart';
-import 'package:envoy/ui/home/home_state.dart';
 
 //ignore: must_be_immutable
 class TxReview extends ConsumerStatefulWidget {
@@ -56,18 +54,6 @@ class TxReview extends ConsumerStatefulWidget {
 class _TxReviewState extends ConsumerState<TxReview> {
   //TODO: disable note
   // String _txNote = "";
-
-  @override
-  void initState() {
-    super.initState();
-    _initialize();
-  }
-
-  Future<void> _initialize() async {
-    Future(() {
-      ref.read(fullscreenHomePageProvider.notifier).state = true;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -463,7 +449,6 @@ class _TransactionReviewScreenState
     final transactionInputsChanged =
         ref.watch(transactionInputsChangedProvider);
     final userHasChangedFees = ref.watch(userHasChangedFeesProvider);
-    final rbfSpendState = ref.read(rbfSpendStateProvider);
 
     final showFeeChangeNotice = userSelectedCoinsThisSession &&
         coinSelectionChanged &&

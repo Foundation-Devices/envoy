@@ -20,6 +20,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/routes/routes.dart';
 
 //ignore: must_be_immutable
 class SendCard extends ConsumerStatefulWidget {
@@ -220,7 +221,6 @@ class _SendCardState extends ConsumerState<SendCard>
                       if (tx.loading) {
                         return;
                       }
-                      final router = GoRouter.of(context);
                       if (formValidation) {
                         try {
                           ref.read(spendTransactionProvider.notifier).reset();
@@ -228,7 +228,7 @@ class _SendCardState extends ConsumerState<SendCard>
                               .read(spendTransactionProvider.notifier)
                               .validate(ProviderScope.containerOf(context));
                           if (valid) {
-                            router.push(ROUTE_ACCOUNT_SEND_CONFIRM);
+                            mainRouter.go(ROUTE_ACCOUNT_SEND_CONFIRM);
                           }
                         } catch (e) {
                           kPrint(e);
