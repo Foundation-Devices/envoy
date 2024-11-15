@@ -210,22 +210,21 @@ class SettingsMenuWidget extends ConsumerWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                       child: GestureDetector(
                           onTap: () {
-                            launchUrl(Uri.parse(
-                                "https://github.com/Foundation-Devices"));
+                            launchUrl(
+                                Uri.parse("https://community.foundation.xyz/"),
+                                mode: LaunchMode.externalApplication);
                           },
                           child: SvgPicture.asset(
-                            "assets/github.svg",
+                            "assets/community.svg",
                           )),
                     ),
                     GestureDetector(
                         onTap: () {
-                          launchUrl(
-                              Uri.parse(
-                                  "https://telegram.me/foundationdevices"),
-                              mode: LaunchMode.externalApplication);
+                          launchUrl(Uri.parse(
+                              "https://github.com/Foundation-Devices"));
                         },
                         child: SvgPicture.asset(
-                          "assets/telegram.svg",
+                          "assets/github.svg",
                         )),
                   ],
                 ),
