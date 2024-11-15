@@ -7,16 +7,16 @@ import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/keys_manager.dart';
-import 'package:envoy/business/map_data.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/map_data.dart';
 import 'package:envoy/business/notifications.dart';
+import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/updates_manager.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/lock/authenticate_page.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/routes/routes.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -25,20 +25,23 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'package:tor/tor.dart';
 import 'package:tor/util.dart';
 
+import 'business/feed_manager.dart';
 import 'business/fees.dart';
 import 'business/scv_server.dart';
-import 'business/feed_manager.dart';
 import 'generated/l10n.dart';
-
-import 'package:timeago/timeago.dart' as timeago;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await initSingletons();
+  try {
+    await initSingletons();
+  } catch (e, stack) {
+    EnvoyReport().log("Envoy init", stack.toString());
+  }
 
   if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
     runApp(const AuthenticateApp());
