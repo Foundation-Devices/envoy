@@ -11,7 +11,6 @@ import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
-import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,7 +19,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/routes/routes.dart';
 
 //ignore: must_be_immutable
 class SendCard extends ConsumerStatefulWidget {
@@ -228,7 +226,9 @@ class _SendCardState extends ConsumerState<SendCard>
                               .read(spendTransactionProvider.notifier)
                               .validate(ProviderScope.containerOf(context));
                           if (valid) {
-                            mainRouter.go(ROUTE_ACCOUNT_SEND_CONFIRM);
+                            if (context.mounted) {
+                              GoRouter.of(context).goNamed('spend_confirm');
+                            }
                           }
                         } catch (e) {
                           kPrint(e);
