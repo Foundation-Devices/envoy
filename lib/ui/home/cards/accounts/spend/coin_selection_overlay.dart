@@ -278,8 +278,17 @@ class SpendRequirementOverlayState
 
     return BackButtonListener(
       onBackButtonPressed: () async {
-        if (inTagSelectionMode) {
+        if (inTagSelectionMode &&
+            ref.read(coinDetailsActiveProvider.notifier).state == false) {
           await cancel(context); // Make sure to await the async call
+        }
+        if (inTagSelectionMode &&
+            ref.read(coinDetailsActiveProvider.notifier).state == true) {
+          if (context.mounted) {
+            Navigator.of(context).pop();
+            //wait for coin details screen to animate out
+            await Future.delayed(const Duration(milliseconds: 100));
+          }
         }
         // Return true to always intercept the back button and avoid app exit
         return true;
