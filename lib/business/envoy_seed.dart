@@ -7,23 +7,24 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:backup/backup.dart';
 import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/business/blog_post.dart';
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/video.dart';
+import 'package:envoy/ui/routes/routes.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/services.dart';
 import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
-import 'package:envoy/business/devices.dart';
-import 'package:envoy/business/local_storage.dart';
-import 'package:file_saver/file_saver.dart';
-import 'package:envoy/ui/routes/routes.dart';
-import 'package:envoy/util/bug_report_helper.dart';
-import 'package:envoy/business/blog_post.dart';
-import 'package:envoy/business/notifications.dart';
 
 const String SEED_KEY = "seed";
 const String WALLET_DERIVED_PREFS = "wallet_derived";
@@ -49,10 +50,14 @@ class EnvoySeed {
     // the keychain may still retain the seed for a brief period.
     // To ensure the seed is fully removed, set the flag during the erase flow
     // to delete the seed upon the next installation.
-    if (await LocalStorage().readSecure("seed_cleared") == "1") {
-      await LocalStorage().deleteSecure(SEED_KEY);
-      await LocalStorage().deleteFile(LOCAL_SECRET_FILE_NAME);
-      await LocalStorage().deleteSecure("seed_cleared");
+    try {
+      if (await LocalStorage().readSecure("seed_cleared") == "1") {
+        await LocalStorage().deleteSecure(SEED_KEY);
+        await LocalStorage().deleteFile(LOCAL_SECRET_FILE_NAME);
+        await LocalStorage().deleteSecure("seed_cleared");
+      }
+    } catch (er) {
+      EnvoyReport().log("EnvoySeed Init", er.toString());
     }
     return singleton;
   }
