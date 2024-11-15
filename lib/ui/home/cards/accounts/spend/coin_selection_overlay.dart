@@ -278,12 +278,10 @@ class SpendRequirementOverlayState
 
     return BackButtonListener(
       onBackButtonPressed: () async {
-        if (inTagSelectionMode &&
-            ref.read(coinDetailsActiveProvider.notifier).state == false) {
+        if (inTagSelectionMode && !ref.read(coinDetailsActiveProvider)) {
           await cancel(context); // Make sure to await the async call
         }
-        if (inTagSelectionMode &&
-            ref.read(coinDetailsActiveProvider.notifier).state == true) {
+        if (inTagSelectionMode && ref.read(coinDetailsActiveProvider)) {
           if (context.mounted) {
             Navigator.of(context).pop();
             //wait for coin details screen to animate out
