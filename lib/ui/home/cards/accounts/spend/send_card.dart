@@ -19,10 +19,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-
-import '../../../../routes/accounts_router.dart';
-import '../../../../routes/route_state.dart';
-import '../detail/coins/coins_state.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'coin_selection_overlay.dart';
 
 //ignore: must_be_immutable
@@ -97,19 +95,25 @@ class _SendCardState extends ConsumerState<SendCard>
     ref.read(spendAmountProvider.notifier).state = amount;
   }
 
-  Future show(SpendOverlayContext overlayContext) async {
+  Future<void> show(SpendOverlayContext overlayContext) async {
     ref.read(spendEditModeProvider.notifier).state = overlayContext;
     final account = ref.read(selectedAccountProvider);
     if (account == null || overlayEntry != null) return;
+
     overlayEntry = OverlayEntry(
-        builder: (context) {
-          return SpendRequirementOverlay(account: account);
-        },
-        maintainState: true,
-        opaque: false);
-    if (context.mounted) {
-      Overlay.of(context, rootOverlay: true).insert(overlayEntry!);
-    }
+      builder: (context) {
+        return SpendRequirementOverlay(account: account);
+      },
+      maintainState: true,
+      opaque: false,
+    );
+
+    // Delay overlay insertion to avoid triggering updates in the build phase
+    Future.microtask(() {
+      if (mounted) {
+        Overlay.of(context, rootOverlay: true).insert(overlayEntry!);
+      }
+    });
   }
 
   @override
@@ -117,15 +121,13 @@ class _SendCardState extends ConsumerState<SendCard>
     super.build(context);
     account = ref.read(selectedAccountProvider);
     String addressText = ref.read(spendAddressProvider);
-    String path = ref.watch(routePathProvider);
 
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (bool didPop, _) {
-        if (path == ROUTE_ACCOUNT_DETAIL &&
-            ref.read(coinSelectionStateProvider).isNotEmpty) {
-          if (ref.read(showSpendRequirementOverlayProvider) ||
-              ref.read(coinSelectionStateProvider).isNotEmpty) {
+        Future.microtask(() {
+          if (ref.read(coinSelectionStateProvider).isNotEmpty &&
+              ref.read(showSpendRequirementOverlayProvider)) {
             final account = ref.read(selectedAccountProvider);
             if (account != null) {
               show(SpendOverlayContext.preselectCoins);
@@ -134,14 +136,7 @@ class _SendCardState extends ConsumerState<SendCard>
               context.go(ROUTE_ACCOUNT_DETAIL);
             }
           }
-          // else {
-          //   if (ref.read(spendEditModeProvider) !=
-          //       SpendOverlayContext.hidden) {
-          //     ref.read(spendEditModeProvider.notifier).state = SpendOverlayContext.hidden;
-          //     ref.read(hideBottomNavProvider.notifier).state = false;
-          //   }
-          // }
-        }
+        });
       },
       child: LayoutBuilder(
         builder: (context, constraints) {

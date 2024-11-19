@@ -178,25 +178,15 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                   if (context.mounted) {
                     GoRouter.of(context).go(ROUTE_ACCOUNTS_HOME);
                   }
-                } else if (path == ROUTE_ACCOUNT_DETAIL &&
-                    ref.read(coinSelectionStateProvider).isNotEmpty) {
-                  if (ref.read(showSpendRequirementOverlayProvider) ||
-                      ref.read(coinSelectionStateProvider).isNotEmpty) {
-                    final account = ref.read(selectedAccountProvider);
-                    if (account != null) {
-                      show(SpendOverlayContext.preselectCoins);
-                    }
-                    if (context.mounted) {
-                      context.go(ROUTE_ACCOUNT_DETAIL);
-                    }
+                } else if (ref.read(coinSelectionStateProvider).isNotEmpty &&
+                    ref.read(showSpendRequirementOverlayProvider)) {
+                  final account = ref.read(selectedAccountProvider);
+                  if (account != null) {
+                    show(SpendOverlayContext.preselectCoins);
                   }
-                  // else {
-                  //   if (ref.read(spendEditModeProvider) !=
-                  //       SpendOverlayContext.hidden) {
-                  //     ref.read(spendEditModeProvider.notifier).state = SpendOverlayContext.hidden;
-                  //     ref.read(hideBottomNavProvider.notifier).state = false;
-                  //   }
-                  // }
+                  if (context.mounted) {
+                    context.go(ROUTE_ACCOUNT_DETAIL);
+                  }
                 } else {
                   if (context.mounted && GoRouter.of(context).canPop()) {
                     GoRouter.of(context).pop();
