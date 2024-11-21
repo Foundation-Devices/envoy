@@ -370,6 +370,7 @@
   "envoy_scv_scan_qr_subheading": "Este código QR termina o processo de validação e partilha alguma informação do Passport com a Envoy.",
   "envoy_scv_show_qr_heading": "No teu Passport, seleciona Aplicação Envoy e digitaliza este Código QR",
   "envoy_scv_show_qr_subheading": "Este código QR fornece informação para validação e configuração.",
+  "envoy_support_community": "COMMUNITY",
   "envoy_support_documentation": "Documentação",
   "envoy_support_email": "E-mail",
   "envoy_support_telegram": "Telegram",
