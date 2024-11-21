@@ -43,7 +43,7 @@ class SupportPage extends StatelessWidget {
                       label: S().envoy_support_community,
                       onTap: () {
                         launchUrl(
-                            Uri.parse("https://telegram.me/foundationdevices"),
+                            Uri.parse("https://community.foundation.xyz/"),
                             mode: LaunchMode.externalApplication);
                       },
                     ),
