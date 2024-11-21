@@ -795,6 +795,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "No teu Passport, seleciona Aplicação Envoy e digitaliza este Código QR"),
         "envoy_scv_show_qr_subheading": MessageLookupByLibrary.simpleMessage(
             "Este código QR fornece informação para validação e configuração."),
+        "envoy_support_community":
+            MessageLookupByLibrary.simpleMessage("COMMUNITY"),
         "envoy_support_documentation":
             MessageLookupByLibrary.simpleMessage("Documentação"),
         "envoy_support_email": MessageLookupByLibrary.simpleMessage("E-mail"),
