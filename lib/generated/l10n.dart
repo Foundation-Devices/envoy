@@ -3638,6 +3638,16 @@ class S {
     );
   }
 
+  /// `COMMUNITY`
+  String get envoy_support_community {
+    return Intl.message(
+      'COMMUNITY',
+      name: 'envoy_support_community',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Documentation`
   String get envoy_support_documentation {
     return Intl.message(

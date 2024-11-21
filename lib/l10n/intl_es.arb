@@ -360,6 +360,7 @@
   "envoy_scv_scan_qr_subheading": "Este código QR completa la validación y comparte cierta información del Passport con Envoy.",
   "envoy_scv_show_qr_heading": "En Passport, selecciona la aplicación Envoy y escanea este código QR",
   "envoy_scv_show_qr_subheading": "Este código QR contiene información sobre la validación y configuración.",
+  "envoy_support_community": "COMUNIDAD",
   "envoy_support_documentation": "Documentación",
   "envoy_support_email": "Email",
   "envoy_support_telegram": "Telegram",
