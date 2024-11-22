@@ -475,6 +475,8 @@ class TransactionListTile extends StatelessWidget {
   final TextStyle _detailsHeadingStyle = EnvoyTypography.subheading
       .copyWith(color: EnvoyColors.textPrimaryInverse);
 
+  final Settings s = Settings();
+
   @override
   Widget build(BuildContext context) {
     final Locale activeLocale = Localizations.localeOf(context);
@@ -502,7 +504,9 @@ class TransactionListTile extends StatelessWidget {
                   subtitle: txSubtitle(activeLocale),
                   contentPadding: const EdgeInsets.all(0),
                   trailing: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: s.displayFiat() == null
+                        ? MainAxisAlignment.start
+                        : MainAxisAlignment.center,
                     crossAxisAlignment: Settings().selectedFiat == null
                         ? CrossAxisAlignment.center
                         : CrossAxisAlignment.end,
@@ -534,11 +538,17 @@ class TransactionListTile extends StatelessWidget {
                                       color: EnvoyColors.textPrimary,
                                     ),
                                   )
-                                : EnvoyAmount(
-                                    account: account,
-                                    amountSats: transaction.amount,
-                                    amountWidgetStyle:
-                                        AmountWidgetStyle.normal),
+                                : Padding(
+                                    padding: EdgeInsets.only(
+                                        top: s.displayFiat() == null
+                                            ? EnvoySpacing.small
+                                            : 0),
+                                    child: EnvoyAmount(
+                                        account: account,
+                                        amountSats: transaction.amount,
+                                        amountWidgetStyle:
+                                            AmountWidgetStyle.normal),
+                                  ),
                           ],
                         ),
                       ),
