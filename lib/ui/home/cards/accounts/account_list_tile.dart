@@ -333,6 +333,14 @@ class BadgeIcon extends StatelessWidget {
         color: Colors.white,
       );
     }
+    if (account.deviceSerial == "prime") {
+      return SvgPicture.asset(
+        "assets/icons/ic_wallet_coins.svg",
+        height: 24,
+        width: 24,
+        color: Colors.white,
+      );
+    }
     if (!account.wallet.hot) {
       return SvgPicture.asset(
         "assets/icons/ic_passport_account.svg",

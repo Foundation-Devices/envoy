@@ -4,15 +4,19 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:envoy/business/local_storage.dart';
-import 'package:envoy/ui/onboard/onboard_welcome.dart';
+import 'package:envoy/ui/onboard/prime/onboard_prime.dart';
+import 'package:envoy/ui/onboard/prime/prime_onboarding.dart';
+import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/routes/home_router.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 const ROUTE_SPLASH = '/splash';
+const ROUTE_PRIME_ONBOARD = '/prime';
 const ROUTE_ONBOARD_PASSPORT = '/onboard';
 const ROUTE_ONBOARD_ENVOY = '/onboard/envoy';
 const PREFS_ONBOARDED = 'onboarded';
@@ -42,14 +46,21 @@ final GoRouter mainRouter = GoRouter(
     return null;
   },
   routes: <RouteBase>[
-    GoRoute(
-      path: ROUTE_SPLASH,
-      builder: (context, state) => const WelcomeScreen(),
-    ),
+    onboardRoutes,
     homeRouter,
+    GoRoute(
+      path: ROUTE_PRIME_ONBOARD,
+      builder: (context, state) => const OnboardPrimeWelcome(),
+    ),
     GoRoute(
         path: "/",
         redirect: (context, state) {
+          if (state.uri.queryParameters.containsKey("p")) {
+            ProviderScope.containerOf(context)
+                .read(primePayload.notifier)
+                .state = state.uri.queryParameters['p'];
+            return ROUTE_PRIME_ONBOARD;
+          }
           if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) != true) {
             return ROUTE_SPLASH;
           } else {

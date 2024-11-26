@@ -7,9 +7,8 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
-import 'package:envoy/ui/onboard/magic/magic_setup_tutorial.dart';
-import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,6 +16,7 @@ import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:go_router/go_router.dart';
 
 class OnboardEnvoyWelcomeScreen extends ConsumerStatefulWidget {
   const OnboardEnvoyWelcomeScreen({super.key});
@@ -40,7 +40,7 @@ class _OnboardEnvoyWelcomeScreenState
         backgroundColor: Colors.transparent,
         leading: CupertinoNavigationBarBackButton(
           color: Colors.white,
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(),
         ),
         actions: [
           Padding(
@@ -54,7 +54,7 @@ class _OnboardEnvoyWelcomeScreenState
                   ?.copyWith(color: Colors.white),
               type: EnvoyButtonTypes.tertiary,
               onTap: () {
-                OnboardingPage.popUntilHome(context);
+                context.go("/");
               },
             ),
           )
@@ -68,14 +68,8 @@ class _OnboardEnvoyWelcomeScreenState
           leading: CupertinoNavigationBarBackButton(
             color: Colors.white,
             onPressed: () {
-              Navigator.pop(context);
+              context.pop();
               return;
-              //TODO: fix this
-              // if (GoRouter.of(context).canPop()) {
-              //   GoRouter.of(context).pop();
-              // } else {
-              //   GoRouter.of(context).push(ROUTE_ACCOUNTS_HOME);
-              // }
             },
           ),
           automaticallyImplyLeading: false,
@@ -91,7 +85,7 @@ class _OnboardEnvoyWelcomeScreenState
                     ?.copyWith(color: Colors.white),
                 type: EnvoyButtonTypes.tertiary,
                 onTap: () {
-                  OnboardingPage.popUntilHome(context);
+                  context.go("/");
                 },
               ),
             )
@@ -189,20 +183,14 @@ class _OnboardEnvoyWelcomeScreenState
                               S().envoy_welcome_screen_cta2,
                               type: EnvoyButtonTypes.secondary,
                               onTap: () {
-                                Navigator.of(context)
-                                    .push(MaterialPageRoute(builder: (context) {
-                                  return const ManualSetup();
-                                }));
+                                context.pushNamed(ONBOARD_ENVOY_MANUAL_SETUP);
                               },
                             ),
                             const SizedBox(height: EnvoySpacing.medium1),
                             EnvoyButton(
                               S().envoy_welcome_screen_cta1,
                               onTap: () {
-                                Navigator.of(context)
-                                    .push(MaterialPageRoute(builder: (context) {
-                                  return const MagicSetupTutorial();
-                                }));
+                                context.pushNamed(ONBOARD_ENVOY_MAGIC_SETUP);
                               },
                             ),
                             const SizedBox(height: EnvoySpacing.small),
