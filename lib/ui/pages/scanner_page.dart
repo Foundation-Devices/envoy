@@ -233,8 +233,8 @@ class ScannerPageState extends State<ScannerPage> {
           }
         },
         showCloseButton: false,
-        typeOfMessage: PopUpState.danger,
         icon: EnvoyIcons.alert,
+        iconColor: EnvoyColors.danger,
         secondaryButtonLabel: S().component_back,
         onSecondaryButtonTap: (BuildContext context) {
           navigator.pop();

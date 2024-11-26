@@ -6,6 +6,8 @@ import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 
 class AztecoConnectionModalFail extends StatefulWidget {
   final PageController controller;
@@ -42,8 +44,11 @@ class _AztecoRedeemModalFail extends State<AztecoConnectionModalFail> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset("assets/exclamation_triangle.png",
-                  scale: 1.0, width: 70, height: 70, fit: BoxFit.contain),
+              const EnvoyIcon(
+                EnvoyIcons.alert,
+                size: EnvoyIconSize.big,
+                color: EnvoyColors.copperLight500,
+              ),
               Padding(
                 padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
                 child: Text(

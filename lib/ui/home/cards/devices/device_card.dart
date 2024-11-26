@@ -5,7 +5,6 @@
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/home/cards/devices/device_list_tile.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
@@ -21,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:envoy/ui/theme/envoy_colors.dart';
 
 //ignore: must_be_immutable
 class DeviceCard extends ConsumerStatefulWidget {
@@ -191,7 +191,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
         ),
         GestureDetector(
           child: Text(S().component_delete.toUpperCase(),
-              style: const TextStyle(color: EnvoyColors.lightCopper)),
+              style: const TextStyle(color: EnvoyColors.copperLight500)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             showEnvoyDialog(
@@ -202,7 +202,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                     children: [
                       const EnvoyIcon(
                         EnvoyIcons.alert,
-                        color: EnvoyColors.darkCopper,
+                        color: EnvoyColors.copperLight500,
                         size: EnvoyIconSize.big,
                       ),
                       const SizedBox(
@@ -221,7 +221,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                       borderRadius: const BorderRadius.all(
                           Radius.circular(EnvoySpacing.small)),
                       textStyle: EnvoyTypography.button
-                          .copyWith(color: EnvoyColors.white100),
+                          .copyWith(color: EnvoyColors.textPrimaryInverse),
                       type: EnvoyButtonTypes.primaryModal,
                       onTap: () {
                         Devices().deleteDevice(widget.device);

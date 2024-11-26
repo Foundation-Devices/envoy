@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/btcpay_voucher.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -19,6 +20,7 @@ class BtcPayFail extends StatelessWidget {
   Widget build(BuildContext context) {
     return EnvoyPopUp(
       icon: EnvoyIcons.alert,
+      iconColor: EnvoyColors.copperLight500,
       title: getTitle(voucher.errorType),
       content: getErrorContent(voucher.errorType, voucher.expiresAt),
       linkUrl: voucher.errorType == BtcPayVoucherErrorType.onChain
@@ -28,7 +30,6 @@ class BtcPayFail extends StatelessWidget {
       onPrimaryButtonTap: (context) {
         Navigator.of(context).pop();
       },
-      typeOfMessage: PopUpState.danger,
     );
   }
 }

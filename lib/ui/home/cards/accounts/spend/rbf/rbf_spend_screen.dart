@@ -521,7 +521,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                       child: EnvoyIcon(
                         EnvoyIcons.alert,
                         size: EnvoyIconSize.big,
-                        color: EnvoyColors.danger,
+                        color: EnvoyColors.copperLight500,
                       ),
                     ),
                     Padding(

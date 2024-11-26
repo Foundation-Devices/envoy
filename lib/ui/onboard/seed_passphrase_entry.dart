@@ -6,8 +6,8 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 
@@ -167,8 +167,11 @@ void showInvalidSeedDialog({required BuildContext context}) {
                             },
                             icon: const Icon(Icons.close))),
                   ),
-                  const Icon(EnvoyIcons.exclamationWarning,
-                      color: EnvoyColors.darkCopper, size: 58),
+                  const EnvoyIcon(
+                    EnvoyIcons.alert,
+                    size: EnvoyIconSize.big,
+                    color: EnvoyColors.copperLight500,
+                  ),
                   const Padding(padding: EdgeInsets.all(8)),
                   Padding(
                     padding:

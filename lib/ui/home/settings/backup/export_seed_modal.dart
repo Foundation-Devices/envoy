@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -49,7 +49,7 @@ class _ExportSeedModalState extends State<ExportSeedModal> {
                   const EnvoyIcon(
                     EnvoyIcons.alert,
                     size: EnvoyIconSize.big,
-                    color: EnvoyColors.copper,
+                    color: EnvoyColors.copperLight500,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: EnvoySpacing.medium2),

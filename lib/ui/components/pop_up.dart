@@ -13,12 +13,6 @@ import 'package:envoy/ui/components/checkbox.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/generated/l10n.dart';
 
-enum PopUpState {
-  deafult,
-  warning,
-  danger,
-}
-
 void showEnvoyPopUp(
   BuildContext context,
   String content,
@@ -28,7 +22,6 @@ void showEnvoyPopUp(
   String? title,
   String? secondaryButtonLabel,
   Function(BuildContext context)? onSecondaryButtonTap,
-  PopUpState? typeOfMessage,
   String? checkBoxText,
   Function(bool checked)? onCheckBoxChanged,
   bool? checkedValue,
@@ -37,6 +30,7 @@ void showEnvoyPopUp(
   String? learnMoreText,
   Widget? customWidget,
   bool? showCloseButton,
+  Color iconColor = EnvoyColors.accentPrimary,
 }) =>
     showEnvoyDialog(
         context: context,
@@ -45,11 +39,11 @@ void showEnvoyPopUp(
           title: title,
           content: content,
           icon: icon,
+          iconColor: iconColor,
           primaryButtonLabel: primaryButtonLabel,
           onPrimaryButtonTap: onPrimaryButtonTap,
           secondaryButtonLabel: secondaryButtonLabel,
           onSecondaryButtonTap: onSecondaryButtonTap,
-          typeOfMessage: typeOfMessage,
           checkBoxText: checkBoxText,
           onCheckBoxChanged: onCheckBoxChanged,
           checkedValue: checkedValue ?? true,
@@ -71,7 +65,6 @@ class EnvoyPopUp extends StatefulWidget {
     this.secondaryButtonLabel,
     this.onPrimaryButtonTap,
     this.onSecondaryButtonTap,
-    this.typeOfMessage = PopUpState.deafult,
     this.checkBoxText,
     this.onCheckBoxChanged,
     this.checkedValue = true,
@@ -79,16 +72,17 @@ class EnvoyPopUp extends StatefulWidget {
     this.learnMoreText = '',
     this.customWidget,
     this.showCloseButton = true,
+    this.iconColor = EnvoyColors.accentPrimary,
   });
 
   final String? title;
   final String content;
   final EnvoyIcons? icon;
+  final Color iconColor;
   final String primaryButtonLabel;
   final String? secondaryButtonLabel;
   final Function(BuildContext context)? onPrimaryButtonTap;
   final Function(BuildContext context)? onSecondaryButtonTap;
-  final PopUpState? typeOfMessage;
   final String? checkBoxText;
   final Function(bool checked)? onCheckBoxChanged;
   bool? checkedValue;
@@ -102,41 +96,8 @@ class EnvoyPopUp extends StatefulWidget {
 }
 
 class _EnvoyPopUpState extends State<EnvoyPopUp> {
-  Color _color = EnvoyColors.accentPrimary;
-
   @override
   Widget build(BuildContext context) {
-    switch (widget.typeOfMessage) {
-      case PopUpState.deafult:
-        {
-          setState(() {
-            _color = EnvoyColors.accentPrimary;
-          });
-        }
-        break;
-
-      case PopUpState.danger:
-        {
-          setState(() {
-            _color = EnvoyColors.danger;
-          });
-        }
-        break;
-      case PopUpState.warning:
-        {
-          setState(() {
-            _color = EnvoyColors.warning;
-          });
-        }
-        break;
-      case null:
-        {
-          setState(() {
-            _color = EnvoyColors.accentPrimary;
-          });
-        }
-        break;
-    }
     return Container(
       width: MediaQuery.of(context).size.width * 0.85,
       decoration: const BoxDecoration(
@@ -171,7 +132,7 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                   child: EnvoyIcon(
                     widget.icon!,
                     size: EnvoyIconSize.big,
-                    color: _color,
+                    color: widget.iconColor,
                   ),
                 ),
               if (widget.title != null)

@@ -17,6 +17,8 @@ import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
@@ -695,10 +697,10 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Image.asset(
-                      "assets/exclamation_triangle.png",
-                      height: 80,
-                      width: 80,
+                    const EnvoyIcon(
+                      EnvoyIcons.alert,
+                      size: EnvoyIconSize.big,
+                      color: EnvoyColors.copperLight500,
                     ),
                     const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                     Padding(

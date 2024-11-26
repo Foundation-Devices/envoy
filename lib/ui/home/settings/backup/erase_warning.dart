@@ -217,10 +217,10 @@ class _EraseWalletsBalanceWarningState
             const Padding(padding: EdgeInsets.all(8)),
             Column(
               children: [
-                Image.asset(
-                  "assets/exclamation_triangle.png",
-                  height: 80,
-                  width: 80,
+                const EnvoyIcon(
+                  EnvoyIcons.alert,
+                  size: EnvoyIconSize.big,
+                  color: EnvoyColors.copperLight500,
                 ),
                 const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 Padding(

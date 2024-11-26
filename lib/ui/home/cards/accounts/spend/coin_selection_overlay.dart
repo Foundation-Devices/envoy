@@ -21,6 +21,7 @@ import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
@@ -824,10 +825,10 @@ class _SpendSelectionCancelWarningState
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          const Icon(
-            Icons.warning_amber_rounded,
-            color: EnvoyColors.accentSecondary,
-            size: 68,
+          const EnvoyIcon(
+            EnvoyIcons.alert,
+            color: EnvoyColors.copperLight500,
+            size: EnvoyIconSize.big,
           ),
           const Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
           Text(S().manual_coin_preselection_dialog_description,

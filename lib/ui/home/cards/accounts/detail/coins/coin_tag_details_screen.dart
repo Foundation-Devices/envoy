@@ -30,6 +30,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 
 class CoinTagDetailsScreen extends ConsumerStatefulWidget {
   final bool showCoins;
@@ -722,9 +723,13 @@ class DeleteTagDialog extends StatelessWidget {
                 },
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: EnvoySpacing.xs),
-              child: Image.asset("assets/exclamation_triangle.png", width: 68),
+            const Padding(
+              padding: EdgeInsets.only(top: EnvoySpacing.xs),
+              child: EnvoyIcon(
+                EnvoyIcons.alert,
+                color: EnvoyColors.copperLight500,
+                size: EnvoyIconSize.big,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(top: EnvoySpacing.medium3),

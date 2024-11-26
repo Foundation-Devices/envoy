@@ -727,7 +727,11 @@ class _DiscardTransactionDialogState
     Account? account = ref.watch(selectedAccountProvider);
 
     return Container(
-      padding: const EdgeInsets.all(28).add(const EdgeInsets.only(top: -6)),
+      padding: const EdgeInsets.only(
+          top: EnvoySpacing.medium3,
+          bottom: EnvoySpacing.medium2,
+          left: EnvoySpacing.medium3,
+          right: EnvoySpacing.medium3),
       constraints: const BoxConstraints(
         minHeight: 300,
         maxWidth: 280,
@@ -737,18 +741,25 @@ class _DiscardTransactionDialogState
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          const Icon(
-            Icons.warning_amber_rounded,
-            color: EnvoyColors.accentSecondary,
-            size: 42,
+          const EnvoyIcon(
+            EnvoyIcons.alert,
+            color: EnvoyColors.copperLight500,
+            size: EnvoyIconSize.big,
           ),
           const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          Text(S().manage_account_remove_heading,
-              style: Theme.of(context).textTheme.titleSmall),
+          Text(
+            S().manage_account_remove_heading,
+            style: EnvoyTypography.info.copyWith(
+              color: EnvoyColors.textPrimary,
+            ),
+            textAlign: TextAlign.center,
+          ),
           const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Text(
             S().coincontrol_tx_detail_passport_subheading,
-            style: Theme.of(context).textTheme.titleSmall,
+            style: EnvoyTypography.info.copyWith(
+              color: EnvoyColors.textPrimary,
+            ),
             textAlign: TextAlign.center,
           ),
           const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
