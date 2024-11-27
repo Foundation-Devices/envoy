@@ -9,6 +9,7 @@ import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
 import 'package:envoy/ui/pages/legal/passport_tou.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -251,11 +252,25 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                         const SizedBox(height: EnvoySpacing.medium1),
                         EnvoyButton(
                           S().passport_welcome_screen_cta1,
-                          onTap: () {
-                            Navigator.of(context)
-                                .push(MaterialPageRoute(builder: (context) {
-                              return const TouPage();
-                            }));
+                          onTap: () async {
+                            final htmlContent = await rootBundle.loadString(
+                                'assets/passport_tou.html'); // Preload HTML content
+
+                            if (context.mounted) {
+                              Navigator.of(context).push(PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) {
+                                  return TouPage(htmlContent: htmlContent);
+                                },
+                                transitionDuration:
+                                    const Duration(milliseconds: 300),
+                                transitionsBuilder: (context, animation,
+                                    secondaryAnimation, child) {
+                                  return FadeTransition(
+                                      opacity: animation, child: child);
+                                },
+                              ));
+                            }
                           },
                         ),
                         const SizedBox(height: EnvoySpacing.small),

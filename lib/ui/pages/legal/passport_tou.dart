@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/pages/scv/scv_intro.dart';
@@ -13,7 +12,9 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class TouPage extends StatelessWidget {
-  const TouPage({super.key});
+  final String htmlContent;
+
+  const TouPage({super.key, required this.htmlContent});
 
   @override
   Widget build(BuildContext context) {
@@ -62,20 +63,11 @@ class TouPage extends StatelessWidget {
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(4.0),
                 scrollDirection: Axis.vertical,
-                child: FutureBuilder<String>(
-                  future: rootBundle.loadString('assets/passport_tou.html'),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return DefaultTextStyle(
-                        style: Theme.of(context).textTheme.bodySmall!,
-                        child: Html(
-                          data: snapshot.data,
-                        ),
-                      );
-                    } else {
-                      return const SizedBox.shrink();
-                    }
-                  },
+                child: DefaultTextStyle(
+                  style: Theme.of(context).textTheme.bodySmall!,
+                  child: Html(
+                    data: htmlContent,
+                  ),
                 ),
               ),
             ),
