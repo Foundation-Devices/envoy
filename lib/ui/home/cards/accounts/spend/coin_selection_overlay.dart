@@ -19,6 +19,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -519,7 +520,6 @@ class SpendRequirementOverlayState
 
   Future<void> onPrimaryButtonTap(BuildContext context) async {
     final scope = ProviderScope.containerOf(context);
-    final router = GoRouter.of(context);
     final navigator = Navigator.of(context);
     final mode = ref.read(spendEditModeProvider);
     final account = ref.read(selectedAccountProvider);
@@ -565,7 +565,7 @@ class SpendRequirementOverlayState
           SpendOverlayContext.hidden;
       ref.read(hideBottomNavProvider.notifier).state = false;
       _dismiss();
-      router.push(ROUTE_ACCOUNT_SEND);
+      mainRouter.go(ROUTE_ACCOUNT_SEND);
       return;
     }
   }
