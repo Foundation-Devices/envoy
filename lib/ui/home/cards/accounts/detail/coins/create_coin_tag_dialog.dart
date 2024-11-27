@@ -150,7 +150,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                   borderRadius: BorderRadius.circular(EnvoySpacing.small)),
               child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
+                      const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
                   //16
                   child: TextFormField(
                     style: const TextStyle(
