@@ -149,7 +149,8 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                   color: EnvoyColors.surface4,
                   borderRadius: BorderRadius.circular(EnvoySpacing.small)),
               child: Padding(
-                  padding: const EdgeInsets.only(top: EnvoySpacing.small),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
                   //16
                   child: TextFormField(
                     style: const TextStyle(
@@ -157,6 +158,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                       overflow: TextOverflow.fade,
                       fontWeight: FontWeight.w500,
                     ),
+                    textAlignVertical: TextAlignVertical.center,
                     onChanged: (value) {
                       setState(() {
                         _tagController.text = value;
