@@ -619,15 +619,14 @@ class _SlidingToggleState extends State<SlidingToggle>
         }
       });
     });
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (value == "Tx") {
-        // TODO: FIGMA
-        _animationController.reverse();
-      } else {
-        _animationController.animateTo(1.0,
-            duration: const Duration(milliseconds: 0));
-      }
-    });
+
+    if (value == "Tx") {
+      // TODO: FIGMA
+      _animationController.reverse();
+    } else {
+      _animationController.animateTo(1.0,
+          duration: const Duration(milliseconds: 0));
+    }
   }
 
   @override
