@@ -22,8 +22,9 @@ class AztecoVoucher {
 
   AztecoVoucher(String url) {
     // Parse the url to code
-    // Old format: "https://azte.co/?c1=1111&c2=2222&c3=3333&c4=4444";
+    // Old format: "https://azte.co/?c1=1111&c2=2222&c3=3333&c4=4444"
     // New format: "https://azte.co/redeem?code=1111222233334444"
+    // Voucher path format: "https://azte.co/voucher/1486935437384434"
 
     Uri uri = Uri.parse(url);
     Map<String, dynamic> queryParams = uri.queryParameters;
@@ -35,12 +36,16 @@ class AztecoVoucher {
         queryParams['c3'],
         queryParams['c4']
       ];
-    }
-    if (queryParams.length == 1) {
-      String queryData = queryParams['code'];
-
+    } else if (queryParams.length == 1 && queryParams.containsKey('code')) {
+      String queryData = queryParams['code']!;
       for (int i = 0; i < queryData.length; i += 4) {
         code.add(queryData.substring(i, i + 4));
+      }
+    } else if (uri.pathSegments.length == 2 &&
+        uri.pathSegments[0] == 'voucher') {
+      String pathCode = uri.pathSegments[1];
+      for (int i = 0; i < pathCode.length; i += 4) {
+        code.add(pathCode.substring(i, i + 4));
       }
     }
   }

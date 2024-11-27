@@ -3,4 +3,4 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 [toolchain]
-channel = "1.69.0"
+channel = "1.74.0"

@@ -11,7 +11,6 @@ import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
-import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
@@ -220,7 +219,6 @@ class _SendCardState extends ConsumerState<SendCard>
                       if (tx.loading) {
                         return;
                       }
-                      final router = GoRouter.of(context);
                       if (formValidation) {
                         try {
                           ref.read(spendTransactionProvider.notifier).reset();
@@ -228,7 +226,9 @@ class _SendCardState extends ConsumerState<SendCard>
                               .read(spendTransactionProvider.notifier)
                               .validate(ProviderScope.containerOf(context));
                           if (valid) {
-                            router.push(ROUTE_ACCOUNT_SEND_CONFIRM);
+                            if (context.mounted) {
+                              GoRouter.of(context).goNamed('spend_confirm');
+                            }
                           }
                         } catch (e) {
                           kPrint(e);

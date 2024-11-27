@@ -95,5 +95,6 @@ final modalModeRoutes = [
 ///Any routes that required the app bar and bottom navigation bar to be hidden
 final hideAppBarRoutes = [
   // ROUTE_ACCOUNT_SEND,
-  ROUTE_ACCOUNT_SEND_CONFIRM
+  ROUTE_ACCOUNT_SEND_CONFIRM,
+  ROUTE_ACCOUNT_SEND_REVIEW
 ];

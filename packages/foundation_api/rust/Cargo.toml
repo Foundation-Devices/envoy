@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+[package]
+name = "foundation_api"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+flutter_rust_bridge = "=2.2.0"
+foundation-api = { git = "ssh://git@github.com/Foundation-Devices/foundation-api.git" }
+foundation-abstracted = { git = "ssh://git@github.com/Foundation-Devices/foundation-api.git" }
+bc-envelope = { version = "^0.18.2", default-features = false, features = [
+    "multithreaded",
+    "attachment",
+    "compress",
+    "encrypt",
+    "expression",
+    "known_value",
+    "proof",
+    "recipient",
+    "salt",
+    "signature",
+    "sskr",
+    "transaction",
+    "types"
+]}
+bc-components = "^0.13.0"
+async-trait = "0.1.81"
+anyhow = "1.0.86"
+indoc = "2.0.5"
+tokio = "1.38.1"

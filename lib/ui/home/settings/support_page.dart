@@ -40,10 +40,10 @@ class SupportPage extends StatelessWidget {
                     const SizedBox(height: 0),
                     MenuOption(
                       icon: EnvoyIcons.externalLink,
-                      label: S().envoy_support_telegram,
+                      label: S().envoy_support_community,
                       onTap: () {
                         launchUrl(
-                            Uri.parse("https://telegram.me/foundationdevices"),
+                            Uri.parse("https://community.foundation.xyz/"),
                             mode: LaunchMode.externalApplication);
                       },
                     ),

@@ -6,7 +6,6 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
-import 'package:envoy/ui/pages/legal/passport_tou.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -14,6 +13,7 @@ import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/pages/legal/passport_tou.dart';
 
 class OnboardPassportWelcomeScreen extends StatelessWidget {
   const OnboardPassportWelcomeScreen({super.key});
@@ -143,9 +143,9 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
         //this is better than using a stack
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: Transform.translate(
-          offset: const Offset(0, 75),
+          offset: const Offset(0, 90),
           child: Image.asset(
-            "assets/passport_envoy.png",
+            "assets/welcome_prime.png",
             alignment: Alignment.bottomCenter,
             width: MediaQuery.of(context).size.width * 0.8,
             height: MediaQuery.of(context).size.height * 0.8,
@@ -246,12 +246,13 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                                 .push(MaterialPageRoute(builder: (context) {
                               return const SingleImportPpIntroPage();
                             }));
+                            //PRIME-DEMO
                           },
                         ),
                         const SizedBox(height: EnvoySpacing.medium1),
                         EnvoyButton(
                           S().passport_welcome_screen_cta1,
-                          onTap: () {
+                          onTap: () async {
                             Navigator.of(context)
                                 .push(MaterialPageRoute(builder: (context) {
                               return const TouPage();
