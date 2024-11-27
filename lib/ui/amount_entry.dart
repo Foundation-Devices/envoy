@@ -59,9 +59,8 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 
     if (widget.initalSatAmount > 0) {
       _amountSats = widget.initalSatAmount;
-      _enteredAmount = getDisplayAmount(
-          _amountSats, ref.read(sendScreenUnitProvider),
-          trailingZeroes: true);
+      _enteredAmount =
+          getDisplayAmount(_amountSats, ref.read(sendScreenUnitProvider));
     }
 
     WidgetsBinding.instance.addPostFrameCallback(_getFittedBoxHeight);
@@ -264,9 +263,8 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
                   enteredAmount = "${enteredAmount}0";
                 }
                 if (_addTrailingZeros && unit == AmountDisplayUnit.btc) {
-                  enteredAmount = getDisplayAmount(
-                      _amountSats, AmountDisplayUnit.btc,
-                      trailingZeroes: true);
+                  enteredAmount =
+                      getDisplayAmount(_amountSats, AmountDisplayUnit.btc);
                 }
                 _enteredAmount = enteredAmount;
               },
