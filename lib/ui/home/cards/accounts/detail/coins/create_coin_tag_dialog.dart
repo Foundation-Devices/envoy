@@ -18,8 +18,11 @@ import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 
-class CreateCoinTag extends StatefulWidget {
+class CreateCoinTag extends ConsumerStatefulWidget {
   final String accountId;
   final Function onTagUpdate;
 
@@ -27,7 +30,7 @@ class CreateCoinTag extends StatefulWidget {
       {super.key, required this.onTagUpdate, required this.accountId});
 
   @override
-  State<CreateCoinTag> createState() => _CreateCoinTagState();
+  ConsumerState<CreateCoinTag> createState() => _CreateCoinTagState();
 }
 
 List<String> tagSuggestions = [
@@ -38,7 +41,7 @@ List<String> tagSuggestions = [
   S().tagSelection_example5,
 ];
 
-class _CreateCoinTagState extends State<CreateCoinTag> {
+class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -58,6 +61,10 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                   icon: const Icon(Icons.close),
                   padding: const EdgeInsets.all(12),
                   onPressed: () {
+                    if (ref.read(selectedAccountProvider) != null) {
+                      coinSelectionOverlayKey.currentState
+                          ?.show(SpendOverlayContext.preselectCoins);
+                    }
                     Navigator.of(context).pop();
                   },
                 ),
