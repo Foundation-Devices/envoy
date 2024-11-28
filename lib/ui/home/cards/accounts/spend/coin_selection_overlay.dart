@@ -652,6 +652,8 @@ class SpendRequirementOverlayState
           type: EnvoyButtonTypes.secondary,
           buttonText,
           onTap: () async {
+            ref.read(spendEditModeProvider.notifier).state =
+                SpendOverlayContext.hidden;
             NavigatorState navigator =
                 Navigator.of(context, rootNavigator: true);
             if (!inTagSelectionMode) {
@@ -668,6 +670,7 @@ class SpendRequirementOverlayState
               showEnvoyDialog(
                   context: context,
                   useRootNavigator: true,
+                  dismissible: false,
                   builder: Builder(
                     builder: (context) => CreateCoinTag(
                       accountId: selectedAccount.id ?? "",
@@ -688,6 +691,7 @@ class SpendRequirementOverlayState
                 showEnvoyDialog(
                     useRootNavigator: true,
                     context: context,
+                    dismissible: false,
                     builder: Builder(builder: (context) {
                       return CreateCoinTagWarning(onContinue: () {
                         //pop warning dialog
@@ -696,6 +700,7 @@ class SpendRequirementOverlayState
                         showEnvoyDialog(
                             context: context,
                             useRootNavigator: true,
+                            dismissible: false,
                             builder: Builder(
                               builder: (context) => CreateCoinTag(
                                 accountId: selectedAccount.id ?? "",

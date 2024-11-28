@@ -12,6 +12,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
 
 class CoinLockWarning extends StatefulWidget {
   final String warningMessage;
@@ -197,6 +200,10 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
               padding: const EdgeInsets.all(EnvoySpacing.small),
               icon: const Icon(Icons.close),
               onPressed: () {
+                if (ref.read(selectedAccountProvider) != null) {
+                  coinSelectionOverlayKey.currentState
+                      ?.show(SpendOverlayContext.preselectCoins);
+                }
                 Navigator.of(context).pop();
               },
             ),
@@ -257,6 +264,10 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
           EnvoyButton(
             label: S().component_back,
             onTap: () {
+              if (ref.read(selectedAccountProvider) != null) {
+                coinSelectionOverlayKey.currentState
+                    ?.show(SpendOverlayContext.preselectCoins);
+              }
               Navigator.pop(context);
             },
             type: ButtonType.secondary,
