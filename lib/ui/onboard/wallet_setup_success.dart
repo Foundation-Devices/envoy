@@ -35,6 +35,7 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
+      canPop: false,
       onPopInvokedWithResult: (_, __) async {
         context.go("/");
       },

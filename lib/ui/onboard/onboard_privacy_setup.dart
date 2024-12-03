@@ -53,8 +53,9 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
     return EnvoyPatternScaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        leading: const CupertinoNavigationBarBackButton(
+        leading: CupertinoNavigationBarBackButton(
           color: Colors.white,
+          onPressed: () => Navigator.maybePop(context),
         ),
         actions: [
           Consumer(

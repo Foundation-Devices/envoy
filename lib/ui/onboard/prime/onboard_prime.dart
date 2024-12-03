@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OnboardPrimeWelcome extends StatelessWidget {
@@ -131,7 +132,7 @@ class OnboardPrimeWelcome extends StatelessWidget {
                     ?.copyWith(color: Colors.white),
                 type: EnvoyButtonTypes.tertiary,
                 onTap: () {
-                  OnboardingPage.popUntilHome(context);
+                  context.go("/");
                 },
               ),
             )
