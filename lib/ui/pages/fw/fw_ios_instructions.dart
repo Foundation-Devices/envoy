@@ -2,36 +2,31 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/fw_uploader.dart';
 import 'package:envoy/business/updates_manager.dart';
-import 'package:envoy/ui/pages/fw/fw_microsd.dart';
-import 'package:flutter/material.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:envoy/business/devices.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/pages/fw/fw_routes.dart';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:envoy/ui/pages/fw/fw_ios_success.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 //ignore: must_be_immutable
 class FwIosInstructionsPage extends ConsumerWidget {
-  bool onboarding;
-  int deviceId;
+  final FwPagePayload fwPagePayload;
 
-  FwIosInstructionsPage({super.key, this.onboarding = true, this.deviceId = 1});
+  const FwIosInstructionsPage({super.key, required this.fwPagePayload});
 
   @override
   Widget build(context, ref) {
+    int deviceId = fwPagePayload.deviceId;
     final fwInfo = ref.watch(firmwareStreamProvider(deviceId));
 
     return OnboardingPage(
       key: const Key("fw_ios_instructions"),
       clipArt: Image.asset("assets/fw_ios_instructions.png"),
-      rightFunction: (_) {
-        onboarding
-            ? OnboardingPage.popUntilHome(context)
-            : OnboardingPage.popUntilGoRoute(context);
-      },
       text: [
         Column(
           mainAxisSize: MainAxisSize.min,
@@ -53,7 +48,7 @@ class FwIosInstructionsPage extends ConsumerWidget {
         OnboardingButton(
             label: S().component_continue,
             onTap: () async {
-              final navigator = Navigator.of(context);
+              final goRouter = GoRouter.of(context);
               final firmwareFile = await UpdatesManager().getStoredFw(deviceId);
               final uploader = FwUploader(firmwareFile);
               final folderPath = await uploader.promptUserForFolderAccess();
@@ -62,16 +57,10 @@ class FwIosInstructionsPage extends ConsumerWidget {
                 await uploader.upload();
                 Devices()
                     .markDeviceUpdated(deviceId, fwInfo.value!.storedVersion);
-
-                navigator.push(MaterialPageRoute(builder: (context) {
-                  return FwIosSuccessPage(
-                    onboarding: onboarding,
-                  );
-                }));
+                goRouter.goNamed(PASSPORT_UPDATE_IOS_SUCCESS,
+                    extra: fwPagePayload);
               } else {
-                navigator.push(MaterialPageRoute(builder: (context) {
-                  return FwMicrosdPage(onboarding: onboarding);
-                }));
+                goRouter.goNamed(PASSPORT_UPDATE_SD_CARD, extra: fwPagePayload);
               }
             }),
       ],

@@ -3,10 +3,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/pages/wallet/single_wallet_address_verify.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:wallet/wallet.dart';
 
 class SingleWalletPairSuccessPage extends StatelessWidget {
@@ -40,7 +44,13 @@ class SingleWalletPairSuccessPage extends StatelessWidget {
             type: EnvoyButtonTypes.secondary,
             label: S().pair_new_device_success_cta2,
             onTap: () {
-              OnboardingPage.popUntilHome(context, resetHomeProviders: true);
+              ProviderScope.containerOf(context)
+                  .read(homePageBackgroundProvider.notifier)
+                  .state = HomePageBackgroundState.hidden;
+              ProviderScope.containerOf(context)
+                  .read(homePageTitleProvider.notifier)
+                  .state = "";
+              context.go("/");
             }),
         OnboardingButton(
             label: S().pair_new_device_success_cta1,

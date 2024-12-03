@@ -2,28 +2,29 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ui/pages/pp/pp_setup_intro.dart';
+import 'package:envoy/ui/pages/fw/fw_routes.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:go_router/go_router.dart';
 
 //ignore: must_be_immutable
 class FwPassportPage extends StatelessWidget {
-  bool onboarding;
+  final FwPagePayload fwPagePayload;
 
-  FwPassportPage({super.key, this.onboarding = true});
+  const FwPassportPage({super.key, required this.fwPagePayload});
 
   @override
   Widget build(BuildContext context) {
+    bool onboarding = fwPagePayload.onboarding;
     return OnboardingPage(
       key: const Key("fw_passport"),
-      clipArt: Image.asset("assets/fw_passport.png"),
-      rightFunction: (_) {
-        onboarding
-            ? OnboardingPage.popUntilHome(context)
-            : OnboardingPage.popUntilGoRoute(context);
+      leftFunction: (context) {
+        context.go("/");
       },
+      clipArt: Image.asset("assets/fw_passport.png"),
       text: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
@@ -51,12 +52,9 @@ class FwPassportPage extends StatelessWidget {
             label: S().component_continue,
             onTap: () {
               if (!onboarding) {
-                OnboardingPage.popUntilGoRoute(context);
+                context.go("/");
               } else {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return const PpSetupIntroPage();
-                }));
+                context.goNamed(PASSPORT_INTRO);
               }
             }),
       ],

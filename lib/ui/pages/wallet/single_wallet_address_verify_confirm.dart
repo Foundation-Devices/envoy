@@ -6,6 +6,7 @@ import 'package:envoy/ui/envoy_button.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 
@@ -38,7 +39,7 @@ class SingleWalletAddressVerifyConfirmPage extends StatelessWidget {
         OnboardingButton(
             label: S().component_continue,
             onTap: () {
-              OnboardingPage.popUntilHome(context);
+              context.go("/");
             }),
       ],
     );

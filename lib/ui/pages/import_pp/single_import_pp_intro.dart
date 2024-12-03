@@ -4,12 +4,13 @@
 
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/pages/import_pp/single_import_pp_scan.dart';
+import 'package:envoy/ui/envoy_pattern_scaffold.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/ui/envoy_pattern_scaffold.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:go_router/go_router.dart';
 
 class SingleImportPpIntroPage extends StatelessWidget {
   final bool isExistingDevice;
@@ -41,7 +42,7 @@ class SingleImportPpIntroPage extends StatelessWidget {
                     ?.copyWith(color: Colors.white),
                 type: EnvoyButtonTypes.tertiary,
                 onTap: () {
-                  OnboardingPage.popUntilHome(context);
+                  context.go("/");
                 },
               ),
             )
@@ -99,10 +100,7 @@ class SingleImportPpIntroPage extends StatelessWidget {
                     child: EnvoyButton(
                       S().accounts_empty_text_learn_more,
                       onTap: () {
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return const SingleImportPpScanPage();
-                        }));
+                        context.goNamed(ONBOARD_PASSPORT_EXISTING_SCAN);
                       },
                     ),
                   )
