@@ -1,12 +1,15 @@
-// SPDX-FileCopyrightText: 2023 Foundation Devices Inc.
+// SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 // ignore_for_file: constant_identifier_names
 
 import 'package:envoy/business/local_storage.dart';
-import 'package:envoy/ui/onboard/prime/onboard_prime.dart';
 import 'package:envoy/ui/onboard/prime/prime_onboarding.dart';
+import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
+import 'package:envoy/ui/onboard/wallet_setup_success.dart';
+import 'package:envoy/ui/pages/fw/fw_routes.dart';
+import 'package:envoy/ui/pages/pp/pp_setup_intro.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/routes/home_router.dart';
@@ -15,10 +18,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-const ROUTE_SPLASH = '/splash';
-const ROUTE_PRIME_ONBOARD = '/prime';
-const ROUTE_ONBOARD_PASSPORT = '/onboard';
-const ROUTE_ONBOARD_ENVOY = '/onboard/envoy';
+const ROUTE_SPLASH = 'onboard';
+const WALLET_SUCCESS = "wallet_ready";
+const PASSPORT_INTRO = "passport_intro";
 const PREFS_ONBOARDED = 'onboarded';
 
 /// this key can be used in nested GoRoute to leverage main router
@@ -40,7 +42,7 @@ final GoRouter mainRouter = GoRouter(
   redirect: (context, state) {
     if (state.fullPath == ROUTE_ACCOUNTS_HOME) {
       if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) != true) {
-        return ROUTE_SPLASH;
+        return state.namedLocation(ROUTE_SPLASH);
       } else {}
     }
     return null;
@@ -49,17 +51,13 @@ final GoRouter mainRouter = GoRouter(
     onboardRoutes,
     homeRouter,
     GoRoute(
-      path: ROUTE_PRIME_ONBOARD,
-      builder: (context, state) => const OnboardPrimeWelcome(),
-    ),
-    GoRoute(
         path: "/",
         redirect: (context, state) {
           if (state.uri.queryParameters.containsKey("p")) {
             ProviderScope.containerOf(context)
                 .read(primePayload.notifier)
                 .state = state.uri.queryParameters['p'];
-            return ROUTE_PRIME_ONBOARD;
+            return state.namedLocation(ONBOARD_PRIME);
           }
           if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) != true) {
             return ROUTE_SPLASH;
@@ -67,6 +65,17 @@ final GoRouter mainRouter = GoRouter(
             return ROUTE_ACCOUNTS_HOME;
           }
         }),
+    fwRoutes,
+    GoRoute(
+      path: "/passport_intro",
+      name: PASSPORT_INTRO,
+      builder: (context, state) => const PpSetupIntroPage(),
+    ),
+    GoRoute(
+      path: "/wallet_success",
+      name: WALLET_SUCCESS,
+      builder: (context, state) => const WalletSetupSuccess(),
+    )
   ],
 );
 
