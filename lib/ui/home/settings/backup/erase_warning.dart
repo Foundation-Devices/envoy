@@ -469,7 +469,7 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       await Future.delayed(const Duration(milliseconds: 2000));
 
       //Show android backup info
-      if (!Platform.isAndroid) {
+      if (Platform.isAndroid) {
         await Future.delayed(const Duration(milliseconds: 300));
         await navigator.push(MaterialPageRoute(
             builder: (context) => const AndroidBackupWarning(
