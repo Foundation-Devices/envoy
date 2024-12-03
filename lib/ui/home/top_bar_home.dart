@@ -340,7 +340,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
               if (EnvoySeed().walletDerived()) {
                 context.push(ONBOARD_PASSPORT_SETUP);
               } else {
-                context.push(ROUTE_SPLASH);
+                context.pushNamed(ROUTE_SPLASH);
               }
               return;
             },
