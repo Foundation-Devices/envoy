@@ -399,10 +399,6 @@ class HomePageState extends ConsumerState<HomePage>
         !ref.read(homePageOptionsVisibilityProvider);
   }
 
-  bool boolIsOptionVisible() {
-    return ref.read(homePageOptionsVisibilityProvider);
-  }
-
   void showForceUpdateDialog() {
     showEnvoyPopUp(
       context,
