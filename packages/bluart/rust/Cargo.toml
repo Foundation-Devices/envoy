@@ -14,3 +14,5 @@ crate-type = ["cdylib", "staticlib"]
 flutter_rust_bridge = "=2.6.0"
 btleplug = "^0.11.6"
 uuid = "^1.6.0"
+tokio = "1.41.0"
+anyhow = "1.0.75"

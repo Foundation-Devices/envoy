@@ -7,13 +7,16 @@
 use btleplug::api::{Central, Manager as _, Peripheral, ScanFilter};
 pub use btleplug::platform::{Adapter, Manager};
 
-use uuid::Uuid;
 use btleplug::api::bleuuid::uuid_from_u16;
 use btleplug::api::WriteType;
-pub use std::net::{TcpListener, TcpStream};
 use flutter_rust_bridge::frb;
-use std::io::{self, Read, Write};
 use std::io::Error;
+use std::io::{self, Read, Write};
+pub use std::net::{TcpListener, TcpStream};
+use uuid::Uuid;
+
+const WRITE_CHARACTERISTIC_UUID: Uuid = Uuid::from_u128(0x6E400002_B5A3_F393_E0A9_E50E24DCCA9E);
+const APP_MTU: usize = 256;
 
 #[frb(opaque)]
 pub enum BluartPeripheral {
@@ -26,7 +29,6 @@ pub struct TcpAsPeripheral {
     pub port: String,
     stream: Option<std::net::TcpStream>,
 }
-
 
 impl TcpAsPeripheral {
     pub fn new(url: String) -> TcpAsPeripheral {
@@ -51,12 +53,13 @@ impl TcpAsPeripheral {
     pub fn write(&self, data: Vec<u8>) {
         if let Some(ref stream) = self.stream {
             let mut stream_clone = stream.try_clone().unwrap();
-            stream_clone.write(&data).expect("Failed to write data to TCP stream");
+            stream_clone
+                .write(&data)
+                .expect("Failed to write data to TCP stream");
         } else {
             eprintln!("the stream hasn't been initialized yet");
         }
     }
-
 
     async fn read(&self) -> Vec<u8> {
         if let Some(ref stream) = self.stream {
@@ -98,7 +101,10 @@ pub async fn get_adapters() -> Vec<btleplug::platform::Adapter> {
 // NOTE: this function now takes a REFERENCE to 'adapter' owned by Dart
 // NOTE: if you remove the '&' Rust takes OWNERSHIP and...
 // NOTE: ...since both Dart and Rust cannot OWN 'adapter' at the same time, it is dropped on Dart side by FRB
-pub async fn get_peripherals(adapter: &btleplug::platform::Adapter, tcp_ports: Option<Vec<String>>) -> Vec<BluartPeripheral> {
+pub async fn get_peripherals(
+    adapter: &btleplug::platform::Adapter,
+    tcp_ports: Option<Vec<String>>,
+) -> Vec<BluartPeripheral> {
     println!("Started scan!");
     start_scan(&adapter).await;
     //stop_scan(&adapter).await;
@@ -119,13 +125,16 @@ pub async fn get_peripherals(adapter: &btleplug::platform::Adapter, tcp_ports: O
                 result.push(BluartPeripheral::Tcp(tcp));
             }
         }
-        None => ()
+        None => (),
     }
     result
 }
 
 pub async fn start_scan(adapter: &btleplug::platform::Adapter) {
-    adapter.start_scan(ScanFilter::default()).await.expect("start scan error");
+    adapter
+        .start_scan(ScanFilter::default())
+        .await
+        .expect("start scan error");
 }
 
 pub async fn stop_scan(adapter: &btleplug::platform::Adapter) {
@@ -152,20 +161,16 @@ pub async fn get_name_from_perihperal(peripheral: &BluartPeripheral) -> String {
             properties.local_name.unwrap_or("Unknown".to_string())
         }
         BluartPeripheral::Tcp(tcp) => {
-            tcp.port.clone()  // Return the URL for the Connection variant
+            tcp.port.clone() // Return the URL for the Connection variant
         }
     }
 }
 
 pub async fn is_connected(peripheral: &BluartPeripheral) -> bool {
     match peripheral {
-        BluartPeripheral::Ble(p) => {
-            p.is_connected().await.unwrap()
-        }
+        BluartPeripheral::Ble(p) => p.is_connected().await.unwrap(),
 
-        BluartPeripheral::Tcp(tcp) => {
-            tcp.stream.is_some()
-        }
+        BluartPeripheral::Tcp(tcp) => tcp.stream.is_some(),
     }
 }
 
@@ -180,7 +185,8 @@ pub async fn write_to(peripheral: &BluartPeripheral, rx_characteristic: Uuid, da
                 .expect("Unable to find characterics");
 
             p.write(&cmd_char, &data, WriteType::WithoutResponse)
-                .await.unwrap();
+                .await
+                .unwrap();
         }
         BluartPeripheral::Tcp(tcp) => {
             tcp.write(data);
@@ -200,31 +206,40 @@ pub async fn read_from(peripheral: &mut BluartPeripheral, characteristic: Uuid) 
 
             p.read(&cmd_char).await.unwrap()
         }
-        BluartPeripheral::Tcp(tcp) => {
-            tcp.read().await
-        }
+        BluartPeripheral::Tcp(tcp) => tcp.read().await,
     }
 }
 
-pub async fn write_test(peripheral: &BluartPeripheral) {
-    let characteristics = peripheral.characteristics();
-    let write_charac = characteristics
-        .iter()
-        .find(|c| c.uuid == WRITE_CHARACTERISTIC_UUID)
-        .expect("Unable to find characterics");
-    let data9 = [9u8; consts::APP_MTU];
-    let data10 = [10u8; consts::APP_MTU];
-    println!("Writing data to {}...", name);
-    tokio::time::sleep(tokio::time::Duration::from_secs(2)).await;
-    peripheral.write(write_charac, &data9, WriteType::WithoutResponse).await?;
-    peripheral.write(write_charac, &data10, WriteType::WithoutResponse).await?;
-    peripheral.write(write_charac, &data9, WriteType::WithoutResponse).await?;
-    peripheral.write(write_charac, &data10, WriteType::WithoutResponse).await?;
-
+pub async fn write_test(peripheral: &BluartPeripheral) -> anyhow::Result<()> {
+    match peripheral {
+        BluartPeripheral::Ble(p) => {
+            let characteristics = p.characteristics();
+            let write_charac = characteristics
+                .iter()
+                .find(|c| c.uuid == WRITE_CHARACTERISTIC_UUID)
+                .expect("Unable to find characterics");
+            let data9 = [9u8; APP_MTU];
+            let data10 = [10u8; APP_MTU];
+            println!("Writing data!");
+            tokio::time::sleep(tokio::time::Duration::from_secs(2)).await;
+            p
+                .write(write_charac, &data9, WriteType::WithoutResponse)
+                .await?;
+            p
+                .write(write_charac, &data10, WriteType::WithoutResponse)
+                .await?;
+            p
+                .write(write_charac, &data9, WriteType::WithoutResponse)
+                .await?;
+            p
+                .write(write_charac, &data10, WriteType::WithoutResponse)
+                .await?;
+        },
+        BluartPeripheral::Tcp(_) => {},
     }
-    
 
-
+    Ok(())
+}
 
 // pub struct Device {
 //     pub name: String,

@@ -127,8 +127,10 @@ dependencies = [
 name = "bluart"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "btleplug",
  "flutter_rust_bridge",
+ "tokio",
  "uuid",
 ]
 
