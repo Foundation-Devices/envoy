@@ -206,6 +206,25 @@ pub async fn read_from(peripheral: &mut BluartPeripheral, characteristic: Uuid) 
     }
 }
 
+pub async fn write_test(peripheral: &BluartPeripheral) {
+    let characteristics = peripheral.characteristics();
+    let write_charac = characteristics
+        .iter()
+        .find(|c| c.uuid == WRITE_CHARACTERISTIC_UUID)
+        .expect("Unable to find characterics");
+    let data9 = [9u8; consts::APP_MTU];
+    let data10 = [10u8; consts::APP_MTU];
+    println!("Writing data to {}...", name);
+    tokio::time::sleep(tokio::time::Duration::from_secs(2)).await;
+    peripheral.write(write_charac, &data9, WriteType::WithoutResponse).await?;
+    peripheral.write(write_charac, &data10, WriteType::WithoutResponse).await?;
+    peripheral.write(write_charac, &data9, WriteType::WithoutResponse).await?;
+    peripheral.write(write_charac, &data10, WriteType::WithoutResponse).await?;
+
+    }
+    
+
+
 
 // pub struct Device {
 //     pub name: String,
