@@ -13,6 +13,7 @@ use flutter_rust_bridge::frb;
 use std::io::Error;
 use std::io::{self, Read, Write};
 pub use std::net::{TcpListener, TcpStream};
+use tokio::time::Instant;
 use uuid::Uuid;
 
 const WRITE_CHARACTERISTIC_UUID: Uuid = Uuid::from_u128(0x6E400002_B5A3_F393_E0A9_E50E24DCCA9E);
@@ -222,6 +223,7 @@ pub async fn write_test(peripheral: &BluartPeripheral) -> anyhow::Result<()> {
             let data10 = [10u8; APP_MTU];
             println!("Writing data!");
             tokio::time::sleep(tokio::time::Duration::from_secs(2)).await;
+            let start = Instant::now();
             p
                 .write(write_charac, &data9, WriteType::WithoutResponse)
                 .await?;
@@ -234,6 +236,10 @@ pub async fn write_test(peripheral: &BluartPeripheral) -> anyhow::Result<()> {
             p
                 .write(write_charac, &data10, WriteType::WithoutResponse)
                 .await?;
+
+            let duration = start.elapsed();
+
+            println!("Elapsed time: {:?}", duration);
         },
         BluartPeripheral::Tcp(_) => {},
     }
