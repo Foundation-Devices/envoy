@@ -61,6 +61,16 @@ class BluetoothManager {
     return true;
   }
 
+  Future<bool> testWrite() async {
+    if (connected == null) {
+      return false;
+    }
+
+    await writeTest(peripheral: connected!);
+
+    return true;
+  }
+
   scan() async {
     try {
       // Ensure adapter is initialized
