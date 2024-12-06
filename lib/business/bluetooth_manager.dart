@@ -66,9 +66,7 @@ class BluetoothManager {
       return false;
     }
 
-    await writeTest(
-        peripheral: connected!
-    );
+    await writeTest(peripheral: connected!);
 
     return true;
   }
