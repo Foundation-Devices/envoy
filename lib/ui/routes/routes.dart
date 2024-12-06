@@ -4,7 +4,8 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:envoy/business/local_storage.dart';
-import 'package:envoy/ui/onboard/prime/prime_onboarding.dart';
+import 'package:envoy/ui/home/settings/backup/erase_warning.dart';
+import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
@@ -15,11 +16,12 @@ import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/routes/home_router.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 const ROUTE_SPLASH = 'onboard';
 const WALLET_SUCCESS = "wallet_ready";
+const SEED_INTRO = "seed_intro";
+const WALLET_BACKUP_WARNING = "backup_warning";
 const PASSPORT_INTRO = "passport_intro";
 const PREFS_ONBOARDED = 'onboarded';
 
@@ -52,11 +54,9 @@ final GoRouter mainRouter = GoRouter(
     homeRouter,
     GoRoute(
         path: "/",
+        name: "/",
         redirect: (context, state) {
           if (state.uri.queryParameters.containsKey("p")) {
-            ProviderScope.containerOf(context)
-                .read(primePayload.notifier)
-                .state = state.uri.queryParameters['p'];
             return state.namedLocation(ONBOARD_PRIME);
           }
           if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) != true) {
@@ -75,7 +75,28 @@ final GoRouter mainRouter = GoRouter(
       path: "/wallet_success",
       name: WALLET_SUCCESS,
       builder: (context, state) => const WalletSetupSuccess(),
-    )
+    ),
+    GoRoute(
+      path: "/android_backup_warning",
+      name: WALLET_BACKUP_WARNING,
+      builder: (context, state) {
+        return AndroidBackupWarning(skipSuccess: state.extra as bool);
+      },
+    ),
+    GoRoute(
+        path: "/seed_intro",
+        name: SEED_INTRO,
+        builder: (context, state) {
+          var type = SeedIntroScreenType.verify;
+          for (var element in SeedIntroScreenType.values) {
+            if (element.toString() == state.extra) {
+              type = element;
+            }
+          }
+          return SeedIntroScreen(
+            mode: type,
+          );
+        })
   ],
 );
 

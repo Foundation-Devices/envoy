@@ -6,7 +6,6 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
-import 'package:envoy/ui/onboard/prime/prime_onboarding.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -227,7 +226,10 @@ class OnboardPrimeWelcome extends StatelessWidget {
                         const SizedBox(height: EnvoySpacing.medium1),
                         Consumer(
                           builder: (context, ref, child) {
-                            final payload = ref.watch(primePayload);
+                            final payload = GoRouter.of(context)
+                                .state
+                                ?.uri
+                                .queryParameters["p"];
                             return Text("Payload : $payload");
                           },
                         ),

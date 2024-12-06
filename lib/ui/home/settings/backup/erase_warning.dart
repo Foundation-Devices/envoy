@@ -368,13 +368,9 @@ class _EraseWalletsConfirmationState
   }
 }
 
-void displaySeedBeforeNuke(BuildContext context) {
+void displaySeedBeforeNuke(BuildContext context) async {
   Navigator.of(context).pop();
-  Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-    return const SeedIntroScreen(
-      mode: SeedIntroScreenType.verify,
-    );
-  }));
+  context.pushNamed(SEED_INTRO, extra: SeedIntroScreenType.verify.toString());
 }
 
 class EraseProgress extends ConsumerStatefulWidget {
@@ -391,66 +387,73 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
 
   @override
   Widget build(BuildContext context) {
-    return OnboardPageBackground(
-        child: Material(
-      color: Colors.transparent,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 260,
-                child: rive.RiveAnimation.asset(
-                  "assets/envoy_loader.riv",
-                  fit: BoxFit.contain,
-                  onInit: (artboard) {
-                    _stateMachineController =
-                        rive.StateMachineController.fromArtboard(
-                            artboard, 'STM');
-                    artboard.addController(_stateMachineController!);
-                    _stateMachineController
-                        ?.findInput<bool>("indeterminate")
-                        ?.change(true);
-                    _onInit();
+    return PopScope(
+      canPop: !_deleteInProgress,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          context.go("/");
+        }
+      },
+      child: OnboardPageBackground(
+          child: Material(
+        color: Colors.transparent,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 260,
+                  child: rive.RiveAnimation.asset(
+                    "assets/envoy_loader.riv",
+                    fit: BoxFit.contain,
+                    onInit: (artboard) {
+                      _stateMachineController =
+                          rive.StateMachineController.fromArtboard(
+                              artboard, 'STM');
+                      artboard.addController(_stateMachineController!);
+                      _stateMachineController
+                          ?.findInput<bool>("indeterminate")
+                          ?.change(true);
+                      _onInit();
+                    },
+                  ),
+                ),
+              ),
+              const SliverPadding(padding: EdgeInsets.all(28)),
+              SliverToBoxAdapter(
+                child: Builder(
+                  builder: (context) {
+                    String title = S().delete_wallet_for_good_loading_heading;
+                    if (!_deleteInProgress) {
+                      title = S().delete_wallet_for_good_success_heading;
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            title,
+                            textAlign: TextAlign.center,
+                            style: EnvoyTypography.heading,
+                          ),
+                          const Padding(padding: EdgeInsets.all(18)),
+                        ],
+                      ),
+                    );
                   },
                 ),
               ),
-            ),
-            const SliverPadding(padding: EdgeInsets.all(28)),
-            SliverToBoxAdapter(
-              child: Builder(
-                builder: (context) {
-                  String title = S().delete_wallet_for_good_loading_heading;
-                  if (!_deleteInProgress) {
-                    title = S().delete_wallet_for_good_success_heading;
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          title,
-                          textAlign: TextAlign.center,
-                          style: EnvoyTypography.heading,
-                        ),
-                        const Padding(padding: EdgeInsets.all(18)),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    ));
+      )),
+    );
   }
 
   _onInit() async {
     try {
-      final navigator = Navigator.of(context);
       setState(() {
         _deleteInProgress = true;
       });
@@ -458,7 +461,8 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       _stateMachineController?.findInput<bool>("happy")?.change(false);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
       //wait for animation
-      // await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 4));
       // await EnvoySeed().delete();
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
       _stateMachineController?.findInput<bool>("happy")?.change(true);
@@ -471,16 +475,15 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       //Show android backup info
       if (Platform.isAndroid) {
         await Future.delayed(const Duration(milliseconds: 300));
-        await navigator.push(MaterialPageRoute(
-            builder: (context) => const AndroidBackupWarning(
-                  skipSuccess: true,
-                )));
+        if (mounted) {
+          context.pushNamed(WALLET_BACKUP_WARNING, extra: true);
+        }
       } else {
         //wait for pop animation to finish
         await Future.delayed(const Duration(milliseconds: 300));
         // Show home page and navigate to accounts
         if (mounted) {
-          context.go("/");
+          context.goNamed("/");
         }
         ref.read(homePageBackgroundProvider.notifier).state =
             HomePageBackgroundState.hidden;

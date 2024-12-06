@@ -6,16 +6,16 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class VerifySeedPuzzleWidget extends StatefulWidget {
   final List<String> seed;
@@ -92,7 +92,8 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
               children: [
                 Expanded(
                   child: PageView(
-                    physics: const BouncingScrollPhysics(),
+                    physics: const BouncingScrollPhysics(
+                        parent: NeverScrollableScrollPhysics()),
                     controller: _pageController,
                     pageSnapping: true,
                     padEnds: true,
@@ -145,17 +146,20 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
         SliverFillRemaining(
           hasScrollBody: false,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              const Padding(
-                  padding: EdgeInsets.only(bottom: EnvoySpacing.medium1)),
+              const SizedBox(height: EnvoySpacing.medium1),
               !_finishedAnswers
-                  ? Text(
-                      S().manual_setup_generate_seed_verify_seed_again_quiz_infotext,
-                      style: EnvoyTypography.button.copyWith(
-                        color: EnvoyColors.textInactive,
+                  ? Padding(
+                      padding:
+                          const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                      child: Text(
+                        S().manual_setup_generate_seed_verify_seed_again_quiz_infotext,
+                        style: EnvoyTypography.button.copyWith(
+                          color: EnvoyColors.textInactive,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     )
                   : Padding(
                       padding: const EdgeInsets.only(
@@ -166,7 +170,8 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                           label: S().component_continue,
                           onTap: () {
                             widget.onVerificationFinished(true);
-                          })),
+                          }),
+                    )
             ],
           ),
         ),
