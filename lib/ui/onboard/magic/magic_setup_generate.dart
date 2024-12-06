@@ -8,13 +8,14 @@ import 'package:animations/animations.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
-import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -72,7 +73,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
   }
 
   void _initiateWalletCreate() async {
-    final navigator = Navigator.of(context);
+    final goRouter = GoRouter.of(context);
     if (!walletGenerated) {
       Settings().syncToCloud = true;
       Settings().store();
@@ -99,15 +100,9 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
 
     await Future.delayed(const Duration(seconds: 2));
 
-    navigator.pushReplacement(
-      PageRouteBuilder(
-        pageBuilder: (_, __, ___) =>
-            MagicRecoveryInfo(skipSuccessScreen: walletGenerated),
-        transitionDuration: const Duration(milliseconds: 300),
-        transitionsBuilder: (_, a, __, c) =>
-            FadeTransition(opacity: a, child: c),
-      ),
-    );
+    Map<String, String> params = walletGenerated ? {"skip": "1"} : {};
+    goRouter.pushNamed(ONBOARD_ENVOY_MAGIC_RECOVER_INFO,
+        queryParameters: params);
   }
 
   @override
@@ -213,11 +208,9 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
           widget.onContinue!.call();
         }
         if (widget.skipSuccessScreen) {
-          Navigator.pop(context);
+          context.go("/");
         } else {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return const WalletSetupSuccess();
-          }));
+          context.pushNamed(ONBOARD_ENVOY_MAGIC_WALLET_READY);
         }
       },
       child: OnboardPageBackground(
@@ -266,12 +259,9 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                       }
                       if (widget.skipSuccessScreen) {
                         //clear on-boarding routes and go to home
-                        OnboardingPage.popUntilHome(context);
+                        context.go("/");
                       } else {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return const WalletSetupSuccess();
-                        }));
+                        context.pushNamed(ONBOARD_ENVOY_MAGIC_WALLET_READY);
                       }
                     },
                   ),

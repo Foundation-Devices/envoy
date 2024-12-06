@@ -4,13 +4,18 @@ import android.app.Activity
 import android.app.backup.BackupManager
 import android.content.ComponentName
 import android.content.Intent
+import android.content.pm.verify.domain.DomainVerificationManager
+import android.content.pm.verify.domain.DomainVerificationUserState
 import android.os.Build
+import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
+import android.os.PersistableBundle
 import android.provider.DocumentsContract
 import android.provider.Settings
 import android.provider.Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
 import android.system.Os
+import android.util.Log
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import io.flutter.embedding.android.FlutterFragmentActivity
@@ -39,7 +44,7 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
         val data = intent.data
         if (data != null) {
             var fullRoute = data.path
-            if (fullRoute != null && fullRoute.isNotEmpty()) {
+            if (!fullRoute.isNullOrEmpty()) {
                 if (data.query != null && data.query!!.isNotEmpty()) {
                     fullRoute += "?" + data.query
                 }
@@ -90,8 +95,7 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
                     )
                 }
             }
-        }
-        else if (requestCode == saveFileRequestCode && resultCode == Activity.RESULT_CANCELED) {
+        } else if (requestCode == saveFileRequestCode && resultCode == Activity.RESULT_CANCELED) {
             Handler().postDelayed(
                 {
                     sdCardEventSink?.success(false)
@@ -100,7 +104,6 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
             )
         }
     }
-
 
     override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
         sdCardEventSink = events
@@ -141,52 +144,65 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
                     startActivityForResult(intent, saveFileRequestCode)
                     result.success(true)
                 }
+
                 "data_changed" -> {
                     BackupManager(this).dataChanged()
                     result.success(true)
                 }
+
                 "show_settings" -> {
                     startActivity(Intent(Settings.ACTION_SETTINGS))
                     result.success(true)
                 }
+
                 "get_sd_card_path" -> {
                     val paths = getExternalFilesDirs(null)
                     // TODO: If there is only 1 path that means there is no SD?
                     sdCard = paths.last().toPath().subpath(0, 2).toFile()
                     result.success(sdCard?.absolutePath)
                 }
+
                 "get_directory_content_permission" -> {
                     startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
                         putExtra(DocumentsContract.EXTRA_INITIAL_URI, sdCard?.toURI())
                     }, directoryContentRequestCode)
                     result.success(true)
                 }
+
                 "get_manage_files_permission" -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         getManageAllFilesPermission()
                     }
                     result.success(true)
                 }
+
                 "open_settings" -> {
                     try {
                         val intent = Intent()
-                        intent.component = ComponentName("com.android.settings",
-                            "com.android.settings.backup.UserBackupSettingsActivity")
+                        intent.component = ComponentName(
+                            "com.android.settings",
+                            "com.android.settings.backup.UserBackupSettingsActivity"
+                        )
                         startActivity(intent)
                     } catch (e: Exception) {
-                      startActivity(Intent(Settings.ACTION_SETTINGS))
+                        startActivity(Intent(Settings.ACTION_SETTINGS))
                     }
                     result.success(true)
                 }
+
                 "make_screen_secure" -> {
                     val secure = call.argument<Boolean>("secure") ?: false
                     if (secure) {
-                        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+                        window.setFlags(
+                            WindowManager.LayoutParams.FLAG_SECURE,
+                            WindowManager.LayoutParams.FLAG_SECURE
+                        );
                     } else {
                         window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
                     }
                     result.success(true)
                 }
+
                 else -> {
                     result.notImplemented()
                 }

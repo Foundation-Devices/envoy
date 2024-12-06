@@ -7,6 +7,7 @@ import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -34,8 +35,9 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
+      canPop: false,
       onPopInvokedWithResult: (_, __) async {
-        OnboardingPage.popUntilHome(context);
+        context.go("/");
       },
       child: OnboardPageBackground(
         child: Material(
@@ -92,7 +94,7 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                         onTap: () async {
                           Settings().updateAccountsViewSettings();
                           if (context.mounted) {
-                            OnboardingPage.popUntilHome(context);
+                            context.go("/");
                           }
                         });
                   },

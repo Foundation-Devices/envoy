@@ -8,8 +8,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/indicator_shield.dart';
-import 'package:envoy/ui/onboard/onboard_welcome.dart';
-import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
+import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/routes/home_router.dart';
@@ -338,19 +337,12 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
           rightAction: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-              Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) {
-                      if (EnvoySeed().walletDerived()) {
-                        return const OnboardPassportWelcomeScreen();
-                      } else {
-                        return const WelcomeScreen();
-                      }
-                    },
-                    reverseTransitionDuration: Duration.zero,
-                    transitionDuration: Duration.zero,
-                  ));
+              if (EnvoySeed().walletDerived()) {
+                context.push(ONBOARD_PASSPORT_SETUP);
+              } else {
+                context.pushNamed(ROUTE_SPLASH);
+              }
+              return;
             },
             child: Container(
               height: 55,

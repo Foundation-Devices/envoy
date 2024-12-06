@@ -6,20 +6,19 @@ import 'dart:math';
 
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/onboard/onboard_privacy_setup.dart';
-import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
+import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/business/local_storage.dart';
-import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:go_router/go_router.dart';
 
 enum EscapeHatchTap { logo, text }
 
@@ -82,10 +81,10 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
       child: EnvoyPatternScaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
-          leading: isOnboardingComplete && Navigator.canPop(context)
+          leading: isOnboardingComplete
               ? CupertinoNavigationBarBackButton(
                   color: EnvoyColors.textPrimaryInverse,
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => context.go("/"),
                 )
               : const SizedBox.shrink(),
         ),
@@ -153,40 +152,16 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                     S().welcome_screen_cta2,
                     type: EnvoyButtonTypes.secondary,
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          // Don't set up privacy if previously onboarded
-                          if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) ==
-                              null) {
-                            return const OnboardPrivacySetup(
-                                setUpEnvoyWallet: false);
-                          }
-                          return LocalStorage().prefs.getBool(PREFS_ONBOARDED)!
-                              ? const OnboardPassportWelcomeScreen()
-                              : const OnboardPrivacySetup(
-                                  setUpEnvoyWallet: false);
-                        },
-                      ));
+                      context.pushNamed(ONBOARD_PASSPORT_SETUP);
+                      return;
                     },
                   ),
                   const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                   EnvoyButton(
                     S().welcome_screen_ctA1,
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          // Don't set up privacy if previously onboarded
-                          if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) ==
-                              null) {
-                            return const OnboardPrivacySetup(
-                                setUpEnvoyWallet: true);
-                          }
-                          return LocalStorage().prefs.getBool(PREFS_ONBOARDED)!
-                              ? const OnboardEnvoyWelcomeScreen()
-                              : const OnboardPrivacySetup(
-                                  setUpEnvoyWallet: true);
-                        },
-                      ));
+                      context.pushNamed(ONBOARD_ENVOY_SETUP,
+                          queryParameters: {"setupEnvoy": "1"});
                     },
                   ),
                 ],
