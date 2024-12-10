@@ -10,25 +10,24 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_method_channel.dart';
+import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
-import 'package:envoy/ui/onboard/wallet_setup_success.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
-import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/home/home_state.dart';
-import 'package:envoy/ui/routes/accounts_router.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
-import 'package:envoy/ui/widgets/expandable_page_view.dart';
 
 class EraseWalletsAndBackupsWarning extends StatefulWidget {
   const EraseWalletsAndBackupsWarning({super.key});
@@ -451,7 +450,7 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
 
   _onInit() async {
     try {
-      final navigator = Navigator.of(context);
+      final goRouter = GoRouter.of(context);
       setState(() {
         _deleteInProgress = true;
       });
@@ -472,8 +471,7 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       //Show android backup info
       if (Platform.isAndroid) {
         await Future.delayed(const Duration(milliseconds: 300));
-        await navigator.push(MaterialPageRoute(
-            builder: (context) => const AndroidBackupWarning()));
+        goRouter.goNamed("android-backup");
       } else {
         //wait for pop animation to finish
         await Future.delayed(const Duration(milliseconds: 300));
@@ -493,19 +491,29 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
   }
 }
 
-class AndroidBackupWarning extends StatelessWidget {
+class AndroidBackupWarning extends ConsumerStatefulWidget {
   const AndroidBackupWarning({
     super.key,
   });
 
   @override
+  ConsumerState<AndroidBackupWarning> createState() =>
+      _AndroidBackupWarningState();
+}
+
+class _AndroidBackupWarningState extends ConsumerState<AndroidBackupWarning> {
+  @override
   Widget build(BuildContext context) {
     bool iphoneSE = MediaQuery.of(context).size.height < 700;
     return PopScope(
-      onPopInvokedWithResult: (_, __) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return const WalletSetupSuccess();
-        }));
+      canPop: false,
+      onPopInvokedWithResult: (x, xx) {
+        ref.read(homePageBackgroundProvider.notifier).state =
+            HomePageBackgroundState.hidden;
+        ref.read(homePageTabProvider.notifier).state =
+            HomePageTabState.accounts;
+        ref.read(homePageTitleProvider.notifier).state = "";
+        OnboardingPage.popUntilHome(context);
       },
       child: OnboardPageBackground(
         child: EnvoyScaffold(
@@ -566,16 +574,8 @@ class AndroidBackupWarning extends StatelessWidget {
                               type: EnvoyButtonTypes.tertiary,
                               label: S().component_skip,
                               onTap: () async {
-                                OnboardingPage.popUntilHome(context);
-                                ref
-                                    .read(homePageBackgroundProvider.notifier)
-                                    .state = HomePageBackgroundState.hidden;
-                                ref.read(homePageTabProvider.notifier).state =
-                                    HomePageTabState.accounts;
-                                ref.read(homePageTitleProvider.notifier).state =
-                                    "";
-                                await Future.delayed(
-                                    const Duration(milliseconds: 100));
+                                // OnboardingPage.popUntilHome(context);
+                                Navigator.pop(context);
                               },
                             );
                           },

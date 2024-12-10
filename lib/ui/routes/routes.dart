@@ -4,6 +4,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/ui/home/settings/backup/erase_warning.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
@@ -49,6 +50,7 @@ final GoRouter mainRouter = GoRouter(
     homeRouter,
     GoRoute(
         path: "/",
+        name: "/",
         redirect: (context, state) {
           if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) != true) {
             return ROUTE_SPLASH;
@@ -56,6 +58,11 @@ final GoRouter mainRouter = GoRouter(
             return ROUTE_ACCOUNTS_HOME;
           }
         }),
+    GoRoute(
+      path: "/android-backup",
+      name: "android-backup",
+      builder: (context, state) => const AndroidBackupWarning(),
+    )
   ],
 );
 

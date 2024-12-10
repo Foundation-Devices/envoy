@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:io';
+
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -73,9 +74,13 @@ class LocalStorage {
 
   Future<void> deleteSecure(String key) async {
     if (Platform.isAndroid || Platform.isIOS) {
-      await secureStorage.delete(key: key);
+      if (await secureStorage.containsKey(key: key)) {
+        await secureStorage.delete(key: key);
+      }
     } else {
-      await prefs.remove(key);
+      if (prefs.containsKey(key)) {
+        await prefs.remove(key);
+      }
     }
   }
 
@@ -91,7 +96,9 @@ class LocalStorage {
   }
 
   Future<void> deleteFile(String name) async {
-    await File('${appSupportDir.path}/$name').delete();
+    if (await File('${appSupportDir.path}/$name').exists()) {
+      await File('${appSupportDir.path}/$name').delete();
+    }
   }
 
   Future<File> saveFileBytes(String name, List<int> content) async {
