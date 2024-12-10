@@ -29,6 +29,7 @@ import 'package:wallet/wallet.dart';
 const String SEED_KEY = "seed";
 const String WALLET_DERIVED_PREFS = "wallet_derived";
 const String TAPROOT_WALLET_DERIVED_PREFS = "taproot_wallet_derived";
+const String SEED_CLEAR_FLAG = "seed_cleared";
 
 const String LAST_BACKUP_PREFS = "last_backup";
 const String LOCAL_SECRET_FILE_NAME = "local.secret";
@@ -46,15 +47,19 @@ class EnvoySeed {
 
   static Future<EnvoySeed> init() async {
     var singleton = EnvoySeed._instance;
+
     // After a fresh install of Envoy following an Envoy erase,
     // the keychain may still retain the seed for a brief period.
     // To ensure the seed is fully removed, set the flag during the erase flow
     // to delete the seed upon the next installation.
     try {
-      if (await LocalStorage().readSecure("seed_cleared") == "1") {
-        await LocalStorage().deleteSecure(SEED_KEY);
-        await LocalStorage().deleteFile(LOCAL_SECRET_FILE_NAME);
-        await LocalStorage().deleteSecure("seed_cleared");
+      if (await LocalStorage().readSecure(SEED_CLEAR_FLAG) == "1") {
+        try {
+          await LocalStorage().deleteSecure(SEED_KEY);
+          await LocalStorage().deleteFile(LOCAL_SECRET_FILE_NAME);
+        } finally{
+          await clearDeleteFlag();
+        }
       }
     } catch (er) {
       EnvoyReport().log("EnvoySeed Init", er.toString());
@@ -116,6 +121,9 @@ class EnvoySeed {
       {String? passphrase,
       WalletType type = WalletType.witnessPublicKeyHash,
       Network? network}) async {
+
+    await clearDeleteFlag();
+
     if (AccountManager().checkIfWalletFromSeedExists(seed,
         passphrase: passphrase, type: type, network: network)) {
       return true;
@@ -274,7 +282,7 @@ class EnvoySeed {
 
     await removeSeedFromSecure();
     EnvoyReport().log("QA", "Removed seed from secure storage!");
-    await LocalStorage().saveSecure("seed_cleared", "1");
+    await LocalStorage().saveSecure(SEED_CLEAR_FLAG, "1");
 
     //add minor delay to allow the seed to be removed from secure storage (specifically on iOS)
     await Future.delayed(const Duration(milliseconds: 500));
@@ -546,5 +554,12 @@ class EnvoySeed {
     int timestamp =
         int.parse(timestampString.replaceAll(".", "").substring(0, 13));
     return DateTime.fromMillisecondsSinceEpoch(timestamp);
+  }
+
+  //deletes the secure store "delete" flag
+  static Future clearDeleteFlag() async {
+    if (await LocalStorage().readSecure(SEED_CLEAR_FLAG) != null) {
+      await LocalStorage().deleteSecure(SEED_CLEAR_FLAG);
+    }
   }
 }
