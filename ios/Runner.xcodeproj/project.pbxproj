@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
+		4BAFFFCE2D0987A400DAA96C /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4255A42DB2AF56F644919A15 /* Pods_Runner.framework */; };
+		4BAFFFE02D0994DD00DAA96C /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78ABDD292C46ED4500677063 /* CoreBluetooth.framework */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		7861873B299FF9AD00CDC6F4 /* libbackup_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7861873A299FF9AC00CDC6F4 /* libbackup_ffi.a */; };
 		7861873D299FF9EF00CDC6F4 /* libbackup_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7861873C299FF9EF00CDC6F4 /* libbackup_ffi.a */; };
@@ -16,7 +18,6 @@
 		787400BE2955C8010097D2C3 /* libwallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 787400BA2955C8010097D2C3 /* libwallet_ffi.a */; };
 		787400BF2955C8010097D2C3 /* libhttp_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 787400BB2955C8010097D2C3 /* libhttp_ffi.a */; };
 		787400C02955C8010097D2C3 /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 787400BC2955C8010097D2C3 /* libur_ffi.a */; };
-		78ABDD2B2C46EDA400677063 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78ABDD292C46ED4500677063 /* CoreBluetooth.framework */; };
 		78CFC741291BC27300A3AFDC /* libwallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760E27F831B4005559E4 /* libwallet_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		78CFC742291BC27600A3AFDC /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760C27F831AC005559E4 /* libur_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		78CFC744291BC28300A3AFDC /* libhttp_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760827F83192005559E4 /* libhttp_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -26,7 +27,6 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
-		A32C2D9F135BF88BF0BCD327 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4255A42DB2AF56F644919A15 /* Pods_Runner.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +34,7 @@
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		4255A42DB2AF56F644919A15 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4BAFFFDA2D098D6900DAA96C /* bluart.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = bluart.framework; path = "../../../../../../../../envoy-dev/ios/build/Release-iphoneos/bluart.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7861873A299FF9AC00CDC6F4 /* libbackup_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbackup_ffi.a; path = "../target/aarch64-apple-ios/debug/libbackup_ffi.a"; sourceTree = "<group>"; };
@@ -72,15 +73,15 @@
 				78CFC76A292E5CE000A3AFDC /* libhttp_ffi.a in Frameworks */,
 				78CFC76D292E5CE000A3AFDC /* libur_ffi.a in Frameworks */,
 				78CFC744291BC28300A3AFDC /* libhttp_ffi.a in Frameworks */,
-				78ABDD2B2C46EDA400677063 /* CoreBluetooth.framework in Frameworks */,
+				4BAFFFE02D0994DD00DAA96C /* CoreBluetooth.framework in Frameworks */,
 				787400BF2955C8010097D2C3 /* libhttp_ffi.a in Frameworks */,
 				787400BE2955C8010097D2C3 /* libwallet_ffi.a in Frameworks */,
 				787400C02955C8010097D2C3 /* libur_ffi.a in Frameworks */,
 				7861873D299FF9EF00CDC6F4 /* libbackup_ffi.a in Frameworks */,
-				A32C2D9F135BF88BF0BCD327 /* Pods_Runner.framework in Frameworks */,
 				7861873B299FF9AD00CDC6F4 /* libbackup_ffi.a in Frameworks */,
 				78CFC76B292E5CE000A3AFDC /* libwallet_ffi.a in Frameworks */,
 				78CFC742291BC27600A3AFDC /* libur_ffi.a in Frameworks */,
+				4BAFFFCE2D0987A400DAA96C /* Pods_Runner.framework in Frameworks */,
 				7861873F299FFA0F00CDC6F4 /* libbackup_ffi.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -105,6 +106,7 @@
 				78CFC767292E5CDF00A3AFDC /* libwallet_ffi.a */,
 				787400BA2955C8010097D2C3 /* libwallet_ffi.a */,
 				4255A42DB2AF56F644919A15 /* Pods_Runner.framework */,
+				4BAFFFDA2D098D6900DAA96C /* bluart.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
