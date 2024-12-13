@@ -57,7 +57,7 @@ class EnvoySeed {
         try {
           await LocalStorage().deleteSecure(SEED_KEY);
           await LocalStorage().deleteFile(LOCAL_SECRET_FILE_NAME);
-        } finally{
+        } finally {
           await clearDeleteFlag();
         }
       }
@@ -121,7 +121,6 @@ class EnvoySeed {
       {String? passphrase,
       WalletType type = WalletType.witnessPublicKeyHash,
       Network? network}) async {
-
     await clearDeleteFlag();
 
     if (AccountManager().checkIfWalletFromSeedExists(seed,
