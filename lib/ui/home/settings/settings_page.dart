@@ -270,8 +270,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   children: [SettingText(S().settings_advanced_enableBuyRamp)],
                 ),
                 trailing: SettingToggle(
-                  s.isAllowedBuyInEnvoy,
-                  s.setAllowBuyInEnvoy,
+                  () => ref.watch(settingsProvider).isAllowedBuyInEnvoy(),
+                  (enabled) async {
+                    await ref
+                        .read(settingsProvider)
+                        .setAllowBuyInEnvoy(enabled);
+                  },
                 ),
               ),
               ListTile(

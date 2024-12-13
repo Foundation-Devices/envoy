@@ -44,6 +44,10 @@ final showTaprootAccountsProvider = Provider((ref) {
   return ref.watch(settingsProvider).taprootEnabled();
 });
 
+final allowBuyInEnvoyProvider = Provider((ref) {
+  return ref.watch(settingsProvider).isAllowedBuyInEnvoy();
+});
+
 @JsonSerializable()
 class Settings extends ChangeNotifier {
   @override
@@ -324,8 +328,10 @@ class Settings extends ChangeNotifier {
     return allowBuyInEnvoy;
   }
 
-  setAllowBuyInEnvoy(bool allowBuy) {
+  setAllowBuyInEnvoy(bool allowBuy) async {
     allowBuyInEnvoy = allowBuy;
+
+    notifyListeners();
     store();
   }
 

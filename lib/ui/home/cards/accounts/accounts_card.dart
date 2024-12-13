@@ -30,6 +30,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/components/linear_gradient.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:envoy/business/settings.dart';
 
 class AccountsCard extends ConsumerStatefulWidget {
   const AccountsCard({
@@ -62,6 +63,7 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
     // ignore: unused_local_variable
 
     final mainNetAccounts = ref.watch(mainnetAccountsProvider(null));
+    final allowBuyInEnvoy = ref.watch(allowBuyInEnvoyProvider);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -76,7 +78,8 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
                 bool countryRestricted =
                     snapshot.data != null && snapshot.data!;
                 bool disabled = mainNetAccounts.isEmpty;
-                if (countryRestricted) {
+
+                if (countryRestricted || !allowBuyInEnvoy) {
                   return const SizedBox.shrink();
                 }
                 return GestureDetector(
