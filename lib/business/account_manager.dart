@@ -265,9 +265,11 @@ class AccountManager extends ChangeNotifier {
       // New format can handle multiple accounts
       List<Account> newAccounts = await getPassportAccountsFromJson(json);
       int alreadyPairedAccountsCount = 0;
-
       newAccountsLoop:
-      for (var (index, newAccount) in newAccounts.indexed) {
+      for (var entry in newAccounts.asMap().entries) {
+        var index = entry.key;
+        var newAccount = entry.value;
+
         // Check if account already paired
         for (var account in accounts) {
           if (account.wallet.name == newAccount.wallet.name) {
@@ -283,7 +285,8 @@ class AccountManager extends ChangeNotifier {
           }
         }
 
-        _initWallet(newAccount.wallet);
+
+      _initWallet(newAccount.wallet);
         addAccount(newAccount);
       }
 

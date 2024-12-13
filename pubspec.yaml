@@ -75,7 +75,7 @@ dependencies:
   email_validator: ^2.0.1
   json_annotation: ^4.8.1
   animations: ^2.0.2
-  share_plus: ^8.0.2
+  share_plus: ^10.1.3
   timeago: ^3.2.2
   webfeed:
     git:
@@ -83,7 +83,7 @@ dependencies:
       ref: 2e0f4ec0bffb85df13b2c114d93d5ec0490bd2c1
   flutter_svg: ^1.0.3
   bip32: ^2.0.0
-  package_info_plus: ^6.0.0
+  package_info_plus: ^8.1.2
   permission_handler: ^11.3.1
   flutter_html:
     git:
@@ -95,7 +95,7 @@ dependencies:
   rive: ^0.12.4
   local_auth: ^2.1.6
   file_saver: ^0.2.12
-  file_picker: ^8.0.0+1
+  file_picker: ^8.1.5
   intl_utils: ^2.8.2
   schedulers:
     git:
