@@ -20,6 +20,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/console.dart';
@@ -189,7 +190,7 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
             child: Container(
               height: EnvoySpacing.medium2,
               decoration: BoxDecoration(
-                  color: EnvoyColors.chilli500.withOpacity(_loading
+                  color: EnvoyColors.chilli500.applyOpacity(_loading
                       ? 1
                       : (ref.watch(rbfSpendStateProvider) != null && _canCancel
                           ? 1

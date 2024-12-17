@@ -5,6 +5,7 @@
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as design_system;
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/account.dart';
 import 'package:flutter_svg/svg.dart';
@@ -56,7 +57,7 @@ class QrTab extends StatelessWidget {
                     isComplex: true,
                     willChange: false,
                     painter: StripePainter(
-                      EnvoyColors.gray1000.withOpacity(0.4),
+                      EnvoyColors.gray1000.applyOpacity(0.4),
                     ),
                   ),
                 ),
@@ -69,7 +70,7 @@ class QrTab extends StatelessWidget {
                         width: 32,
                         height: 32,
                         decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.6),
+                            color: Colors.black.applyOpacity(0.6),
                             borderRadius: BorderRadius.circular(36),
                             border: Border.all(
                                 color: account.color,

@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
 
 enum EnvoyButtonTypes { primary, secondary, tertiary, primaryModal }
@@ -98,7 +99,7 @@ class _EnvoyButtonState extends State<EnvoyButton> {
             if (!widget.enabled)
               Positioned.fill(
                 child: Container(
-                  color: EnvoyColors.textPrimaryInverse.withOpacity(0.5),
+                  color: EnvoyColors.textPrimaryInverse.applyOpacity(0.5),
                 ),
               ),
           ],

@@ -5,6 +5,7 @@
 import 'dart:math';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';
 
@@ -93,7 +94,7 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
             child: CustomPaint(
           size: const Size(double.infinity, double.infinity),
           painter: StripePainter(
-            EnvoyColors.solidWhite.withOpacity(0.1),
+            EnvoyColors.solidWhite.applyOpacity(0.1),
             stripeWidth: 2.0,
             gapWidth: 2.0,
             rotateDegree: 25.0,
@@ -172,9 +173,9 @@ class GradientPainter extends CustomPainter {
           const Color(0xff965C4B),
           const Color(0xffD68B6E),
           const Color(0xcfd68b6e),
-          const Color(0xffF0BBA4).withOpacity(0.4),
-          const Color(0xffF0BBA4).withOpacity(0.1),
-          const Color(0xffF0BBA4).withOpacity(0.002),
+          const Color(0xffF0BBA4).applyOpacity(0.4),
+          const Color(0xffF0BBA4).applyOpacity(0.1),
+          const Color(0xffF0BBA4).applyOpacity(0.002),
         ],
       ).createShader(Rect.fromCircle(
           center: Offset(size.width / 2, size.height / gradientHeight),

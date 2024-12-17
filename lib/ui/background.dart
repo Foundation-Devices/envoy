@@ -5,6 +5,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
 
 class AppBackground extends StatefulWidget {
@@ -70,10 +71,10 @@ class AppBackgroundState extends State<AppBackground> {
                     shaderCallback: (bounds) {
                       return LinearGradient(
                         colors: [
-                          Colors.white.withOpacity(0.02),
-                          Colors.white.withOpacity(0.1),
-                          Colors.white.withOpacity(0.2),
-                          Colors.white.withOpacity(0.3),
+                          Colors.white.applyOpacity(0.02),
+                          Colors.white.applyOpacity(0.1),
+                          Colors.white.applyOpacity(0.2),
+                          Colors.white.applyOpacity(0.3),
                         ],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -149,7 +150,7 @@ class LinesPainter extends CustomPainter {
 
       final p2 = Offset(size.width - 2, currentY + offset);
       final paint = Paint()
-        ..color = color.withOpacity(opacity)
+        ..color = color.applyOpacity(opacity)
         ..isAntiAlias = false
         ..strokeWidth = 1;
       canvas.drawLine(p1, p2, paint);

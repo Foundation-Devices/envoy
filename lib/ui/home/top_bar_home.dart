@@ -441,9 +441,6 @@ class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
           _menuController?.findInput<double>("state_pos")?.change(-1);
         }
         break;
-      default:
-        _menuController?.findInput<double>("state_pos")?.change(0.0);
-        break;
     }
   }
 
