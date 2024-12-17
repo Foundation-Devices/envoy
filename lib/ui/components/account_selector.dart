@@ -146,7 +146,9 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
   @override
   void didUpdateWidget(covariant StackedAccountChooser oldWidget) {
     if (oldWidget.account == _selectedAccount ||
-        widget.accounts.length != oldWidget.accounts.length) return;
+        widget.accounts.length != oldWidget.accounts.length) {
+      return;
+    }
     super.didUpdateWidget(oldWidget);
   }
 

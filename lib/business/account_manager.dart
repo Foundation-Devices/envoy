@@ -285,8 +285,7 @@ class AccountManager extends ChangeNotifier {
           }
         }
 
-
-      _initWallet(newAccount.wallet);
+        _initWallet(newAccount.wallet);
         addAccount(newAccount);
       }
 
@@ -322,7 +321,7 @@ class AccountManager extends ChangeNotifier {
     for (var wallet in wallets) {
       accounts.add(Account(
           wallet: wallet,
-          name: json["acct_name"] + " (#" + accountNumber.toString() + ")",
+          name: json["acct_name"] + " (#${accountNumber.toString()})",
           deviceSerial: device.serial,
           dateAdded: DateTime.now(),
           number: accountNumber,
@@ -355,7 +354,7 @@ class AccountManager extends ChangeNotifier {
     // Create an account & store
     Account account = Account(
         wallet: wallet,
-        name: json["acct_name"] + " (#" + accountNumber.toString() + ")",
+        name: json["acct_name"] + " (#${accountNumber.toString()})",
         deviceSerial: device.serial,
         dateAdded: DateTime.now(),
         number: accountNumber,
