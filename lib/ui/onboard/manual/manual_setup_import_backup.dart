@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:io';
-
 import 'package:backup/backup.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -36,11 +34,19 @@ class ManualSetupImportBackup extends StatefulWidget {
 class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
   StateMachineController? _stateMachineController;
   bool _isRecoveryInProgress = false;
+  late final bool isTest;
 
   @override
   void dispose() {
     _stateMachineController?.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // IS_TEST flag from run_integration_tests.sh
+    isTest = const bool.fromEnvironment('IS_TEST', defaultValue: false);
   }
 
   _onRiveInit(Artboard artBoard) {
@@ -102,100 +108,99 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
       },
       child: OnboardPageBackground(
           child: Material(
-        color: Colors.transparent,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const SizedBox(height: EnvoySpacing.small),
-            Padding(
-              padding:
+            color: Colors.transparent,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const SizedBox(height: EnvoySpacing.small),
+                Padding(
+                  padding:
                   const EdgeInsets.symmetric(horizontal: EnvoySpacing.large3),
-              child: GestureDetector(
-                onLongPress: () {
-                  // BeefQA test: Only execute if the platform is Linux
-                  if (Platform.isLinux) {
-                    setState(() {
-                      _isRecoveryInProgress = true;
-                    });
-                    openBeefQABackupFile(context).then((value) {
-                      setState(() {
-                        _isRecoveryInProgress = false;
-                      });
-                    });
-                  }
-                },
-                child: Image.asset(
-                  "assets/fw_intro.png",
-                  width: 150,
-                  height: 150,
-                ),
-              ),
-            ),
-            const SizedBox(height: EnvoySpacing.medium1),
-            Flexible(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.small),
-                      child: Text(S().manual_setup_import_backup_CTA2,
-                          textAlign: TextAlign.center,
-                          style: EnvoyTypography.heading),
-                    ),
-                    const SizedBox(height: EnvoySpacing.medium3),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.large1),
-                      child: Text(S().manual_setup_import_backup_subheading,
-                          textAlign: TextAlign.center,
-                          style: EnvoyTypography.info
-                              .copyWith(color: EnvoyColors.textTertiary)),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: EnvoySpacing.medium1),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: EnvoySpacing.xs,
-                right: EnvoySpacing.xs,
-                bottom: EnvoySpacing.medium2,
-              ),
-              child: Column(
-                children: [
-                  OnboardingButton(
-                      type: EnvoyButtonTypes.secondary,
-                      label: S().manual_setup_import_backup_CTA2,
-                      onTap: () {
-                        Future.delayed(const Duration(seconds: 2), () {
-                          setState(() {
-                            _isRecoveryInProgress = true;
-                          });
+                  child: GestureDetector(
+                    onLongPress: () {
+                      if(isTest) {
+                        setState(() {
+                          _isRecoveryInProgress = true;
                         });
-
-                        openBackupFile(context).then((value) {
+                        openBeefQABackupFile(context).then((value) {
                           setState(() {
                             _isRecoveryInProgress = false;
                           });
                         });
-                      }),
-                  OnboardingButton(
-                      type: EnvoyButtonTypes.primary,
-                      label: S().manual_setup_import_backup_CTA1,
-                      onTap: () {
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return const ManualSetupCreateAndStoreBackup();
-                        }));
-                      }),
-                ],
-              ),
+                      }
+                    },
+                    child: Image.asset(
+                      "assets/fw_intro.png",
+                      width: 150,
+                      height: 150,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: EnvoySpacing.medium1),
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: EnvoySpacing.small),
+                          child: Text(S().manual_setup_import_backup_CTA2,
+                              textAlign: TextAlign.center,
+                              style: EnvoyTypography.heading),
+                        ),
+                        const SizedBox(height: EnvoySpacing.medium3),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: EnvoySpacing.large1),
+                          child: Text(S().manual_setup_import_backup_subheading,
+                              textAlign: TextAlign.center,
+                              style: EnvoyTypography.info
+                                  .copyWith(color: EnvoyColors.textTertiary)),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: EnvoySpacing.medium1),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: EnvoySpacing.xs,
+                    right: EnvoySpacing.xs,
+                    bottom: EnvoySpacing.medium2,
+                  ),
+                  child: Column(
+                    children: [
+                      OnboardingButton(
+                          type: EnvoyButtonTypes.secondary,
+                          label: S().manual_setup_import_backup_CTA2,
+                          onTap: () {
+                            Future.delayed(const Duration(seconds: 2), () {
+                              setState(() {
+                                _isRecoveryInProgress = true;
+                              });
+                            });
+
+                            openBackupFile(context).then((value) {
+                              setState(() {
+                                _isRecoveryInProgress = false;
+                              });
+                            });
+                          }),
+                      OnboardingButton(
+                          type: EnvoyButtonTypes.primary,
+                          label: S().manual_setup_import_backup_CTA1,
+                          onTap: () {
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return const ManualSetupCreateAndStoreBackup();
+                            }));
+                          }),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      )),
+          )),
     );
   }
 }
@@ -224,7 +229,7 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
               title: S().manual_setup_magicBackupDetected_heading,
               S().manual_setup_magicBackupDetected_subheading,
               S().manual_setup_magicBackupDetected_restore,
-              (BuildContext context) async {
+                  (BuildContext context) async {
                 await tryMagicRecover(seedList, seed, data, context);
               },
               icon: EnvoyIcons.info,
@@ -257,30 +262,30 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
   Widget build(BuildContext context) {
     return OnboardPageBackground(
         child: Column(
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(top: EnvoySpacing.xl),
-          child: SizedBox(
-            height: 180,
-            width: 180,
-            child: CircularProgressIndicator(
-              color: EnvoyColors.tealLight,
-              backgroundColor: EnvoyColors.surface4,
-              strokeWidth: 15,
-              strokeCap: StrokeCap.round,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(top: EnvoySpacing.xl),
+              child: SizedBox(
+                height: 180,
+                width: 180,
+                child: CircularProgressIndicator(
+                  color: EnvoyColors.tealLight,
+                  backgroundColor: EnvoyColors.surface4,
+                  strokeWidth: 15,
+                  strokeCap: StrokeCap.round,
+                ),
+              ),
             ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
-          child: DefaultTextStyle(
-            style: EnvoyTypography.heading,
-            child: Text(S().manual_setup_importingSeedLoadingInfo,
-                style: EnvoyTypography.heading),
-          ),
-        )
-      ],
-    ));
+            Padding(
+              padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
+              child: DefaultTextStyle(
+                style: EnvoyTypography.heading,
+                child: Text(S().manual_setup_importingSeedLoadingInfo,
+                    style: EnvoyTypography.heading),
+              ),
+            )
+          ],
+        ));
   }
 }
 
@@ -320,3 +325,4 @@ Future<void> recoverManually(
     }
   }
 }
+
