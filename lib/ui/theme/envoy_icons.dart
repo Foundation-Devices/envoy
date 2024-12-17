@@ -177,6 +177,6 @@ extension FloatSize on EnvoyIconSize {
         return 48.0;
       case EnvoyIconSize.big:
         return 64.0;
-      }
+    }
   }
 }
