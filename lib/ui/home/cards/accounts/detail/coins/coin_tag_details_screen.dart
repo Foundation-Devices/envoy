@@ -22,6 +22,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart' as new_colors;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -265,7 +266,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                       isComplex: true,
                       willChange: false,
                       painter: StripePainter(
-                        EnvoyColors.gray1000.withOpacity(0.4),
+                        EnvoyColors.gray1000.applyOpacity(0.4),
                       ),
                       child: tag.coins.length == 1
                           ? singleCoinWidget(context)

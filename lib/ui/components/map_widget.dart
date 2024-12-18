@@ -10,6 +10,7 @@ import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -481,7 +482,7 @@ class TriangleShadow extends CustomPainter {
         stops: const [0.0, 0.9],
         // Ensure stops are correct for smooth transition
         colors: [
-          EnvoyColors.border1.withOpacity(0.7), // Adjust colors as needed
+          EnvoyColors.border1.applyOpacity(0.7), // Adjust colors as needed
           Colors.transparent
         ],
       ).createShader(Rect.fromLTWH(-0.3, -1.9, size.width, size.height));

@@ -15,6 +15,7 @@ import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -118,9 +119,9 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
               end: const Alignment(0, -1),
               stops: const [0, .65, 1],
               colors: [
-                Colors.black.withOpacity(0.65),
-                Colors.black.withOpacity(0.13),
-                Colors.black.withOpacity(0)
+                Colors.black.applyOpacity(0.65),
+                Colors.black.applyOpacity(0.13),
+                Colors.black.applyOpacity(0)
               ],
             ),
             border: Border.all(
@@ -131,7 +132,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
             isComplex: true,
             willChange: false,
             painter: StripePainter(
-              EnvoyColors.gray1000.withOpacity(0.4),
+              EnvoyColors.gray1000.applyOpacity(0.4),
             ),
             child: Padding(
               padding: const EdgeInsets.only(

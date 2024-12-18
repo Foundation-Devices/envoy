@@ -8,6 +8,7 @@ import 'package:envoy/ui/components/stripe_painter.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/pages/fw/fw_routes.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -96,7 +97,7 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                         isComplex: true,
                         willChange: false,
                         painter: StripePainter(
-                          EnvoyColors.gray1000.withOpacity(0.4),
+                          EnvoyColors.gray1000.applyOpacity(0.4),
                         ),
                       ),
                     ),
@@ -212,7 +213,7 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                                               Radius.circular(
                                                                   10)),
                                                       color: Colors.black
-                                                          .withOpacity(0.6),
+                                                          .applyOpacity(0.6),
                                                       border: Border.all(
                                                           color: widget
                                                               .device.color,

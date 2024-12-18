@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -106,7 +107,7 @@ class _VideoCardState extends ConsumerState<VideoCard> {
                           child: Container(
                             height: 50,
                             width: 70,
-                            color: EnvoyColors.textPrimary.withOpacity(0.5),
+                            color: EnvoyColors.textPrimary.applyOpacity(0.5),
                           ),
                         ),
                       ),
@@ -172,7 +173,7 @@ class _VideoCardState extends ConsumerState<VideoCard> {
             if (isVideoWatched)
               Positioned.fill(
                 child: Container(
-                  color: EnvoyColors.textPrimaryInverse.withOpacity(0.5),
+                  color: EnvoyColors.textPrimaryInverse.applyOpacity(0.5),
                 ),
               ),
           ],
