@@ -8,6 +8,7 @@
 // found in the LICENSE file.
 
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -216,7 +217,7 @@ class EnvoyCheckbox extends StatefulWidget {
   ///   onChanged: (_){},
   ///   fillColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
   ///     if (states.contains(WidgetState.disabled)) {
-  ///       return Colors.orange.withOpacity(.32);
+  ///       return Colors.orange.applyOpacity(.32);
   ///     }
   ///     return Colors.orange;
   ///   })
@@ -892,7 +893,7 @@ class _CheckboxDefaultsM3 extends CheckboxThemeData {
   WidgetStateProperty<Color> get fillColor {
     return WidgetStateProperty.resolveWith((Set<WidgetState> states) {
       if (states.contains(WidgetState.disabled)) {
-        return _colors.onSurface.withOpacity(0.38);
+        return _colors.onSurface.applyOpacity(0.38);
       }
       if (states.contains(WidgetState.error)) {
         return _colors.error;
@@ -939,35 +940,35 @@ class _CheckboxDefaultsM3 extends CheckboxThemeData {
     return WidgetStateProperty.resolveWith((Set<WidgetState> states) {
       if (states.contains(WidgetState.error)) {
         if (states.contains(WidgetState.pressed)) {
-          return _colors.error.withOpacity(0.12);
+          return _colors.error.applyOpacity(0.12);
         }
         if (states.contains(WidgetState.hovered)) {
-          return _colors.error.withOpacity(0.08);
+          return _colors.error.applyOpacity(0.08);
         }
         if (states.contains(WidgetState.focused)) {
-          return _colors.error.withOpacity(0.12);
+          return _colors.error.applyOpacity(0.12);
         }
       }
       if (states.contains(WidgetState.selected)) {
         if (states.contains(WidgetState.pressed)) {
-          return _colors.onSurface.withOpacity(0.12);
+          return _colors.onSurface.applyOpacity(0.12);
         }
         if (states.contains(WidgetState.hovered)) {
-          return _colors.primary.withOpacity(0.08);
+          return _colors.primary.applyOpacity(0.08);
         }
         if (states.contains(WidgetState.focused)) {
-          return _colors.primary.withOpacity(0.12);
+          return _colors.primary.applyOpacity(0.12);
         }
         return Colors.transparent;
       }
       if (states.contains(WidgetState.pressed)) {
-        return _colors.primary.withOpacity(0.12);
+        return _colors.primary.applyOpacity(0.12);
       }
       if (states.contains(WidgetState.hovered)) {
-        return _colors.onSurface.withOpacity(0.08);
+        return _colors.onSurface.applyOpacity(0.08);
       }
       if (states.contains(WidgetState.focused)) {
-        return _colors.onSurface.withOpacity(0.12);
+        return _colors.onSurface.applyOpacity(0.12);
       }
       return Colors.transparent;
     });

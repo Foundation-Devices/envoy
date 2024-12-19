@@ -8,6 +8,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -425,16 +426,16 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                                     radius: 3,
                                     focal: Alignment.center,
                                     colors: [
-                                      gradientOverlayColor.withOpacity(0.0),
-                                      gradientOverlayColor.withOpacity(0.0),
-                                      gradientOverlayColor.withOpacity(0.0),
-                                      gradientOverlayColor.withOpacity(0.6),
-                                      gradientOverlayColor.withOpacity(0.7),
-                                      gradientOverlayColor.withOpacity(0.8),
-                                      gradientOverlayColor.withOpacity(0.8),
-                                      gradientOverlayColor.withOpacity(0.9),
-                                      gradientOverlayColor.withOpacity(0.9),
-                                      gradientOverlayColor.withOpacity(1),
+                                      gradientOverlayColor.applyOpacity(0.0),
+                                      gradientOverlayColor.applyOpacity(0.0),
+                                      gradientOverlayColor.applyOpacity(0.0),
+                                      gradientOverlayColor.applyOpacity(0.6),
+                                      gradientOverlayColor.applyOpacity(0.7),
+                                      gradientOverlayColor.applyOpacity(0.8),
+                                      gradientOverlayColor.applyOpacity(0.8),
+                                      gradientOverlayColor.applyOpacity(0.9),
+                                      gradientOverlayColor.applyOpacity(0.9),
+                                      gradientOverlayColor.applyOpacity(1),
                                     ],
                                   ),
                                 )),

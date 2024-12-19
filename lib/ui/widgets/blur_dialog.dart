@@ -5,6 +5,7 @@
 import 'dart:ui';
 
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
 
 class BlurDialogRoute<T> extends OverlayRoute<T> {
@@ -202,7 +203,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
 
   Animation<Color?>? createColorFilterAnimation() {
     return ColorTween(
-            begin: Colors.transparent, end: blurColor.withOpacity(0.26))
+            begin: Colors.transparent, end: blurColor.applyOpacity(0.26))
         .animate(
       CurvedAnimation(
         parent: _controller,

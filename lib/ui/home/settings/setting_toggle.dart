@@ -70,9 +70,9 @@ class EnvoySwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoSwitch(
-      activeColor: EnvoyColors.darkTeal,
+      activeTrackColor: EnvoyColors.darkTeal,
       thumbColor: EnvoyColors.whitePrint,
-      trackColor: EnvoyColors.grey15,
+      inactiveTrackColor: EnvoyColors.grey15,
       value: value,
       onChanged: onChanged,
     );

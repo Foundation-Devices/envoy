@@ -1,23 +1,22 @@
-// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+// SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
-import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:envoy/ui/envoy_pattern_scaffold.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/pages/legal/passport_tou.dart';
+import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class OnboardPassportWelcomeScreen extends StatelessWidget {
-  const OnboardPassportWelcomeScreen({super.key});
+class OnboardPrimeWelcome extends StatelessWidget {
+  const OnboardPrimeWelcome({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -80,8 +79,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                const OnboardPassportWelcomeScreen(),
+                            builder: (context) => const OnboardPrimeWelcome(),
                           ));
                     },
                   ),
@@ -92,8 +90,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                const OnboardPassportWelcomeScreen(),
+                            builder: (context) => const OnboardPrimeWelcome(),
                           ));
                     },
                   )
@@ -144,9 +141,9 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
         //this is better than using a stack
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: Transform.translate(
-          offset: const Offset(0, 90),
+          offset: const Offset(0, 75),
           child: Image.asset(
-            "assets/welcome_prime.png",
+            "assets/prime_welcome_white.png",
             alignment: Alignment.bottomCenter,
             width: MediaQuery.of(context).size.width * 0.8,
             height: MediaQuery.of(context).size.height * 0.8,
@@ -188,7 +185,7 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                                           MainAxisAlignment.spaceEvenly,
                                       children: [
                                         Text(
-                                          S().passport_welcome_screen_heading,
+                                          "Welcome Prime",
                                           textAlign: TextAlign.center,
                                           style: EnvoyTypography.body.copyWith(
                                             fontSize: 20,
@@ -226,36 +223,18 @@ class OnboardPassportWelcomeScreen extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        LinkText(
-                          text: S().passport_welcome_screen_cta3,
-                          textStyle: EnvoyTypography.button.copyWith(
-                            color: EnvoyColors.inactiveDark,
-                          ),
-                          linkStyle: EnvoyTypography.button
-                              .copyWith(color: EnvoyColors.accentPrimary),
-                          onTap: () {
-                            launchUrl(
-                                Uri.parse("https://foundation.xyz/passport"));
+                        const SizedBox(height: EnvoySpacing.medium1),
+                        Consumer(
+                          builder: (context, ref, child) {
+                            final payload = GoRouter.of(context)
+                                .state
+                                ?.uri
+                                .queryParameters["p"];
+                            return Text("Payload : $payload");
                           },
                         ),
                         const SizedBox(height: EnvoySpacing.medium1),
-                        EnvoyButton(
-                          S().passport_welcome_screen_cta2,
-                          type: EnvoyButtonTypes.secondary,
-                          onTap: () {
-                            context.goNamed(ONBOARD_PASSPORT_EXISTING);
-                          },
-                        ),
-                        const SizedBox(height: EnvoySpacing.medium1),
-                        EnvoyButton(
-                          S().passport_welcome_screen_cta1,
-                          onTap: () async {
-                            Navigator.of(context)
-                                .push(MaterialPageRoute(builder: (context) {
-                              return const TouPage();
-                            }));
-                          },
-                        ),
+                        EnvoyButton("Connect", onTap: () {}),
                         const SizedBox(height: EnvoySpacing.small),
                       ],
                     ),

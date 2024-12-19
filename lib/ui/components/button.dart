@@ -170,7 +170,9 @@ class EnvoyButtonState extends State<EnvoyButton> {
       return EnvoyColors.accentPrimary;
     }
     if (widget.type == ButtonType.secondary ||
-        widget.type == ButtonType.tertiary) return EnvoyColors.accentPrimary;
+        widget.type == ButtonType.tertiary) {
+      return EnvoyColors.accentPrimary;
+    }
 
     return EnvoyColors.textPrimaryInverse;
   }

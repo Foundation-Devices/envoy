@@ -2,17 +2,19 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/updates_manager.dart';
-import 'package:envoy/ui/envoy_colors.dart';
-import 'package:flutter/material.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:envoy/business/updates_manager.dart';
+import 'package:envoy/ui/components/stripe_painter.dart';
+import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/pages/fw/fw_routes.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
+import 'package:envoy/util/envoy_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:envoy/ui/pages/fw/fw_intro.dart';
-import 'package:envoy/util/envoy_storage.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/components/stripe_painter.dart';
+import 'package:go_router/go_router.dart';
 
 final shouldUpdateProvider =
     FutureProvider.family<bool, Device>((ref, device) async {
@@ -95,7 +97,7 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                         isComplex: true,
                         willChange: false,
                         painter: StripePainter(
-                          EnvoyColors.gray1000.withOpacity(0.4),
+                          EnvoyColors.gray1000.applyOpacity(0.4),
                         ),
                       ),
                     ),
@@ -192,16 +194,16 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                                     if (!fwAvailable) {
                                                       return;
                                                     }
-                                                    Navigator.of(context,
-                                                            rootNavigator: true)
-                                                        .push(MaterialPageRoute(
-                                                            builder: (context) {
-                                                      return FwIntroPage(
-                                                        onboarding: false,
-                                                        deviceId: widget
-                                                            .device.type.index,
-                                                      );
-                                                    }));
+                                                    context.goNamed(
+                                                        PASSPORT_UPDATE,
+                                                        extra: FwPagePayload(
+                                                          onboarding: false,
+                                                          deviceId: widget
+                                                              .device
+                                                              .type
+                                                              .index,
+                                                        ));
+                                                    return;
                                                   },
                                                   child: Container(
                                                     decoration: BoxDecoration(
@@ -211,7 +213,7 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                                               Radius.circular(
                                                                   10)),
                                                       color: Colors.black
-                                                          .withOpacity(0.6),
+                                                          .applyOpacity(0.6),
                                                       border: Border.all(
                                                           color: widget
                                                               .device.color,

@@ -11,6 +11,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/manual/dialogs.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
+import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
@@ -24,8 +25,8 @@ import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart';
-import 'package:envoy/ui/onboard/onboard_welcome.dart';
 
 class MagicRecoverWallet extends ConsumerStatefulWidget {
   const MagicRecoverWallet({super.key});
@@ -185,7 +186,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                           onPressed: () {
                             _handleBackPress().then((proceed) {
                               if (proceed && context.mounted) {
-                                Navigator.pop(context);
+                                context.pop();
                               }
                             });
                           },
@@ -206,7 +207,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                                     await Future.delayed(
                                         const Duration(milliseconds: 200));
                                     if (context.mounted) {
-                                      OnboardingPage.popUntilHome(context);
+                                      context.go("/");
                                     }
                                   },
                                   icon: const Icon(Icons.close)),
@@ -296,7 +297,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                     onTap: () async {
                       await Future.delayed(const Duration(milliseconds: 200));
                       if (context.mounted) {
-                        OnboardingPage.popUntilHome(context);
+                        context.go("/");
                       }
                     },
                   )),
@@ -392,7 +393,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                                   child: SeedPassphraseEntry(
                                       onPassphraseEntered: (value) {
                                     passphrase = value;
-                                    Navigator.maybePop(context);
+                                    context.pop();
                                   })),
                               context: context);
                           setState(() {
@@ -686,7 +687,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                     child: IconButton(
                       icon: const Icon(Icons.close),
                       onPressed: () {
-                        Navigator.pop(context);
+                        context.pop();
                       },
                     ),
                   ),
@@ -725,7 +726,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                     label: S().component_back,
                     type: EnvoyButtonTypes.tertiary,
                     onTap: () async {
-                      Navigator.pop(context);
+                      context.pop();
                     }),
                 const Padding(padding: EdgeInsets.all(2)),
                 Consumer(
@@ -735,9 +736,11 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                         label: S().component_continue,
                         onTap: () {
                           EnvoySeed().get().then((seed) async {
+                            await EnvoySeed().deriveAndAddWallets(seed!);
+                            await Future.delayed(
+                                const Duration(milliseconds: 120));
                             if (context.mounted) {
-                              EnvoySeed().deriveAndAddWallets(seed!);
-                              OnboardingPage.popUntilHome(context);
+                              context.go("/");
                             }
                           });
                         });

@@ -8,20 +8,20 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/embedded_video.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
-import 'package:envoy/ui/onboard/magic/magic_setup_generate.dart';
 import 'package:envoy/ui/onboard/magic/wallet_security/wallet_security_modal.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class MagicSetupTutorial extends StatefulWidget {
   const MagicSetupTutorial({super.key});
@@ -40,7 +40,7 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
       removeAppBarPadding: true,
       topBarLeading: CupertinoNavigationBarBackButton(
         color: Colors.black,
-        onPressed: () => Navigator.pop(context),
+        onPressed: () => context.pop(),
       ),
       topBarActions: [
         TextButton(
@@ -50,7 +50,7 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                   .bodyMedium
                   ?.copyWith(color: Colors.black)),
           onPressed: () {
-            OnboardingPage.popUntilHome(context);
+            context.go("/");
           },
         ),
       ],
@@ -126,11 +126,7 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                               false;
                           ref.read(successfulSetupWallet.notifier).state =
                               false;
-
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return const MagicRecoverWallet();
-                          }));
+                          context.pushNamed(ONBOARD_ENVOY_MAGIC_RECOVER_SETUP);
                         });
                   },
                 ),
@@ -142,11 +138,7 @@ class _MagicSetupTutorialState extends State<MagicSetupTutorial> {
                     label: S().magic_setup_tutorial_ios_CTA1,
                     onTap: () {
                       _playerKey.currentState?.pause();
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return const MagicSetupGenerate();
-                      }));
-                      // showCreateWarning(context);
+                      context.pushNamed(ONBOARD_ENVOY_MAGIC_GENERATE_SETUP);
                     }),
                 const SizedBox(height: EnvoySpacing.xs),
                 SizedBox(

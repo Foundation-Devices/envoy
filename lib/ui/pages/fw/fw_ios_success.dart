@@ -2,27 +2,23 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ui/pages/fw/fw_passport.dart';
+import 'package:envoy/ui/pages/fw/fw_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart';
 
 class FwIosSuccessPage extends StatelessWidget {
-  final bool onboarding;
+  final FwPagePayload fwPagePayload;
 
-  const FwIosSuccessPage({super.key, required this.onboarding});
+  const FwIosSuccessPage({super.key, required this.fwPagePayload});
 
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
       leftFunction: (context) {
         Navigator.of(context).pop();
-      },
-      rightFunction: (_) {
-        onboarding
-            ? OnboardingPage.popUntilHome(context)
-            : OnboardingPage.popUntilGoRoute(context);
       },
       key: const Key("fw_ios_success"),
       text: [
@@ -51,12 +47,8 @@ class FwIosSuccessPage extends StatelessWidget {
         OnboardingButton(
             label: S().component_continue,
             onTap: () {
-              Navigator.of(context)
-                  .pushReplacement(MaterialPageRoute(builder: (context) {
-                return FwPassportPage(
-                  onboarding: onboarding,
-                );
-              }));
+              context.goNamed(PASSPORT_UPDATE, extra: fwPagePayload);
+              return;
             })
       ],
     );

@@ -54,7 +54,6 @@ class _SeedScreenState extends State<SeedScreen> {
             duration: const Duration(milliseconds: 300), curve: Curves.ease);
       } else {
         final seed = await EnvoySeed().get();
-
         setState(() {
           seedList = seed!.split(" ");
         });
