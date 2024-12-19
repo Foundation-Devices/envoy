@@ -89,7 +89,7 @@ class _OnboardPrimeQuantumLinkState extends State<OnboardPrimeQuantumLink> {
                   "Establish QuantumLink",
                   onTap: () async {
                     // Send pairing code here
-                    await BluetoothManager().pair(widget.discoveryQr);
+                    //await BluetoothManager().pair(widget.discoveryQr);
                     if (context.mounted) {
                       Navigator.push(context, MaterialPageRoute(
                         builder: (context) {

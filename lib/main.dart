@@ -73,7 +73,7 @@ Future<void> initSingletons() async {
   await EnvoySeed.init();
   await FMTCObjectBoxBackend().initialise();
   await const FMTCStore('mapStore').manage.create();
-  BluetoothManager.init();
+  await BluetoothManager.init();
 
   // Start Tor regardless of whether we are using it or not
   try {

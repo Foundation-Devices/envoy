@@ -23,6 +23,7 @@ rootProject.allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -51,6 +52,10 @@ android {
     defaultConfig {
         minSdkVersion 19
     }
+}
+
+dependencies {
+    implementation 'com.github.icota:jitpack-test:ad0bd3fd45'
 }
 
 apply from: "../cargokit/gradle/plugin.gradle"
