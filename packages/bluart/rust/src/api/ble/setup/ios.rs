@@ -3,10 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use flutter_rust_bridge::frb;
-use std::sync::OnceLock;
-use tokio::runtime::Runtime;
-
-use super::Runtime;
+use crate::api::ble::RUNTIME;
 
 #[frb(ignore)]
 pub fn create_runtime() -> anyhow::Result<()> {
