@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/bluetooth_manager.dart';
+import 'package:envoy/ui/home/settings/bluetooth_diag.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/home/settings/backup/backup_page.dart';
 import 'package:envoy/ui/home/settings/settings_page.dart';
@@ -220,8 +222,13 @@ class SettingsMenuWidget extends ConsumerWidget {
                     ),
                     GestureDetector(
                         onTap: () {
-                          launchUrl(Uri.parse(
-                              "https://github.com/Foundation-Devices"));
+                          BluetoothManager().getPermissions();
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const BluetoothDiagnosticsPage(),
+                              ));
                         },
                         child: SvgPicture.asset(
                           "assets/github.svg",
