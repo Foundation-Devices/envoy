@@ -94,3 +94,27 @@ License: GPL-3.0-or-later
 Files: test/assets/*
 Copyright: 2024 Foundation Devices Inc.
 License: GPL-3.0-or-later
+
+Files: packages/bluart/example/linux/flutter/*
+Copyright: 2024 Foundation Devices Inc.
+License: GPL-3.0-or-later
+
+Files: packages/bluart/example/macos/Flutter/GeneratedPluginRegistrant.swift
+Copyright: 2024 Foundation Devices Inc.
+License: GPL-3.0-or-later
+
+Files: packages/bluart/example/windows/flutter/*
+Copyright: 2024 Foundation Devices Inc.
+License: GPL-3.0-or-later
+
+Files: packages/bluart/lib/src/rust/api/*
+Copyright: 2024 Foundation Devices Inc.
+License: GPL-3.0-or-later
+
+Files: packages/bluart/lib/src/rust/*
+Copyright: 2024 Foundation Devices Inc.
+License: GPL-3.0-or-later
+
+Files: packages/bluart/rust/src/frb_generated.rs
+Copyright: 2024 Foundation Devices Inc.
+License: GPL-3.0-or-later
