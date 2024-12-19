@@ -57,6 +57,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     xorg \
     xdg-user-dirs \
     xterm tesseract-ocr \
+    gh \
     && apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install Android SDK
@@ -82,6 +83,16 @@ ENV PATH=/root/.cargo/bin:$PATH
 
 # Keep Dart cache directory outside of home
 ENV PUB_CACHE=/pub-cache
+
+# Store GH access token
+ARG GITHUB_ACCESS_TOKEN
+ENV GITHUB_ACCESS_TOKEN=$GITHUB_ACCESS_TOKEN
+RUN echo $GITHUB_ACCESS_TOKEN > .github-access-token
+
+RUN gh auth login --with-token < .github-access-token
+RUN gh auth setup-git
+
+ENV CARGO_NET_GIT_FETCH_WITH_CLI=true
 
 # Copy our files
 COPY . .
