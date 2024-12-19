@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 use crate::frb_generated::StreamSink;
 use core::fmt::{self, Display};
 use std::sync::{Mutex, OnceLock};

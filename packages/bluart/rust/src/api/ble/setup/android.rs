@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 use flutter_rust_bridge::frb;
 use jni::objects::GlobalRef;
 use jni::{AttachGuard, JNIEnv, JavaVM};

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 use anyhow::Result;
 use btleplug::{api::Peripheral as _, platform::PeripheralId};
 use btleplug::api::{Characteristic, WriteType};

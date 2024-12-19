@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 use super::peripheral::Peripheral;
 
 /// This is the BleDevice intended to show in Dart/Flutter
