@@ -11,6 +11,7 @@ docker-build:
 docker-build-android: docker-build
     mkdir -p release && \
         docker run --mount type=bind,source="$(pwd)"/release,target=/release \
+        -e GITHUB_ACCESS_TOKEN=$GITHUB_ACCESS_TOKEN \
         -t {{docker_image}} /bin/bash \
         -c "flutter build apk --release -P nosign && flutter build appbundle --release -P nosign \
         && cp /root/build/app/outputs/flutter-apk/app-release.apk /release \
@@ -19,7 +20,7 @@ docker-build-android: docker-build
 docker-build-android-sign: docker-build
     mkdir -p release && \
         docker run --mount type=bind,source="$(pwd)"/release,target=/release \
-        -e ALIAS_PASSWORD=$ALIAS_PASSWORD -e KEY_PASSWORD=$KEY_PASSWORD \
+        -e ALIAS_PASSWORD=$ALIAS_PASSWORD -e KEY_PASSWORD=$KEY_PASSWORD -e GITHUB_ACCESS_TOKEN=$GITHUB_ACCESS_TOKEN \
         -t {{docker_image}} /bin/bash \
         -c "flutter build apk --release && flutter build appbundle --release \
         && cp /root/build/app/outputs/flutter-apk/app-release.apk /release \
