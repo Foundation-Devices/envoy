@@ -6,12 +6,11 @@ docker_x := '-v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -v $XAUTHORITY
 docker_v4l2 := '--privileged -v /dev/video5:/dev/video5 -v /dev/video6:/dev/video6 -v /dev/video7:/dev/video7'
 
 docker-build:
-    docker build -t {{docker_image}} .
+    docker build --build-arg GITHUB_ACCESS_TOKEN=$GITHUB_ACCESS_TOKEN -t {{docker_image}} .
 
 docker-build-android: docker-build
     mkdir -p release && \
         docker run --mount type=bind,source="$(pwd)"/release,target=/release \
-        -e GITHUB_ACCESS_TOKEN=$GITHUB_ACCESS_TOKEN \
         -t {{docker_image}} /bin/bash \
         -c "flutter build apk --release -P nosign && flutter build appbundle --release -P nosign \
         && cp /root/build/app/outputs/flutter-apk/app-release.apk /release \
@@ -20,7 +19,7 @@ docker-build-android: docker-build
 docker-build-android-sign: docker-build
     mkdir -p release && \
         docker run --mount type=bind,source="$(pwd)"/release,target=/release \
-        -e ALIAS_PASSWORD=$ALIAS_PASSWORD -e KEY_PASSWORD=$KEY_PASSWORD -e GITHUB_ACCESS_TOKEN=$GITHUB_ACCESS_TOKEN \
+        -e ALIAS_PASSWORD=$ALIAS_PASSWORD -e KEY_PASSWORD=$KEY_PASSWORD \
         -t {{docker_image}} /bin/bash \
         -c "flutter build apk --release && flutter build appbundle --release \
         && cp /root/build/app/outputs/flutter-apk/app-release.apk /release \
