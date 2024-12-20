@@ -6,7 +6,7 @@ docker_x := '-v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -v $XAUTHORITY
 docker_v4l2 := '--privileged -v /dev/video5:/dev/video5 -v /dev/video6:/dev/video6 -v /dev/video7:/dev/video7'
 
 docker-build:
-    docker build --build-arg GITHUB_ACCESS_TOKEN=$GITHUB_ACCESS_TOKEN -t {{docker_image}} .
+    docker build --load --build-arg GITHUB_ACCESS_TOKEN=$GITHUB_ACCESS_TOKEN -t {{docker_image}} .
 
 docker-build-android: docker-build
     mkdir -p release && \
