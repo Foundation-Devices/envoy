@@ -57,6 +57,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     xdg-user-dirs \
     xterm tesseract-ocr \
     gh \
+    openssh-client \
     && apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install Android SDK
