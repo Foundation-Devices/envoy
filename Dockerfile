@@ -94,6 +94,7 @@ RUN echo $GITHUB_ACCESS_TOKEN > .github-access-token
 RUN gh auth login --with-token < .github-access-token
 RUN gh auth setup-git
 
+RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
 ENV CARGO_NET_GIT_FETCH_WITH_CLI=true
 
 # Copy our files
