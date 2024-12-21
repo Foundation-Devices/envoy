@@ -773,7 +773,7 @@ dependencies = [
 [[package]]
 name = "foundation-abstracted"
 version = "0.1.0"
-source = "git+ssh://git@github.com/Foundation-Devices/foundation-api.git#f819daaf3da1f213f2923ec9445260621aa1bf22"
+source = "git+https://github.com/Foundation-Devices/foundation-api.git#f819daaf3da1f213f2923ec9445260621aa1bf22"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -792,7 +792,7 @@ dependencies = [
 [[package]]
 name = "foundation-api"
 version = "0.2.0"
-source = "git+ssh://git@github.com/Foundation-Devices/foundation-api.git#f819daaf3da1f213f2923ec9445260621aa1bf22"
+source = "git+https://github.com/Foundation-Devices/foundation-api.git#f819daaf3da1f213f2923ec9445260621aa1bf22"
 dependencies = [
  "anyhow",
  "bc-components",
