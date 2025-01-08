@@ -11,7 +11,7 @@ on:
 
 jobs:
   beef-qa:
-    runs-on: [ self-hosted, macOS, x64 ]
+    runs-on: [ self-hosted, macOS, ARM64 ]
 
     steps:
       - uses: extractions/setup-just@v1
