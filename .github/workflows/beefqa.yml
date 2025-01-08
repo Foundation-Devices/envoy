@@ -44,6 +44,9 @@ jobs:
 #      - name: Install dependencies
 #        run: flutter pub get
 
+      - name: Build ffi
+        run: ./build_ffi_ios.sh
+
       - name: Build Rust libs
         run: cargo build
 
