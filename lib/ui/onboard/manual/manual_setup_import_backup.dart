@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:io';
-
 import 'package:backup/backup.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -36,11 +34,19 @@ class ManualSetupImportBackup extends StatefulWidget {
 class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
   StateMachineController? _stateMachineController;
   bool _isRecoveryInProgress = false;
+  late final bool isTest;
 
   @override
   void dispose() {
     _stateMachineController?.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // IS_TEST flag from run_integration_tests.sh
+    isTest = const bool.fromEnvironment('IS_TEST', defaultValue: false);
   }
 
   _onRiveInit(Artboard artBoard) {
@@ -112,8 +118,7 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                   const EdgeInsets.symmetric(horizontal: EnvoySpacing.large3),
               child: GestureDetector(
                 onLongPress: () {
-                  // BeefQA test: Only execute if the platform is Linux
-                  if (Platform.isLinux) {
+                  if (isTest) {
                     setState(() {
                       _isRecoveryInProgress = true;
                     });

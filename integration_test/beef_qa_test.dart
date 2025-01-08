@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:io';
+
 import 'package:envoy/business/faucet.dart';
 import 'package:envoy/main.dart';
 import 'package:envoy/ui/amount_display.dart';
@@ -25,8 +27,12 @@ Future<void> main() async {
     }
   };
 
-  await resetEnvoyData();
+  if (Platform.isLinux) {
+    await resetLinuxEnvoyData();
+  }
+
   await initSingletons();
+  await resetEnvoyData();
 
   group('Hot wallet tests', () {
     // These tests use wallet which is set up from zero (no need for passport account)
@@ -65,7 +71,7 @@ Future<void> main() async {
       await pressHamburgerMenu(tester);
       await goToAbout(tester);
 
-      final appVersion = find.text('1.8.3');
+      final appVersion = find.text('1.8.5');
       expect(appVersion, findsOneWidget);
 
       final showButton = find.text('Show');
@@ -76,15 +82,18 @@ Future<void> main() async {
       final licensePage = find.text('Licenses');
       expect(licensePage, findsOneWidget);
     });
+
     testWidgets('Check support buttons in settings', (tester) async {
       await goBackHome(tester);
 
       await pressHamburgerMenu(tester);
       await goToSupport(tester);
+      // check buttons
       await goToDocumentation(tester);
-      await goToTelegram(tester);
+      await goToCommunity(tester);
       await goToEmail(tester);
     });
+
     testWidgets('Flow to edit acc name', (tester) async {
       await goBackHome(tester);
 
@@ -290,9 +299,9 @@ Future<void> main() async {
       reorderPromptFinder = find.text(reorderPromptMessage);
       expect(reorderPromptFinder, findsOneWidget);
 
-      Finder dragIcon = find.byIcon(Icons.drag_handle);
+      final accountText = find.text("Mobile Wallet");
       await tester.timedDrag(
-          dragIcon.first, const Offset(0, 120), const Duration(seconds: 1));
+          accountText.first, const Offset(0, 120), const Duration(seconds: 1));
       await tester.pump(Durations.long2);
       await Future.delayed(const Duration(seconds: 1));
 
@@ -366,7 +375,6 @@ Future<void> main() async {
           tester, find.byType(TextField), accountPassportName);
       await saveName(tester);
     });
-
     testWidgets('Fiat in App', (tester) async {
       await goBackHome(tester);
 
@@ -1387,6 +1395,8 @@ Future<void> main() async {
         expect(fiatCheckResult, isTrue);
       }
 
+      await tester.pump(Durations.long2);
+
       String newFiatAmount =
           await extractFiatAmountFromAccount(tester, accountPassportName);
       // Check if the numbers differ from different Fiats
@@ -1475,10 +1485,12 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
 
       await findAndPressTextButton(tester, 'View Envoy Logs');
-      await tester.pumpAndSettle();
+      await tester.pump(Durations.long2);
 
       await findAndPressIcon(tester, Icons.copy);
+      //await tester.pump(const Duration(seconds: 5));
 
+      await checkForToast(tester);
       // Perform an action that should trigger a UI update
       await findAndPressWidget<CupertinoNavigationBarBackButton>(tester);
       await tester.pump(Durations.long2);
