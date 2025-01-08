@@ -1395,6 +1395,8 @@ Future<void> main() async {
         expect(fiatCheckResult, isTrue);
       }
 
+      await tester.pump(Durations.long2);
+
       String newFiatAmount =
           await extractFiatAmountFromAccount(tester, accountPassportName);
       // Check if the numbers differ from different Fiats
