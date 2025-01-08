@@ -265,7 +265,10 @@ class AccountManager extends ChangeNotifier {
       int alreadyPairedAccountsCount = 0;
 
       newAccountsLoop:
-      for (var (index, newAccount) in newAccounts.indexed) {
+      for (var entry in newAccounts.asMap().entries) {
+        var index = entry.key;
+        var newAccount = entry.value;
+
         // Check if account already paired
         for (var account in accounts) {
           if (account.wallet.name == newAccount.wallet.name) {

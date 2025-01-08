@@ -100,7 +100,7 @@ Future<void> openBackupFile(BuildContext buildContext) async {
 
     try {
       success =
-      await EnvoySeed().restoreData(filePath: result.files.single.path!);
+          await EnvoySeed().restoreData(filePath: result.files.single.path!);
     } catch (e) {
       success = false;
     }
@@ -127,7 +127,7 @@ Future<void> openBeefQABackupFile(BuildContext buildContext) async {
   String path = 'assets/beefqa_backup.mla.txt';
 
   var success = false;
-  var seed=await EnvoySeed().get();
+  var seed = await EnvoySeed().get();
 
   try {
     final byteData = await rootBundle.load(path);
@@ -139,7 +139,6 @@ Future<void> openBeefQABackupFile(BuildContext buildContext) async {
     await file.writeAsBytes(bytes);
 
     success = await EnvoySeed().restoreData(seed: seed, filePath: file.path);
-
   } catch (e) {
     success = false;
   }
@@ -153,4 +152,3 @@ Future<void> openBeefQABackupFile(BuildContext buildContext) async {
     }
   }
 }
-
