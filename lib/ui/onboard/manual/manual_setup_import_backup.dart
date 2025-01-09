@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:io';
-
 import 'package:backup/backup.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -13,7 +11,6 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/manual/dialogs.dart';
 import 'package:rive/rive.dart';
@@ -37,11 +34,19 @@ class ManualSetupImportBackup extends StatefulWidget {
 class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
   StateMachineController? _stateMachineController;
   bool _isRecoveryInProgress = false;
+  late final bool isTest;
 
   @override
   void dispose() {
     _stateMachineController?.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // IS_TEST flag from run_integration_tests.sh
+    isTest = const bool.fromEnvironment('IS_TEST', defaultValue: true);
   }
 
   _onRiveInit(Artboard artBoard) {
@@ -81,14 +86,6 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
     );
   }
 
-  Future<FilePickerResult?> _pickFileForRecovery() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-    setState(() {
-      _isRecoveryInProgress = true;
-    });
-    return result;
-  }
-
   @override
   Widget build(BuildContext context) {
     if (_isRecoveryInProgress) {
@@ -121,8 +118,7 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                   const EdgeInsets.symmetric(horizontal: EnvoySpacing.large3),
               child: GestureDetector(
                 onLongPress: () {
-                  // BeefQA test: Only execute if the platform is Linux
-                  if (Platform.isLinux) {
+                  if (isTest) {
                     setState(() {
                       _isRecoveryInProgress = true;
                     });
@@ -177,18 +173,18 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                   OnboardingButton(
                       type: EnvoyButtonTypes.secondary,
                       label: S().manual_setup_import_backup_CTA2,
-                      onTap: () async {
-                        FilePickerResult? fileResult =
-                            await _pickFileForRecovery();
-
-                        if (context.mounted) {
-                          openBackupFile(context, fileResult: fileResult)
-                              .then((value) {
-                            setState(() {
-                              _isRecoveryInProgress = false;
-                            });
+                      onTap: () {
+                        Future.delayed(const Duration(seconds: 2), () {
+                          setState(() {
+                            _isRecoveryInProgress = true;
                           });
-                        }
+                        });
+
+                        openBackupFile(context).then((value) {
+                          setState(() {
+                            _isRecoveryInProgress = false;
+                          });
+                        });
                       }),
                   OnboardingButton(
                       type: EnvoyButtonTypes.primary,

@@ -71,7 +71,7 @@ dependencies:
   uuid: ^4.4.2
   google_fonts: ^6.1.0
   carousel_slider: ^4.0.0
-  url_launcher: ^6.0.18
+  url_launcher: ^6.2.5
   email_validator: ^2.0.1
   json_annotation: ^4.8.1
   animations: ^2.0.2
@@ -155,7 +155,6 @@ flutter:
     - assets/
     - assets/videos/
     - assets/components/icons/
-    - integration_test/assets/
 
   fonts:
     - family: EnvoyIcons
