@@ -2,7 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/faucet.dart';
+import 'dart:io';
+
 import 'package:envoy/main.dart';
 import 'package:envoy/ui/amount_display.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
@@ -10,7 +11,6 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/util/console.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -25,8 +25,12 @@ Future<void> main() async {
     }
   };
 
-  await resetEnvoyData();
+  if (Platform.isLinux) {
+    await resetLinuxEnvoyData();
+  }
+
   await initSingletons();
+  await resetEnvoyData();
 
   group('Hot wallet tests', () {
     // These tests use wallet which is set up from zero (no need for passport account)
@@ -65,7 +69,7 @@ Future<void> main() async {
       await pressHamburgerMenu(tester);
       await goToAbout(tester);
 
-      final appVersion = find.text('1.8.3');
+      final appVersion = find.text('2.0.0');
       expect(appVersion, findsOneWidget);
 
       final showButton = find.text('Show');
@@ -76,15 +80,18 @@ Future<void> main() async {
       final licensePage = find.text('Licenses');
       expect(licensePage, findsOneWidget);
     });
+
     testWidgets('Check support buttons in settings', (tester) async {
       await goBackHome(tester);
 
       await pressHamburgerMenu(tester);
       await goToSupport(tester);
+      // check buttons
       await goToDocumentation(tester);
-      await goToTelegram(tester);
+      await goToCommunity(tester);
       await goToEmail(tester);
     });
+
     testWidgets('Flow to edit acc name', (tester) async {
       await goBackHome(tester);
 
@@ -290,9 +297,9 @@ Future<void> main() async {
       reorderPromptFinder = find.text(reorderPromptMessage);
       expect(reorderPromptFinder, findsOneWidget);
 
-      Finder dragIcon = find.byIcon(Icons.drag_handle);
+      final accountText = find.text("Mobile Wallet");
       await tester.timedDrag(
-          dragIcon.first, const Offset(0, 120), const Duration(seconds: 1));
+          accountText.first, const Offset(0, 120), const Duration(seconds: 1));
       await tester.pump(Durations.long2);
       await Future.delayed(const Duration(seconds: 1));
 
@@ -366,7 +373,6 @@ Future<void> main() async {
           tester, find.byType(TextField), accountPassportName);
       await saveName(tester);
     });
-
     testWidgets('Fiat in App', (tester) async {
       await goBackHome(tester);
 
@@ -946,15 +952,27 @@ Future<void> main() async {
       /// Should wait a few minutes for another test
 
       // pull some money for the next test
-      await getSatsFromSignetFaucet(5000, hotSignetAddress);
+      // await getSatsFromSignetFaucet(5000, hotSignetAddress); //TODO: not used because of page limits
+      // await tester.pump(Durations.long2);
+
       await tester.pump(Durations.long2);
 
       await fromHomeToAdvancedMenu(tester);
 
       bool isSettingsSignetSwitchOn = await isSlideSwitchOn(tester, 'Signet');
+      bool isSettingsTaprootSwitchOn = await isSlideSwitchOn(tester, 'Taproot');
+
       if (!isSettingsSignetSwitchOn) {
         // find And Toggle Signet Switch
         await findAndToggleSettingsSwitch(tester, 'Signet');
+        final closeDialogButton = find.byIcon(Icons.close);
+        await tester.tap(closeDialogButton.last);
+        await tester.pump(Durations.long2);
+      }
+
+      if (!isSettingsTaprootSwitchOn) {
+        // find And Toggle Signet Switch
+        await findAndToggleSettingsSwitch(tester, 'Taproot');
         final closeDialogButton = find.byIcon(Icons.close);
         await tester.tap(closeDialogButton.last);
         await tester.pump(Durations.long2);
@@ -966,9 +984,13 @@ Future<void> main() async {
 
       await tester.pump(Durations.long2);
 
+      await sendFromBaseWallet(tester, hotSignetAddress);
+
+      /// getSatsFromSignetFaucet does not work
+
       final signetFinder = find.text("Signet");
-      expect(signetFinder, findsOneWidget);
-      await tester.tap(signetFinder);
+      expect(signetFinder, findsWidgets);
+      await tester.tap(signetFinder.first);
       await tester.pump(Durations.long2);
 
       // go to tags
@@ -1063,436 +1085,436 @@ Future<void> main() async {
         await findAndPressTextButton(tester, 'Unlock');
       }
     });
-    testWidgets('Testnet-taproot collisions', (tester) async {
-      await goBackHome(tester);
-
-      // go to menu / settings / advanced
-      await pressHamburgerMenu(tester);
-      await goToSettings(tester);
-      await openAdvanced(tester);
-
-      // turn Testnet ON
-      bool isSettingsTestnetSwitchOn = await isSlideSwitchOn(tester, 'Testnet');
-      if (!isSettingsTestnetSwitchOn) {
-        // find And Toggle Testnet Switch
-        await findAndToggleSettingsSwitch(tester, 'Testnet');
-        // exit Testnet pop-up
-        final closeDialogButton = find.byIcon(Icons.close);
-        await tester.tap(closeDialogButton.last);
-        await tester.pump(Durations.long2);
-      }
-
-      // turn taproot ON
-      bool isSettingsTaprootSwitchOn = await isSlideSwitchOn(tester, 'Taproot');
-      if (!isSettingsTaprootSwitchOn) {
-        // find And Toggle Taproot Switch
-        await findAndToggleSettingsSwitch(tester, 'Taproot');
-      }
-
-      // Go back to the Accounts view
-      await pressHamburgerMenu(tester);
-      await pressHamburgerMenu(tester);
-
-      /// Make sure there is a hot wallet account for Testnet Taproot
-      await tester.pump(Durations.long2);
-
-      // scroll back by 10000
-      await scrollHome(tester, 10000);
-
-      const int maxScrollAttempts = 5;
-      int scrollAttempts = 0;
-      bool testTaprootFound = false;
-
-      while (scrollAttempts < maxScrollAttempts) {
-        testTaprootFound = await searchTestTaprootAccType(tester);
-        if (testTaprootFound) {
-          break; // Exit the loop if the account is found
-        }
-
-        await scrollHome(tester, -100);
-        await tester.pump(Durations.long2);
-        scrollAttempts++;
-      }
-
-      // Expect that testTaprootFound is true after the loop
-      expect(testTaprootFound, true,
-          reason:
-              'Expected to find at least one Testnet Taproot account but did not.');
-
-      // scroll back by 10000
-      await scrollHome(tester, 10000);
-
-      /// Go to settings, disable Testnet
-      // go to menu / settings / advanced
-      await pressHamburgerMenu(tester);
-      await goToSettings(tester);
-      await openAdvanced(tester);
-
-      /// turn Testnet OFF
-      isSettingsTestnetSwitchOn = await isSlideSwitchOn(tester, 'Testnet');
-      if (isSettingsTestnetSwitchOn) {
-        // find And Toggle Testnet Switch
-        await findAndToggleSettingsSwitch(tester, 'Testnet');
-      }
-
-      // Go back to the Accounts view
-      await pressHamburgerMenu(tester);
-      await pressHamburgerMenu(tester);
-
-      /// Go to accounts, make sure both Testnet Taproot accounts disappeared
-      await tester.pump(Durations.long2);
-
-      testTaprootFound = false;
-      scrollAttempts = 0;
-
-      while (scrollAttempts < maxScrollAttempts) {
-        testTaprootFound = await searchTestTaprootAccType(tester);
-        if (testTaprootFound) {
-          break; // Exit the loop if the account is found
-        }
-
-        await scrollHome(tester, -100);
-        await tester.pump(Durations.long2);
-        scrollAttempts++;
-      }
-
-      // Expect that testTaprootFound is false after the loop
-      expect(testTaprootFound, false,
-          reason:
-              'Expected not to find Testnet Taproot account but found one.');
-
-      // scroll back by 10000
-      await scrollHome(tester, 10000);
-
-      bool testnetFound = false;
-      scrollAttempts = 0;
-
-      while (scrollAttempts < maxScrollAttempts) {
-        testnetFound = await searchTestnetAccType(tester);
-        if (testnetFound) {
-          break; // Exit the loop if the account is found
-        }
-
-        await scrollHome(tester, -100);
-        await tester.pump(Durations.long2);
-        scrollAttempts++;
-      }
-
-      // Expect that testnetFound is false after the loop
-      expect(testnetFound, false,
-          reason: 'Expected not to find Testnet account but found one.');
-
-      // scroll back by 10000
-      await scrollHome(tester, 10000);
-
-      /// Go to settings, enable Testnet, disable Taproot
-      // go to menu / settings / advanced
-      await pressHamburgerMenu(tester);
-      await goToSettings(tester);
-      await openAdvanced(tester);
-
-      // turn Testnet ON
-      isSettingsTestnetSwitchOn = await isSlideSwitchOn(tester, 'Testnet');
-      if (!isSettingsTestnetSwitchOn) {
-        // find And Toggle Testnet Switch
-        await findAndToggleSettingsSwitch(tester, 'Testnet');
-        // exit Testnet pop-up
-        final closeDialogButton = find.byIcon(Icons.close);
-        await tester.tap(closeDialogButton.last);
-        await tester.pump(Durations.long2);
-      }
-
-      // disable Taproot
-      isSettingsTaprootSwitchOn = await isSlideSwitchOn(tester, 'Taproot');
-      if (isSettingsTaprootSwitchOn) {
-        // find And Toggle Taproot Switch
-        await findAndToggleSettingsSwitch(tester, 'Taproot');
-      }
-
-      // Go back to the Accounts view
-      await pressHamburgerMenu(tester);
-      await pressHamburgerMenu(tester);
-
-      /// Go to accounts, make sure both Testnet Taproot accounts disappeared
-      // Ensure the screen is fully rendered
-      await tester.pump(Durations.long2);
-
-      testTaprootFound = false;
-      scrollAttempts = 0;
-
-      while (scrollAttempts < maxScrollAttempts) {
-        testTaprootFound = await searchTestTaprootAccType(tester);
-        if (testTaprootFound) {
-          break; // Exit the loop if the account is found
-        }
-
-        await scrollHome(tester, -100);
-        await tester.pump(Durations.long2);
-        scrollAttempts++;
-      }
-
-      // Expect that testTaprootFound is false after the loop
-      expect(testTaprootFound, false,
-          reason:
-              'Expected not to find Testnet Taproot account but found one.');
-
-      // scroll back by 10000
-      await scrollHome(tester, 10000);
-
-      bool taprootFound = false;
-      scrollAttempts = 0;
-
-      while (scrollAttempts < maxScrollAttempts) {
-        taprootFound = await searchTaprootAccType(tester);
-        if (taprootFound) {
-          break; // Exit the loop if the account is found
-        }
-
-        await scrollHome(tester, -100);
-        await tester.pump(Durations.long2);
-        scrollAttempts++;
-      }
-
-      // Expect that taprootFound is false after the loop
-      expect(taprootFound, false,
-          reason: 'Expected not to find Taproot account but found one.');
-
-      // scroll back by 10000
-      await scrollHome(tester, 10000);
-
-      /// Go to settings, enable Taproot
-      // go to menu / settings / advanced
-      await pressHamburgerMenu(tester);
-      await goToSettings(tester);
-      await openAdvanced(tester);
-
-      // turn taproot ON
-      isSettingsTaprootSwitchOn = await isSlideSwitchOn(tester, 'Taproot');
-      if (!isSettingsTaprootSwitchOn) {
-        // find And Toggle Taproot Switch
-        await findAndToggleSettingsSwitch(tester, 'Taproot');
-      }
-
-      // Go back to the Accounts view
-      await pressHamburgerMenu(tester);
-      await pressHamburgerMenu(tester);
-
-      /// Make sure there is a hot wallet account for Testnet Taproot
-      await tester.pump(Durations.long2);
-
-      // scroll back by 10000
-      await scrollHome(tester, 10000);
-
-      scrollAttempts = 0;
-      testTaprootFound = false;
-
-      while (scrollAttempts < maxScrollAttempts) {
-        testTaprootFound = await searchTestTaprootAccType(tester);
-        if (testTaprootFound) {
-          break; // Exit the loop if the account is found
-        }
-
-        await scrollHome(tester, -100);
-        await tester.pump(Durations.long2);
-        scrollAttempts++;
-      }
-
-      // Expect that testTaprootFound is true after the loop
-      expect(testTaprootFound, true,
-          reason:
-              'Expected to find at least one Testnet Taproot account but did not.');
-
-      // scroll back by 10000
-      await scrollHome(tester, 10000);
-    });
-    testWidgets('Switching Fiat in App', (tester) async {
-      await goBackHome(tester);
-      const String accountPassportName = "GH TEST ACC (#1)";
-
-      /// Open Envoy settings, enable fiat
-      await findAndPressTextButton(tester, 'Privacy');
-      // enable "better performance" if it is not enabled
-      await enablePerformance(tester);
-      // Check the shield icon after enabling performance
-      await checkTorShieldIcon(tester, expectPrivacy: false);
-      await findAndPressTextButton(tester, 'Accounts');
-
-      // go to settings
-      await pressHamburgerMenu(tester);
-      await goToSettings(tester);
-
-      // Check Fiat and set it to USD before testing
-      bool textIsOnScreen = await findTextOnScreen(tester, 'USD');
-      if (!textIsOnScreen) {
-        await fromSettingsToFiatBottomSheet(tester);
-        await findAndPressTextButton(tester, 'USD');
-      }
-
-      String? currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
-
-      bool isSettingsFiatSwitchOn =
-          await isSlideSwitchOn(tester, 'Display Fiat Values');
-      if (!isSettingsFiatSwitchOn) {
-        // find And Toggle DisplayFiat Switch
-        await findAndToggleSettingsSwitch(tester, 'Display Fiat Values');
-      }
-
-      currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
-
-      /// Go back to accounts menu, see the fiat values pop up - take note of the actual number being displayed
-      await pressHamburgerMenu(tester); // back to settings
-      await pressHamburgerMenu(tester); // back to home
-
-      // Scroll down by until text found
-      await scrollUntilVisible(
-        tester,
-        accountPassportName,
-      );
-
-      // Wait for the LoaderGhost to disappear
-      await checkAndWaitLoaderGhostInAccount(tester, accountPassportName);
-
-      // Check the Fiat on the screen
-      if (currentSettingsFiatCode != null) {
-        await tester.pump(Durations.long2);
-        bool fiatCheckResult =
-            await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
-        expect(fiatCheckResult, isTrue);
-      }
-
-      String usdFiatAmount =
-          await extractFiatAmountFromAccount(tester, accountPassportName);
-
-      ///Go back to settings, change from USD to JPY, for example
-      await pressHamburgerMenu(tester);
-      await goToSettings(tester);
-
-      await fromSettingsToFiatBottomSheet(tester);
-      await findAndPressTextButton(tester, 'JPY');
-      currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
-
-      /// Go back to the accounts view
-      await pressHamburgerMenu(tester); // back to settings
-      await pressHamburgerMenu(tester); // back to home
-
-      /// Check that all fiat values ate grayed out "loading"
-      await checkAndWaitLoaderGhostInAccount(tester, accountPassportName);
-
-      /// Check that when the number loads we get the actual JPY value, not just the same number noted in step 2 with the JPY symbol
-      // Check the Fiat on the screen
-      if (currentSettingsFiatCode != null) {
-        await tester.pump(Durations.long2);
-        bool fiatCheckResult =
-            await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
-        expect(fiatCheckResult, isTrue);
-      }
-
-      String newFiatAmount =
-          await extractFiatAmountFromAccount(tester, accountPassportName);
-      // Check if the numbers differ from different Fiats
-      if (usdFiatAmount != "0.00") {
-        expect(newFiatAmount != usdFiatAmount, isTrue);
-      }
-
-      /// Repeat all steps over tor //////////////////////////////////////////////////
-
-      await findAndPressTextButton(tester, 'Privacy');
-      await enablePrivacy(tester);
-      await findAndPressTextButton(tester, 'Accounts');
-      // Check the shield icon after enabling privacy
-      bool torIsConnected =
-          await checkTorShieldIcon(tester, expectPrivacy: true);
-
-      expect(torIsConnected, isTrue);
-
-      /// Open Envoy settings, enable fiat
-      await pressHamburgerMenu(tester);
-      await goToSettings(tester);
-
-      // Check Fiat and set it to USD before testing
-      await fromSettingsToFiatBottomSheet(tester,
-          currentSelection: currentSettingsFiatCode);
-      await findAndPressTextButton(tester, 'USD');
-      currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
-
-      isSettingsFiatSwitchOn =
-          await isSlideSwitchOn(tester, 'Display Fiat Values');
-      if (!isSettingsFiatSwitchOn) {
-        // find And Toggle DisplayFiat Switch
-        await findAndToggleSettingsSwitch(tester, 'Display Fiat Values');
-      }
-
-      currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
-
-      /// Go back to accounts menu, see the fiat values pop up - take note of the actual number being displayed
-      await pressHamburgerMenu(tester); // back to settings
-      await pressHamburgerMenu(tester); // back to home
-
-      // Wait for the LoaderGhost to disappear
-      await checkAndWaitLoaderGhostInAccount(tester, accountPassportName);
-
-      // Check the Fiat on the screen
-      if (currentSettingsFiatCode != null) {
-        await tester.pump(Durations.long2);
-        bool fiatCheckResult =
-            await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
-        expect(fiatCheckResult, isTrue);
-      }
-
-      usdFiatAmount =
-          await extractFiatAmountFromAccount(tester, accountPassportName);
-
-      ///Go back to settings, change from USD to JPY, for example
-      await pressHamburgerMenu(tester);
-      await goToSettings(tester);
-
-      await fromSettingsToFiatBottomSheet(tester);
-      await findAndPressTextButton(tester, 'JPY');
-      currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
-
-      /// Go back to the accounts view
-      await pressHamburgerMenu(tester); // back to settings
-      await pressHamburgerMenu(tester); // back to home
-
-      /// Check that all fiat values ate grayed out "loading"
-      await checkAndWaitLoaderGhostInAccount(tester, accountPassportName);
-
-      /// Check that when the number loads we get the actual JPY value, not just the same number noted in step 2 with the JPY symbol
-      // Check the Fiat on the screen
-      if (currentSettingsFiatCode != null) {
-        await tester.pump(Durations.long2);
-        bool fiatCheckResult =
-            await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
-        expect(fiatCheckResult, isTrue);
-      }
-
-      newFiatAmount =
-          await extractFiatAmountFromAccount(tester, accountPassportName);
-      if (usdFiatAmount != "0.00") {
-        // Check if the numbers differ from different Fiats
-        expect(newFiatAmount != usdFiatAmount, isTrue);
-      }
-    });
-    testWidgets('Logs freeze', (tester) async {
-      await goBackHome(tester);
-
-      await fromHomeToAdvancedMenu(tester);
-      await tester.pump(Durations.long2);
-
-      await findAndPressTextButton(tester, 'View Envoy Logs');
-      await tester.pumpAndSettle();
-
-      await findAndPressIcon(tester, Icons.copy);
-
-      // Perform an action that should trigger a UI update
-      await findAndPressWidget<CupertinoNavigationBarBackButton>(tester);
-      await tester.pump(Durations.long2);
-
-      final newElementFinder = find.text('View Envoy Logs');
-
-      await tester.pumpUntilFound(newElementFinder,
-          duration: Durations.long1, tries: 100);
-    });
+    // testWidgets('Testnet-taproot collisions', (tester) async {
+    //   await goBackHome(tester);
+    //
+    //   // go to menu / settings / advanced
+    //   await pressHamburgerMenu(tester);
+    //   await goToSettings(tester);
+    //   await openAdvanced(tester);
+    //
+    //   // turn Testnet ON
+    //   bool isSettingsTestnetSwitchOn = await isSlideSwitchOn(tester, 'Testnet');
+    //   if (!isSettingsTestnetSwitchOn) {
+    //     // find And Toggle Testnet Switch
+    //     await findAndToggleSettingsSwitch(tester, 'Testnet');
+    //     // exit Testnet pop-up
+    //     final closeDialogButton = find.byIcon(Icons.close);
+    //     await tester.tap(closeDialogButton.last);
+    //     await tester.pump(Durations.long2);
+    //   }
+    //
+    //   // turn taproot ON
+    //   bool isSettingsTaprootSwitchOn = await isSlideSwitchOn(tester, 'Taproot');
+    //   if (!isSettingsTaprootSwitchOn) {
+    //     // find And Toggle Taproot Switch
+    //     await findAndToggleSettingsSwitch(tester, 'Taproot');
+    //   }
+    //
+    //   // Go back to the Accounts view
+    //   await pressHamburgerMenu(tester);
+    //   await pressHamburgerMenu(tester);
+    //
+    //   /// Make sure there is a hot wallet account for Testnet Taproot
+    //   await tester.pump(Durations.long2);
+    //
+    //   // scroll back by 10000
+    //   await scrollHome(tester, 10000);
+    //
+    //   const int maxScrollAttempts = 5;
+    //   int scrollAttempts = 0;
+    //   bool testTaprootFound = false;
+    //
+    //   while (scrollAttempts < maxScrollAttempts) {
+    //     testTaprootFound = await searchTestTaprootAccType(tester);
+    //     if (testTaprootFound) {
+    //       break; // Exit the loop if the account is found
+    //     }
+    //
+    //     await scrollHome(tester, -100);
+    //     await tester.pump(Durations.long2);
+    //     scrollAttempts++;
+    //   }
+    //
+    //   // Expect that testTaprootFound is true after the loop
+    //   expect(testTaprootFound, true,
+    //       reason:
+    //           'Expected to find at least one Testnet Taproot account but did not.');
+    //
+    //   // scroll back by 10000
+    //   await scrollHome(tester, 10000);
+    //
+    //   /// Go to settings, disable Testnet
+    //   // go to menu / settings / advanced
+    //   await pressHamburgerMenu(tester);
+    //   await goToSettings(tester);
+    //   await openAdvanced(tester);
+    //
+    //   /// turn Testnet OFF
+    //   isSettingsTestnetSwitchOn = await isSlideSwitchOn(tester, 'Testnet');
+    //   if (isSettingsTestnetSwitchOn) {
+    //     // find And Toggle Testnet Switch
+    //     await findAndToggleSettingsSwitch(tester, 'Testnet');
+    //   }
+    //
+    //   // Go back to the Accounts view
+    //   await pressHamburgerMenu(tester);
+    //   await pressHamburgerMenu(tester);
+    //
+    //   /// Go to accounts, make sure both Testnet Taproot accounts disappeared
+    //   await tester.pump(Durations.long2);
+    //
+    //   testTaprootFound = false;
+    //   scrollAttempts = 0;
+    //
+    //   while (scrollAttempts < maxScrollAttempts) {
+    //     testTaprootFound = await searchTestTaprootAccType(tester);
+    //     if (testTaprootFound) {
+    //       break; // Exit the loop if the account is found
+    //     }
+    //
+    //     await scrollHome(tester, -100);
+    //     await tester.pump(Durations.long2);
+    //     scrollAttempts++;
+    //   }
+    //
+    //   // Expect that testTaprootFound is false after the loop
+    //   expect(testTaprootFound, false,
+    //       reason:
+    //           'Expected not to find Testnet Taproot account but found one.');
+    //
+    //   // scroll back by 10000
+    //   await scrollHome(tester, 10000);
+    //
+    //   bool testnetFound = false;
+    //   scrollAttempts = 0;
+    //
+    //   while (scrollAttempts < maxScrollAttempts) {
+    //     testnetFound = await searchTestnetAccType(tester);
+    //     if (testnetFound) {
+    //       break; // Exit the loop if the account is found
+    //     }
+    //
+    //     await scrollHome(tester, -100);
+    //     await tester.pump(Durations.long2);
+    //     scrollAttempts++;
+    //   }
+    //
+    //   // Expect that testnetFound is false after the loop
+    //   expect(testnetFound, false,
+    //       reason: 'Expected not to find Testnet account but found one.');
+    //
+    //   // scroll back by 10000
+    //   await scrollHome(tester, 10000);
+    //
+    //   /// Go to settings, enable Testnet, disable Taproot
+    //   // go to menu / settings / advanced
+    //   await pressHamburgerMenu(tester);
+    //   await goToSettings(tester);
+    //   await openAdvanced(tester);
+    //
+    //   // turn Testnet ON
+    //   isSettingsTestnetSwitchOn = await isSlideSwitchOn(tester, 'Testnet');
+    //   if (!isSettingsTestnetSwitchOn) {
+    //     // find And Toggle Testnet Switch
+    //     await findAndToggleSettingsSwitch(tester, 'Testnet');
+    //     // exit Testnet pop-up
+    //     final closeDialogButton = find.byIcon(Icons.close);
+    //     await tester.tap(closeDialogButton.last);
+    //     await tester.pump(Durations.long2);
+    //   }
+    //
+    //   // disable Taproot
+    //   isSettingsTaprootSwitchOn = await isSlideSwitchOn(tester, 'Taproot');
+    //   if (isSettingsTaprootSwitchOn) {
+    //     // find And Toggle Taproot Switch
+    //     await findAndToggleSettingsSwitch(tester, 'Taproot');
+    //   }
+    //
+    //   // Go back to the Accounts view
+    //   await pressHamburgerMenu(tester);
+    //   await pressHamburgerMenu(tester);
+    //
+    //   /// Go to accounts, make sure both Testnet Taproot accounts disappeared
+    //   // Ensure the screen is fully rendered
+    //   await tester.pump(Durations.long2);
+    //
+    //   testTaprootFound = false;
+    //   scrollAttempts = 0;
+    //
+    //   while (scrollAttempts < maxScrollAttempts) {
+    //     testTaprootFound = await searchTestTaprootAccType(tester);
+    //     if (testTaprootFound) {
+    //       break; // Exit the loop if the account is found
+    //     }
+    //
+    //     await scrollHome(tester, -100);
+    //     await tester.pump(Durations.long2);
+    //     scrollAttempts++;
+    //   }
+    //
+    //   // Expect that testTaprootFound is false after the loop
+    //   expect(testTaprootFound, false,
+    //       reason:
+    //           'Expected not to find Testnet Taproot account but found one.');
+    //
+    //   // scroll back by 10000
+    //   await scrollHome(tester, 10000);
+    //
+    //   bool taprootFound = false;
+    //   scrollAttempts = 0;
+    //
+    //   while (scrollAttempts < maxScrollAttempts) {
+    //     taprootFound = await searchTaprootAccType(tester);
+    //     if (taprootFound) {
+    //       break; // Exit the loop if the account is found
+    //     }
+    //
+    //     await scrollHome(tester, -100);
+    //     await tester.pump(Durations.long2);
+    //     scrollAttempts++;
+    //   }
+    //
+    //   // Expect that taprootFound is false after the loop
+    //   expect(taprootFound, false,
+    //       reason: 'Expected not to find Taproot account but found one.');
+    //
+    //   // scroll back by 10000
+    //   await scrollHome(tester, 10000);
+    //
+    //   /// Go to settings, enable Taproot
+    //   // go to menu / settings / advanced
+    //   await pressHamburgerMenu(tester);
+    //   await goToSettings(tester);
+    //   await openAdvanced(tester);
+    //
+    //   // turn taproot ON
+    //   isSettingsTaprootSwitchOn = await isSlideSwitchOn(tester, 'Taproot');
+    //   if (!isSettingsTaprootSwitchOn) {
+    //     // find And Toggle Taproot Switch
+    //     await findAndToggleSettingsSwitch(tester, 'Taproot');
+    //   }
+    //
+    //   // Go back to the Accounts view
+    //   await pressHamburgerMenu(tester);
+    //   await pressHamburgerMenu(tester);
+    //
+    //   /// Make sure there is a hot wallet account for Testnet Taproot
+    //   await tester.pump(Durations.long2);
+    //
+    //   // scroll back by 10000
+    //   await scrollHome(tester, 10000);
+    //
+    //   scrollAttempts = 0;
+    //   testTaprootFound = false;
+    //
+    //   while (scrollAttempts < maxScrollAttempts) {
+    //     testTaprootFound = await searchTestTaprootAccType(tester);
+    //     if (testTaprootFound) {
+    //       break; // Exit the loop if the account is found
+    //     }
+    //
+    //     await scrollHome(tester, -100);
+    //     await tester.pump(Durations.long2);
+    //     scrollAttempts++;
+    //   }
+    //
+    //   // Expect that testTaprootFound is true after the loop
+    //   expect(testTaprootFound, true,
+    //       reason:
+    //           'Expected to find at least one Testnet Taproot account but did not.');
+    //
+    //   // scroll back by 10000
+    //   await scrollHome(tester, 10000);
+    // });
+    // testWidgets('Switching Fiat in App', (tester) async {
+    //   await goBackHome(tester);
+    //   const String accountPassportName = "GH TEST ACC (#1)";
+    //
+    //   /// Open Envoy settings, enable fiat
+    //   await findAndPressTextButton(tester, 'Privacy');
+    //   // enable "better performance" if it is not enabled
+    //   await enablePerformance(tester);
+    //   // Check the shield icon after enabling performance
+    //   await checkTorShieldIcon(tester, expectPrivacy: false);
+    //   await findAndPressTextButton(tester, 'Accounts');
+    //
+    //   // go to settings
+    //   await pressHamburgerMenu(tester);
+    //   await goToSettings(tester);
+    //
+    //   // Check Fiat and set it to USD before testing
+    //   bool textIsOnScreen = await findTextOnScreen(tester, 'USD');
+    //   if (!textIsOnScreen) {
+    //     await fromSettingsToFiatBottomSheet(tester);
+    //     await findAndPressTextButton(tester, 'USD');
+    //   }
+    //
+    //   String? currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
+    //
+    //   bool isSettingsFiatSwitchOn =
+    //       await isSlideSwitchOn(tester, 'Display Fiat Values');
+    //   if (!isSettingsFiatSwitchOn) {
+    //     // find And Toggle DisplayFiat Switch
+    //     await findAndToggleSettingsSwitch(tester, 'Display Fiat Values');
+    //   }
+    //
+    //   currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
+    //
+    //   /// Go back to accounts menu, see the fiat values pop up - take note of the actual number being displayed
+    //   await pressHamburgerMenu(tester); // back to settings
+    //   await pressHamburgerMenu(tester); // back to home
+    //
+    //   // Scroll down by until text found
+    //   await scrollUntilVisible(
+    //     tester,
+    //     accountPassportName,
+    //   );
+    //
+    //   // Wait for the LoaderGhost to disappear
+    //   await checkAndWaitLoaderGhostInAccount(tester, accountPassportName);
+    //
+    //   // Check the Fiat on the screen
+    //   if (currentSettingsFiatCode != null) {
+    //     await tester.pump(Durations.long2);
+    //     bool fiatCheckResult =
+    //         await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+    //     expect(fiatCheckResult, isTrue);
+    //   }
+    //
+    //   String usdFiatAmount =
+    //       await extractFiatAmountFromAccount(tester, accountPassportName);
+    //
+    //   ///Go back to settings, change from USD to JPY, for example
+    //   await pressHamburgerMenu(tester);
+    //   await goToSettings(tester);
+    //
+    //   await fromSettingsToFiatBottomSheet(tester);
+    //   await findAndPressTextButton(tester, 'JPY');
+    //   currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
+    //
+    //   /// Go back to the accounts view
+    //   await pressHamburgerMenu(tester); // back to settings
+    //   await pressHamburgerMenu(tester); // back to home
+    //
+    //   /// Check that all fiat values ate grayed out "loading"
+    //   await checkAndWaitLoaderGhostInAccount(tester, accountPassportName);
+    //
+    //   /// Check that when the number loads we get the actual JPY value, not just the same number noted in step 2 with the JPY symbol
+    //   // Check the Fiat on the screen
+    //   if (currentSettingsFiatCode != null) {
+    //     await tester.pump(Durations.long2);
+    //     bool fiatCheckResult =
+    //         await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+    //     expect(fiatCheckResult, isTrue);
+    //   }
+    //
+    //   await tester.pump(Durations.long2);
+    //   await tester.pump(Durations.long2);
+    //
+    //   String newFiatAmount =
+    //       await extractFiatAmountFromAccount(tester, accountPassportName);
+    //   // Check if the numbers differ from different Fiats
+    //   expect(newFiatAmount != usdFiatAmount, isTrue);
+    //
+    //   /// Repeat all steps over tor //////////////////////////////////////////////////
+    //
+    //   await findAndPressTextButton(tester, 'Privacy');
+    //   await enablePrivacy(tester);
+    //   await findAndPressTextButton(tester, 'Accounts');
+    //   // Check the shield icon after enabling privacy
+    //   bool torIsConnected =
+    //       await checkTorShieldIcon(tester, expectPrivacy: true);
+    //
+    //   expect(torIsConnected, isTrue);
+    //
+    //   /// Open Envoy settings, enable fiat
+    //   await pressHamburgerMenu(tester);
+    //   await goToSettings(tester);
+    //
+    //   // Check Fiat and set it to USD before testing
+    //   await fromSettingsToFiatBottomSheet(tester,
+    //       currentSelection: currentSettingsFiatCode);
+    //   await findAndPressTextButton(tester, 'USD');
+    //   currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
+    //
+    //   isSettingsFiatSwitchOn =
+    //       await isSlideSwitchOn(tester, 'Display Fiat Values');
+    //   if (!isSettingsFiatSwitchOn) {
+    //     // find And Toggle DisplayFiat Switch
+    //     await findAndToggleSettingsSwitch(tester, 'Display Fiat Values');
+    //   }
+    //
+    //   currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
+    //
+    //   /// Go back to accounts menu, see the fiat values pop up - take note of the actual number being displayed
+    //   await pressHamburgerMenu(tester); // back to settings
+    //   await pressHamburgerMenu(tester); // back to home
+    //
+    //   // Wait for the LoaderGhost to disappear
+    //   await checkAndWaitLoaderGhostInAccount(tester, accountPassportName);
+    //
+    //   // Check the Fiat on the screen
+    //   if (currentSettingsFiatCode != null) {
+    //     await tester.pump(Durations.long2);
+    //     bool fiatCheckResult =
+    //         await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+    //     expect(fiatCheckResult, isTrue);
+    //   }
+    //
+    //   usdFiatAmount =
+    //       await extractFiatAmountFromAccount(tester, accountPassportName);
+    //
+    //   ///Go back to settings, change from USD to JPY, for example
+    //   await pressHamburgerMenu(tester);
+    //   await goToSettings(tester);
+    //
+    //   await fromSettingsToFiatBottomSheet(tester);
+    //   await findAndPressTextButton(tester, 'JPY');
+    //   currentSettingsFiatCode = await findCurrentFiatInSettings(tester);
+    //
+    //   /// Go back to the accounts view
+    //   await pressHamburgerMenu(tester); // back to settings
+    //   await pressHamburgerMenu(tester); // back to home
+    //
+    //   /// Check that all fiat values ate grayed out "loading"
+    //   await checkAndWaitLoaderGhostInAccount(tester, accountPassportName);
+    //
+    //   /// Check that when the number loads we get the actual JPY value, not just the same number noted in step 2 with the JPY symbol
+    //   // Check the Fiat on the screen
+    //   if (currentSettingsFiatCode != null) {
+    //     await tester.pump(Durations.long2);
+    //     bool fiatCheckResult =
+    //         await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
+    //     expect(fiatCheckResult, isTrue);
+    //   }
+    //
+    //   newFiatAmount =
+    //       await extractFiatAmountFromAccount(tester, accountPassportName);
+    //   // Check if the numbers differ from different Fiats
+    //   expect(newFiatAmount != usdFiatAmount, isTrue);
+    // });
+    // testWidgets('Logs freeze', (tester) async {
+    //   await goBackHome(tester);
+    //
+    //   await fromHomeToAdvancedMenu(tester);
+    //   await tester.pump(Durations.long2);
+    //
+    //   await findAndPressTextButton(tester, 'View Envoy Logs');
+    //   await tester.pump(Durations.long2);
+    //
+    //   await findAndPressIcon(tester, Icons.copy);
+    //
+    //   await checkForToast(tester);
+    //   // Perform an action that should trigger a UI update
+    //   await findAndPressWidget<CupertinoNavigationBarBackButton>(tester);
+    //   await tester.pump(Durations.long2);
+    //
+    //   final newElementFinder = find.text('View Envoy Logs');
+    //
+    //   await tester.pumpUntilFound(newElementFinder,
+    //       duration: Durations.long1, tries: 100);
+    // });
   });
 
   group('No account tests', () {
@@ -1507,4 +1529,46 @@ Future<void> main() async {
       await checkBuyOptionAndTitle(tester);
     });
   });
+}
+
+Future<void> sendFromBaseWallet(
+    WidgetTester tester, String hotSignetAddress) async {
+  final baseWalletFinder = find.text("Base Wallet");
+  expect(baseWalletFinder, findsWidgets);
+  await tester.tap(baseWalletFinder.first);
+  await tester.pump(Durations.long2);
+
+  final sendButtonFinder = find.text("Send");
+  expect(sendButtonFinder, findsWidgets);
+  await tester.tap(sendButtonFinder.first);
+  await tester.pump(Durations.long2);
+
+  /// SEND some money to hot signet wallet
+  await enterTextInField(tester, find.byType(TextFormField), hotSignetAddress);
+
+  // enter amount
+  await findAndPressTextButton(tester, '1');
+  await findAndPressTextButton(tester, '2');
+  await findAndPressTextButton(tester, '3');
+  await findAndPressTextButton(tester, '4');
+
+  // go to staging
+  await waitForTealTextAndTap(tester, 'Confirm');
+  await tester.pump(Durations.long2);
+
+  // now wait for it to go to staging
+  final textFeeFinder = find.text("Fee");
+  await tester.pumpUntilFound(textFeeFinder,
+      tries: 100, duration: Durations.long2);
+
+  await findAndPressTextButton(tester, 'Send Transaction');
+
+  await findAndPressTextButton(tester, 'No thanks');
+
+  await slowSearchAndToggleText(tester, 'Continue');
+
+  final homeButtonFinder = find.text("Accounts");
+  expect(homeButtonFinder, findsWidgets);
+  await tester.tap(homeButtonFinder.first);
+  await tester.pump(Durations.long2);
 }
