@@ -13,7 +13,6 @@ export AR=llvm-ar
 export RANLIB=llvm-ranlib
 
 # Use specific Rust version
-rustup install 1.69.0
-rustup +1.69.0 target add aarch64-linux-android
-cargo +1.69.0 build --target=aarch64-linux-android
-cargo +1.69.0 build --target=aarch64-linux-android --release
+rustup target add aarch64-linux-android
+cargo build --target=aarch64-linux-android
+cargo build --target=aarch64-linux-android --release

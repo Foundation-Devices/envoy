@@ -6,7 +6,7 @@ docker_x := '-v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -v $XAUTHORITY
 docker_v4l2 := '--privileged -v /dev/video5:/dev/video5 -v /dev/video6:/dev/video6 -v /dev/video7:/dev/video7'
 
 docker-build:
-    docker build -t {{docker_image}} .
+    docker build --load --build-arg GITHUB_ACCESS_TOKEN=$GITHUB_ACCESS_TOKEN -t {{docker_image}} .
 
 docker-build-android: docker-build
     mkdir -p release && \
@@ -99,5 +99,5 @@ docker-beef: docker-build-linux
     docker run --mount type=bind,source="$(pwd)"/release,target=/root/release {{docker_v4l2}} {{docker_image_beefbench}}
 
 qa:
-    xvfb-run -s '-screen 0 2000x2000x24 +extension GLX' ./run_integration_tests.sh
+    ./run_integration_tests.sh
 

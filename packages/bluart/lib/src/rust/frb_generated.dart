@@ -3,15 +3,17 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
-import 'api/bluart.dart';
-import 'api/simple.dart';
+import 'api/ble.dart';
+import 'api/ble/device.dart';
+import 'api/ble/peripheral.dart';
+import 'api/ble/setup.dart';
+import 'api/logger.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
 import 'frb_generated.io.dart'
     if (dart.library.js_interop) 'frb_generated.web.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
-import 'package:uuid/uuid.dart';
 
 /// Main entrypoint of the Rust API
 class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
@@ -58,9 +60,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
       RustLibWire.fromExternalLibrary;
 
   @override
-  Future<void> executeRustInitializers() async {
-    await api.crateApiSimpleInitApp();
-  }
+  Future<void> executeRustInitializers() async {}
 
   @override
   ExternalLibraryLoaderConfig get defaultExternalLibraryLoaderConfig =>
@@ -70,7 +70,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.6.0';
 
   @override
-  int get rustContentHash => -1542925009;
+  int get rustContentHash => -591637202;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -81,79 +81,35 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
-  String crateApiBluartTcpAsPeripheralAutoAccessorGetPort(
-      {required TcpAsPeripheral that});
+  Future<void> crateApiLoggerAddLogger(
+      {required String name, required LogLevel level});
 
-  void crateApiBluartTcpAsPeripheralAutoAccessorSetPort(
-      {required TcpAsPeripheral that, required String port});
+  Stream<BigInt> crateApiBleBenchmark({required String id});
 
-  Future<void> crateApiBluartTcpAsPeripheralConnect(
-      {required TcpAsPeripheral that});
+  Future<BleDevice> crateApiBleDeviceBleDeviceFromPeripheral(
+      {required Peripheral peripheral});
 
-  Future<TcpAsPeripheral> crateApiBluartTcpAsPeripheralNew(
-      {required String url});
+  Future<void> crateApiBleConnect({required String id});
 
-  Future<void> crateApiBluartTcpAsPeripheralWrite(
-      {required TcpAsPeripheral that, required List<int> data});
+  Future<void> crateApiBleSetupCreateRuntime();
 
-  Future<void> crateApiBluartConnectPeripheral(
-      {required BluartPeripheral peripheral});
+  Future<void> crateApiBleDisconnect({required String id});
 
-  Future<Adapter?> crateApiBluartFirstAdapter();
+  Stream<String> crateApiLoggerEnableLogging();
 
-  Future<List<Adapter>> crateApiBluartGetAdapters();
+  Future<void> crateApiBleInit();
 
-  Future<String> crateApiBluartGetNameFromPerihperal(
-      {required BluartPeripheral peripheral});
+  Future<LogVisitor> crateApiLoggerLogVisitorDefault();
 
-  Future<List<BluartPeripheral>> crateApiBluartGetPeripherals(
-      {required Adapter adapter, List<String>? tcpPorts});
-
-  String crateApiSimpleGreet({required String name});
-
-  Future<void> crateApiSimpleInitApp();
-
-  Future<bool> crateApiBluartIsConnected(
-      {required BluartPeripheral peripheral});
-
-  Future<Uint8List> crateApiBluartReadFrom(
-      {required BluartPeripheral peripheral,
-      required UuidValue characteristic});
-
-  Future<void> crateApiBluartStartScan({required Adapter adapter});
-
-  Future<void> crateApiBluartStopScan({required Adapter adapter});
-
-  Future<void> crateApiBluartWriteTest({required BluartPeripheral peripheral});
-
-  Future<void> crateApiBluartWriteTo(
-      {required BluartPeripheral peripheral,
-      required UuidValue rxCharacteristic,
-      required List<int> data});
-
-  RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Adapter;
-
-  RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Adapter;
-
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_AdapterPtr;
+  Stream<List<BleDevice>> crateApiBleScan({required List<String> filter});
 
   RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_BluartPeripheral;
+      get rust_arc_increment_strong_count_Peripheral;
 
   RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_BluartPeripheral;
+      get rust_arc_decrement_strong_count_Peripheral;
 
-  CrossPlatformFinalizerArg
-      get rust_arc_decrement_strong_count_BluartPeripheralPtr;
-
-  RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_TcpAsPeripheral;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_TcpAsPeripheral;
-
-  CrossPlatformFinalizerArg
-      get rust_arc_decrement_strong_count_TcpAsPeripheralPtr;
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_PeripheralPtr;
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -165,195 +121,186 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  String crateApiBluartTcpAsPeripheralAutoAccessorGetPort(
-      {required TcpAsPeripheral that}) {
-    return handler.executeSync(SyncTask(
-      callFfi: () {
+  Future<void> crateApiLoggerAddLogger(
+      {required String name, required LogLevel level}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTcpAsPeripheral(
-            that, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_String,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiBluartTcpAsPeripheralAutoAccessorGetPortConstMeta,
-      argValues: [that],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta
-      get kCrateApiBluartTcpAsPeripheralAutoAccessorGetPortConstMeta =>
-          const TaskConstMeta(
-            debugName: "TcpAsPeripheral_auto_accessor_get_port",
-            argNames: ["that"],
-          );
-
-  @override
-  void crateApiBluartTcpAsPeripheralAutoAccessorSetPort(
-      {required TcpAsPeripheral that, required String port}) {
-    return handler.executeSync(SyncTask(
-      callFfi: () {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTcpAsPeripheral(
-            that, serializer);
-        sse_encode_String(port, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
+        sse_encode_String(name, serializer);
+        sse_encode_log_level(level, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 1, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
         decodeErrorData: null,
       ),
-      constMeta: kCrateApiBluartTcpAsPeripheralAutoAccessorSetPortConstMeta,
-      argValues: [that, port],
+      constMeta: kCrateApiLoggerAddLoggerConstMeta,
+      argValues: [name, level],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta
-      get kCrateApiBluartTcpAsPeripheralAutoAccessorSetPortConstMeta =>
-          const TaskConstMeta(
-            debugName: "TcpAsPeripheral_auto_accessor_set_port",
-            argNames: ["that", "port"],
-          );
+  TaskConstMeta get kCrateApiLoggerAddLoggerConstMeta => const TaskConstMeta(
+        debugName: "add_logger",
+        argNames: ["name", "level"],
+      );
 
   @override
-  Future<void> crateApiBluartTcpAsPeripheralConnect(
-      {required TcpAsPeripheral that}) {
+  Stream<BigInt> crateApiBleBenchmark({required String id}) {
+    final sink = RustStreamSink<BigInt>();
+    unawaited(handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        sse_encode_StreamSink_u_64_Sse(sink, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 2, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBleBenchmarkConstMeta,
+      argValues: [id, sink],
+      apiImpl: this,
+    )));
+    return sink.stream;
+  }
+
+  TaskConstMeta get kCrateApiBleBenchmarkConstMeta => const TaskConstMeta(
+        debugName: "benchmark",
+        argNames: ["id", "sink"],
+      );
+
+  @override
+  Future<BleDevice> crateApiBleDeviceBleDeviceFromPeripheral(
+      {required Peripheral peripheral}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTcpAsPeripheral(
-            that, serializer);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPeripheral(
+            peripheral, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 3, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_unit,
+        decodeSuccessData: sse_decode_ble_device,
         decodeErrorData: null,
       ),
-      constMeta: kCrateApiBluartTcpAsPeripheralConnectConstMeta,
-      argValues: [that],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiBluartTcpAsPeripheralConnectConstMeta =>
-      const TaskConstMeta(
-        debugName: "TcpAsPeripheral_connect",
-        argNames: ["that"],
-      );
-
-  @override
-  Future<TcpAsPeripheral> crateApiBluartTcpAsPeripheralNew(
-      {required String url}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_String(url, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 4, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData:
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTcpAsPeripheral,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiBluartTcpAsPeripheralNewConstMeta,
-      argValues: [url],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiBluartTcpAsPeripheralNewConstMeta =>
-      const TaskConstMeta(
-        debugName: "TcpAsPeripheral_new",
-        argNames: ["url"],
-      );
-
-  @override
-  Future<void> crateApiBluartTcpAsPeripheralWrite(
-      {required TcpAsPeripheral that, required List<int> data}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTcpAsPeripheral(
-            that, serializer);
-        sse_encode_list_prim_u_8_loose(data, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 5, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_unit,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiBluartTcpAsPeripheralWriteConstMeta,
-      argValues: [that, data],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiBluartTcpAsPeripheralWriteConstMeta =>
-      const TaskConstMeta(
-        debugName: "TcpAsPeripheral_write",
-        argNames: ["that", "data"],
-      );
-
-  @override
-  Future<void> crateApiBluartConnectPeripheral(
-      {required BluartPeripheral peripheral}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
-            peripheral, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 6, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_unit,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiBluartConnectPeripheralConstMeta,
+      constMeta: kCrateApiBleDeviceBleDeviceFromPeripheralConstMeta,
       argValues: [peripheral],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateApiBluartConnectPeripheralConstMeta =>
+  TaskConstMeta get kCrateApiBleDeviceBleDeviceFromPeripheralConstMeta =>
       const TaskConstMeta(
-        debugName: "connect_peripheral",
+        debugName: "ble_device_from_peripheral",
         argNames: ["peripheral"],
       );
 
   @override
-  Future<Adapter?> crateApiBluartFirstAdapter() {
+  Future<void> crateApiBleConnect({required String id}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 4, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBleConnectConstMeta,
+      argValues: [id],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBleConnectConstMeta => const TaskConstMeta(
+        debugName: "connect",
+        argNames: ["id"],
+      );
+
+  @override
+  Future<void> crateApiBleSetupCreateRuntime() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 7, port: port_);
+            funcId: 5, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData:
-            sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter,
-        decodeErrorData: null,
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
       ),
-      constMeta: kCrateApiBluartFirstAdapterConstMeta,
+      constMeta: kCrateApiBleSetupCreateRuntimeConstMeta,
       argValues: [],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateApiBluartFirstAdapterConstMeta => const TaskConstMeta(
-        debugName: "first_adapter",
+  TaskConstMeta get kCrateApiBleSetupCreateRuntimeConstMeta =>
+      const TaskConstMeta(
+        debugName: "create_runtime",
         argNames: [],
       );
 
   @override
-  Future<List<Adapter>> crateApiBluartGetAdapters() {
+  Future<void> crateApiBleDisconnect({required String id}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 6, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBleDisconnectConstMeta,
+      argValues: [id],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBleDisconnectConstMeta => const TaskConstMeta(
+        debugName: "disconnect",
+        argNames: ["id"],
+      );
+
+  @override
+  Stream<String> crateApiLoggerEnableLogging() {
+    final sink = RustStreamSink<String>();
+    unawaited(handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_StreamSink_String_Sse(sink, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 7, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiLoggerEnableLoggingConstMeta,
+      argValues: [sink],
+      apiImpl: this,
+    )));
+    return sink.stream;
+  }
+
+  TaskConstMeta get kCrateApiLoggerEnableLoggingConstMeta =>
+      const TaskConstMeta(
+        debugName: "enable_logging",
+        argNames: ["sink"],
+      );
+
+  @override
+  Future<void> crateApiBleInit() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
@@ -361,392 +308,118 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             funcId: 8, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData:
-            sse_decode_list_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter,
-        decodeErrorData: null,
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
       ),
-      constMeta: kCrateApiBluartGetAdaptersConstMeta,
+      constMeta: kCrateApiBleInitConstMeta,
       argValues: [],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateApiBluartGetAdaptersConstMeta => const TaskConstMeta(
-        debugName: "get_adapters",
+  TaskConstMeta get kCrateApiBleInitConstMeta => const TaskConstMeta(
+        debugName: "init",
         argNames: [],
       );
 
   @override
-  Future<String> crateApiBluartGetNameFromPerihperal(
-      {required BluartPeripheral peripheral}) {
+  Future<LogVisitor> crateApiLoggerLogVisitorDefault() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
-            peripheral, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 9, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_String,
+        decodeSuccessData: sse_decode_log_visitor,
         decodeErrorData: null,
       ),
-      constMeta: kCrateApiBluartGetNameFromPerihperalConstMeta,
-      argValues: [peripheral],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiBluartGetNameFromPerihperalConstMeta =>
-      const TaskConstMeta(
-        debugName: "get_name_from_perihperal",
-        argNames: ["peripheral"],
-      );
-
-  @override
-  Future<List<BluartPeripheral>> crateApiBluartGetPeripherals(
-      {required Adapter adapter, List<String>? tcpPorts}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-            adapter, serializer);
-        sse_encode_opt_list_String(tcpPorts, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 10, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData:
-            sse_decode_list_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiBluartGetPeripheralsConstMeta,
-      argValues: [adapter, tcpPorts],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiBluartGetPeripheralsConstMeta =>
-      const TaskConstMeta(
-        debugName: "get_peripherals",
-        argNames: ["adapter", "tcpPorts"],
-      );
-
-  @override
-  String crateApiSimpleGreet({required String name}) {
-    return handler.executeSync(SyncTask(
-      callFfi: () {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_String(name, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11)!;
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_String,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiSimpleGreetConstMeta,
-      argValues: [name],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiSimpleGreetConstMeta => const TaskConstMeta(
-        debugName: "greet",
-        argNames: ["name"],
-      );
-
-  @override
-  Future<void> crateApiSimpleInitApp() {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 12, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_unit,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiSimpleInitAppConstMeta,
+      constMeta: kCrateApiLoggerLogVisitorDefaultConstMeta,
       argValues: [],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateApiSimpleInitAppConstMeta => const TaskConstMeta(
-        debugName: "init_app",
+  TaskConstMeta get kCrateApiLoggerLogVisitorDefaultConstMeta =>
+      const TaskConstMeta(
+        debugName: "log_visitor_default",
         argNames: [],
       );
 
   @override
-  Future<bool> crateApiBluartIsConnected(
-      {required BluartPeripheral peripheral}) {
-    return handler.executeNormal(NormalTask(
+  Stream<List<BleDevice>> crateApiBleScan({required List<String> filter}) {
+    final sink = RustStreamSink<List<BleDevice>>();
+    unawaited(handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
-            peripheral, serializer);
+        sse_encode_StreamSink_list_ble_device_Sse(sink, serializer);
+        sse_encode_list_String(filter, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 13, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_bool,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiBluartIsConnectedConstMeta,
-      argValues: [peripheral],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiBluartIsConnectedConstMeta => const TaskConstMeta(
-        debugName: "is_connected",
-        argNames: ["peripheral"],
-      );
-
-  @override
-  Future<Uint8List> crateApiBluartReadFrom(
-      {required BluartPeripheral peripheral,
-      required UuidValue characteristic}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
-            peripheral, serializer);
-        sse_encode_Uuid(characteristic, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 14, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_list_prim_u_8_strict,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiBluartReadFromConstMeta,
-      argValues: [peripheral, characteristic],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiBluartReadFromConstMeta => const TaskConstMeta(
-        debugName: "read_from",
-        argNames: ["peripheral", "characteristic"],
-      );
-
-  @override
-  Future<void> crateApiBluartStartScan({required Adapter adapter}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-            adapter, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 15, port: port_);
+            funcId: 10, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
-        decodeErrorData: null,
+        decodeErrorData: sse_decode_AnyhowException,
       ),
-      constMeta: kCrateApiBluartStartScanConstMeta,
-      argValues: [adapter],
+      constMeta: kCrateApiBleScanConstMeta,
+      argValues: [sink, filter],
       apiImpl: this,
-    ));
+    )));
+    return sink.stream;
   }
 
-  TaskConstMeta get kCrateApiBluartStartScanConstMeta => const TaskConstMeta(
-        debugName: "start_scan",
-        argNames: ["adapter"],
-      );
-
-  @override
-  Future<void> crateApiBluartStopScan({required Adapter adapter}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-            adapter, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 16, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_unit,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiBluartStopScanConstMeta,
-      argValues: [adapter],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiBluartStopScanConstMeta => const TaskConstMeta(
-        debugName: "stop_scan",
-        argNames: ["adapter"],
-      );
-
-  @override
-  Future<void> crateApiBluartWriteTest({required BluartPeripheral peripheral}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
-            peripheral, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 17, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_unit,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiBluartWriteTestConstMeta,
-      argValues: [peripheral],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiBluartWriteTestConstMeta => const TaskConstMeta(
-        debugName: "write_test",
-        argNames: ["peripheral"],
-      );
-
-  @override
-  Future<void> crateApiBluartWriteTo(
-      {required BluartPeripheral peripheral,
-      required UuidValue rxCharacteristic,
-      required List<int> data}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
-            peripheral, serializer);
-        sse_encode_Uuid(rxCharacteristic, serializer);
-        sse_encode_list_prim_u_8_loose(data, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 18, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_unit,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiBluartWriteToConstMeta,
-      argValues: [peripheral, rxCharacteristic, data],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiBluartWriteToConstMeta => const TaskConstMeta(
-        debugName: "write_to",
-        argNames: ["peripheral", "rxCharacteristic", "data"],
+  TaskConstMeta get kCrateApiBleScanConstMeta => const TaskConstMeta(
+        debugName: "scan",
+        argNames: ["sink", "filter"],
       );
 
   RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_Adapter => wire
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter;
+      get rust_arc_increment_strong_count_Peripheral => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPeripheral;
 
   RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_Adapter => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter;
-
-  RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_BluartPeripheral => wire
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_BluartPeripheral => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral;
-
-  RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_TcpAsPeripheral => wire
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTcpAsPeripheral;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_TcpAsPeripheral => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTcpAsPeripheral;
+      get rust_arc_decrement_strong_count_Peripheral => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPeripheral;
 
   @protected
-  Adapter
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-          dynamic raw) {
+  AnyhowException dco_decode_AnyhowException(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return AdapterImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return AnyhowException(raw as String);
   }
 
   @protected
-  BluartPeripheral
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
+  Peripheral
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPeripheral(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return BluartPeripheralImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return PeripheralImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
-  TcpAsPeripheral
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTcpAsPeripheral(
+  Peripheral
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPeripheral(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return TcpAsPeripheralImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return PeripheralImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
-  BluartPeripheral
-      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
-          dynamic raw) {
+  RustStreamSink<String> dco_decode_StreamSink_String_Sse(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return BluartPeripheralImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    throw UnimplementedError();
   }
 
   @protected
-  TcpAsPeripheral
-      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTcpAsPeripheral(
-          dynamic raw) {
+  RustStreamSink<List<BleDevice>> dco_decode_StreamSink_list_ble_device_Sse(
+      dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return TcpAsPeripheralImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    throw UnimplementedError();
   }
 
   @protected
-  Adapter
-      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-          dynamic raw) {
+  RustStreamSink<BigInt> dco_decode_StreamSink_u_64_Sse(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return AdapterImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  BluartPeripheral
-      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return BluartPeripheralImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  TcpAsPeripheral
-      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTcpAsPeripheral(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return TcpAsPeripheralImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  Adapter
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return AdapterImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  BluartPeripheral
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return BluartPeripheralImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  TcpAsPeripheral
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTcpAsPeripheral(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return TcpAsPeripheralImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    throw UnimplementedError();
   }
 
   @protected
@@ -756,9 +429,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  UuidValue dco_decode_Uuid(dynamic raw) {
+  BleDevice dco_decode_ble_device(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return UuidValue.fromByteList(dco_decode_list_prim_u_8_strict(raw));
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return BleDevice(
+      id: dco_decode_String(arr[0]),
+      name: dco_decode_String(arr[1]),
+      connected: dco_decode_bool(arr[2]),
+    );
   }
 
   @protected
@@ -768,34 +448,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Adapter
-      dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-          dynamic raw) {
+  int dco_decode_i_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-        raw);
-  }
-
-  @protected
-  List<Adapter>
-      dco_decode_list_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>)
-        .map(
-            dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter)
-        .toList();
-  }
-
-  @protected
-  List<BluartPeripheral>
-      dco_decode_list_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>)
-        .map(
-            dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral)
-        .toList();
+    return raw as int;
   }
 
   @protected
@@ -805,9 +460,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<int> dco_decode_list_prim_u_8_loose(dynamic raw) {
+  List<BleDevice> dco_decode_list_ble_device(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw as List<int>;
+    return (raw as List<dynamic>).map(dco_decode_ble_device).toList();
   }
 
   @protected
@@ -817,20 +472,35 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Adapter?
-      dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-          dynamic raw) {
+  LogLevel dco_decode_log_level(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw == null
-        ? null
-        : dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-            raw);
+    return LogLevel.values[raw as int];
   }
 
   @protected
-  List<String>? dco_decode_opt_list_String(dynamic raw) {
+  LogVisitor dco_decode_log_visitor(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw == null ? null : dco_decode_list_String(raw);
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return LogVisitor(
+      message: dco_decode_opt_String(arr[0]),
+      modulePath: dco_decode_opt_String(arr[1]),
+      line: dco_decode_opt_String(arr[2]),
+      rest: dco_decode_String(arr[3]),
+    );
+  }
+
+  @protected
+  String? dco_decode_opt_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_String(raw);
+  }
+
+  @protected
+  BigInt dco_decode_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeU64(raw);
   }
 
   @protected
@@ -852,102 +522,49 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Adapter
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
+  AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_String(deserializer);
+    return AnyhowException(inner);
+  }
+
+  @protected
+  Peripheral
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPeripheral(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return AdapterImpl.frbInternalSseDecode(
+    return PeripheralImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
   @protected
-  BluartPeripheral
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
+  Peripheral
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPeripheral(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return BluartPeripheralImpl.frbInternalSseDecode(
+    return PeripheralImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
   @protected
-  TcpAsPeripheral
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTcpAsPeripheral(
-          SseDeserializer deserializer) {
+  RustStreamSink<String> sse_decode_StreamSink_String_Sse(
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return TcpAsPeripheralImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+    throw UnimplementedError('Unreachable ()');
   }
 
   @protected
-  BluartPeripheral
-      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
-          SseDeserializer deserializer) {
+  RustStreamSink<List<BleDevice>> sse_decode_StreamSink_list_ble_device_Sse(
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return BluartPeripheralImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+    throw UnimplementedError('Unreachable ()');
   }
 
   @protected
-  TcpAsPeripheral
-      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTcpAsPeripheral(
-          SseDeserializer deserializer) {
+  RustStreamSink<BigInt> sse_decode_StreamSink_u_64_Sse(
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return TcpAsPeripheralImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  Adapter
-      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return AdapterImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  BluartPeripheral
-      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return BluartPeripheralImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  TcpAsPeripheral
-      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTcpAsPeripheral(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return TcpAsPeripheralImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  Adapter
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return AdapterImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  BluartPeripheral
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return BluartPeripheralImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  TcpAsPeripheral
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTcpAsPeripheral(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return TcpAsPeripheralImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+    throw UnimplementedError('Unreachable ()');
   }
 
   @protected
@@ -958,10 +575,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  UuidValue sse_decode_Uuid(SseDeserializer deserializer) {
+  BleDevice sse_decode_ble_device(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var inner = sse_decode_list_prim_u_8_strict(deserializer);
-    return UuidValue.fromByteList(inner);
+    var var_id = sse_decode_String(deserializer);
+    var var_name = sse_decode_String(deserializer);
+    var var_connected = sse_decode_bool(deserializer);
+    return BleDevice(id: var_id, name: var_name, connected: var_connected);
   }
 
   @protected
@@ -971,44 +590,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Adapter
-      sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-          SseDeserializer deserializer) {
+  int sse_decode_i_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-        deserializer));
-  }
-
-  @protected
-  List<Adapter>
-      sse_decode_list_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <Adapter>[];
-    for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(
-          sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-              deserializer));
-    }
-    return ans_;
-  }
-
-  @protected
-  List<BluartPeripheral>
-      sse_decode_list_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <BluartPeripheral>[];
-    for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(
-          sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
-              deserializer));
-    }
-    return ans_;
+    return deserializer.buffer.getInt32();
   }
 
   @protected
@@ -1024,10 +608,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<int> sse_decode_list_prim_u_8_loose(SseDeserializer deserializer) {
+  List<BleDevice> sse_decode_list_ble_device(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
+
     var len_ = sse_decode_i_32(deserializer);
-    return deserializer.buffer.getUint8List(len_);
+    var ans_ = <BleDevice>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_ble_device(deserializer));
+    }
+    return ans_;
   }
 
   @protected
@@ -1038,28 +627,41 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Adapter?
-      sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-          SseDeserializer deserializer) {
+  LogLevel sse_decode_log_level(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return LogLevel.values[inner];
+  }
+
+  @protected
+  LogVisitor sse_decode_log_visitor(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_message = sse_decode_opt_String(deserializer);
+    var var_modulePath = sse_decode_opt_String(deserializer);
+    var var_line = sse_decode_opt_String(deserializer);
+    var var_rest = sse_decode_String(deserializer);
+    return LogVisitor(
+        message: var_message,
+        modulePath: var_modulePath,
+        line: var_line,
+        rest: var_rest);
+  }
+
+  @protected
+  String? sse_decode_opt_String(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     if (sse_decode_bool(deserializer)) {
-      return (sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-          deserializer));
+      return (sse_decode_String(deserializer));
     } else {
       return null;
     }
   }
 
   @protected
-  List<String>? sse_decode_opt_list_String(SseDeserializer deserializer) {
+  BigInt sse_decode_u_64(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-
-    if (sse_decode_bool(deserializer)) {
-      return (sse_decode_list_String(deserializer));
-    } else {
-      return null;
-    }
+    return deserializer.buffer.getBigUint64();
   }
 
   @protected
@@ -1080,115 +682,66 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  int sse_decode_i_32(SseDeserializer deserializer) {
+  void sse_encode_AnyhowException(
+      AnyhowException self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getInt32();
+    sse_encode_String(self.message, serializer);
   }
 
   @protected
   void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-          Adapter self, SseSerializer serializer) {
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPeripheral(
+          Peripheral self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-        (self as AdapterImpl).frbInternalSseEncode(move: true), serializer);
+        (self as PeripheralImpl).frbInternalSseEncode(move: false), serializer);
   }
 
   @protected
   void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
-          BluartPeripheral self, SseSerializer serializer) {
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPeripheral(
+          Peripheral self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-        (self as BluartPeripheralImpl).frbInternalSseEncode(move: true),
+        (self as PeripheralImpl).frbInternalSseEncode(move: null), serializer);
+  }
+
+  @protected
+  void sse_encode_StreamSink_String_Sse(
+      RustStreamSink<String> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(
+        self.setupAndSerialize(
+            codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: sse_decode_AnyhowException,
+        )),
         serializer);
   }
 
   @protected
-  void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTcpAsPeripheral(
-          TcpAsPeripheral self, SseSerializer serializer) {
+  void sse_encode_StreamSink_list_ble_device_Sse(
+      RustStreamSink<List<BleDevice>> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as TcpAsPeripheralImpl).frbInternalSseEncode(move: true),
+    sse_encode_String(
+        self.setupAndSerialize(
+            codec: SseCodec(
+          decodeSuccessData: sse_decode_list_ble_device,
+          decodeErrorData: sse_decode_AnyhowException,
+        )),
         serializer);
   }
 
   @protected
-  void
-      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
-          BluartPeripheral self, SseSerializer serializer) {
+  void sse_encode_StreamSink_u_64_Sse(
+      RustStreamSink<BigInt> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as BluartPeripheralImpl).frbInternalSseEncode(move: false),
-        serializer);
-  }
-
-  @protected
-  void
-      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTcpAsPeripheral(
-          TcpAsPeripheral self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as TcpAsPeripheralImpl).frbInternalSseEncode(move: false),
-        serializer);
-  }
-
-  @protected
-  void
-      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-          Adapter self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as AdapterImpl).frbInternalSseEncode(move: false), serializer);
-  }
-
-  @protected
-  void
-      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
-          BluartPeripheral self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as BluartPeripheralImpl).frbInternalSseEncode(move: false),
-        serializer);
-  }
-
-  @protected
-  void
-      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTcpAsPeripheral(
-          TcpAsPeripheral self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as TcpAsPeripheralImpl).frbInternalSseEncode(move: false),
-        serializer);
-  }
-
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-          Adapter self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as AdapterImpl).frbInternalSseEncode(move: null), serializer);
-  }
-
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
-          BluartPeripheral self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as BluartPeripheralImpl).frbInternalSseEncode(move: null),
-        serializer);
-  }
-
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTcpAsPeripheral(
-          TcpAsPeripheral self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as TcpAsPeripheralImpl).frbInternalSseEncode(move: null),
+    sse_encode_String(
+        self.setupAndSerialize(
+            codec: SseCodec(
+          decodeSuccessData: sse_decode_u_64,
+          decodeErrorData: sse_decode_AnyhowException,
+        )),
         serializer);
   }
 
@@ -1199,9 +752,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_Uuid(UuidValue self, SseSerializer serializer) {
+  void sse_encode_ble_device(BleDevice self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_list_prim_u_8_strict(self.toBytes(), serializer);
+    sse_encode_String(self.id, serializer);
+    sse_encode_String(self.name, serializer);
+    sse_encode_bool(self.connected, serializer);
   }
 
   @protected
@@ -1211,36 +766,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void
-      sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-          Adapter self, SseSerializer serializer) {
+  void sse_encode_i_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-        self, serializer);
-  }
-
-  @protected
-  void
-      sse_encode_list_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-          List<Adapter> self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_32(self.length, serializer);
-    for (final item in self) {
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-          item, serializer);
-    }
-  }
-
-  @protected
-  void
-      sse_encode_list_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
-          List<BluartPeripheral> self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_32(self.length, serializer);
-    for (final item in self) {
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBluartPeripheral(
-          item, serializer);
-    }
+    serializer.buffer.putInt32(self);
   }
 
   @protected
@@ -1253,12 +781,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_list_prim_u_8_loose(
-      List<int> self, SseSerializer serializer) {
+  void sse_encode_list_ble_device(
+      List<BleDevice> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
-    serializer.buffer
-        .putUint8List(self is Uint8List ? self : Uint8List.fromList(self));
+    for (final item in self) {
+      sse_encode_ble_device(item, serializer);
+    }
   }
 
   @protected
@@ -1270,27 +799,34 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void
-      sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-          Adapter? self, SseSerializer serializer) {
+  void sse_encode_log_level(LogLevel self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_log_visitor(LogVisitor self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_String(self.message, serializer);
+    sse_encode_opt_String(self.modulePath, serializer);
+    sse_encode_opt_String(self.line, serializer);
+    sse_encode_String(self.rest, serializer);
+  }
+
+  @protected
+  void sse_encode_opt_String(String? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     sse_encode_bool(self != null, serializer);
     if (self != null) {
-      sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAdapter(
-          self, serializer);
+      sse_encode_String(self, serializer);
     }
   }
 
   @protected
-  void sse_encode_opt_list_String(
-      List<String>? self, SseSerializer serializer) {
+  void sse_encode_u_64(BigInt self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-
-    sse_encode_bool(self != null, serializer);
-    if (self != null) {
-      sse_encode_list_String(self, serializer);
-    }
+    serializer.buffer.putBigUint64(self);
   }
 
   @protected
@@ -1309,87 +845,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putBigUint64(self);
   }
-
-  @protected
-  void sse_encode_i_32(int self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putInt32(self);
-  }
 }
 
 @sealed
-class AdapterImpl extends RustOpaque implements Adapter {
+class PeripheralImpl extends RustOpaque implements Peripheral {
   // Not to be used by end users
-  AdapterImpl.frbInternalDcoDecode(List<dynamic> wire)
+  PeripheralImpl.frbInternalDcoDecode(List<dynamic> wire)
       : super.frbInternalDcoDecode(wire, _kStaticData);
 
   // Not to be used by end users
-  AdapterImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+  PeripheralImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
       : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
 
   static final _kStaticData = RustArcStaticData(
     rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_Adapter,
+        RustLib.instance.api.rust_arc_increment_strong_count_Peripheral,
     rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_Adapter,
+        RustLib.instance.api.rust_arc_decrement_strong_count_Peripheral,
     rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_AdapterPtr,
+        RustLib.instance.api.rust_arc_decrement_strong_count_PeripheralPtr,
   );
-}
-
-@sealed
-class BluartPeripheralImpl extends RustOpaque implements BluartPeripheral {
-  // Not to be used by end users
-  BluartPeripheralImpl.frbInternalDcoDecode(List<dynamic> wire)
-      : super.frbInternalDcoDecode(wire, _kStaticData);
-
-  // Not to be used by end users
-  BluartPeripheralImpl.frbInternalSseDecode(
-      BigInt ptr, int externalSizeOnNative)
-      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-  static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_BluartPeripheral,
-    rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_BluartPeripheral,
-    rustArcDecrementStrongCountPtr: RustLib
-        .instance.api.rust_arc_decrement_strong_count_BluartPeripheralPtr,
-  );
-}
-
-@sealed
-class TcpAsPeripheralImpl extends RustOpaque implements TcpAsPeripheral {
-  // Not to be used by end users
-  TcpAsPeripheralImpl.frbInternalDcoDecode(List<dynamic> wire)
-      : super.frbInternalDcoDecode(wire, _kStaticData);
-
-  // Not to be used by end users
-  TcpAsPeripheralImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
-      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-  static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_TcpAsPeripheral,
-    rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_TcpAsPeripheral,
-    rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_TcpAsPeripheralPtr,
-  );
-
-  String get port =>
-      RustLib.instance.api.crateApiBluartTcpAsPeripheralAutoAccessorGetPort(
-        that: this,
-      );
-
-  set port(String port) => RustLib.instance.api
-      .crateApiBluartTcpAsPeripheralAutoAccessorSetPort(that: this, port: port);
-
-  Future<void> connect() =>
-      RustLib.instance.api.crateApiBluartTcpAsPeripheralConnect(
-        that: this,
-      );
-
-  Future<void> write({required List<int> data}) => RustLib.instance.api
-      .crateApiBluartTcpAsPeripheralWrite(that: this, data: data);
 }

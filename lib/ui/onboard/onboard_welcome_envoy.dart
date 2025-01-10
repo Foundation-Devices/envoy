@@ -175,20 +175,22 @@ class _OnboardEnvoyWelcomeScreenState
     if (mounted) {
       Future.delayed(const Duration(milliseconds: 100)).then((value) async {
         //while pop back to home, welcome screen will init again, so we need to check if we already tried automatic recovery
-        if (!ref.read(triedAutomaticRecovery) &&
-            !ref.read(successfulSetupWallet) &&
-            !_checkedMagicBackUpInWelcomeScreen) {
-          try {
-            _checkedMagicBackUpInWelcomeScreen = true;
-            //make sure automatic recovery only once
-            if (await EnvoySeed().get() != null && mounted) {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const MagicRecoverWallet()));
+        if (mounted) {
+          if (!ref.read(triedAutomaticRecovery) &&
+              !ref.read(successfulSetupWallet) &&
+              !_checkedMagicBackUpInWelcomeScreen) {
+            try {
+              _checkedMagicBackUpInWelcomeScreen = true;
+              //make sure automatic recovery only once
+              if (await EnvoySeed().get() != null && mounted) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MagicRecoverWallet()));
+              }
+            } catch (e) {
+              //no-op
             }
-          } catch (e) {
-            //no-op
           }
         }
       });

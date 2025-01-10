@@ -2,5 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-pub mod api;
 mod frb_generated;
+
+pub mod api;

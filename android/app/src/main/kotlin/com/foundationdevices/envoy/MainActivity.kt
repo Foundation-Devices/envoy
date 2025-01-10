@@ -37,6 +37,10 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
     private var directoryContentRequestCode = 21;
     private var saveFileRequestCode = 22;
 
+    init {
+        System.loadLibrary("bluart")
+    }
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
 
