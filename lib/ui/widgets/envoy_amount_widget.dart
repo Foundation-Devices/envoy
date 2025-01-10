@@ -19,6 +19,7 @@ class EnvoyAmount extends StatelessWidget {
     required this.amountWidgetStyle,
     required this.account,
     this.alignToEnd = true,
+    this.millionaireMode = true,
     this.unit,
   });
 
@@ -27,6 +28,7 @@ class EnvoyAmount extends StatelessWidget {
   final Account account;
   final bool alignToEnd;
   final AmountDisplayUnit? unit;
+  final bool millionaireMode;
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +65,7 @@ class EnvoyAmount extends StatelessWidget {
       network: account.wallet.network,
       alignToEnd: alignToEnd,
       locale: currentLocale,
+      millionaireMode: millionaireMode,
     );
   }
 }

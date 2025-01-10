@@ -22,6 +22,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart' as new_colors;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -243,6 +244,9 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                     ]),
               ),
               child: Container(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.78,
+                ),
                 decoration: BoxDecoration(
                     borderRadius:
                         const BorderRadius.all(Radius.circular(cardRadius - 3)),
@@ -262,7 +266,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                       isComplex: true,
                       willChange: false,
                       painter: StripePainter(
-                        EnvoyColors.gray1000.withOpacity(0.4),
+                        EnvoyColors.gray1000.applyOpacity(0.4),
                       ),
                       child: tag.coins.length == 1
                           ? singleCoinWidget(context)
@@ -350,6 +354,13 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                           children: [
                                             const GhostListTile(
                                               animate: false,
+                                              diagonal: false,
+                                              leadingHeight:
+                                                  EnvoySpacing.medium2,
+                                              minLeadingWidth:
+                                                  EnvoySpacing.small,
+                                              subtitleRightPadding:
+                                                  EnvoySpacing.xl,
                                             ),
                                             const Padding(
                                                 padding: EdgeInsets.only(
@@ -672,6 +683,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
 class DeleteTagDialog extends StatelessWidget {
   const DeleteTagDialog({
     super.key,
+    this.dialogHeading = "",
     required this.dialogSubheading,
     required this.primaryButtonText,
     required this.secondaryButtonText,
@@ -679,6 +691,7 @@ class DeleteTagDialog extends StatelessWidget {
     required this.onSecondaryButtonTap,
   });
 
+  final String dialogHeading;
   final String dialogSubheading;
   final String primaryButtonText;
   final String secondaryButtonText;
@@ -687,6 +700,9 @@ class DeleteTagDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final heading =
+        dialogHeading.isNotEmpty ? dialogHeading : S().component_warning;
+
     return Container(
       constraints: BoxConstraints(
         minHeight: 270,
@@ -707,15 +723,20 @@ class DeleteTagDialog extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+              padding: const EdgeInsets.only(top: EnvoySpacing.xs),
               child: Image.asset("assets/exclamation_triangle.png", width: 68),
             ),
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
-              child: Text(dialogSubheading,
+              padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
+              child: Text(heading.toUpperCase(),
                   textAlign: TextAlign.center, style: EnvoyTypography.heading),
             ),
+            Padding(
+              padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+              child: Text(dialogSubheading,
+                  textAlign: TextAlign.center, style: EnvoyTypography.info),
+            ),
+            const SizedBox(height: EnvoySpacing.medium3),
             EnvoyButton(
               secondaryButtonText,
               textStyle: EnvoyTypography.body

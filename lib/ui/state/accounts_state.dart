@@ -45,14 +45,6 @@ final mainnetAccountsProvider =
       .where((account) => account.wallet.network == Network.Mainnet)
       .toList();
 
-  if (selectedAccount != null) {
-    final indexOfSelected = filteredAccounts
-        .indexWhere((account) => account.id == selectedAccount.id);
-    if (indexOfSelected != -1) {
-      final selectedAccountToMove = filteredAccounts.removeAt(indexOfSelected);
-      filteredAccounts.add(selectedAccountToMove);
-    }
-  }
   return filteredAccounts;
 });
 

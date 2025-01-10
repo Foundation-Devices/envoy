@@ -5,6 +5,7 @@
 import 'dart:io';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/main.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/big_tab.dart';
@@ -19,6 +20,7 @@ import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -67,7 +69,8 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
   final continueButtonFinder = find.text('Continue');
   expect(continueButtonFinder, findsOneWidget);
   await tester.tap(continueButtonFinder);
-  await tester.pump(const Duration(milliseconds: 500));
+  await tester.pump(Durations.long2);
+  await tester.pump(Durations.long2);
 
   final enableMagicButtonFinder = find.text('Enable Magic Backups');
   expect(enableMagicButtonFinder, findsOneWidget);
@@ -80,7 +83,8 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
   await tester.tap(createMagicButtonFinder);
   await tester.pump(const Duration(milliseconds: 1500));
 
-  await tester.pumpAndSettle();
+  await tester.pumpUntilFound(continueButtonFinder,
+      tries: 50, duration: Durations.long2);
 
   // animations
   expect(continueButtonFinder, findsOneWidget);
@@ -92,7 +96,7 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
   await tester.pump(const Duration(milliseconds: 500));
 }
 
-Future<void> resetEnvoyData() async {
+Future<void> resetLinuxEnvoyData() async {
   final appSupportDir = await getApplicationSupportDirectory();
 
   // Database
@@ -110,6 +114,18 @@ Future<void> resetEnvoyData() async {
   }
 }
 
+Future<void> resetEnvoyData() async {
+  const String localSecretFileName = "local.secret";
+  const String seedKey = "seed";
+
+  try {
+    await LocalStorage().deleteSecure(seedKey);
+    await LocalStorage().deleteFile(localSecretFileName);
+  } catch (er) {
+    EnvoyReport().log("EnvoySeed integration", er.toString());
+  }
+}
+
 Future<void> goToAbout(WidgetTester tester) async {
   await tester.pump();
   final aboutButton = find.text('ABOUT');
@@ -120,7 +136,7 @@ Future<void> goToAbout(WidgetTester tester) async {
 }
 
 FiatCurrency? getFiatCurrencyByCode(String code) {
-  for (var fiatCurrency in supportedFiat) {
+  for (var fiatCurrency in ExchangeRate().supportedFiat) {
     if (fiatCurrency.code == code) {
       return fiatCurrency;
     }
@@ -176,18 +192,14 @@ Future<void> goToSettings(WidgetTester tester) async {
 
 Future<String?> findCurrentFiatInSettings(WidgetTester tester) async {
   await tester.pump();
-  final dropdownFiatFinder = find.byType(DropdownButton<String>);
-  expect(dropdownFiatFinder, findsOneWidget);
-
-  // Retrieve the DropdownButton widget
-  final dropdownFiatWidget =
-      tester.widget<DropdownButton<String>>(dropdownFiatFinder);
-
-  // Get the currently selected value
-  final currentFiat = dropdownFiatWidget.value;
-  await tester.pump(Durations.long2);
-
-  return currentFiat;
+  String? currentSelection;
+  for (var element in ExchangeRate().supportedFiat) {
+    if (find.text(element.code).evaluate().isNotEmpty) {
+      currentSelection = element.code;
+    }
+  }
+  await tester.pump(Durations.long1);
+  return currentSelection;
 }
 
 Future<bool> isSlideSwitchOn(WidgetTester tester, String listTileText) async {
@@ -229,13 +241,14 @@ Future<void> findAndToggleSettingsSwitch(
   await tester.pump(Durations.long2);
 }
 
-Future<void> fromSettingsToFiatDropdown(WidgetTester tester) async {
+Future<void> fromSettingsToFiatBottomSheet(WidgetTester tester,
+    {String? currentSelection}) async {
   await tester.pump();
-  final dropdownButton = find.byType(DropdownButton<String>);
-  expect(dropdownButton, findsOneWidget);
+  final fiatOptionButton = find.text(currentSelection ?? 'USD');
+  expect(fiatOptionButton, findsOneWidget);
 
-  await tester.tap(dropdownButton);
-  await tester.pump(Durations.long2);
+  await tester.tap(fiatOptionButton);
+  await tester.pump(Durations.long3);
 }
 
 Future<void> scrollActivityAndCheckFiat(
@@ -287,16 +300,16 @@ Future<void> goToDocumentation(WidgetTester tester) async {
   final documentationButton = find.text('DOCUMENTATION');
   expect(documentationButton, findsOneWidget);
 
-  await tester.tap(documentationButton);
+  //await tester.tap(documentationButton); // TODO: we can't exit from an outside app
   await tester.pump(Durations.long2);
 }
 
-Future<void> goToTelegram(WidgetTester tester) async {
+Future<void> goToCommunity(WidgetTester tester) async {
   await tester.pump();
-  final telegramButton = find.text('TELEGRAM');
-  expect(telegramButton, findsOneWidget);
+  final communityButton = find.text('COMMUNITY');
+  expect(communityButton, findsOneWidget);
 
-  await tester.tap(telegramButton);
+  //await tester.tap(communityButton); // TODO: we can't exit from an outside app
   await tester.pump(Durations.long2);
 }
 
@@ -305,7 +318,7 @@ Future<void> goToEmail(WidgetTester tester) async {
   final emailButton = find.text('EMAIL');
   expect(emailButton, findsOneWidget);
 
-  await tester.tap(emailButton);
+  //await tester.tap(emailButton);  // TODO: we can't exit from an outside app
   await tester.pump(Durations.long2);
 }
 
@@ -425,9 +438,10 @@ Future<void> setUpWalletFromSeedViaBackupFile(
   await tester.pump(Durations.long2);
   await tester.tap(ignoreButtonFromDialog);
   await tester.pump(Durations.long2);
-  await tester.pumpAndSettle();
 
   final imageFinder = find.byType(Image);
+  await tester.pump(Durations.long2);
+  await tester.pump(Durations.long2);
 
   await tester.longPress(imageFinder);
 
@@ -520,7 +534,8 @@ Future<void> onboardingAndEnterSeed(
   final continueButtonFinder = find.text('Continue');
   expect(continueButtonFinder, findsOneWidget);
   await tester.tap(continueButtonFinder);
-  await tester.pump(const Duration(milliseconds: 500));
+  await tester.pump(Durations.long2);
+  await tester.pump(Durations.long2);
 
   final manuallyConfigureSeedWords = find.text('Manually Configure Seed Words');
   expect(manuallyConfigureSeedWords, findsOneWidget);
@@ -606,6 +621,7 @@ Future<void> setUpFromStartNoAccounts(WidgetTester tester) async {
   expect(continueButtonFinder, findsOneWidget);
   await tester.tap(continueButtonFinder);
   await tester.pump(Durations.long2);
+  await tester.pump(Durations.long2);
 
   // go to home w no accounts
   final skipButtonFinder = find.text('Skip');
@@ -616,9 +632,16 @@ Future<void> setUpFromStartNoAccounts(WidgetTester tester) async {
 
 Future<void> checkForToast(WidgetTester tester) async {
   final iconFinder = find.byWidgetPredicate(
-    (widget) =>
-        widget is EnvoyIcon &&
-        (widget.icon == EnvoyIcons.info || widget.icon == EnvoyIcons.alert),
+    (widget) {
+      if (widget is EnvoyIcon) {
+        return widget.icon == EnvoyIcons.info ||
+            widget.icon == EnvoyIcons.alert;
+      }
+      if (widget is Icon) {
+        return widget.icon == Icons.copy;
+      }
+      return false;
+    },
   );
 
   // Check if the icon is found initially

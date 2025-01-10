@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/bluetooth_manager.dart';
+import 'package:envoy/ui/home/settings/bluetooth_diag.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/home/settings/backup/backup_page.dart';
 import 'package:envoy/ui/home/settings/settings_page.dart';
@@ -12,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/home/home_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/home/settings/about_page.dart';
 import 'package:envoy/business/settings.dart';
@@ -21,6 +24,7 @@ import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
 
 class SettingsMenu extends ConsumerStatefulWidget {
   const SettingsMenu({super.key});
@@ -38,15 +42,37 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
     Settings().store();
   }
 
+  onNativeBackPressed(bool didPop) {
+    if (!didPop) {
+      if (_currentPage is! SettingsMenuWidget) {
+        _goBackToMenu();
+      } else if (ref.read(homePageBackgroundProvider) ==
+          HomePageBackgroundState.menu) {
+        ref.read(homePageBackgroundProvider.notifier).state =
+            HomePageBackgroundState.hidden;
+        ref.read(homePageTitleProvider.notifier).state = "";
+        GoRouter.of(context).go(ROUTE_ACCOUNTS_HOME);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ref.listen<HomePageBackgroundState>(homePageBackgroundProvider, (_, next) {
       selectPage(next, context);
     });
 
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 250),
-      child: _currentPage,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, _) async {
+        if (!didPop) {
+          onNativeBackPressed(didPop);
+        }
+      },
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 250),
+        child: _currentPage,
+      ),
     );
   }
 
@@ -186,22 +212,26 @@ class SettingsMenuWidget extends ConsumerWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                       child: GestureDetector(
                           onTap: () {
-                            launchUrl(Uri.parse(
-                                "https://github.com/Foundation-Devices"));
+                            launchUrl(
+                                Uri.parse("https://community.foundation.xyz/"),
+                                mode: LaunchMode.externalApplication);
                           },
                           child: SvgPicture.asset(
-                            "assets/github.svg",
+                            "assets/community.svg",
                           )),
                     ),
                     GestureDetector(
                         onTap: () {
-                          launchUrl(
-                              Uri.parse(
-                                  "https://telegram.me/foundationdevices"),
-                              mode: LaunchMode.externalApplication);
+                          BluetoothManager().getPermissions();
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const BluetoothDiagnosticsPage(),
+                              ));
                         },
                         child: SvgPicture.asset(
-                          "assets/telegram.svg",
+                          "assets/github.svg",
                         )),
                   ],
                 ),

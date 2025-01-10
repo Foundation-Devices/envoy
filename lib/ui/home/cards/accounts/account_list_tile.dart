@@ -13,6 +13,7 @@ import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/card_swipe_wrapper.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -115,7 +116,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                     isComplex: true,
                     willChange: false,
                     painter: StripePainter(
-                      EnvoyColors.gray1000.withOpacity(0.4),
+                      EnvoyColors.gray1000.applyOpacity(0.4),
                     ),
                   ),
                 ),
@@ -260,7 +261,7 @@ class AccountBadge extends StatelessWidget {
         width: (isNotCircular) ? null : containerHeight / 2,
         height: containerHeight / 2.0,
         decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.6),
+            color: Colors.black.applyOpacity(0.6),
             borderRadius: isNotCircular
                 ? BorderRadius.circular(containerHeight / 2)
                 : null,
@@ -326,6 +327,14 @@ class BadgeIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (account.wallet.hot) {
+      return SvgPicture.asset(
+        "assets/icons/ic_wallet_coins.svg",
+        height: 24,
+        width: 24,
+        color: Colors.white,
+      );
+    }
+    if (account.deviceSerial == "prime") {
       return SvgPicture.asset(
         "assets/icons/ic_wallet_coins.svg",
         height: 24,

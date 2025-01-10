@@ -5,6 +5,7 @@
 import 'dart:math';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';
 
@@ -29,6 +30,7 @@ class EnvoyPatternScaffold extends StatefulWidget {
   final Widget? child;
   final Widget? shield;
   final Widget? header;
+  final String? heroTag;
   final PreferredSizeWidget? appBar;
   final bool animate;
   final double gradientHeight;
@@ -40,6 +42,7 @@ class EnvoyPatternScaffold extends StatefulWidget {
       this.appBar,
       this.shield,
       this.header,
+      this.heroTag,
       this.gradientHeight = 1.5});
 
   @override
@@ -84,13 +87,14 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
   @override
   Widget build(BuildContext context) {
     double shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
+
     return Stack(
       children: [
         SizedBox.expand(
             child: CustomPaint(
           size: const Size(double.infinity, double.infinity),
           painter: StripePainter(
-            EnvoyColors.solidWhite.withOpacity(0.1),
+            EnvoyColors.solidWhite.applyOpacity(0.1),
             stripeWidth: 2.0,
             gapWidth: 2.0,
             rotateDegree: 25.0,
@@ -107,37 +111,49 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
         )),
         widget.child != null
             ? widget.child!
-            : Scaffold(
-                backgroundColor: Colors.transparent,
-                appBar: widget.appBar,
-                body: Align(
-                  alignment: Alignment.center,
-                  child: widget.header,
-                ),
-                bottomNavigationBar: SizedBox(
-                  width: double.infinity,
-                  height: (MediaQuery.of(context).size.height * 0.52)
-                      .clamp(350, 580),
-                  child: Container(
-                    padding: EdgeInsets.only(bottom: shieldBottom),
-                    decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [
-                          Color(0x00000000),
-                          Color(0xff686868),
-                          Color(0xffFFFFFF),
-                        ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter)),
-                    child: Shield(
-                      child: Padding(
-                          padding: const EdgeInsets.only(
-                              right: 8, left: 8, top: 8, bottom: 40),
-                          child: SizedBox.expand(child: widget.shield)),
+            : Builder(builder: (context) {
+                Widget shield = Shield(
+                  child: Padding(
+                      padding: const EdgeInsets.only(
+                          right: 8, left: 8, top: 8, bottom: 40),
+                      child: SizedBox.expand(child: widget.shield)),
+                );
+
+                return Scaffold(
+                  backgroundColor: Colors.transparent,
+                  appBar: widget.appBar,
+                  body: Align(
+                    alignment: Alignment.center,
+                    child: widget.header,
+                  ),
+                  bottomNavigationBar: SizedBox(
+                    width: double.infinity,
+                    height: (MediaQuery.of(context).size.height * 0.52)
+                        .clamp(350, 580),
+                    child: Container(
+                      padding: EdgeInsets.only(bottom: shieldBottom),
+                      decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: [
+                            Color(0x00000000),
+                            Color(0xff686868),
+                            Color(0xffFFFFFF),
+                          ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter)),
+                      child: widget.heroTag != null
+                          ? Hero(
+                              tag: widget.heroTag!,
+                              child: Material(
+                                color: Colors.transparent,
+                                child: shield,
+                              ),
+                            )
+                          : shield,
                     ),
                   ),
-                ),
-              ),
+                );
+              }),
       ],
     );
   }
@@ -157,9 +173,9 @@ class GradientPainter extends CustomPainter {
           const Color(0xff965C4B),
           const Color(0xffD68B6E),
           const Color(0xcfd68b6e),
-          const Color(0xffF0BBA4).withOpacity(0.4),
-          const Color(0xffF0BBA4).withOpacity(0.1),
-          const Color(0xffF0BBA4).withOpacity(0.002),
+          const Color(0xffF0BBA4).applyOpacity(0.4),
+          const Color(0xffF0BBA4).applyOpacity(0.1),
+          const Color(0xffF0BBA4).applyOpacity(0.002),
         ],
       ).createShader(Rect.fromCircle(
           center: Offset(size.width / 2, size.height / gradientHeight),

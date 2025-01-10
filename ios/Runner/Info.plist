@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>Our app uses bluetooth to find, connect and transfer data between different devices</string>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -12,6 +16,13 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>es</string>
+		<string>ca</string>
+		<string>pt</string>
+	</array>
 	<key>CFBundleName</key>
 	<string>envoy</string>
 	<key>CFBundlePackageType</key>
@@ -22,12 +33,19 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Envoy needs camera access to scan QR codes</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>$(PRODUCT_NAME) Authentication with TouchId or FaceID</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>bluetooth-central</string>
 		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
@@ -52,20 +70,5 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>ITSAppUsesNonExemptEncryption</key>
-    <false/>
-	<key>NSFaceIDUsageDescription</key>
-    <string>$(PRODUCT_NAME) Authentication with TouchId or FaceID</string>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-    <key>CFBundleLocalizations</key>
-    <array>
-        <string>en</string>
-        <string>es</string>
-        <string>ca</string>
-        <string>pt</string>
-    </array>
 </dict>
 </plist>

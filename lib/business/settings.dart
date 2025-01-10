@@ -360,7 +360,8 @@ class Settings extends ChangeNotifier {
       return "USD";
     }
 
-    if (supportedFiat.contains(FiatCurrency(currencyCode, ""))) {
+    if (ExchangeRate().supportedFiat.contains(
+        FiatCurrency(code: currencyCode, title: "", flag: "", symbol: ""))) {
       return currencyCode;
     }
 

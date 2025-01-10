@@ -10,14 +10,16 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class EnvoySearch extends StatefulWidget {
+  final bool showClearIcon;
+  final void Function(String) filterSearchResults;
+  final TextEditingController controller;
+
   const EnvoySearch({
     super.key,
     required this.filterSearchResults,
+    this.showClearIcon = true,
     required this.controller,
   });
-
-  final void Function(String) filterSearchResults;
-  final TextEditingController controller;
 
   @override
   State<EnvoySearch> createState() => _EnvoySearchState();
@@ -90,7 +92,7 @@ class _EnvoySearchState extends State<EnvoySearch> {
               size: EnvoyIconSize.small,
               color: EnvoyColors.textTertiary,
             ),
-            suffixIcon: _focus.hasFocus
+            suffixIcon: (_focus.hasFocus && widget.showClearIcon)
                 ? Padding(
                     padding: const EdgeInsets.only(
                         left: EnvoySpacing.medium1,

@@ -13,6 +13,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as new_color_scheme;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -95,7 +96,7 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
                                 context: context,
                                 isDismissible: true,
                                 useRootNavigator: true,
-                                barrierColor: Colors.black.withOpacity(0.2),
+                                barrierColor: Colors.black.applyOpacity(0.2),
                                 enableDrag: true,
                                 isScrollControlled: true,
                                 shape: const RoundedRectangleBorder(
@@ -536,8 +537,8 @@ class _SlidingToggleState extends State<SlidingToggle>
   late Animation<Color?> _activityIconColorAnimation;
   late Animation<Color?> _tagsIconColorAnimation;
   final Color _iconDisabledColor = new_color_scheme.EnvoyColors.textTertiary;
-  final String _firstOptionText = "Activity"; // TODO: FIGMA
-  final String _secondOptionText = "Tags"; // TODO: FIGMA
+  final String _firstOptionText = S().coincontrol_switchActivity;
+  final String _secondOptionText = S().coincontrol_switchTags;
   late String _currentOptionText = _firstOptionText;
   double _maxOptionWidth = 0.0;
 

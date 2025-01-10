@@ -8,8 +8,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/indicator_shield.dart';
-import 'package:envoy/ui/onboard/onboard_welcome.dart';
-import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
+import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/routes/home_router.dart';
@@ -32,7 +31,7 @@ class HomeAppBar extends ConsumerStatefulWidget {
   ConsumerState createState() => _HomeAppBarState();
 }
 
-const _animationsDuration = Duration(milliseconds: 350);
+const _animationsDuration = Duration(milliseconds: 100);
 
 class _HomeAppBarState extends ConsumerState<HomeAppBar> {
   HamburgerState state = HamburgerState.idle;
@@ -69,6 +68,19 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     bool backDropEnabled = homePageDropState != HomePageBackgroundState.hidden;
 
     String homePageTitle = ref.watch(homePageTitleProvider);
+
+    ref.listen(
+      homePageBackgroundProvider,
+      (previous, next) {
+        if (previous != HomePageBackgroundState.hidden &&
+            next == HomePageBackgroundState.hidden) {
+          final paths = mainRouter.routerDelegate.currentConfiguration.fullPath;
+          if (homeTabRoutes.contains(paths)) {
+            ref.read(homePageTitleProvider.notifier).state = "";
+          }
+        }
+      },
+    );
     ref.listen(
       routePathProvider,
       (previous, nextPath) {
@@ -145,8 +157,12 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                   if (context.mounted) {
                     context.go(ROUTE_BUY_BITCOIN);
                   }
-                } else {
+                } else if (path == ROUTE_BUY_BITCOIN) {
                   if (context.mounted) {
+                    GoRouter.of(context).go(ROUTE_ACCOUNTS_HOME);
+                  }
+                } else {
+                  if (context.mounted && GoRouter.of(context).canPop()) {
                     GoRouter.of(context).pop();
                   }
                 }
@@ -177,7 +193,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         const SizedBox(height: 50, child: IndicatorShield())
       ]),
       actions: [
-// Right action
+        // Right action
         Opacity(
           opacity: (inEditMode || backDropEnabled) ? 0.0 : 1.0,
           child: AnimatedSwitcher(
@@ -321,19 +337,12 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
           rightAction: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-              Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) {
-                      if (EnvoySeed().walletDerived()) {
-                        return const OnboardPassportWelcomeScreen();
-                      } else {
-                        return const WelcomeScreen();
-                      }
-                    },
-                    reverseTransitionDuration: Duration.zero,
-                    transitionDuration: Duration.zero,
-                  ));
+              if (EnvoySeed().walletDerived()) {
+                context.push(ONBOARD_PASSPORT_SETUP);
+              } else {
+                context.pushNamed(ROUTE_SPLASH);
+              }
+              return;
             },
             child: Container(
               height: 55,
@@ -357,6 +366,9 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         optionsState.state = null;
         break;
       case ROUTE_LEARN:
+        optionsState.state = null;
+        break;
+      case ROUTE_LEARN_BLOG:
         optionsState.state = null;
         break;
       // default:
@@ -428,9 +440,6 @@ class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
         } else {
           _menuController?.findInput<double>("state_pos")?.change(-1);
         }
-        break;
-      default:
-        _menuController?.findInput<double>("state_pos")?.change(0.0);
         break;
     }
   }

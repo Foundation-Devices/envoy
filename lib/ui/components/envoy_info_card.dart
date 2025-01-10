@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/components/stripe_painter.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -67,7 +68,7 @@ class EnvoyInfoCard extends StatelessWidget {
               isComplex: true,
               willChange: false,
               painter: StripePainter(
-                EnvoyColors.gray1000.withOpacity(0.4),
+                EnvoyColors.gray1000.applyOpacity(0.4),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,

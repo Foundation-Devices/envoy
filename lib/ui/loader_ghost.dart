@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
@@ -100,7 +101,7 @@ class _LoaderGhostState extends State<LoaderGhost>
             height: widget.height,
             // child: Text('${_animation.value}'),
             decoration: BoxDecoration(
-                color: Colors.grey.shade400.withOpacity(_animation.value),
+                color: Colors.grey.shade400.applyOpacity(_animation.value),
                 borderRadius: const BorderRadius.all(Radius.circular(20))),
           );
   }

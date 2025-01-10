@@ -54,7 +54,7 @@ class IconTabState extends State<IconTab> {
     TextStyle descriptionStyle = EnvoyTypography.info.copyWith(
         color: widget.isLocked
             ? EnvoyColors.textTertiary
-            : EnvoyColors.textSecondary);
+            : EnvoyColors.textPrimary);
 
     TextStyle disabledTextStyle =
         EnvoyTypography.info.copyWith(color: EnvoyColors.accentPrimary);
@@ -144,7 +144,7 @@ class IconTabState extends State<IconTab> {
                                 left: EnvoySpacing.xs / 2),
                             child: EnvoyIcon(
                               icon,
-                              size: EnvoyIconSize.superSmall,
+                              size: EnvoyIconSize.extraSmall,
                               color: poweredByIconColor,
                             ),
                           )),

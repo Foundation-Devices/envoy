@@ -37,9 +37,17 @@ cargo build
 # Using this workaround for now:
 sed -i 's/Mutex<Wallet<Tree>>/const char/g' packages/wallet/native/wallet-ffi/target/wallet-ffi.hpp
 
+frb_packages=("bluart" "foundation_api")
+
 # Generate Dart FFI for each package
 cd packages
 for package in *; do
+  # We are slowly deprecating this manual ffigen approach
+  # in favour of flutter_rust_bridge so we skip over the packages that are already using it
+  if echo "${frb_packages[@]}" | grep -w -q "$package"; then
+    continue
+  fi
+
   cd "$package"
   dart run ffigen
   cd ..

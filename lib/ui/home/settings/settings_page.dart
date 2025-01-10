@@ -4,14 +4,13 @@
 
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
-import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/home/settings/fiat/settings_fiat_chooser.dart';
 import 'package:envoy/ui/home/settings/logs_report.dart';
-import 'package:envoy/ui/home/settings/setting_dropdown.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/home/settings/setting_toggle.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
@@ -19,6 +18,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +32,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/business/region_manager.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
@@ -43,6 +44,7 @@ class SettingsPage extends ConsumerStatefulWidget {
 class _SettingsPageState extends ConsumerState<SettingsPage> {
   final _animationsDuration = const Duration(milliseconds: 200);
   bool _advancedVisible = false;
+  bool canBuy = true;
 
   final LocalAuthentication auth = LocalAuthentication();
 
@@ -65,14 +67,33 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkCanBuy();
+    });
+  }
+
+  Future<void> _checkCanBuy() async {
+    var region = await EnvoyStorage().getCountry();
+    if (region != null) {
+      bool newRegionCanBuy =
+          await AllowedRegions.isRegionAllowed(region.code, region.division);
+      setState(() {
+        canBuy = newRegionCanBuy;
+      });
+    } else {
+      setState(() {
+        canBuy = true;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     var s = Settings();
     double nestedMargin = 8;
     double marginBetweenItems = 6;
-
-    Map<String, String?> fiatMap = {
-      for (var fiat in supportedFiat) fiat.code: fiat.code
-    };
 
     return Container(
       // color: Colors.black,
@@ -103,17 +124,42 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           SliverToBoxAdapter(
             child: AnimatedContainer(
               duration: _animationsDuration,
+              curve: EnvoyEasing.easeInOut,
               margin: EdgeInsets.only(
                   top: s.selectedFiat != null ? marginBetweenItems : 0),
               height: s.selectedFiat == null ? 0 : 52,
-              child: Padding(
-                padding: EdgeInsets.only(left: nestedMargin),
-                child: ListTile(
-                  dense: true,
-                  contentPadding: const EdgeInsets.all(0),
-                  title: SettingText(S().settings_currency),
-                  trailing:
-                      SettingDropdown(fiatMap, s.displayFiat, s.setDisplayFiat),
+              child: GestureDetector(
+                onTap: () {
+                  showModalBottomSheet<void>(
+                    context: context,
+                    isScrollControlled: true,
+                    sheetAnimationStyle: AnimationStyle(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOutSine,
+                    ),
+                    backgroundColor: Colors.transparent,
+                    isDismissible: true,
+                    useSafeArea: true,
+                    builder: (context) {
+                      return FiatCurrencyChooser(onSelect: (String selection) {
+                        setState(() {
+                          s.setDisplayFiat(selection);
+                        });
+                      });
+                    },
+                  );
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(left: nestedMargin),
+                  child: ListTile(
+                    dense: true,
+                    contentPadding:
+                        const EdgeInsets.only(right: EnvoySpacing.medium1),
+                    title: SettingText(S().settings_currency),
+                    trailing: Text(s.selectedFiat ?? "",
+                        style: EnvoyTypography.body
+                            .copyWith(color: EnvoyColors.accentPrimary)),
+                  ),
                 ),
               ),
             ),
@@ -262,17 +308,21 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   }
                 }),
               ),
-              ListTile(
-                dense: true,
-                contentPadding: const EdgeInsets.all(0),
-                title: Wrap(
-                  children: [SettingText(S().settings_advanced_enableBuyRamp)],
-                ),
-                trailing: SettingToggle(
-                  s.isAllowedBuyInEnvoy,
-                  s.setAllowBuyInEnvoy,
-                ),
-              ),
+              canBuy
+                  ? ListTile(
+                      dense: true,
+                      contentPadding: const EdgeInsets.all(0),
+                      title: Wrap(
+                        children: [
+                          SettingText(S().settings_advanced_enableBuyRamp)
+                        ],
+                      ),
+                      trailing: SettingToggle(
+                        s.isAllowedBuyInEnvoy,
+                        s.setAllowBuyInEnvoy,
+                      ),
+                    )
+                  : const SizedBox.shrink(),
               ListTile(
                 dense: true,
                 onTap: () {

@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+include: package:flutter_lints/flutter.yaml
+
+# Additional information about this file can be found at
+# https://dart.dev/guides/language/analysis-options
+
+analyzer:
+  exclude:
+    - 'cargokit/**'

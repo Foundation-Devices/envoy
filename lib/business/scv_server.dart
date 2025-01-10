@@ -5,6 +5,7 @@
 library envoy.scv_server;
 
 import 'dart:convert';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -80,6 +81,8 @@ class ScvServer {
       _storeChallenge(challenge);
       return challenge;
     } else {
+      EnvoyReport().log("scv",
+          "Failed to get challenge,status: ${response.code},body: ${response.body}");
       throw Exception('Failed to get challenge');
     }
   }
@@ -108,6 +111,8 @@ class ScvServer {
       var json = jsonDecode(response.body);
       return json['isValidated'] == true;
     } else {
+      EnvoyReport().log("scv",
+          "Failed to validate challenge,status: ${response.code},body: ${response.body}");
       return false;
     }
   }

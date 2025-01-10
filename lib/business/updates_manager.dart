@@ -58,6 +58,8 @@ class UpdatesManager {
         .catchError((e) {
       kPrint("Couldn't fetch firmware: $e");
     });
+
+    Server().checkForForceUpdate();
   }
 
   _processFw(FirmwareUpdate fw) async {

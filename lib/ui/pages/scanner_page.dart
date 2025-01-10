@@ -6,27 +6,31 @@
 
 import 'dart:async';
 import 'dart:io';
+
+import 'package:envoy/business/account.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/business/bip21.dart';
 import 'package:envoy/business/btcpay_voucher.dart';
+import 'package:envoy/business/scv_server.dart';
+import 'package:envoy/business/seed_qr_extract.dart';
+import 'package:envoy/business/uniform_resource.dart';
+import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/home/cards/accounts/azteco/azteco_dialog.dart';
 import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_dialog.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/pages/scv/scv_loading.dart';
-import 'package:envoy/ui/pages/wallet/single_wallet_pair_success.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:envoy/business/uniform_resource.dart';
-import 'package:envoy/business/scv_server.dart';
-import 'package:envoy/ui/home/cards/accounts/azteco/azteco_dialog.dart';
-import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:envoy/business/account.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:wallet/wallet.dart';
-import 'package:envoy/business/seed_qr_extract.dart';
 
 enum ScannerType {
   generic,
@@ -196,6 +200,7 @@ class ScannerPageState extends State<ScannerPage> {
         if (context.mounted) {
           _onDetect(barcode.code!, barcode.rawBytes, context);
         }
+
         _lastScan = barcode.code ?? '';
       }
     });
@@ -204,6 +209,39 @@ class ScannerPageState extends State<ScannerPage> {
     if (Platform.isAndroid) {
       controller.pauseCamera();
       controller.resumeCamera();
+    }
+  }
+
+  // ignore: unused_element
+  void _showQrScannerWarningPopup(
+      BuildContext context, String barcodeCode, List<int>? rawBytes) {
+    final NavigatorState navigator = Navigator.of(context);
+
+    if (context.mounted) {
+      controller?.pauseCamera();
+
+      showEnvoyPopUp(
+        context,
+        title: S().component_warning,
+        S().qrTooBig_warning_subheading,
+        S().component_confirm,
+        (context) {
+          navigator.pop();
+          controller?.resumeCamera();
+          if (context.mounted) {
+            _onDetect(barcodeCode, rawBytes, context);
+          }
+        },
+        showCloseButton: false,
+        typeOfMessage: PopUpState.danger,
+        icon: EnvoyIcons.alert,
+        secondaryButtonLabel: S().component_back,
+        onSecondaryButtonTap: (BuildContext context) {
+          navigator.pop();
+          navigator.pop();
+          return;
+        },
+      );
     }
   }
 
@@ -261,7 +299,7 @@ class ScannerPageState extends State<ScannerPage> {
     if (widget._acceptableTypes.contains(ScannerType.btcPay)) {
       if (BtcPayVoucher.isVoucher(code)) {
         final voucher = BtcPayVoucher(code);
-        Navigator.of(context).pop();
+        navigator.pop();
         showEnvoyDialog(
             context: context, dialog: BtcPayDialog(voucher, widget.account!));
         return;
@@ -300,13 +338,18 @@ class ScannerPageState extends State<ScannerPage> {
       }
 
       // Remove bitcoin: prefix in case BIP-21 parsing failed
-      address = address.replaceFirst("bitcoin:", "");
+      address = address.replaceFirst("bitcoin:", "").trim();
+      kPrint("address scanned $address");
 
       if (!await widget.account!.wallet.validateAddress(address)) {
         showSnackbar(invalidAddressSnackbar);
+        return;
       } else {
         // Convert the address to lowercase for consistent display in Envoy
-        address = address.toLowerCase();
+        if (address.startsWith('bc') || address.startsWith("tb")) {
+          address = address.toLowerCase();
+        }
+
         widget.onAddressValidated!(address, amount, message);
         navigator.pop();
         await Future.delayed(const Duration(milliseconds: 500));
@@ -383,7 +426,6 @@ class ScannerPageState extends State<ScannerPage> {
   }
 
   void _binaryValidated(Binary binary) async {
-    final navigator = Navigator.of(context);
     final scaffold = ScaffoldMessenger.of(context);
     Account? pairedAccount;
     try {
@@ -394,19 +436,17 @@ class ScannerPageState extends State<ScannerPage> {
       ));
       await Future.delayed(const Duration(seconds: 2));
       if (mounted) {
-        OnboardingPage.popUntilGoRoute(context);
+        context.go("/");
       }
       return;
     }
-
-    if (pairedAccount == null) {
-      if (mounted) {
-        OnboardingPage.popUntilHome(context);
+    if (mounted) {
+      if (pairedAccount == null) {
+        context.go("/");
+      } else {
+        context.goNamed(ONBOARD_PASSPORT_SCV_SUCCESS,
+            extra: pairedAccount.wallet);
       }
-    } else {
-      navigator.pushReplacement(MaterialPageRoute(builder: (context) {
-        return SingleWalletPairSuccessPage(pairedAccount!.wallet);
-      }));
     }
   }
 }

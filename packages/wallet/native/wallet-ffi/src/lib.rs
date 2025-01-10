@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // These are all because of FFI's inherent unsafety
-#![allow(clippy::drop_copy, clippy::forget_copy, clippy::mut_mutex_lock)]
+#![allow(dropping_copy_types, forgetting_copy_types, clippy::mut_mutex_lock)]
 
 #[macro_use]
 extern crate log;
@@ -1524,7 +1524,7 @@ pub unsafe extern "C" fn wallet_decode_raw_tx(
         .iter()
         .map(|o| RawTransactionOutput {
             amount: o.value,
-            ///this is a static function we dont have a wallet context
+            // this is a static function, we don't have a wallet context
             path: match &wallet_instance {
                 None => OutputPath::NotMine,
                 Some(wallet) => util::get_output_path_type(&o.script_pubkey, wallet),

@@ -1,0 +1,991 @@
+[
+  {
+    "title": "United States Dollar",
+    "code": "USD",
+    "symbol": "$",
+    "flag": "🇺🇸"
+  },
+  {
+    "title": "Euro",
+    "code": "EUR",
+    "symbol": "€",
+    "flag": "🇪🇺"
+  },
+  {
+    "title": "British Pound Sterling",
+    "code": "GBP",
+    "symbol": "£",
+    "flag": "🇬🇧"
+  },
+  {
+    "title": "Japanese Yen",
+    "code": "JPY",
+    "symbol": "¥",
+    "flag": "🇯🇵"
+  },
+  {
+    "title": "Australian Dollar",
+    "code": "AUD",
+    "symbol": "$",
+    "flag": "🇦🇺"
+  },
+  {
+    "title": "Swiss Franc",
+    "code": "CHF",
+    "symbol": "CHF",
+    "flag": "🇨🇭"
+  },
+  {
+    "title": "Canadian Dollar",
+    "code": "CAD",
+    "symbol": "C$",
+    "flag": "🇨🇦"
+  },
+  {
+    "title": "Indian Rupee",
+    "code": "INR",
+    "symbol": "₹",
+    "flag": "🇮🇳"
+  },
+  {
+    "title": "United Arab Emirates Dirham",
+    "code": "AED",
+    "symbol": "د.إ",
+    "flag": "🇦🇪"
+  },
+  {
+    "title": "Afghan Afghani",
+    "code": "AFN",
+    "symbol": "₮",
+    "flag": "🇦🇫"
+  },
+  {
+    "title": "Albanian Lek",
+    "code": "ALL",
+    "symbol": "L",
+    "flag": "🇦🇱"
+  },
+  {
+    "title": "Armenian Dram",
+    "code": "AMD",
+    "symbol": "֏",
+    "flag": "🇦🇲"
+  },
+  {
+    "title": "Netherlands Antillean Guilder",
+    "code": "ANG",
+    "symbol": "ƒ",
+    "flag": "🇦🇼"
+  },
+  {
+    "title": "Angolan Kwanza",
+    "code": "AOA",
+    "symbol": "Kz",
+    "flag": "🇦🇴"
+  },
+  {
+    "title": "Argentine Peso",
+    "code": "ARS",
+    "symbol": "$",
+    "flag": "🇦🇷"
+  },
+
+  {
+    "title": "Aruban Florin",
+    "code": "AWG",
+    "symbol": "ƒ",
+    "flag": "🇦🇼"
+  },
+  {
+    "title": "Azerbaijani Manat",
+    "code": "AZN",
+    "symbol": "₼",
+    "flag": "🇦🇿"
+  },
+  {
+    "title": "Bosnia and Herzegovina Convertible Mark",
+    "code": "BAM",
+    "symbol": "KM",
+    "flag": "🇧🇦"
+  },
+  {
+    "title": "Barbadian Dollar",
+    "code": "BBD",
+    "symbol": "$",
+    "flag": "🇧🇧"
+  },
+  {
+    "title": "Bangladeshi Taka",
+    "code": "BDT",
+    "symbol": "৳",
+    "flag": "🇧🇩"
+  },
+  {
+    "title": "Bulgarian Lev",
+    "code": "BGN",
+    "symbol": "лв",
+    "flag": "🇧🇬"
+  },
+  {
+    "title": "Bahraini Dinar",
+    "code": "BHD",
+    "symbol": ".د.ب",
+    "flag": "🇧🇭"
+  },
+  {
+    "title": "Burundian Franc",
+    "code": "BIF",
+    "symbol": "Fr",
+    "flag": "🇧🇮"
+  },
+  {
+    "title": "Bermudian Dollar",
+    "code": "BMD",
+    "symbol": "$",
+    "flag": "🇧🇲"
+  },
+  {
+    "title": "Brunei Dollar",
+    "code": "BND",
+    "symbol": "B$",
+    "flag": "🇧🇳"
+  },
+  {
+    "title": "Bolivian Boliviano",
+    "code": "BOB",
+    "symbol": "Bs.",
+    "flag": "🇧🇴"
+  },
+  {
+    "title": "Brazilian Real",
+    "code": "BRL",
+    "symbol": "R$",
+    "flag": "🇧🇷"
+  },
+  {
+    "title": "Bahamian Dollar",
+    "code": "BSD",
+    "symbol": "$",
+    "flag": "🇧🇸"
+  },
+  {
+    "title": "Bhutanese Ngultrum",
+    "code": "BTN",
+    "symbol": "Nu.",
+    "flag": "🇧🇹"
+  },
+  {
+    "title": "Botswana Pula",
+    "code": "BWP",
+    "symbol": "P",
+    "flag": "🇧🇼"
+  },
+  {
+    "title": "Belarusian Ruble",
+    "code": "BYN",
+    "symbol": "Br",
+    "flag": "🇧🇾"
+  },
+  {
+    "title": "Belize Dollar",
+    "code": "BZD",
+    "symbol": "BZ$",
+    "flag": "🇧🇿"
+  },
+
+  {
+    "title": "Congolese Franc",
+    "code": "CDF",
+    "symbol": "Fr",
+    "flag": "🇨🇩"
+  },
+
+  {
+    "title": "Unidad de Fomento",
+    "code": "CLF",
+    "symbol": "UF",
+    "flag": "🇨🇱"
+  },
+  {
+    "title": "Chilean Peso",
+    "code": "CLP",
+    "symbol": "$",
+    "flag": "🇨🇱"
+  },
+  {
+    "title": "Chinese Yuan Renminbi",
+    "code": "CNH",
+    "symbol": "¥",
+    "flag": "🇨🇳"
+  },
+  {
+    "title": "Chinese Yuan",
+    "code": "CNY",
+    "symbol": "¥",
+    "flag": "🇨🇳"
+  },
+  {
+    "title": "Colombian Peso",
+    "code": "COP",
+    "symbol": "$",
+    "flag": "🇨🇴"
+  },
+  {
+    "title": "Costa Rican Colón",
+    "code": "CRC",
+    "symbol": "₡",
+    "flag": "🇨🇷"
+  },
+  {
+    "title": "Cuban Convertible Peso",
+    "code": "CUC",
+    "symbol": "$",
+    "flag": "🇨🇺"
+  },
+  {
+    "title": "Cuban Peso",
+    "code": "CUP",
+    "symbol": "$",
+    "flag": "🇨🇺"
+  },
+  {
+    "title": "Cape Verdean Escudo",
+    "code": "CVE",
+    "symbol": "$",
+    "flag": "🇨🇻"
+  },
+  {
+    "title": "Czech Koruna",
+    "code": "CZK",
+    "symbol": "Kč",
+    "flag": "🇨🇿"
+  },
+  {
+    "title": "Djiboutian Franc",
+    "code": "DJF",
+    "symbol": "Fr",
+    "flag": "🇩🇯"
+  },
+  {
+    "title": "Danish Krone",
+    "code": "DKK",
+    "symbol": "kr",
+    "flag": "🇩🇰"
+  },
+  {
+    "title": "Dominican Peso",
+    "code": "DOP",
+    "symbol": "$",
+    "flag": "🇩🇴"
+  },
+  {
+    "title": "Algerian Dinar",
+    "code": "DZD",
+    "symbol": "د.ج",
+    "flag": "🇩🇿"
+  },
+  {
+    "title": "Egyptian Pound",
+    "code": "EGP",
+    "symbol": "£",
+    "flag": "🇪🇬"
+  },
+  {
+    "title": "Eritrean Nakfa",
+    "code": "ERN",
+    "symbol": "Nfk",
+    "flag": "🇪🇷"
+  },
+  {
+    "title": "Ethiopian Birr",
+    "code": "ETB",
+    "symbol": "Br",
+    "flag": "🇪🇹"
+  },
+
+  {
+    "title": "Fijian Dollar",
+    "code": "FJD",
+    "symbol": "FJ$",
+    "flag": "🇫🇯"
+  },
+  {
+    "title": "Falkland Islands Pound",
+    "code": "FKP",
+    "symbol": "£",
+    "flag": "🇫🇰"
+  },
+  {
+    "title": "Georgian Lari",
+    "code": "GEL",
+    "symbol": "₾",
+    "flag": "🇬🇪"
+  },
+  {
+    "title": "Guernsey Pound",
+    "code": "GGP",
+    "symbol": "£",
+    "flag": "🇬🇬"
+  },
+  {
+    "title": "Ghanaian Cedi",
+    "code": "GHS",
+    "symbol": "₵",
+    "flag": "🇬🇭"
+  },
+  {
+    "title": "Gibraltar Pound",
+    "code": "GIP",
+    "symbol": "£",
+    "flag": "🇬🇮"
+  },
+  {
+    "title": "Gambian Dalasi",
+    "code": "GMD",
+    "symbol": "D",
+    "flag": "🇬🇲"
+  },
+  {
+    "title": "Guinean Franc",
+    "code": "GNF",
+    "symbol": "Fr",
+    "flag": "🇬🇳"
+  },
+  {
+    "title": "Guatemalan Quetzal",
+    "code": "GTQ",
+    "symbol": "Q",
+    "flag": "🇬🇹"
+  },
+  {
+    "title": "Guyanese Dollar",
+    "code": "GYD",
+    "symbol": "$",
+    "flag": "🇬🇾"
+  },
+  {
+    "title": "Hong Kong Dollar",
+    "code": "HKD",
+    "symbol": "HK$",
+    "flag": "🇭🇰"
+  },
+  {
+    "title": "Honduran Lempira",
+    "code": "HNL",
+    "symbol": "L",
+    "flag": "🇭🇳"
+  },
+  {
+    "title": "Croatian Kuna",
+    "code": "HRK",
+    "symbol": "kn",
+    "flag": "🇭🇷"
+  },
+  {
+    "title": "Haitian Gourde",
+    "code": "HTG",
+    "symbol": "G",
+    "flag": "🇭🇹"
+  },
+  {
+    "title": "Hungarian Forint",
+    "code": "HUF",
+    "symbol": "Ft",
+    "flag": "🇭🇺"
+  },
+  {
+    "title": "Indonesian Rupiah",
+    "code": "IDR",
+    "symbol": "Rp",
+    "flag": "🇮🇩"
+  },
+  {
+    "title": "Israeli New Shekel",
+    "code": "ILS",
+    "symbol": "₪",
+    "flag": "🇮🇱"
+  },
+  {
+    "title": "Isle of Man Pound",
+    "code": "IMP",
+    "symbol": "£",
+    "flag": "🇮🇲"
+  },
+  {
+    "title": "Iraqi Dinar",
+    "code": "IQD",
+    "symbol": "ع.د",
+    "flag": "🇮🇶"
+  },
+  {
+    "title": "Iranian Rial",
+    "code": "IRR",
+    "symbol": "﷼",
+    "flag": "🇮🇷"
+  },
+  {
+    "title": "Icelandic Króna",
+    "code": "ISK",
+    "symbol": "kr",
+    "flag": "🇮🇸"
+  },
+  {
+    "title": "Jersey Pound",
+    "code": "JEP",
+    "symbol": "£",
+    "flag": "🇯🇪"
+  },
+  {
+    "title": "Jamaican Dollar",
+    "code": "JMD",
+    "symbol": "J$",
+    "flag": "🇯🇲"
+  },
+  {
+    "title": "Jordanian Dinar",
+    "code": "JOD",
+    "symbol": "د.أ",
+    "flag": "🇯🇴"
+  },
+
+  {
+    "title": "Kenyan Shilling",
+    "code": "KES",
+    "symbol": "KSh",
+    "flag": "🇰🇪"
+  },
+  {
+    "title": "Kyrgyzstani Som",
+    "code": "KGS",
+    "symbol": "с",
+    "flag": "🇰🇬"
+  },
+  {
+    "title": "Cambodian Riel",
+    "code": "KHR",
+    "symbol": "៛",
+    "flag": "🇰🇭"
+  },
+  {
+    "title": "Comorian Franc",
+    "code": "KMF",
+    "symbol": "Fr",
+    "flag": "🇰🇲"
+  },
+  {
+    "title": "North Korean Won",
+    "code": "KPW",
+    "symbol": "₩",
+    "flag": "🇰🇵"
+  },
+  {
+    "title": "South Korean Won",
+    "code": "KRW",
+    "symbol": "₩",
+    "flag": "🇰🇷"
+  },
+  {
+    "title": "Kuwaiti Dinar",
+    "code": "KWD",
+    "symbol": "د.ك",
+    "flag": "🇰🇼"
+  },
+  {
+    "title": "Cayman Islands Dollar",
+    "code": "KYD",
+    "symbol": "$",
+    "flag": "🇰🇾"
+  },
+  {
+    "title": "Kazakhstani Tenge",
+    "code": "KZT",
+    "symbol": "₸",
+    "flag": "🇰🇿"
+  },
+  {
+    "title": "Lao Kip",
+    "code": "LAK",
+    "symbol": "₭",
+    "flag": "🇱🇦"
+  },
+  {
+    "title": "Lebanese Pound",
+    "code": "LBP",
+    "symbol": "ل.ل",
+    "flag": "🇱🇧"
+  },
+  {
+    "title": "Sri Lankan Rupee",
+    "code": "LKR",
+    "symbol": "₨",
+    "flag": "🇱🇰"
+  },
+  {
+    "title": "Liberian Dollar",
+    "code": "LRD",
+    "symbol": "$",
+    "flag": "🇱🇷"
+  },
+  {
+    "title": "Lesotho Loti",
+    "code": "LSL",
+    "symbol": "L",
+    "flag": "🇱🇸"
+  },
+  {
+    "title": "Libyan Dinar",
+    "code": "LYD",
+    "symbol": "ل.د",
+    "flag": "🇱🇾"
+  },
+  {
+    "title": "Moroccan Dirham",
+    "code": "MAD",
+    "symbol": "د.م.",
+    "flag": "🇲🇦"
+  },
+  {
+    "title": "Moldovan Leu",
+    "code": "MDL",
+    "symbol": "lei",
+    "flag": "🇲🇩"
+  },
+  {
+    "title": "Malagasy Ariary",
+    "code": "MGA",
+    "symbol": "Ar",
+    "flag": "🇲🇬"
+  },
+  {
+    "title": "North Macedonian Denar",
+    "code": "MKD",
+    "symbol": "ден",
+    "flag": "🇲🇰"
+  },
+  {
+    "title": "Myanmar Kyat",
+    "code": "MMK",
+    "symbol": "K",
+    "flag": "🇲🇲"
+  },
+  {
+    "title": "Mongolian Tögrög",
+    "code": "MNT",
+    "symbol": "₮",
+    "flag": "🇲🇳"
+  },
+  {
+    "title": "Macanese Pataca",
+    "code": "MOP",
+    "symbol": "P",
+    "flag": "🇲🇴"
+  },
+  {
+    "title": "Mauritian Rupee",
+    "code": "MUR",
+    "symbol": "₨",
+    "flag": "🇲🇺"
+  },
+  {
+    "title": "Maldivian Rufiyaa",
+    "code": "MVR",
+    "symbol": "Rf",
+    "flag": "🇲🇻"
+  },
+  {
+    "title": "Malawian Kwacha",
+    "code": "MWK",
+    "symbol": "MK",
+    "flag": "🇲🇼"
+  },
+  {
+    "title": "Mexican Peso",
+    "code": "MXN",
+    "symbol": "$",
+    "flag": "🇲🇽"
+  },
+  {
+    "title": "Malaysian Ringgit",
+    "code": "MYR",
+    "symbol": "RM",
+    "flag": "🇲🇾"
+  },
+  {
+    "title": "Mozambican Metical",
+    "code": "MZN",
+    "symbol": "MT",
+    "flag": "🇲🇿"
+  },
+  {
+    "title": "Namibian Dollar",
+    "code": "NAD",
+    "symbol": "$",
+    "flag": "🇳🇦"
+  },
+  {
+    "title": "Nigerian Naira",
+    "code": "NGN",
+    "symbol": "₦",
+    "flag": "🇳🇬"
+  },
+  {
+    "title": "Nicaraguan Córdoba",
+    "code": "NIO",
+    "symbol": "C$",
+    "flag": "🇳🇮"
+  },
+  {
+    "title": "Norwegian Krone",
+    "code": "NOK",
+    "symbol": "kr",
+    "flag": "🇳🇴"
+  },
+  {
+    "title": "Nepalese Rupee",
+    "code": "NPR",
+    "symbol": "₨",
+    "flag": "🇳🇵"
+  },
+  {
+    "title": "New Zealand Dollar",
+    "code": "NZD",
+    "symbol": "NZ$",
+    "flag": "🇳🇿"
+  },
+  {
+    "title": "Omani Rial",
+    "code": "OMR",
+    "symbol": "ر.ع.",
+    "flag": "🇴🇲"
+  },
+  {
+    "title": "Panamanian Balboa",
+    "code": "PAB",
+    "symbol": "B/. ",
+    "flag": "🇵🇦"
+  },
+  {
+    "title": "Peruvian Sol",
+    "code": "PEN",
+    "symbol": "S/.",
+    "flag": "🇵🇪"
+  },
+  {
+    "title": "Papua New Guinean Kina",
+    "code": "PGK",
+    "symbol": "K",
+    "flag": "🇵🇬"
+  },
+  {
+    "title": "Philippine Peso",
+    "code": "PHP",
+    "symbol": "₱",
+    "flag": "🇵🇭"
+  },
+  {
+    "title": "Pakistani Rupee",
+    "code": "PKR",
+    "symbol": "₨",
+    "flag": "🇵🇰"
+  },
+  {
+    "title": "Polish Zloty",
+    "code": "PLN",
+    "symbol": "zł",
+    "flag": "🇵🇱"
+  },
+  {
+    "title": "Paraguayan Guarani",
+    "code": "PYG",
+    "symbol": "₲",
+    "flag": "🇵🇾"
+  },
+  {
+    "title": "Qatari Rial",
+    "code": "QAR",
+    "symbol": "ر.ق",
+    "flag": "🇶🇦"
+  },
+  {
+    "title": "Romanian Leu",
+    "code": "RON",
+    "symbol": "lei",
+    "flag": "🇷🇴"
+  },
+  {
+    "title": "Serbian Dinar",
+    "code": "RSD",
+    "symbol": "дин",
+    "flag": "🇷🇸"
+  },
+  {
+    "title": "Russian Ruble",
+    "code": "RUB",
+    "symbol": "₽",
+    "flag": "🇷🇺"
+  },
+  {
+    "title": "Rwandan Franc",
+    "code": "RWF",
+    "symbol": "Fr",
+    "flag": "🇷🇼"
+  },
+  {
+    "title": "Saudi Riyal",
+    "code": "SAR",
+    "symbol": "ر.س",
+    "flag": "🇸🇦"
+  },
+  {
+    "title": "Solomon Islands Dollar",
+    "code": "SBD",
+    "symbol": "$",
+    "flag": "🇸🇧"
+  },
+  {
+    "title": "Seychellois Rupee",
+    "code": "SCR",
+    "symbol": "₨",
+    "flag": "🇸🇨"
+  },
+  {
+    "title": "Sudanese Pound",
+    "code": "SDG",
+    "symbol": "ج.س.",
+    "flag": "🇸🇩"
+  },
+  {
+    "title": "Swedish Krona",
+    "code": "SEK",
+    "symbol": "kr",
+    "flag": "🇸🇪"
+  },
+  {
+    "title": "Singapore Dollar",
+    "code": "SGD",
+    "symbol": "$",
+    "flag": "🇸🇬"
+  },
+  {
+    "title": "Saint Helena Pound",
+    "code": "SHP",
+    "symbol": "£",
+    "flag": "🇸🇭"
+  },
+  {
+    "title": "Sierra Leonean Leone",
+    "code": "SLL",
+    "symbol": "Le",
+    "flag": "🇸🇱"
+  },
+  {
+    "title": "Somali Shilling",
+    "code": "SOS",
+    "symbol": "S",
+    "flag": "🇸🇴"
+  },
+  {
+    "title": "Surinamese Dollar",
+    "code": "SRD",
+    "symbol": "$",
+    "flag": "🇸🇷"
+  },
+  {
+    "title": "South Sudanese Pound",
+    "code": "SSP",
+    "symbol": "£",
+    "flag": "🇸🇸"
+  },
+  {
+    "title": "São Tomé and Príncipe Dobra",
+    "code": "STD",
+    "symbol": "Db",
+    "flag": "🇸🇹"
+  },
+  {
+    "title": "Salvadoran Colón",
+    "code": "SVC",
+    "symbol": "$",
+    "flag": "🇸🇻"
+  },
+  {
+    "title": "Syrian Pound",
+    "code": "SYP",
+    "symbol": "ل.س",
+    "flag": "🇸🇾"
+  },
+  {
+    "title": "Swazi Lilangeni",
+    "code": "SZL",
+    "symbol": "L",
+    "flag": "🇸🇿"
+  },
+  {
+    "title": "Thai Baht",
+    "code": "THB",
+    "symbol": "฿",
+    "flag": "🇹🇭"
+  },
+  {
+    "title": "Tajikistani Somoni",
+    "code": "TJS",
+    "symbol": "SM",
+    "flag": "🇹🇯"
+  },
+  {
+    "title": "Turkmenistani Manat",
+    "code": "TMT",
+    "symbol": "T",
+    "flag": "🇹🇲"
+  },
+  {
+    "title": "Tunisian Dinar",
+    "code": "TND",
+    "symbol": "د.ت",
+    "flag": "🇹🇳"
+  },
+  {
+    "title": "Tongan Paʻanga",
+    "code": "TOP",
+    "symbol": "T$",
+    "flag": "🇹🇴"
+  },
+  {
+    "title": "Turkish Lira",
+    "code": "TRY",
+    "symbol": "₺",
+    "flag": "🇹🇷"
+  },
+  {
+    "title": "Trinidad and Tobago Dollar",
+    "code": "TTD",
+    "symbol": "$",
+    "flag": "🇹🇹"
+  },
+  {
+    "title": "New Taiwan Dollar",
+    "code": "TWD",
+    "symbol": "NT$",
+    "flag": "🇹🇼"
+  },
+  {
+    "title": "Tanzanian Shilling",
+    "code": "TZS",
+    "symbol": "TSh",
+    "flag": "🇹🇿"
+  },
+  {
+    "title": "Ukrainian Hryvnia",
+    "code": "UAH",
+    "symbol": "₴",
+    "flag": "🇺🇦"
+  },
+  {
+    "title": "Ugandan Shilling",
+    "code": "UGX",
+    "symbol": "USh",
+    "flag": "🇺🇬"
+  },
+  {
+    "title": "Uruguayan Peso",
+    "code": "UYU",
+    "symbol": "$",
+    "flag": "🇺🇾"
+  },
+  {
+    "title": "Uzbekistani Som",
+    "code": "UZS",
+    "symbol": "лв",
+    "flag": "🇺🇿"
+  },
+  {
+    "title": "Venezuelan Bolívar",
+    "code": "VES",
+    "symbol": "Bs",
+    "flag": "🇻🇪"
+  },
+  {
+    "title": "Vietnamese Dong",
+    "code": "VND",
+    "symbol": "₫",
+    "flag": "🇻🇳"
+  },
+  {
+    "title": "Vanuatu Vatu",
+    "code": "VUV",
+    "symbol": "Vt",
+    "flag": "🇻🇺"
+  },
+  {
+    "title": "Samoan Tala",
+    "code": "WST",
+    "symbol": "T",
+    "flag": "🇼🇸"
+  },
+  {
+    "title": "Silver Ounce",
+    "code": "XAG",
+    "symbol": "oz",
+    "flag": "🥈"
+  },
+  {
+    "title": "Gold Ounce",
+    "code": "XAU",
+    "symbol": "oz",
+    "flag": "🥇"
+  },
+  {
+    "title": "East Caribbean Dollar",
+    "code": "XCD",
+    "symbol": "$",
+    "flag": "🇨🇻"
+  },
+  {
+    "title": "Special Drawing Rights",
+    "code": "XDR",
+    "symbol": "SDR",
+    "flag": "💱"
+  },
+  {
+    "title": "Palladium Ounce",
+    "code": "XPD",
+    "symbol": "oz",
+    "flag": "🥈"
+  },
+  {
+    "title": "CFP Franc",
+    "code": "XPF",
+    "symbol": "₣",
+    "flag": "🇵🇹"
+  },
+  {
+    "title": "Platinum Ounce",
+    "code": "XPT",
+    "symbol": "oz",
+    "flag": "🥇"
+  },
+  {
+    "title": "Yemeni Rial",
+    "code": "YER",
+    "symbol": "ر.ي",
+    "flag": "🇾🇪"
+  },
+  {
+    "title": "South African Rand",
+    "code": "ZAR",
+    "symbol": "R",
+    "flag": "🇿🇦"
+  },
+  {
+    "title": "Zambian Kwacha",
+    "code": "ZMW",
+    "symbol": "ZK",
+    "flag": "🇿🇲"
+  },
+  {
+    "title": "Zimbabwean Dollar",
+    "code": "ZWL",
+    "symbol": "$",
+    "flag": "🇿🇼"
+  }
+]

@@ -24,6 +24,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as new_colors;
+import 'package:envoy/business/account_manager.dart';
 
 class BackupPage extends ConsumerStatefulWidget {
   const BackupPage({super.key});
@@ -37,6 +38,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
   late EnvoySeed seed;
   bool _isBackupInProgress = false;
   Timer? _timer;
+  bool _advancedVisible = false;
 
   @override
   void initState() {
@@ -252,6 +254,44 @@ class _BackupPageState extends ConsumerState<BackupPage>
                     showEnvoyDialog(
                         context: context, dialog: const ExportSeedModal());
                   },
+                ),
+                ExpansionTile(
+                  tilePadding: const EdgeInsets.all(0),
+                  onExpansionChanged: (value) {
+                    setState(() {
+                      _advancedVisible = value;
+                    });
+                  },
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(S().settings_advanced,
+                          style: EnvoyTypography.body
+                              .copyWith(color: Colors.white)),
+                      AnimatedRotation(
+                        duration: const Duration(milliseconds: 200),
+                        turns: _advancedVisible ? 0.0 : 0.5,
+                        child: const Icon(
+                          Icons.keyboard_arrow_up_sharp,
+                          color: Colors.white,
+                        ),
+                      )
+                    ],
+                  ),
+                  trailing: const SizedBox(),
+                  controlAffinity: ListTileControlAffinity.platform,
+                  childrenPadding: const EdgeInsets.only(left: 8),
+                  children: <Widget>[
+                    ListTile(
+                      dense: true,
+                      onTap: () {},
+                      contentPadding: const EdgeInsets.all(0),
+                      title: SettingText(S().backups_downloadBIP329BackupFile,
+                          onTap: () {
+                        AccountManager().exportBIP329();
+                      }),
+                    ),
+                  ],
                 ),
                 Expanded(
                   child: Align(

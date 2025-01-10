@@ -11,8 +11,8 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:go_router/go_router.dart';
 
 class PpSetupIntroPage extends StatelessWidget {
   const PpSetupIntroPage({super.key});
@@ -41,7 +41,7 @@ class PpSetupIntroPage extends StatelessWidget {
               padding: const EdgeInsets.all(EnvoySpacing.medium1),
               child: GestureDetector(
                   onTap: () {
-                    OnboardingPage.popUntilHome(context);
+                    context.go("/");
                   },
                   child: const Icon(Icons.close_rounded)),
             )

@@ -1,11 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.foundationdevices.envoy">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <!--    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />-->
     <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+
 
     <application
         android:allowBackup="true"
@@ -35,6 +39,8 @@
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/Theme.App" />
+            <meta-data android:name="flutter_deeplinking_enabled" android:value="true" />
+
             <!-- Displays an Android View that continues showing the launch screen
                  Drawable until Flutter paints its first frame, then this splash
                  screen fades out. A splash screen is useful to avoid any visual
@@ -59,11 +65,17 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="*envoy.foundation.xyz"
-                    android:scheme="http" />
                 <data android:scheme="https" />
+                <data android:host="qr.foundation.xyz"/>
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="envoy"/>
+                <data android:host="pair"/>
+            </intent-filter>
+            <!-- Deep linking -->
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

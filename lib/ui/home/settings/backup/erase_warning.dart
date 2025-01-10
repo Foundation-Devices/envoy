@@ -5,7 +5,6 @@
 import 'dart:io';
 
 import 'package:envoy/business/account_manager.dart';
-import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -14,7 +13,7 @@ import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
-import 'package:envoy/ui/onboard/wallet_setup_success.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
@@ -357,7 +356,7 @@ class _EraseWalletsConfirmationState
                 type: EnvoyButtonTypes.primaryModal,
                 label: S().component_cancel,
                 onTap: () {
-                  OnboardingPage.popUntilHome(context);
+                  context.go("/");
                 }),
             const SizedBox(
               height: EnvoySpacing.medium3,
@@ -369,13 +368,9 @@ class _EraseWalletsConfirmationState
   }
 }
 
-void displaySeedBeforeNuke(BuildContext context) {
+void displaySeedBeforeNuke(BuildContext context) async {
   Navigator.of(context).pop();
-  Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-    return const SeedIntroScreen(
-      mode: SeedIntroScreenType.verify,
-    );
-  }));
+  context.pushNamed(SEED_INTRO, extra: SeedIntroScreenType.verify.toString());
 }
 
 class EraseProgress extends ConsumerStatefulWidget {
@@ -392,66 +387,73 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
 
   @override
   Widget build(BuildContext context) {
-    return OnboardPageBackground(
-        child: Material(
-      color: Colors.transparent,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 260,
-                child: rive.RiveAnimation.asset(
-                  "assets/envoy_loader.riv",
-                  fit: BoxFit.contain,
-                  onInit: (artboard) {
-                    _stateMachineController =
-                        rive.StateMachineController.fromArtboard(
-                            artboard, 'STM');
-                    artboard.addController(_stateMachineController!);
-                    _stateMachineController
-                        ?.findInput<bool>("indeterminate")
-                        ?.change(true);
-                    _onInit();
+    return PopScope(
+      canPop: !_deleteInProgress,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          context.go("/");
+        }
+      },
+      child: OnboardPageBackground(
+          child: Material(
+        color: Colors.transparent,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 260,
+                  child: rive.RiveAnimation.asset(
+                    "assets/envoy_loader.riv",
+                    fit: BoxFit.contain,
+                    onInit: (artboard) {
+                      _stateMachineController =
+                          rive.StateMachineController.fromArtboard(
+                              artboard, 'STM');
+                      artboard.addController(_stateMachineController!);
+                      _stateMachineController
+                          ?.findInput<bool>("indeterminate")
+                          ?.change(true);
+                      _onInit();
+                    },
+                  ),
+                ),
+              ),
+              const SliverPadding(padding: EdgeInsets.all(28)),
+              SliverToBoxAdapter(
+                child: Builder(
+                  builder: (context) {
+                    String title = S().delete_wallet_for_good_loading_heading;
+                    if (!_deleteInProgress) {
+                      title = S().delete_wallet_for_good_success_heading;
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            title,
+                            textAlign: TextAlign.center,
+                            style: EnvoyTypography.heading,
+                          ),
+                          const Padding(padding: EdgeInsets.all(18)),
+                        ],
+                      ),
+                    );
                   },
                 ),
               ),
-            ),
-            const SliverPadding(padding: EdgeInsets.all(28)),
-            SliverToBoxAdapter(
-              child: Builder(
-                builder: (context) {
-                  String title = S().delete_wallet_for_good_loading_heading;
-                  if (!_deleteInProgress) {
-                    title = S().delete_wallet_for_good_success_heading;
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          title,
-                          textAlign: TextAlign.center,
-                          style: EnvoyTypography.heading,
-                        ),
-                        const Padding(padding: EdgeInsets.all(18)),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    ));
+      )),
+    );
   }
 
   _onInit() async {
     try {
-      final navigator = Navigator.of(context);
       setState(() {
         _deleteInProgress = true;
       });
@@ -460,7 +462,8 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
       //wait for animation
       await Future.delayed(const Duration(seconds: 1));
-      await EnvoySeed().delete();
+      await Future.delayed(const Duration(seconds: 4));
+      // await EnvoySeed().delete();
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
       _stateMachineController?.findInput<bool>("happy")?.change(true);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
@@ -472,14 +475,15 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       //Show android backup info
       if (Platform.isAndroid) {
         await Future.delayed(const Duration(milliseconds: 300));
-        await navigator.push(MaterialPageRoute(
-            builder: (context) => const AndroidBackupWarning()));
+        if (mounted) {
+          context.pushNamed(WALLET_BACKUP_WARNING, extra: true);
+        }
       } else {
         //wait for pop animation to finish
         await Future.delayed(const Duration(milliseconds: 300));
         // Show home page and navigate to accounts
         if (mounted) {
-          OnboardingPage.popUntilHome(context);
+          context.goNamed("/");
         }
         ref.read(homePageBackgroundProvider.notifier).state =
             HomePageBackgroundState.hidden;
@@ -493,19 +497,27 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
   }
 }
 
-class AndroidBackupWarning extends StatelessWidget {
-  const AndroidBackupWarning({
-    super.key,
-  });
+class AndroidBackupWarning extends StatefulWidget {
+  final bool skipSuccess;
+  const AndroidBackupWarning({super.key, this.skipSuccess = false});
 
+  @override
+  State<AndroidBackupWarning> createState() => _AndroidBackupWarningState();
+}
+
+class _AndroidBackupWarningState extends State<AndroidBackupWarning> {
+  bool canPop = false;
   @override
   Widget build(BuildContext context) {
     bool iphoneSE = MediaQuery.of(context).size.height < 700;
     return PopScope(
-      onPopInvokedWithResult: (_, __) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return const WalletSetupSuccess();
-        }));
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (widget.skipSuccess) {
+          context.go("/");
+        } else {
+          context.goNamed(WALLET_SUCCESS);
+        }
       },
       child: OnboardPageBackground(
         child: EnvoyScaffold(
@@ -566,7 +578,11 @@ class AndroidBackupWarning extends StatelessWidget {
                               type: EnvoyButtonTypes.tertiary,
                               label: S().component_skip,
                               onTap: () async {
-                                OnboardingPage.popUntilHome(context);
+                                if (widget.skipSuccess) {
+                                  context.go("/");
+                                } else {
+                                  context.goNamed(WALLET_SUCCESS);
+                                }
                                 ref
                                     .read(homePageBackgroundProvider.notifier)
                                     .state = HomePageBackgroundState.hidden;

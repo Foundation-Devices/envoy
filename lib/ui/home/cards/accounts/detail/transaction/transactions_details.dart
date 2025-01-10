@@ -113,6 +113,8 @@ class _TransactionsDetailsWidgetState
       rbfPossible = false;
     }
 
+    bool showTxInfo = showTxId(tx.type);
+
     return GestureDetector(
       onTapUp: (details) {
         final RenderBox box =
@@ -246,12 +248,12 @@ class _TransactionsDetailsWidgetState
                   trailing: GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onLongPress: () {
-                      if (tx.type != TransactionType.ramp) {
+                      if (showTxInfo) {
                         copyTxId(context, tx.txId, tx.type);
                       }
                     },
                     onTap: () {
-                      if (tx.type != TransactionType.ramp) {
+                      if (showTxInfo) {
                         setState(() {
                           showTxIdExpanded = !showTxIdExpanded;
                           showAddressExpanded = false;
@@ -265,15 +267,23 @@ class _TransactionsDetailsWidgetState
                           begin: 0, end: showTxIdExpanded ? 1 : 0),
                       duration: const Duration(milliseconds: 200),
                       builder: (context, value, child) {
-                        String txId = tx.type == TransactionType.ramp
-                            ? "loading"
-                            : tx.txId; // TODO: Figma
-                        return Text(
-                          truncateWithEllipsisInCenter(txId,
-                              lerpDouble(16, txId.length, value)!.toInt()),
-                          style: idTextStyle,
-                          textAlign: TextAlign.end,
-                          maxLines: 4,
+                        String txId =
+                            showTxInfo ? tx.txId : S().activity_pending;
+                        return Container(
+                          constraints: const BoxConstraints(
+                            maxHeight: 80,
+                          ),
+                          child: SingleChildScrollView(
+                            child: Text(
+                              truncateWithEllipsisInCenter(
+                                txId,
+                                lerpDouble(16, txId.length, value)!.toInt(),
+                              ),
+                              style:
+                                  showTxInfo ? idTextStyle : trailingTextStyle,
+                              textAlign: TextAlign.end,
+                            ),
+                          ),
                         );
                       },
                     ),
@@ -300,7 +310,7 @@ class _TransactionsDetailsWidgetState
                       color: EnvoyColors.textPrimary,
                       size: EnvoyIconSize.small),
                   trailing: Text(getTransactionDateAndTimeString(tx),
-                      style: trailingTextStyle),
+                      textAlign: TextAlign.end, style: trailingTextStyle),
                 ),
                 EnvoyInfoCardListItem(
                   title: S().coindetails_overlay_status,
@@ -352,9 +362,10 @@ class _TransactionsDetailsWidgetState
                 if (tx.rampId != null)
                   EnvoyInfoCardListItem(
                     title: S().coindetails_overlay_rampID,
+                    centerSingleLineTitle: true,
                     icon: const EnvoyIcon(
                       EnvoyIcons.ramp_without_name,
-                      size: EnvoyIconSize.extraSmall,
+                      size: EnvoyIconSize.small,
                       color: EnvoyColors.textPrimary,
                     ),
                     trailing: GestureDetector(
@@ -366,16 +377,17 @@ class _TransactionsDetailsWidgetState
                         tx.rampId!,
                         style: idTextStyle,
                         textAlign: TextAlign.end,
-                        maxLines: 4,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ),
                 if (tx.rampFee != null)
                   EnvoyInfoCardListItem(
                     title: S().coindetails_overlay_rampFee,
+                    centerSingleLineTitle: true,
                     icon: const EnvoyIcon(
                       EnvoyIcons.ramp_without_name,
-                      size: EnvoyIconSize.extraSmall,
+                      size: EnvoyIconSize.small,
                       color: EnvoyColors.textPrimary,
                     ),
                     trailing: hideBalance
@@ -438,12 +450,14 @@ class _TransactionsDetailsWidgetState
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text(note,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            style: EnvoyTypography.body
-                                .copyWith(color: EnvoyColors.textPrimary),
-                            textAlign: TextAlign.end),
+                        Flexible(
+                          child: Text(note,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: EnvoyTypography.body
+                                  .copyWith(color: EnvoyColors.textPrimary),
+                              textAlign: TextAlign.end),
+                        ),
                         const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                         note.trim().isNotEmpty
                             ? SvgPicture.asset(
@@ -491,7 +505,8 @@ class _TransactionsDetailsWidgetState
   }
 
   Widget _renderFeeWidget(BuildContext context, Transaction tx) {
-    final isBoosted = ref.watch(isTxBoostedProvider(tx.txId)) ?? false;
+    final isBoosted =
+        (ref.watch(isTxBoostedProvider(tx.txId)) ?? false) && tx.amount < 0;
     final cancelState = ref.watch(cancelTxStateProvider(tx.txId));
     final hideBalance =
         ref.watch(balanceHideStateStatusProvider(widget.account.id));
@@ -606,5 +621,13 @@ String? getBaseUrlForNetwork(Network network) {
       return Fees.testnetMempoolFoundationInstance;
     case Network.Regtest:
       return null;
+  }
+}
+
+bool showTxId(TransactionType type) {
+  if (type == TransactionType.pending || type == TransactionType.normal) {
+    return true;
+  } else {
+    return false;
   }
 }

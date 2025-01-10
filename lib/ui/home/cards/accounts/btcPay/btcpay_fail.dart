@@ -21,7 +21,7 @@ class BtcPayFail extends StatelessWidget {
       icon: EnvoyIcons.alert,
       title: getTitle(voucher.errorType),
       content: getErrorContent(voucher.errorType, voucher.expiresAt),
-      learnMoreLink: voucher.errorType == BtcPayVoucherErrorType.onChain
+      linkUrl: voucher.errorType == BtcPayVoucherErrorType.onChain
           ? voucher.link
           : null,
       primaryButtonLabel: S().component_continue,

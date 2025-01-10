@@ -6,7 +6,11 @@ library envoy.server;
 
 import 'dart:convert';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/ui/home/home_page.dart';
+import 'package:envoy/util/console.dart';
 import 'package:http_tor/http_tor.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:pub_semver/pub_semver.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/scheduler.dart';
 
@@ -37,6 +41,36 @@ class Server {
       return ApiKeys.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to fetch API keys');
+    }
+  }
+
+  Future<void> checkForForceUpdate() async {
+    try {
+      // Fetch deprecated versions from the backend
+      final response = await http!.get('$_serverAddress/deprecated-versions');
+
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        List<dynamic> deprecatedVersions = data['deprecated_versions'];
+
+        // Get the app's current version
+        PackageInfo packageInfo = await PackageInfo.fromPlatform();
+        Version envoyVersionOnPhone = Version.parse(packageInfo.version);
+
+        // Check if the app's version is in the list of deprecated versions
+        bool isDeprecated = deprecatedVersions.any((version) {
+          Version deprecatedVersion = Version.parse(version);
+          return envoyVersionOnPhone == deprecatedVersion;
+        });
+
+        if (isDeprecated) {
+          isCurrentVersionDeprecated.add(true);
+        }
+      } else {
+        throw Exception('Failed to fetch deprecated versions');
+      }
+    } catch (e) {
+      kPrint("Error checking for force update: $e");
     }
   }
 }
