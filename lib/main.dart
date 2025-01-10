@@ -143,11 +143,11 @@ class EnvoyApp extends StatelessWidget {
         theme: ThemeData(
             textTheme: envoyTextTheme,
             pageTransitionsTheme: const PageTransitionsTheme(builders: {
-              TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-              TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
-              TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
-              TargetPlatform.macOS: FadeUpwardsPageTransitionsBuilder(),
-              TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+              TargetPlatform.android: OpenUpwardsPageTransitionsBuilder(),
+              TargetPlatform.iOS: OpenUpwardsPageTransitionsBuilder(),
+              TargetPlatform.linux: OpenUpwardsPageTransitionsBuilder(),
+              TargetPlatform.macOS: OpenUpwardsPageTransitionsBuilder(),
+              TargetPlatform.windows: OpenUpwardsPageTransitionsBuilder(),
             }),
             primaryColor: envoyAccentColor,
             brightness: Brightness.light,

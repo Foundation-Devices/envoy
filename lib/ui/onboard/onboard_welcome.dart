@@ -2,23 +2,33 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:io';
 import 'dart:math';
 
+import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/background.dart';
+import 'package:envoy/ui/components/button.dart';
+import 'package:envoy/ui/components/envoy_checkbox.dart';
+import 'package:envoy/ui/envoy_pattern_scaffold.dart';
+import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
+import 'package:envoy/ui/routes/routes.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
+import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/haptics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/ui/envoy_pattern_scaffold.dart';
-import 'package:envoy/business/local_storage.dart';
-import 'package:envoy/ui/routes/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:envoy/business/envoy_seed.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rive/rive.dart' as rive;
 
 enum EscapeHatchTap { logo, text }
 
@@ -76,7 +86,6 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   Widget build(BuildContext context) {
     final bool isOnboardingComplete =
         LocalStorage().prefs.getBool(PREFS_ONBOARDED) ?? false;
-
     return PopScope(
       child: EnvoyPatternScaffold(
         appBar: AppBar(
@@ -87,7 +96,22 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                   onPressed: () => context.go("/"),
                 )
               : const SizedBox.shrink(),
+          actions: [
+            //TODO: copy local
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: EnvoyButton(
+                label: "Advanced Options",
+                type: ButtonType.tertiary,
+                onTap: () {
+                  context.pushNamed(ADVANCED_SETTINGS);
+                },
+                state: ButtonState.defaultState,
+              ),
+            )
+          ],
         ),
+        heroTag: "shield",
         header: GestureDetector(
           onTap: () {
             registerEscapeTap(EscapeHatchTap.logo);
@@ -101,7 +125,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
         ),
         shield: Padding(
           padding: const EdgeInsets.symmetric(
-              vertical: EnvoySpacing.medium1, horizontal: EnvoySpacing.medium2),
+              vertical: EnvoySpacing.xs, horizontal: EnvoySpacing.medium1),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.min,
@@ -132,6 +156,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: EnvoySpacing.xs),
                             child: Text(
+                              //TODO: sync latest copy and button links
                               S().welcome_screen_subheading,
                               style: Theme.of(context).textTheme.bodySmall,
                               textAlign: TextAlign.center,
@@ -144,25 +169,40 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                   ),
                 ),
               ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                spacing: EnvoySpacing.medium2,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  EnvoyButton(
-                    S().welcome_screen_cta2,
-                    type: EnvoyButtonTypes.secondary,
-                    onTap: () {
-                      context.pushNamed(ONBOARD_PASSPORT_SETUP);
-                      return;
-                    },
+                  Expanded(
+                    flex: 1,
+                    child: EnvoyWelcomeButton(
+                      asset: Image.asset(
+                        'assets/welcome_envoy_sm.png',
+                        // Replace with your image URL or asset
+                        fit: BoxFit.cover, // Adjust as per your layout
+                      ),
+                      title: "Create a\nMobile Wallet",
+                      onTap: () {
+                        context.pushNamed(ONBOARD_ENVOY_SETUP,
+                            queryParameters: {"setupEnvoy": "1"});
+                      },
+                    ),
                   ),
-                  const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-                  EnvoyButton(
-                    S().welcome_screen_ctA1,
-                    onTap: () {
-                      context.pushNamed(ONBOARD_ENVOY_SETUP,
-                          queryParameters: {"setupEnvoy": "1"});
-                    },
+                  Expanded(
+                    flex: 1,
+                    child: EnvoyWelcomeButton(
+                      asset: Image.asset(
+                        'assets/passport_and_prime.png',
+                        // Replace with your image URL or asset
+                        fit: BoxFit.cover, // Adjust as per your layout
+                      ),
+                      title: "Set Up a\nPassport Device",
+                      onTap: () {
+                        showScanDialog(context);
+                      },
+                    ),
                   ),
                 ],
               )
@@ -171,5 +211,372 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
         ),
       ),
     );
+  }
+
+  void showScanDialog(BuildContext context) async {
+    bool promptDismissed = await EnvoyStorage()
+        .checkPromptDismissed(DismissiblePrompt.scanToConnect);
+    bool dismissed = false;
+
+    if (!promptDismissed && context.mounted) {
+      showEnvoyDialog(
+          context: context,
+          useRootNavigator: true,
+          dialog: StatefulBuilder(
+            builder: (context, setState) {
+              return Container(
+                width: MediaQuery.of(context).size.width * 0.85,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(EnvoySpacing.medium2),
+                  ),
+                  color: EnvoyColors.textPrimaryInverse,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(EnvoySpacing.medium2),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          height: 200,
+                          child: rive.RiveAnimation.asset(
+                            "assets/anim/animated_qr_scanner.riv",
+                            animations: [
+                              Platform.isIOS ? "ios_scan" : "android_scan"
+                            ],
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              dismissed = !dismissed;
+                            });
+                          },
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                child: EnvoyCheckbox(
+                                  value: dismissed,
+                                  onChanged: (value) {
+                                    if (value != null) {
+                                      setState(() {
+                                        dismissed = value;
+                                      });
+                                    }
+                                  },
+                                ),
+                              ),
+                              Text(
+                                S().component_dontShowAgain,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color: dismissed
+                                          ? Colors.black
+                                          : const Color(0xff808080),
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        EnvoyButton(
+                          label: "Continue",
+                          type: ButtonType.primary,
+                          state: ButtonState.defaultState,
+                          onTap: () {
+                            if (dismissed) {
+                              EnvoyStorage().addPromptState(
+                                  DismissiblePrompt.scanToConnect);
+                            }
+
+                            context.goNamed(ONBOARD_PRIME);
+                            //TODO: use scanner
+                            return;
+                            // Navigator.push(context, MaterialPageRoute(
+                            //   builder: (context) {
+                            //     return ScannerPage.devicePair(
+                            //       (payload) {
+                            //         Navigator.pop(context);
+                            //       },
+                            //     );
+                            //   },
+                            // ));
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+          dismissible: true);
+    } else {
+      if (context.mounted) {
+        context.goNamed(ONBOARD_PRIME);
+      }
+    }
+  }
+}
+
+class EnvoyWelcomeButton extends StatefulWidget {
+  final Widget asset;
+  final String title;
+  final GestureTapCallback onTap;
+
+  const EnvoyWelcomeButton(
+      {super.key,
+      required this.asset,
+      required this.onTap,
+      required this.title});
+
+  @override
+  State<EnvoyWelcomeButton> createState() => _EnvoyWelcomeButtonState();
+}
+
+class _EnvoyWelcomeButtonState extends State<EnvoyWelcomeButton> {
+  bool pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double buttonWidth = constraints.minWidth.clamp(110, 184);
+        //image needs to be center of the button,
+        //to make it responsive width will be used anchor the size
+        double imageSize = buttonWidth * 0.65;
+        return Center(
+          child: SizedBox(
+            width: buttonWidth,
+            //
+            height: buttonWidth + 30,
+            child: GestureDetector(
+              onTap: widget.onTap,
+              onTapDown: (details) => setState(() {
+                Haptics.buttonPress();
+                pressed = true;
+              }),
+              onTapCancel: () => setState(() {
+                pressed = false;
+              }),
+              onTapUp: (_) => setState(() {
+                pressed = false;
+              }),
+              child: TweenAnimationBuilder(
+                duration: const Duration(milliseconds: 300),
+                tween: pressed
+                    ? Tween(begin: 0.0, end: 1.0)
+                    : Tween(begin: 1.0, end: 0.0),
+                curve: Curves.easeInOut,
+                builder: (context, value, child) {
+                  return Transform.scale(
+                    scale: Tween(begin: 1.0, end: .96).transform(value),
+                    child: Card(
+                      elevation: Tween(begin: 6.0, end: 4.0).transform(value),
+                      shadowColor: Colors.black,
+                      borderOnForeground: true,
+                      clipBehavior: Clip.hardEdge,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(EnvoySpacing.medium1))),
+                      child: child,
+                    ),
+                  );
+                },
+                child: SizedBox.expand(
+                    child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Flexible(
+                            flex: 5,
+                            child: Container(
+                              color: Colors.white,
+                            ),
+                          ),
+                          Container(
+                            height: 2,
+                          ),
+                          Flexible(
+                            flex: 4,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  // Adjust if needed
+                                  end: Alignment.bottomRight,
+                                  // Adjust if needed
+                                  colors: [
+                                    EnvoyColors.gray1000,
+                                    EnvoyColors.gray1000.applyOpacity(0.62),
+                                  ],
+                                  stops: const [
+                                    0.0754, // 7.54%
+                                    0.9235, // 92.35%
+                                  ],
+                                  transform: const GradientRotation(10 *
+                                      3.14159 /
+                                      180), // 10 degrees to radians
+                                ),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Color(
+                                        0x1A000000), // rgba(0, 0, 0, 0.10)
+                                    blurRadius: 14.0,
+                                    offset: Offset(0, 0), // No offset
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          // Flexible(flex: 1, child: Container())
+                        ],
+                      ),
+                    ),
+                    Positioned.fill(
+                        child: ShaderMask(
+                      shaderCallback: (bounds) {
+                        return LinearGradient(
+                          colors: [
+                            EnvoyColors.gray1000.applyOpacity(1.02),
+                            EnvoyColors.gray1000.applyOpacity(0.01),
+                            EnvoyColors.gray1000.applyOpacity(0.1),
+                            EnvoyColors.gray1000.applyOpacity(0.2),
+                            EnvoyColors.gray1000.applyOpacity(0.8),
+                            EnvoyColors.gray1000.applyOpacity(0.002),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ).createShader(bounds);
+                      },
+                      child: CustomPaint(
+                        isComplex: true,
+                        willChange: false,
+                        painter: LinesPainter(
+                          opacity: 1,
+                          hideLineGap: false,
+                          color: EnvoyColors.gray1000,
+                        ),
+                      ),
+                    )),
+                    Positioned.fill(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Flexible(
+                            flex: 5,
+                            child: Container(
+                              color: Colors.transparent,
+                              alignment: Alignment.bottomCenter,
+                              child: Image.asset(
+                                'assets/crop_glow.png',
+                                fit: BoxFit.cover,
+                                scale: .5,
+                                filterQuality: FilterQuality.high,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: 2,
+                            color: EnvoyColors.danger,
+                          ),
+                          Flexible(
+                            flex: 4,
+                            child: Container(),
+                          ),
+                          // Flexible(flex: 1, child: Container())
+                        ],
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.center.add(const Alignment(0, -.5)),
+                      child: SizedBox(
+                        height: imageSize,
+                        child: widget.asset,
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: EnvoySpacing.medium1,
+                        ),
+                        child: Text(
+                          widget.title,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 11),
+                        ),
+                      ),
+                    )
+                  ],
+                )),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class WelcomeButtonGradientPainter extends CustomPainter {
+  final double gradientRadius;
+  final double gradientHeight;
+
+  WelcomeButtonGradientPainter(
+      {required this.gradientRadius, this.gradientHeight = 1.5});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..shader = const RadialGradient(
+        center: Alignment.center,
+        radius: 0.5,
+        colors: [
+          Color.fromRGBO(150, 92, 75, 0.6),
+          Color.fromRGBO(214, 139, 110, 0.6),
+          Color.fromRGBO(240, 187, 164, 0.0),
+        ],
+        stops: [0.0, 0.4836, 0.9466], // Corresponding to the percentages
+      ).createShader(Rect.fromCircle(
+          center: Offset(size.width / 2, size.height / gradientHeight),
+          radius: min(size.width, size.width * gradientRadius)));
+
+    final rxect = Rect.fromPoints(
+        Offset(0, -size.height), Offset(size.width, size.height));
+    canvas.drawRRect(RRect.fromRectXY(rxect, 0, 0), paint);
+
+    canvas.drawPath(
+        Path()
+          ..addRect(Rect.fromPoints(Offset(size.width / 2, -size.height),
+              Offset(size.width, size.height)))
+          ..fillType = PathFillType.evenOdd,
+        Paint()
+          ..color = Colors.black.withAlpha(50)
+          ..maskFilter =
+              MaskFilter.blur(BlurStyle.normal, convertRadiusToSigma(2)));
+  }
+
+  @override
+  bool shouldRepaint(covariant WelcomeButtonGradientPainter oldDelegate) {
+    return oldDelegate.gradientRadius != gradientRadius;
+  }
+
+  static double convertRadiusToSigma(double radius) {
+    return radius * 0.57735 + 0.5;
   }
 }
