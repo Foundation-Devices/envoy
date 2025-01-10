@@ -574,8 +574,10 @@ class _AndroidBackupWarningState extends ConsumerState<AndroidBackupWarning> {
                               type: EnvoyButtonTypes.tertiary,
                               label: S().component_skip,
                               onTap: () async {
-                                // OnboardingPage.popUntilHome(context);
-                                Navigator.pop(context);
+                                if (mounted) {
+                                  OnboardingPage.popUntilHome(context);
+                                  Navigator.pop(context);
+                                }
                               },
                             );
                           },
