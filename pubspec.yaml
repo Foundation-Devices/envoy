@@ -154,6 +154,8 @@ flutter:
     - assets/icons/
     - assets/
     - assets/videos/
+    - assets/anim/
+    - assets/images/
     - assets/components/icons/
     - integration_test/assets/
 
