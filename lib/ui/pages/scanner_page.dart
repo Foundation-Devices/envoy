@@ -387,7 +387,7 @@ class ScannerPageState extends State<ScannerPage> {
     final scaffold = ScaffoldMessenger.of(context);
     Account? pairedAccount;
     try {
-      pairedAccount = await AccountManager().addPassportAccounts(binary);
+      pairedAccount = await AccountManager().processPassportAccounts(binary);
     } on AccountAlreadyPaired catch (_) {
       scaffold.showSnackBar(const SnackBar(
         content: Text("Account already connected"), // TODO: FIGMA
