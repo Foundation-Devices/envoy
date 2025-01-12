@@ -5,6 +5,7 @@
 
 import 'package:envoy/ui/onboard/prime/onboard_prime.dart';
 import 'package:envoy/ui/onboard/prime/onboard_prime_ble.dart';
+import 'package:envoy/ui/onboard/prime/firmware%20_update/prime_fw_update.dart';
 import 'package:envoy/ui/onboard/prime/prime_onboard_connection.dart';
 import 'package:go_router/go_router.dart';
 
@@ -27,7 +28,7 @@ final primeRoutes = GoRoute(
             name: ONBOARD_PRIME_PAIR),
         GoRoute(
             path: "update",
-            builder: (context, state) => const PrimeOnboardParing(),
+            builder: (context, state) => const OnboardPrimeFwUpdate(),
             name: ONBOARD_PRIME_FIRMWARE_UPDATE),
       ],
       builder: (context, state) => const OnboardPrimeBluetooth(),

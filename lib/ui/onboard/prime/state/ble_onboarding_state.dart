@@ -3,23 +3,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // ignore_for_file: constant_identifier_names
 
+import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-//TODO: add more concrete states based on bluetooth implementation
-enum PairingStep { LOADING, FINISHED, ERROR, IDLE }
-
-class StepModel {
-  final String stepName;
-  PairingStep state;
-
-  StepModel({required this.stepName, this.state = PairingStep.LOADING});
-}
-
 class StepNotifier extends StateNotifier<StepModel> {
-  StepNotifier()
-      : super(StepModel(stepName: "Loading", state: PairingStep.IDLE));
+  StepNotifier({stepName = "Loading", state = EnvoyStepState.HIDDEN})
+      : super(StepModel(stepName: stepName, state: state));
 
-  Future<void> updateStep(String stepName, PairingStep state) async {
+  Future<void> updateStep(String stepName, EnvoyStepState state) async {
     this.state = StepModel(stepName: stepName, state: state);
   }
 }
