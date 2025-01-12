@@ -37,7 +37,6 @@ import 'business/fees.dart';
 import 'business/scv_server.dart';
 import 'generated/l10n.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
