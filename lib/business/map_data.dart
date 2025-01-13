@@ -74,10 +74,8 @@ class MapData {
     }
   }
 
-  Future<void> fetchAndSaveATMData() async {
-    final String filePath = await getWritableFilePath("atm_data.json");
+  Future<Map<String, dynamic>> fetchATMData() async {
     const String overpassUrl = 'https://overpass-api.de/api/interpreter';
-
     const String query = '''
 [out:json][timeout:25];
 nwr["amenity"="atm"]["currency:XBT"="yes"];
@@ -85,48 +83,77 @@ out geom;
 ''';
 
     try {
+      final response =
+          await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
+        overpassUrl,
+        body: 'data=$query',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+        return jsonData;
+      } else {
+        kPrint(
+            'Error: Failed to fetch data. HTTP status: ${response.statusCode}');
+        return {};
+      }
+    } catch (e) {
+      kPrint('Error fetching data: $e');
+      return {};
+    }
+  }
+
+  Future<void> saveATMData(Map<String, dynamic> data) async {
+    final String filePath = await getWritableFilePath("atm_data.json");
+
+    try {
+      if (data.isNotEmpty) {
+        // Save data to the file
+        final file = File(filePath);
+        await file.writeAsString(json.encode(data), flush: true);
+
+        // Restore venues from the saved data
+        _restoreVenuesFromJson();
+
+        kPrint('Data successfully saved to $filePath');
+      } else {
+        kPrint('No data to save.');
+      }
+    } catch (e) {
+      kPrint('Error saving data: $e');
+    }
+  }
+
+  Future<void> fetchAndSaveATMData() async {
+    final String filePath = await getWritableFilePath("atm_data.json");
+
+    try {
       // Read the previously saved JSON data
+      final file = File(filePath);
       Map<String, dynamic>? savedJsonData;
       DateTime? savedTimestamp;
 
-      final file = File(filePath);
-      final initialData = await file.readAsString();
-      savedJsonData = json.decode(initialData);
+      if (await file.exists()) {
+        final initialData = await file.readAsString();
+        savedJsonData = json.decode(initialData);
 
-      String? timestampString = savedJsonData?["osm3s"]["timestamp_osm_base"];
-      savedTimestamp =
-          timestampString == null ? null : DateTime.parse(timestampString);
+        String? timestampString = savedJsonData?["osm3s"]["timestamp_osm_base"];
+        savedTimestamp =
+            timestampString == null ? null : DateTime.parse(timestampString);
+      }
 
       // If there is no saved data or it's older than 7 days
       if (savedJsonData == null ||
           (savedTimestamp != null &&
               DateTime.now().isAfter(savedTimestamp.add(Duration(days: 7))))) {
-        // Make a POST request to Overpass API
-        final response =
-            await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
-          overpassUrl,
-          body: 'data=$query',
-          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        );
-
-        if (response.statusCode == 200) {
-          final Map<String, dynamic> jsonData = json.decode(response.body);
-
-          // Save data to the file
-          await file.writeAsString(json.encode(jsonData), flush: true);
-
-          _restoreVenuesFromJson();
-
-          kPrint('Data successfully saved to $filePath');
-        } else {
-          kPrint(
-              'Error: Failed to fetch data. HTTP status: ${response.statusCode}');
-        }
+        final newData = await fetchATMData();
+        await saveATMData(newData);
       } else {
         kPrint('Data is up to date. Skipping fetch and save.');
       }
     } catch (e) {
-      kPrint('Error: $e');
+      kPrint('Error in fetchAndSaveATMData: $e');
     }
   }
 
