@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:envoy/business/venue.dart';
 import 'package:envoy/util/console.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tor/tor.dart';
 import 'package:http_tor/http_tor.dart';
@@ -43,8 +44,15 @@ class MapData {
     try {
       final String filePath = await getWritableFilePath("atm_data.json");
       File file = File(filePath);
-      String jsonString = await file.readAsString();
-      final Map<String, dynamic> parsedData = json.decode(jsonString);
+      final Map<String, dynamic> parsedData;
+      if (await file.exists()) {
+        String jsonString = await file.readAsString();
+        parsedData = json.decode(jsonString);
+      } else {
+        // Fix JSON file loading on first app run for iOS
+        String jsonString = await rootBundle.loadString("assets/atm_data.json");
+        parsedData = json.decode(jsonString);
+      }
 
       if (parsedData.containsKey('elements')) {
         final elements = parsedData['elements'] as List<dynamic>;
