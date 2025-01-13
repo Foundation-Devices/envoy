@@ -3,9 +3,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:envoy/business/venue.dart';
 import 'package:envoy/util/console.dart';
-import 'package:envoy/util/envoy_storage.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:tor/tor.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:envoy/business/scheduler.dart';
@@ -28,59 +29,110 @@ class MapData {
   MapData._internal() {
     kPrint("Instance of MapData created!");
 
-    _restoreVenues();
-    addVenues();
+    _restoreVenuesFromJson();
+    fetchAndSaveATMData();
   }
 
   _dropVenues() {
     venues.clear();
   }
 
-  _restoreVenues() async {
-    _dropVenues();
+  Future<void> _restoreVenuesFromJson() async {
+    _dropVenues(); // Clear the existing venues list
 
-    var storedVenues = await EnvoyStorage().getAllLocations();
-    for (var venue in storedVenues!) {
-      venues.add(venue!);
+    try {
+      final String filePath = await getWritableFilePath("atm_data.json");
+      File file = File(filePath);
+      String jsonString = await file.readAsString();
+      final Map<String, dynamic> parsedData = json.decode(jsonString);
+
+      if (parsedData.containsKey('elements')) {
+        final elements = parsedData['elements'] as List<dynamic>;
+
+        for (var element in elements) {
+          if (element['type'] == 'node' && element['tags'] != null) {
+            final tags = element['tags'] as Map<String, dynamic>;
+
+            // Extract venue details
+            final id = element['id'] as int;
+            final lat = element['lat'] as double;
+            final lon = element['lon'] as double;
+            final category = tags['amenity'] ?? 'Unknown';
+            final name = tags['name'] ?? 'Unknown';
+
+            final venue = Venue(id, lat, lon, category, name);
+            venues.add(venue); // Add to the venue list
+          }
+        }
+
+        kPrint('Venues successfully restored from JSON.');
+      } else {
+        kPrint('No elements found in the JSON data.');
+      }
+    } catch (e) {
+      kPrint('Error parsing JSON: $e');
     }
   }
 
-  storeVenues() async {
-    for (var venue in venues) {
-      var storedVenue = await EnvoyStorage().getLocationById(venue.id);
-      if (storedVenue != null) {
-        if (storedVenue.name != venue.name ||
-            storedVenue.lon != venue.lon ||
-            storedVenue.lat != venue.lat) {
-          EnvoyStorage().updateLocation(venue);
+  Future<void> fetchAndSaveATMData() async {
+    final String filePath = await getWritableFilePath("atm_data.json");
+    const String overpassUrl = 'https://overpass-api.de/api/interpreter';
+
+    const String query = '''
+[out:json][timeout:25];
+nwr["amenity"="atm"]["currency:XBT"="yes"];
+out geom;
+''';
+
+    try {
+      // Read the previously saved JSON data
+      Map<String, dynamic>? savedJsonData;
+      DateTime? savedTimestamp;
+
+      final file = File(filePath);
+      final initialData = await file.readAsString();
+      savedJsonData = json.decode(initialData);
+
+      String? timestampString = savedJsonData?["osm3s"]["timestamp_osm_base"];
+      savedTimestamp =
+          timestampString == null ? null : DateTime.parse(timestampString);
+
+      // If there is no saved data or it's older than 7 days
+      if (savedJsonData == null ||
+          (savedTimestamp != null &&
+              DateTime.now().isAfter(savedTimestamp.add(Duration(days: 7))))) {
+        // Make a POST request to Overpass API
+        final response =
+            await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
+          overpassUrl,
+          body: 'data=$query',
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        );
+
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> jsonData = json.decode(response.body);
+
+          // Save data to the file
+          await file.writeAsString(json.encode(jsonData), flush: true);
+
+          _restoreVenuesFromJson();
+
+          kPrint('Data successfully saved to $filePath');
+        } else {
+          kPrint(
+              'Error: Failed to fetch data. HTTP status: ${response.statusCode}');
         }
       } else {
-        EnvoyStorage().insertLocation(venue);
+        kPrint('Data is up to date. Skipping fetch and save.');
       }
+    } catch (e) {
+      kPrint('Error: $e');
     }
   }
 
-  addVenues() async {
-    final response = await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
-      "https://coinmap.org/api/v1/venues/?category=atm",
-    ); // fetch only atms
-
-    final data = json.decode(response.body);
-    List myVenues = data["venues"];
-
-    List<Venue> updatedVenues = [];
-    for (var venue in myVenues) {
-      final id = venue["id"];
-      final double lat = venue["lat"];
-      final double lon = venue["lon"];
-      final String category = venue["category"];
-      final String name = venue["name"];
-      final myVenue = Venue(id, lat, lon, category, name);
-      updatedVenues.add(myVenue);
-    }
-    venues = updatedVenues;
-
-    if (updatedVenues.isNotEmpty) storeVenues();
+  Future<String> getWritableFilePath(String fileName) async {
+    final directory = await getApplicationDocumentsDirectory();
+    return '${directory.path}/$fileName';
   }
 
   List<Venue> getLocallyVenues(
@@ -99,9 +151,53 @@ class MapData {
     return locallyVenues;
   }
 
-  Future<Response> getVenueInfo(int id) async {
-    return await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
-      "https://coinmap.org/api/v1/venues/$id",
+  Future<Map<String, dynamic>> getVenueInfoFromJson(int venueId) async {
+    final String filePath = await getWritableFilePath("atm_data.json");
+    File file = File(filePath);
+    String jsonString = await file.readAsString();
+    Map<String, dynamic> data = json.decode(jsonString);
+
+    // Find the venue with the specified ID
+    final List<dynamic> elements = data["elements"];
+    final venue = elements.firstWhere(
+      (element) => element["id"] == venueId,
+      orElse: () => throw Exception('Venue with ID $venueId not found.'),
     );
+
+    // Extract tags (details) from the venue
+    final Map<String, dynamic> venueTags = venue["tags"] ?? {};
+
+    // Return venue details with tags
+    return {
+      "id": venueId,
+      "lat": venue["lat"],
+      "lon": venue["lon"],
+      "name": venueTags["name"],
+      "description": venueTags["description"],
+      "opening_hours": venueTags["opening_hours"],
+      "website": venueTags["website"],
+      "address": _buildAddress(venueTags),
+    };
+  }
+
+// Helper function to build an address string
+  String? _buildAddress(Map<String, dynamic> tags) {
+    final String? street = tags["addr:street"];
+    final String? houseNo = tags["addr:housenumber"];
+    final String? city = tags["addr:city"];
+
+    if (street == null && houseNo == null && city == null) {
+      return null;
+    }
+
+    final String houseNoAndStreet = [
+      if (street != null && street.isNotEmpty) street,
+      if (houseNo != null && houseNo.isNotEmpty) houseNo,
+    ].join(' ');
+
+    return [
+      if (houseNoAndStreet.isNotEmpty) houseNoAndStreet,
+      if (city != null && city.isNotEmpty) city,
+    ].join(', ');
   }
 }

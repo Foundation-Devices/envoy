@@ -221,48 +221,11 @@ class MarkersPageState extends State<MarkersPage> {
           ],
         ),
         onTap: () async {
-          if (mounted) {
-            showEnvoyDialog(
-              context: context,
-              blurColor: Colors.black,
-              linearGradient: true,
-              dialog: const Padding(
-                padding: EdgeInsets.all(EnvoySpacing.medium3),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CircularProgressIndicator(), // Loading spinner
-                  ],
-                ),
-              ),
-            );
-          }
           try {
-            final response = await MapData().getVenueInfo(venue.id);
-            final data = json.decode(response.body);
-            final venueInfo = data["venue"];
-            String? name = venueInfo["name"];
-            final String? description = venueInfo["description"];
-            final String? openingHours = venueInfo["opening_hours"];
-            final String? website = venueInfo["website"];
-            final String? street = venueInfo["street"];
-            final String? houseNo = venueInfo["houseno"];
-            final String? city = venueInfo["city"];
-            String? address;
+            // Use the function to fetch venue info
+            final venueInfo = await MapData().getVenueInfoFromJson(venue.id);
 
-            if (street != null || houseNo != null || city != null) {
-              final String houseNoAndStreet = [
-                if (street != null && street.isNotEmpty) street,
-                if (houseNo != null && houseNo.isNotEmpty) houseNo
-              ].join(' ');
-
-              address = [
-                if (houseNoAndStreet.isNotEmpty) houseNoAndStreet,
-                if (city != null && city.isNotEmpty) city
-              ].join(', ');
-            }
             if (mounted) {
-              Navigator.pop(context);
               showEnvoyDialog(
                 context: context,
                 blurColor: Colors.black,
@@ -270,17 +233,17 @@ class MarkersPageState extends State<MarkersPage> {
                 dialog: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.9,
                   child: AtmDialogInfo(
-                    name: name,
-                    address: address,
-                    website: website,
-                    description: description,
-                    openingHours: openingHours,
+                    name: venueInfo["name"],
+                    address: venueInfo["address"],
+                    website: venueInfo["website"],
+                    description: venueInfo["description"],
+                    openingHours: venueInfo["opening_hours"],
                   ),
                 ),
               );
             }
           } catch (error) {
-            if (mounted) Navigator.pop(context);
+            print('MY Error: $error');
           }
         },
       ),
@@ -564,6 +527,7 @@ class TriangleShadow extends CustomPainter {
         center: Alignment.topCenter,
         focalRadius: 0.5,
         radius: 0.8,
+
         stops: const [0.0, 0.9],
         // Ensure stops are correct for smooth transition
         colors: [
