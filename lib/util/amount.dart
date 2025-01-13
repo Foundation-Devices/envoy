@@ -50,9 +50,10 @@ String removeFiatTrailingZeros(String fiatAmount) {
 
 String convertSatsToBtcString(int amountSats) {
   final amountBtc = amountSats / 100000000;
+  bool isBtcZero = amountBtc == 0; /// ENV-1680 and ENV-1765 !!!
 
   NumberFormat formatter = NumberFormat.decimalPattern(currentLocale);
-  formatter.minimumFractionDigits = 0;
+  formatter.minimumFractionDigits = isBtcZero ? 0 : 8;
   formatter.maximumFractionDigits = 8;
 
   return formatter.format(amountBtc);
