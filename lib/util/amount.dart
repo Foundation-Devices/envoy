@@ -19,11 +19,12 @@ String thousandSatSeparator = fiatGroupSeparator;
 NumberFormat satsFormatter =
     NumberFormat("###,###,###,###,###,###,###", currentLocale);
 
-String getDisplayAmount(int amountSats, AmountDisplayUnit unit,
+String getDisplayAmount(
+    int amountSats, AmountDisplayUnit unit, bool numpadPressed,
     {bool trailingZeroes = false}) {
   switch (unit) {
     case AmountDisplayUnit.btc:
-      return convertSatsToBtcString(amountSats);
+      return convertSatsToBtcString(amountSats, numpadPressed);
     case AmountDisplayUnit.sat:
       return satsFormatter.format(amountSats);
     case AmountDisplayUnit.fiat:
@@ -48,12 +49,15 @@ String removeFiatTrailingZeros(String fiatAmount) {
   return fiatAmount;
 }
 
-String convertSatsToBtcString(int amountSats) {
+String convertSatsToBtcString(int amountSats, bool numpadPressed) {
   final amountBtc = amountSats / 100000000;
-  bool isBtcZero = amountBtc == 0; /// ENV-1680 and ENV-1765 !!!
+  bool isBtcZero = amountBtc == 0;
+
+  /// ENV-1680 and ENV-1765 !!!
+  bool trailingZeros = isBtcZero || numpadPressed ? false : true;
 
   NumberFormat formatter = NumberFormat.decimalPattern(currentLocale);
-  formatter.minimumFractionDigits = isBtcZero ? 0 : 8;
+  formatter.minimumFractionDigits = trailingZeros ? 8 : 0;
   formatter.maximumFractionDigits = 8;
 
   return formatter.format(amountBtc);
@@ -103,13 +107,13 @@ String getFormattedAmount(int amountSats,
   String text = "";
   if (unit == null) {
     if (Settings().displayUnit == DisplayUnit.btc) {
-      text = convertSatsToBtcString(amountSats);
+      text = convertSatsToBtcString(amountSats, true);
     } else {
       text = satsFormatter.format(amountSats);
     }
   } else {
     if (unit == AmountDisplayUnit.btc) {
-      text = convertSatsToBtcString(amountSats);
+      text = convertSatsToBtcString(amountSats, true);
     } else if (unit == AmountDisplayUnit.sat) {
       text = satsFormatter.format(amountSats);
     }

@@ -35,7 +35,7 @@ class AmountDisplay extends ConsumerStatefulWidget {
       super.key});
 
   void setDisplayAmount(AmountDisplayUnit unit) {
-    displayedAmount = getDisplayAmount(amountSats!, unit);
+    displayedAmount = getDisplayAmount(amountSats!, unit, false);
   }
 
   @override
@@ -74,6 +74,8 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
 
   @override
   Widget build(context) {
+    var btcTrailingZeroes = ref.watch(btcTrailingZeroesProvider);
+
     ref.listen(sendScreenUnitProvider, (_, AmountDisplayUnit next) {
       widget.setDisplayAmount(next);
 
@@ -144,14 +146,10 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
                                 widget.amountSats ?? 0,
                                 wallet: widget.account?.wallet)
                             : (Settings().displayUnit == DisplayUnit.btc
-                                ? getDisplayAmount(
-                                    widget.amountSats ?? 0,
-                                    AmountDisplayUnit.btc,
-                                  )
-                                : getDisplayAmount(
-                                    widget.amountSats ?? 0,
-                                    AmountDisplayUnit.sat,
-                                  )),
+                                ? getDisplayAmount(widget.amountSats ?? 0,
+                                    AmountDisplayUnit.btc, btcTrailingZeroes)
+                                : getDisplayAmount(widget.amountSats ?? 0,
+                                    AmountDisplayUnit.sat, false)),
                       ),
                     ])),
         ],
