@@ -32,6 +32,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/business/region_manager.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
@@ -43,6 +44,7 @@ class SettingsPage extends ConsumerStatefulWidget {
 class _SettingsPageState extends ConsumerState<SettingsPage> {
   final _animationsDuration = const Duration(milliseconds: 200);
   bool _advancedVisible = false;
+  bool canBuy = true;
 
   final LocalAuthentication auth = LocalAuthentication();
 
@@ -62,6 +64,29 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     }
 
     return false;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkCanBuy();
+    });
+  }
+
+  Future<void> _checkCanBuy() async {
+    var region = await EnvoyStorage().getCountry();
+    if (region != null) {
+      bool newRegionCanBuy =
+          await AllowedRegions.isRegionAllowed(region.code, region.division);
+      setState(() {
+        canBuy = newRegionCanBuy;
+      });
+    } else {
+      setState(() {
+        canBuy = true;
+      });
+    }
   }
 
   @override
@@ -283,17 +308,21 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   }
                 }),
               ),
-              ListTile(
-                dense: true,
-                contentPadding: const EdgeInsets.all(0),
-                title: Wrap(
-                  children: [SettingText(S().settings_advanced_enableBuyRamp)],
-                ),
-                trailing: SettingToggle(
-                  s.isAllowedBuyInEnvoy,
-                  s.setAllowBuyInEnvoy,
-                ),
-              ),
+              canBuy
+                  ? ListTile(
+                      dense: true,
+                      contentPadding: const EdgeInsets.all(0),
+                      title: Wrap(
+                        children: [
+                          SettingText(S().settings_advanced_enableBuyRamp)
+                        ],
+                      ),
+                      trailing: SettingToggle(
+                        s.isAllowedBuyInEnvoy,
+                        s.setAllowBuyInEnvoy,
+                      ),
+                    )
+                  : const SizedBox.shrink(),
               ListTile(
                 dense: true,
                 onTap: () {

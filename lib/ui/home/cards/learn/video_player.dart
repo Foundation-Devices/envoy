@@ -341,7 +341,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                                 ConnectivityManager().torEnabled &&
                                         !ConnectivityManager()
                                             .torCircuitEstablished
-                                    ? "Connecting to the Tor Network" // TODO: FIGMA
+                                    ? S().video_connectingToTorNetwork
                                     : S().video_loadingTorText,
                                 style: const TextStyle(
                                   color: Colors.white70,

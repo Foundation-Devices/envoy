@@ -2,28 +2,26 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/fw_uploader.dart';
-import 'package:envoy/ui/onboard/sd_card_spinner.dart';
-import 'package:envoy/ui/pages/fw/fw_passport.dart';
-import 'package:flutter/material.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:envoy/generated/l10n.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/business/devices.dart';
-import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/business/fw_uploader.dart';
+import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/home/cards/devices/device_list_tile.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/onboard/sd_card_spinner.dart';
+import 'package:envoy/ui/pages/fw/fw_routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
-import 'fw_intro.dart';
-import 'package:envoy/ui/home/cards/devices/device_list_tile.dart';
+import 'package:envoy/util/envoy_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class FwAndroidProgressPage extends ConsumerStatefulWidget {
-  final bool onboarding;
-  final int deviceId;
+  final FwPagePayload payload;
 
-  const FwAndroidProgressPage(this.deviceId,
-      {super.key, this.onboarding = true});
+  const FwAndroidProgressPage({super.key, required this.payload});
 
   @override
   ConsumerState<FwAndroidProgressPage> createState() =>
@@ -34,11 +32,13 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
   bool? done;
   int currentDotIndex = 3;
   int navigationDots = 6;
+  late int deviceId = widget.payload.deviceId;
+  late bool onboarding = widget.payload.onboarding;
 
   final PageController _instructionPageController = PageController();
 
   void refreshFirmwareUpdateDot() {
-    final device = Devices().getDeviceById(widget.deviceId);
+    final device = Devices().getDeviceById(deviceId);
     if (device != null) {
       ref.invalidate(shouldUpdateProvider(device));
     }
@@ -46,7 +46,7 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
 
   @override
   Widget build(BuildContext context) {
-    final fwInfo = ref.watch(firmwareStreamProvider(widget.deviceId));
+    final fwInfo = ref.watch(firmwareStreamProvider(deviceId));
     ref.listen<bool?>(
       sdFwUploadProgressProvider,
       (previous, next) async {
@@ -64,8 +64,8 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
           setState(() {
             done = next;
             if (done!) {
-              Devices().markDeviceUpdated(
-                  widget.deviceId, fwInfo.value!.storedVersion);
+              Devices()
+                  .markDeviceUpdated(deviceId, fwInfo.value!.storedVersion);
               refreshFirmwareUpdateDot();
             }
           });
@@ -75,12 +75,7 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
 
     return OnboardingPage(
       leftFunction: (context) {
-        Navigator.of(context).pop();
-      },
-      rightFunction: (_) {
-        widget.onboarding
-            ? OnboardingPage.popUntilHome(context)
-            : OnboardingPage.popUntilGoRoute(context);
+        context.pop();
       },
       key: const Key("fw_progress"),
       text: [
@@ -144,19 +139,13 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
           OnboardingButton(
               label: done! ? S().component_continue : S().component_tryAgain,
               onTap: () {
-                Navigator.of(context)
-                    .pushReplacement(MaterialPageRoute(builder: (context) {
-                  if (done!) {
-                    return FwPassportPage(
-                      onboarding: widget.onboarding,
-                    );
-                  } else {
-                    return FwIntroPage(
-                      deviceId: widget.deviceId,
-                      onboarding: widget.onboarding,
-                    );
-                  }
-                }));
+                if (done!) {
+                  context.goNamed(PASSPORT_UPDATE_PASSPORT,
+                      extra: widget.payload);
+                  return;
+                } else {
+                  context.goNamed(PASSPORT_UPDATE, extra: widget.payload);
+                }
               })
       ],
     );

@@ -3,26 +3,26 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:io';
+
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/envoy_scaffold.dart';
+import 'package:envoy/ui/embedded_video.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/manual/generate_seed.dart';
-import 'package:envoy/ui/onboard/manual/manual_setup_import_seed.dart';
-import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/util/build_context_extension.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/embedded_video.dart';
-import 'package:envoy/ui/components/envoy_scaffold.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'manual_setup_import_backup.dart';
+import 'package:go_router/go_router.dart';
 
 class ManualSetup extends StatefulWidget {
   const ManualSetup({super.key});
@@ -53,7 +53,7 @@ class _ManualSetupState extends State<ManualSetup> {
                   .bodyMedium
                   ?.copyWith(color: Colors.black)),
           onPressed: () {
-            OnboardingPage.popUntilHome(context);
+            context.go("/");
           },
         ),
       ],
@@ -105,12 +105,7 @@ class _ManualSetupState extends State<ManualSetup> {
                     fontWeight: FontWeight.w600,
                     onTap: () {
                       _playerKey.currentState?.pause();
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return const SeedIntroScreen(
-                          mode: SeedIntroScreenType.import,
-                        );
-                      }));
+                      context.goNamed(ONBOARD_ENVOY_MANUAL_IMPORT);
                     }),
                 !EnvoySeed().walletDerived()
                     ? OnboardingButton(
@@ -118,11 +113,7 @@ class _ManualSetupState extends State<ManualSetup> {
                         fontWeight: FontWeight.w600,
                         onTap: () {
                           _playerKey.currentState?.pause();
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return const SeedIntroScreen(
-                                mode: SeedIntroScreenType.generate);
-                          }));
+                          context.goNamed(ONBOARD_ENVOY_MANUAL_GENERATE);
                         })
                     : const SizedBox.shrink(),
                 const SizedBox(height: EnvoySpacing.xs),
@@ -167,7 +158,7 @@ class SeedIntroScreen extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: GestureDetector(
                           onTap: () {
-                            Navigator.pop(context);
+                            context.pop();
                           },
                           child: const Padding(
                             padding: EdgeInsets.all(EnvoySpacing.medium1),
@@ -276,28 +267,16 @@ class SeedIntroScreen extends StatelessWidget {
                                 label: S().manual_setup_import_seed_CTA3,
                                 fontWeight: FontWeight.w600,
                                 onTap: () {
-                                  Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) {
-                                    return Builder(builder: (context) {
-                                      return const ManualSetupImportSeed(
-                                        seedLength: SeedLength.mnemonic_12,
-                                      );
-                                    });
-                                  }));
+                                  context
+                                      .goNamed(ONBOARD_ENVOY_MANUAL_IMPORT_12);
                                 }),
                             OnboardingButton(
                                 type: EnvoyButtonTypes.secondary,
                                 label: S().manual_setup_import_seed_CTA2,
                                 fontWeight: FontWeight.w600,
                                 onTap: () {
-                                  Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) {
-                                    return Builder(builder: (context) {
-                                      return const ManualSetupImportSeed(
-                                        seedLength: SeedLength.mnemonic_24,
-                                      );
-                                    });
-                                  }));
+                                  context
+                                      .goNamed(ONBOARD_ENVOY_MANUAL_IMPORT_24);
                                 }),
                             OnboardingButton(
                                 type: EnvoyButtonTypes.primary,
@@ -344,11 +323,6 @@ Future<void> checkSeed(BuildContext context, String seed) async {
       context: context,
     );
   } else {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => RecoverFromSeedLoader(
-                  seed: seed,
-                )));
+    context.goNamed(ONBOARD_ENVOY_MANUAL_IMPORT_SEED, extra: seed);
   }
 }

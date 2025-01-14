@@ -81,7 +81,7 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
                 }
                 return GestureDetector(
                   onTap: () async {
-                    if (countryRestricted) {
+                    if (countryRestricted || disabled) {
                       return;
                     }
                     context.go(

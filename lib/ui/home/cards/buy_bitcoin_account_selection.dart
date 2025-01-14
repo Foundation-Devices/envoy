@@ -288,6 +288,7 @@ class ChooseAccount extends StatefulWidget {
 class ChooseAccountState extends State<ChooseAccount> {
   late List<Account> accounts;
   late Account _currentSelectedAccount;
+
   //to improve shadow animation, bool
   bool _exiting = false;
 
@@ -470,17 +471,8 @@ class VerifyAddressDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Align(
-              alignment: Alignment.centerRight,
-              child: GestureDetector(
-                child: const EnvoyIcon(EnvoyIcons.close),
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
             const Padding(
-              padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium2),
+              padding: EdgeInsets.only(bottom: EnvoySpacing.medium2),
               child: EnvoyIcon(
                 EnvoyIcons.verifyAddress,
                 size: EnvoyIconSize.big,
@@ -510,9 +502,13 @@ class VerifyAddressDialog extends StatelessWidget {
                 align: TextAlign.center,
               ),
             ),
-            Flexible(child: EnvoyQR(data: address)),
+            Flexible(
+                child: Padding(
+              padding: const EdgeInsets.all(EnvoySpacing.small),
+              child: EnvoyQR(data: address),
+            )),
             Padding(
-              padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+              padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
               child: EnvoyButton(
                 label: S().component_done,
                 type: ButtonType.primary,

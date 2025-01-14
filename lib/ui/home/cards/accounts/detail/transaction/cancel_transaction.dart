@@ -20,6 +20,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/console.dart';
@@ -90,7 +91,6 @@ class CancelTxButton extends ConsumerStatefulWidget {
 }
 
 class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
-  bool _isPressed = false;
   bool _loading = false;
   bool _canCancel = false;
   late Psbt psbt;
@@ -172,7 +172,6 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
           GestureDetector(
             onTapDown: (_) {
               setState(() {
-                _isPressed = true;
                 Haptics.lightImpact();
               });
             },
@@ -187,27 +186,21 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
                               originalRawTx: originalTxRaw,
                               cancelTx: psbt)))
                   : showNoCancelNoFundsDialog(context);
-              _isPressed = false;
-            },
-            onTapCancel: () {
-              setState(() {
-                _isPressed = false;
-                Haptics.lightImpact();
-              });
             },
             child: Container(
               height: EnvoySpacing.medium2,
               decoration: BoxDecoration(
-                  color: EnvoyColors.chilli500.withOpacity(
-                      ref.watch(rbfSpendStateProvider) != null && _canCancel
-                          ? (_isPressed ? 0.5 : 1)
-                          : (_loading ? 1 : 0.5)),
+                  color: EnvoyColors.chilli500.applyOpacity(_loading
+                      ? 1
+                      : (ref.watch(rbfSpendStateProvider) != null && _canCancel
+                          ? 1
+                          : 0.5)),
                   borderRadius: BorderRadius.circular(EnvoySpacing.small)),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _loading
+                  _loading && ref.watch(rbfSpendStateProvider) == null
                       ? const SizedBox.square(
                           dimension: EnvoySpacing.medium1,
                           child: CircularProgressIndicator(
@@ -237,6 +230,10 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
   }
 
   void showNoCancelNoFundsDialog(BuildContext context) {
+    if (_loading) {
+      return;
+    }
+
     showEnvoyPopUp(
       context,
       title: S().coindetails_overlay_noCancelNoFunds_heading,

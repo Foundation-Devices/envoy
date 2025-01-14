@@ -10,6 +10,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/home/cards/learn/faq.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -105,7 +106,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                             context: context,
                             isDismissible: true,
                             useRootNavigator: true,
-                            barrierColor: Colors.black.withOpacity(0.2),
+                            barrierColor: Colors.black.applyOpacity(0.2),
                             enableDrag: true,
                             isScrollControlled: true,
                             shape: const RoundedRectangleBorder(

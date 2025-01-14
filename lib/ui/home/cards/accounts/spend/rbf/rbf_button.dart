@@ -19,6 +19,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
@@ -71,7 +72,6 @@ class TxRBFButton extends ConsumerStatefulWidget {
 }
 
 class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
-  bool _isPressed = false;
   bool _isLoading = false;
 
   @override
@@ -235,19 +235,9 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTapDown: (_) {
-        setState(() {
-          _isPressed = true;
-        });
-      },
       onTap: () {
         if (_isLoading) return;
         _showRBFDialog(context);
-      },
-      onTapCancel: () {
-        setState(() {
-          _isPressed = false;
-        });
       },
       child: _buildButtonContainer(
           active: ref.watch(rbfSpendStateProvider) != null || _isLoading,
@@ -297,8 +287,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
     required Widget child,
     bool active = true,
   }) {
-    Color buttonColor =
-        EnvoyColors.teal500.withOpacity(active ? (_isPressed ? 0.5 : 1) : 0.5);
+    Color buttonColor = EnvoyColors.teal500.applyOpacity(active ? 1 : 0.5);
 
     return AnimatedContainer(
         duration: const Duration(milliseconds: 200),

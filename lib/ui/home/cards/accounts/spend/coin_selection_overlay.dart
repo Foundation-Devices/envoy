@@ -23,6 +23,7 @@ import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -278,8 +279,15 @@ class SpendRequirementOverlayState
 
     return BackButtonListener(
       onBackButtonPressed: () async {
-        if (inTagSelectionMode) {
+        if (inTagSelectionMode && !ref.read(coinDetailsActiveProvider)) {
           await cancel(context); // Make sure to await the async call
+        }
+        if (inTagSelectionMode && ref.read(coinDetailsActiveProvider)) {
+          if (context.mounted) {
+            Navigator.of(context).pop();
+            //wait for coin details screen to animate out
+            await Future.delayed(const Duration(milliseconds: 100));
+          }
         }
         // Return true to always intercept the back button and avoid app exit
         return true;
@@ -350,7 +358,7 @@ class SpendRequirementOverlayState
                     decoration: BoxDecoration(
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black.applyOpacity(0.2),
                           spreadRadius: 0,
                           blurRadius: 10,
                           offset:

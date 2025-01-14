@@ -23,9 +23,9 @@ class EnvoyToggle extends StatelessWidget {
         child: FittedBox(
             fit: BoxFit.contain,
             child: CupertinoSwitch(
-              activeColor: EnvoyColors.accentPrimary,
+              activeTrackColor: EnvoyColors.accentPrimary,
               thumbColor: EnvoyColors.surface1,
-              trackColor: EnvoyColors.surface2,
+              inactiveTrackColor: EnvoyColors.surface2,
               value: value,
               onChanged: onChanged,
             )));

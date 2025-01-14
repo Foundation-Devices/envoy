@@ -15,7 +15,7 @@ import 'package:envoy/business/account_manager.dart';
 
 part 'devices.g.dart';
 
-enum DeviceType { passportGen1, passportGen12, passportGen2 }
+enum DeviceType { passportGen1, passportGen12, passportPrime }
 
 @JsonSerializable()
 class Device {
@@ -135,6 +135,10 @@ class Devices extends ChangeNotifier {
   getDeviceName(String serialNumber) {
     if (serialNumber == "envoy") {
       return S().accounts_screen_walletType_Envoy;
+    }
+    //TODO: for demo
+    if (serialNumber == "prime") {
+      return "Passport Prime";
     }
 
     return devices.firstWhere((d) => d.serial == serialNumber).name;

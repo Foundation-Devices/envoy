@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 MAINTAINER Igor Cota <igor@foundation.xyz>
 
@@ -27,7 +27,6 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     openjdk-8-jdk \
     openjdk-17-jdk \
     wget \
-    python2 \
     autoconf \
     clang \
     cmake \
@@ -57,6 +56,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     xorg \
     xdg-user-dirs \
     xterm tesseract-ocr \
+    gh \
+    openssh-client \
     && apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install Android SDK
@@ -72,7 +73,9 @@ ENV PATH "$PATH:/root/Android/sdk/platform-tools"
 RUN update-java-alternatives --set /usr/lib/jvm/java-1.17.0-openjdk-amd64
 RUN git clone https://github.com/flutter/flutter.git
 ENV PATH "$PATH:/root/flutter/bin"
-RUN flutter channel stable && cd flutter && git checkout 3.24.1 && flutter config --enable-linux-desktop
+
+ENV TAR_OPTIONS=--no-same-owner
+RUN flutter channel stable && cd flutter && git checkout 3.27.1 && flutter config --enable-linux-desktop
 
 # Install Rust
 RUN curl https://sh.rustup.rs -sSf | \
@@ -82,6 +85,17 @@ ENV PATH=/root/.cargo/bin:$PATH
 
 # Keep Dart cache directory outside of home
 ENV PUB_CACHE=/pub-cache
+
+# Store GH access token
+ARG GITHUB_ACCESS_TOKEN
+ENV GITHUB_ACCESS_TOKEN=$GITHUB_ACCESS_TOKEN
+RUN echo $GITHUB_ACCESS_TOKEN > .github-access-token
+
+RUN gh auth login --with-token < .github-access-token
+RUN gh auth setup-git
+
+RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
+ENV CARGO_NET_GIT_FETCH_WITH_CLI=true
 
 # Copy our files
 COPY . .

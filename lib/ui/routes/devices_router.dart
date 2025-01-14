@@ -29,7 +29,7 @@ final devicesRouter =
         return true;
       },
       pageBuilder: (context, state) =>
-          wrapWithVerticalAxisAnimation(const DevicesCard()),
+          wrapWithEnvoyPageAnimation(child: const DevicesCard()),
       routes: [
         GoRoute(
             path: _DEVICE_DETAIL,
@@ -40,7 +40,7 @@ final devicesRouter =
               } else {
                 device = state.extra as Device;
               }
-              return wrapWithVerticalAxisAnimation(DeviceCard(device));
+              return wrapWithEnvoyPageAnimation(child: DeviceCard(device));
             }),
       ]),
 ]);

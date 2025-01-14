@@ -8,5 +8,6 @@ analyzer:
   exclude:
     - 'lib/generated'
     - 'lib/business/*.freezed.*'
+
   plugins:
     - custom_lint

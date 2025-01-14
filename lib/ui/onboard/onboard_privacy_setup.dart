@@ -8,28 +8,27 @@ import 'package:envoy/business/node_url.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
-import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
-import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
-import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
+import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/state/onboarding_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/build_context_extension.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
 import 'package:tor/tor.dart';
-import 'package:envoy/ui/envoy_pattern_scaffold.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/util/console.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class OnboardPrivacySetup extends ConsumerStatefulWidget {
   final bool setUpEnvoyWallet;
@@ -54,8 +53,9 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
     return EnvoyPatternScaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        leading: const CupertinoNavigationBarBackButton(
+        leading: CupertinoNavigationBarBackButton(
           color: Colors.white,
+          onPressed: () => Navigator.maybePop(context),
         ),
         actions: [
           Consumer(
@@ -85,7 +85,16 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
           )
         ],
       ),
-      header: const PrivacyShieldAnimated(),
+      header: TweenAnimationBuilder(
+          duration: const Duration(milliseconds: 1300),
+          tween: Tween(begin: 0.0, end: 1.0),
+          builder: (context, child, value) {
+            return Opacity(
+              opacity: child,
+              child: value,
+            );
+          },
+          child: const PrivacyShieldAnimated()),
       shield: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.min,
@@ -201,7 +210,8 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
             child: EnvoyButton(
               S().component_continue,
               onTap: () async {
-                final navigator = Navigator.of(context);
+                final goRouterState = GoRouterState.of(context);
+                final goRouter = GoRouter.of(context);
                 //tor is necessary if user selects onion node
                 bool torRequire = ref.read(isNodeRequiredTorProvider);
                 //tor is not required if user selects better performance
@@ -210,28 +220,20 @@ class _OnboardPrivacySetupState extends ConsumerState<OnboardPrivacySetup> {
                 //based on both conditions, set tor enabled or disabled. before entering to the main screen
                 Settings().setTorEnabled(torRequire || !betterPerformance);
                 LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
-                if (!widget.setUpEnvoyWallet) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            const OnboardPassportWelcomeScreen(),
-                      ));
-                } else {
-                  //if there is magic recovery seed, go to recover wallet screen else go to welcome screen
-                  try {
-                    if (await EnvoySeed().get() != null) {
-                      navigator.push(MaterialPageRoute(
-                          builder: (context) => const MagicRecoverWallet()));
-                    } else {
-                      navigator.push(MaterialPageRoute(
-                        builder: (context) => const OnboardEnvoyWelcomeScreen(),
-                      ));
-                    }
-                  } catch (e) {
-                    navigator.push(MaterialPageRoute(
-                      builder: (context) => const OnboardEnvoyWelcomeScreen(),
-                    ));
+                await Future.delayed(const Duration(milliseconds: 100));
+
+                //route to specific flow , onboard hw product / onboard wallet
+                final String? redirect =
+                    goRouterState.uri.queryParameters["redirect"];
+                if (redirect != null) {
+                  //if user trying to use envoy wallet and we found seed on the storage,
+                  //redirect user to recovery screen
+                  if (redirect == ONBOARD_ENVOY_SETUP &&
+                      (await EnvoySeed().get()) != null) {
+                    goRouter.pushNamed(ONBOARD_ENVOY_MAGIC_RECOVER_SETUP);
+                  } else {
+                    goRouter.pushNamed(
+                        goRouterState.uri.queryParameters["redirect"]!);
                   }
                 }
               },
@@ -529,7 +531,8 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
   rive.StateMachineController? _privacyIconController;
   rive.Artboard? _privacyIconArtBoard, _performanceArtBoard;
 
-  double iconSize = 38.0;
+  double iconSizePerformance = 38.0;
+  double iconSizePrivacy = 49.0;
 
   @override
   void initState() {
@@ -555,9 +558,6 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
 
   @override
   Widget build(BuildContext context) {
-    if (MediaQuery.sizeOf(context).width < 350) {
-      iconSize = 28.0;
-    }
     //turns off the flag that enables tor. this wont affect tor process if it is already running
     ref.listen<bool>(privacyOnboardSelectionProvider, (previous, next) {
       if (mounted) {
@@ -606,19 +606,28 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   SizedBox(
-                    height: iconSize,
-                    width: iconSize,
+                    height: _betterPerformance
+                        ? iconSizePerformance
+                        : iconSizePrivacy,
+                    width: _betterPerformance
+                        ? iconSizePerformance
+                        : iconSizePrivacy,
                     child: icon,
                   ),
-                  const Padding(padding: EdgeInsets.all(4)),
+                  const SizedBox(height: EnvoySpacing.xs),
                   SizedBox(
                     width: 90,
                     child: Text(
                       text,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontSize: 8.5,
-                          ),
+                      style: EnvoyTypography.label.copyWith(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w600,
+                          color: EnvoyColors.accentPrimary),
                       textAlign: TextAlign.center,
+                      textScaler: MediaQuery.of(context).textScaler.clamp(
+                            minScaleFactor: 0.8,
+                            maxScaleFactor: 1.6,
+                          ),
                       maxLines: 2,
                     ),
                   )
@@ -649,19 +658,21 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   SizedBox(
-                    height: iconSize,
-                    width: iconSize,
+                    height: iconSizePerformance,
+                    width: iconSizePerformance,
                     child: _performanceArtBoard == null
                         ? Container()
                         : rive.Rive(artboard: _performanceArtBoard!),
                   ),
-                  const Padding(padding: EdgeInsets.all(4)),
+                  const SizedBox(height: EnvoySpacing.xs),
                   Text(
                     S().privacy_privacyMode_betterPerformance,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(fontSize: 10.5),
+                    style: EnvoyTypography.label.copyWith(
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w600,
+                        color: _betterPerformance
+                            ? EnvoyColors.accentPrimary
+                            : EnvoyColors.textTertiary),
                     textAlign: TextAlign.center,
                     textScaler: MediaQuery.of(context).textScaler.clamp(
                           minScaleFactor: 0.8,
@@ -692,23 +703,25 @@ class _PrivacyOptionSelectState extends ConsumerState<PrivacyOptionSelect> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   SizedBox(
-                    height: iconSize,
-                    width: iconSize,
+                    height: iconSizePrivacy,
+                    width: iconSizePrivacy,
                     child: _privacyIconArtBoard == null
                         ? Container()
                         : rive.Rive(
                             artboard: _privacyIconArtBoard!,
                           ),
                   ),
-                  const Padding(padding: EdgeInsets.all(2)),
+                  const SizedBox(height: EnvoySpacing.xs),
                   SizedBox(
                     width: 90,
                     child: Text(
                       S().privacy_privacyMode_improvedPrivacy,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(fontSize: 10.5),
+                      style: EnvoyTypography.label.copyWith(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w600,
+                          color: _betterPerformance
+                              ? EnvoyColors.textTertiary
+                              : EnvoyColors.accentPrimary),
                       textScaler: MediaQuery.of(context).textScaler.clamp(
                             minScaleFactor: 0.8,
                             maxScaleFactor: 1.5,

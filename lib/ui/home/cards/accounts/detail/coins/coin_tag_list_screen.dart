@@ -11,6 +11,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_details_scree
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/util/blur_container_transform.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
@@ -126,7 +127,7 @@ class CoinItemWidget extends ConsumerWidget {
               isComplex: true,
               willChange: false,
               painter: StripePainter(
-                EnvoyColors.gray1000.withOpacity(0.4),
+                EnvoyColors.gray1000.applyOpacity(0.4),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.max,

@@ -30,5 +30,5 @@ Map<String, dynamic> _$DeviceToJson(Device instance) => <String, dynamic>{
 const _$DeviceTypeEnumMap = {
   DeviceType.passportGen1: 'passportGen1',
   DeviceType.passportGen12: 'passportGen12',
-  DeviceType.passportGen2: 'passportGen2',
+  DeviceType.passportPrime: 'passportGen2',
 };

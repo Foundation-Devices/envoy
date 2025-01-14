@@ -66,31 +66,30 @@ class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
         ),
         Container(
           margin: const EdgeInsets.only(top: EnvoySpacing.medium1),
-          child: Container(
-            decoration: BoxDecoration(
-                color: EnvoyColors.gray200,
-                borderRadius: BorderRadius.circular(15)),
-            padding: const EdgeInsets.all(EnvoySpacing.xs),
-            child: TextFormField(
-              maxLines: 2,
-              maxLength: 255,
-              controller: _textEditingController,
-              textAlign: TextAlign.center,
-              textInputAction: TextInputAction.done,
-              style:
-                  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14),
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.all(EnvoySpacing.medium1),
-                hintText: widget.noteHintText,
-                labelStyle: EnvoyTypography.body
-                    .copyWith(color: EnvoyColors.textTertiary),
-                border: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                errorBorder: InputBorder.none,
-                disabledBorder: InputBorder.none,
-                focusedErrorBorder: InputBorder.none,
-              ),
+          decoration: BoxDecoration(
+              color: EnvoyColors.gray200,
+              borderRadius: BorderRadius.circular(15)),
+          padding: const EdgeInsets.all(EnvoySpacing.xs),
+          child: TextFormField(
+            maxLines: null,
+            minLines: null,
+            maxLength: 255,
+            controller: _textEditingController,
+            textAlign: TextAlign.center,
+            textInputAction: TextInputAction.done,
+            style:
+                Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14),
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.all(EnvoySpacing.medium1),
+              hintText: widget.noteHintText,
+              labelStyle: EnvoyTypography.body
+                  .copyWith(color: EnvoyColors.textTertiary),
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              errorBorder: InputBorder.none,
+              disabledBorder: InputBorder.none,
+              focusedErrorBorder: InputBorder.none,
             ),
           ),
         ),

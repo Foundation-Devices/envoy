@@ -16,13 +16,10 @@ import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as new_color_scheme;
 import 'package:envoy/ui/components/address_widget.dart';
-import 'package:envoy/ui/home/home_state.dart';
-import 'package:envoy/ui/state/home_page_state.dart';
 
 class OnboardingPage extends StatelessWidget {
   final Function(BuildContext)? leftFunction;
@@ -43,40 +40,11 @@ class OnboardingPage extends StatelessWidget {
   //https://github.com/dart-lang/language/issues/1048
   //https://stackoverflow.com/a/62379038
   static goBack(context) {
-    Navigator.of(context).pop();
+    Navigator.pop(context);
   }
 
-  static popUntilGoRoute(context) {
-    Navigator.of(context).popUntil((route) {
-      return route.settings is MaterialPage;
-    });
-  }
-
-  static popUntilHome(BuildContext context,
-      {bool useRootNavigator = false, bool resetHomeProviders = false}) async {
-    if (resetHomeProviders) {
-      ProviderScope.containerOf(context)
-          .read(homePageBackgroundProvider.notifier)
-          .state = HomePageBackgroundState.hidden;
-      ProviderScope.containerOf(context)
-          .read(homePageTitleProvider.notifier)
-          .state = "";
-    }
-
-    /// get the router and navigator instance from the context
-    /// if the parent widget of context get disposed,we wont be able to access goroouter and navigator.
-    GoRouter router = GoRouter.of(context);
-
-    /// push main route to make sure we are on the home page
-    router.go("/");
-
-    /// wait for the go router to push the route
-    await Future.delayed(const Duration(milliseconds: 100));
-
-    if (context.mounted) {
-      /// Pop until we get to the home page (GoRouter Shell)
-      popUntilGoRoute(context);
-    }
+  static popBackToHome(BuildContext context) {
+    context.go("/");
   }
 
   const OnboardingPage({
@@ -91,7 +59,7 @@ class OnboardingPage extends StatelessWidget {
     this.helperTextBelow,
     this.qrCodeUrBinary,
     this.qrCodeUrCryptoRequest,
-    this.rightFunction = popUntilHome,
+    this.rightFunction = popBackToHome,
     this.leftFunction = goBack,
     this.right,
   });

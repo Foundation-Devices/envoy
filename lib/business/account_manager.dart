@@ -7,7 +7,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
+import 'dart:typed_data';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/devices.dart';
@@ -24,9 +24,11 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/xfp_endian.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/business/bip329.dart';
 
 class AccountAlreadyPaired implements Exception {}
 
@@ -246,49 +248,58 @@ class AccountManager extends ChangeNotifier {
     return false;
   }
 
-  // Returned account is the one used for address verification
-  Future<Account?> addPassportAccounts(Binary binary) async {
+// Processes binary data to add Passport accounts, ensuring address verification
+  Future<Account?> processPassportAccounts(Binary binary) async {
+    // Extract JSON string from the binary data
     var jsonIndex = binary.decoded.indexOf("{");
     var decoded = binary.decoded.substring(jsonIndex);
     var json = jsonDecode(decoded);
 
+    // Determine if the JSON follows the old format
     bool oldJsonFormat = json['xpub'] != null;
 
     if (oldJsonFormat) {
-      // Old format with single WPKH account
+      // Handle old format with a single WPKH account
       Account newAccount = await getPassportAccountJson(json);
-      addAccount(newAccount);
       return newAccount;
     } else {
-      // New format can handle multiple accounts
+      // Handle new format that supports multiple accounts
       List<Account> newAccounts = await getPassportAccountsFromJson(json);
       int alreadyPairedAccountsCount = 0;
 
+      // Loop through the new accounts and check for duplicates
       newAccountsLoop:
-      for (var (index, newAccount) in newAccounts.indexed) {
-        // Check if account already paired
+      for (var entry in newAccounts.asMap().entries) {
+        var index = entry.key;
+        var newAccount = entry.value;
+
         for (var account in accounts) {
+          // Check if the account is already paired
           if (account.wallet.name == newAccount.wallet.name) {
+            // Rename the existing account if the names differ
             if (account.name != newAccount.name) {
               renameAccount(account, newAccount.name);
+              return account;
             }
-            // Don't add this one
+            // Skip adding this account as it already exists
             alreadyPairedAccountsCount++;
 
-            // But add the existing one to the list in case user wants to verify address again
+            // Add the existing account to the list for address verification
             newAccounts[index] = account;
             continue newAccountsLoop;
           }
         }
 
+        // Initialize the wallet and add the new account
         _initWallet(newAccount.wallet);
         addAccount(newAccount);
       }
 
+      // If all accounts are already paired, throw an error
       if (newAccounts.length == alreadyPairedAccountsCount) {
         throw AccountAlreadyPaired();
       } else {
-        // We will verify the address on WPKH account only
+        // Return the first WPKH account for address verification
         return newAccounts[0];
       }
     }
@@ -317,7 +328,7 @@ class AccountManager extends ChangeNotifier {
     for (var wallet in wallets) {
       accounts.add(Account(
           wallet: wallet,
-          name: json["acct_name"] + " (#" + accountNumber.toString() + ")",
+          name: json["acct_name"] + " (#${accountNumber.toString()})",
           deviceSerial: device.serial,
           dateAdded: DateTime.now(),
           number: accountNumber,
@@ -334,6 +345,7 @@ class AccountManager extends ChangeNotifier {
       if (account.wallet.name == json["xpub"].toString()) {
         if (account.name != json["acct_name"].toString()) {
           renameAccount(account, json["acct_name"].toString());
+          return account;
         }
         throw AccountAlreadyPaired();
       }
@@ -350,12 +362,14 @@ class AccountManager extends ChangeNotifier {
     // Create an account & store
     Account account = Account(
         wallet: wallet,
-        name: json["acct_name"] + " (#" + accountNumber.toString() + ")",
+        name: json["acct_name"] + " (#${accountNumber.toString()})",
         deviceSerial: device.serial,
         dateAdded: DateTime.now(),
         number: accountNumber,
         id: Account.generateNewId(),
         dateSynced: null);
+
+    addAccount(account);
     return account;
   }
 
@@ -685,5 +699,37 @@ class AccountManager extends ChangeNotifier {
       }
     }
     return null;
+  }
+
+  Future<void> exportBIP329() async {
+    List<String> allData = [];
+
+    for (Account account in accounts) {
+      Wallet wallet = account.wallet;
+
+      // Get xpub and create JSON data
+      String xpub = getXpub(wallet);
+      String xpubData = buildKeyJson("xpub", xpub, account.name);
+      allData.add(xpubData);
+
+      // Get output data and add each entry to allData
+      List<String> outputData = await getUtxosData(account);
+      allData.addAll(outputData);
+
+      // Get transaction data and add each entry to allData
+      List<String> txData = await getTxData(wallet);
+      allData.addAll(txData);
+    }
+
+    // Join each JSON string with a newline character
+    String fileContent = allData.join('\n');
+    Uint8List fileContentBytes = Uint8List.fromList(utf8.encode(fileContent));
+
+    // Save the file
+    await FileSaver.instance.saveAs(
+        mimeType: MimeType.json,
+        name: 'bip329_export',
+        bytes: fileContentBytes,
+        ext: 'json');
   }
 }

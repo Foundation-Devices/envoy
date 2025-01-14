@@ -6,6 +6,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
 
 enum EnvoyDropdownOptionType { normal, personalNode }
@@ -88,7 +89,7 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
         decoration: BoxDecoration(
           color: widget.isDropdownActive
               ? EnvoyColors.surface2
-              : EnvoyColors.surface2.withOpacity(0.5),
+              : EnvoyColors.surface2.applyOpacity(0.5),
           borderRadius: BorderRadius.circular(EnvoySpacing.small),
           border: Border.all(
             color: (!_isTapped && widget.isDropdownActive)
