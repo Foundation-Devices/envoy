@@ -120,9 +120,11 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
     if (!didPop) {
       HomePageState.of(context)?.toggleOptions();
     } else if (!navigatingToRegion) {
-      if (mounted) {
-        GoRouter.of(context).pushReplacement(ROUTE_ACCOUNTS_HOME);
-      }
+      Future.microtask(() {
+        if (mounted) {
+          context.go("/");
+        }
+      });
     }
   }
 
