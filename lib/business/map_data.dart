@@ -42,43 +42,62 @@ class MapData {
     _dropVenues(); // Clear the existing venues list
 
     try {
-      final String filePath = await getWritableFilePath("atm_data.json");
+      final parsedData = await _getJsonData();
+      if (parsedData != null) {
+        _restoreVenuesFromParsedData(parsedData);
+        kPrint('Venues successfully restored from JSON.');
+      } else {
+        throw Exception('No data found in the JSON file.');
+      }
+    } catch (e) {
+      throw Exception('Error restoring venues: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>?> _getJsonData() async {
+    try {
+      final String filePath = await getFilePath();
       File file = File(filePath);
-      final Map<String, dynamic> parsedData;
+
       if (await file.exists()) {
         String jsonString = await file.readAsString();
-        parsedData = json.decode(jsonString);
+        return json.decode(jsonString);
       } else {
         // Fix JSON file loading on first app run for iOS
         String jsonString = await rootBundle.loadString("assets/atm_data.json");
-        parsedData = json.decode(jsonString);
-      }
-
-      if (parsedData.containsKey('elements')) {
-        final elements = parsedData['elements'] as List<dynamic>;
-
-        for (var element in elements) {
-          if (element['type'] == 'node' && element['tags'] != null) {
-            final tags = element['tags'] as Map<String, dynamic>;
-
-            // Extract venue details
-            final id = element['id'] as int;
-            final lat = element['lat'] as double;
-            final lon = element['lon'] as double;
-            final category = tags['amenity'] ?? 'Unknown';
-            final name = tags['name'] ?? 'Unknown';
-
-            final venue = Venue(id, lat, lon, category, name);
-            venues.add(venue); // Add to the venue list
-          }
-        }
-
-        kPrint('Venues successfully restored from JSON.');
-      } else {
-        kPrint('No elements found in the JSON data.');
+        return json.decode(jsonString);
       }
     } catch (e) {
-      kPrint('Error parsing JSON: $e');
+      throw Exception('Error retrieving JSON data: $e');
+    }
+  }
+
+  void _restoreVenuesFromParsedData(Map<String, dynamic> parsedData) {
+    if (parsedData.containsKey('elements')) {
+      final elements = parsedData['elements'] as List<dynamic>;
+
+      for (var element in elements) {
+        if (element['type'] == 'node' && element['tags'] != null) {
+          final tags = element['tags'] as Map<String, dynamic>;
+
+          // Extract venue details
+          final id = element['id'] as int;
+          final lat = element['lat'] as double;
+          final lon = element['lon'] as double;
+          final category = tags['amenity'] ?? 'Unknown';
+          final name = tags['name'] ?? 'Unknown';
+          final description = tags['description'];
+          final openingHours = tags['opening_hours'];
+          final website = tags['website'];
+          final address = _buildAddress(tags);
+
+          final venue = Venue(id, lat, lon, category, name, description,
+              openingHours, website, address);
+          venues.add(venue); // Add to the venue list
+        }
+      }
+    } else {
+      throw Exception('No elements found in the JSON data.');
     }
   }
 
@@ -102,18 +121,16 @@ out geom;
         final Map<String, dynamic> jsonData = json.decode(response.body);
         return jsonData;
       } else {
-        kPrint(
-            'Error: Failed to fetch data. HTTP status: ${response.statusCode}');
-        return {};
+        throw Exception(
+            'Failed to fetch data. HTTP status: ${response.statusCode}');
       }
     } catch (e) {
-      kPrint('Error fetching data: $e');
-      return {};
+      throw Exception('Error fetching data: $e');
     }
   }
 
   Future<void> saveATMData(Map<String, dynamic> data) async {
-    final String filePath = await getWritableFilePath("atm_data.json");
+    final String filePath = await getFilePath();
 
     try {
       if (data.isNotEmpty) {
@@ -126,15 +143,15 @@ out geom;
 
         kPrint('Data successfully saved to $filePath');
       } else {
-        kPrint('No data to save.');
+        throw Exception('No data to save.');
       }
     } catch (e) {
-      kPrint('Error saving data: $e');
+      throw Exception('Error saving data: $e');
     }
   }
 
   Future<void> fetchAndSaveATMData() async {
-    final String filePath = await getWritableFilePath("atm_data.json");
+    final String filePath = await getFilePath();
 
     try {
       // Read the previously saved JSON data
@@ -146,7 +163,8 @@ out geom;
         final initialData = await file.readAsString();
         savedJsonData = json.decode(initialData);
 
-        String? timestampString = savedJsonData?["osm3s"]["timestamp_osm_base"];
+        String? timestampString =
+            savedJsonData?['osm3s']?['timestamp_osm_base'];
         savedTimestamp =
             timestampString == null ? null : DateTime.parse(timestampString);
       }
@@ -161,13 +179,13 @@ out geom;
         kPrint('Data is up to date. Skipping fetch and save.');
       }
     } catch (e) {
-      kPrint('Error in fetchAndSaveATMData: $e');
+      throw Exception('Error in fetchAndSaveATMData: $e');
     }
   }
 
-  Future<String> getWritableFilePath(String fileName) async {
+  Future<String> getFilePath() async {
     final directory = await getApplicationDocumentsDirectory();
-    return '${directory.path}/$fileName';
+    return '${directory.path}/atm_data.json';
   }
 
   List<Venue> getLocallyVenues(
@@ -184,35 +202,6 @@ out geom;
     }
 
     return locallyVenues;
-  }
-
-  Future<Map<String, dynamic>> getVenueInfoFromJson(int venueId) async {
-    final String filePath = await getWritableFilePath("atm_data.json");
-    File file = File(filePath);
-    String jsonString = await file.readAsString();
-    Map<String, dynamic> data = json.decode(jsonString);
-
-    // Find the venue with the specified ID
-    final List<dynamic> elements = data["elements"];
-    final venue = elements.firstWhere(
-      (element) => element["id"] == venueId,
-      orElse: () => throw Exception('Venue with ID $venueId not found.'),
-    );
-
-    // Extract tags (details) from the venue
-    final Map<String, dynamic> venueTags = venue["tags"] ?? {};
-
-    // Return venue details with tags
-    return {
-      "id": venueId,
-      "lat": venue["lat"],
-      "lon": venue["lon"],
-      "name": venueTags["name"],
-      "description": venueTags["description"],
-      "opening_hours": venueTags["opening_hours"],
-      "website": venueTags["website"],
-      "address": _buildAddress(venueTags),
-    };
   }
 
 // Helper function to build an address string

@@ -220,30 +220,23 @@ class MarkersPageState extends State<MarkersPage> {
             )
           ],
         ),
-        onTap: () async {
-          try {
-            // Use the function to fetch venue info
-            final venueInfo = await MapData().getVenueInfoFromJson(venue.id);
-
-            if (mounted) {
-              showEnvoyDialog(
-                context: context,
-                blurColor: Colors.black,
-                linearGradient: true,
-                dialog: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: AtmDialogInfo(
-                    name: venueInfo["name"],
-                    address: venueInfo["address"],
-                    website: venueInfo["website"],
-                    description: venueInfo["description"],
-                    openingHours: venueInfo["opening_hours"],
-                  ),
+        onTap: () {
+          if (mounted) {
+            showEnvoyDialog(
+              context: context,
+              blurColor: Colors.black,
+              linearGradient: true,
+              dialog: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: AtmDialogInfo(
+                  name: venue.name,
+                  address: venue.address,
+                  website: venue.website,
+                  description: venue.description,
+                  openingHours: venue.openingHours,
                 ),
-              );
-            }
-          } catch (error) {
-            print('MY Error: $error');
+              ),
+            );
           }
         },
       ),
