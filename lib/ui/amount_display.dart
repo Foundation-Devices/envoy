@@ -151,9 +151,7 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
                                         widget.amountSats!,
                                         ref.watch(isNumpadPressed)))
                                 : getDisplayAmount(widget.amountSats ?? 0,
-                                    AmountDisplayUnit.sat,
-                                    btcTrailingZeroes: showBtcTrailingZeroes(
-                                        widget.amountSats!, false))),
+                                    AmountDisplayUnit.sat)),
                       ),
                     ])),
         ],

@@ -20,7 +20,7 @@ NumberFormat satsFormatter =
     NumberFormat("###,###,###,###,###,###,###", currentLocale);
 
 String getDisplayAmount(int amountSats, AmountDisplayUnit unit,
-    {required bool btcTrailingZeroes}) {
+    {bool btcTrailingZeroes = false}) {
   switch (unit) {
     case AmountDisplayUnit.btc:
       return convertSatsToBtcString(amountSats, btcTrailingZeroes);
