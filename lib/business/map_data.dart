@@ -172,7 +172,8 @@ out geom;
       // If there is no saved data or it's older than 7 days
       if (savedJsonData == null ||
           (savedTimestamp != null &&
-              DateTime.now().isAfter(savedTimestamp.add(const Duration(days: 7))))) {
+              DateTime.now()
+                  .isAfter(savedTimestamp.add(const Duration(days: 7))))) {
         final newData = await fetchATMData();
         await saveATMData(newData);
       } else {
