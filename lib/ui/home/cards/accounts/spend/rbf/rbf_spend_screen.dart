@@ -211,32 +211,44 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Flexible(
-                                      flex: 1,
-                                      child: BackButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 3,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: EnvoySpacing.small),
+                                  child: AppBar(
+                                    backgroundColor: Colors.transparent,
+                                    automaticallyImplyLeading: false,
+                                    titleSpacing:
+                                        0, // Don't show the leading button
+                                    title: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: <Widget>[
+                                        IconButton(
+                                          icon: const EnvoyIcon(
+                                            EnvoyIcons.chevron_left,
+                                            color: EnvoyColors.textPrimary,
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        Expanded(
+                                          child: Text(
                                             S().replaceByFee_boost_tx_heading,
                                             textAlign: TextAlign.center,
-                                            style: EnvoyTypography.subheading),
-                                      ),
+                                            style: EnvoyTypography.subheading
+                                                .copyWith(
+                                                    color: EnvoyColors
+                                                        .textPrimary),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: EnvoySpacing.medium2,
+                                        )
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              ),
+                                  )),
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                     vertical: EnvoySpacing.small,
