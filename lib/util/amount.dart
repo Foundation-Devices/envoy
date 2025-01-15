@@ -19,11 +19,11 @@ String thousandSatSeparator = fiatGroupSeparator;
 NumberFormat satsFormatter =
     NumberFormat("###,###,###,###,###,###,###", currentLocale);
 
-String getDisplayAmount(
-    int amountSats, AmountDisplayUnit unit, bool trailingZeroes) {
+String getDisplayAmount(int amountSats, AmountDisplayUnit unit,
+    {required bool btcTrailingZeroes}) {
   switch (unit) {
     case AmountDisplayUnit.btc:
-      return convertSatsToBtcString(amountSats, trailingZeroes);
+      return convertSatsToBtcString(amountSats, btcTrailingZeroes);
     case AmountDisplayUnit.sat:
       return satsFormatter.format(amountSats);
     case AmountDisplayUnit.fiat:

@@ -61,9 +61,8 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     if (widget.initalSatAmount > 0) {
       _amountSats = widget.initalSatAmount;
       _enteredAmount = getDisplayAmount(
-          _amountSats,
-          ref.read(sendScreenUnitProvider),
-          btcTrailingZeroes(_amountSats, false));
+          _amountSats, ref.read(sendScreenUnitProvider),
+          btcTrailingZeroes: btcTrailingZeroes(_amountSats, false));
     }
 
     WidgetsBinding.instance.addPostFrameCallback(_getFittedBoxHeight);
@@ -220,7 +219,8 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
       // Format it nicely
       setState(() {
         _enteredAmount = getDisplayAmount(_amountSats, unit,
-            btcTrailingZeroes(_amountSats, ref.watch(isNumpadPressed)));
+            btcTrailingZeroes:
+                btcTrailingZeroes(_amountSats, ref.watch(isNumpadPressed)));
       });
     }
 
@@ -267,9 +267,8 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
                 }
                 if (unit == AmountDisplayUnit.btc) {
                   enteredAmount = getDisplayAmount(
-                      _amountSats,
-                      AmountDisplayUnit.btc,
-                      btcTrailingZeroes(_amountSats,
+                      _amountSats, AmountDisplayUnit.btc,
+                      btcTrailingZeroes: btcTrailingZeroes(_amountSats,
                           false)); // Do not add trailing zeros when manually typing the amount
                 }
                 _enteredAmount = enteredAmount;
