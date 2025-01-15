@@ -188,6 +188,7 @@ class EnvoyStorage {
       });
     }
     removeOutstandingAztecoPendingTxs();
+    clearLocationStore();
   }
 
   Future<void> updateCountry(String code, String name, String division) async {
@@ -746,33 +747,6 @@ class EnvoyStorage {
   Future<bool> clearLocationStore() async {
     var cleared = await locationStore.delete(_db);
     return cleared > 0;
-  }
-
-  insertLocation(Venue venue) async {
-    await locationStore.record(venue.id).put(_db, jsonEncode(venue));
-  }
-
-  updateLocation(Venue venue) {
-    locationStore.record(venue.id).update(_db, jsonEncode(venue));
-  }
-
-  Venue? transformLocation(RecordSnapshot<int, String> records) {
-    return Venue.fromJson(jsonDecode(records.value));
-  }
-
-  Future<List<Venue?>?> getAllLocations() async {
-    var venues = await locationStore.find(_db);
-
-    return venues.map((e) => transformLocation(e)).toList();
-  }
-
-  Future<Venue?> getLocationById(int id) async {
-    var finder = Finder(filter: Filter.byKey(id));
-    var venue = await locationStore.findFirst(_db, finder: finder);
-    if (venue != null) {
-      return transformLocation(venue);
-    }
-    return null;
   }
 
   Future<bool> storeApiKeys(ApiKeys keys) async {
