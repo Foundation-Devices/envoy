@@ -35,7 +35,8 @@ class AmountDisplay extends ConsumerStatefulWidget {
       super.key});
 
   void setDisplayAmount(AmountDisplayUnit unit) {
-    displayedAmount = getDisplayAmount(amountSats!, unit);
+    displayedAmount = getDisplayAmount(amountSats!, unit,
+        btcTrailingZeroes: showBtcTrailingZeroes(amountSats!, false));
   }
 
   @override
@@ -144,14 +145,13 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
                                 widget.amountSats ?? 0,
                                 wallet: widget.account?.wallet)
                             : (Settings().displayUnit == DisplayUnit.btc
-                                ? getDisplayAmount(
-                                    widget.amountSats ?? 0,
+                                ? getDisplayAmount(widget.amountSats ?? 0,
                                     AmountDisplayUnit.btc,
-                                  )
-                                : getDisplayAmount(
-                                    widget.amountSats ?? 0,
-                                    AmountDisplayUnit.sat,
-                                  )),
+                                    btcTrailingZeroes: showBtcTrailingZeroes(
+                                        widget.amountSats!,
+                                        ref.watch(isNumpadPressed)))
+                                : getDisplayAmount(widget.amountSats ?? 0,
+                                    AmountDisplayUnit.sat)),
                       ),
                     ])),
         ],
@@ -166,4 +166,10 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
       },
     );
   }
+}
+
+bool showBtcTrailingZeroes(int amountSats, bool numpadPressed) {
+  bool isBtcZero = amountSats == 0;
+  bool trailingZeros = isBtcZero || numpadPressed ? false : true;
+  return trailingZeros;
 }
