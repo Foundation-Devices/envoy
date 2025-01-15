@@ -9,7 +9,6 @@ import 'package:envoy/business/blog_post.dart';
 import 'package:envoy/business/coins.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/media.dart';
-import 'package:envoy/business/venue.dart';
 import 'package:envoy/business/video.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
@@ -188,6 +187,7 @@ class EnvoyStorage {
       });
     }
     removeOutstandingAztecoPendingTxs();
+    clearLocationStore();
   }
 
   Future<void> updateCountry(String code, String name, String division) async {
@@ -746,33 +746,6 @@ class EnvoyStorage {
   Future<bool> clearLocationStore() async {
     var cleared = await locationStore.delete(_db);
     return cleared > 0;
-  }
-
-  insertLocation(Venue venue) async {
-    await locationStore.record(venue.id).put(_db, jsonEncode(venue));
-  }
-
-  updateLocation(Venue venue) {
-    locationStore.record(venue.id).update(_db, jsonEncode(venue));
-  }
-
-  Venue? transformLocation(RecordSnapshot<int, String> records) {
-    return Venue.fromJson(jsonDecode(records.value));
-  }
-
-  Future<List<Venue?>?> getAllLocations() async {
-    var venues = await locationStore.find(_db);
-
-    return venues.map((e) => transformLocation(e)).toList();
-  }
-
-  Future<Venue?> getLocationById(int id) async {
-    var finder = Finder(filter: Filter.byKey(id));
-    var venue = await locationStore.findFirst(_db, finder: finder);
-    if (venue != null) {
-      return transformLocation(venue);
-    }
-    return null;
   }
 
   Future<bool> storeApiKeys(ApiKeys keys) async {
