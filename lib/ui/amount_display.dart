@@ -35,7 +35,8 @@ class AmountDisplay extends ConsumerStatefulWidget {
       super.key});
 
   void setDisplayAmount(AmountDisplayUnit unit) {
-    displayedAmount = getDisplayAmount(amountSats!, unit, false);
+    displayedAmount = getDisplayAmount(
+        amountSats!, unit, btcTrailingZeroes(amountSats!, false));
   }
 
   @override
@@ -74,8 +75,6 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
 
   @override
   Widget build(context) {
-    var btcTrailingZeroes = ref.watch(btcTrailingZeroesProvider);
-
     ref.listen(sendScreenUnitProvider, (_, AmountDisplayUnit next) {
       widget.setDisplayAmount(next);
 
@@ -146,10 +145,16 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
                                 widget.amountSats ?? 0,
                                 wallet: widget.account?.wallet)
                             : (Settings().displayUnit == DisplayUnit.btc
-                                ? getDisplayAmount(widget.amountSats ?? 0,
-                                    AmountDisplayUnit.btc, btcTrailingZeroes)
-                                : getDisplayAmount(widget.amountSats ?? 0,
-                                    AmountDisplayUnit.sat, false)),
+                                ? getDisplayAmount(
+                                    widget.amountSats ?? 0,
+                                    AmountDisplayUnit.btc,
+                                    btcTrailingZeroes(widget.amountSats!,
+                                        ref.watch(isNumpadPressed)))
+                                : getDisplayAmount(
+                                    widget.amountSats ?? 0,
+                                    AmountDisplayUnit.sat,
+                                    btcTrailingZeroes(
+                                        widget.amountSats!, false))),
                       ),
                     ])),
         ],
@@ -164,4 +169,10 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
       },
     );
   }
+}
+
+bool btcTrailingZeroes(int amountSats, bool numpadPressed) {
+  bool isBtcZero = amountSats == 0;
+  bool trailingZeros = isBtcZero || numpadPressed ? false : true;
+  return trailingZeros;
 }

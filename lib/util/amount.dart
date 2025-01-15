@@ -20,11 +20,10 @@ NumberFormat satsFormatter =
     NumberFormat("###,###,###,###,###,###,###", currentLocale);
 
 String getDisplayAmount(
-    int amountSats, AmountDisplayUnit unit, bool numpadPressed,
-    {bool trailingZeroes = false}) {
+    int amountSats, AmountDisplayUnit unit, bool trailingZeroes) {
   switch (unit) {
     case AmountDisplayUnit.btc:
-      return convertSatsToBtcString(amountSats, numpadPressed);
+      return convertSatsToBtcString(amountSats, trailingZeroes);
     case AmountDisplayUnit.sat:
       return satsFormatter.format(amountSats);
     case AmountDisplayUnit.fiat:
@@ -49,15 +48,13 @@ String removeFiatTrailingZeros(String fiatAmount) {
   return fiatAmount;
 }
 
-String convertSatsToBtcString(int amountSats, bool numpadPressed) {
+String convertSatsToBtcString(int amountSats, bool trailingZeroes) {
   final amountBtc = amountSats / 100000000;
-  bool isBtcZero = amountBtc == 0;
-
-  /// ENV-1680 and ENV-1765 !!!
-  bool trailingZeros = isBtcZero || numpadPressed ? false : true;
 
   NumberFormat formatter = NumberFormat.decimalPattern(currentLocale);
-  formatter.minimumFractionDigits = trailingZeros ? 8 : 0;
+  formatter.minimumFractionDigits = trailingZeroes ? 8 : 0;
+
+  /// ENV-1680 and ENV-1765 !!!
   formatter.maximumFractionDigits = 8;
 
   return formatter.format(amountBtc);

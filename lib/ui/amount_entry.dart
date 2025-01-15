@@ -27,7 +27,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/locale.dart';
 
-final btcTrailingZeroesProvider = StateProvider<bool>((ref) => false);
+final isNumpadPressed = StateProvider<bool>((ref) => false);
 
 enum AmountDisplayUnit { btc, sat, fiat }
 
@@ -61,7 +61,9 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     if (widget.initalSatAmount > 0) {
       _amountSats = widget.initalSatAmount;
       _enteredAmount = getDisplayAmount(
-          _amountSats, ref.read(sendScreenUnitProvider), false);
+          _amountSats,
+          ref.read(sendScreenUnitProvider),
+          btcTrailingZeroes(_amountSats, false));
     }
 
     WidgetsBinding.instance.addPostFrameCallback(_getFittedBoxHeight);
@@ -217,8 +219,8 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     } else {
       // Format it nicely
       setState(() {
-        _enteredAmount = getDisplayAmount(
-            _amountSats, unit, ref.watch(btcTrailingZeroesProvider));
+        _enteredAmount = getDisplayAmount(_amountSats, unit,
+            btcTrailingZeroes(_amountSats, ref.watch(isNumpadPressed)));
       });
     }
 
@@ -236,10 +238,9 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
         isAmountZero: _enteredAmount.isEmpty || _enteredAmount == "0",
         onDigitEntered: (digit) {
       onNumPadEvents(digit);
-      ref.read(btcTrailingZeroesProvider.notifier).state = false;
     }, onNumPadEvents: (event) {
       onNumPadEvents(event);
-      ref.read(btcTrailingZeroesProvider.notifier).state = true;
+      ref.read(isNumpadPressed.notifier).state = true;
     }, isDecimalSeparator: _enteredAmount.contains(fiatDecimalSeparator));
 
     return Column(
@@ -268,7 +269,8 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
                   enteredAmount = getDisplayAmount(
                       _amountSats,
                       AmountDisplayUnit.btc,
-                      false); // Do not add trailing zeros when manually typing the amount
+                      btcTrailingZeroes(_amountSats,
+                          false)); // Do not add trailing zeros when manually typing the amount
                 }
                 _enteredAmount = enteredAmount;
               },
