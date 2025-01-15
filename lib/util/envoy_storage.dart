@@ -9,7 +9,6 @@ import 'package:envoy/business/blog_post.dart';
 import 'package:envoy/business/coins.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/media.dart';
-import 'package:envoy/business/venue.dart';
 import 'package:envoy/business/video.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
