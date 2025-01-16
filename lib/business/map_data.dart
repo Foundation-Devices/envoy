@@ -3,9 +3,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:envoy/business/venue.dart';
 import 'package:envoy/util/console.dart';
-import 'package:envoy/util/envoy_storage.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:tor/tor.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:envoy/business/scheduler.dart';
@@ -28,59 +30,163 @@ class MapData {
   MapData._internal() {
     kPrint("Instance of MapData created!");
 
-    _restoreVenues();
-    addVenues();
+    _restoreVenuesFromJson();
+    fetchAndSaveATMData();
   }
 
   _dropVenues() {
     venues.clear();
   }
 
-  _restoreVenues() async {
-    _dropVenues();
+  Future<void> _restoreVenuesFromJson() async {
+    _dropVenues(); // Clear the existing venues list
 
-    var storedVenues = await EnvoyStorage().getAllLocations();
-    for (var venue in storedVenues!) {
-      venues.add(venue!);
-    }
-  }
-
-  storeVenues() async {
-    for (var venue in venues) {
-      var storedVenue = await EnvoyStorage().getLocationById(venue.id);
-      if (storedVenue != null) {
-        if (storedVenue.name != venue.name ||
-            storedVenue.lon != venue.lon ||
-            storedVenue.lat != venue.lat) {
-          EnvoyStorage().updateLocation(venue);
-        }
+    try {
+      final parsedData = await _getJsonData();
+      if (parsedData != null) {
+        _restoreVenuesFromParsedData(parsedData);
+        kPrint('Venues successfully restored from JSON.');
       } else {
-        EnvoyStorage().insertLocation(venue);
+        throw Exception('No data found in the JSON file.');
       }
+    } catch (e) {
+      throw Exception('Error restoring venues: $e');
     }
   }
 
-  addVenues() async {
-    final response = await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
-      "https://coinmap.org/api/v1/venues/?category=atm",
-    ); // fetch only atms
+  Future<Map<String, dynamic>?> _getJsonData() async {
+    try {
+      final String filePath = await getFilePath();
+      File file = File(filePath);
 
-    final data = json.decode(response.body);
-    List myVenues = data["venues"];
-
-    List<Venue> updatedVenues = [];
-    for (var venue in myVenues) {
-      final id = venue["id"];
-      final double lat = venue["lat"];
-      final double lon = venue["lon"];
-      final String category = venue["category"];
-      final String name = venue["name"];
-      final myVenue = Venue(id, lat, lon, category, name);
-      updatedVenues.add(myVenue);
+      if (await file.exists()) {
+        String jsonString = await file.readAsString();
+        return json.decode(jsonString);
+      } else {
+        // Fix JSON file loading on first app run for iOS
+        String jsonString = await rootBundle.loadString("assets/atm_data.json");
+        return json.decode(jsonString);
+      }
+    } catch (e) {
+      throw Exception('Error retrieving JSON data: $e');
     }
-    venues = updatedVenues;
+  }
 
-    if (updatedVenues.isNotEmpty) storeVenues();
+  void _restoreVenuesFromParsedData(Map<String, dynamic> parsedData) {
+    if (parsedData.containsKey('elements')) {
+      final elements = parsedData['elements'] as List<dynamic>;
+
+      for (var element in elements) {
+        if (element['type'] == 'node' && element['tags'] != null) {
+          final tags = element['tags'] as Map<String, dynamic>;
+
+          // Extract venue details
+          final id = element['id'] as int;
+          final lat = element['lat'] as double;
+          final lon = element['lon'] as double;
+          final category = tags['amenity'] ?? 'Unknown';
+          final name = tags['name'] ?? 'Unknown';
+          final description = tags['description'];
+          final openingHours = tags['opening_hours'];
+          final website = tags['website'];
+          final address = _buildAddress(tags);
+
+          final venue = Venue(id, lat, lon, category, name, description,
+              openingHours, website, address);
+          venues.add(venue); // Add to the venue list
+        }
+      }
+    } else {
+      throw Exception('No elements found in the JSON data.');
+    }
+  }
+
+  Future<Map<String, dynamic>> fetchATMData() async {
+    const String overpassUrl = 'https://overpass-api.de/api/interpreter';
+    const String query = '''
+[out:json][timeout:25];
+nwr["amenity"="atm"]["currency:XBT"="yes"];
+out geom;
+''';
+
+    try {
+      final response =
+          await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
+        overpassUrl,
+        body: 'data=$query',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+        return jsonData;
+      } else {
+        throw Exception(
+            'Failed to fetch data. HTTP status: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching data: $e');
+    }
+  }
+
+  Future<void> saveATMData(Map<String, dynamic> data) async {
+    final String filePath = await getFilePath();
+
+    try {
+      if (data.isNotEmpty) {
+        // Save data to the file
+        final file = File(filePath);
+        await file.writeAsString(json.encode(data), flush: true);
+
+        // Restore venues from the saved data
+        _restoreVenuesFromJson();
+
+        kPrint('Data successfully saved to $filePath');
+      } else {
+        throw Exception('No data to save.');
+      }
+    } catch (e) {
+      throw Exception('Error saving data: $e');
+    }
+  }
+
+  Future<void> fetchAndSaveATMData() async {
+    final String filePath = await getFilePath();
+
+    try {
+      // Read the previously saved JSON data
+      final file = File(filePath);
+      Map<String, dynamic>? savedJsonData;
+      DateTime? savedTimestamp;
+
+      if (await file.exists()) {
+        final initialData = await file.readAsString();
+        savedJsonData = json.decode(initialData);
+
+        String? timestampString =
+            savedJsonData?['osm3s']?['timestamp_osm_base'];
+        savedTimestamp =
+            timestampString == null ? null : DateTime.parse(timestampString);
+      }
+
+      // If there is no saved data or it's older than 7 days
+      if (savedJsonData == null ||
+          (savedTimestamp != null &&
+              DateTime.now()
+                  .isAfter(savedTimestamp.add(const Duration(days: 7))))) {
+        final newData = await fetchATMData();
+        await saveATMData(newData);
+      } else {
+        kPrint('Data is up to date. Skipping fetch and save.');
+      }
+    } catch (e) {
+      throw Exception('Error in fetchAndSaveATMData: $e');
+    }
+  }
+
+  Future<String> getFilePath() async {
+    final directory = await getApplicationDocumentsDirectory();
+    return '${directory.path}/atm_data.json';
   }
 
   List<Venue> getLocallyVenues(
@@ -99,9 +205,24 @@ class MapData {
     return locallyVenues;
   }
 
-  Future<Response> getVenueInfo(int id) async {
-    return await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
-      "https://coinmap.org/api/v1/venues/$id",
-    );
+// Helper function to build an address string
+  String? _buildAddress(Map<String, dynamic> tags) {
+    final String? street = tags["addr:street"];
+    final String? houseNo = tags["addr:housenumber"];
+    final String? city = tags["addr:city"];
+
+    if (street == null && houseNo == null && city == null) {
+      return null;
+    }
+
+    final String houseNoAndStreet = [
+      if (street != null && street.isNotEmpty) street,
+      if (houseNo != null && houseNo.isNotEmpty) houseNo,
+    ].join(' ');
+
+    return [
+      if (houseNoAndStreet.isNotEmpty) houseNoAndStreet,
+      if (city != null && city.isNotEmpty) city,
+    ].join(', ');
   }
 }

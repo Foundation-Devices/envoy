@@ -13,8 +13,13 @@ class Venue {
   final double lon;
   final String category;
   final String name;
+  final String? description;
+  final String? openingHours;
+  final String? website;
+  final String? address;
 
-  Venue(this.id, this.lat, this.lon, this.category, this.name);
+  Venue(this.id, this.lat, this.lon, this.category, this.name, this.description,
+      this.openingHours, this.website, this.address);
 
   factory Venue.fromJson(Map<String, dynamic> json) => _$VenueFromJson(json);
 
