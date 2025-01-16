@@ -96,6 +96,48 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
   await tester.pump(const Duration(milliseconds: 500));
 }
 
+Future<void> sendFromBaseWallet(
+    WidgetTester tester, String hotSignetAddress) async {
+  final baseWalletFinder = find.text("Base Wallet");
+  expect(baseWalletFinder, findsWidgets);
+  await tester.tap(baseWalletFinder.first);
+  await tester.pump(Durations.long2);
+
+  final sendButtonFinder = find.text("Send");
+  expect(sendButtonFinder, findsWidgets);
+  await tester.tap(sendButtonFinder.first);
+  await tester.pump(Durations.long2);
+
+  /// SEND some money to hot signet wallet
+  await enterTextInField(tester, find.byType(TextFormField), hotSignetAddress);
+
+  // enter amount
+  await findAndPressTextButton(tester, '1');
+  await findAndPressTextButton(tester, '2');
+  await findAndPressTextButton(tester, '3');
+  await findAndPressTextButton(tester, '4');
+
+  // go to staging
+  await waitForTealTextAndTap(tester, 'Confirm');
+  await tester.pump(Durations.long2);
+
+  // now wait for it to go to staging
+  final textFeeFinder = find.text("Fee");
+  await tester.pumpUntilFound(textFeeFinder,
+      tries: 100, duration: Durations.long2);
+
+  await findAndPressTextButton(tester, 'Send Transaction');
+
+  await findAndPressTextButton(tester, 'No thanks');
+
+  await slowSearchAndToggleText(tester, 'Continue');
+
+  final homeButtonFinder = find.text("Accounts");
+  expect(homeButtonFinder, findsWidgets);
+  await tester.tap(homeButtonFinder.first);
+  await tester.pump(Durations.long2);
+}
+
 Future<void> resetLinuxEnvoyData() async {
   final appSupportDir = await getApplicationSupportDirectory();
 
