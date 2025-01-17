@@ -63,7 +63,10 @@ class _CoinsListState extends ConsumerState<CoinsList> {
                     );
                   },
                   onClosed: (_) {
-                    ref.read(coinDetailsActiveProvider.notifier).state = false;
+                    if (mounted) {
+                      ref.read(coinDetailsActiveProvider.notifier).state =
+                          false;
+                    }
                   },
                   openBuilder: (context, action) {
                     return CoinTagDetailsScreen(

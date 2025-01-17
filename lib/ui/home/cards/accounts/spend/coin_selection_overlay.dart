@@ -32,7 +32,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 OverlayEntry? overlayEntry;
 final GlobalKey<CoinSelectionOverlayState> coinSelectionOverlayKey =
@@ -705,9 +704,12 @@ class SpendRequirementOverlayState
                               builder: (context) => CreateCoinTag(
                                 accountId: selectedAccount.id ?? "",
                                 onTagUpdate: () async {
-                                  ref
-                                      .read(coinSelectionStateProvider.notifier)
-                                      .reset();
+                                  if (mounted) {
+                                    ref
+                                        .read(
+                                            coinSelectionStateProvider.notifier)
+                                        .reset();
+                                  }
                                   NavigatorState navigator = Navigator.of(
                                       context,
                                       rootNavigator: true);
