@@ -278,13 +278,7 @@ pub unsafe extern "C" fn backup_delete(
     let hash = bitcoin::hashes::sha256::Hash::hash(seed_words.as_bytes());
     let server_url = CStr::from_ptr(server_url).to_str().unwrap();
 
-    let rt = match RUNTIME.as_ref() {
-        Ok(rt) => rt,
-        Err(e) => {
-            eprintln!("Failed to get runtime: {}", e);
-            return 0;
-        }
-    };
+    let rt = unwrap_or_return!(RUNTIME.as_ref(), 0);
 
     let response = rt
         .block_on(async move { delete_backup_async(server_url, proxy_port, hash.to_hex()).await });
