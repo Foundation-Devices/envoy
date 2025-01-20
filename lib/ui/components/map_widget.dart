@@ -168,67 +168,21 @@ class MarkersPageState extends State<MarkersPage> {
         ],
       ),
       onTap: () async {
-        if (mounted) {
-          showEnvoyDialog(
-            context: context,
-            blurColor: Colors.black,
-            linearGradient: true,
-            dialog: const Padding(
-              padding: EdgeInsets.all(EnvoySpacing.medium3),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircularProgressIndicator(), // Loading spinner
-                ],
-              ),
+        showEnvoyDialog(
+          context: context,
+          blurColor: Colors.black,
+          linearGradient: true,
+          dialog: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: AtmDialogInfo(
+              name: venue.name,
+              address: venue.address,
+              website: venue.website,
+              description: venue.description,
+              openingHours: venue.openingHours,
             ),
-          );
-        }
-        try {
-          final response = await MapData().getVenueInfo(venue.id);
-          final data = json.decode(response.body);
-          final venueInfo = data["venue"];
-          String? name = venueInfo["name"];
-          final String? description = venueInfo["description"];
-          final String? openingHours = venueInfo["opening_hours"];
-          final String? website = venueInfo["website"];
-          final String? street = venueInfo["street"];
-          final String? houseNo = venueInfo["houseno"];
-          final String? city = venueInfo["city"];
-          String? address;
-
-          if (street != null || houseNo != null || city != null) {
-            final String houseNoAndStreet = [
-              if (street != null && street.isNotEmpty) street,
-              if (houseNo != null && houseNo.isNotEmpty) houseNo
-            ].join(' ');
-
-            address = [
-              if (houseNoAndStreet.isNotEmpty) houseNoAndStreet,
-              if (city != null && city.isNotEmpty) city
-            ].join(', ');
-          }
-          if (mounted) {
-            Navigator.pop(context);
-            showEnvoyDialog(
-              context: context,
-              blurColor: Colors.black,
-              linearGradient: true,
-              dialog: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.9,
-                child: AtmDialogInfo(
-                  name: name,
-                  address: address,
-                  website: website,
-                  description: description,
-                  openingHours: openingHours,
-                ),
-              ),
-            );
-          }
-        } catch (error) {
-          if (mounted) Navigator.pop(context);
-        }
+          ),
+        );
       },
     );
   }
