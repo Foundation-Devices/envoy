@@ -651,8 +651,11 @@ class SpendRequirementOverlayState
           type: EnvoyButtonTypes.secondary,
           buttonText,
           onTap: () async {
-            ref.read(spendEditModeProvider.notifier).state =
-                SpendOverlayContext.hidden;
+            final coinSelectionNotifier = ref.read(coinSelectionStateProvider.notifier);
+            final spendEditModeNotifier = ref.read(spendEditModeProvider.notifier);
+
+            spendEditModeNotifier.state = SpendOverlayContext.hidden;
+
             NavigatorState navigator =
                 Navigator.of(context, rootNavigator: true);
             if (!inTagSelectionMode) {
@@ -674,7 +677,9 @@ class SpendRequirementOverlayState
                     builder: (context) => CreateCoinTag(
                       accountId: selectedAccount.id ?? "",
                       onTagUpdate: () async {
-                        ref.read(coinSelectionStateProvider.notifier).reset();
+
+                          coinSelectionNotifier.reset();
+
                         await Future.delayed(const Duration(milliseconds: 100));
 
                         /// Pop until we get to the go router
@@ -704,12 +709,8 @@ class SpendRequirementOverlayState
                               builder: (context) => CreateCoinTag(
                                 accountId: selectedAccount.id ?? "",
                                 onTagUpdate: () async {
-                                  if (mounted) {
-                                    ref
-                                        .read(
-                                            coinSelectionStateProvider.notifier)
-                                        .reset();
-                                  }
+                                    coinSelectionNotifier.reset();
+
                                   NavigatorState navigator = Navigator.of(
                                       context,
                                       rootNavigator: true);

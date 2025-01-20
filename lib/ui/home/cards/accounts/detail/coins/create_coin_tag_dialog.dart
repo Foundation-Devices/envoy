@@ -46,7 +46,7 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
   Widget build(BuildContext context) {
     return Container(
       width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
-      height: 428,
+      height: 440,
       padding: const EdgeInsets.all(EnvoySpacing.small),
       child: EnvoyScaffold(
           resizeToAvoidBottomInset: false,
