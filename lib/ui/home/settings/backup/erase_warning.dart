@@ -391,61 +391,64 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
 
   @override
   Widget build(BuildContext context) {
-    return OnboardPageBackground(
-        child: Material(
-      color: Colors.transparent,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 260,
-                child: rive.RiveAnimation.asset(
-                  "assets/envoy_loader.riv",
-                  fit: BoxFit.contain,
-                  onInit: (artboard) {
-                    _stateMachineController =
-                        rive.StateMachineController.fromArtboard(
-                            artboard, 'STM');
-                    artboard.addController(_stateMachineController!);
-                    _stateMachineController
-                        ?.findInput<bool>("indeterminate")
-                        ?.change(true);
-                    _onInit();
+    return PopScope(
+      canPop: false,
+      child: OnboardPageBackground(
+          child: Material(
+        color: Colors.transparent,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 260,
+                  child: rive.RiveAnimation.asset(
+                    "assets/envoy_loader.riv",
+                    fit: BoxFit.contain,
+                    onInit: (artboard) {
+                      _stateMachineController =
+                          rive.StateMachineController.fromArtboard(
+                              artboard, 'STM');
+                      artboard.addController(_stateMachineController!);
+                      _stateMachineController
+                          ?.findInput<bool>("indeterminate")
+                          ?.change(true);
+                      _onInit();
+                    },
+                  ),
+                ),
+              ),
+              const SliverPadding(padding: EdgeInsets.all(28)),
+              SliverToBoxAdapter(
+                child: Builder(
+                  builder: (context) {
+                    String title = S().delete_wallet_for_good_loading_heading;
+                    if (!_deleteInProgress) {
+                      title = S().delete_wallet_for_good_success_heading;
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            title,
+                            textAlign: TextAlign.center,
+                            style: EnvoyTypography.heading,
+                          ),
+                          const Padding(padding: EdgeInsets.all(18)),
+                        ],
+                      ),
+                    );
                   },
                 ),
               ),
-            ),
-            const SliverPadding(padding: EdgeInsets.all(28)),
-            SliverToBoxAdapter(
-              child: Builder(
-                builder: (context) {
-                  String title = S().delete_wallet_for_good_loading_heading;
-                  if (!_deleteInProgress) {
-                    title = S().delete_wallet_for_good_success_heading;
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          title,
-                          textAlign: TextAlign.center,
-                          style: EnvoyTypography.heading,
-                        ),
-                        const Padding(padding: EdgeInsets.all(18)),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    ));
+      )),
+    );
   }
 
   _onInit() async {
