@@ -785,8 +785,32 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
               showEnvoyDialog(
                   context: context,
                   dialog: EnvoyDialog(
-                    title: S().manage_account_remove_heading,
-                    content: Text(S().manage_account_remove_subheading),
+                    content: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const EnvoyIcon(
+                          EnvoyIcons.alert,
+                          color: EnvoyColors.accentSecondary,
+                          size: EnvoyIconSize.big,
+                        ),
+                        const SizedBox(
+                          height: EnvoySpacing.medium1,
+                        ),
+                        Text(
+                          S().manage_account_remove_heading,
+                          style: EnvoyTypography.info,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(
+                          height: EnvoySpacing.medium1,
+                        ),
+                        Text(
+                          S().manage_account_remove_subheading,
+                          style: EnvoyTypography.info,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                     actions: [
                       EnvoyButton(
                         S().component_delete,
