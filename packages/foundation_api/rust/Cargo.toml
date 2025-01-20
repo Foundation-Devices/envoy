@@ -14,7 +14,8 @@ crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
 flutter_rust_bridge = "=2.6.0"
-foundation-api = { git = "https://github.com/Foundation-Devices/foundation-api.git", rev = "5f0bcf2274f3c4b9d5add795bb53608a33fd3d7f" }
-foundation-abstracted = { git = "https://github.com/Foundation-Devices/foundation-api.git", rev = "5f0bcf2274f3c4b9d5add795bb53608a33fd3d7f" }
-foundation-abstracted = { git = "https://github.com/Foundation-Devices/foundation-api.git", rev = "5f0bcf2274f3c4b9d5add795bb53608a33fd3d7f" }
+#foundation-api = { path = "/home/igor/Code/foundation-api/api" }
+#foundation-abstracted = { path = "/home/igor/Code/foundation-api/abstracted" }
 
+foundation-api = { git = "https://github.com/Foundation-Devices/foundation-api.git", rev = "0207eb18d8384a2fd75de437c87e1540efdde5b7" }
+foundation-abstracted = { git = "https://github.com/Foundation-Devices/foundation-api.git", rev = "0207eb18d8384a2fd75de437c87e1540efdde5b7" }
