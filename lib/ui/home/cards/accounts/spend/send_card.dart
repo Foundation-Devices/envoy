@@ -67,6 +67,9 @@ class _SendCardState extends ConsumerState<SendCard>
       if (ref.read(spendAmountProvider) != 0) {
         setAmount(ref.read(spendAmountProvider));
       }
+      if (ref.read(spendTransactionProvider).loading) {
+        ref.read(spendTransactionProvider.notifier).reset();
+      }
       if (account == null && context.mounted) {
         // ignore: use_build_context_synchronously
         context.pop();
