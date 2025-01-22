@@ -108,7 +108,7 @@ class ExchangeRate extends ChangeNotifier {
     // *Always* get USD
     Timer.periodic(const Duration(seconds: 30), (_) async {
       await _getUsdRate();
-      if (_selectedCurrency!.code == "USD") {
+      if (_selectedCurrency != null && _selectedCurrency!.code == "USD") {
         _selectedCurrencyRate = _usdRate;
         notifyListeners();
       }
