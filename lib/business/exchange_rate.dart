@@ -71,6 +71,9 @@ class ExchangeRate extends ChangeNotifier {
 
   double? _usdRate;
 
+  bool _isFetchingData = false;
+  bool _isManualFetch = false;
+
   double? get usdRate => _usdRate;
   FiatCurrency? _currency;
 
@@ -95,8 +98,8 @@ class ExchangeRate extends ChangeNotifier {
     restore();
 
     // Refresh from time to time
-    Timer.periodic(const Duration(seconds: 30), (_) {
-      _getRate();
+    Timer.periodic(const Duration(seconds: 30), (_) async {
+      if (!_isFetchingData && !_isManualFetch) _getRate(true);
     });
   }
 
@@ -138,7 +141,7 @@ class ExchangeRate extends ChangeNotifier {
     notifyListeners();
 
     // Fetch rates for this session
-    _getRate();
+    _getRate(false);
   }
 
   _storeRate(double selectedRate, String currencyCode, double usdRate) {
@@ -153,31 +156,57 @@ class ExchangeRate extends ChangeNotifier {
     EnvoyStorage().setExchangeRate(exchangeRateMap);
   }
 
-  _getRate() async {
+  _getRate(bool triggeredByTimer) async {
+    _isManualFetch = !triggeredByTimer;
+
     String selectedCurrencyCode = _currency?.code ?? ("USD");
     double? selectedRate;
     double? usdRate;
 
+    // Exit if a fetch is already in progress and it's not a manual fetch
+    if (_isFetchingData) {
+      if (!_isManualFetch) {
+        return;
+      }
+    }
+    _isFetchingData = true;
+
     try {
       if (selectedCurrencyCode != "USD") {
         selectedRate = await _getRateForCode(selectedCurrencyCode);
-        _selectedCurrencyRate = selectedRate;
-        notifyListeners();
+
+        if (selectedCurrencyCode == _currency?.code) {
+          _selectedCurrencyRate = selectedRate;
+          notifyListeners();
+        } else {
+          // If the currency code has changed during the fetch, re-initiate the process.
+          _getRate(false);
+        }
       }
 
       usdRate = await _getRateForCode("USD");
       _usdRate = usdRate;
-      if (selectedCurrencyCode == "USD") {
-        _selectedCurrencyRate = usdRate;
+
+      if (selectedCurrencyCode == _currency?.code) {
+        if (selectedCurrencyCode == "USD") {
+          _selectedCurrencyRate = usdRate;
+        }
+        notifyListeners();
+      } else {
+        // If the currency code has changed during the fetch, re-initiate the process.
+        _getRate(false);
       }
-      notifyListeners();
     } on Exception catch (e) {
       EnvoyReport().log("connectivity", e.toString());
+      _isFetchingData = false;
+      _isManualFetch = false;
       return;
     }
 
     selectedRate ??= usdRate;
     _storeRate(selectedRate, selectedCurrencyCode, usdRate);
+    _isFetchingData = false;
+    _isManualFetch = false;
   }
 
   Future<double> _getRateForCode(String currencyCode) async {
