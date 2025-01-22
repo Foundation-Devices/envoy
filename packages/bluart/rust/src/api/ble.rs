@@ -267,7 +267,7 @@ async fn inner_benchmark(id: String, sink: StreamSink<u64>) -> Result<()> {
         .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
 
     loop {
-        tokio::time::sleep(time::Duration::from_millis(100)).await;
+        tokio::time::sleep(time::Duration::from_millis(2000)).await;
         match device.benchmark().await {
             Ok(result) => {
                 sink.add(result as u64).unwrap();
