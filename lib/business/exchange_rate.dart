@@ -71,8 +71,10 @@ class ExchangeRate extends ChangeNotifier {
 
   double? _usdRate;
 
+  bool _isFetchingData = false;
+
   double? get usdRate => _usdRate;
-  FiatCurrency? _currency;
+  FiatCurrency? _selectedCurrency;
 
   final HttpTor _http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
   final String _serverAddress = Settings().nguServerAddress;
@@ -95,8 +97,21 @@ class ExchangeRate extends ChangeNotifier {
     restore();
 
     // Refresh from time to time
-    Timer.periodic(const Duration(seconds: 30), (_) {
-      _getRate();
+    Timer.periodic(const Duration(seconds: 30), (_) async {
+      if (!_isFetchingData &&
+          _selectedCurrency != null &&
+          _selectedCurrency!.code != "USD") {
+        await _getNonUsdRate(true);
+      }
+    });
+
+    // *Always* get USD
+    Timer.periodic(const Duration(seconds: 30), (_) async {
+      await _getUsdRate();
+      if (_selectedCurrency!.code == "USD") {
+        _selectedCurrencyRate = _usdRate;
+        notifyListeners();
+      }
     });
   }
 
@@ -119,65 +134,89 @@ class ExchangeRate extends ChangeNotifier {
   }
 
   void setCurrency(String? currencyCode) {
-    if (_currency == null || currencyCode != _currency?.code) {
+    if (_selectedCurrency == null || currencyCode != _selectedCurrency?.code) {
       _selectedCurrencyRate = null;
     }
 
     if (currencyCode == null) {
-      _currency = null;
+      _selectedCurrency = null;
       notifyListeners();
       return;
     }
 
-    _currency = supportedFiat.firstWhere(
+    _selectedCurrency = supportedFiat.firstWhere(
       (element) => element.code == currencyCode,
       // If code is wrong (for whatever reason) go with default
       orElse: () => supportedFiat[0],
     );
 
-    notifyListeners();
+    if (_selectedCurrency!.code == "USD") {
+      _selectedCurrencyRate = _usdRate;
+    }
 
     // Fetch rates for this session
-    _getRate();
+    if (currencyCode != "USD") {
+      _getNonUsdRate(false);
+    }
+
+    notifyListeners();
   }
 
-  _storeRate(double selectedRate, String currencyCode, double usdRate) {
-    _usdRate = usdRate;
-
+  _storeRate(double? selectedRate, String? currencyCode, double? usdRate) {
     Map exchangeRateMap = {
       CURRENCY_KEY: currencyCode,
       RATE_KEY: selectedRate,
-      USD_RATE_KEY: _usdRate
+      USD_RATE_KEY: usdRate
     };
 
     EnvoyStorage().setExchangeRate(exchangeRateMap);
   }
 
-  _getRate() async {
-    String selectedCurrencyCode = _currency?.code ?? ("USD");
-    double? selectedRate;
-    double? usdRate;
+  _getNonUsdRate(bool triggeredByTimer) async {
+    // We have a separate function for USD
+    if (_selectedCurrency == null) {
+      return;
+    }
+
+    // Exit if a fetch is already in progress and it's not a manual fetch
+    if (_isFetchingData && triggeredByTimer) {
+      return;
+    }
+    _isFetchingData = true;
+
+    String selectedCurrencyCode = _selectedCurrency!.code;
+    double selectedRate = 0;
 
     try {
       if (selectedCurrencyCode != "USD") {
         selectedRate = await _getRateForCode(selectedCurrencyCode);
-        _selectedCurrencyRate = selectedRate;
-        notifyListeners();
-      }
 
-      usdRate = await _getRateForCode("USD");
-      _usdRate = usdRate;
-      if (selectedCurrencyCode == "USD") {
-        _selectedCurrencyRate = usdRate;
+        if (selectedCurrencyCode == _selectedCurrency?.code) {
+          _selectedCurrencyRate = selectedRate;
+          notifyListeners();
+        } else {
+          // If the currency code has changed during the fetch, reenter
+          _getNonUsdRate(false);
+          return;
+        }
       }
-      notifyListeners();
     } on Exception catch (e) {
       EnvoyReport().log("connectivity", e.toString());
+      _isFetchingData = false;
       return;
     }
 
-    selectedRate ??= usdRate;
-    _storeRate(selectedRate, selectedCurrencyCode, usdRate);
+    _storeRate(selectedRate, selectedCurrencyCode, _usdRate);
+    _isFetchingData = false;
+  }
+
+  _getUsdRate() async {
+    try {
+      _usdRate = await _getRateForCode("USD");
+      _storeRate(_selectedCurrencyRate, _selectedCurrency?.code, _usdRate);
+    } on Exception catch (e) {
+      EnvoyReport().log("connectivity", e.toString());
+    }
   }
 
   Future<double> _getRateForCode(String currencyCode) async {
@@ -209,7 +248,7 @@ class ExchangeRate extends ChangeNotifier {
       return "";
     }
 
-    if (_currency == null || _selectedCurrencyRate == null) {
+    if (_selectedCurrency == null || _selectedCurrencyRate == null) {
       return "";
     }
 
@@ -228,15 +267,16 @@ class ExchangeRate extends ChangeNotifier {
     formattedAmount =
         formattedAmount.replaceAll(String.fromCharCode(nonBreakingSpace), "");
 
-    return (includeSymbol ? _currency?.symbol ?? '' : "") + formattedAmount;
+    return (includeSymbol ? _selectedCurrency?.symbol ?? '' : "") +
+        formattedAmount;
   }
 
   String getSymbol() {
-    if (_currency == null) {
+    if (_selectedCurrency == null) {
       return "";
     }
 
-    return _currency!.symbol;
+    return _selectedCurrency!.symbol;
   }
 
   int convertFiatStringToSats(String amountFiat) {
@@ -246,7 +286,7 @@ class ExchangeRate extends ChangeNotifier {
 
     amountFiat = amountFiat.replaceAll(fiatDecimalSeparator, ".");
 
-    if (_currency == null) {
+    if (_selectedCurrency == null) {
       return 0;
     }
 
@@ -262,8 +302,8 @@ class ExchangeRate extends ChangeNotifier {
   }
 
   String getCode() {
-    if (_currency?.code != null) {
-      return _currency!.code;
+    if (_selectedCurrency?.code != null) {
+      return _selectedCurrency!.code;
     }
     return "";
   }
