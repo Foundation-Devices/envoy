@@ -360,7 +360,6 @@ dependencies = [
 [[package]]
 name = "btp"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api.git?rev=0207eb18d8384a2fd75de437c87e1540efdde5b7#0207eb18d8384a2fd75de437c87e1540efdde5b7"
 dependencies = [
  "anyhow",
  "consts",
@@ -818,7 +817,6 @@ dependencies = [
 [[package]]
 name = "foundation-abstracted"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api.git?rev=0207eb18d8384a2fd75de437c87e1540efdde5b7#0207eb18d8384a2fd75de437c87e1540efdde5b7"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -832,8 +830,7 @@ dependencies = [
 
 [[package]]
 name = "foundation-api"
-version = "0.2.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api.git?rev=0207eb18d8384a2fd75de437c87e1540efdde5b7#0207eb18d8384a2fd75de437c87e1540efdde5b7"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "bc-components",
@@ -866,6 +863,9 @@ dependencies = [
 name = "foundation_api"
 version = "0.1.0"
 dependencies = [
+ "bc-components",
+ "bc-envelope",
+ "bc-xid",
  "flutter_rust_bridge",
  "foundation-abstracted",
  "foundation-api",

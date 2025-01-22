@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-rust_input: crate::api,foundation-api::Discovery
+#foundation-api::QuantumLinkMessage
+#, bc-components
+rust_input: crate::api, foundation-api::api, bc-envelope::expression
 rust_root: rust/
 dart_output: lib/src/rust

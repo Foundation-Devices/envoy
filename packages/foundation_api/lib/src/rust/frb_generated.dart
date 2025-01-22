@@ -3,12 +3,20 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'api/api.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
 import 'frb_generated.io.dart'
     if (dart.library.js_interop) 'frb_generated.web.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'third_party/bc_envelope/extension/expressions/expression.dart';
+import 'third_party/foundation_api/api.dart';
+import 'third_party/foundation_api/api/firmware.dart';
+import 'third_party/foundation_api/api/fx.dart';
+import 'third_party/foundation_api/api/pairing.dart';
+import 'third_party/foundation_api/api/scv.dart';
+import 'third_party/foundation_api/api/settings.dart';
 
 /// Main entrypoint of the Rust API
 class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
@@ -65,7 +73,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.6.0';
 
   @override
-  int get rustContentHash => -291292710;
+  int get rustContentHash => 1903183537;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -75,7 +83,132 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   );
 }
 
-abstract class RustLibApi extends BaseApi {}
+abstract class RustLibApi extends BaseApi {
+  Future<void> foundationApiApiScvChallengeResponseChallengeId(
+      {required ChallengeResponse that});
+
+  Future<void> foundationApiApiScvChallengeResponseDerSignature(
+      {required ChallengeResponse that});
+
+  Future<Expression> foundationApiApiScvChallengeResponseEncode(
+      {required ChallengeResponse that});
+
+  Future<ChallengeResponse> foundationApiApiScvChallengeResponseNew(
+      {required String challengeId,
+      required List<String> words,
+      required String derSignature});
+
+  Future<void> foundationApiApiScvChallengeResponseWords(
+      {required ChallengeResponse that});
+
+  Future<void> foundationApiApiScvChallengeDerSignature(
+      {required Challenge that});
+
+  Future<Expression> foundationApiApiScvChallengeEncode(
+      {required Challenge that});
+
+  Future<void> foundationApiApiScvChallengeId({required Challenge that});
+
+  Future<Challenge> foundationApiApiScvChallengeNew(
+      {required String id,
+      required String signature,
+      required String derSignature});
+
+  Future<void> foundationApiApiScvChallengeSignature({required Challenge that});
+
+  Future<void> foundationApiApiFxExchangeRateCurrencyCode(
+      {required ExchangeRate that});
+
+  Future<Expression> foundationApiApiFxExchangeRateEncode(
+      {required ExchangeRate that});
+
+  Future<ExchangeRate> foundationApiApiFxExchangeRateNew(
+      {required String currencyCode, required double rate});
+
+  Future<double> foundationApiApiFxExchangeRateRate(
+      {required ExchangeRate that});
+
+  Future<void> foundationApiApiFirmwareFirmwareUpdateChangelog(
+      {required FirmwareUpdate that});
+
+  Future<Expression> foundationApiApiFirmwareFirmwareUpdateEncode(
+      {required FirmwareUpdate that});
+
+  Future<FirmwareUpdate> foundationApiApiFirmwareFirmwareUpdateNew(
+      {required String version,
+      required int timestamp,
+      required String changelog});
+
+  Future<int> foundationApiApiFirmwareFirmwareUpdateTimestamp(
+      {required FirmwareUpdate that});
+
+  Future<void> foundationApiApiFirmwareFirmwareUpdateVersion(
+      {required FirmwareUpdate that});
+
+  Future<Expression> foundationApiApiSettingsSettingsEncode(
+      {required Settings that});
+
+  Future<bool> foundationApiApiSettingsSettingsMagicBackup(
+      {required Settings that});
+
+  Future<Settings> foundationApiApiSettingsSettingsNew(
+      {required bool magicBackup});
+
+  Future<void> crateApiApiHelloWorld();
+
+  Future<Expression> foundationApiApiPairingPairingRequestEncode(
+      {required PairingRequest that});
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_Challenge;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_Challenge;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_ChallengePtr;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_ChallengeResponse;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_ChallengeResponse;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_ChallengeResponsePtr;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_ExchangeRate;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_ExchangeRate;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_ExchangeRatePtr;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_Expression;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_Expression;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_ExpressionPtr;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_FirmwareUpdate;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_FirmwareUpdate;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_FirmwareUpdatePtr;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_Settings;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_Settings;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_SettingsPtr;
+}
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   RustLibApiImpl({
@@ -85,10 +218,1085 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     required super.portManager,
   });
 
+  @override
+  Future<void> foundationApiApiScvChallengeResponseChallengeId(
+      {required ChallengeResponse that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallengeResponse(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 1, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiScvChallengeResponseChallengeIdConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiScvChallengeResponseChallengeIdConstMeta =>
+      const TaskConstMeta(
+        debugName: "ChallengeResponse_challenge_id",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<void> foundationApiApiScvChallengeResponseDerSignature(
+      {required ChallengeResponse that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallengeResponse(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 2, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiScvChallengeResponseDerSignatureConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kFoundationApiApiScvChallengeResponseDerSignatureConstMeta =>
+          const TaskConstMeta(
+            debugName: "ChallengeResponse_der_signature",
+            argNames: ["that"],
+          );
+
+  @override
+  Future<Expression> foundationApiApiScvChallengeResponseEncode(
+      {required ChallengeResponse that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallengeResponse(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 3, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExpression,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiScvChallengeResponseEncodeConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiScvChallengeResponseEncodeConstMeta =>
+      const TaskConstMeta(
+        debugName: "ChallengeResponse_encode",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<ChallengeResponse> foundationApiApiScvChallengeResponseNew(
+      {required String challengeId,
+      required List<String> words,
+      required String derSignature}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(challengeId, serializer);
+        sse_encode_list_String(words, serializer);
+        sse_encode_String(derSignature, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 4, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallengeResponse,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiScvChallengeResponseNewConstMeta,
+      argValues: [challengeId, words, derSignature],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiScvChallengeResponseNewConstMeta =>
+      const TaskConstMeta(
+        debugName: "ChallengeResponse_new",
+        argNames: ["challengeId", "words", "derSignature"],
+      );
+
+  @override
+  Future<void> foundationApiApiScvChallengeResponseWords(
+      {required ChallengeResponse that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallengeResponse(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 5, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiScvChallengeResponseWordsConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiScvChallengeResponseWordsConstMeta =>
+      const TaskConstMeta(
+        debugName: "ChallengeResponse_words",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<void> foundationApiApiScvChallengeDerSignature(
+      {required Challenge that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallenge(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 6, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiScvChallengeDerSignatureConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiScvChallengeDerSignatureConstMeta =>
+      const TaskConstMeta(
+        debugName: "Challenge_der_signature",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<Expression> foundationApiApiScvChallengeEncode(
+      {required Challenge that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallenge(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 7, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExpression,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiScvChallengeEncodeConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiScvChallengeEncodeConstMeta =>
+      const TaskConstMeta(
+        debugName: "Challenge_encode",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<void> foundationApiApiScvChallengeId({required Challenge that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallenge(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 8, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiScvChallengeIdConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiScvChallengeIdConstMeta =>
+      const TaskConstMeta(
+        debugName: "Challenge_id",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<Challenge> foundationApiApiScvChallengeNew(
+      {required String id,
+      required String signature,
+      required String derSignature}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        sse_encode_String(signature, serializer);
+        sse_encode_String(derSignature, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 9, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallenge,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiScvChallengeNewConstMeta,
+      argValues: [id, signature, derSignature],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiScvChallengeNewConstMeta =>
+      const TaskConstMeta(
+        debugName: "Challenge_new",
+        argNames: ["id", "signature", "derSignature"],
+      );
+
+  @override
+  Future<void> foundationApiApiScvChallengeSignature(
+      {required Challenge that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallenge(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 10, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiScvChallengeSignatureConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiScvChallengeSignatureConstMeta =>
+      const TaskConstMeta(
+        debugName: "Challenge_signature",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<void> foundationApiApiFxExchangeRateCurrencyCode(
+      {required ExchangeRate that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExchangeRate(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 11, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiFxExchangeRateCurrencyCodeConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiFxExchangeRateCurrencyCodeConstMeta =>
+      const TaskConstMeta(
+        debugName: "ExchangeRate_currency_code",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<Expression> foundationApiApiFxExchangeRateEncode(
+      {required ExchangeRate that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExchangeRate(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 12, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExpression,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiFxExchangeRateEncodeConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiFxExchangeRateEncodeConstMeta =>
+      const TaskConstMeta(
+        debugName: "ExchangeRate_encode",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<ExchangeRate> foundationApiApiFxExchangeRateNew(
+      {required String currencyCode, required double rate}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(currencyCode, serializer);
+        sse_encode_f_32(rate, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 13, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExchangeRate,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiFxExchangeRateNewConstMeta,
+      argValues: [currencyCode, rate],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiFxExchangeRateNewConstMeta =>
+      const TaskConstMeta(
+        debugName: "ExchangeRate_new",
+        argNames: ["currencyCode", "rate"],
+      );
+
+  @override
+  Future<double> foundationApiApiFxExchangeRateRate(
+      {required ExchangeRate that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExchangeRate(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 14, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_f_32,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiFxExchangeRateRateConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiFxExchangeRateRateConstMeta =>
+      const TaskConstMeta(
+        debugName: "ExchangeRate_rate",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<void> foundationApiApiFirmwareFirmwareUpdateChangelog(
+      {required FirmwareUpdate that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerFirmwareUpdate(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 15, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiFirmwareFirmwareUpdateChangelogConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiFirmwareFirmwareUpdateChangelogConstMeta =>
+      const TaskConstMeta(
+        debugName: "FirmwareUpdate_changelog",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<Expression> foundationApiApiFirmwareFirmwareUpdateEncode(
+      {required FirmwareUpdate that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerFirmwareUpdate(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 16, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExpression,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiFirmwareFirmwareUpdateEncodeConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiFirmwareFirmwareUpdateEncodeConstMeta =>
+      const TaskConstMeta(
+        debugName: "FirmwareUpdate_encode",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<FirmwareUpdate> foundationApiApiFirmwareFirmwareUpdateNew(
+      {required String version,
+      required int timestamp,
+      required String changelog}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(version, serializer);
+        sse_encode_u_32(timestamp, serializer);
+        sse_encode_String(changelog, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 17, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerFirmwareUpdate,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiFirmwareFirmwareUpdateNewConstMeta,
+      argValues: [version, timestamp, changelog],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiFirmwareFirmwareUpdateNewConstMeta =>
+      const TaskConstMeta(
+        debugName: "FirmwareUpdate_new",
+        argNames: ["version", "timestamp", "changelog"],
+      );
+
+  @override
+  Future<int> foundationApiApiFirmwareFirmwareUpdateTimestamp(
+      {required FirmwareUpdate that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerFirmwareUpdate(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 18, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_32,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiFirmwareFirmwareUpdateTimestampConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiFirmwareFirmwareUpdateTimestampConstMeta =>
+      const TaskConstMeta(
+        debugName: "FirmwareUpdate_timestamp",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<void> foundationApiApiFirmwareFirmwareUpdateVersion(
+      {required FirmwareUpdate that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerFirmwareUpdate(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 19, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiFirmwareFirmwareUpdateVersionConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiFirmwareFirmwareUpdateVersionConstMeta =>
+      const TaskConstMeta(
+        debugName: "FirmwareUpdate_version",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<Expression> foundationApiApiSettingsSettingsEncode(
+      {required Settings that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 20, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExpression,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiSettingsSettingsEncodeConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiSettingsSettingsEncodeConstMeta =>
+      const TaskConstMeta(
+        debugName: "Settings_encode",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<bool> foundationApiApiSettingsSettingsMagicBackup(
+      {required Settings that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 21, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiSettingsSettingsMagicBackupConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiSettingsSettingsMagicBackupConstMeta =>
+      const TaskConstMeta(
+        debugName: "Settings_magic_backup",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<Settings> foundationApiApiSettingsSettingsNew(
+      {required bool magicBackup}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_bool(magicBackup, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 22, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiSettingsSettingsNewConstMeta,
+      argValues: [magicBackup],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiSettingsSettingsNewConstMeta =>
+      const TaskConstMeta(
+        debugName: "Settings_new",
+        argNames: ["magicBackup"],
+      );
+
+  @override
+  Future<void> crateApiApiHelloWorld() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 24, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiApiHelloWorldConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiApiHelloWorldConstMeta => const TaskConstMeta(
+        debugName: "hello_world",
+        argNames: [],
+      );
+
+  @override
+  Future<Expression> foundationApiApiPairingPairingRequestEncode(
+      {required PairingRequest that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_pairing_request(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 25, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExpression,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiPairingPairingRequestEncodeConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiPairingPairingRequestEncodeConstMeta =>
+      const TaskConstMeta(
+        debugName: "pairing_request_encode",
+        argNames: ["that"],
+      );
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_Challenge => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallenge;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_Challenge => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallenge;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_ChallengeResponse => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallengeResponse;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_ChallengeResponse => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallengeResponse;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_ExchangeRate => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExchangeRate;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_ExchangeRate => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExchangeRate;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_Expression => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExpression;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_Expression => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExpression;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_FirmwareUpdate => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerFirmwareUpdate;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_FirmwareUpdate => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerFirmwareUpdate;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_Settings => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_Settings => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings;
+
   @protected
-  int sse_decode_i_32(SseDeserializer deserializer) {
+  Challenge
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallenge(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ChallengeImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  ChallengeResponse
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallengeResponse(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ChallengeResponseImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  ExchangeRate
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExchangeRate(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ExchangeRateImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  Expression
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExpression(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ExpressionImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  FirmwareUpdate
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerFirmwareUpdate(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return FirmwareUpdateImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  Settings
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return SettingsImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  Challenge
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallenge(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ChallengeImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  ChallengeResponse
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallengeResponse(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ChallengeResponseImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  ExchangeRate
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExchangeRate(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ExchangeRateImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  FirmwareUpdate
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerFirmwareUpdate(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return FirmwareUpdateImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  Settings
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return SettingsImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  Challenge
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallenge(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ChallengeImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  ChallengeResponse
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallengeResponse(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ChallengeResponseImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  ExchangeRate
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExchangeRate(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ExchangeRateImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  Expression
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExpression(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ExpressionImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  FirmwareUpdate
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerFirmwareUpdate(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return FirmwareUpdateImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  Settings
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return SettingsImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  String dco_decode_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as String;
+  }
+
+  @protected
+  QuantumLinkMessage dco_decode_TraitDef_QuantumLinkMessage(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    throw UnimplementedError();
+  }
+
+  @protected
+  bool dco_decode_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as bool;
+  }
+
+  @protected
+  PairingRequest dco_decode_box_autoadd_pairing_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_pairing_request(raw);
+  }
+
+  @protected
+  double dco_decode_f_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as double;
+  }
+
+  @protected
+  List<String> dco_decode_list_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_String).toList();
+  }
+
+  @protected
+  Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as Uint8List;
+  }
+
+  @protected
+  PairingRequest dco_decode_pairing_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.isNotEmpty)
+      throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
+    return const PairingRequest();
+  }
+
+  @protected
+  int dco_decode_u_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  int dco_decode_u_8(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  void dco_decode_unit(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return;
+  }
+
+  @protected
+  BigInt dco_decode_usize(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeU64(raw);
+  }
+
+  @protected
+  Challenge
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallenge(
+          SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getInt32();
+    return ChallengeImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  ChallengeResponse
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallengeResponse(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ChallengeResponseImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  ExchangeRate
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExchangeRate(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ExchangeRateImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  Expression
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExpression(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ExpressionImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  FirmwareUpdate
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerFirmwareUpdate(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return FirmwareUpdateImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  Settings
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return SettingsImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  Challenge
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallenge(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ChallengeImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  ChallengeResponse
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallengeResponse(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ChallengeResponseImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  ExchangeRate
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExchangeRate(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ExchangeRateImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  FirmwareUpdate
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerFirmwareUpdate(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return FirmwareUpdateImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  Settings
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return SettingsImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  Challenge
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallenge(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ChallengeImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  ChallengeResponse
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallengeResponse(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ChallengeResponseImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  ExchangeRate
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExchangeRate(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ExchangeRateImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  Expression
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExpression(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ExpressionImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  FirmwareUpdate
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerFirmwareUpdate(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return FirmwareUpdateImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  Settings
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return SettingsImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  String sse_decode_String(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_list_prim_u_8_strict(deserializer);
+    return utf8.decoder.convert(inner);
   }
 
   @protected
@@ -98,9 +1306,238 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_i_32(int self, SseSerializer serializer) {
+  PairingRequest sse_decode_box_autoadd_pairing_request(
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putInt32(self);
+    return (sse_decode_pairing_request(deserializer));
+  }
+
+  @protected
+  double sse_decode_f_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getFloat32();
+  }
+
+  @protected
+  List<String> sse_decode_list_String(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <String>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_String(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var len_ = sse_decode_i_32(deserializer);
+    return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
+  PairingRequest sse_decode_pairing_request(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return const PairingRequest();
+  }
+
+  @protected
+  int sse_decode_u_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint32();
+  }
+
+  @protected
+  int sse_decode_u_8(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint8();
+  }
+
+  @protected
+  void sse_decode_unit(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  BigInt sse_decode_usize(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getBigUint64();
+  }
+
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getInt32();
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallenge(
+          Challenge self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ChallengeImpl).frbInternalSseEncode(move: true), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallengeResponse(
+          ChallengeResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ChallengeResponseImpl).frbInternalSseEncode(move: true),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExchangeRate(
+          ExchangeRate self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ExchangeRateImpl).frbInternalSseEncode(move: true),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExpression(
+          Expression self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ExpressionImpl).frbInternalSseEncode(move: true), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerFirmwareUpdate(
+          FirmwareUpdate self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as FirmwareUpdateImpl).frbInternalSseEncode(move: true),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings(
+          Settings self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as SettingsImpl).frbInternalSseEncode(move: true), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallenge(
+          Challenge self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ChallengeImpl).frbInternalSseEncode(move: false), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallengeResponse(
+          ChallengeResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ChallengeResponseImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExchangeRate(
+          ExchangeRate self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ExchangeRateImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerFirmwareUpdate(
+          FirmwareUpdate self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as FirmwareUpdateImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings(
+          Settings self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as SettingsImpl).frbInternalSseEncode(move: false), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallenge(
+          Challenge self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ChallengeImpl).frbInternalSseEncode(move: null), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallengeResponse(
+          ChallengeResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ChallengeResponseImpl).frbInternalSseEncode(move: null),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExchangeRate(
+          ExchangeRate self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ExchangeRateImpl).frbInternalSseEncode(move: null),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExpression(
+          Expression self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ExpressionImpl).frbInternalSseEncode(move: null), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerFirmwareUpdate(
+          FirmwareUpdate self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as FirmwareUpdateImpl).frbInternalSseEncode(move: null),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings(
+          Settings self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as SettingsImpl).frbInternalSseEncode(move: null), serializer);
+  }
+
+  @protected
+  void sse_encode_String(String self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_8_strict(utf8.encoder.convert(self), serializer);
   }
 
   @protected
@@ -108,4 +1545,274 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint8(self ? 1 : 0);
   }
+
+  @protected
+  void sse_encode_box_autoadd_pairing_request(
+      PairingRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_pairing_request(self, serializer);
+  }
+
+  @protected
+  void sse_encode_f_32(double self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putFloat32(self);
+  }
+
+  @protected
+  void sse_encode_list_String(List<String> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_String(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_prim_u_8_strict(
+      Uint8List self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    serializer.buffer.putUint8List(self);
+  }
+
+  @protected
+  void sse_encode_pairing_request(
+      PairingRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  void sse_encode_u_32(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint32(self);
+  }
+
+  @protected
+  void sse_encode_u_8(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint8(self);
+  }
+
+  @protected
+  void sse_encode_unit(void self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  void sse_encode_usize(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putBigUint64(self);
+  }
+
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putInt32(self);
+  }
+}
+
+@sealed
+class ChallengeImpl extends RustOpaque implements Challenge {
+  // Not to be used by end users
+  ChallengeImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  ChallengeImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_Challenge,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_Challenge,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_ChallengePtr,
+  );
+
+  Future<void> derSignature() =>
+      RustLib.instance.api.foundationApiApiScvChallengeDerSignature(
+        that: this,
+      );
+
+  Future<Expression> encode() =>
+      RustLib.instance.api.foundationApiApiScvChallengeEncode(
+        that: this,
+      );
+
+  Future<void> id() => RustLib.instance.api.foundationApiApiScvChallengeId(
+        that: this,
+      );
+
+  Future<void> signature() =>
+      RustLib.instance.api.foundationApiApiScvChallengeSignature(
+        that: this,
+      );
+}
+
+@sealed
+class ChallengeResponseImpl extends RustOpaque implements ChallengeResponse {
+  // Not to be used by end users
+  ChallengeResponseImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  ChallengeResponseImpl.frbInternalSseDecode(
+      BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_ChallengeResponse,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_ChallengeResponse,
+    rustArcDecrementStrongCountPtr: RustLib
+        .instance.api.rust_arc_decrement_strong_count_ChallengeResponsePtr,
+  );
+
+  Future<void> challengeId() =>
+      RustLib.instance.api.foundationApiApiScvChallengeResponseChallengeId(
+        that: this,
+      );
+
+  Future<void> derSignature() =>
+      RustLib.instance.api.foundationApiApiScvChallengeResponseDerSignature(
+        that: this,
+      );
+
+  Future<Expression> encode() =>
+      RustLib.instance.api.foundationApiApiScvChallengeResponseEncode(
+        that: this,
+      );
+
+  Future<void> words() =>
+      RustLib.instance.api.foundationApiApiScvChallengeResponseWords(
+        that: this,
+      );
+}
+
+@sealed
+class ExchangeRateImpl extends RustOpaque implements ExchangeRate {
+  // Not to be used by end users
+  ExchangeRateImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  ExchangeRateImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_ExchangeRate,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_ExchangeRate,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_ExchangeRatePtr,
+  );
+
+  Future<void> currencyCode() =>
+      RustLib.instance.api.foundationApiApiFxExchangeRateCurrencyCode(
+        that: this,
+      );
+
+  Future<Expression> encode() =>
+      RustLib.instance.api.foundationApiApiFxExchangeRateEncode(
+        that: this,
+      );
+
+  Future<double> rate() =>
+      RustLib.instance.api.foundationApiApiFxExchangeRateRate(
+        that: this,
+      );
+}
+
+@sealed
+class ExpressionImpl extends RustOpaque implements Expression {
+  // Not to be used by end users
+  ExpressionImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  ExpressionImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_Expression,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_Expression,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_ExpressionPtr,
+  );
+}
+
+@sealed
+class FirmwareUpdateImpl extends RustOpaque implements FirmwareUpdate {
+  // Not to be used by end users
+  FirmwareUpdateImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  FirmwareUpdateImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_FirmwareUpdate,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_FirmwareUpdate,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_FirmwareUpdatePtr,
+  );
+
+  Future<void> changelog() =>
+      RustLib.instance.api.foundationApiApiFirmwareFirmwareUpdateChangelog(
+        that: this,
+      );
+
+  Future<Expression> encode() =>
+      RustLib.instance.api.foundationApiApiFirmwareFirmwareUpdateEncode(
+        that: this,
+      );
+
+  Future<int> timestamp() =>
+      RustLib.instance.api.foundationApiApiFirmwareFirmwareUpdateTimestamp(
+        that: this,
+      );
+
+  Future<void> version() =>
+      RustLib.instance.api.foundationApiApiFirmwareFirmwareUpdateVersion(
+        that: this,
+      );
+}
+
+@sealed
+class SettingsImpl extends RustOpaque implements Settings {
+  // Not to be used by end users
+  SettingsImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  SettingsImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_Settings,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_Settings,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_SettingsPtr,
+  );
+
+  Future<Expression> encode() =>
+      RustLib.instance.api.foundationApiApiSettingsSettingsEncode(
+        that: this,
+      );
+
+  Future<bool> magicBackup() =>
+      RustLib.instance.api.foundationApiApiSettingsSettingsMagicBackup(
+        that: this,
+      );
 }

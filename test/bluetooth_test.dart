@@ -14,11 +14,22 @@ void main() async {
 
     await RustLib.init();
 
-    final stream = pairStream(discoveryQr: qrCode);
+    // 1. decode above
+    // 2. store pubkey somewhere
+    // 3. respond by sending chunked PairingRequest
+    // TODO: get PairingRequest
 
-    stream.listen((data) {
-      kPrint(data);
-    });
+    // See how BluetoothEnpoint looks in Dart
+
+
+    // 4. parse PairingResponse
+
+
+    //final stream = pairStream(discoveryQr: qrCode);
+
+    // stream.listen((data) {
+    //   kPrint(data);
+    // });
 
     await Future.delayed(const Duration(seconds: 30));
   });
