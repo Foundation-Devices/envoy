@@ -266,44 +266,59 @@ pub unsafe extern "C" fn backup_delete(
     server_url: *const c_char,
     proxy_port: i32,
 ) -> u16 {
-    if seed_words.is_null() || server_url.is_null() {
+    if seed_words.is_null() {
+        error::update_last_error(std::io::Error::new(
+            std::io::ErrorKind::InvalidInput,
+            "Seed words are null",
+        ));
         return 0;
     }
 
-    let seed_words: &str = match CStr::from_ptr(seed_words).to_str() {
-        Ok(s) => s,
-        Err(e) => {
-            error::update_last_error(e);
-            return 0;
-        }
-    };
+    if server_url.is_null() {
+        error::update_last_error(std::io::Error::new(
+            std::io::ErrorKind::InvalidInput,
+            "Server url is null",
+        ));
+        return 0;
+    }
+
+    let seed_words = unwrap_or_return!(CStr::from_ptr(seed_words).to_str(), {
+        error::update_last_error(std::io::Error::new(
+            std::io::ErrorKind::InvalidData,
+            "Invalid UTF-8 in seed_words",
+        ));
+        0
+    });
 
     let hash = bitcoin::hashes::sha256::Hash::hash(seed_words.as_bytes());
-    let server_url = match CStr::from_ptr(server_url).to_str() {
-        Ok(url) => url,
-        Err(e) => {
-            error::update_last_error(e);
-            return 0;
-        }
-    };
+    let server_url = unwrap_or_return!(CStr::from_ptr(server_url).to_str(), {
+        error::update_last_error(std::io::Error::new(
+            std::io::ErrorKind::InvalidData,
+            "Invalid UTF-8 in server_url",
+        ));
+        0
+    });
 
-    let rt = match RUNTIME.as_ref() {
-        Ok(runtime) => runtime,
-        Err(e) => {
-            error::update_last_error(e);
-            return 0;
-        }
-    };
+    let rt = unwrap_or_return!(RUNTIME.as_ref(), {
+        error::update_last_error(std::io::Error::new(
+            std::io::ErrorKind::NotConnected,
+            "Runtime is not initialized",
+        ));
+        0
+    });
 
-    let response = match rt
-        .block_on(async move { delete_backup_async(server_url, proxy_port, hash.to_hex()).await })
-    {
-        Ok(res) => res,
-        Err(e) => {
-            error::update_last_error(e);
-            return 0;
+    let response = unwrap_or_return!(
+        rt.block_on(
+            async move { delete_backup_async(server_url, proxy_port, hash.to_hex()).await }
+        ),
+        {
+            error::update_last_error(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "Async delete backup failed",
+            ));
+            0
         }
-    };
+    );
 
     response.status().as_u16()
 }
