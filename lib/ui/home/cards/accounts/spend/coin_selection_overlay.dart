@@ -514,8 +514,10 @@ class SpendRequirementOverlayState
                                             padding: EdgeInsets.all(
                                                 EnvoySpacing.xs)),
                                         inTagSelectionMode
-                                            ? coinSelectionButton(context,
-                                                valid, inTagSelectionMode)
+                                            ? CoinSelectionButton(
+                                                valid: valid,
+                                                inTagSelectionMode:
+                                                    inTagSelectionMode)
                                             : transactionEditButton(context),
                                         Padding(
                                             padding: EdgeInsets.only(
@@ -640,118 +642,6 @@ class SpendRequirementOverlayState
     );
   }
 
-  Widget coinSelectionButton(
-      BuildContext context, bool valid, bool inTagSelectionMode) {
-    return Consumer(
-      builder: (_, ref, child) {
-        Account? selectedAccount = ref.read(selectedAccountProvider);
-        Set<String> selection = ref.watch(coinSelectionStateProvider);
-
-        String buttonText = S().component_cancel;
-        if (inTagSelectionMode) {
-          List<CoinTag> tags =
-              ref.read(coinsTagProvider(selectedAccount?.id ?? "")) ?? [];
-          bool isCoinsOnlyPartOfUntagged = false;
-          CoinTag? untagged =
-              tags.firstWhereOrNull((element) => element.untagged);
-          if (untagged == null) {
-            isCoinsOnlyPartOfUntagged = false;
-          } else {
-            isCoinsOnlyPartOfUntagged = true;
-
-            /// check if selected coins are only part of untagged coins
-            selection.toList().forEach((selectionId) {
-              if (!untagged.coinsId.contains(selectionId)) {
-                isCoinsOnlyPartOfUntagged = false;
-              }
-            });
-          }
-
-          buttonText = isCoinsOnlyPartOfUntagged
-              ? S().tagged_tagDetails_sheet_cta2
-              : S().tagged_tagDetails_sheet_retag_cta2;
-        }
-        return EnvoyButton(
-          enabled: valid,
-          type: EnvoyButtonTypes.secondary,
-          buttonText,
-          onTap: () async {
-            NavigatorState navigator =
-                Navigator.of(context, rootNavigator: true);
-            if (!inTagSelectionMode) {
-              cancel(context);
-              return;
-            }
-            Account? selectedAccount = ref.read(selectedAccountProvider);
-            if (selectedAccount == null) {
-              return;
-            }
-            bool dismissed = await EnvoyStorage()
-                .checkPromptDismissed(DismissiblePrompt.createCoinTagWarning);
-            if (dismissed && context.mounted) {
-              showEnvoyDialog(
-                  context: context,
-                  useRootNavigator: true,
-                  builder: Builder(
-                    builder: (context) => CreateCoinTag(
-                      accountId: selectedAccount.id ?? "",
-                      onTagUpdate: () async {
-                        ref.read(coinSelectionStateProvider.notifier).reset();
-                        await Future.delayed(const Duration(milliseconds: 100));
-
-                        /// Pop until we get to the go router
-                        navigator.popUntil((route) {
-                          return route.settings is MaterialPage;
-                        });
-                      },
-                    ),
-                  ),
-                  alignment: const Alignment(0.0, -.6));
-            } else {
-              if (context.mounted) {
-                showEnvoyDialog(
-                    useRootNavigator: true,
-                    context: context,
-                    builder: Builder(builder: (context) {
-                      return CreateCoinTagWarning(onContinue: () {
-                        //pop warning dialog
-                        Navigator.pop(context);
-                        //Shows Coin create dialog
-                        showEnvoyDialog(
-                            context: context,
-                            useRootNavigator: true,
-                            builder: Builder(
-                              builder: (context) => CreateCoinTag(
-                                accountId: selectedAccount.id ?? "",
-                                onTagUpdate: () async {
-                                  ref
-                                      .read(coinSelectionStateProvider.notifier)
-                                      .reset();
-                                  NavigatorState navigator = Navigator.of(
-                                      context,
-                                      rootNavigator: true);
-                                  await Future.delayed(
-                                      const Duration(milliseconds: 100));
-
-                                  /// Pop until we get to the home page (GoRouter Shell)
-                                  navigator.popUntil((route) {
-                                    return route.settings is MaterialPage;
-                                  });
-                                },
-                              ),
-                            ),
-                            alignment: const Alignment(0.0, -.6));
-                      });
-                    }),
-                    alignment: const Alignment(0.0, -.6));
-              }
-            }
-          },
-        );
-      },
-    );
-  }
-
   cancel(BuildContext context) async {
     /// if the user is in utxo details screen we need to wait animations to finish
     /// before we can pop back to home screen
@@ -784,6 +674,162 @@ class SpendRequirementOverlayState
         clearSpendState(container);
       }
     }
+  }
+}
+
+class CoinSelectionButton extends StatefulWidget {
+  final bool valid;
+  final bool inTagSelectionMode;
+
+  const CoinSelectionButton({
+    super.key,
+    required this.valid,
+    required this.inTagSelectionMode,
+  });
+
+  @override
+  State<CoinSelectionButton> createState() => _CoinSelectionButtonState();
+}
+
+class _CoinSelectionButtonState extends State<CoinSelectionButton> {
+  bool dialogOpen = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer(
+      builder: (_, ref, child) {
+        Account? selectedAccount = ref.read(selectedAccountProvider);
+        Set<String> selection = ref.watch(coinSelectionStateProvider);
+
+        String buttonText = S().component_cancel;
+        if (widget.inTagSelectionMode) {
+          List<CoinTag> tags =
+              ref.read(coinsTagProvider(selectedAccount?.id ?? "")) ?? [];
+          bool isCoinsOnlyPartOfUntagged = false;
+          CoinTag? untagged =
+              tags.firstWhereOrNull((element) => element.untagged);
+          if (untagged == null) {
+            isCoinsOnlyPartOfUntagged = false;
+          } else {
+            isCoinsOnlyPartOfUntagged = true;
+
+            /// check if selected coins are only part of untagged coins
+            selection.toList().forEach((selectionId) {
+              if (!untagged.coinsId.contains(selectionId)) {
+                isCoinsOnlyPartOfUntagged = false;
+              }
+            });
+          }
+
+          buttonText = isCoinsOnlyPartOfUntagged
+              ? S().tagged_tagDetails_sheet_cta2
+              : S().tagged_tagDetails_sheet_retag_cta2;
+        }
+
+        return EnvoyButton(
+          enabled: widget.valid,
+          type: EnvoyButtonTypes.secondary,
+          buttonText,
+          onTap: () async {
+            if (dialogOpen) return; // Prevent opening multiple dialogs
+
+            NavigatorState navigator =
+                Navigator.of(context, rootNavigator: true);
+            if (!widget.inTagSelectionMode) {
+              SpendRequirementOverlayState().cancel(context);
+              return;
+            }
+            if (selectedAccount == null) {
+              return;
+            }
+            bool dismissed = await EnvoyStorage()
+                .checkPromptDismissed(DismissiblePrompt.createCoinTagWarning);
+            if (dismissed && context.mounted) {
+              setState(() {
+                dialogOpen = true;
+              });
+              await showEnvoyDialog(
+                context: context,
+                useRootNavigator: true,
+                onDispose: () {
+                  setState(() {
+                    dialogOpen = false;
+                  });
+                },
+                builder: Builder(
+                  builder: (context) => CreateCoinTag(
+                    accountId: selectedAccount.id ?? "",
+                    onTagUpdate: () async {
+                      ref.read(coinSelectionStateProvider.notifier).reset();
+                      await Future.delayed(const Duration(milliseconds: 100));
+                      navigator.popUntil((route) {
+                        return route.settings is MaterialPage;
+                      });
+                    },
+                  ),
+                ),
+                alignment: const Alignment(0.0, -.6),
+              );
+            } else if (context.mounted) {
+              setState(() {
+                dialogOpen = true;
+              });
+              await showEnvoyDialog(
+                useRootNavigator: true,
+                context: context,
+                onDispose: () {
+                  setState(() {
+                    dialogOpen = false;
+                  });
+                },
+                builder: Builder(
+                  builder: (context) {
+                    return CreateCoinTagWarning(onContinue: () async {
+                      Navigator.pop(context); // Close warning dialog
+
+                      Future.delayed(const Duration(milliseconds: 500), () {
+                        setState(() {
+                          dialogOpen = true;
+                        });
+                      });
+
+                      await showEnvoyDialog(
+                        context: context,
+                        useRootNavigator: true,
+                        onDispose: () {
+                          setState(() {
+                            dialogOpen = false;
+                          });
+                        },
+                        builder: Builder(
+                          builder: (context) => CreateCoinTag(
+                            accountId: selectedAccount.id ?? "",
+                            onTagUpdate: () async {
+                              ref
+                                  .read(coinSelectionStateProvider.notifier)
+                                  .reset();
+                              NavigatorState navigator =
+                                  Navigator.of(context, rootNavigator: true);
+                              await Future.delayed(
+                                  const Duration(milliseconds: 100));
+                              navigator.popUntil((route) {
+                                return route.settings is MaterialPage;
+                              });
+                            },
+                          ),
+                        ),
+                        alignment: const Alignment(0.0, -.6),
+                      );
+                    });
+                  },
+                ),
+                alignment: const Alignment(0.0, -.6),
+              );
+            }
+          },
+        );
+      },
+    );
   }
 }
 
