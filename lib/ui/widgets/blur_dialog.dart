@@ -20,6 +20,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
   final Alignment alignment;
   bool dismissible;
   bool linearGradient;
+  Function? onDispose;
 
   Builder builder;
   late AnimationController _controller;
@@ -35,6 +36,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
     this.cardColor,
     this.borderRadius = 14,
     this.linearGradient = false,
+    this.onDispose,
   });
 
   @override
@@ -218,6 +220,10 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
 
   @override
   void dispose() {
+    if (onDispose != null) {
+      onDispose!();
+    }
+
     _controller.dispose();
     super.dispose();
   }
@@ -262,6 +268,7 @@ Future<T?> showEnvoyDialog<T>({
   bool dismissible = true,
   double borderRadius = EnvoySpacing.medium2,
   bool linearGradient = false,
+  Function? onDispose,
 }) async {
   var route = BlurDialogRoute<T>(
       blur: blur,
@@ -272,7 +279,8 @@ Future<T?> showEnvoyDialog<T>({
       dismissible: dismissible,
       settings: routeSettings,
       borderRadius: borderRadius,
-      linearGradient: linearGradient);
+      linearGradient: linearGradient,
+      onDispose: onDispose);
   return await Navigator.of(context, rootNavigator: useRootNavigator)
       .push(route);
 }
