@@ -272,18 +272,40 @@ pub unsafe extern "C" fn backup_delete(
 
     let seed_words: &str = match CStr::from_ptr(seed_words).to_str() {
         Ok(s) => s,
-        Err(_) => return 0,
+        Err(e) => {
+            error::update_last_error(e);
+            return 0;
+        }
     };
 
     let hash = bitcoin::hashes::sha256::Hash::hash(seed_words.as_bytes());
-    let server_url = CStr::from_ptr(server_url).to_str().unwrap();
+    let server_url = match CStr::from_ptr(server_url).to_str() {
+        Ok(url) => url,
+        Err(e) => {
+            error::update_last_error(e);
+            return 0;
+        }
+    };
 
-    let rt = unwrap_or_return!(RUNTIME.as_ref(), 0);
+    let rt = match RUNTIME.as_ref() {
+        Ok(runtime) => runtime,
+        Err(e) => {
+            error::update_last_error(e);
+            return 0;
+        }
+    };
 
-    let response = rt
-        .block_on(async move { delete_backup_async(server_url, proxy_port, hash.to_hex()).await });
+    let response = match rt
+        .block_on(async move { delete_backup_async(server_url, proxy_port, hash.to_hex()).await })
+    {
+        Ok(res) => res,
+        Err(e) => {
+            error::update_last_error(e);
+            return 0;
+        }
+    };
 
-    unwrap_or_return!(response, 0).status().as_u16()
+    response.status().as_u16()
 }
 
 fn decrypt_backup(
