@@ -181,14 +181,32 @@ pub unsafe extern "C" fn backup_get(
         data: ptr::null(),
     };
 
-    let seed_words = CStr::from_ptr(seed_words).to_str().unwrap();
+    let seed_words = unwrap_or_return!(CStr::from_ptr(seed_words).to_str(), {
+        error::update_last_error(std::io::Error::new(
+            std::io::ErrorKind::InvalidData,
+            "Invalid UTF-8 in seed_words",
+        ));
+        err_ret
+    });
     let hash = bitcoin::hashes::sha256::Hash::hash(seed_words.as_bytes());
 
     let password = unwrap_or_return!(get_static_secret(seed_words), err_ret);
 
-    let server_url = CStr::from_ptr(server_url).to_str().unwrap();
+    let server_url = unwrap_or_return!(CStr::from_ptr(server_url).to_str(), {
+        error::update_last_error(std::io::Error::new(
+            std::io::ErrorKind::InvalidData,
+            "Invalid UTF-8 in server_url",
+        ));
+        err_ret
+    });
 
-    let rt = RUNTIME.as_ref().unwrap();
+    let rt = unwrap_or_return!(RUNTIME.as_ref(), {
+        error::update_last_error(std::io::Error::new(
+            std::io::ErrorKind::NotConnected,
+            "Runtime is not initialized",
+        ));
+        err_ret
+    });
 
     let response =
         rt.block_on(async move { get_backup_async(server_url, proxy_port, hash.to_hex()).await });
