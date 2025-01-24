@@ -96,6 +96,7 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
   await tester.pump(const Duration(milliseconds: 500));
 }
 
+/// Send Signet money back to test Account
 Future<void> sendFromBaseWallet(
     WidgetTester tester, String hotSignetAddress) async {
   final baseWalletFinder = find.text("Base Wallet");
