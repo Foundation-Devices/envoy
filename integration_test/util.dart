@@ -1256,6 +1256,16 @@ Future<void> openEditDevice(WidgetTester tester) async {
   await tester.pump(Durations.long2);
 }
 
+Future<void> openMenuAndPressDeleteDevice(WidgetTester tester) async {
+  await openDotsMenu(tester);
+  await tester.pump();
+  final editNameButton = find.text('DELETE');
+  expect(editNameButton, findsOneWidget);
+
+  await tester.tap(editNameButton);
+  await tester.pump(Durations.long2);
+}
+
 extension PumpUntilFound on WidgetTester {
   /// Pumps the widget tree until the specified [finder] locates an element,
   /// or until the maximum number of tries is reached.

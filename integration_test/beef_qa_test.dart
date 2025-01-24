@@ -9,6 +9,7 @@ import 'package:envoy/ui/amount_display.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
+import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
@@ -1516,6 +1517,49 @@ Future<void> main() async {
           await extractFiatAmountFromAccount(tester, accountPassportName);
       // Check if the numbers differ from different Fiats
       expect(newFiatAmount != usdFiatAmount, isTrue);
+    });
+    testWidgets('Delete device', (tester) async {
+      await goBackHome(tester);
+      String deviceName = "Passport";
+
+      final devicesButton = find.text('Devices');
+      await tester.tap(devicesButton);
+      await tester.pumpAndSettle();
+
+      await openDeviceCard(tester, deviceName);
+      await openMenuAndPressDeleteDevice(tester);
+
+      final popUpText = find.text(
+        'Are you sure',
+      );
+      // Check that a pop up comes up
+      await tester.pumpUntilFound(popUpText, duration: Durations.long1);
+      final closeDialogButton = find.byIcon(Icons.close);
+      await tester.tap(closeDialogButton.last);
+      await tester.pump(Durations.long2);
+      // Check that a pop up close on 'x'
+      expect(popUpText, findsNothing);
+
+      await openMenuAndPressDeleteDevice(tester);
+      await tester.pumpUntilFound(popUpText, duration: Durations.long1);
+
+      final deleteButtonFromDialog = find.text('Delete');
+      expect(deleteButtonFromDialog, findsOneWidget);
+      await tester.tap(deleteButtonFromDialog);
+      await tester.pump(Durations.long2);
+
+      await tester.pump(Durations.long2);
+
+      // Make sure device is removed
+      final emptyDevices = find.byType(GhostDevice);
+      expect(emptyDevices, findsOne);
+
+      // Verify that deleting the device also removes its associated accounts
+      await findAndPressTextButton(tester, 'Accounts');
+      final passportAccount = find.text(
+        deviceName,
+      );
+      expect(passportAccount, findsNothing);
     });
     testWidgets('Logs freeze', (tester) async {
       await goBackHome(tester);
