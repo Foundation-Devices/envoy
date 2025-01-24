@@ -7,8 +7,6 @@ import '../../frb_generated.dart';
 import '../bc_envelope/extension/expressions/expression.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored (category: IgnoreBecauseOwnerTyShouldIgnore): `encode`
-
 abstract class QuantumLinkMessage {
   Future<Expression> encode();
 }

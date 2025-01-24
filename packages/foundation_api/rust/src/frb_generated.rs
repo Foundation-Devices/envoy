@@ -25,6 +25,7 @@
 
 // Section: imports
 
+use crate::*;
 use bc_envelope::extension::expressions::expression::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::{transform_result_dco, Lifetimeable, Lockable};
@@ -43,7 +44,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.6.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1903183537;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 690475071;
 
 // Section: executor
 
@@ -1132,11 +1133,13 @@ fn wire__crate__api__api__hello_world_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_response =
+                <foundation_api::api::pairing::PairingResponse>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, ()>((move || {
                     let output_ok = Result::<_, ()>::Ok({
-                        crate::api::api::hello_world();
+                        crate::api::api::hello_world(api_response);
                     })?;
                     Ok(output_ok)
                 })())
@@ -1180,12 +1183,67 @@ fn wire__foundation_api__api__pairing__pairing_request_encode_impl(
         },
     )
 }
+fn wire__foundation_api__api__pairing__pairing_response_encode_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "pairing_response_encode",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that =
+                <foundation_api::api::pairing::PairingResponse>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok = Result::<_, ()>::Ok(
+                        foundation_api::api::pairing::PairingResponse::encode(&api_that),
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
 
 // Section: static_checks
 
 #[allow(clippy::unnecessary_literal_unwrap)]
 const _: fn() = || {
-    let PairingRequest = None::<foundation_api::api::pairing::PairingRequest>.unwrap();
+    {
+        let PairingRequest = None::<foundation_api::api::pairing::PairingRequest>.unwrap();
+    }
+    {
+        let PairingResponse = None::<foundation_api::api::pairing::PairingResponse>.unwrap();
+        let _: foundation_api::api::passport::PassportModel = PairingResponse.passport_model;
+        let _: foundation_api::api::passport::PassportFirmwareVersion =
+            PairingResponse.passport_firmware_version;
+        let _: foundation_api::api::passport::PassportSerial = PairingResponse.passport_serial;
+        let _: HDKeyRef<'static> = PairingResponse.hdkey;
+    }
+    {
+        let PassportFirmwareVersion_ =
+            None::<foundation_api::api::passport::PassportFirmwareVersion>.unwrap();
+        let _: String = PassportFirmwareVersion_.0;
+    }
+    {
+        let PassportSerial_ = None::<foundation_api::api::passport::PassportSerial>.unwrap();
+        let _: String = PassportSerial_.0;
+    }
 };
 
 // Section: related_funcs
@@ -1206,10 +1264,25 @@ flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::RustAutoOpaqueInner<FirmwareUpdate>
 );
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
+    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Lifetimeable<HDKeyRef<'static>>>
+);
+flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Settings>
 );
 
 // Section: dart2rust
+
+impl SseDecode for RustAutoOpaqueMoi<Lifetimeable<HDKeyRef<'static>>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <RustOpaqueMoi<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
+                Lifetimeable<HDKeyRef<'static>>,
+            >,
+        >>::sse_decode(deserializer);
+        return flutter_rust_bridge::for_generated::rust_auto_opaque_explicit_decode(inner);
+    }
+}
 
 impl SseDecode for Challenge {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1322,6 +1395,18 @@ impl SseDecode
 }
 
 impl SseDecode
+    for RustOpaqueMoi<
+        flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Lifetimeable<HDKeyRef<'static>>>,
+    >
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <usize>::sse_decode(deserializer);
+        return decode_rust_opaque_moi(inner);
+    }
+}
+
+impl SseDecode
     for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Settings>>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1350,6 +1435,13 @@ impl SseDecode for f32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         deserializer.cursor.read_f32::<NativeEndian>().unwrap()
+    }
+}
+
+impl SseDecode for i32 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_i32::<NativeEndian>().unwrap()
     }
 }
 
@@ -1384,6 +1476,54 @@ impl SseDecode for foundation_api::api::pairing::PairingRequest {
     }
 }
 
+impl SseDecode for foundation_api::api::pairing::PairingResponse {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_passportModel =
+            <foundation_api::api::passport::PassportModel>::sse_decode(deserializer);
+        let mut var_passportFirmwareVersion =
+            <foundation_api::api::passport::PassportFirmwareVersion>::sse_decode(deserializer);
+        let mut var_passportSerial =
+            <foundation_api::api::passport::PassportSerial>::sse_decode(deserializer);
+        let mut var_hdkey = <HDKeyRef<'static>>::sse_decode(deserializer);
+        return foundation_api::api::pairing::PairingResponse {
+            passport_model: var_passportModel,
+            passport_firmware_version: var_passportFirmwareVersion,
+            passport_serial: var_passportSerial,
+            hdkey: var_hdkey,
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::passport::PassportFirmwareVersion {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_field0 = <String>::sse_decode(deserializer);
+        return foundation_api::api::passport::PassportFirmwareVersion(var_field0);
+    }
+}
+
+impl SseDecode for foundation_api::api::passport::PassportModel {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => foundation_api::api::passport::PassportModel::Gen1,
+            1 => foundation_api::api::passport::PassportModel::Gen2,
+            2 => foundation_api::api::passport::PassportModel::Prime,
+            _ => unreachable!("Invalid variant for PassportModel: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::passport::PassportSerial {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_field0 = <String>::sse_decode(deserializer);
+        return foundation_api::api::passport::PassportSerial(var_field0);
+    }
+}
+
 impl SseDecode for u32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1407,13 +1547,6 @@ impl SseDecode for usize {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         deserializer.cursor.read_u64::<NativeEndian>().unwrap() as _
-    }
-}
-
-impl SseDecode for i32 {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        deserializer.cursor.read_i32::<NativeEndian>().unwrap()
     }
 }
 
@@ -1546,6 +1679,12 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
+        26 => wire__foundation_api__api__pairing__pairing_response_encode_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
         _ => unreachable!(),
     }
 }
@@ -1671,6 +1810,106 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::pairing::
         self.into()
     }
 }
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::pairing::PairingResponse> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.passport_model.into_into_dart().into_dart(),
+            self.0
+                .passport_firmware_version
+                .into_into_dart()
+                .into_dart(),
+            self.0.passport_serial.into_into_dart().into_dart(),
+            self.0.hdkey.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::pairing::PairingResponse>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::pairing::PairingResponse>>
+    for foundation_api::api::pairing::PairingResponse
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::pairing::PairingResponse> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::passport::PassportFirmwareVersion>
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.0 .0.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::passport::PassportFirmwareVersion>
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<
+        FrbWrapper<foundation_api::api::passport::PassportFirmwareVersion>,
+    > for foundation_api::api::passport::PassportFirmwareVersion
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::passport::PassportFirmwareVersion> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::passport::PassportModel> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            foundation_api::api::passport::PassportModel::Gen1 => 0.into_dart(),
+            foundation_api::api::passport::PassportModel::Gen2 => 1.into_dart(),
+            foundation_api::api::passport::PassportModel::Prime => 2.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::passport::PassportModel>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::passport::PassportModel>>
+    for foundation_api::api::passport::PassportModel
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::passport::PassportModel> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::passport::PassportSerial> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.0 .0.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::passport::PassportSerial>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::passport::PassportSerial>>
+    for foundation_api::api::passport::PassportSerial
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::passport::PassportSerial> {
+        self.into()
+    }
+}
+
+impl SseEncode for RustAutoOpaqueMoi<Lifetimeable<HDKeyRef<'static>>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <RustOpaqueMoi<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
+                Lifetimeable<HDKeyRef<'static>>,
+            >,
+        >>::sse_encode(
+            flutter_rust_bridge::for_generated::rust_auto_opaque_explicit_encode(self),
+            serializer,
+        );
+    }
+}
 
 impl SseEncode for Challenge {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1770,6 +2009,19 @@ impl SseEncode
 }
 
 impl SseEncode
+    for RustOpaqueMoi<
+        flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Lifetimeable<HDKeyRef<'static>>>,
+    >
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        let (ptr, size) = self.sse_encode_raw();
+        <usize>::sse_encode(ptr, serializer);
+        <i32>::sse_encode(size, serializer);
+    }
+}
+
+impl SseEncode
     for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Settings>>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1801,6 +2053,13 @@ impl SseEncode for f32 {
     }
 }
 
+impl SseEncode for i32 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_i32::<NativeEndian>(self).unwrap();
+    }
+}
+
 impl SseEncode for Vec<String> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1824,6 +2083,53 @@ impl SseEncode for Vec<u8> {
 impl SseEncode for foundation_api::api::pairing::PairingRequest {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
+}
+
+impl SseEncode for foundation_api::api::pairing::PairingResponse {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <foundation_api::api::passport::PassportModel>::sse_encode(self.passport_model, serializer);
+        <foundation_api::api::passport::PassportFirmwareVersion>::sse_encode(
+            self.passport_firmware_version,
+            serializer,
+        );
+        <foundation_api::api::passport::PassportSerial>::sse_encode(
+            self.passport_serial,
+            serializer,
+        );
+        <HDKeyRef<'static>>::sse_encode(self.hdkey, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::passport::PassportFirmwareVersion {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.0, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::passport::PassportModel {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                foundation_api::api::passport::PassportModel::Gen1 => 0,
+                foundation_api::api::passport::PassportModel::Gen2 => 1,
+                foundation_api::api::passport::PassportModel::Prime => 2,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for foundation_api::api::passport::PassportSerial {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.0, serializer);
+    }
 }
 
 impl SseEncode for u32 {
@@ -1855,13 +2161,6 @@ impl SseEncode for usize {
     }
 }
 
-impl SseEncode for i32 {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        serializer.cursor.write_i32::<NativeEndian>(self).unwrap();
-    }
-}
-
 #[cfg(not(target_family = "wasm"))]
 mod io {
     // This file is automatically generated, so please do not edit it.
@@ -1870,6 +2169,7 @@ mod io {
     // Section: imports
 
     use super::*;
+    use crate::*;
     use bc_envelope::extension::expressions::expression::*;
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
@@ -1957,6 +2257,28 @@ mod io {
     }
 
     #[no_mangle]
+    pub extern "C" fn frbgen_foundation_api_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
+                Lifetimeable<HDKeyRef<'static>>,
+            >,
+        >::increment_strong_count(ptr as _);
+    }
+
+    #[no_mangle]
+    pub extern "C" fn frbgen_foundation_api_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
+                Lifetimeable<HDKeyRef<'static>>,
+            >,
+        >::decrement_strong_count(ptr as _);
+    }
+
+    #[no_mangle]
     pub extern "C" fn frbgen_foundation_api_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings(
         ptr: *const std::ffi::c_void,
     ) {
@@ -1982,6 +2304,7 @@ mod web {
     // Section: imports
 
     use super::*;
+    use crate::*;
     use bc_envelope::extension::expressions::expression::*;
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
@@ -2068,6 +2391,28 @@ mod web {
         ptr: *const std::ffi::c_void,
     ) {
         MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<FirmwareUpdate>>::decrement_strong_count(ptr as _);
+    }
+
+    #[wasm_bindgen]
+    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
+                Lifetimeable<HDKeyRef<'static>>,
+            >,
+        >::increment_strong_count(ptr as _);
+    }
+
+    #[wasm_bindgen]
+    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
+                Lifetimeable<HDKeyRef<'static>>,
+            >,
+        >::decrement_strong_count(ptr as _);
     }
 
     #[wasm_bindgen]

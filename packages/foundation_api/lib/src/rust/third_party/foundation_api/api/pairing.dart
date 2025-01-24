@@ -4,10 +4,11 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../../../frb_generated.dart';
+import '../../../lib.dart';
 import '../../bc_envelope/extension/expressions/expression.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'passport.dart';
 
-// These types are ignored because they are not used by any `pub` functions: `PairingResponse`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `decode`, `decode`, `encode`, `encode`
 
 class PairingRequest {
@@ -25,4 +26,40 @@ class PairingRequest {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is PairingRequest && runtimeType == other.runtimeType;
+}
+
+class PairingResponse {
+  final PassportModel passportModel;
+  final PassportFirmwareVersion passportFirmwareVersion;
+  final PassportSerial passportSerial;
+  final HdKeyRef hdkey;
+
+  const PairingResponse({
+    required this.passportModel,
+    required this.passportFirmwareVersion,
+    required this.passportSerial,
+    required this.hdkey,
+  });
+
+  Future<Expression> encode() =>
+      RustLib.instance.api.foundationApiApiPairingPairingResponseEncode(
+        that: this,
+      );
+
+  @override
+  int get hashCode =>
+      passportModel.hashCode ^
+      passportFirmwareVersion.hashCode ^
+      passportSerial.hashCode ^
+      hdkey.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PairingResponse &&
+          runtimeType == other.runtimeType &&
+          passportModel == other.passportModel &&
+          passportFirmwareVersion == other.passportFirmwareVersion &&
+          passportSerial == other.passportSerial &&
+          hdkey == other.hdkey;
 }

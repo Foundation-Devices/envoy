@@ -8,12 +8,14 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi' as ffi;
 import 'frb_generated.dart';
+import 'lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart';
 import 'third_party/bc_envelope/extension/expressions/expression.dart';
 import 'third_party/foundation_api/api.dart';
 import 'third_party/foundation_api/api/firmware.dart';
 import 'third_party/foundation_api/api/fx.dart';
 import 'third_party/foundation_api/api/pairing.dart';
+import 'third_party/foundation_api/api/passport.dart';
 import 'third_party/foundation_api/api/scv.dart';
 import 'third_party/foundation_api/api/settings.dart';
 
@@ -43,8 +45,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       get rust_arc_decrement_strong_count_FirmwareUpdatePtr => wire
           ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerFirmwareUpdatePtr;
 
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_HdKeyRefPtr => wire
+      ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstaticPtr;
+
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_SettingsPtr => wire
       ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettingsPtr;
+
+  @protected
+  HdKeyRef
+      dco_decode_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+          dynamic raw);
 
   @protected
   Challenge
@@ -102,6 +112,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
+  HdKeyRef
+      dco_decode_Lifetimeable_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerHDKeyRefstatic(
+          dynamic raw);
+
+  @protected
   Challenge
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallenge(
           dynamic raw);
@@ -127,6 +142,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
+  HdKeyRef
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+          dynamic raw);
+
+  @protected
   Settings
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings(
           dynamic raw);
@@ -144,7 +164,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   PairingRequest dco_decode_box_autoadd_pairing_request(dynamic raw);
 
   @protected
+  PairingResponse dco_decode_box_autoadd_pairing_response(dynamic raw);
+
+  @protected
   double dco_decode_f_32(dynamic raw);
+
+  @protected
+  int dco_decode_i_32(dynamic raw);
 
   @protected
   List<String> dco_decode_list_String(dynamic raw);
@@ -154,6 +180,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PairingRequest dco_decode_pairing_request(dynamic raw);
+
+  @protected
+  PairingResponse dco_decode_pairing_response(dynamic raw);
+
+  @protected
+  PassportFirmwareVersion dco_decode_passport_firmware_version(dynamic raw);
+
+  @protected
+  PassportModel dco_decode_passport_model(dynamic raw);
+
+  @protected
+  PassportSerial dco_decode_passport_serial(dynamic raw);
 
   @protected
   int dco_decode_u_32(dynamic raw);
@@ -166,6 +204,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   BigInt dco_decode_usize(dynamic raw);
+
+  @protected
+  HdKeyRef
+      sse_decode_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+          SseDeserializer deserializer);
 
   @protected
   Challenge
@@ -223,6 +266,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  HdKeyRef
+      sse_decode_Lifetimeable_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerHDKeyRefstatic(
+          SseDeserializer deserializer);
+
+  @protected
   Challenge
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallenge(
           SseDeserializer deserializer);
@@ -248,6 +296,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  HdKeyRef
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+          SseDeserializer deserializer);
+
+  @protected
   Settings
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings(
           SseDeserializer deserializer);
@@ -263,7 +316,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  PairingResponse sse_decode_box_autoadd_pairing_response(
+      SseDeserializer deserializer);
+
+  @protected
   double sse_decode_f_32(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
   List<String> sse_decode_list_String(SseDeserializer deserializer);
@@ -273,6 +333,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PairingRequest sse_decode_pairing_request(SseDeserializer deserializer);
+
+  @protected
+  PairingResponse sse_decode_pairing_response(SseDeserializer deserializer);
+
+  @protected
+  PassportFirmwareVersion sse_decode_passport_firmware_version(
+      SseDeserializer deserializer);
+
+  @protected
+  PassportModel sse_decode_passport_model(SseDeserializer deserializer);
+
+  @protected
+  PassportSerial sse_decode_passport_serial(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_32(SseDeserializer deserializer);
@@ -287,7 +360,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt sse_decode_usize(SseDeserializer deserializer);
 
   @protected
-  int sse_decode_i_32(SseDeserializer deserializer);
+  void
+      sse_encode_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+          HdKeyRef self, SseSerializer serializer);
 
   @protected
   void
@@ -346,6 +421,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
+      sse_encode_Lifetimeable_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerHDKeyRefstatic(
+          HdKeyRef self, SseSerializer serializer);
+
+  @protected
+  void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallenge(
           Challenge self, SseSerializer serializer);
 
@@ -371,6 +451,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+          HdKeyRef self, SseSerializer serializer);
+
+  @protected
+  void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings(
           Settings self, SseSerializer serializer);
 
@@ -385,7 +470,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       PairingRequest self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_pairing_response(
+      PairingResponse self, SseSerializer serializer);
+
+  @protected
   void sse_encode_f_32(double self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_String(List<String> self, SseSerializer serializer);
@@ -399,6 +491,21 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       PairingRequest self, SseSerializer serializer);
 
   @protected
+  void sse_encode_pairing_response(
+      PairingResponse self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_passport_firmware_version(
+      PassportFirmwareVersion self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_passport_model(PassportModel self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_passport_serial(
+      PassportSerial self, SseSerializer serializer);
+
+  @protected
   void sse_encode_u_32(int self, SseSerializer serializer);
 
   @protected
@@ -409,9 +516,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_usize(BigInt self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_i_32(int self, SseSerializer serializer);
 }
 
 // Section: wire_class
@@ -586,6 +690,38 @@ class RustLibWire implements BaseWire {
           'frbgen_foundation_api_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerFirmwareUpdate');
   late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerFirmwareUpdate =
       _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerFirmwareUpdatePtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstaticPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'frbgen_foundation_api_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic');
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic =
+      _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstaticPtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstaticPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'frbgen_foundation_api_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic');
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic =
+      _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstaticPtr
           .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
 
   void

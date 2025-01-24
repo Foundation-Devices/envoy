@@ -7,3 +7,4 @@
 rust_input: crate::api, foundation-api::api, bc-envelope::expression
 rust_root: rust/
 dart_output: lib/src/rust
+enable_lifetime: true

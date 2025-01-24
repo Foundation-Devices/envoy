@@ -9,12 +9,14 @@ import 'dart:convert';
 import 'frb_generated.dart';
 import 'frb_generated.io.dart'
     if (dart.library.js_interop) 'frb_generated.web.dart';
+import 'lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'third_party/bc_envelope/extension/expressions/expression.dart';
 import 'third_party/foundation_api/api.dart';
 import 'third_party/foundation_api/api/firmware.dart';
 import 'third_party/foundation_api/api/fx.dart';
 import 'third_party/foundation_api/api/pairing.dart';
+import 'third_party/foundation_api/api/passport.dart';
 import 'third_party/foundation_api/api/scv.dart';
 import 'third_party/foundation_api/api/settings.dart';
 
@@ -73,7 +75,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.6.0';
 
   @override
-  int get rustContentHash => 1903183537;
+  int get rustContentHash => 690475071;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -154,10 +156,13 @@ abstract class RustLibApi extends BaseApi {
   Future<Settings> foundationApiApiSettingsSettingsNew(
       {required bool magicBackup});
 
-  Future<void> crateApiApiHelloWorld();
+  Future<void> crateApiApiHelloWorld({required PairingResponse response});
 
   Future<Expression> foundationApiApiPairingPairingRequestEncode(
       {required PairingRequest that});
+
+  Future<Expression> foundationApiApiPairingPairingResponseEncode(
+      {required PairingResponse that});
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_Challenge;
@@ -200,6 +205,14 @@ abstract class RustLibApi extends BaseApi {
 
   CrossPlatformFinalizerArg
       get rust_arc_decrement_strong_count_FirmwareUpdatePtr;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_HdKeyRef;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_HdKeyRef;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_HdKeyRefPtr;
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_Settings;
@@ -831,10 +844,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<void> crateApiApiHelloWorld() {
+  Future<void> crateApiApiHelloWorld({required PairingResponse response}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_pairing_response(response, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 24, port: port_);
       },
@@ -843,14 +857,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: null,
       ),
       constMeta: kCrateApiApiHelloWorldConstMeta,
-      argValues: [],
+      argValues: [response],
       apiImpl: this,
     ));
   }
 
   TaskConstMeta get kCrateApiApiHelloWorldConstMeta => const TaskConstMeta(
         debugName: "hello_world",
-        argNames: [],
+        argNames: ["response"],
       );
 
   @override
@@ -877,6 +891,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kFoundationApiApiPairingPairingRequestEncodeConstMeta =>
       const TaskConstMeta(
         debugName: "pairing_request_encode",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<Expression> foundationApiApiPairingPairingResponseEncode(
+      {required PairingResponse that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_pairing_response(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 26, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExpression,
+        decodeErrorData: null,
+      ),
+      constMeta: kFoundationApiApiPairingPairingResponseEncodeConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kFoundationApiApiPairingPairingResponseEncodeConstMeta =>
+      const TaskConstMeta(
+        debugName: "pairing_response_encode",
         argNames: ["that"],
       );
 
@@ -921,12 +962,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerFirmwareUpdate;
 
   RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_HdKeyRef => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_HdKeyRef => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic;
+
+  RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_Settings => wire
           .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings;
 
   RustArcDecrementStrongCountFnType
       get rust_arc_decrement_strong_count_Settings => wire
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings;
+
+  @protected
+  HdKeyRef
+      dco_decode_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+        raw);
+  }
 
   @protected
   Challenge
@@ -1017,6 +1075,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  HdKeyRef
+      dco_decode_Lifetimeable_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerHDKeyRefstatic(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    throw UnimplementedError(
+        'Not implemented in this codec, please use the other one');
+  }
+
+  @protected
   Challenge
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallenge(
           dynamic raw) {
@@ -1057,6 +1124,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  HdKeyRef
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return HdKeyRefImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   Settings
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings(
           dynamic raw) {
@@ -1089,9 +1164,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PairingResponse dco_decode_box_autoadd_pairing_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_pairing_response(raw);
+  }
+
+  @protected
   double dco_decode_f_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as double;
+  }
+
+  @protected
+  int dco_decode_i_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
   }
 
   @protected
@@ -1116,6 +1203,50 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PairingResponse dco_decode_pairing_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return PairingResponse(
+      passportModel: dco_decode_passport_model(arr[0]),
+      passportFirmwareVersion: dco_decode_passport_firmware_version(arr[1]),
+      passportSerial: dco_decode_passport_serial(arr[2]),
+      hdkey:
+          dco_decode_Lifetimeable_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerHDKeyRefstatic(
+              arr[3]),
+    );
+  }
+
+  @protected
+  PassportFirmwareVersion dco_decode_passport_firmware_version(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return PassportFirmwareVersion(
+      field0: dco_decode_String(arr[0]),
+    );
+  }
+
+  @protected
+  PassportModel dco_decode_passport_model(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return PassportModel.values[raw as int];
+  }
+
+  @protected
+  PassportSerial dco_decode_passport_serial(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return PassportSerial(
+      field0: dco_decode_String(arr[0]),
+    );
+  }
+
+  @protected
   int dco_decode_u_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
@@ -1137,6 +1268,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   BigInt dco_decode_usize(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dcoDecodeU64(raw);
+  }
+
+  @protected
+  HdKeyRef
+      sse_decode_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner =
+        sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+            deserializer);
+    return inner;
   }
 
   @protected
@@ -1239,6 +1381,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  HdKeyRef
+      sse_decode_Lifetimeable_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerHDKeyRefstatic(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner =
+        sse_decode_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+            deserializer);
+    return inner;
+  }
+
+  @protected
   Challenge
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallenge(
           SseDeserializer deserializer) {
@@ -1284,6 +1437,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  HdKeyRef
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return HdKeyRefImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
   Settings
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings(
           SseDeserializer deserializer) {
@@ -1313,9 +1475,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PairingResponse sse_decode_box_autoadd_pairing_response(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_pairing_response(deserializer));
+  }
+
+  @protected
   double sse_decode_f_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getFloat32();
+  }
+
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getInt32();
   }
 
   @protected
@@ -1344,6 +1519,45 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PairingResponse sse_decode_pairing_response(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_passportModel = sse_decode_passport_model(deserializer);
+    var var_passportFirmwareVersion =
+        sse_decode_passport_firmware_version(deserializer);
+    var var_passportSerial = sse_decode_passport_serial(deserializer);
+    var var_hdkey =
+        sse_decode_Lifetimeable_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerHDKeyRefstatic(
+            deserializer);
+    return PairingResponse(
+        passportModel: var_passportModel,
+        passportFirmwareVersion: var_passportFirmwareVersion,
+        passportSerial: var_passportSerial,
+        hdkey: var_hdkey);
+  }
+
+  @protected
+  PassportFirmwareVersion sse_decode_passport_firmware_version(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_field0 = sse_decode_String(deserializer);
+    return PassportFirmwareVersion(field0: var_field0);
+  }
+
+  @protected
+  PassportModel sse_decode_passport_model(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return PassportModel.values[inner];
+  }
+
+  @protected
+  PassportSerial sse_decode_passport_serial(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_field0 = sse_decode_String(deserializer);
+    return PassportSerial(field0: var_field0);
+  }
+
+  @protected
   int sse_decode_u_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint32();
@@ -1367,9 +1581,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  int sse_decode_i_32(SseDeserializer deserializer) {
+  void
+      sse_encode_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+          HdKeyRef self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getInt32();
+    sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+        self, serializer);
   }
 
   @protected
@@ -1479,6 +1696,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+      sse_encode_Lifetimeable_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerHDKeyRefstatic(
+          HdKeyRef self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+        self, serializer);
+  }
+
+  @protected
+  void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChallenge(
           Challenge self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1527,6 +1753,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLifetimeableHDKeyRefstatic(
+          HdKeyRef self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as HdKeyRefImpl).frbInternalSseEncode(move: null), serializer);
+  }
+
+  @protected
+  void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSettings(
           Settings self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1554,9 +1789,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_pairing_response(
+      PairingResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_pairing_response(self, serializer);
+  }
+
+  @protected
   void sse_encode_f_32(double self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putFloat32(self);
+  }
+
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putInt32(self);
   }
 
   @protected
@@ -1583,6 +1831,38 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_pairing_response(
+      PairingResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_passport_model(self.passportModel, serializer);
+    sse_encode_passport_firmware_version(
+        self.passportFirmwareVersion, serializer);
+    sse_encode_passport_serial(self.passportSerial, serializer);
+    sse_encode_Lifetimeable_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerHDKeyRefstatic(
+        self.hdkey, serializer);
+  }
+
+  @protected
+  void sse_encode_passport_firmware_version(
+      PassportFirmwareVersion self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.field0, serializer);
+  }
+
+  @protected
+  void sse_encode_passport_model(PassportModel self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_passport_serial(
+      PassportSerial self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.field0, serializer);
+  }
+
+  @protected
   void sse_encode_u_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint32(self);
@@ -1603,12 +1883,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_usize(BigInt self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putBigUint64(self);
-  }
-
-  @protected
-  void sse_encode_i_32(int self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putInt32(self);
   }
 }
 
@@ -1785,6 +2059,26 @@ class FirmwareUpdateImpl extends RustOpaque implements FirmwareUpdate {
       RustLib.instance.api.foundationApiApiFirmwareFirmwareUpdateVersion(
         that: this,
       );
+}
+
+@sealed
+class HdKeyRefImpl extends RustOpaque implements HdKeyRef {
+  // Not to be used by end users
+  HdKeyRefImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  HdKeyRefImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_HdKeyRef,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_HdKeyRef,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_HdKeyRefPtr,
+  );
 }
 
 @sealed

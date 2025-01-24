@@ -5,6 +5,8 @@
 //pub use foundation_api;
 //use foundation_api::bluetooth_endpoint::BluetoothEndpoint;
 
-pub fn hello_world() {
+use foundation_api::pairing::PairingResponse;
+
+pub fn hello_world(response: PairingResponse) {
     //BluetoothEndpoint::new();
 }
