@@ -1551,5 +1551,25 @@ Future<void> main() async {
       await findAndPressBuyOptions(tester);
       await checkBuyOptionAndTitle(tester);
     });
+    testWidgets('Buy button - enable from Settings', (tester) async {
+      await goBackHome(tester);
+
+      // Find the Buy button (enabled in Settings by default)
+      final buyButtonFinder = find.descendant(
+        of: find.byType(GestureDetector),
+        matching: find.text('Buy'),
+      );
+      expect(buyButtonFinder, findsOneWidget);
+
+      // now turn it off from settings
+      await fromHomeToAdvancedMenu(tester);
+      await findAndToggleSettingsSwitch(tester, "Buy in Envoy");
+
+      // back to Accounts
+      await pressHamburgerMenu(tester);
+      await pressHamburgerMenu(tester);
+
+      expect(buyButtonFinder, findsNothing);
+    });
   });
 }
