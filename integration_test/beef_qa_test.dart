@@ -1538,6 +1538,29 @@ Future<void> main() async {
       await tester.pumpUntilFound(newElementFinder,
           duration: Durations.long1, tries: 100);
     });
+    testWidgets('Account delete icon', (tester) async {
+      await goBackHome(tester);
+
+      const String accountPassportName = "Primary (#0)";
+
+      await scrollUntilVisible(
+        tester,
+        accountPassportName,
+      );
+
+      await findAndPressTextButton(tester, accountPassportName);
+
+      // Go to Acc options
+      await findAndPressIcon(tester, Icons.more_horiz_outlined);
+      await findAndPressTextButton(tester, "DELETE");
+
+      final envoyIconFinder = find.byWidgetPredicate(
+        (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.alert,
+        description: 'EnvoyIcon finder == EnvoyIcons.alert',
+      );
+
+      expect(envoyIconFinder, findsOneWidget);
+    });
   });
 
   group('No account tests', () {
