@@ -338,7 +338,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
             behavior: HitTestBehavior.opaque,
             onTap: () {
               if (EnvoySeed().walletDerived()) {
-                context.push(ONBOARD_PASSPORT_SETUP);
+                context.pushNamed(ONBOARD_PASSPORT_SETUP);
               } else {
                 context.pushNamed(ROUTE_SPLASH);
               }
