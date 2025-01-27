@@ -111,8 +111,7 @@ class _SendCardState extends ConsumerState<SendCard>
       opaque: false,
     );
 
-    // Delay overlay insertion to avoid triggering updates in the build phase
-    Future.microtask(() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         Overlay.of(context, rootOverlay: true).insert(overlayEntry!);
       }
