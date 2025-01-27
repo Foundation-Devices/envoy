@@ -12,6 +12,7 @@ class EnvoyDialog extends StatelessWidget {
   final List<Widget>? actions;
   final double paddingBottom;
   final TextStyle? titleTextStyle;
+  final bool scrollable;
 
   const EnvoyDialog(
       {super.key,
@@ -20,7 +21,8 @@ class EnvoyDialog extends StatelessWidget {
       this.paddingBottom = 12,
       this.actions,
       this.dismissible = true,
-      this.titleTextStyle});
+      this.titleTextStyle,
+      this.scrollable = true});
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,9 @@ class EnvoyDialog extends StatelessWidget {
         maxWidth: MediaQuery.of(context).size.width * 0.80,
       ),
       child: SingleChildScrollView(
+        physics: scrollable
+            ? const ClampingScrollPhysics()
+            : const NeverScrollableScrollPhysics(),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,

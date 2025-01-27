@@ -1256,6 +1256,16 @@ Future<void> openEditDevice(WidgetTester tester) async {
   await tester.pump(Durations.long2);
 }
 
+Future<void> openMenuAndPressDeleteDevice(WidgetTester tester) async {
+  await openDotsMenu(tester);
+  await tester.pump();
+  final editNameButton = find.text('DELETE');
+  expect(editNameButton, findsOneWidget);
+
+  await tester.tap(editNameButton);
+  await tester.pump(Durations.long2);
+}
+
 extension PumpUntilFound on WidgetTester {
   /// Pumps the widget tree until the specified [finder] locates an element,
   /// or until the maximum number of tries is reached.
@@ -1404,5 +1414,35 @@ Future<void> findAndPressIcon(WidgetTester tester, IconData iconData) async {
 
   // Tap the first occurrence of the widget
   await tester.tap(iconFinder.first);
+  await tester.pump(Durations.long2);
+}
+
+Future<void> trySendToAddress(WidgetTester tester, String address) async {
+  final sendButtonFinder = find.text("Send");
+  expect(sendButtonFinder, findsWidgets);
+  await tester.tap(sendButtonFinder.first);
+  await tester.pump(Durations.long2);
+
+  await enterTextInField(tester, find.byType(TextFormField), address);
+
+  // enter amount
+  await findAndPressTextButton(tester, '1');
+  await findAndPressTextButton(tester, '2');
+  await findAndPressTextButton(tester, '3');
+  await findAndPressTextButton(tester, '4');
+
+  // go to staging
+  await waitForTealTextAndTap(tester, 'Confirm');
+  await tester.pump(Durations.long2);
+
+  final textFeeFinder = find.text("Fee");
+  await tester.pumpUntilFound(textFeeFinder,
+      tries: 100, duration: Durations.long2);
+  await findAndPressEnvoyIcon(tester, EnvoyIcons.chevron_left);
+  final cancelTransactionFinder = find.text("Cancel Transaction");
+  await tester.pumpUntilFound(cancelTransactionFinder,
+      tries: 100, duration: Durations.long2);
+  await tester.tap(cancelTransactionFinder);
+  await tester.pump(Durations.long2);
   await tester.pump(Durations.long2);
 }
