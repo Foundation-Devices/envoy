@@ -21,7 +21,7 @@ import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
-import 'coin_selection_overlay.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
 
 //ignore: must_be_immutable
 class SendCard extends ConsumerStatefulWidget {
