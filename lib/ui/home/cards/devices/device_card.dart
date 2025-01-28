@@ -95,7 +95,13 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
                   top: EnvoySpacing.medium2,
                   right: EnvoySpacing.medium2),
               child: DeviceListTile(widget.device, onTap: () {
-                GoRouter.of(context).pop();
+                ref.read(homePageOptionsVisibilityProvider.notifier).state =
+                    false;
+                Future.delayed(const Duration(milliseconds: 200), () {
+                  if (context.mounted) {
+                    GoRouter.of(context).pop();
+                  }
+                });
               }),
             ),
             Padding(
