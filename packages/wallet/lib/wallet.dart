@@ -6,7 +6,6 @@ import 'dart:async';
 import 'dart:ffi';
 import 'dart:io';
 import 'dart:isolate';
-
 import 'package:collection/collection.dart';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
@@ -14,6 +13,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/generated_bindings.dart' as rust;
 import 'package:wallet/generated_bindings.dart';
+import 'dart:developer';
 
 // Generated
 part 'wallet.freezed.dart';
@@ -481,6 +481,7 @@ class Wallet {
         lib.lookup<NativeFunction<WalletSyncRust>>('wallet_sync');
     final dartFunction = rustFunction.asFunction<WalletSyncDart>();
 
+    log("Syncing: $walletPtr", level: 800);
     bool synced = dartFunction(
       Pointer.fromAddress(walletPtr),
       electrumAddress.toNativeUtf8(),
@@ -567,12 +568,15 @@ class Wallet {
   }
 
   drop() {
+    final pointerToDrop = _self;
+    _self = nullptr;
+
     final rustFunction =
         _lib.lookup<NativeFunction<WalletDropRust>>('wallet_drop');
     final dartFunction = rustFunction.asFunction<WalletDropDart>();
 
-    dartFunction(_self);
-    _self = nullptr;
+    log("Drop wallet: ${pointerToDrop.address}", level: 800);
+    dartFunction(pointerToDrop);
   }
 
   Future<String> getAddress() async {
