@@ -402,8 +402,12 @@ Future<void> main() async {
 
       await findAndPressBuyOptions(tester);
 
+      // Check default Country
+      bool found_UK = await findTextOnScreen(tester, "United Kingdom");
+      String state = found_UK ? "Banbridge" : "Arizona";
+
       await findAndPressTextButton(tester, "Select State");
-      await findAndPressTextButton(tester, "Arizona");
+      await findAndPressTextButton(tester, state);
       await findAndPressTextButton(tester, "Continue");
       await findAndPressTextButton(tester, "Continue");
       await findAndPressTextButton(tester, "Verify Address with Passport");
