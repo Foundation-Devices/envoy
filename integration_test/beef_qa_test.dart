@@ -400,15 +400,8 @@ Future<void> main() async {
     testWidgets('BUY forever back loop', (tester) async {
       await goBackHome(tester);
 
-      await findAndPressBuyOptions(tester);
+      await fromHomeToBuyOptions(tester);
 
-      // Check default Country
-      bool foundUK = await findTextOnScreen(tester, "United Kingdom");
-      String state = foundUK ? "Banbridge" : "Arizona";
-
-      await findAndPressTextButton(tester, "Select State");
-      await findAndPressTextButton(tester, state);
-      await findAndPressTextButton(tester, "Continue");
       await findAndPressTextButton(tester, "Continue");
       await findAndPressTextButton(tester, "Verify Address with Passport");
       await findAndPressTextButton(tester, "Done");
