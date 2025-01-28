@@ -152,6 +152,7 @@ final accountsRouter = StatefulShellBranch(
                     onExit: (context, GoRouterState state) {
                       /// if we are exiting the send screen, we need to clear the spend state
                       /// but only if we are not in edit mode
+                      ///
                       clearSpendState(ProviderScope.containerOf(context));
                       return true;
                     },
