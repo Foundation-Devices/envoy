@@ -403,8 +403,8 @@ Future<void> main() async {
       await findAndPressBuyOptions(tester);
 
       // Check default Country
-      bool found_UK = await findTextOnScreen(tester, "United Kingdom");
-      String state = found_UK ? "Banbridge" : "Arizona";
+      bool foundUK = await findTextOnScreen(tester, "United Kingdom");
+      String state = foundUK ? "Banbridge" : "Arizona";
 
       await findAndPressTextButton(tester, "Select State");
       await findAndPressTextButton(tester, state);
