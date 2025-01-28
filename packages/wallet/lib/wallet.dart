@@ -481,7 +481,7 @@ class Wallet {
         lib.lookup<NativeFunction<WalletSyncRust>>('wallet_sync');
     final dartFunction = rustFunction.asFunction<WalletSyncDart>();
 
-    log("Syncing: ${Pointer.fromAddress(walletPtr)}", level: 800);
+    log("Syncing: $walletPtr", level: 800);
     bool synced = dartFunction(
       Pointer.fromAddress(walletPtr),
       electrumAddress.toNativeUtf8(),
@@ -575,7 +575,7 @@ class Wallet {
         _lib.lookup<NativeFunction<WalletDropRust>>('wallet_drop');
     final dartFunction = rustFunction.asFunction<WalletDropDart>();
 
-    log("Drop wallet: $pointerToDrop", level: 800);
+    log("Drop wallet: ${pointerToDrop.address}", level: 800);
     dartFunction(pointerToDrop);
   }
 
