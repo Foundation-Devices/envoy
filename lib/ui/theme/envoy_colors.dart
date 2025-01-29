@@ -45,6 +45,6 @@ class EnvoyColors {
   static const Color accentSecondary = copper500;
   static const Color accentTertiary = pine500;
   static const Color success = apple500;
-  static const Color warning = sunglow500;
+  static const Color warning = copper500;
   static const Color danger = chilli500;
 }
