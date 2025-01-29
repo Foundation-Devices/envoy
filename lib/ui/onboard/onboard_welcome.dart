@@ -97,16 +97,16 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                 )
               : const SizedBox.shrink(),
           actions: [
-            //TODO: copy local
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: EnvoyButton(
-                label: "Advanced Options",
-                type: ButtonType.tertiary,
-                onTap: () {
+              child: TextButton(
+                //TODO: copy local
+                child: Text("Advanced Options",
+                    style: EnvoyTypography.button
+                        .copyWith(color: EnvoyColors.textPrimaryInverse)),
+                onPressed: () {
                   context.pushNamed(ADVANCED_SETTINGS);
                 },
-                state: ButtonState.defaultState,
               ),
             )
           ],
