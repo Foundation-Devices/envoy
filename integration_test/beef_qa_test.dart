@@ -397,6 +397,27 @@ Future<void> main() async {
           tester, find.byType(TextField), accountPassportName);
       await saveName(tester);
     });
+    testWidgets('BUY forever back loop', (tester) async {
+      await goBackHome(tester);
+
+      await fromHomeToBuyOptions(tester);
+
+      await findAndPressTextButton(tester, "Continue");
+      await findAndPressTextButton(tester, "Verify Address with Passport");
+      await findAndPressTextButton(tester, "Done");
+      await pressHamburgerMenu(tester);
+      await pressHamburgerMenu(tester);
+      await tester.pump(Durations.long2);
+      await findTextOnScreen(tester, "ACCOUNTS");
+      await tester.pump(Durations.long2);
+      await findTextOnScreen(tester, "Accounts");
+      await tester.pump(Durations.long2);
+      // Make sure you do not go back to BUY after hamburger (and closing the loop)
+      await pressHamburgerMenu(tester);
+      await tester.pump(Durations.long2);
+      await findTextOnScreen(tester, "SETTINGS");
+      await tester.pump(Durations.long2);
+    });
     testWidgets('Fiat in App', (tester) async {
       await goBackHome(tester);
 

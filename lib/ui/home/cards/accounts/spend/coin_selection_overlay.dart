@@ -587,6 +587,7 @@ class SpendRequirementOverlayState
         //wait for coin details screen to animate out
         await Future.delayed(const Duration(milliseconds: 320));
       }
+
       ref.read(spendEditModeProvider.notifier).state =
           SpendOverlayContext.hidden;
       ref.read(hideBottomNavProvider.notifier).state = false;
@@ -671,6 +672,7 @@ class SpendRequirementOverlayState
         ref.read(hideBottomNavProvider.notifier).state = false;
         ref.read(spendEditModeProvider.notifier).state =
             SpendOverlayContext.hidden;
+
         clearSpendState(container);
       }
     }
