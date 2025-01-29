@@ -612,6 +612,13 @@ class Wallet {
 
       if (transactions.length != walletState["transactions"].length) {
         changed = true;
+      } else {
+        for (int i = 0; i < transactions.length; i++) {
+          if (transactions[i].txId != walletState["transactions"][i].txId) {
+            changed = true;
+            break; // Exit loop early if a mismatch is found
+          }
+        }
       }
 
       balance = walletState["balance"];

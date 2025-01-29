@@ -53,6 +53,14 @@ const SnackBar invalidSeedSnackbar = SnackBar(
   content: Text("Not a valid seed"), // TODO: FIGMA
 );
 
+const SnackBar invalidPassportQRSnackbar = SnackBar(
+  content: Text("Not a valid Passport QR"), // TODO: FIGMA
+);
+
+const SnackBar useTestnetSnackbar = SnackBar(
+  content: Text("Please use Testnet"), // TODO: FIGMA
+);
+
 class ScannerPage extends StatefulWidget {
   final UniformResourceReader _urDecoder = UniformResourceReader();
   final List<ScannerType> _acceptableTypes;
@@ -377,10 +385,17 @@ class ScannerPageState extends State<ScannerPage> {
       return;
     }
 
-    _urDecoder.receive(scannedData);
-    setState(() {
-      _progress = _urDecoder.urDecoder.progress;
-    });
+    try {
+      _urDecoder.receive(scannedData);
+      setState(() {
+        _progress = _urDecoder.urDecoder.progress;
+      });
+    } catch (e) {
+      _processing = false;
+      showSnackbar(invalidPassportQRSnackbar);
+      kPrint("Couldn't decode UR!");
+      return;
+    }
 
     if (_urDecoder.decoded != null && !_processing) {
       _processing = true;
@@ -406,9 +421,7 @@ class ScannerPageState extends State<ScannerPage> {
           _binaryValidated(_urDecoder.decoded as Binary);
         } else {
           // Tell the user to use testnet
-          scaffold.showSnackBar(const SnackBar(
-            content: Text("Please use Testnet"), // TODO: FIGMA
-          ));
+          scaffold.showSnackBar(useTestnetSnackbar);
         }
       }
     }
@@ -440,7 +453,7 @@ class ScannerPageState extends State<ScannerPage> {
     final scaffold = ScaffoldMessenger.of(context);
     Account? pairedAccount;
     try {
-      pairedAccount = await AccountManager().addPassportAccounts(binary);
+      pairedAccount = await AccountManager().processPassportAccounts(binary);
     } on AccountAlreadyPaired catch (_) {
       scaffold.showSnackBar(const SnackBar(
         content: Text("Account already connected"), // TODO: FIGMA

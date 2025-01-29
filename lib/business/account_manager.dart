@@ -248,51 +248,58 @@ class AccountManager extends ChangeNotifier {
     return false;
   }
 
-  // Returned account is the one used for address verification
-  Future<Account?> addPassportAccounts(Binary binary) async {
+// Processes binary data to add Passport accounts, ensuring address verification
+  Future<Account?> processPassportAccounts(Binary binary) async {
+    // Extract JSON string from the binary data
     var jsonIndex = binary.decoded.indexOf("{");
     var decoded = binary.decoded.substring(jsonIndex);
     var json = jsonDecode(decoded);
 
+    // Determine if the JSON follows the old format
     bool oldJsonFormat = json['xpub'] != null;
 
     if (oldJsonFormat) {
-      // Old format with single WPKH account
+      // Handle old format with a single WPKH account
       Account newAccount = await getPassportAccountJson(json);
-      addAccount(newAccount);
       return newAccount;
     } else {
-      // New format can handle multiple accounts
+      // Handle new format that supports multiple accounts
       List<Account> newAccounts = await getPassportAccountsFromJson(json);
       int alreadyPairedAccountsCount = 0;
+
+      // Loop through the new accounts and check for duplicates
       newAccountsLoop:
       for (var entry in newAccounts.asMap().entries) {
         var index = entry.key;
         var newAccount = entry.value;
 
-        // Check if account already paired
         for (var account in accounts) {
+          // Check if the account is already paired
           if (account.wallet.name == newAccount.wallet.name) {
+            // Rename the existing account if the names differ
             if (account.name != newAccount.name) {
               renameAccount(account, newAccount.name);
+              return account;
             }
-            // Don't add this one
+            // Skip adding this account as it already exists
             alreadyPairedAccountsCount++;
 
-            // But add the existing one to the list in case user wants to verify address again
+            // Add the existing account to the list for address verification
             newAccounts[index] = account;
             continue newAccountsLoop;
           }
         }
 
+        // Initialize the wallet and add the new account
         _initWallet(newAccount.wallet);
         addAccount(newAccount);
       }
 
+      // If all accounts are already paired, throw an error
       if (newAccounts.length == alreadyPairedAccountsCount) {
         throw AccountAlreadyPaired();
       } else {
-        // We will verify the address on WPKH account only
+        // Return the first WPKH account for address verification
         return newAccounts[0];
       }
     }
@@ -338,6 +345,7 @@ class AccountManager extends ChangeNotifier {
       if (account.wallet.name == json["xpub"].toString()) {
         if (account.name != json["acct_name"].toString()) {
           renameAccount(account, json["acct_name"].toString());
+          return account;
         }
         throw AccountAlreadyPaired();
       }
@@ -360,6 +368,8 @@ class AccountManager extends ChangeNotifier {
         number: accountNumber,
         id: Account.generateNewId(),
         dateSynced: null);
+
+    addAccount(account);
     return account;
   }
 
