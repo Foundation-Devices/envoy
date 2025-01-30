@@ -21,6 +21,7 @@ import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/ntp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -60,6 +61,7 @@ Future<void> initSingletons() async {
   // ~10k on iPhone 11 which is much better than the default 256
   kPrint("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
 
+  await NTPUtil.init();
   await EnvoyStorage().init();
   await LocalStorage.init();
   EnvoyScheduler.init();
