@@ -2,10 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -16,8 +18,21 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/pages/legal/passport_tou.dart';
 
-class OnboardPassportWelcomeScreen extends StatelessWidget {
+class OnboardPassportWelcomeScreen extends StatefulWidget {
   const OnboardPassportWelcomeScreen({super.key});
+
+  @override
+  State<OnboardPassportWelcomeScreen> createState() =>
+      _OnboardPassportWelcomeScreenState();
+}
+
+class _OnboardPassportWelcomeScreenState
+    extends State<OnboardPassportWelcomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
+  }
 
   @override
   Widget build(BuildContext context) {

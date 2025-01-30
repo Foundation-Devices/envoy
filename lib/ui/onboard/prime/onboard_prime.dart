@@ -2,10 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -22,6 +24,12 @@ class OnboardPrimeWelcome extends StatefulWidget {
 
 class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
   final s = Settings();
+
+  @override
+  void initState() {
+    super.initState();
+    LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
+  }
 
   @override
   Widget build(BuildContext context) {
