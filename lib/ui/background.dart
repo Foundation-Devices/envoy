@@ -148,7 +148,7 @@ class LinesPainter extends CustomPainter {
     while (currentY < size.height - offset) {
       final p1 = Offset(0, currentY);
 
-      final p2 = Offset(size.width - 2, currentY + offset);
+      final p2 = Offset(size.width - (hideLineGap ? 2 : 0), currentY + offset);
       final paint = Paint()
         ..color = color.applyOpacity(opacity)
         ..isAntiAlias = false
