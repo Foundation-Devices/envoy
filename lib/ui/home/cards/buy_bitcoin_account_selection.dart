@@ -23,6 +23,7 @@ import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/components/ramp_widget.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
+import 'package:envoy/ui/home/home_state.dart';
 
 GlobalKey<ChooseAccountState> chooseAccountKey =
     GlobalKey<ChooseAccountState>();
@@ -49,6 +50,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
     Future.delayed(Duration.zero).then((_) {
       setState(() {
         selectedAccount = ref.read(mainnetAccountsProvider(null)).first;
+        ref.read(homeShellOptionsProvider.notifier).state = null;
       });
       selectedAccount?.wallet.getAddress().then((value) {
         setState(() {

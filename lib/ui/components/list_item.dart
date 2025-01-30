@@ -29,6 +29,7 @@ import 'package:envoy/util/blur_container_transform.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
+import 'package:envoy/business/settings.dart';
 
 class EnvoyListTile extends StatelessWidget {
   const EnvoyListTile({
@@ -134,6 +135,8 @@ class ActivityListTile extends ConsumerStatefulWidget {
   ActivityListTileState createState() => ActivityListTileState();
 }
 
+final Settings s = Settings();
+
 class ActivityListTileState extends ConsumerState<ActivityListTile> {
   @override
   Widget build(BuildContext context) {
@@ -180,7 +183,7 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
             return const Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                SizedBox(height: EnvoySpacing.xs),
+                SizedBox(height: EnvoySpacing.small),
                 LoaderGhost(
                   width: 120,
                   height: 15,
@@ -195,12 +198,16 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
               ],
             );
           } else {
-            return FittedBox(
-              child: EnvoyAmount(
-                account: transactionAccount!,
-                amountSats: transaction.amount,
-                amountWidgetStyle: AmountWidgetStyle.normal,
-                alignToEnd: true,
+            return Padding(
+              padding: EdgeInsets.only(
+                  bottom: s.displayFiat() == null ? EnvoySpacing.medium1 : 0),
+              child: FittedBox(
+                child: EnvoyAmount(
+                  account: transactionAccount!,
+                  amountSats: transaction.amount,
+                  amountWidgetStyle: AmountWidgetStyle.normal,
+                  alignToEnd: true,
+                ),
               ),
             );
           }

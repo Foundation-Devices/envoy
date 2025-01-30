@@ -42,6 +42,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
 import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/shield_path.dart';
 
 //ignore: must_be_immutable
 class TxReview extends ConsumerStatefulWidget {
@@ -489,46 +490,40 @@ class _TransactionReviewScreenState
           GoRouter.of(context).pop();
         },
       ),
-      bottom: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(8),
-          topRight: Radius.circular(7),
-        ),
+      bottom: ClipPath(
+        clipper: ShieldClipper(isBlurShield: true),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-          child: Container(
-            color: Colors.white12,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-              ).add(const EdgeInsets.only(bottom: EnvoySpacing.large1)),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  if (!transactionModel.isPSBTFinalized)
-                    EnvoyButton(
-                      enabled: !transactionModel.loading,
-                      S().coincontrol_tx_detail_cta2,
-                      type: EnvoyButtonTypes.secondary,
-                      onTap: () {
-                        ref.read(userHasChangedFeesProvider.notifier).state =
-                            false;
-                        editTransaction(context, ref);
-                      },
-                    ),
-                  const Padding(padding: EdgeInsets.all(6)),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+            ).add(const EdgeInsets.only(bottom: EnvoySpacing.large1)),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (!transactionModel.isPSBTFinalized)
                   EnvoyButton(
                     enabled: !transactionModel.loading,
-                    (account.wallet.hot || transactionModel.isPSBTFinalized)
-                        ? S().coincontrol_tx_detail_cta1
-                        : S().coincontrol_txDetail_cta1_passport,
+                    S().coincontrol_tx_detail_cta2,
+                    type: EnvoyButtonTypes.secondary,
                     onTap: () {
-                      widget.onBroadcast();
+                      ref.read(userHasChangedFeesProvider.notifier).state =
+                          false;
+                      editTransaction(context, ref);
                     },
                   ),
-                ],
-              ),
+                const Padding(padding: EdgeInsets.all(6)),
+                EnvoyButton(
+                  enabled: !transactionModel.loading,
+                  (account.wallet.hot || transactionModel.isPSBTFinalized)
+                      ? S().coincontrol_tx_detail_cta1
+                      : S().coincontrol_txDetail_cta1_passport,
+                  onTap: () {
+                    widget.onBroadcast();
+                  },
+                ),
+              ],
             ),
           ),
         ),

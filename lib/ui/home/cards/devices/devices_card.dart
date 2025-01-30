@@ -68,14 +68,14 @@ class DevicesCardState extends ConsumerState<DevicesCard>
 }
 
 //ignore: must_be_immutable
-class DevicesList extends StatefulWidget {
+class DevicesList extends ConsumerStatefulWidget {
   DevicesList() : super(key: UniqueKey());
 
   @override
-  State<DevicesList> createState() => _DevicesListState();
+  ConsumerState<DevicesList> createState() => _DevicesListState();
 }
 
-class _DevicesListState extends State<DevicesList> {
+class _DevicesListState extends ConsumerState<DevicesList> {
   _redraw() {
     setState(() {});
   }
@@ -125,8 +125,18 @@ class _DevicesListState extends State<DevicesList> {
                                 bottom: EnvoySpacing.medium1),
                             child: DeviceListTile(
                               device,
-                              onTap: () {
-                                context.go(ROUTE_DEVICE_DETAIL, extra: device);
+                              onTap: () async {
+                                ref
+                                    .read(homePageOptionsVisibilityProvider
+                                        .notifier)
+                                    .state = false;
+                                Future.delayed(
+                                    const Duration(milliseconds: 200), () {
+                                  if (context.mounted) {
+                                    context.go(ROUTE_DEVICE_DETAIL,
+                                        extra: device);
+                                  }
+                                });
                                 // widget.navigator!.push(DeviceCard(
                                 //     device,
                                 //     widget.navigator,
