@@ -4,7 +4,7 @@
 
 import 'package:flutter/material.dart';
 
-class EnvoyColor {
+class NewEnvoyColor {
   /// Colors
   static const Color neutral950 = Color(0xFF231F20);
   static const Color neutral900 = Color(0xFF454444);
