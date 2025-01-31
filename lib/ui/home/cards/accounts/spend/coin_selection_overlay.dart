@@ -7,7 +7,6 @@ import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
-import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_list_screen.dart';
@@ -34,6 +33,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 
 OverlayEntry? overlayEntry;
 final GlobalKey<CoinSelectionOverlayState> coinSelectionOverlayKey =
@@ -862,80 +862,28 @@ class _SpendSelectionCancelWarningState
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(24).add(const EdgeInsets.only(top: -6)),
-      constraints: const BoxConstraints(
-        minHeight: 300,
-        maxWidth: 300,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          const EnvoyIcon(
-            EnvoyIcons.alert,
-            color: EnvoyColors.copperLight500,
-            size: EnvoyIconSize.big,
-          ),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
-          Text(S().manual_coin_preselection_dialog_description,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleSmall),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                dismissed = !dismissed;
-              });
-            },
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  child: EnvoyCheckbox(
-                    value: dismissed,
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() {
-                          dismissed = value;
-                        });
-                      }
-                    },
-                  ),
-                ),
-                Text(
-                  S().component_dontShowAgain,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color:
-                            dismissed ? Colors.black : const Color(0xff808080),
-                      ),
-                ),
-              ],
-            ),
-          ),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-          EnvoyButton(
-            S().component_no,
-            type: EnvoyButtonTypes.tertiary,
-            onTap: () {
-              txWarningExit(context);
-              Navigator.of(context).pop(false);
-            },
-          ),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          EnvoyButton(
-            S().component_yes,
-            type: EnvoyButtonTypes.primaryModal,
-            onTap: () {
-              txWarningExit(context);
-              Navigator.of(context).pop(true);
-            },
-          )
-        ],
-      ),
-    );
+    return EnvoyPopUp(
+        icon: EnvoyIcons.alert,
+        typeOfMessage: PopUpState.warning,
+        showCloseButton: false,
+        content: S().manual_coin_preselection_dialog_description,
+        primaryButtonLabel: S().component_yes,
+        onPrimaryButtonTap: (context) {
+          txWarningExit(context);
+          Navigator.of(context).pop(true);
+        },
+        tertiaryButtonLabel: S().component_no,
+        onTertiaryButtonTap: (context) {
+          txWarningExit(context);
+          Navigator.of(context).pop(false);
+        },
+        checkBoxText: S().component_dontShowAgain,
+        checkedValue: false,
+        onCheckBoxChanged: (checkedValue) {
+          setState(() {
+            dismissed = !dismissed;
+          });
+        });
   }
 
   void txWarningExit(BuildContext context) {

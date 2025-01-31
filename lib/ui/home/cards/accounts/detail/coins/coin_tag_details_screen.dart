@@ -31,6 +31,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 
 class CoinTagDetailsScreen extends ConsumerStatefulWidget {
   final bool showCoins;
@@ -704,69 +705,21 @@ class DeleteTagDialog extends StatelessWidget {
     final heading =
         dialogHeading.isNotEmpty ? dialogHeading : S().component_warning;
 
-    return Container(
-      constraints: BoxConstraints(
-        minHeight: 270,
-        maxWidth: MediaQuery.of(context).size.width * 0.80,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(EnvoySpacing.medium2),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Align(
-              alignment: Alignment.centerRight.add(const Alignment(.1, 0)),
-              child: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(top: EnvoySpacing.xs),
-              child: EnvoyIcon(
-                EnvoyIcons.alert,
-                color: EnvoyColors.copperLight500,
-                size: EnvoyIconSize.big,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
-              child: Text(heading.toUpperCase(),
-                  textAlign: TextAlign.center, style: EnvoyTypography.heading),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
-              child: Text(dialogSubheading,
-                  textAlign: TextAlign.center, style: EnvoyTypography.info),
-            ),
-            const SizedBox(height: EnvoySpacing.medium3),
-            EnvoyButton(
-              secondaryButtonText,
-              textStyle: EnvoyTypography.body
-                  .copyWith(color: EnvoyColors.accentSecondary, fontSize: 16),
-              onTap: () async {
-                await onSecondaryButtonTap();
-              },
-              type: EnvoyButtonTypes.tertiary,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
-              child: EnvoyButton(
-                primaryButtonText,
-                textStyle: EnvoyTypography.body.copyWith(
-                    color: EnvoyColors.textPrimaryInverse, fontSize: 16),
-                type: EnvoyButtonTypes.primaryModal,
-                borderRadius: const BorderRadius.all(Radius.circular(6.0)),
-                onTap: () async {
-                  await onPrimaryButtonTap();
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
+    return EnvoyPopUp(
+      icon: EnvoyIcons.alert,
+      typeOfMessage: PopUpState.warning,
+      title: heading,
+      showCloseButton: true,
+      content: dialogSubheading,
+      primaryButtonLabel: primaryButtonText,
+      onPrimaryButtonTap: (context) async {
+        await onPrimaryButtonTap();
+      },
+      tertiaryButtonLabel: secondaryButtonText, // use tertiary button style
+      tertiaryButtonTextColor: EnvoyColors.accentSecondary,
+      onTertiaryButtonTap: (context) async {
+        await onSecondaryButtonTap();
+      },
     );
   }
 }

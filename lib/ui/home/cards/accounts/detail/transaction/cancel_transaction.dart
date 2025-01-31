@@ -235,15 +235,18 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
     }
 
     showEnvoyPopUp(
-        context,
-        title: S().coindetails_overlay_noCancelNoFunds_heading,
-        S().coindetails_overlay_noCanceltNoFunds_subheading,
-        S().component_continue,
-        learnMoreLink:
-            "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions",
-        (BuildContext context) {
-      Navigator.pop(context);
-    }, icon: EnvoyIcons.alert, iconColor: EnvoyColors.copperLight500);
+      context,
+      title: S().coindetails_overlay_noCancelNoFunds_heading,
+      S().coindetails_overlay_noCanceltNoFunds_subheading,
+      S().component_continue,
+      learnMoreLink:
+          "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions",
+      (BuildContext context) {
+        Navigator.pop(context);
+      },
+      icon: EnvoyIcons.alert,
+      typeOfMessage: PopUpState.warning,
+    );
   }
 }
 

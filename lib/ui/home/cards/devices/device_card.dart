@@ -14,13 +14,13 @@ import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 
 //ignore: must_be_immutable
 class DeviceCard extends ConsumerStatefulWidget {
@@ -202,44 +202,21 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             showEnvoyDialog(
                 context: context,
-                dialog: EnvoyDialog(
-                  content: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const EnvoyIcon(
-                        EnvoyIcons.alert,
-                        color: EnvoyColors.copperLight500,
-                        size: EnvoyIconSize.big,
-                      ),
-                      const SizedBox(
-                        height: EnvoySpacing.medium1,
-                      ),
-                      Text(
-                        S().manage_device_deletePassportWarning,
-                        style: EnvoyTypography.info,
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                  actions: [
-                    EnvoyButton(
-                      S().component_delete,
-                      borderRadius: const BorderRadius.all(
-                          Radius.circular(EnvoySpacing.small)),
-                      textStyle: EnvoyTypography.button
-                          .copyWith(color: EnvoyColors.textPrimaryInverse),
-                      type: EnvoyButtonTypes.primaryModal,
-                      onTap: () {
-                        Devices().deleteDevice(widget.device);
+                dialog: EnvoyPopUp(
+                  icon: EnvoyIcons.alert,
+                  typeOfMessage: PopUpState.warning,
+                  showCloseButton: true,
+                  content: S().manage_device_deletePassportWarning,
+                  primaryButtonLabel: S().component_delete,
+                  onPrimaryButtonTap: (context) {
+                    Devices().deleteDevice(widget.device);
 
-                        // Pop the dialog
-                        Navigator.pop(context);
+                    // Pop the dialog
+                    Navigator.pop(context);
 
-                        // Go back to devices list
-                        GoRouter.of(context).pop();
-                      },
-                    ),
-                  ],
+                    // Go back to devices list
+                    GoRouter.of(context).pop();
+                  },
                 ));
           },
         ),

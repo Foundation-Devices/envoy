@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -23,7 +22,7 @@ void showRestoreFailedDialog(BuildContext context) {
       title: S().manual_setup_import_backup_fails_modal_heading,
       dismissible: false,
       showCloseButton: false,
-      iconColor: EnvoyColors.copperLight500,
+      typeOfMessage: PopUpState.warning,
       icon: EnvoyIcons.alert);
 }
 

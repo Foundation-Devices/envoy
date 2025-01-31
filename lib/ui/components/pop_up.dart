@@ -12,16 +12,27 @@ import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/checkbox.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/envoy_colors.dart' as old_color;
+
+enum PopUpState {
+  deafult,
+  warning,
+  danger,
+}
 
 void showEnvoyPopUp(
   BuildContext context,
-  String content,
-  primaryButtonLabel,
+  String? content,
+  String primaryButtonLabel,
   Function(BuildContext context)? onPrimaryButtonTap, {
   EnvoyIcons? icon,
   String? title,
   String? secondaryButtonLabel,
   Function(BuildContext context)? onSecondaryButtonTap,
+  String? tertiaryButtonLabel,
+  Color? tertiaryButtonTextColor,
+  Function(BuildContext context)? onTertiaryButtonTap,
+  PopUpState? typeOfMessage,
   String? checkBoxText,
   Function(bool checked)? onCheckBoxChanged,
   bool? checkedValue,
@@ -30,7 +41,6 @@ void showEnvoyPopUp(
   String? learnMoreText,
   Widget? customWidget,
   bool? showCloseButton,
-  Color iconColor = EnvoyColors.accentPrimary,
 }) =>
     showEnvoyDialog(
         context: context,
@@ -39,11 +49,14 @@ void showEnvoyPopUp(
           title: title,
           content: content,
           icon: icon,
-          iconColor: iconColor,
           primaryButtonLabel: primaryButtonLabel,
           onPrimaryButtonTap: onPrimaryButtonTap,
           secondaryButtonLabel: secondaryButtonLabel,
           onSecondaryButtonTap: onSecondaryButtonTap,
+          tertiaryButtonLabel: tertiaryButtonLabel,
+          tertiaryButtonTextColor: tertiaryButtonTextColor,
+          onTertiaryButtonTap: onTertiaryButtonTap,
+          typeOfMessage: typeOfMessage,
           checkBoxText: checkBoxText,
           onCheckBoxChanged: onCheckBoxChanged,
           checkedValue: checkedValue ?? true,
@@ -60,11 +73,15 @@ class EnvoyPopUp extends StatefulWidget {
     super.key,
     this.icon,
     this.title,
-    required this.content,
+    this.content,
     required this.primaryButtonLabel,
     this.secondaryButtonLabel,
+    this.tertiaryButtonLabel,
+    this.tertiaryButtonTextColor,
     this.onPrimaryButtonTap,
     this.onSecondaryButtonTap,
+    this.onTertiaryButtonTap,
+    this.typeOfMessage = PopUpState.deafult,
     this.checkBoxText,
     this.onCheckBoxChanged,
     this.checkedValue = true,
@@ -72,17 +89,19 @@ class EnvoyPopUp extends StatefulWidget {
     this.learnMoreText = '',
     this.customWidget,
     this.showCloseButton = true,
-    this.iconColor = EnvoyColors.accentPrimary,
   });
 
   final String? title;
-  final String content;
+  final String? content;
   final EnvoyIcons? icon;
-  final Color iconColor;
   final String primaryButtonLabel;
   final String? secondaryButtonLabel;
+  final String? tertiaryButtonLabel;
+  final Color? tertiaryButtonTextColor;
   final Function(BuildContext context)? onPrimaryButtonTap;
   final Function(BuildContext context)? onSecondaryButtonTap;
+  final Function(BuildContext context)? onTertiaryButtonTap;
+  final PopUpState? typeOfMessage;
   final String? checkBoxText;
   final Function(bool checked)? onCheckBoxChanged;
   bool? checkedValue;
@@ -96,8 +115,41 @@ class EnvoyPopUp extends StatefulWidget {
 }
 
 class _EnvoyPopUpState extends State<EnvoyPopUp> {
+  Color _color = EnvoyColors.accentPrimary;
+
   @override
   Widget build(BuildContext context) {
+    switch (widget.typeOfMessage) {
+      case PopUpState.deafult:
+        {
+          setState(() {
+            _color = EnvoyColors.accentPrimary;
+          });
+        }
+        break;
+
+      case PopUpState.danger:
+        {
+          setState(() {
+            _color = EnvoyColors.danger;
+          });
+        }
+        break;
+      case PopUpState.warning:
+        {
+          setState(() {
+            _color = old_color.EnvoyColors.listAccountTileColors[3];
+          });
+        }
+        break;
+      case null:
+        {
+          setState(() {
+            _color = EnvoyColors.accentPrimary;
+          });
+        }
+        break;
+    }
     return Container(
       width: MediaQuery.of(context).size.width * 0.85,
       decoration: const BoxDecoration(
@@ -132,7 +184,7 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                   child: EnvoyIcon(
                     widget.icon!,
                     size: EnvoyIconSize.big,
-                    color: widget.iconColor,
+                    color: _color,
                   ),
                 ),
               if (widget.title != null)
@@ -146,18 +198,19 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-              Padding(
-                padding: EdgeInsets.only(
-                    bottom:
-                        widget.linkUrl == null && widget.customWidget == null
-                            ? EnvoySpacing.medium3
-                            : EnvoySpacing.medium1),
-                child: Text(
-                  widget.content,
-                  style: EnvoyTypography.info,
-                  textAlign: TextAlign.center,
+              if (widget.content != null)
+                Padding(
+                  padding: EdgeInsets.only(
+                      bottom:
+                          widget.linkUrl == null && widget.customWidget == null
+                              ? EnvoySpacing.medium3
+                              : EnvoySpacing.medium1),
+                  child: Text(
+                    widget.content!,
+                    style: EnvoyTypography.info,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
               if (widget.customWidget != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
@@ -196,6 +249,20 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                       });
                     },
                   ),
+                ),
+              if (widget.tertiaryButtonLabel != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                  child: EnvoyButton(
+                      label: widget.tertiaryButtonLabel!,
+                      type: ButtonType.tertiary,
+                      state: ButtonState.defaultState,
+                      textColor: widget.tertiaryButtonTextColor,
+                      onTap: () {
+                        if (widget.onTertiaryButtonTap != null) {
+                          widget.onTertiaryButtonTap!(context);
+                        }
+                      }),
                 ),
               if (widget.secondaryButtonLabel != null)
                 Padding(

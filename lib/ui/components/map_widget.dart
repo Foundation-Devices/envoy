@@ -257,7 +257,7 @@ class MarkersPageState extends State<MarkersPage> {
                                 Navigator.pop(context);
                               },
                               icon: EnvoyIcons.alert,
-                              iconColor: EnvoyColors.copperLight500,
+                              typeOfMessage: PopUpState.warning,
                               title: S().buy_bitcoin_mapLoadingError_header,
                               secondaryButtonLabel: S().component_retry,
                               onSecondaryButtonTap: (BuildContext context) {

@@ -29,6 +29,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 
 class MagicRecoverWallet extends ConsumerStatefulWidget {
   const MagicRecoverWallet({super.key});
@@ -672,86 +673,34 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
 
   void showContinueWarningDialog(BuildContext context) {
     showEnvoyDialog(
-        context: context,
-        dismissible: false,
-        dialog: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.75,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 18),
-                    child: IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () {
-                        context.pop();
-                      },
-                    ),
-                  ),
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const EnvoyIcon(
-                      EnvoyIcons.alert,
-                      size: EnvoyIconSize.big,
-                      color: EnvoyColors.copperLight500,
-                    ),
-                    const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 0, horizontal: 0),
-                      child: Text(
-                        S().component_warning,
-                        textAlign: TextAlign.center,
-                        style: EnvoyTypography.info,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 12),
-                      child: Text(
-                        S().manual_setup_recovery_import_backup_modal_fail_connectivity_subheading,
-                        textAlign: TextAlign.center,
-                        style: EnvoyTypography.info,
-                      ),
-                    ),
-                    const Padding(padding: EdgeInsets.all(2)),
-                  ],
-                ),
-                OnboardingButton(
-                    label: S().component_back,
-                    type: EnvoyButtonTypes.tertiary,
-                    onTap: () async {
-                      context.pop();
-                    }),
-                const Padding(padding: EdgeInsets.all(2)),
-                Consumer(
-                  builder: (context, ref, child) {
-                    return OnboardingButton(
-                        type: EnvoyButtonTypes.primaryModal,
-                        label: S().component_continue,
-                        onTap: () {
-                          EnvoySeed().get().then((seed) async {
-                            await EnvoySeed().deriveAndAddWallets(seed!);
-                            await Future.delayed(
-                                const Duration(milliseconds: 120));
-                            if (context.mounted) {
-                              context.go("/");
-                            }
-                          });
-                        });
-                  },
-                ),
-                const Padding(padding: EdgeInsets.all(12)),
-              ],
-            ),
-          ),
-        ));
+      context: context,
+      dismissible: false,
+      dialog: EnvoyPopUp(
+        icon: EnvoyIcons.alert,
+        typeOfMessage: PopUpState.warning,
+        showCloseButton: true,
+        title: S().component_warning,
+        customWidget: Text(
+          S().manual_setup_recovery_import_backup_modal_fail_connectivity_subheading,
+          textAlign: TextAlign.center,
+          style: EnvoyTypography.info,
+        ),
+        primaryButtonLabel: S().component_continue,
+        onPrimaryButtonTap: (context) {
+          EnvoySeed().get().then((seed) async {
+            await EnvoySeed().deriveAndAddWallets(seed!);
+            await Future.delayed(const Duration(milliseconds: 120));
+            if (context.mounted) {
+              context.go("/");
+            }
+          });
+        },
+        tertiaryButtonLabel: S().component_back,
+        tertiaryButtonTextColor: EnvoyColors.accentPrimary,
+        onTertiaryButtonTap: (context) async {
+          context.pop();
+        },
+      ),
+    );
   }
 }

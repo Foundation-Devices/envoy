@@ -44,11 +44,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
-import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/generated_bindings.dart' as rust;
 import 'package:wallet/wallet.dart';
 import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 
 final rbfSpendStateProvider = StateProvider<RBFSpendState?>((ref) => null);
 
@@ -508,89 +508,27 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       showEnvoyDialog(
           context: context,
           dialog: Builder(builder: (context) {
-            return Container(
-              width: MediaQuery.of(context).size.width * 0.75,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(EnvoySpacing.medium2),
-                ),
-                color: EnvoyColors.textPrimaryInverse,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: EnvoySpacing.medium3,
-                    horizontal: EnvoySpacing.medium2),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: EnvoySpacing.medium3),
-                      child: EnvoyIcon(
-                        EnvoyIcons.alert,
-                        size: EnvoyIconSize.big,
-                        color: EnvoyColors.copperLight500,
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-                      child: Text(
-                        S().component_warning,
-                        style: EnvoyTypography.subheading,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
-                      child: Text(
-                        S().replaceByFee_warning_extraUTXO_overlay_modal_subheading,
-                        style: EnvoyTypography.info,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    GestureDetector(
-                        onTap: () async {
-                          const link =
-                              "https://docs.foundation.xyz/en/troubleshooting#why-is-envoy-adding-more-coins-to-my-boost-or-cancel-transaction";
-                          launchUrl(Uri.parse(link));
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: EnvoySpacing.medium1),
-                          child: Text(
-                            S().component_learnMore,
-                            style: EnvoyTypography.baseFont.copyWith(
-                                color: EnvoyColors.accentPrimary,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        )),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-                      child: EnvoyButton(
-                          label: S().component_back,
-                          type: ButtonType.secondary,
-                          state: ButtonState.defaultState,
-                          onTap: () {
-                            //hide dialog
-                            Navigator.pop(context);
-                            //hide RBF screen
-                            Navigator.pop(context);
-                          }),
-                    ),
-                    EnvoyButton(
-                        label: S().component_continue,
-                        type: ButtonType.primary,
-                        state: ButtonState.defaultState,
-                        onTap: () {
-                          _warningShown = true;
-                          Navigator.pop(context);
-                        }),
-                  ],
-                ),
-              ),
+            return EnvoyPopUp(
+              icon: EnvoyIcons.alert,
+              typeOfMessage: PopUpState.warning,
+              title: S().component_warning,
+              showCloseButton: false,
+              content:
+                  S().replaceByFee_warning_extraUTXO_overlay_modal_subheading,
+              linkUrl:
+                  "https://docs.foundation.xyz/en/troubleshooting#why-is-envoy-adding-more-coins-to-my-boost-or-cancel-transaction",
+              primaryButtonLabel: S().component_continue,
+              onPrimaryButtonTap: (context) {
+                _warningShown = true;
+                Navigator.pop(context);
+              },
+              secondaryButtonLabel: S().component_back,
+              onSecondaryButtonTap: (context) {
+                //hide dialog
+                Navigator.pop(context);
+                //hide RBF screen
+                Navigator.pop(context);
+              },
             );
           }));
     } else {

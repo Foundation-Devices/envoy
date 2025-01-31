@@ -10,8 +10,9 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 
 class CoinLockWarning extends StatefulWidget {
   final String warningMessage;
@@ -35,126 +36,30 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
 
   @override
   Widget build(BuildContext context) {
-    double contentSpacing = EnvoySpacing.medium1;
-    if (MediaQuery.sizeOf(context).width < 350) {
-      contentSpacing = EnvoySpacing.small;
-    }
-
-    return Container(
-      //clamp the width so it doesn't stretch too much
-      width: (MediaQuery.sizeOf(context).width * 0.75).clamp(280, 400),
-      padding: const EdgeInsets.symmetric(
-          horizontal: EnvoySpacing.medium1, vertical: EnvoySpacing.medium1),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              height: 34,
-              alignment: Alignment.centerRight,
-              child: IconButton(
-                padding: const EdgeInsets.all(0),
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-            Image.asset(
-              "assets/exclamation_triangle.png",
-              height: 54,
-              width: 54,
-              color: EnvoyColors.copperLight500,
-            ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(height: contentSpacing),
-                Text(
-                  S().component_warning,
-                  style: EnvoyTypography.heading,
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: contentSpacing),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Text(
-                    widget.warningMessage,
-                    style: EnvoyTypography.info.copyWith(
-                      color: EnvoyColors.textPrimary,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                SizedBox(height: contentSpacing),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      dismissed = !dismissed;
-                    });
-                  },
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      EnvoyCheckbox(
-                        value: dismissed,
-                        visualDensity: VisualDensity.compact,
-                        onChanged: (value) {
-                          if (value != null) {
-                            setState(() {
-                              dismissed = value;
-                            });
-                          }
-                        },
-                      ),
-                      Text(
-                        S().component_dontShowAgain,
-                        style: EnvoyTypography.info.copyWith(
-                          color: EnvoyColors.textSecondary,
-                          fontSize: 11,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: contentSpacing),
-              ],
-            ),
-            Flexible(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                EnvoyButton(
-                  label: S().component_back,
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  type: ButtonType.secondary,
-                  state: ButtonState.defaultState,
-                ),
-                const SizedBox(height: EnvoySpacing.small),
-                EnvoyButton(
-                  label: widget.buttonTitle,
-                  state: ButtonState.defaultState,
-                  edgeInsets: const EdgeInsets.all(0),
-                  onTap: () {
-                    if (dismissed) {
-                      EnvoyStorage().addPromptState(widget.promptType);
-                    } else {
-                      EnvoyStorage().removePromptState(widget.promptType);
-                    }
-                    widget.onContinue();
-                  },
-                  type: ButtonType.primary,
-                ),
-              ],
-            ))
-          ],
-        ),
-      ),
-    );
+    return EnvoyPopUp(
+        icon: EnvoyIcons.alert,
+        typeOfMessage: PopUpState.warning,
+        title: S().component_warning,
+        showCloseButton: true,
+        content: widget.warningMessage,
+        primaryButtonLabel: widget.buttonTitle,
+        onPrimaryButtonTap: (context) {
+          if (dismissed) {
+            EnvoyStorage().addPromptState(widget.promptType);
+          } else {
+            EnvoyStorage().removePromptState(widget.promptType);
+          }
+          widget.onContinue();
+        },
+        secondaryButtonLabel: S().component_back,
+        onSecondaryButtonTap: (context) {
+          Navigator.pop(context);
+        },
+        checkBoxText: S().component_dontShowAgain,
+        checkedValue: false,
+        onCheckBoxChanged: (checkedValue) {
+          dismissed = checkedValue;
+        });
   }
 }
 

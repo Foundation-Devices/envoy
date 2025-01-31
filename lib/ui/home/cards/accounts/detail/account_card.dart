@@ -784,7 +784,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
           },
         ),
         const SizedBox(
-          height: EnvoySpacing.small,
+          height: 10,
         ),
         GestureDetector(
           child: Text(S().component_delete.toUpperCase(),
@@ -795,31 +795,8 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
               showEnvoyDialog(
                   context: context,
                   dialog: EnvoyDialog(
-                    content: Column(
-                      children: [
-                        const EnvoyIcon(
-                          EnvoyIcons.alert,
-                          color: EnvoyColors.copperLight500,
-                          size: EnvoyIconSize.big,
-                        ),
-                        const SizedBox(height: EnvoySpacing.medium1),
-                        Text(
-                          S().manage_account_remove_heading,
-                          textAlign: TextAlign.center,
-                          style: EnvoyTypography.info.copyWith(
-                            color: EnvoyColors.textPrimary,
-                          ),
-                        ),
-                        const SizedBox(height: EnvoySpacing.medium1),
-                        Text(
-                          S().manage_account_remove_subheading,
-                          textAlign: TextAlign.center,
-                          style: EnvoyTypography.info.copyWith(
-                            color: EnvoyColors.textPrimary,
-                          ),
-                        ),
-                      ],
-                    ),
+                    title: S().manage_account_remove_heading,
+                    content: Text(S().manage_account_remove_subheading),
                     actions: [
                       EnvoyButton(
                         S().component_delete,
