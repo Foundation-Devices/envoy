@@ -3,11 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:math';
+
+import 'package:envoy/ui/components/stripe_painter.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/ui/components/stripe_painter.dart';
 
 Widget envoyScaffoldShieldScrollView(BuildContext context, Widget child) {
   double shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
@@ -49,7 +50,76 @@ class EnvoyPatternScaffold extends StatefulWidget {
   State<EnvoyPatternScaffold> createState() => _EnvoyPatternScaffoldState();
 }
 
-class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
+class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
+
+    Widget shield = Shield(
+      child: Padding(
+          padding: const EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 40),
+          child: SizedBox.expand(child: widget.shield)),
+    );
+    return Scaffold(
+      extendBody: true,
+      extendBodyBehindAppBar: true,
+      appBar: widget.appBar,
+      primary: widget.appBar != null,
+      backgroundColor: Colors.black,
+      floatingActionButton: widget.header ?? Container(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      body: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          ScaffoldBackGround(
+            animate: widget.animate,
+            gradientHeight: widget.gradientHeight,
+          ),
+        ],
+      ),
+      bottomNavigationBar: SizedBox(
+        width: double.infinity,
+        height: (MediaQuery.of(context).size.height * 0.52).clamp(350, 580),
+        child: Container(
+            padding: EdgeInsets.only(bottom: shieldBottom),
+            decoration: const BoxDecoration(
+                gradient: LinearGradient(colors: [
+              Color(0x00000000),
+              Color(0xff686868),
+              Color(0xffFFFFFF),
+            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+            child: widget.heroTag != null
+                ? Hero(
+                    tag: widget.heroTag!,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: shield,
+                    ),
+                  )
+                : shield),
+      ),
+    );
+  }
+}
+
+class ScaffoldBackGround extends StatefulWidget {
+  final bool animate;
+
+  final double gradientHeight;
+
+  const ScaffoldBackGround(
+      {super.key, this.animate = true, this.gradientHeight = 1.5});
+
+  @override
+  State<ScaffoldBackGround> createState() => _ScaffoldBackgroundState();
+}
+
+class _ScaffoldBackgroundState extends State<ScaffoldBackGround>
     with SingleTickerProviderStateMixin {
   Animation<double>? animation;
   AnimationController? controller;
@@ -59,13 +129,7 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (widget.animate == true) {
-        controller = AnimationController(
-            duration: const Duration(milliseconds: 2200), vsync: this);
-        animation = Tween(begin: 0.6, end: .8).animate(controller!);
-        controller?.addListener(() {
-          setState(() {});
-        });
-        controller?.repeat(reverse: true);
+        startAnimation();
       }
     });
   }
@@ -86,12 +150,12 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
 
   @override
   Widget build(BuildContext context) {
-    double shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
-
     return Stack(
       children: [
         SizedBox.expand(
             child: CustomPaint(
+          isComplex: true,
+          willChange: false,
           size: const Size(double.infinity, double.infinity),
           painter: StripePainter(
             EnvoyColors.solidWhite.applyOpacity(0.1),
@@ -109,53 +173,28 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold>
               gradientRadius: animation?.value ?? 0.8,
               gradientHeight: widget.gradientHeight),
         )),
-        widget.child != null
-            ? widget.child!
-            : Builder(builder: (context) {
-                Widget shield = Shield(
-                  child: Padding(
-                      padding: const EdgeInsets.only(
-                          right: 8, left: 8, top: 8, bottom: 40),
-                      child: SizedBox.expand(child: widget.shield)),
-                );
-
-                return Scaffold(
-                  backgroundColor: Colors.transparent,
-                  appBar: widget.appBar,
-                  body: Align(
-                    alignment: Alignment.center,
-                    child: widget.header,
-                  ),
-                  bottomNavigationBar: SizedBox(
-                    width: double.infinity,
-                    height: (MediaQuery.of(context).size.height * 0.52)
-                        .clamp(350, 580),
-                    child: Container(
-                      padding: EdgeInsets.only(bottom: shieldBottom),
-                      decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                              colors: [
-                            Color(0x00000000),
-                            Color(0xff686868),
-                            Color(0xffFFFFFF),
-                          ],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter)),
-                      child: widget.heroTag != null
-                          ? Hero(
-                              tag: widget.heroTag!,
-                              child: Material(
-                                color: Colors.transparent,
-                                child: shield,
-                              ),
-                            )
-                          : shield,
-                    ),
-                  ),
-                );
-              }),
       ],
     );
+  }
+
+  @override
+  void didUpdateWidget(covariant ScaffoldBackGround oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.animate != widget.animate) {
+      if (widget.animate) {
+        startAnimation();
+      }
+    }
+  }
+
+  void startAnimation() {
+    controller = AnimationController(
+        duration: const Duration(milliseconds: 2200), vsync: this);
+    animation = Tween(begin: 0.6, end: .8).animate(controller!);
+    controller?.addListener(() {
+      setState(() {});
+    });
+    controller?.repeat(reverse: true);
   }
 }
 
