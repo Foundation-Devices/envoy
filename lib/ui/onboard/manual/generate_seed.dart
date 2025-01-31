@@ -4,9 +4,8 @@
 
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -21,7 +20,7 @@ import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup_create_and_store_backup.dart';
-import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 
 class SeedScreen extends StatefulWidget {
   final bool generate;
@@ -324,51 +323,19 @@ class _SeedScreenState extends State<SeedScreen> {
       context: context,
       dismissible: false,
       builder: Builder(builder: (context) {
-        final heightFactor =
-            MediaQuery.sizeOf(context).width < 380 ? 0.7 : 0.38;
-        return Container(
-          height: MediaQuery.of(context).size.height * heightFactor,
-          width: MediaQuery.of(context).size.width * 0.8,
-          constraints: const BoxConstraints(maxHeight: 400, maxWidth: 400),
-          child: EnvoyScaffold(
-            hasScrollBody: false,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Padding(padding: EdgeInsets.all(24)),
-                  Expanded(
-                      child: Column(
-                    children: [
-                      const Icon(EnvoyIcons.exclamationWarning,
-                          color: EnvoyColors.copper500, size: 56),
-                      const Padding(padding: EdgeInsets.all(12)),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Text(
-                          S().manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  )),
-                  OnboardingButton(
-                      type: EnvoyButtonTypes.primaryModal,
-                      label: S().component_back,
-                      onTap: () async {
-                        Navigator.pop(context);
-                        _pageController.animateToPage(1,
-                            duration: const Duration(milliseconds: 320),
-                            curve: Curves.ease);
-                      }),
-                  const Padding(padding: EdgeInsets.all(12)),
-                ],
-              ),
-            ),
-          ),
+        return EnvoyPopUp(
+          icon: EnvoyIcons.alert,
+          typeOfMessage: PopUpState.warning,
+          showCloseButton: false,
+          content: S()
+              .manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading,
+          primaryButtonLabel: S().component_back,
+          onPrimaryButtonTap: (context) async {
+            Navigator.pop(context);
+            _pageController.animateToPage(1,
+                duration: const Duration(milliseconds: 320),
+                curve: Curves.ease);
+          },
         );
       }),
     );
