@@ -66,6 +66,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     return false;
   }
 
+  final s = Settings();
+
   @override
   void initState() {
     super.initState();
@@ -91,7 +93,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    var s = Settings();
     double nestedMargin = 8;
     double marginBetweenItems = 6;
 

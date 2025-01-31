@@ -10,6 +10,6 @@ import 'package:rive/rive.dart';
 final riveLoaderProvider = FutureProvider.family<RiveFile, String>(
     (ref, asset) async => RiveFile.import(await rootBundle.load(asset)));
 
-final coinLockRiveProvider = Provider((ref) {
+final coinLockRiveProvider = Provider<RiveFile?>((ref) {
   return ref.watch(riveLoaderProvider('assets/coin_lock.riv')).value;
 });

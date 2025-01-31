@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // ignore_for_file: constant_identifier_names
 
-import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/ui/onboard/advanced_settings.dart';
 import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
 import 'package:envoy/ui/onboard/magic/magic_setup_generate.dart';
 import 'package:envoy/ui/onboard/magic/magic_setup_tutorial.dart';
@@ -11,7 +11,6 @@ import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup_import_backup.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup_import_seed.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
-import 'package:envoy/ui/onboard/onboard_privacy_setup.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
@@ -29,7 +28,8 @@ import 'package:wallet/wallet.dart';
 * named onboarding routes
 * use goNamed
 */
-const ONBOARD_PRIVACY_SETUP = 'welcome_privacy_setup';
+const ADVANCED_SETTINGS = 'advanced_settings';
+const SCAN_FOR_DEVICE = 'scan_device';
 
 const ONBOARD_PASSPORT_SETUP = 'welcome_passport_setup';
 const ONBOARD_PASSPORT_NEW = 'welcome_passport_new';
@@ -62,13 +62,6 @@ final onboardRoutes = GoRoute(
     primeRoutes,
     GoRoute(
       path: "device",
-      redirect: (context, state) {
-        if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) != true) {
-          return state.namedLocation(ONBOARD_PRIVACY_SETUP,
-              queryParameters: {"redirect": ONBOARD_PASSPORT_SETUP});
-        }
-        return null;
-      },
       name: ONBOARD_PASSPORT_SETUP,
       routes: [
         GoRoute(
@@ -97,14 +90,12 @@ final onboardRoutes = GoRoute(
       builder: (context, state) => const OnboardPassportWelcomeScreen(),
     ),
     GoRoute(
+      path: "advanced_settings",
+      name: ADVANCED_SETTINGS,
+      builder: (context, state) => const AdvancedSettingsOptions(),
+    ),
+    GoRoute(
       path: "wallet",
-      redirect: (context, state) {
-        if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) != true) {
-          return state.namedLocation(ONBOARD_PRIVACY_SETUP,
-              queryParameters: {"redirect": ONBOARD_ENVOY_SETUP});
-        }
-        return null;
-      },
       name: ONBOARD_ENVOY_SETUP,
       routes: [
         GoRoute(
@@ -190,13 +181,6 @@ final onboardRoutes = GoRoute(
         ),
       ],
       builder: (context, state) => const OnboardEnvoyWelcomeScreen(),
-    ),
-    GoRoute(
-      path: "privacy",
-      name: ONBOARD_PRIVACY_SETUP,
-      builder: (context, state) {
-        return const OnboardPrivacySetup(setUpEnvoyWallet: false);
-      },
     ),
   ],
   builder: (context, state) => const WelcomeScreen(),

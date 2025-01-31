@@ -70,6 +70,7 @@ class ScannerPage extends StatefulWidget {
   final Function(String)? onTxParsed;
   final Function(String)? onSeedValidated;
   final Function(String)? onNodeUrlParsed;
+  final Function(String)? deviceScan;
   final Function(String, int, String?)? onAddressValidated;
 
   ScannerPage(this._acceptableTypes,
@@ -79,12 +80,16 @@ class ScannerPage extends StatefulWidget {
       this.onTxParsed,
       this.onSeedValidated,
       this.onNodeUrlParsed,
+      this.deviceScan,
       this.onAddressValidated});
 
   ScannerPage.address(
       Function(String, int, String?) onAddressValidated, Account account)
       : this([ScannerType.address],
             onAddressValidated: onAddressValidated, account: account);
+
+  ScannerPage.devicePair(Function(String payload) deviceScan)
+      : this([ScannerType.pair], deviceScan: deviceScan);
 
   ScannerPage.tx(Function(String) onTxParsed)
       : this([ScannerType.tx], onTxParsed: onTxParsed);
@@ -312,6 +317,12 @@ class ScannerPageState extends State<ScannerPage> {
             context: context, dialog: BtcPayDialog(voucher, widget.account!));
         return;
       }
+    }
+
+    //TODO: REMOVE and handle new unifyQR for pairing request
+    if (widget.deviceScan != null) {
+      widget.deviceScan?.call(code);
+      return;
     }
 
     // Seed recovery flow
