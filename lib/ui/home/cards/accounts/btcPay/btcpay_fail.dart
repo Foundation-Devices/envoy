@@ -19,6 +19,7 @@ class BtcPayFail extends StatelessWidget {
   Widget build(BuildContext context) {
     return EnvoyPopUp(
       icon: EnvoyIcons.alert,
+      typeOfMessage: PopUpState.warning,
       title: getTitle(voucher.errorType),
       content: getErrorContent(voucher.errorType, voucher.expiresAt),
       linkUrl: voucher.errorType == BtcPayVoucherErrorType.onChain
@@ -28,7 +29,6 @@ class BtcPayFail extends StatelessWidget {
       onPrimaryButtonTap: (context) {
         Navigator.of(context).pop();
       },
-      typeOfMessage: PopUpState.danger,
     );
   }
 }

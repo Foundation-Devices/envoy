@@ -2,14 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 
 class SeedPassphraseEntry extends StatefulWidget {
   final Function(String passphrase) onPassphraseEntered;
@@ -146,55 +144,15 @@ void showInvalidSeedDialog({required BuildContext context}) {
   showEnvoyDialog(
     context: context,
     dismissible: true,
-    builder: Builder(builder: (context) {
-      return SizedBox(
-        width: MediaQuery.of(context).size.width * 0.75,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Align(
-                        alignment: Alignment.topRight,
-                        child: IconButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            icon: const Icon(Icons.close))),
-                  ),
-                  const Icon(EnvoyIcons.exclamationWarning,
-                      color: EnvoyColors.darkCopper, size: 58),
-                  const Padding(padding: EdgeInsets.all(8)),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 38),
-                    child: Text(
-                      S().manual_setup_import_seed_12_words_fail_modal_subheading,
-                      textAlign: TextAlign.center,
-                      style: EnvoyTypography.body,
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                child: OnboardingButton(
-                    type: EnvoyButtonTypes.primaryModal,
-                    label: S().component_back,
-                    onTap: () async {
-                      Navigator.pop(context);
-                    }),
-              ),
-            ],
-          ),
-        ),
-      );
-    }),
+    dialog: EnvoyPopUp(
+      icon: EnvoyIcons.alert,
+      typeOfMessage: PopUpState.warning,
+      showCloseButton: true,
+      content: S().manual_setup_import_seed_12_words_fail_modal_subheading,
+      primaryButtonLabel: S().component_back,
+      onPrimaryButtonTap: (context) async {
+        Navigator.pop(context);
+      },
+    ),
   );
 }
