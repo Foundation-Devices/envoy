@@ -40,6 +40,7 @@ Future<void> main() async {
       await tester.pumpWidget(const EnvoyApp());
 
       await setUpAppFromStart(tester);
+      await tester.pump(Durations.long2);
       await fromHomeToBuyOptions(tester);
 
       await tester.pump(Durations.long2);

@@ -61,16 +61,10 @@ Future<void> fromHomeToBuyOptions(WidgetTester tester) async {
 Future<void> setUpAppFromStart(WidgetTester tester) async {
   await tester.pump();
 
-  final setUpButtonFinder = find.text('Set Up Envoy Wallet');
+  final setUpButtonFinder = find.text('Create a\nMobile Wallet');
   expect(setUpButtonFinder, findsOneWidget);
   await tester.tap(setUpButtonFinder);
   await tester.pump(const Duration(milliseconds: 500));
-
-  final continueButtonFinder = find.text('Continue');
-  expect(continueButtonFinder, findsOneWidget);
-  await tester.tap(continueButtonFinder);
-  await tester.pump(Durations.long2);
-  await tester.pump(Durations.long2);
 
   final enableMagicButtonFinder = find.text('Enable Magic Backups');
   expect(enableMagicButtonFinder, findsOneWidget);
@@ -82,6 +76,9 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
   expect(createMagicButtonFinder, findsOneWidget);
   await tester.tap(createMagicButtonFinder);
   await tester.pump(const Duration(milliseconds: 1500));
+
+  final continueButtonFinder = find.text('Continue');
+  await tester.pump(Durations.long2);
 
   await tester.pumpUntilFound(continueButtonFinder,
       tries: 50, duration: Durations.long2);
