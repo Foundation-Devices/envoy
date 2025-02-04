@@ -91,6 +91,13 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
   expect(continueButtonFinder, findsOneWidget);
   await tester.tap(continueButtonFinder);
   await tester.pump(const Duration(milliseconds: 500));
+
+  //Android has an additional info screen about backup
+  if(Platform.isAndroid){
+    expect(continueButtonFinder, findsOneWidget);
+    await tester.tap(continueButtonFinder);
+    await tester.pump(const Duration(milliseconds: 500));
+  }
 }
 
 /// Send Signet money back to test Account
@@ -566,7 +573,7 @@ Future<void> scrollFindAndTapText(WidgetTester tester, String text,
 
 Future<void> onboardingAndEnterSeed(
     WidgetTester tester, List<String> seed) async {
-  final setUpButtonFinder = find.text('Set Up Envoy Wallet');
+  final setUpButtonFinder = find.text('Create a\nMobile Wallet');
   expect(setUpButtonFinder, findsOneWidget);
   await tester.tap(setUpButtonFinder);
   await tester.pump(const Duration(milliseconds: 500));
