@@ -614,7 +614,9 @@ class Wallet {
         changed = true;
       } else {
         for (int i = 0; i < transactions.length; i++) {
-          if (transactions[i].txId != walletState["transactions"][i].txId) {
+          if (transactions[i].txId != walletState["transactions"][i].txId ||
+              transactions[i].isConfirmed !=
+                  walletState["transactions"][i].isConfirmed) {
             changed = true;
             break; // Exit loop early if a mismatch is found
           }
