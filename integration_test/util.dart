@@ -578,12 +578,6 @@ Future<void> onboardingAndEnterSeed(
   await tester.tap(setUpButtonFinder);
   await tester.pump(const Duration(milliseconds: 500));
 
-  final continueButtonFinder = find.text('Continue');
-  expect(continueButtonFinder, findsOneWidget);
-  await tester.tap(continueButtonFinder);
-  await tester.pump(Durations.long2);
-  await tester.pump(Durations.long2);
-
   final manuallyConfigureSeedWords = find.text('Manually Configure Seed Words');
   expect(manuallyConfigureSeedWords, findsOneWidget);
   await tester.tap(manuallyConfigureSeedWords);
@@ -659,15 +653,9 @@ Future<void> checkBuyOptionAndTitle(WidgetTester tester) async {
 Future<void> setUpFromStartNoAccounts(WidgetTester tester) async {
   await tester.pump();
 
-  final setUpButtonFinder = find.text('Set Up Envoy Wallet');
+  final setUpButtonFinder = find.text('Create a\nMobile Wallet');
   expect(setUpButtonFinder, findsOneWidget);
   await tester.tap(setUpButtonFinder);
-  await tester.pump(Durations.long2);
-
-  final continueButtonFinder = find.text('Continue');
-  expect(continueButtonFinder, findsOneWidget);
-  await tester.tap(continueButtonFinder);
-  await tester.pump(Durations.long2);
   await tester.pump(Durations.long2);
 
   // go to home w no accounts
