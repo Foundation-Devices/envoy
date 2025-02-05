@@ -72,7 +72,7 @@ Future<void> initSingletons() async {
   await ExchangeRate.init();
   EnvoyReport().init();
   Settings.restore();
-  // Tor.init(enabled: Settings().torEnabled());
+  Tor.init(enabled: Settings().torEnabled());
   UpdatesManager.init();
   ScvServer.init();
   await EnvoySeed.init();
