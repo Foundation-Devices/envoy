@@ -562,13 +562,11 @@ class SpendRequirementOverlayState
       }
       await Future.delayed(const Duration(milliseconds: 120));
 
-      ///if the user changed the selection, validate the transaction
-      if (coinSelectionDiff.isNotEmpty) {
-        ///reset fees if coin selection changed
-        ref.read(spendFeeRateProvider.notifier).state =
-            Fees().slowRate(account!.wallet.network) * 100000;
-        ref.read(spendTransactionProvider.notifier).validate(scope);
-      }
+      ///reset fees
+      ref.read(spendFeeRateProvider.notifier).state =
+          Fees().slowRate(account!.wallet.network) * 100000;
+      ref.read(spendTransactionProvider.notifier).validate(scope);
+
       ref.read(spendEditModeProvider.notifier).state =
           SpendOverlayContext.hidden;
       await Future.delayed(const Duration(milliseconds: 120));
