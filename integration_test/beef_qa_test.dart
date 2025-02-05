@@ -36,11 +36,12 @@ Future<void> main() async {
 
   group('Hot wallet tests', () {
     // These tests use wallet which is set up from zero (no need for passport account)
-    testWidgets('Flow to map', (tester) async {
+    testWidgets('Buy ATM filter by country first and flow to map',
+        (tester) async {
       await tester.pumpWidget(const EnvoyApp());
 
       await setUpAppFromStart(tester);
-      await fromHomeToBuyOptions(tester);
+      await fromHomeToBuyOptions(tester, selectFirstCountryAvailable: false);
 
       await tester.pump(Durations.long2);
 
@@ -63,6 +64,23 @@ Future<void> main() async {
         (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.plus,
       );
       expect(iconFinder, findsOneWidget);
+
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
+
+      final iconLocationFinder = find.byWidgetPredicate(
+        (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.location,
+      );
+
+      expect(iconLocationFinder, findsAny);
+      await tester.tap(iconLocationFinder.last);
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
+
+      // Check that the ATM name widget is present.
+      // If found, it indicates that the map has loaded correctly for the specified region (Granada, Spain).
+      final atmName = find.text("Kurant Bitcoin ATM");
+      expect(atmName, findsAny);
     });
 
     testWidgets('About', (tester) async {

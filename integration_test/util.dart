@@ -32,7 +32,8 @@ Future<void> goBackHome(WidgetTester tester) async {
   await tester.pumpWidget(const EnvoyApp());
 }
 
-Future<void> fromHomeToBuyOptions(WidgetTester tester) async {
+Future<void> fromHomeToBuyOptions(WidgetTester tester,
+    {bool selectFirstCountryAvailable = true}) async {
   await tester.pump();
   final buyBitcoinButton = find.text('Buy');
   expect(buyBitcoinButton, findsOneWidget);
@@ -44,11 +45,36 @@ Future<void> fromHomeToBuyOptions(WidgetTester tester) async {
   await tester.pumpUntilFound(selectRegionDropDown,
       tries: 50, duration: Durations.long2);
   expect(selectRegionDropDown, findsOneWidget);
+
+  if (!selectFirstCountryAvailable) {
+    final selectCountryDropDown = find.text("United States");
+    expect(selectCountryDropDown, findsOneWidget);
+    await tester.tap(selectCountryDropDown);
+    await tester.pump(Durations.long2);
+    await scrollUntilVisible(tester, "Spain",
+        scrollableWidgetType: ListView, scrollIncrement: 100);
+    final countryFinder = find.text('Spain');
+    expect(countryFinder, findsOneWidget);
+    await tester.tap(countryFinder);
+    await tester.pump(Durations.long2);
+    await tester.pump(Durations.long2);
+  }
+
   await tester.tap(selectRegionDropDown);
   await tester.pump(Durations.long2);
 
-  final dropdownItems = find.byType(DropdownMenuItem<EnvoyDropdownOption>);
-  await tester.tap(dropdownItems.at(1)); // Tap at first state
+  if (selectFirstCountryAvailable) {
+    final dropdownItems = find.byType(DropdownMenuItem<EnvoyDropdownOption>);
+    await tester.tap(dropdownItems.at(1)); // Tap at first state
+  }
+
+  if (!selectFirstCountryAvailable) {
+    await scrollUntilVisible(tester, "Granada", scrollableWidgetType: ListView);
+    final granada = find.text('Granada');
+    expect(granada, findsOneWidget);
+    await tester.tap(granada);
+  }
+
   await tester.pump(Durations.long2);
 
   final continueButtonFinder = find.text('Continue');
@@ -521,14 +547,17 @@ Future<void> enterSeedWords(
   }
 }
 
-Future<void> scrollHome(WidgetTester tester, double pixels) async {
+Future<void> scrollHome(WidgetTester tester, double pixels,
+    {Type scrollableWidgetType = ReorderableListView}) async {
   // Perform the drag operation on the ReorderableListView by the specified number of pixels
-  await tester.drag(find.byType(ReorderableListView), Offset(0, pixels));
+  await tester.drag(find.byType(scrollableWidgetType).last, Offset(0, pixels));
   await tester.pump(Durations.long2);
 }
 
 Future<void> scrollUntilVisible(WidgetTester tester, String text,
-    {int maxScrolls = 50, double scrollIncrement = -100}) async {
+    {int maxScrolls = 50,
+    double scrollIncrement = -100,
+    Type scrollableWidgetType = ReorderableListView}) async {
   Finder finder = find.text(text);
 
   for (int i = 0; i < maxScrolls; i++) {
@@ -537,7 +566,8 @@ Future<void> scrollUntilVisible(WidgetTester tester, String text,
       return; // Widget found, stop scrolling
     }
 
-    await scrollHome(tester, scrollIncrement);
+    await scrollHome(tester, scrollIncrement,
+        scrollableWidgetType: scrollableWidgetType);
   }
 
   // Optionally, you could throw an exception if the widget isn't found after maxScrolls
