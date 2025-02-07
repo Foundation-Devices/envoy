@@ -93,7 +93,7 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
   await tester.pump(const Duration(milliseconds: 500));
 
   //Android has an additional info screen about backup
-  if(Platform.isAndroid){
+  if (Platform.isAndroid) {
     expect(continueButtonFinder, findsOneWidget);
     await tester.tap(continueButtonFinder);
     await tester.pump(const Duration(milliseconds: 500));
