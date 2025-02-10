@@ -270,6 +270,16 @@ class ExchangeRate extends ChangeNotifier {
     return (_usdRate ?? 0) * amountSats / 100000000;
   }
 
+  // SATS to double FIAT
+  double convertSatsToFiat(int amountSats) {
+
+    if (_selectedCurrencyRate == null) {
+      return 0;
+    }
+
+    return (amountSats / 100000000) * _selectedCurrencyRate!;
+  }
+
   // SATS to FIAT
   String getFormattedAmount(int amountSats,
       {bool includeSymbol = true, Wallet? wallet}) {

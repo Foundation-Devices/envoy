@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/account.dart';
+import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_entry.dart';
@@ -83,6 +84,13 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
     Psbt psbt = widget.psbt;
     // total amount to spend including fee
     int totalSpendAmount = amount + psbt.fee;
+
+    double fakeFiatSendAmount = ref.watch(fakeFiatSendAmountProvider)!;
+
+    double fakeFiatAmountTotal =
+        ExchangeRate().convertSatsToFiat(totalSpendAmount);
+    // Leave total as it is (total will be visible after sending)
+    double fakeFiatFeeAmount = fakeFiatAmountTotal - fakeFiatSendAmount;
 
     Account account = ref.read(selectedAccountProvider)!;
 
@@ -189,6 +197,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           account: account,
                           unit: formatUnit,
                           amountSats: amount,
+                          fakeAmountFiat: ref.watch(fakeFiatSendAmountProvider),
                           millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                   Padding(
@@ -289,6 +298,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           unit: formatUnit,
                           account: account,
                           amountSats: psbt.fee,
+                          fakeAmountFiat: fakeFiatFeeAmount,
                           millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                   Padding(
@@ -333,6 +343,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           account: account,
                           unit: formatUnit,
                           amountSats: totalSpendAmount,
+                          fakeAmountFiat: fakeFiatAmountTotal,
                           millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                 ],
