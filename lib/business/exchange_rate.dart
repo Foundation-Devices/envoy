@@ -273,6 +273,7 @@ class ExchangeRate extends ChangeNotifier {
 
   // SATS to double FIAT
   double convertSatsToFiat(int amountSats) {
+
     if (_selectedCurrencyRate == null) {
       return 0;
     }

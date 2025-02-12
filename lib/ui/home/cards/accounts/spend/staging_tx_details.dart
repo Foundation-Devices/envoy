@@ -180,6 +180,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
     double fakeFiatTotalInputAmount =
         fakeFiatSendAmount + fakeTotalChangeAmount;
 
+
     if (userChosenTag != null) {
       changeOutputTag = userChosenTag;
     }
@@ -356,7 +357,8 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                         color: EnvoyColors
                                                             .textTertiary),
                                               )
-                                            : EnvoyAmount(
+                                            :
+                                        EnvoyAmount(
                                                 unit: formatUnit,
                                                 account: account,
                                                 amountSats: totalChangeAmount,

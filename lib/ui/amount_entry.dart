@@ -29,6 +29,7 @@ import 'package:envoy/business/locale.dart';
 
 enum AmountDisplayUnit { btc, sat, fiat }
 
+
 final fakeFiatSendAmountProvider = StateProvider<double?>((ref) => 0); // null
 
 class AmountEntry extends ConsumerStatefulWidget {
@@ -78,8 +79,8 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     }
   }
 
-  int getAmountSats(String _enteredAmount) {
-    // TODO: ?
+
+  int getAmountSats(String _enteredAmount) { // TODO: ?
     final unit = ref.read(sendScreenUnitProvider);
     return unit == AmountDisplayUnit.btc
         ? convertBtcStringToSats(_enteredAmount)
@@ -87,6 +88,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
             ? convertSatsStringToSats(_enteredAmount)
             : ExchangeRate().convertFiatStringToSats((_enteredAmount)));
   }
+
 
   Future<void> pasteAmount() async {
     var unit = ref.read(sendScreenUnitProvider);
@@ -195,11 +197,13 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
           });
         }
 
+
         ref.read(fakeFiatSendAmountProvider.notifier).state =
             double.tryParse(_enteredAmount);
 
       /// this here is the amount that needs to be !!!
       //  _enteredAmount = (ref.watch(fakeFiatSendAmountProvider)?.toStringAsFixed(0))!;
+
     }
 
     _amountSats = getAmountSats(_enteredAmount);
