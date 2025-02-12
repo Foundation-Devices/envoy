@@ -21,6 +21,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/amount_entry.dart';
+import 'package:envoy/ui/state/send_screen_state.dart';
 
 enum BroadcastProgress {
   inProgress,
@@ -664,6 +666,10 @@ void clearSpendState(ProviderContainer ref) {
   ref.read(stagingTxChangeOutPutTagProvider.notifier).state = null;
   ref.read(stagingTxNoteProvider.notifier).state = null;
   ref.read(spendFeeProcessing.notifier).state = false;
+  ref.read(sendScreenUnitProvider.notifier).state =
+      Settings().displayUnit == DisplayUnit.btc
+          ? AmountDisplayUnit.btc
+          : AmountDisplayUnit.sat;
 }
 
 Future<Psbt> getPsbt(

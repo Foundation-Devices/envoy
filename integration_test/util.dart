@@ -22,6 +22,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider/path_provider.dart';
@@ -38,6 +39,7 @@ Future<void> fromHomeToBuyOptions(WidgetTester tester) async {
   expect(buyBitcoinButton, findsOneWidget);
 
   await tester.tap(buyBitcoinButton);
+  await tester.pump(Durations.long2);
   await tester.pump(Durations.long2);
 
   final selectRegionDropDown = find.text('Select State');
@@ -497,12 +499,15 @@ Future<void> setUpWalletFromSeedViaBackupFile(
       tries: 100, duration: Durations.long2);
   final continueButtonFinder = find.text('Continue');
   expect(successMessage, findsOneWidget);
+  await tester.pump(Durations.long2);
   expect(continueButtonFinder, findsOneWidget);
   await tester.tap(continueButtonFinder);
-  await tester.pump(const Duration(milliseconds: 500));
+  await tester.pump(Durations.long2);
+  await tester.pump(Durations.long2);
 
   // Scroll down by 600 pixels
   await scrollHome(tester, -600);
+  await tester.pump(Durations.long2);
 
   // search for passport account
   final passportAccount = find.text("Passport");
@@ -573,6 +578,16 @@ Future<void> scrollFindAndTapText(WidgetTester tester, String text,
 
 Future<void> onboardingAndEnterSeed(
     WidgetTester tester, List<String> seed) async {
+  await tester.pump(Durations.long2);
+
+  // turn off Tor
+  await findAndPressTextButton(tester, "Advanced Options");
+  await enablePerformance(tester);
+  Finder backButtonFinder = find.byType(CupertinoNavigationBarBackButton);
+  expect(backButtonFinder, findsOne);
+  await tester.tap(backButtonFinder);
+  await tester.pump(Durations.long2);
+
   final setUpButtonFinder = find.text('Create a\nMobile Wallet');
   expect(setUpButtonFinder, findsOneWidget);
   await tester.tap(setUpButtonFinder);
