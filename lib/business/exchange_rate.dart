@@ -7,6 +7,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:envoy/business/connectivity_manager.dart';
+import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -268,6 +269,15 @@ class ExchangeRate extends ChangeNotifier {
 
   double getUsdValue(int amountSats) {
     return (_usdRate ?? 0) * amountSats / 100000000;
+  }
+
+  // SATS to double FIAT
+  double convertSatsToFiat(int amountSats) {
+    if (_selectedCurrencyRate == null) {
+      return 0;
+    }
+
+    return (amountSats / 100000000) * _selectedCurrencyRate!;
   }
 
   // SATS to FIAT

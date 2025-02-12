@@ -149,7 +149,9 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
                           ),
                         TextSpan(
                           text: unit != AmountDisplayUnit.fiat
-                              ? ExchangeRate().getFormattedAmount(
+                              ?
+                              // ref.watch(fakeFiatSendAmountProvider)?.toStringAsFixed(2)
+                              ExchangeRate().getFormattedAmount(
                                   widget.amountSats ?? 0,
                                   wallet: widget.account?.wallet)
                               : (Settings().displayUnit == DisplayUnit.btc

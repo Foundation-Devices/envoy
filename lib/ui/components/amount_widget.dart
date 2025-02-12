@@ -19,6 +19,7 @@ class AmountWidget extends StatelessWidget {
   final AmountDisplayUnit primaryUnit;
   final AmountWidgetStyle style;
   final AmountDisplayUnit? secondaryUnit;
+  final double? fakeFiat;
   final String symbolFiat;
   final double? fxRateFiat;
   final Color? badgeColor;
@@ -31,6 +32,7 @@ class AmountWidget extends StatelessWidget {
     super.key,
     required this.amountSats,
     required this.primaryUnit,
+    this.fakeFiat,
     this.style = AmountWidgetStyle.normal,
     this.secondaryUnit,
     this.symbolFiat = "",
@@ -86,6 +88,7 @@ class AmountWidget extends StatelessWidget {
             if (secondaryUnit != null)
               SecondaryAmountWidget(
                   unit: secondaryUnit!,
+                  fakeFiat: fakeFiat,
                   style: SecondaryAmountWidgetStyle.large,
                   amountSats: amountSats,
                   symbolFiat: symbolFiat,
@@ -121,6 +124,7 @@ class AmountWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(top: EnvoySpacing.xs),
                 child: SecondaryAmountWidget(
                     unit: secondaryUnit!,
+                    fakeFiat: fakeFiat,
                     style: SecondaryAmountWidgetStyle.normal,
                     amountSats: amountSats,
                     symbolFiat: symbolFiat,
@@ -158,6 +162,7 @@ class AmountWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(left: EnvoySpacing.small),
                 child: SecondaryAmountWidget(
                     unit: secondaryUnit!,
+                    fakeFiat: fakeFiat,
                     style: SecondaryAmountWidgetStyle.normal,
                     amountSats: amountSats,
                     symbolFiat: symbolFiat,
@@ -323,6 +328,7 @@ class SecondaryAmountWidget extends StatelessWidget {
   final double? fxRateFiat;
   final String decimalSeparator;
   final String groupSeparator;
+  final double? fakeFiat;
   final SecondaryAmountWidgetStyle style;
   final Color? badgeColor;
   final Network? network;
@@ -335,6 +341,7 @@ class SecondaryAmountWidget extends StatelessWidget {
       {super.key,
       required this.unit,
       required this.amountSats,
+      this.fakeFiat,
       required this.locale,
       this.symbolFiat = "",
       this.fxRateFiat,
@@ -393,8 +400,14 @@ class SecondaryAmountWidget extends StatelessWidget {
           textScaler: TextScaler.linear(textScaleFactor),
           text: TextSpan(
               children: unit == AmountDisplayUnit.fiat
-                  ? buildFiatTextSpans(amountSats, fxRateFiat!, textStyle,
-                      locale, decimalSeparator, groupSeparator,
+                  ? buildFiatTextSpans(
+                      amountSats,
+                      fxRateFiat!,
+                      fakeFiat: fakeFiat,
+                      textStyle,
+                      locale,
+                      decimalSeparator,
+                      groupSeparator,
                       millionaireMode: millionaireMode)
                   : buildSecondaryBtcTextSpans(amountSats, decimalSeparator,
                       groupSeparator, textStyle, textStyle)),
@@ -578,7 +591,8 @@ List<TextSpan> buildFiatTextSpans(
     String locale,
     String decimalSeparator,
     String groupSeparator,
-    {required bool millionaireMode}) {
+    {required bool millionaireMode,
+    double? fakeFiat}) {
   List<TextSpan> textSpans = [];
 
   String amountFiatString =
@@ -607,9 +621,15 @@ List<TextSpan> buildFiatTextSpans(
     }
   } else {
     // Display the original amount
-    for (int i = 0; i < amountFiatString.length; i++) {
-      String char = amountFiatString[i];
-      textSpans.add(_createTextSpan(char, textStyle!));
+    if (fakeFiat != null) {
+      String formattedFakeFiat =
+          fakeFiat.toStringAsFixed(2); // Adjust decimal places if needed
+      textSpans.add(_createTextSpan(formattedFakeFiat, textStyle!));
+    } else {
+      for (int i = 0; i < amountFiatString.length; i++) {
+        String char = amountFiatString[i];
+        textSpans.add(_createTextSpan(char, textStyle!));
+      }
     }
   }
 
