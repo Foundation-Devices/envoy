@@ -566,7 +566,13 @@ class Wallet {
     _lib = lib;
   }
 
-  drop() {
+  drop() async {
+    if (_currentlySyncing) {
+      await Future.delayed(Duration(seconds: 1));
+      drop();
+      return;
+    }
+
     final rustFunction =
         _lib.lookup<NativeFunction<WalletDropRust>>('wallet_drop');
     final dartFunction = rustFunction.asFunction<WalletDropDart>();
