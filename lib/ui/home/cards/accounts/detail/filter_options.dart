@@ -800,4 +800,20 @@ class _SlidingToggleState extends State<SlidingToggle>
       },
     );
   }
+
+  @override
+  void didUpdateWidget(covariant SlidingToggle oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value) {
+      value = widget.value;
+      if (_animationController.isAnimating) {
+        _animationController.stop();
+      }
+      if (value == "Tx") {
+        _animationController.reverse();
+      } else {
+        _animationController.forward();
+      }
+    }
+  }
 }
