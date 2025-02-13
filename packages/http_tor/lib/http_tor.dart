@@ -227,7 +227,7 @@ class HttpTor {
         .result
         .then((response) => response, onError: (e) {
       if (e is TimeoutException) {
-        throw TimeoutException("Timed out");
+        throw TimeoutException("Timed out ${uri}, torPort: ${torPort}");
       }
       throw Exception(e.message);
     });

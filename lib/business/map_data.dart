@@ -5,6 +5,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:envoy/business/venue.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -101,7 +102,7 @@ class MapData {
     }
   }
 
-  Future<Map<String, dynamic>> fetchATMData() async {
+  Future<Map<String, dynamic>?> fetchATMData() async {
     const String overpassUrl = 'https://overpass-api.de/api/interpreter';
     const String query = '''
 [out:json][timeout:25];
@@ -124,8 +125,10 @@ out geom;
         throw Exception(
             'Failed to fetch data. HTTP status: ${response.statusCode}');
       }
-    } catch (e) {
-      throw Exception('Error fetching data: $e');
+    } catch (e, stack) {
+      EnvoyReport()
+          .log("MapData", e.toString(), stackTrace: stack, limitTrace: 15);
+      return null;
     }
   }
 
@@ -175,7 +178,9 @@ out geom;
               DateTime.now()
                   .isAfter(savedTimestamp.add(const Duration(days: 7))))) {
         final newData = await fetchATMData();
-        await saveATMData(newData);
+        if (newData != null) {
+          await saveATMData(newData);
+        }
       } else {
         kPrint('Data is up to date. Skipping fetch and save.');
       }

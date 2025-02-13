@@ -23,6 +23,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/amount_entry.dart';
+import 'package:envoy/ui/state/send_screen_state.dart';
 
 enum BroadcastProgress {
   inProgress,
@@ -237,7 +239,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         }
       });
       return true;
-    } on InsufficientFunds {
+    } on InsufficientFunds catch (e) {
       // FIXME: This is to avoid redraws while we search for a valid PSBT
       // FIXME: See setFee in fee_slider
       if (!settingFee) {
@@ -247,6 +249,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           ..psbt = null
           ..canProceed = false;
       }
+      kPrint(e);
       container.read(spendValidationErrorProvider.notifier).state =
           S().send_keyboard_amount_insufficient_funds_info;
     } on BelowDustLimit {
