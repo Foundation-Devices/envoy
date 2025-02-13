@@ -29,7 +29,7 @@ class FwIntroPage extends StatelessWidget {
         },
         clipArt: Transform.translate(
             offset: const Offset(0, 75),
-            child: Image.asset("assets/fw_intro.png", height: 150)),
+            child: Image.asset("assets/fw_download.png", height: 150)),
         text: [
           Column(
             mainAxisSize: MainAxisSize.min,
