@@ -63,6 +63,8 @@ Future<void> fromHomeToBuyOptions(WidgetTester tester) async {
 Future<void> setUpAppFromStart(WidgetTester tester) async {
   await tester.pump();
 
+  await disableTorOnboarding(tester);
+
   final setUpButtonFinder = find.text('Create a\nMobile Wallet');
   expect(setUpButtonFinder, findsOneWidget);
   await tester.tap(setUpButtonFinder);
@@ -580,13 +582,7 @@ Future<void> onboardingAndEnterSeed(
     WidgetTester tester, List<String> seed) async {
   await tester.pump(Durations.long2);
 
-  // turn off Tor
-  await findAndPressTextButton(tester, "Advanced Options");
-  await enablePerformance(tester);
-  Finder backButtonFinder = find.byType(CupertinoNavigationBarBackButton);
-  expect(backButtonFinder, findsOne);
-  await tester.tap(backButtonFinder);
-  await tester.pump(Durations.long2);
+  await disableTorOnboarding(tester);
 
   final setUpButtonFinder = find.text('Create a\nMobile Wallet');
   expect(setUpButtonFinder, findsOneWidget);
@@ -623,6 +619,15 @@ Future<void> onboardingAndEnterSeed(
   expect(doneButton, findsOneWidget);
   await tester.tap(doneButton);
   await tester.pump(const Duration(milliseconds: 500));
+}
+
+Future<void> disableTorOnboarding(WidgetTester tester) async {
+  await findAndPressTextButton(tester, "Advanced Options");
+  await enablePerformance(tester);
+  Finder backButtonFinder = find.byType(CupertinoNavigationBarBackButton);
+  expect(backButtonFinder, findsOne);
+  await tester.tap(backButtonFinder);
+  await tester.pump(Durations.long2);
 }
 
 Future<void> findAndPressBuyOptions(WidgetTester tester) async {
