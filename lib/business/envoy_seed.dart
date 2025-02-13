@@ -229,12 +229,16 @@ class EnvoySeed {
 
     // SFT-2447: flip cloud syncing to false if we're making an offline file
     if (!isOnlineBackup) {
-      var settings = values[keys.indexOf(Settings.SETTINGS_PREFS)];
-      var jsonSettings = jsonDecode(settings);
-      jsonSettings["syncToCloudSetting"] = false;
-      settings = jsonEncode(jsonSettings);
-      json["stores"][indexOfPreferences]["values"]
-          [keys.indexOf(Settings.SETTINGS_PREFS)] = settings;
+      try {
+        var settings = values[keys.indexOf(Settings.SETTINGS_PREFS)];
+        var jsonSettings = jsonDecode(settings);
+        jsonSettings["syncToCloudSetting"] = false;
+        settings = jsonEncode(jsonSettings);
+        json["stores"][indexOfPreferences]["values"]
+            [keys.indexOf(Settings.SETTINGS_PREFS)] = settings;
+      } catch (e, stack) {
+        EnvoyReport().log("EnvoySeed", e.toString(), stackTrace: stack);
+      }
     }
 
     // Strip keys from hot wallets

@@ -71,7 +71,8 @@ class EnvoyReport {
     }
   }
 
-  Future<void> log(String category, String message) async {
+  Future<void> log(String category, String message,
+      {StackTrace? stackTrace, int limitTrace = 50}) async {
     await _ensureDbInitialized();
 
     if (_db != null) {
@@ -80,6 +81,10 @@ class EnvoyReport {
         "message": message,
         "time": DateTime.now().toIso8601String()
       };
+      if (stackTrace != null) {
+        report["stackTrace"] =
+            getStackTraceElements(stackTrace, limitTrace).join("\n");
+      }
       _logsStore.add(_db!, report);
     }
   }
