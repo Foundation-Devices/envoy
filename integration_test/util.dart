@@ -36,6 +36,7 @@ Future<void> goBackHome(WidgetTester tester) async {
 Future<void> fromHomeToBuyOptions(WidgetTester tester) async {
   await tester.pump();
   final buyBitcoinButton = find.text('Buy');
+  await tester.pumpUntilFound(buyBitcoinButton);
   expect(buyBitcoinButton, findsOneWidget);
 
   await tester.tap(buyBitcoinButton);
@@ -680,6 +681,7 @@ Future<void> setUpFromStartNoAccounts(WidgetTester tester) async {
 
   // go to home w no accounts
   final skipButtonFinder = find.text('Skip');
+  await tester.pumpUntilFound(skipButtonFinder);
   expect(skipButtonFinder, findsOneWidget);
   await tester.tap(skipButtonFinder);
   await tester.pump(Durations.long2);

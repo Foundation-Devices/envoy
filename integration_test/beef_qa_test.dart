@@ -1569,6 +1569,7 @@ Future<void> main() async {
       final closeDialogButton = find.byIcon(Icons.close);
       await tester.tap(closeDialogButton.last);
       await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
       // Check that a pop up close on 'x'
       expect(popUpText, findsNothing);
 
@@ -1584,10 +1585,12 @@ Future<void> main() async {
 
       // Make sure device is removed
       final emptyDevices = find.byType(GhostDevice);
+      await tester.pumpUntilFound(emptyDevices);
       expect(emptyDevices, findsOne);
 
       // Verify that deleting the device also removes its associated accounts
       await findAndPressTextButton(tester, 'Accounts');
+      await tester.pump(Durations.long2);
       final passportAccount = find.text(
         deviceName,
       );
