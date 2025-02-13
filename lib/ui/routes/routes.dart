@@ -60,9 +60,9 @@ final GoRouter mainRouter = GoRouter(
             return state.namedLocation(ONBOARD_PRIME);
           }
           if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) != true) {
-            return state.namedLocation(ROUTE_SPLASH);
+            return ROUTE_SPLASH;
           } else {
-            return state.namedLocation(ROUTE_ACCOUNTS_HOME);
+            return ROUTE_ACCOUNTS_HOME;
           }
         }),
     fwRoutes,
