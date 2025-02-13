@@ -29,7 +29,6 @@ import 'package:envoy/business/locale.dart';
 
 enum AmountDisplayUnit { btc, sat, fiat }
 
-
 final fakeFiatSendAmountProvider = StateProvider<double?>((ref) => 0); // null
 
 class AmountEntry extends ConsumerStatefulWidget {
@@ -79,8 +78,8 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     }
   }
 
-
-  int getAmountSats(String _enteredAmount) { // TODO: ?
+  int getAmountSats() {
+    // TODO: ?
     final unit = ref.read(sendScreenUnitProvider);
     return unit == AmountDisplayUnit.btc
         ? convertBtcStringToSats(_enteredAmount)
@@ -88,7 +87,6 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
             ? convertSatsStringToSats(_enteredAmount)
             : ExchangeRate().convertFiatStringToSats((_enteredAmount)));
   }
-
 
   Future<void> pasteAmount() async {
     var unit = ref.read(sendScreenUnitProvider);
@@ -196,17 +194,9 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
             }
           });
         }
-
-
-        ref.read(fakeFiatSendAmountProvider.notifier).state =
-            double.tryParse(_enteredAmount);
-
-      /// this here is the amount that needs to be !!!
-      //  _enteredAmount = (ref.watch(fakeFiatSendAmountProvider)?.toStringAsFixed(0))!;
-
     }
 
-    _amountSats = getAmountSats(_enteredAmount);
+    _amountSats = getAmountSats();
 
     // Make sure we don't do any formatting in certain situations
     bool addZero = (event == "0") &&
@@ -229,6 +219,14 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
             ? "0"
             : (_enteredAmount) + (addDot ? (fiatDecimalSeparator) : "");
       });
+    }
+
+    if (unit == AmountDisplayUnit.fiat) {
+      ref.read(fakeFiatSendAmountProvider.notifier).state =
+          double.tryParse(_enteredAmount);
+    } else {
+      ref.read(fakeFiatSendAmountProvider.notifier).state =
+          double.parse(getDisplayAmount(_amountSats, AmountDisplayUnit.fiat));
     }
 
     // else {
@@ -267,18 +265,16 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
               account: widget.account,
               inputMode: true,
               displayedAmount: _enteredAmount,
-              //displayedAmount:( (ref.watch(fakeFiatSendAmountProvider) != null && unit == AmountDisplayUnit.fiat ) ? ref.watch(fakeFiatSendAmountProvider)?.toStringAsFixed(0) : _enteredAmount)!,
+              fakeFiat: ref.watch(fakeFiatSendAmountProvider),
               amountSats: _amountSats,
               onUnitToggled: (enteredAmount) {
                 // SFT-2508: special rule for circling through is to pad fiat with last 0
                 final unit = ref.watch(sendScreenUnitProvider);
-                if (unit == AmountDisplayUnit.fiat &&
-                    enteredAmount.contains(fiatDecimalSeparator) &&
-                    ((enteredAmount.length -
-                            enteredAmount.indexOf(fiatDecimalSeparator)) ==
-                        2)) {
-                  enteredAmount = "${enteredAmount}0";
-                  //  "${ref.watch(fakeFiatSendAmountProvider)!.toStringAsFixed(2)}0"; //"${enteredAmount}0";
+                if(unit == AmountDisplayUnit.fiat){
+                  enteredAmount = ref.watch(fakeFiatSendAmountProvider)!.toStringAsFixed(2);
+                  if(ref.watch(fakeFiatSendAmountProvider) == 0){
+                    enteredAmount = "0";
+                  }
                 }
                 if (_addTrailingZeros && unit == AmountDisplayUnit.btc) {
                   enteredAmount =

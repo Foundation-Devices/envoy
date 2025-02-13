@@ -271,6 +271,7 @@ class ExchangeRate extends ChangeNotifier {
     return (_usdRate ?? 0) * amountSats / 100000000;
   }
 
+
   // SATS to double FIAT
   double convertSatsToFiat(int amountSats) {
 
@@ -283,7 +284,7 @@ class ExchangeRate extends ChangeNotifier {
 
   // SATS to FIAT
   String getFormattedAmount(int amountSats,
-      {bool includeSymbol = true, Wallet? wallet}) {
+      {bool includeSymbol = true, Wallet? wallet, double? fakeFiat, bool useFake = false}) {
     // Hide test coins on production builds only
     if (!kDebugMode && wallet != null && wallet.network != Network.Mainnet) {
       return "";
@@ -293,20 +294,28 @@ class ExchangeRate extends ChangeNotifier {
       return "";
     }
 
-    NumberFormat currencyFormatter =
-        NumberFormat.currency(locale: currentLocale, symbol: "");
-
     if (_selectedCurrencyRate == null) {
       return "";
     }
 
-    String formattedAmount = currencyFormatter
-        .format(_selectedCurrencyRate! * amountSats / 100000000);
+    NumberFormat currencyFormatter =
+        NumberFormat.currency(locale: currentLocale, symbol: "");
 
-    // NumberFormat still adds a non-breaking space if symbol is empty
-    const int nonBreakingSpace = 0x00A0;
-    formattedAmount =
-        formattedAmount.replaceAll(String.fromCharCode(nonBreakingSpace), "");
+    String formattedAmount;
+
+    if(fakeFiat != null && useFake){
+      formattedAmount = fakeFiat.toStringAsFixed(2);
+    }
+    else{
+      formattedAmount = currencyFormatter
+          .format(_selectedCurrencyRate! * amountSats / 100000000);
+
+      // NumberFormat still adds a non-breaking space if symbol is empty
+      const int nonBreakingSpace = 0x00A0;
+      formattedAmount =
+          formattedAmount.replaceAll(String.fromCharCode(nonBreakingSpace), "");
+    }
+
 
     return (includeSymbol ? _selectedCurrency?.symbol ?? '' : "") +
         formattedAmount;
