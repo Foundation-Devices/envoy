@@ -133,7 +133,8 @@ final walletTransactionsProvider =
                       // Beyond this point they're the same length
                       // So let's naively compare the txids
                       for (int i = 0; i < one.length; i++) {
-                        if (one[i].txId != otherList[i].txId) {
+                        if (one[i].txId != otherList[i].txId ||
+                            one[i].isConfirmed != otherList[i].isConfirmed) {
                           return false;
                         }
                       }
