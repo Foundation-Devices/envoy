@@ -22,6 +22,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider/path_provider.dart';
@@ -36,9 +37,11 @@ Future<void> fromHomeToBuyOptions(WidgetTester tester,
     {bool selectFirstCountryAvailable = true}) async {
   await tester.pump();
   final buyBitcoinButton = find.text('Buy');
+  await tester.pumpUntilFound(buyBitcoinButton);
   expect(buyBitcoinButton, findsOneWidget);
 
   await tester.tap(buyBitcoinButton);
+  await tester.pump(Durations.long2);
   await tester.pump(Durations.long2);
 
   final selectRegionDropDown = find.text('Select State');
@@ -87,16 +90,12 @@ Future<void> fromHomeToBuyOptions(WidgetTester tester,
 Future<void> setUpAppFromStart(WidgetTester tester) async {
   await tester.pump();
 
-  final setUpButtonFinder = find.text('Set Up Envoy Wallet');
+  await disableTorOnboarding(tester);
+
+  final setUpButtonFinder = find.text('Create a\nMobile Wallet');
   expect(setUpButtonFinder, findsOneWidget);
   await tester.tap(setUpButtonFinder);
   await tester.pump(const Duration(milliseconds: 500));
-
-  final continueButtonFinder = find.text('Continue');
-  expect(continueButtonFinder, findsOneWidget);
-  await tester.tap(continueButtonFinder);
-  await tester.pump(Durations.long2);
-  await tester.pump(Durations.long2);
 
   final enableMagicButtonFinder = find.text('Enable Magic Backups');
   expect(enableMagicButtonFinder, findsOneWidget);
@@ -109,6 +108,9 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
   await tester.tap(createMagicButtonFinder);
   await tester.pump(const Duration(milliseconds: 1500));
 
+  final continueButtonFinder = find.text('Continue');
+  await tester.pump(Durations.long2);
+
   await tester.pumpUntilFound(continueButtonFinder,
       tries: 50, duration: Durations.long2);
 
@@ -120,6 +122,13 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
   expect(continueButtonFinder, findsOneWidget);
   await tester.tap(continueButtonFinder);
   await tester.pump(const Duration(milliseconds: 500));
+
+  //Android has an additional info screen about backup
+  if (Platform.isAndroid) {
+    expect(continueButtonFinder, findsOneWidget);
+    await tester.tap(continueButtonFinder);
+    await tester.pump(const Duration(milliseconds: 500));
+  }
 }
 
 /// Send Signet money back to test Account
@@ -519,12 +528,15 @@ Future<void> setUpWalletFromSeedViaBackupFile(
       tries: 100, duration: Durations.long2);
   final continueButtonFinder = find.text('Continue');
   expect(successMessage, findsOneWidget);
+  await tester.pump(Durations.long2);
   expect(continueButtonFinder, findsOneWidget);
   await tester.tap(continueButtonFinder);
-  await tester.pump(const Duration(milliseconds: 500));
+  await tester.pump(Durations.long2);
+  await tester.pump(Durations.long2);
 
   // Scroll down by 600 pixels
   await scrollHome(tester, -600);
+  await tester.pump(Durations.long2);
 
   // search for passport account
   final passportAccount = find.text("Passport");
@@ -599,16 +611,14 @@ Future<void> scrollFindAndTapText(WidgetTester tester, String text,
 
 Future<void> onboardingAndEnterSeed(
     WidgetTester tester, List<String> seed) async {
-  final setUpButtonFinder = find.text('Set Up Envoy Wallet');
+  await tester.pump(Durations.long2);
+
+  await disableTorOnboarding(tester);
+
+  final setUpButtonFinder = find.text('Create a\nMobile Wallet');
   expect(setUpButtonFinder, findsOneWidget);
   await tester.tap(setUpButtonFinder);
   await tester.pump(const Duration(milliseconds: 500));
-
-  final continueButtonFinder = find.text('Continue');
-  expect(continueButtonFinder, findsOneWidget);
-  await tester.tap(continueButtonFinder);
-  await tester.pump(Durations.long2);
-  await tester.pump(Durations.long2);
 
   final manuallyConfigureSeedWords = find.text('Manually Configure Seed Words');
   expect(manuallyConfigureSeedWords, findsOneWidget);
@@ -640,6 +650,15 @@ Future<void> onboardingAndEnterSeed(
   expect(doneButton, findsOneWidget);
   await tester.tap(doneButton);
   await tester.pump(const Duration(milliseconds: 500));
+}
+
+Future<void> disableTorOnboarding(WidgetTester tester) async {
+  await findAndPressTextButton(tester, "Advanced Options");
+  await enablePerformance(tester);
+  Finder backButtonFinder = find.byType(CupertinoNavigationBarBackButton);
+  expect(backButtonFinder, findsOne);
+  await tester.tap(backButtonFinder);
+  await tester.pump(Durations.long2);
 }
 
 Future<void> findAndPressBuyOptions(WidgetTester tester) async {
@@ -685,19 +704,14 @@ Future<void> checkBuyOptionAndTitle(WidgetTester tester) async {
 Future<void> setUpFromStartNoAccounts(WidgetTester tester) async {
   await tester.pump();
 
-  final setUpButtonFinder = find.text('Set Up Envoy Wallet');
+  final setUpButtonFinder = find.text('Create a\nMobile Wallet');
   expect(setUpButtonFinder, findsOneWidget);
   await tester.tap(setUpButtonFinder);
   await tester.pump(Durations.long2);
 
-  final continueButtonFinder = find.text('Continue');
-  expect(continueButtonFinder, findsOneWidget);
-  await tester.tap(continueButtonFinder);
-  await tester.pump(Durations.long2);
-  await tester.pump(Durations.long2);
-
   // go to home w no accounts
   final skipButtonFinder = find.text('Skip');
+  await tester.pumpUntilFound(skipButtonFinder);
   expect(skipButtonFinder, findsOneWidget);
   await tester.tap(skipButtonFinder);
   await tester.pump(Durations.long2);
