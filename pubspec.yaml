@@ -123,6 +123,7 @@ dependencies:
 dependency_overrides:
   watcher: ^1.1.0
   win32: ^5.5.4 # https://stackoverflow.com/questions/69553108/flutter-error-unmodifiableuint8listview-is-restricted-and-cant-be-extended-o
+  archive: ^3.6.1
 
 dev_dependencies:
   test: any

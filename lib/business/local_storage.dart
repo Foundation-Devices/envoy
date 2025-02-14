@@ -7,6 +7,7 @@ import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:archive/archive.dart';
 
 class LocalStorage {
   final secureStorage = const FlutterSecureStorage();
@@ -126,5 +127,30 @@ class LocalStorage {
   Future<bool> fileExists(String name) async {
     final file = File('${appSupportDir.path}/$name');
     return file.exists();
+  }
+
+  Future<void> extractTarFileAndSaveExtracted(String tarFileName) async {
+    final file = File('${appSupportDir.path}/$tarFileName');
+    if (!await file.exists()) {
+      throw Exception('Tar file does not exist: $tarFileName');
+    }
+
+    final bytes = await file.readAsBytes();
+    final archive = TarDecoder().decodeBytes(bytes);
+    final folderName = tarFileName.replaceAll('.tar', '');
+    final extractionFolder = Directory('${appSupportDir.path}/$folderName');
+    await extractionFolder.create(recursive: true);
+    final destination = extractionFolder.path;
+
+    for (final file in archive) {
+      final filePath = '$destination/${file.name}';
+      if (file.isFile) {
+        final outputFile = File(filePath);
+        await outputFile.create(recursive: true);
+        await outputFile.writeAsBytes(file.content as List<int>);
+      } else {
+        await Directory(filePath).create(recursive: true);
+      }
+    }
   }
 }
