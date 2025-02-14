@@ -24,7 +24,6 @@ class UpdatesManager {
 
   factory UpdatesManager() => _instance;
 
-  final HttpTor _http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
   final LocalStorage _localStorage = LocalStorage();
   final EnvoyStorage _envoyStorage = EnvoyStorage();
 
@@ -37,13 +36,12 @@ class UpdatesManager {
   static Future<UpdatesManager> init() async => _instance;
 
   void _fetchUpdates() {
-    // TODO: Update range to [0, 2] when prime firmware on the server is ready.
-    for (var deviceId in [0, 1]) {
+    for (var device in [DeviceType.passportGen1, DeviceType.passportGen12]) {
       Server()
-          .fetchFirmwareUpdateInfo(deviceId)
+          .fetchFirmwareUpdateInfo(device.id)
           .then(_downloadAndStoreFirmware)
           .catchError((e) {
-        kPrint("Couldn't fetch firmware for device $deviceId: $e");
+        kPrint("Couldn't fetch firmware for device $device: $e");
       });
     }
     Server().checkForForceUpdate();
@@ -59,7 +57,8 @@ class UpdatesManager {
       return;
     }
 
-    final response = await _http.get(fw.url);
+    final response =
+        await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(fw.url);
     final bytes = response.bodyBytes;
 
     _verifyChecksum(bytes, fw.md5, () => md5, 'MD5');
@@ -69,8 +68,8 @@ class UpdatesManager {
 
     await _localStorage.saveFileBytes(fileName, bytes);
 
-    if (fw.deviceId == 2) {
-      await _localStorage.extractTarFileAndSaveExtracted(fileName);
+    if (fw.deviceId == DeviceType.passportPrime.id) {
+      await _localStorage.extractTarFile(fileName);
       await _addPrimeFirmwareToEnvoyStorage(fileName, fw);
     } else {
       _envoyStorage.addNewFirmware(fw.deviceId, fw.version, fileName);
@@ -114,15 +113,18 @@ class UpdatesManager {
   }
 
   String generateFirmwareFileName(FirmwareUpdate fw) {
-    switch (fw.deviceId) {
-      case 0:
+    final deviceType = DeviceType.values.firstWhere(
+      (device) => device.id == fw.deviceId,
+      orElse: () => throw Exception("Unsupported deviceId: ${fw.deviceId}"),
+    );
+
+    switch (deviceType) {
+      case DeviceType.passportGen1:
         return "${fw.version}-founders-passport.bin";
-      case 1:
+      case DeviceType.passportGen12:
         return "${fw.version}-passport.bin";
-      case 2:
+      case DeviceType.passportPrime:
         return "${fw.version}-prime-release.tar";
-      default:
-        throw Exception("Unsupported deviceId: ${fw.deviceId}");
     }
   }
 
@@ -152,7 +154,7 @@ class UpdatesManager {
   }
 
   bool _isFileNameValid(int deviceId, String path) {
-    if (deviceId == 2) {
+    if (deviceId == DeviceType.passportPrime.id) {
       return true;
     } else {
       final fileName = basename(path);

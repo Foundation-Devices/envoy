@@ -15,7 +15,15 @@ import 'package:envoy/business/account_manager.dart';
 
 part 'devices.g.dart';
 
-enum DeviceType { passportGen1, passportGen12, passportPrime }
+enum DeviceType {
+  passportGen1(0),
+  passportGen12(1),
+  passportPrime(2);
+
+  final int id;
+
+  const DeviceType(this.id);
+}
 
 @JsonSerializable()
 class Device {
