@@ -19,6 +19,10 @@ class InsufficientFunds implements Exception {
   final int available;
 
   InsufficientFunds(String s, this.needed, this.available);
+  @override
+  String toString() {
+    return "InsufficientFunds: needed=$needed available=${available}";
+  }
 }
 
 class BelowDustLimit implements Exception {}

@@ -12,6 +12,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
+import 'package:envoy/util/build_context_extension.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -163,9 +164,15 @@ class _SendCardState extends ConsumerState<SendCard>
                     children: [
                       Padding(
                         padding: EdgeInsets.only(
-                          top: EnvoySpacing.medium2,
-                          left: EnvoySpacing.medium2,
-                          right: EnvoySpacing.medium2,
+                          top: context.isSmallScreen
+                              ? EnvoySpacing.medium1
+                              : EnvoySpacing.medium2,
+                          left: context.isSmallScreen
+                              ? EnvoySpacing.medium1
+                              : EnvoySpacing.medium2,
+                          right: context.isSmallScreen
+                              ? EnvoySpacing.medium1
+                              : EnvoySpacing.medium2,
                           bottom: addressEntryBottomPadding,
                         ),
                         child: AddressEntry(

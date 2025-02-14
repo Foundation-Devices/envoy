@@ -55,6 +55,7 @@ class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
                   centerTitle: true,
                   title: Text(
                     S().manage_account_address_heading,
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,

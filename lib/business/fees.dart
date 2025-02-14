@@ -7,6 +7,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_tor/http_tor.dart';
@@ -181,7 +182,11 @@ class Fees {
       } else {
         throw Exception("Couldn't get mempool.space fees");
       }
-    });
+    }).onError(
+      (error, stackTrace) {
+        EnvoyReport().log("Fees", "Cannot get Fees ${error.toString()}");
+      },
+    );
   }
 
   _getMempoolBlocksFees(Network network) {
@@ -199,7 +204,11 @@ class Fees {
       } else {
         throw Exception("Couldn't get mempool.space blocks fees");
       }
-    });
+    }).onError(
+      (error, stackTrace) {
+        EnvoyReport().log("Fees", "Cannot get BlocksFees ${error.toString()}");
+      },
+    );
   }
 
   // Generated
