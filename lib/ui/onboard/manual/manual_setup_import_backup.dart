@@ -130,7 +130,7 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                   }
                 },
                 child: Image.asset(
-                  "assets/fw_intro.png",
+                  "assets/fw_download.png",
                   width: 150,
                   height: 150,
                 ),

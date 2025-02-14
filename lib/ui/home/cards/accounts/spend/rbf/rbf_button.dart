@@ -220,7 +220,9 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
       }
       return;
     }
-    if (ref.read(rbfSpendStateProvider) != null) {
+    final rbfSpendState = ref.read(rbfSpendStateProvider);
+    if (rbfSpendState != null) {
+      ref.read(spendFeeRateProvider.notifier).state = rbfSpendState.feeRate;
       navigator.push(MaterialPageRoute(
         builder: (context) {
           return const RBFSpendScreen();

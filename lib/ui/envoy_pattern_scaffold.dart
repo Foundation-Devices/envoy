@@ -28,7 +28,6 @@ Widget envoyScaffoldShieldScrollView(BuildContext context, Widget child) {
 }
 
 class EnvoyPatternScaffold extends StatefulWidget {
-  final Widget? child;
   final Widget? shield;
   final Widget? header;
   final String? heroTag;
@@ -39,7 +38,6 @@ class EnvoyPatternScaffold extends StatefulWidget {
   const EnvoyPatternScaffold(
       {super.key,
       this.animate = true,
-      this.child,
       this.appBar,
       this.shield,
       this.header,
