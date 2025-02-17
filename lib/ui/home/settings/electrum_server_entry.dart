@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_tor/http_tor.dart';
@@ -230,6 +231,7 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
       }
     } catch (e) {
       ConnectivityManager().electrumFailure();
+      EnvoyReport().log("EsploraServer", e.toString());
       if (mounted) {
         setState(() {
           _state = ElectrumServerEntryState.invalid;
