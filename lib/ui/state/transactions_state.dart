@@ -12,6 +12,7 @@ import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
@@ -363,12 +364,16 @@ Future prunePendingTransactions(
   }
   for (var pendingTx in ramp) {
     if (pendingTx.purchaseViewToken != null) {
-      String? state =
-          await checkPurchase(pendingTx.txId, pendingTx.purchaseViewToken!);
-      if (state == "EXPIRED" || state == "CANCELLED") {
-        isNewExpiredBuyTxAvailable.add([pendingTx]);
-        EnvoyStorage().deleteTxNote(pendingTx.txId);
-        EnvoyStorage().deletePendingTx(pendingTx.txId);
+      try {
+        String? state =
+            await checkPurchase(pendingTx.txId, pendingTx.purchaseViewToken!);
+        if (state == "EXPIRED" || state == "CANCELLED") {
+          isNewExpiredBuyTxAvailable.add([pendingTx]);
+          EnvoyStorage().deleteTxNote(pendingTx.txId);
+          EnvoyStorage().deletePendingTx(pendingTx.txId);
+        }
+      } catch (e) {
+        EnvoyReport().log("RampStateCheck", "Error checking ramp state: $e");
       }
     }
 
