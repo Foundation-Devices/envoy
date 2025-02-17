@@ -72,8 +72,8 @@ Future<void> fromHomeToBuyOptions(WidgetTester tester,
   }
 
   if (!selectFirstCountryAvailable) {
-    await scrollUntilVisible(tester, "Granada",
-        scrollableWidgetType: ListView, scrollIncrement: -110);
+    await scrollUntilVisible(tester, "Granada", scrollableWidgetType: ListView);
+    await scrollHome(tester, -100, scrollableWidgetType: ListView);
     final granada = find.text('Granada');
     expect(granada, findsOneWidget);
     await tester.tap(granada);
