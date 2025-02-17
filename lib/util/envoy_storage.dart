@@ -26,16 +26,45 @@ import 'package:wallet/wallet.dart' as wallet;
 import 'package:envoy/business/country.dart';
 import 'package:envoy/business/server.dart';
 
+class Action {
+  Action({
+    required this.action,
+    this.source,
+    this.dest,
+    this.patchFile,
+    this.patchSource,
+    this.baseVersion,
+    this.newVersion,
+  });
+
+  final String action;
+  final String? source;
+  final String? dest;
+  final String? patchFile;
+  final String? patchSource;
+  final String? baseVersion;
+  final String? newVersion;
+}
+
+class PackageAction {
+  PackageAction({required this.name, this.actions});
+
+  final String name;
+  final List<Action>? actions;
+}
+
 class FirmwareInfo {
   FirmwareInfo({
     required this.deviceID,
     required this.storedVersion,
     required this.path,
+    this.packageActions,
   });
 
   final int deviceID;
   final String storedVersion;
   final String path;
+  final List<PackageAction>? packageActions;
 }
 
 final pendingTxStreamProvider =
@@ -473,10 +502,15 @@ class EnvoyStorage {
     pendingTxStore.delete(_db);
   }
 
-  Future addNewFirmware(int deviceId, String version, String path) async {
-    await firmwareStore
-        .record(deviceId)
-        .put(_db, {'version': version, 'path': path});
+  Future addNewFirmware(int deviceId, String version, String path,
+      {List<PackageAction>? packageActions}) async {
+    await firmwareStore.record(deviceId).put(_db, {
+      'version': version,
+      'path': path,
+      if (packageActions != null)
+        'packageActions':
+            packageActions.map((e) => _packageActionToMap(e)).toList(),
+    });
     return true;
   }
 
@@ -492,10 +526,19 @@ class EnvoyStorage {
     }
 
     var record = records[0];
+    var data = record.value! as Map;
+
     return FirmwareInfo(
-        deviceID: record.key as int,
-        storedVersion: (record.value! as Map)['version'],
-        path: (record.value! as Map)['path']);
+      deviceID: record.key as int,
+      storedVersion: data['version'],
+      path: data['path'],
+      packageActions: (data['packageActions'] as List?)
+          ?.map((e) => e is Map
+              ? _mapToPackageAction(Map<String, dynamic>.from(e))
+              : null)
+          .whereType<PackageAction>() // Remove nulls safely
+          .toList(),
+    );
   }
 
   Stream<FirmwareInfo?> getfirmwareSteam(int deviceId) {
@@ -507,6 +550,46 @@ class EnvoyStorage {
         .map((firmwares) {
       return transformFirmware(firmwares);
     });
+  }
+
+  Map<String, dynamic> _packageActionToMap(PackageAction action) {
+    return {
+      'name': action.name,
+      'actions': action.actions?.map((e) => _actionToMap(e)).toList(),
+    };
+  }
+
+  Map<String, dynamic> _actionToMap(Action action) {
+    return {
+      'action': action.action,
+      'source': action.source,
+      'dest': action.dest,
+      'patchFile': action.patchFile,
+      'patchSource': action.patchSource,
+      'baseVersion': action.baseVersion,
+      'newVersion': action.newVersion,
+    };
+  }
+
+  PackageAction _mapToPackageAction(Map<String, dynamic> map) {
+    return PackageAction(
+      name: map['name'],
+      actions: (map['actions'] as List?)
+          ?.map((e) => _mapToAction(Map<String, dynamic>.from(e)))
+          .toList(),
+    );
+  }
+
+  Action _mapToAction(Map<String, dynamic> map) {
+    return Action(
+      action: map['action'],
+      source: map['source'],
+      dest: map['dest'],
+      patchFile: map['patchFile'],
+      patchSource: map['patchSource'],
+      baseVersion: map['baseVersion'],
+      newVersion: map['newVersion'],
+    );
   }
 
   Future<String> export() async {
