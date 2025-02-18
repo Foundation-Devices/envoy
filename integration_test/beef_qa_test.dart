@@ -1624,6 +1624,7 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
 
       await findAndPressIcon(tester, Icons.copy);
+      //await tester.pump(const Duration(seconds: 5));
 
       await checkForToast(tester);
       // Perform an action that should trigger a UI update

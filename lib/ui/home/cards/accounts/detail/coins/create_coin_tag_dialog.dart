@@ -18,8 +18,11 @@ import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 
-class CreateCoinTag extends StatefulWidget {
+class CreateCoinTag extends ConsumerStatefulWidget {
   final String accountId;
   final Function onTagUpdate;
 
@@ -27,7 +30,7 @@ class CreateCoinTag extends StatefulWidget {
       {super.key, required this.onTagUpdate, required this.accountId});
 
   @override
-  State<CreateCoinTag> createState() => _CreateCoinTagState();
+  ConsumerState<CreateCoinTag> createState() => _CreateCoinTagState();
 }
 
 List<String> tagSuggestions = [
@@ -38,12 +41,12 @@ List<String> tagSuggestions = [
   S().tagSelection_example5,
 ];
 
-class _CreateCoinTagState extends State<CreateCoinTag> {
+class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
   @override
   Widget build(BuildContext context) {
     return Container(
       width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
-      height: 428,
+      height: 440,
       padding: const EdgeInsets.all(EnvoySpacing.small),
       child: EnvoyScaffold(
           resizeToAvoidBottomInset: false,
@@ -58,6 +61,10 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                   icon: const Icon(Icons.close),
                   padding: const EdgeInsets.all(12),
                   onPressed: () {
+                    if (ref.read(selectedAccountProvider) != null) {
+                      coinSelectionOverlayKey.currentState
+                          ?.show(SpendOverlayContext.preselectCoins);
+                    }
                     Navigator.of(context).pop();
                   },
                 ),
@@ -149,7 +156,8 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                   color: EnvoyColors.surface4,
                   borderRadius: BorderRadius.circular(EnvoySpacing.small)),
               child: Padding(
-                  padding: const EdgeInsets.only(top: EnvoySpacing.small),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
                   //16
                   child: TextFormField(
                     style: const TextStyle(
@@ -157,6 +165,7 @@ class _CreateCoinTagState extends State<CreateCoinTag> {
                       overflow: TextOverflow.fade,
                       fontWeight: FontWeight.w500,
                     ),
+                    textAlignVertical: TextAlignVertical.center,
                     onChanged: (value) {
                       setState(() {
                         _tagController.text = value;
