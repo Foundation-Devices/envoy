@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -621,9 +622,10 @@ List<TextSpan> buildFiatTextSpans(
     }
   } else {
     // Display the original amount
+
     if (fakeFiat != null) {
-      String formattedFakeFiat =
-          fakeFiat.toStringAsFixed(2); // Adjust decimal places if needed
+      // TODO: ?????
+      String formattedFakeFiat = ExchangeRate().formatFiatToString(fakeFiat);
       textSpans.add(_createTextSpan(formattedFakeFiat, textStyle!));
     } else {
       for (int i = 0; i < amountFiatString.length; i++) {

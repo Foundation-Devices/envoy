@@ -85,12 +85,22 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
     // total amount to spend including fee
     int totalSpendAmount = amount + psbt.fee;
 
-    double fakeFiatSendAmount = ref.watch(fakeFiatSendAmountProvider)!;
+    TransactionModel transactionModel = ref.watch(spendTransactionProvider);
 
-    double fakeFiatAmountTotal =
+    /// Leave total as it is (total will be visible after sending)
+    double fakeFiatTotalAmount =
         ExchangeRate().convertSatsToFiat(totalSpendAmount);
-    // Leave total as it is (total will be visible after sending)
-    double fakeFiatFeeAmount = fakeFiatAmountTotal - fakeFiatSendAmount;
+
+    double fakeFiatSendAmount;
+    double fakeFiatFeeAmount;
+
+    if (transactionModel.mode == SpendMode.sendMax) {
+      fakeFiatFeeAmount = ExchangeRate().convertSatsToFiat(psbt.fee);
+      fakeFiatSendAmount = fakeFiatTotalAmount - fakeFiatFeeAmount;
+    } else {
+      fakeFiatSendAmount = ref.watch(fakeFiatSendAmountProvider)!;
+      fakeFiatFeeAmount = fakeFiatTotalAmount - fakeFiatSendAmount;
+    }
 
     Account account = ref.read(selectedAccountProvider)!;
 
@@ -197,7 +207,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           account: account,
                           unit: formatUnit,
                           amountSats: amount,
-                          fakeAmountFiat: ref.watch(fakeFiatSendAmountProvider),
+                          fakeAmountFiat: fakeFiatSendAmount,
                           millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                   Padding(
@@ -343,7 +353,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           account: account,
                           unit: formatUnit,
                           amountSats: totalSpendAmount,
-                          fakeAmountFiat: fakeFiatAmountTotal,
+                          fakeAmountFiat: fakeFiatTotalAmount,
                           millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                 ],

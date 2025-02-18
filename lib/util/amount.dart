@@ -20,7 +20,7 @@ NumberFormat satsFormatter =
     NumberFormat("###,###,###,###,###,###,###", currentLocale);
 
 String getDisplayAmount(int amountSats, AmountDisplayUnit unit,
-    {bool trailingZeroes = false}) {
+    {bool trailingZeroes = false, bool useFake = false, double? fakeFiat}) {
   switch (unit) {
     case AmountDisplayUnit.btc:
       return convertSatsToBtcString(amountSats);
@@ -30,6 +30,8 @@ String getDisplayAmount(int amountSats, AmountDisplayUnit unit,
       var formattedString = ExchangeRate().getFormattedAmount(
         amountSats,
         includeSymbol: false,
+        fakeFiat: fakeFiat,
+        useFake: useFake,
       );
       return removeFiatTrailingZeros(formattedString);
   }

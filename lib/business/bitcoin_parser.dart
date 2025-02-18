@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:core';
+
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:wallet/wallet.dart';
@@ -12,8 +14,10 @@ class ParseResult {
   String? address;
   int? amountSats;
   AmountDisplayUnit? unit;
+  double? fakeFiatSendAmount;
 
-  ParseResult({this.address, this.amountSats, this.unit});
+  ParseResult(
+      {this.address, this.amountSats, this.fakeFiatSendAmount, this.unit});
 }
 
 // Extract payment data from a random string
@@ -27,6 +31,7 @@ class BitcoinParser {
 
     String? address;
     int? amountInSats;
+    double? fakeFiatSendAmount;
     AmountDisplayUnit? unit;
 
     bool isFiatSelected =
@@ -37,6 +42,7 @@ class BitcoinParser {
       return ParseResult(
         address: data,
         amountSats: null,
+        fakeFiatSendAmount: null,
         unit: null,
       );
     }
@@ -55,10 +61,13 @@ class BitcoinParser {
 
       // BIP-21 amounts are in BTC
       amountInSats = convertBtcStringToSats(bip21.amount.toString());
+      fakeFiatSendAmount = convertToFiat(amountInSats);
       unit = AmountDisplayUnit.btc;
+
       return ParseResult(
         address: address,
         amountSats: amountInSats,
+        fakeFiatSendAmount: fakeFiatSendAmount,
         unit: unit,
       );
     }
@@ -69,16 +78,22 @@ class BitcoinParser {
     if (data.contains("\$") && isFiatSelected) {
       unit = AmountDisplayUnit.fiat;
       data = data.replaceAll("\$", "");
-      amountInSats = getSatsFromFiat(data, fiatExchangeRate);
+      fakeFiatSendAmount = double.tryParse(data);
+      amountInSats = getSatsFromFiat(fakeFiatSendAmount, fiatExchangeRate);
       return ParseResult(
         address: address,
         amountSats: amountInSats,
+        fakeFiatSendAmount: fakeFiatSendAmount,
         unit: unit,
       );
     }
     bool isError = !isNumber(data);
     if (isError) {
-      return ParseResult(address: null, amountSats: null, unit: null);
+      return ParseResult(
+          address: null,
+          amountSats: null,
+          fakeFiatSendAmount: null,
+          unit: null);
     } else {
       var copiedStringParsed = double.parse(data);
       String numberAsString = copiedStringParsed.toString();
@@ -94,20 +109,30 @@ class BitcoinParser {
 
           if (unit == AmountDisplayUnit.sat) {
             amountInSats = int.parse(data);
+            fakeFiatSendAmount = convertToFiat(amountInSats);
           }
           if (currentUnit == AmountDisplayUnit.fiat) {
             amountInSats = getSatsFromFiat(data, fiatExchangeRate);
+            fakeFiatSendAmount = double.tryParse(data);
           }
         } else {
           if (!isFiatSelected) {
-            return ParseResult(address: null, amountSats: null, unit: unit);
+            return ParseResult(
+                address: null,
+                amountSats: null,
+                fakeFiatSendAmount: null,
+                unit: unit);
           } else {
             unit = AmountDisplayUnit.fiat;
             amountInSats = getSatsFromFiat(data, fiatExchangeRate);
+            fakeFiatSendAmount = double.tryParse(data);
           }
         }
-
-        return ParseResult(address: null, amountSats: amountInSats, unit: unit);
+        return ParseResult(
+            address: null,
+            amountSats: amountInSats,
+            fakeFiatSendAmount: fakeFiatSendAmount,
+            unit: unit);
       }
 
       if ((copiedStringParsed % 1) == 0) {
@@ -117,26 +142,39 @@ class BitcoinParser {
         switch (unit) {
           case AmountDisplayUnit.sat:
             amountInSats = int.parse(data);
+            fakeFiatSendAmount = convertToFiat(amountInSats);
+
             break;
 
           case AmountDisplayUnit.btc:
             amountInSats = convertBtcStringToSats(data);
+            fakeFiatSendAmount = convertToFiat(amountInSats);
             break;
 
           case AmountDisplayUnit.fiat:
             amountInSats = getSatsFromFiat(data, fiatExchangeRate);
+            fakeFiatSendAmount = double.tryParse(data);
             break;
           case null:
             break;
         }
-
-        return ParseResult(address: null, amountSats: amountInSats, unit: unit);
+        return ParseResult(
+            address: null,
+            amountSats: amountInSats,
+            fakeFiatSendAmount: fakeFiatSendAmount,
+            unit: unit);
       }
 
       if (!isFiatSelected || decimalPlaces >= 3) {
         unit = AmountDisplayUnit.btc;
         amountInSats = convertBtcStringToSats(data);
-        return ParseResult(address: null, amountSats: amountInSats, unit: unit);
+        fakeFiatSendAmount = convertToFiat(amountInSats);
+
+        return ParseResult(
+            address: null,
+            amountSats: amountInSats,
+            fakeFiatSendAmount: fakeFiatSendAmount,
+            unit: unit);
       }
 
       if (copiedStringParsed < 1 && copiedStringParsed >= 0.01) {
@@ -146,14 +184,19 @@ class BitcoinParser {
           case AmountDisplayUnit.sat:
             unit = AmountDisplayUnit.btc;
             amountInSats = convertBtcStringToSats(data);
+            fakeFiatSendAmount = convertToFiat(amountInSats);
+
             break;
 
           case AmountDisplayUnit.btc:
             amountInSats = convertBtcStringToSats(data);
+            fakeFiatSendAmount = convertToFiat(amountInSats);
+
             break;
 
           case AmountDisplayUnit.fiat:
             amountInSats = getSatsFromFiat(data, fiatExchangeRate);
+            fakeFiatSendAmount = double.tryParse(data);
             break;
           case null:
             break;
@@ -161,6 +204,7 @@ class BitcoinParser {
         return ParseResult(
           address: null,
           amountSats: amountInSats,
+          fakeFiatSendAmount: fakeFiatSendAmount,
           unit: unit,
         );
       }
@@ -175,14 +219,19 @@ class BitcoinParser {
 
       if (copiedInBtc < amountInWalletBtc) {
         amountInSats = convertBtcStringToSats(data);
+        fakeFiatSendAmount = convertToFiat(amountInSats);
         unit = AmountDisplayUnit.btc;
       } else {
         amountInSats = getSatsFromFiat(data, fiatExchangeRate);
+        fakeFiatSendAmount = double.tryParse(data);
         unit = AmountDisplayUnit.fiat;
       }
     }
-
-    return ParseResult(address: address, amountSats: amountInSats, unit: unit);
+    return ParseResult(
+        address: address,
+        amountSats: amountInSats,
+        fakeFiatSendAmount: fakeFiatSendAmount,
+        unit: unit);
   }
 
   static bool isNumber(String string) {
@@ -209,5 +258,17 @@ class BitcoinParser {
     }
 
     return double.parse(amountFiat) * 100000000 ~/ fiatRate!;
+  }
+
+  static double convertToFiat(amountSats) {
+    String formattedAmount =
+        getDisplayAmount(amountSats, AmountDisplayUnit.fiat);
+
+// Remove only the fiatGroupSeparator, keeping the decimal separator intact
+    formattedAmount = formattedAmount.replaceAll(fiatGroupSeparator, "");
+// Replace fiatDecimalSeparator with "." for proper parsing
+    formattedAmount = formattedAmount.replaceAll(fiatDecimalSeparator, ".");
+
+    return double.tryParse(formattedAmount)!;
   }
 }

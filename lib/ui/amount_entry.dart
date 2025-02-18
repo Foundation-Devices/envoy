@@ -29,7 +29,7 @@ import 'package:envoy/business/locale.dart';
 
 enum AmountDisplayUnit { btc, sat, fiat }
 
-final fakeFiatSendAmountProvider = StateProvider<double?>((ref) => 0); // null
+final fakeFiatSendAmountProvider = StateProvider<double?>((ref) => 0);
 
 class AmountEntry extends ConsumerStatefulWidget {
   final Account? account;
@@ -58,11 +58,17 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
   @override
   void initState() {
     super.initState();
+    var unit = ref.read(sendScreenUnitProvider);
 
     if (widget.initalSatAmount > 0) {
       _amountSats = widget.initalSatAmount;
-      _enteredAmount =
-          getDisplayAmount(_amountSats, ref.read(sendScreenUnitProvider));
+      if (unit == AmountDisplayUnit.fiat) {
+        _enteredAmount = ExchangeRate()
+            .formatFiatToString(ref.read(fakeFiatSendAmountProvider)!);
+      } else {
+        _enteredAmount =
+            getDisplayAmount(_amountSats, ref.read(sendScreenUnitProvider));
+      }
     }
 
     WidgetsBinding.instance.addPostFrameCallback(_getFittedBoxHeight);
@@ -79,7 +85,6 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
   }
 
   int getAmountSats() {
-    // TODO: ?
     final unit = ref.read(sendScreenUnitProvider);
     return unit == AmountDisplayUnit.btc
         ? convertBtcStringToSats(_enteredAmount)
@@ -94,16 +99,21 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 
     String? text = cdata?.text;
     if (text != null) {
-      var decodedInfo = await BitcoinParser.parse(text,
-          fiatExchangeRate: ExchangeRate().selectedCurrencyRate,
-          wallet: widget.account?.wallet,
-          selectedFiat: Settings().selectedFiat,
-          currentUnit: unit);
+      var decodedInfo = await BitcoinParser.parse(
+        text,
+        fiatExchangeRate: ExchangeRate().selectedCurrencyRate,
+        wallet: widget.account?.wallet,
+        selectedFiat: Settings().selectedFiat,
+        currentUnit: unit,
+      );
+
       ref.read(sendScreenUnitProvider.notifier).state =
           decodedInfo.unit ?? unit;
 
       setState(() {
         unit = decodedInfo.unit ?? unit;
+        ref.read(fakeFiatSendAmountProvider.notifier).state =
+            decodedInfo.fakeFiatSendAmount;
       });
 
       if (widget.onPaste != null) {
@@ -222,19 +232,46 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     }
 
     if (unit == AmountDisplayUnit.fiat) {
-      ref.read(fakeFiatSendAmountProvider.notifier).state =
-          double.tryParse(_enteredAmount);
-    } else {
-      ref.read(fakeFiatSendAmountProvider.notifier).state =
-          double.parse(getDisplayAmount(_amountSats, AmountDisplayUnit.fiat));
-    }
+      /// if entering Fiat
+      String sanitizedAmount = _enteredAmount
+          .replaceAll(RegExp('[^0-9$fiatDecimalSeparator]'), '')
+          .replaceAll(fiatGroupSeparator, '');
 
-    // else {
-    //   // Format it nicely
-    //   setState(() {
-    //     _enteredAmount = getDisplayAmount(_amountSats, unit);
-    //   });
-    // }
+      sanitizedAmount = sanitizedAmount.replaceAll(fiatDecimalSeparator, '.');
+
+      ref.read(fakeFiatSendAmountProvider.notifier).state =
+          double.tryParse(sanitizedAmount);
+
+      if (!addDot && !addZero) {
+        setState(() {
+          _enteredAmount = getDisplayAmount(
+              _amountSats,
+              fakeFiat: ref.read(fakeFiatSendAmountProvider)!,
+              useFake: true,
+              unit);
+        });
+      }
+    } else {
+      /// if entering btc/sat
+      String formattedFiatAmount =
+          getDisplayAmount(_amountSats, AmountDisplayUnit.fiat);
+
+      String sanitizedFiatAmount = formattedFiatAmount
+          .replaceAll(RegExp('[^0-9$fiatDecimalSeparator]'), '')
+          .replaceAll(fiatGroupSeparator, '');
+
+      sanitizedFiatAmount =
+          sanitizedFiatAmount.replaceAll(fiatDecimalSeparator, '.');
+
+      ref.read(fakeFiatSendAmountProvider.notifier).state =
+          double.parse(sanitizedFiatAmount);
+
+      if (!addDot && !addZero) {
+        setState(() {
+          _enteredAmount = getDisplayAmount(_amountSats, unit);
+        });
+      }
+    }
 
     if (widget.onAmountChanged != null) {
       widget.onAmountChanged!(_amountSats);
@@ -270,11 +307,10 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
               onUnitToggled: (enteredAmount) {
                 // SFT-2508: special rule for circling through is to pad fiat with last 0
                 final unit = ref.watch(sendScreenUnitProvider);
-                if(unit == AmountDisplayUnit.fiat){
-                  enteredAmount = ref.watch(fakeFiatSendAmountProvider)!.toStringAsFixed(2);
-                  if(ref.watch(fakeFiatSendAmountProvider) == 0){
-                    enteredAmount = "0";
-                  }
+                if (unit == AmountDisplayUnit.fiat) {
+                  enteredAmount = ExchangeRate().formatFiatToString(
+                      ref.watch(fakeFiatSendAmountProvider)!,
+                      isPrimaryValue: true);
                 }
                 if (_addTrailingZeros && unit == AmountDisplayUnit.btc) {
                   enteredAmount =
@@ -283,7 +319,9 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
                 _enteredAmount = enteredAmount;
               },
               onLongPress: () async {
-                pasteAmount();
+                setState(() {
+                  pasteAmount();
+                });
               },
             ),
           ),

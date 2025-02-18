@@ -29,7 +29,7 @@ class AmountDisplay extends ConsumerStatefulWidget {
   AmountDisplay(
       {this.displayedAmount = "",
       this.amountSats,
-        this.fakeFiat,
+      this.fakeFiat,
       this.onUnitToggled,
       this.inputMode = false,
       this.onLongPress,
@@ -37,16 +37,13 @@ class AmountDisplay extends ConsumerStatefulWidget {
       super.key});
 
   void setDisplayAmount(AmountDisplayUnit unit) {
-   if(unit == AmountDisplayUnit.fiat) {
-     displayedAmount = fakeFiat!.toStringAsFixed(2); //TODO: set decimal numbers here if you made a whole turn !!! (will not reject last decimal number)
-   }
-   // if(fakeFiat == 0){
-   //   displayedAmount = "0";
-   // }
- else{
-      displayedAmount = getDisplayAmount(amountSats!, unit); // TODO: this condition is messing with fiat when entering sats or BTC  (BTC 555 = $555) !!! (I you never entered fakeFiat you will have -> getDisplayAmount(amountSats!, unit); )
-
-   }
+    if (unit == AmountDisplayUnit.fiat) {
+      displayedAmount = ExchangeRate().formatFiatToString(fakeFiat!);
+      print("displayedAmount === $displayedAmount");
+    } else {
+      displayedAmount = getDisplayAmount(amountSats!, unit);
+      print("displayedAmount === $displayedAmount");
+    }
   }
 
   @override
@@ -78,7 +75,6 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
 
   @override
   void initState() {
-
     widget.setDisplayAmount(ref.read(sendScreenUnitProvider));
 
     super.initState();
@@ -92,7 +88,6 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
         );
     double baseFontScale = 1;
     double textScaleFactor = textScaler.scale(baseFontScale);
-
 
     ref.listen(sendScreenUnitProvider, (_, AmountDisplayUnit next) {
       widget.setDisplayAmount(next);
@@ -132,7 +127,6 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
                 child: displayIcon(widget.account!, unit),
               ),
               Text(
-
                   widget.displayedAmount.isEmpty ? "0" : widget.displayedAmount,
                   style: EnvoyTypography.digitsLarge
                       .copyWith(color: EnvoyColors.textPrimary)),
@@ -163,9 +157,11 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
                           ),
                         TextSpan(
                           text: unit != AmountDisplayUnit.fiat
-                              ?
-                              ExchangeRate().getFormattedAmount(
-                                  widget.amountSats ?? 0, fakeFiat: widget.fakeFiat, useFake: true,
+                              ? ExchangeRate().getFormattedAmount(
+                                  // TODO ???
+                                  widget.amountSats ?? 0,
+                                  fakeFiat: widget.fakeFiat,
+                                  useFake: true,
                                   wallet: widget.account?.wallet)
                               : (Settings().displayUnit == DisplayUnit.btc
                                   ? getDisplayAmount(
