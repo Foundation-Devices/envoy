@@ -54,7 +54,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       return false;
     }
 
-    final currentFwVersion = await UpdatesManager().getStoredFwVersion(1);
+    final currentFwVersion = await UpdatesManager().getStoredFirmwareVersion(1);
     if (currentFwVersion == null) {
       return false;
     }

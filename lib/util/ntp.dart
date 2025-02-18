@@ -45,7 +45,6 @@ class NTPUtil {
       if (!ntpTimeStreamController.isClosed) {
         ntpTimeStreamController.add(_dateTime);
       }
-      kPrint("NTP time: $_dateTime");
     } catch (e) {
       kPrint("Error getting NTP time: $e");
       EnvoyReport().log("NTP", "Error getting NTP time: $e");

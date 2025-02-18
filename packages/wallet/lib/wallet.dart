@@ -566,7 +566,13 @@ class Wallet {
     _lib = lib;
   }
 
-  drop() {
+  drop() async {
+    if (_currentlySyncing) {
+      await Future.delayed(Duration(seconds: 1));
+      drop();
+      return;
+    }
+
     final rustFunction =
         _lib.lookup<NativeFunction<WalletDropRust>>('wallet_drop');
     final dartFunction = rustFunction.asFunction<WalletDropDart>();
@@ -614,7 +620,9 @@ class Wallet {
         changed = true;
       } else {
         for (int i = 0; i < transactions.length; i++) {
-          if (transactions[i].txId != walletState["transactions"][i].txId) {
+          if (transactions[i].txId != walletState["transactions"][i].txId ||
+              transactions[i].isConfirmed !=
+                  walletState["transactions"][i].isConfirmed) {
             changed = true;
             break; // Exit loop early if a mismatch is found
           }
