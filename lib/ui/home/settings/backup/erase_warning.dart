@@ -27,12 +27,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
-import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
-import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 
 class EraseWalletsAndBackupsWarning extends StatefulWidget {

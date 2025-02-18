@@ -61,8 +61,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     if (widget.initalSatAmount > 0) {
       _amountSats = widget.initalSatAmount;
       _enteredAmount = getDisplayAmount(
-          _amountSats,
-          ref.read(sendScreenUnitProvider),
+          _amountSats, ref.read(sendScreenUnitProvider),
           trailingZeroes: showBtcTrailingZeroes(_amountSats, false));
     }
 

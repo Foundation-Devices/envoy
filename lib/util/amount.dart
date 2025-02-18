@@ -35,7 +35,6 @@ String getDisplayAmount(int amountSats, AmountDisplayUnit unit,
   }
 }
 
-
 String removeFiatTrailingZeros(String fiatAmount) {
   if (fiatAmount.contains(fiatDecimalSeparator)) {
     while (fiatAmount[fiatAmount.length - 1] == "0") {
@@ -48,7 +47,6 @@ String removeFiatTrailingZeros(String fiatAmount) {
   }
   return fiatAmount;
 }
-
 
 String convertSatsToBtcString(int amountSats) {
   final amountBtc = amountSats / 100000000;
