@@ -4,7 +4,6 @@
 
 import 'dart:core';
 
-import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:wallet/wallet.dart';
