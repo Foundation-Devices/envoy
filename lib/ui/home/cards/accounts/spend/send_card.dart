@@ -290,7 +290,9 @@ class _SendCardState extends ConsumerState<SendCard>
                         if (spendAmount == 0) {
                           ref.read(spendAmountProvider.notifier).state =
                               ref.read(totalSpendableAmountProvider);
-                          ref.read(fakeFiatSendAmountProvider.notifier).state =
+                          ref
+                                  .read(displayFiatSendAmountProvider.notifier)
+                                  .state =
                               ExchangeRate().convertSatsToFiat(
                                   ref.read(totalSpendableAmountProvider));
                           setState(() {

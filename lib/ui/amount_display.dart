@@ -21,7 +21,7 @@ class AmountDisplay extends ConsumerStatefulWidget {
   final int? amountSats;
   String displayedAmount;
   final Function? onLongPress;
-  double? fakeFiat;
+  double? displayFiat;
   final Account? account;
 
   final Function(String)? onUnitToggled;
@@ -29,7 +29,7 @@ class AmountDisplay extends ConsumerStatefulWidget {
   AmountDisplay(
       {this.displayedAmount = "",
       this.amountSats,
-      this.fakeFiat,
+      this.displayFiat,
       this.onUnitToggled,
       this.inputMode = false,
       this.onLongPress,
@@ -38,11 +38,9 @@ class AmountDisplay extends ConsumerStatefulWidget {
 
   void setDisplayAmount(AmountDisplayUnit unit) {
     if (unit == AmountDisplayUnit.fiat) {
-      displayedAmount = ExchangeRate().formatFiatToString(fakeFiat!);
-      print("displayedAmount === $displayedAmount");
+      displayedAmount = ExchangeRate().formatFiatToString(displayFiat!);
     } else {
       displayedAmount = getDisplayAmount(amountSats!, unit);
-      print("displayedAmount === $displayedAmount");
     }
   }
 
@@ -158,10 +156,8 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
                         TextSpan(
                           text: unit != AmountDisplayUnit.fiat
                               ? ExchangeRate().getFormattedAmount(
-                                  // TODO ???
                                   widget.amountSats ?? 0,
-                                  fakeFiat: widget.fakeFiat,
-                                  useFake: true,
+                                  displayFiat: widget.displayFiat,
                                   wallet: widget.account?.wallet)
                               : (Settings().displayUnit == DisplayUnit.btc
                                   ? getDisplayAmount(

@@ -174,11 +174,11 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
     }
     final CoinTag? userChosenTag = ref.watch(stagingTxChangeOutPutTagProvider);
 
-    double fakeFiatSendAmount = ref.watch(fakeFiatSendAmountProvider)!;
-    double fakeTotalChangeAmount =
+    double? displayFiatSendAmount = ref.watch(displayFiatSendAmountProvider);
+    double? displayFiatTotalChangeAmount =
         ExchangeRate().convertSatsToFiat(totalChangeAmount);
-    double fakeFiatTotalInputAmount =
-        fakeFiatSendAmount + fakeTotalChangeAmount;
+    double? displayFiatTotalInputAmount =
+        displayFiatSendAmount! + displayFiatTotalChangeAmount;
 
     if (userChosenTag != null) {
       changeOutputTag = userChosenTag;
@@ -282,7 +282,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                       topWidget: EnvoyAmount(
                           unit: formatUnit,
                           account: account,
-                          fakeAmountFiat: fakeFiatSendAmount,
+                          displayFiatAmount: displayFiatSendAmount,
                           amountSats: totalReceiveAmount,
                           millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine),
@@ -298,7 +298,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                               unit: formatUnit,
                               account: account,
                               amountSats: totalInputAmount,
-                              fakeAmountFiat: fakeFiatTotalInputAmount,
+                              displayFiatAmount: displayFiatTotalInputAmount,
                               millionaireMode: false,
                               amountWidgetStyle: AmountWidgetStyle.normal),
                         ),

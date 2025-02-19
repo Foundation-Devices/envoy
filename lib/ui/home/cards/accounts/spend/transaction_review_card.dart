@@ -87,19 +87,23 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
 
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
 
+    final s = Settings();
+
     /// Leave total as it is (total will be visible after sending)
-    double fakeFiatTotalAmount =
+    double displayFiatTotalAmount =
         ExchangeRate().convertSatsToFiat(totalSpendAmount);
 
-    double fakeFiatSendAmount;
-    double fakeFiatFeeAmount;
+    double? displayFiatSendAmount;
+    double? displayFiatFeeAmount;
 
-    if (transactionModel.mode == SpendMode.sendMax) {
-      fakeFiatFeeAmount = ExchangeRate().convertSatsToFiat(psbt.fee);
-      fakeFiatSendAmount = fakeFiatTotalAmount - fakeFiatFeeAmount;
-    } else {
-      fakeFiatSendAmount = ref.watch(fakeFiatSendAmountProvider)!;
-      fakeFiatFeeAmount = fakeFiatTotalAmount - fakeFiatSendAmount;
+    if (s.displayFiat() != null) {
+      if (transactionModel.mode == SpendMode.sendMax) {
+        displayFiatFeeAmount = ExchangeRate().convertSatsToFiat(psbt.fee);
+        displayFiatSendAmount = displayFiatTotalAmount - displayFiatFeeAmount;
+      } else {
+        displayFiatSendAmount = ref.watch(displayFiatSendAmountProvider)!;
+        displayFiatFeeAmount = displayFiatTotalAmount - displayFiatSendAmount;
+      }
     }
 
     Account account = ref.read(selectedAccountProvider)!;
@@ -207,7 +211,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           account: account,
                           unit: formatUnit,
                           amountSats: amount,
-                          fakeAmountFiat: fakeFiatSendAmount,
+                          displayFiatAmount: displayFiatSendAmount,
                           millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                   Padding(
@@ -308,7 +312,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           unit: formatUnit,
                           account: account,
                           amountSats: psbt.fee,
-                          fakeAmountFiat: fakeFiatFeeAmount,
+                          displayFiatAmount: displayFiatFeeAmount,
                           millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                   Padding(
@@ -353,7 +357,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           account: account,
                           unit: formatUnit,
                           amountSats: totalSpendAmount,
-                          fakeAmountFiat: fakeFiatTotalAmount,
+                          displayFiatAmount: displayFiatTotalAmount,
                           millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                 ],

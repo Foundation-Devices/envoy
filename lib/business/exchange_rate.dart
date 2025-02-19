@@ -7,7 +7,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:envoy/business/connectivity_manager.dart';
-import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -271,24 +270,13 @@ class ExchangeRate extends ChangeNotifier {
     return (_usdRate ?? 0) * amountSats / 100000000;
   }
 
+  // double FIAT to string FIAT
   String formatFiatToString(double amount, {bool isPrimaryValue = false}) {
-    // TODO delete
     String pattern = (isPrimaryValue && amount == 0) ? "#0" : "#,##0.00";
 
     // Format the double using the current locale
     String formattedAmount =
         NumberFormat(pattern, currentLocale).format(amount);
-
-    // Get locale-specific separators
-    var currencySymbols =
-        NumberFormat.simpleCurrency(locale: currentLocale).symbols;
-    String groupSeparator = currencySymbols.GROUP_SEP;
-    String decimalSeparator = currencySymbols.DECIMAL_SEP;
-
-    // Replace default locale separators with the custom ones
-    formattedAmount = formattedAmount
-        .replaceAll(groupSeparator, fiatGroupSeparator)
-        .replaceAll(decimalSeparator, fiatDecimalSeparator);
 
     return formattedAmount;
   }
@@ -304,10 +292,7 @@ class ExchangeRate extends ChangeNotifier {
 
   // SATS to FIAT
   String getFormattedAmount(int amountSats,
-      {bool includeSymbol = true,
-      Wallet? wallet,
-      double? fakeFiat,
-      bool useFake = false}) {
+      {bool includeSymbol = true, Wallet? wallet, double? displayFiat}) {
     // Hide test coins on production builds only
     if (!kDebugMode && wallet != null && wallet.network != Network.Mainnet) {
       return "";
@@ -326,8 +311,8 @@ class ExchangeRate extends ChangeNotifier {
 
     String formattedAmount;
 
-    if (fakeFiat != null && useFake) {
-      formattedAmount = currencyFormatter.format(fakeFiat);
+    if (displayFiat != null) {
+      formattedAmount = currencyFormatter.format(displayFiat);
     } else {
       formattedAmount = currencyFormatter
           .format(_selectedCurrencyRate! * amountSats / 100000000);

@@ -20,7 +20,7 @@ class AmountWidget extends StatelessWidget {
   final AmountDisplayUnit primaryUnit;
   final AmountWidgetStyle style;
   final AmountDisplayUnit? secondaryUnit;
-  final double? fakeFiat;
+  final double? displayFiat;
   final String symbolFiat;
   final double? fxRateFiat;
   final Color? badgeColor;
@@ -33,7 +33,7 @@ class AmountWidget extends StatelessWidget {
     super.key,
     required this.amountSats,
     required this.primaryUnit,
-    this.fakeFiat,
+    this.displayFiat,
     this.style = AmountWidgetStyle.normal,
     this.secondaryUnit,
     this.symbolFiat = "",
@@ -89,7 +89,7 @@ class AmountWidget extends StatelessWidget {
             if (secondaryUnit != null)
               SecondaryAmountWidget(
                   unit: secondaryUnit!,
-                  fakeFiat: fakeFiat,
+                  displayFiat: displayFiat,
                   style: SecondaryAmountWidgetStyle.large,
                   amountSats: amountSats,
                   symbolFiat: symbolFiat,
@@ -125,7 +125,7 @@ class AmountWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(top: EnvoySpacing.xs),
                 child: SecondaryAmountWidget(
                     unit: secondaryUnit!,
-                    fakeFiat: fakeFiat,
+                    displayFiat: displayFiat,
                     style: SecondaryAmountWidgetStyle.normal,
                     amountSats: amountSats,
                     symbolFiat: symbolFiat,
@@ -163,7 +163,7 @@ class AmountWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(left: EnvoySpacing.small),
                 child: SecondaryAmountWidget(
                     unit: secondaryUnit!,
-                    fakeFiat: fakeFiat,
+                    displayFiat: displayFiat,
                     style: SecondaryAmountWidgetStyle.normal,
                     amountSats: amountSats,
                     symbolFiat: symbolFiat,
@@ -329,7 +329,7 @@ class SecondaryAmountWidget extends StatelessWidget {
   final double? fxRateFiat;
   final String decimalSeparator;
   final String groupSeparator;
-  final double? fakeFiat;
+  final double? displayFiat;
   final SecondaryAmountWidgetStyle style;
   final Color? badgeColor;
   final Network? network;
@@ -342,7 +342,7 @@ class SecondaryAmountWidget extends StatelessWidget {
       {super.key,
       required this.unit,
       required this.amountSats,
-      this.fakeFiat,
+      this.displayFiat,
       required this.locale,
       this.symbolFiat = "",
       this.fxRateFiat,
@@ -404,7 +404,7 @@ class SecondaryAmountWidget extends StatelessWidget {
                   ? buildFiatTextSpans(
                       amountSats,
                       fxRateFiat!,
-                      fakeFiat: fakeFiat,
+                      displayFiat: displayFiat,
                       textStyle,
                       locale,
                       decimalSeparator,
@@ -593,7 +593,7 @@ List<TextSpan> buildFiatTextSpans(
     String decimalSeparator,
     String groupSeparator,
     {required bool millionaireMode,
-    double? fakeFiat}) {
+    double? displayFiat}) {
   List<TextSpan> textSpans = [];
 
   String amountFiatString =
@@ -623,10 +623,10 @@ List<TextSpan> buildFiatTextSpans(
   } else {
     // Display the original amount
 
-    if (fakeFiat != null) {
-      // TODO: ?????
-      String formattedFakeFiat = ExchangeRate().formatFiatToString(fakeFiat);
-      textSpans.add(_createTextSpan(formattedFakeFiat, textStyle!));
+    if (displayFiat != null) {
+      String formattedDisplayFiat =
+          ExchangeRate().formatFiatToString(displayFiat);
+      textSpans.add(_createTextSpan(formattedDisplayFiat, textStyle!));
     } else {
       for (int i = 0; i < amountFiatString.length; i++) {
         String char = amountFiatString[i];

@@ -18,7 +18,7 @@ class EnvoyAmount extends StatelessWidget {
     required this.amountSats,
     required this.amountWidgetStyle,
     required this.account,
-    this.fakeAmountFiat,
+    this.displayFiatAmount,
     this.alignToEnd = true,
     this.millionaireMode = true,
     this.unit,
@@ -30,7 +30,7 @@ class EnvoyAmount extends StatelessWidget {
   final bool alignToEnd;
   final AmountDisplayUnit? unit;
   final bool millionaireMode;
-  final double? fakeAmountFiat;
+  final double? displayFiatAmount;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +58,7 @@ class EnvoyAmount extends StatelessWidget {
 
     return AmountWidget(
       amountSats: amountSats,
-      fakeFiat: fakeAmountFiat,
+      displayFiat: displayFiatAmount,
       primaryUnit: primaryUnit,
       style: amountWidgetStyle,
       fxRateFiat: fxRateFiat,
