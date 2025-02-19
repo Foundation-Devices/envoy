@@ -53,7 +53,7 @@ class FwMicrosdPage extends ConsumerWidget {
             onTap: () async {
               try {
                 File firmwareFile =
-                    await UpdatesManager().getStoredFw(deviceId);
+                    await UpdatesManager().getStoredFirmware(deviceId);
                 await FwUploader(firmwareFile).upload();
 
                 if (Platform.isIOS && context.mounted) {

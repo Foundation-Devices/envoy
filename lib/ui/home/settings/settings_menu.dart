@@ -222,6 +222,8 @@ class SettingsMenuWidget extends ConsumerWidget {
                     ),
                     GestureDetector(
                         onTap: () {
+                          launchUrl(Uri.parse(
+                              "https://github.com/Foundation-Devices"));
                           BluetoothManager().getPermissions();
                           Navigator.push(
                               context,
