@@ -244,7 +244,10 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
               closedBuilder: (context, action) {
                 return GestureDetector(
                     onTap: () {
-                      action();
+                      if (!ref.read(transactionDetailsOpen.notifier).state) {
+                        ref.read(transactionDetailsOpen.notifier).state = true;
+                        action();
+                      }
                     },
                     child: EnvoyListTile(
                       titleText: titleText,

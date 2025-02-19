@@ -27,6 +27,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/locale.dart';
 
+final isNumpadPressed = StateProvider<bool>((ref) => false);
+
 enum AmountDisplayUnit { btc, sat, fiat }
 
 final displayFiatSendAmountProvider = StateProvider<double?>((ref) => 0);
@@ -53,7 +55,6 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
   int _amountSats = 0;
   final GlobalKey _fittedBoxKey = GlobalKey();
   double? _fittedBoxHeight;
-  bool _addTrailingZeros = true;
 
   @override
   void initState() {
@@ -62,12 +63,14 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 
     if (widget.initalSatAmount > 0) {
       _amountSats = widget.initalSatAmount;
+
       if (unit == AmountDisplayUnit.fiat) {
         _enteredAmount = ExchangeRate()
             .formatFiatToString(ref.read(displayFiatSendAmountProvider)!);
       } else {
-        _enteredAmount =
-            getDisplayAmount(_amountSats, ref.read(sendScreenUnitProvider));
+        _enteredAmount = getDisplayAmount(
+            _amountSats, ref.read(sendScreenUnitProvider),
+            trailingZeroes: showBtcTrailingZeroes(_amountSats, false));
       }
     }
 
@@ -130,8 +133,6 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
       return;
     }
     var unit = ref.read(sendScreenUnitProvider);
-    _addTrailingZeros =
-        false; // Do not add trailing zeros when manually typing the amount
     switch (event) {
       case NumPadEvents.backspace:
         {
@@ -245,6 +246,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 
       if (!addDot && !addZero) {
         setState(() {
+          // Format it nicely
           _enteredAmount = getDisplayAmount(
               _amountSats,
               displayFiat: ref.read(displayFiatSendAmountProvider)!,
@@ -272,7 +274,9 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 
       if (!addDot && !addZero) {
         setState(() {
-          _enteredAmount = getDisplayAmount(_amountSats, unit);
+          // Format it nicely
+          _enteredAmount = getDisplayAmount(_amountSats, unit,
+              trailingZeroes: showBtcTrailingZeroes(_amountSats, false));
         });
       }
     }
@@ -293,6 +297,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
       onNumPadEvents(digit);
     }, onNumPadEvents: (event) {
       onNumPadEvents(event);
+      ref.read(isNumpadPressed.notifier).state = true;
     }, isDecimalSeparator: _enteredAmount.contains(fiatDecimalSeparator));
 
     return Column(
@@ -316,9 +321,11 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
                       ref.watch(displayFiatSendAmountProvider)!,
                       isPrimaryValue: true);
                 }
-                if (_addTrailingZeros && unit == AmountDisplayUnit.btc) {
-                  enteredAmount =
-                      getDisplayAmount(_amountSats, AmountDisplayUnit.btc);
+                if (unit == AmountDisplayUnit.btc) {
+                  enteredAmount = getDisplayAmount(
+                      _amountSats, AmountDisplayUnit.btc,
+                      trailingZeroes: showBtcTrailingZeroes(_amountSats,
+                          false)); // Do not add trailing zeros when manually typing the amount
                 }
                 _enteredAmount = enteredAmount;
               },

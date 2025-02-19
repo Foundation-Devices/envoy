@@ -183,3 +183,9 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
     );
   }
 }
+
+bool showBtcTrailingZeroes(int amountSats, bool numpadPressed) {
+  bool isBtcZero = amountSats == 0;
+  bool trailingZeros = isBtcZero || numpadPressed ? false : true;
+  return trailingZeros;
+}
