@@ -49,7 +49,8 @@ class FwIosInstructionsPage extends ConsumerWidget {
             label: S().component_continue,
             onTap: () async {
               final goRouter = GoRouter.of(context);
-              final firmwareFile = await UpdatesManager().getStoredFw(deviceId);
+              final firmwareFile =
+                  await UpdatesManager().getStoredFirmware(deviceId);
               final uploader = FwUploader(firmwareFile);
               final folderPath = await uploader.promptUserForFolderAccess();
 

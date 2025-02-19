@@ -6,7 +6,6 @@ import 'dart:async';
 import 'dart:ffi';
 import 'dart:io';
 import 'dart:isolate';
-
 import 'package:collection/collection.dart';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
@@ -19,6 +18,10 @@ import 'package:wallet/generated_bindings.dart';
 part 'wallet.freezed.dart';
 
 part 'wallet.g.dart';
+
+class WalletNullException implements Exception {
+  WalletNullException(String s);
+}
 
 const dustAmount = 546;
 
@@ -425,6 +428,15 @@ class Wallet {
   static late DynamicLibrary _lib;
 
   Pointer<Uint8> _self = nullptr;
+
+  Pointer<Uint8> getSelf() {
+    if (_self == nullptr) {
+      throw WalletNullException("Wallet pointer is null");
+    }
+
+    return _self;
+  }
+
   bool _currentlySyncing = false;
 
   final String name;
@@ -566,7 +578,15 @@ class Wallet {
     _lib = lib;
   }
 
-  drop() {
+  drop() async {
+    // This ensures that the wallet is not dropped while it is still in use, which could
+    // lead to invalid memory access or use-after-free errors in the native library.
+    if (_currentlySyncing) {
+      await Future.delayed(Duration(seconds: 1));
+      drop();
+      return;
+    }
+
     final rustFunction =
         _lib.lookup<NativeFunction<WalletDropRust>>('wallet_drop');
     final dartFunction = rustFunction.asFunction<WalletDropDart>();
@@ -576,11 +596,11 @@ class Wallet {
   }
 
   Future<String> getAddress() async {
-    return compute(_getAddress, _self.address);
+    return compute(_getAddress, getSelf().address);
   }
 
   Future<String> getChangeAddress() async {
-    return compute(_getChangeAddress, _self.address);
+    return compute(_getChangeAddress, getSelf().address);
   }
 
   // Returns true if there have been changes
@@ -593,7 +613,7 @@ class Wallet {
 
     // Unfortunately we need to pass maps onto computes if there is more than one arg
     Map map = Map();
-    map['wallet_pointer'] = _self.address;
+    map['wallet_pointer'] = getSelf().address;
     map['server_address'] = electrumAddress;
     map['tor_port'] = torPort;
 
@@ -614,7 +634,9 @@ class Wallet {
         changed = true;
       } else {
         for (int i = 0; i < transactions.length; i++) {
-          if (transactions[i].txId != walletState["transactions"][i].txId) {
+          if (transactions[i].txId != walletState["transactions"][i].txId ||
+              transactions[i].isConfirmed !=
+                  walletState["transactions"][i].isConfirmed) {
             changed = true;
             break; // Exit loop early if a mismatch is found
           }
@@ -657,7 +679,7 @@ class Wallet {
 
   Future<int> getMaxFeeRate(String sendTo, int amount,
       {List<Utxo>? mustSpendUtxos, List<Utxo>? dontSpendUtxos}) async {
-    final walletAddress = _self.address;
+    final walletAddress = getSelf().address;
 
     return Isolate.run(() {
       final lib = load(_libName);
@@ -691,7 +713,7 @@ class Wallet {
   Future<Psbt> createPsbt(String sendTo, int amount, double feeRate,
       {required List<Utxo>? mustSpendUtxos,
       required List<Utxo>? dontSpendUtxos}) async {
-    final walletAddress = _self.address;
+    final walletAddress = getSelf().address;
 
     return Isolate.run(() {
       DynamicLibrary library = load(_libName);
@@ -722,7 +744,7 @@ class Wallet {
   }
 
   Future<Psbt> decodePsbt(String base64Psbt) async {
-    final walletAddress = _self.address;
+    final walletAddress = getSelf().address;
 
     return Isolate.run(() {
       final lib = load(_libName);
@@ -742,7 +764,7 @@ class Wallet {
 
   Future<Psbt> getBumpedPSBT(
       String txId, double feeRate, List<Utxo>? doNotSpend) async {
-    final walletAddress = _self.address;
+    final walletAddress = getSelf().address;
 
     return Isolate.run(() {
       final lib = load(_libName);
@@ -767,7 +789,7 @@ class Wallet {
   ///Decode raw transaction
   Future<RawTransaction> decodeWalletRawTx(
       String rawTransaction, Network network) async {
-    final walletAddress = _self.address;
+    final walletAddress = getSelf().address;
 
     return Isolate.run(() {
       final dynlib = load(_libName);
@@ -788,12 +810,13 @@ class Wallet {
 
   Future<RBFfeeRates> getBumpedPSBTMaxFeeRate(
       String txId, List<Utxo>? doNotSpend) async {
-    final walletAddress = _self.address;
+    final walletAddress = getSelf().address;
     return Isolate.run(() {
       final lib = load(_libName);
       Pointer<rust.UtxoList> doNotSpendPointer =
           _createUtxoListPointer(doNotSpend);
       final native = rust.NativeLibrary(lib);
+
       RBFfeeRates feeRates = native.wallet_get_max_bumped_fee_rate(
           Pointer.fromAddress(walletAddress),
           txId.toNativeUtf8() as Pointer<Char>,
@@ -1139,13 +1162,14 @@ class Wallet {
         _lib.lookup<NativeFunction<WalletSignPsbtRust>>('wallet_sign_psbt');
     final dartFunction = rustFunction.asFunction<WalletSignPsbtDart>();
 
-    return Future(() =>
-        dartFunction(_self, psbt.toNativeUtf8()).cast<Utf8>().toDartString());
+    return Future(() => dartFunction(getSelf(), psbt.toNativeUtf8())
+        .cast<Utf8>()
+        .toDartString());
   }
 
   Future<Psbt> cancelTx(
       String txId, List<Utxo>? doNotSpend, double feeRate) async {
-    final walletAddress = _self.address;
+    final walletAddress = getSelf().address;
 
     return Isolate.run(() {
       final lib = load(_libName);
@@ -1170,7 +1194,7 @@ class Wallet {
   }
 
   Future<String> getRawTxFromTxId(String txId) {
-    final walletAddress = _self.address;
+    final walletAddress = getSelf().address;
 
     return Isolate.run(() {
       final lib = load(_libName);

@@ -111,6 +111,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         !(_broadcastProgress == BroadcastProgress.inProgress) && !_rebuildingTx;
     ProviderContainer scope = ProviderScope.containerOf(context);
 
+    bool canBoost = _inputsChanged && finalizedPsbt == null;
     return CoinSelectionOverlay(
       child: Builder(builder: (context) {
         return PopScope(
@@ -169,22 +170,14 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       Opacity(
-                                        opacity: (_inputsChanged &&
-                                                finalizedPsbt == null)
-                                            ? 1
-                                            : 0,
-                                        child: IgnorePointer(
-                                          ignoring: !(_inputsChanged &&
-                                              finalizedPsbt == null),
-                                          child: EnvoyButton(
-                                            label:
-                                                S().coincontrol_tx_detail_cta2,
-                                            state: ButtonState.defaultState,
-                                            onTap: _inputsChanged
-                                                ? () => _editCoins(context)
-                                                : null,
-                                            type: ButtonType.secondary,
-                                          ),
+                                        opacity: canBoost ? 1 : 0,
+                                        child: EnvoyButton(
+                                          label: S().coincontrol_tx_detail_cta2,
+                                          state: ButtonState.defaultState,
+                                          onTap: canBoost
+                                              ? () => _editCoins(context)
+                                              : null,
+                                          type: ButtonType.secondary,
                                         ),
                                       ),
                                       const Padding(
