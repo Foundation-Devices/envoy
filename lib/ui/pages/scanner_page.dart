@@ -12,10 +12,13 @@ import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/business/bip21.dart';
 import 'package:envoy/business/btcpay_voucher.dart';
+import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/business/seed_qr_extract.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/azteco/azteco_dialog.dart';
@@ -26,6 +29,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -61,8 +65,7 @@ const SnackBar useTestnetSnackbar = SnackBar(
   content: Text("Please use Testnet"), // TODO: FIGMA
 );
 
-class ScannerPage extends StatefulWidget {
-  final UniformResourceReader _urDecoder = UniformResourceReader();
+class ScannerPage extends ConsumerStatefulWidget {
   final List<ScannerType> _acceptableTypes;
 
   final Account? account;
@@ -73,7 +76,7 @@ class ScannerPage extends StatefulWidget {
   final Function(String)? deviceScan;
   final Function(String, int, String?)? onAddressValidated;
 
-  ScannerPage(this._acceptableTypes,
+  const ScannerPage(this._acceptableTypes,
       {super.key,
       this.account,
       this.challengeToValidate,
@@ -106,10 +109,10 @@ class ScannerPage extends StatefulWidget {
   //TODO: fix scanner widget with proper widget convention
   @override
   // ignore: no_logic_in_create_state
-  State<StatefulWidget> createState() => ScannerPageState(_urDecoder);
+  ConsumerState<ScannerPage> createState() => _ScannerPageState();
 }
 
-class ScannerPageState extends State<ScannerPage> {
+class _ScannerPageState extends ConsumerState<ScannerPage> {
   late UniformResourceReader _urDecoder;
   bool _processing = false;
 
@@ -126,13 +129,14 @@ class ScannerPageState extends State<ScannerPage> {
 
   Timer? _snackbarTimer;
 
-  ScannerPageState(UniformResourceReader urDecoder) {
+  scannerPageState(UniformResourceReader urDecoder) {
     _urDecoder = urDecoder;
   }
 
   @override
   void initState() {
     super.initState();
+    _urDecoder = UniformResourceReader();
 
     _permissionsGranted = _permissionsCompleter.future;
     if (Platform.isAndroid || Platform.isIOS) {
@@ -342,6 +346,7 @@ class ScannerPageState extends State<ScannerPage> {
       String address = code;
       int amount = 0;
       String? message;
+      final s = Settings();
 
       // Try to decode with BIP21
       try {
@@ -352,6 +357,10 @@ class ScannerPageState extends State<ScannerPage> {
 
         // BIP-21 amounts are in BTC
         amount = (bip21.amount * 100000000.0).toInt();
+        if (s.displayFiat() != null) {
+          ref.read(displayFiatSendAmountProvider.notifier).state =
+              ExchangeRate().convertSatsToFiat(amount);
+        }
       } catch (e, s) {
         kPrint(e, stackTrace: s);
       }
