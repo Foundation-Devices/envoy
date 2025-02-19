@@ -199,22 +199,24 @@ class DevicesOptions extends ConsumerWidget {
           height: 10,
         ),
         GestureDetector(
-          child: Text(S().passport_welcome_screen_cta1.toUpperCase(),
-              style: const TextStyle(color: EnvoyColors.accentSecondary)),
-          onTap: () {
+          child: Text(
+            S().passport_welcome_screen_cta1.toUpperCase(),
+            style: const TextStyle(color: EnvoyColors.accentSecondary),
+          ),
+          onTap: () async {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
-            // Delay navigation to allow the UI to update
-            Future.delayed(const Duration(milliseconds: 200), () {
-              if (context.mounted) {
-                Navigator.of(context).push(PageRouteBuilder(
-                  pageBuilder: (context, animation, secondaryAnimation) {
-                    return const TouPage();
-                  },
-                  reverseTransitionDuration: Duration.zero,
-                  transitionDuration: Duration.zero,
-                ));
-              }
-            });
+            if (context.mounted) {
+              Navigator.of(context).push(PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) {
+                  return const TouPage();
+                },
+                transitionDuration: const Duration(milliseconds: 300),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
+              ));
+            }
           },
         ),
       ],

@@ -9,16 +9,17 @@ import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/keys_manager.dart';
-import 'package:envoy/business/map_data.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/map_data.dart';
 import 'package:envoy/business/notifications.dart';
+import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/updates_manager.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/lock/authenticate_page.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/routes/routes.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/widgets/envoy_page_transition.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -139,11 +140,11 @@ class EnvoyApp extends StatelessWidget {
         theme: ThemeData(
             textTheme: envoyTextTheme,
             pageTransitionsTheme: const PageTransitionsTheme(builders: {
-              TargetPlatform.android: OpenUpwardsPageTransitionsBuilder(),
-              TargetPlatform.iOS: OpenUpwardsPageTransitionsBuilder(),
-              TargetPlatform.linux: OpenUpwardsPageTransitionsBuilder(),
-              TargetPlatform.macOS: OpenUpwardsPageTransitionsBuilder(),
-              TargetPlatform.windows: OpenUpwardsPageTransitionsBuilder(),
+              TargetPlatform.android: EnvoyOpenUpwardsPageTransitionsBuilder(),
+              TargetPlatform.iOS: EnvoyOpenUpwardsPageTransitionsBuilder(),
+              TargetPlatform.linux: EnvoyOpenUpwardsPageTransitionsBuilder(),
+              TargetPlatform.macOS: EnvoyOpenUpwardsPageTransitionsBuilder(),
+              TargetPlatform.windows: EnvoyOpenUpwardsPageTransitionsBuilder(),
             }),
             primaryColor: envoyAccentColor,
             brightness: Brightness.light,

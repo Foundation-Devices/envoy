@@ -620,15 +620,14 @@ class _SlidingToggleState extends State<SlidingToggle>
         }
       });
     });
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (value == "Tx") {
-        // TODO: FIGMA
-        _animationController.reverse();
-      } else {
-        _animationController.animateTo(1.0,
-            duration: const Duration(milliseconds: 0));
-      }
-    });
+
+    if (value == "Tx") {
+      // TODO: FIGMA
+      _animationController.reverse();
+    } else {
+      _animationController.animateTo(1.0,
+          duration: const Duration(milliseconds: 0));
+    }
   }
 
   @override
@@ -799,5 +798,21 @@ class _SlidingToggleState extends State<SlidingToggle>
         );
       },
     );
+  }
+
+  @override
+  void didUpdateWidget(covariant SlidingToggle oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value) {
+      value = widget.value;
+      if (_animationController.isAnimating) {
+        _animationController.stop();
+      }
+      if (value == "Tx") {
+        _animationController.reverse();
+      } else {
+        _animationController.forward();
+      }
+    }
   }
 }

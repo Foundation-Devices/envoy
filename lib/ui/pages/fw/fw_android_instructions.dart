@@ -48,7 +48,7 @@ class FwAndroidInstructionsPage extends StatelessWidget {
             label: "Continue", // TODO: FIGMA
             onTap: () {
               final router = GoRouter.of(context);
-              UpdatesManager().getStoredFw(deviceId).then((File file) {
+              UpdatesManager().getStoredFirmware(deviceId).then((File file) {
                 FwUploader(file).getDirectoryContentPermission();
               }).then((value) {
                 router.goNamed(PASSPORT_UPDATE_SD_CARD, extra: fwPagePayload);
