@@ -455,7 +455,7 @@ class GhostListTile extends StatelessWidget {
   }
 }
 
-class TransactionListTile extends StatelessWidget {
+class TransactionListTile extends ConsumerWidget {
   TransactionListTile({
     super.key,
     required this.transaction,
@@ -478,7 +478,7 @@ class TransactionListTile extends StatelessWidget {
   final Settings s = Settings();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     final Locale activeLocale = Localizations.localeOf(context);
 
     return BlurContainerTransform(
@@ -486,7 +486,10 @@ class TransactionListTile extends StatelessWidget {
       closedBuilder: (context, action) {
         return GestureDetector(
           onTap: () {
-            action();
+            if (!ref.read(transactionDetailsOpen.notifier).state) {
+              ref.read(transactionDetailsOpen.notifier).state = true;
+              action();
+            }
           },
           onLongPress: () async {
             await copyTxId(context, transaction.txId, transaction.type);
