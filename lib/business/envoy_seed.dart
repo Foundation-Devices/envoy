@@ -272,6 +272,18 @@ class EnvoySeed {
   Future<bool> delete() async {
     final seed = await get();
 
+    bool isDeleted = false;
+
+    try {
+      isDeleted = await Backup.delete(
+          seed!, Settings().envoyServerAddress, Tor.instance);
+    } on Exception {
+      return false;
+    }
+    if (!isDeleted) {
+      return false;
+    }
+
     AccountManager().deleteHotWalletAccounts();
     Settings().syncToCloud = false;
 
@@ -289,7 +301,7 @@ class EnvoySeed {
 
     //add minor delay to allow the seed to be removed from secure storage (specifically on iOS)
     await Future.delayed(const Duration(milliseconds: 500));
-    return Backup.delete(seed!, Settings().envoyServerAddress, Tor.instance);
+    return isDeleted;
   }
 
   Future<bool> restoreData({String? seed, String? filePath}) async {
