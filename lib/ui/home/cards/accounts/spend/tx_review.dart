@@ -35,7 +35,6 @@ import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/tuple.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -678,9 +677,30 @@ class _TransactionReviewScreenState
   }
 }
 
-void editTransaction(BuildContext context, WidgetRef ref) async {
+void navigateWithTransition(BuildContext context, Widget page) {
   final router = Navigator.of(context, rootNavigator: true);
 
+  router.push(
+    PageRouteBuilder(
+      transitionDuration: const Duration(milliseconds: 360),
+      reverseTransitionDuration: const Duration(milliseconds: 360),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return page;
+      },
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return SharedAxisTransition(
+          animation: animation,
+          fillColor: Colors.transparent,
+          secondaryAnimation: secondaryAnimation,
+          transitionType: SharedAxisTransitionType.vertical,
+          child: child,
+        );
+      },
+    ),
+  );
+}
+
+void editTransaction(BuildContext context, WidgetRef ref) async {
   /// The user has is in edit mode and if the psbt
   /// has inputs then use them to populate the coin selection state
   if (ref.read(rawTransactionProvider) != null) {
@@ -701,11 +721,8 @@ void editTransaction(BuildContext context, WidgetRef ref) async {
   if (ref.read(selectedAccountProvider) != null) {
     coinSelectionOverlayKey.currentState?.show(SpendOverlayContext.editCoins);
   }
-  router
-      .push(CupertinoPageRoute(
-          builder: (context) => const ChooseCoinsWidget(),
-          fullscreenDialog: true))
-      .then((value) {});
+
+  navigateWithTransition(context, const ChooseCoinsWidget());
 }
 
 class DiscardTransactionDialog extends ConsumerStatefulWidget {
