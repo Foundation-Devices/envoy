@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:envoy/business/video.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:tor/tor.dart';
@@ -43,6 +44,9 @@ class FeedManager {
         .then((response) {
       RssFeed feed = RssFeed.parse(response.body);
       _addBlogPostsFromRssFeed(feed);
+    }).catchError((error) {
+      kPrint("Error fetching blog posts: $error");
+      EnvoyReport().log("Feed Manager", error.toString());
     });
   }
 
@@ -57,32 +61,36 @@ class FeedManager {
   }
 
   _addVideosFromVimeo() async {
-    List<Video> currentVideos = [];
+    try {
+      List<Video> currentVideos = [];
 
-    final response = await getVimeoData();
+      final response = await getVimeoData();
 
-    final data = json.decode(response.body);
-    final videos = (data['data'] as List);
+      final data = json.decode(response.body);
+      final videos = (data['data'] as List);
 
-    final lastPage = data["paging"]["last"];
-    var lastNum = int.parse(lastPage[lastPage.length - 1]);
+      final lastPage = data["paging"]["last"];
+      var lastNum = int.parse(lastPage[lastPage.length - 1]);
 
-    currentVideos.addAll(_parseVideos(videos));
+      currentVideos.addAll(_parseVideos(videos));
 
-    if (lastNum > 1) {
-      for (var i = 2; i <= lastNum; i++) {
-        var response = await getVimeoData(
-          page: i,
-        );
+      if (lastNum > 1) {
+        for (var i = 2; i <= lastNum; i++) {
+          var response = await getVimeoData(
+            page: i,
+          );
 
-        final data = json.decode(response.body);
-        final videos = (data['data'] as List);
+          final data = json.decode(response.body);
+          final videos = (data['data'] as List);
 
-        currentVideos.addAll(_parseVideos(videos));
+          currentVideos.addAll(_parseVideos(videos));
+        }
       }
+      updateVideos(currentVideos);
+    } catch (e) {
+      kPrint("Error fetching Vimeo videos: $e");
+      EnvoyReport().log("Feed Manager", e.toString());
     }
-
-    updateVideos(currentVideos);
   }
 
   List<Video> _parseVideos(List<dynamic> videos) {

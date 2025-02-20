@@ -43,6 +43,7 @@ enum DismissiblePrompt {
   copyAddressWarning,
   openTxDetailsInExplorer,
   buyTxWarning,
+  scanToConnect,
 
   ///warning for exiting manual coin selection
   txDiscardWarning,
