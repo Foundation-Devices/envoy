@@ -551,7 +551,10 @@ class SpendRequirementOverlayState
     final account = ref.read(selectedAccountProvider);
     Set<String> walletSelection = ref.read(coinSelectionFromWallet);
     Set<String> coinSelection = ref.read(coinSelectionStateProvider);
-    Set coinSelectionDiff = coinSelection.difference(walletSelection);
+    Set coinSelectionDiff1 = walletSelection.difference(coinSelection);
+    Set coinSelectionDiff2 = coinSelection.difference(walletSelection);
+    Set coinSelectionDiff = coinSelectionDiff1
+        .union(coinSelectionDiff2); // all the diff (excluding all duplicates)
 
     if (mode == SpendOverlayContext.editCoins) {
       if (ref.read(coinDetailsActiveProvider)) {
@@ -568,6 +571,7 @@ class SpendRequirementOverlayState
             Fees().slowRate(account!.wallet.network) * 100000;
         ref.read(spendTransactionProvider.notifier).validate(scope);
       }
+
       ref.read(spendEditModeProvider.notifier).state =
           SpendOverlayContext.hidden;
       await Future.delayed(const Duration(milliseconds: 120));
@@ -603,7 +607,10 @@ class SpendRequirementOverlayState
         ref.watch(getTotalSelectedAmount(widget.account.id!));
         Set<String> walletSelection = ref.watch(coinSelectionFromWallet);
         Set<String> coinSelection = ref.watch(coinSelectionStateProvider);
-        Set diff = coinSelection.difference(walletSelection);
+        Set coinSelectionDiff1 = walletSelection.difference(coinSelection);
+        Set coinSelectionDiff2 = coinSelection.difference(walletSelection);
+        Set diff = coinSelectionDiff1.union(
+            coinSelectionDiff2); // all the diff (excluding all duplicates)
         bool selectionChanged = diff.isNotEmpty;
         return EnvoyButton(
           selectionChanged
