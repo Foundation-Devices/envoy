@@ -52,7 +52,7 @@ class AmountEntry extends ConsumerStatefulWidget {
 }
 
 class AmountEntryState extends ConsumerState<AmountEntry> {
-  String _enteredAmount = "";
+  String _enteredAmount = "0";
   int _amountSats = 0;
   final GlobalKey _fittedBoxKey = GlobalKey();
   double? _fittedBoxHeight;
