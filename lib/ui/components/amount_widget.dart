@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -749,8 +750,9 @@ double convertFiatStringToFiat(
 
 String convertSatsToFiatString(
     int amountSats, double fxRateFiat, String locale) {
-  NumberFormat currencyFormatter =
-      NumberFormat.currency(locale: locale, symbol: "");
+  // format via Settings().selectedFiat
+  NumberFormat currencyFormatter = NumberFormat.currency(
+      locale: locale, symbol: "", name: Settings().selectedFiat);
 
   String formattedAmount =
       currencyFormatter.format(fxRateFiat * amountSats / 100000000);

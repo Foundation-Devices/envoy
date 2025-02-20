@@ -272,13 +272,14 @@ class ExchangeRate extends ChangeNotifier {
 
   // double FIAT to string FIAT
   String formatFiatToString(double amount, {bool isPrimaryValue = false}) {
-    String pattern = (isPrimaryValue && amount == 0) ? "#0" : "#,##0.00";
+    if (isPrimaryValue && amount == 0) {
+      return "0";
+    }
+    // format via Settings().selectedFiat
+    NumberFormat currencyFormatter = NumberFormat.currency(
+        locale: currentLocale, symbol: "", name: Settings().selectedFiat);
 
-    // Format the double using the current locale
-    String formattedAmount =
-        NumberFormat(pattern, currentLocale).format(amount);
-
-    return formattedAmount;
+    return currencyFormatter.format(amount);
   }
 
   // SATS to double FIAT
@@ -306,8 +307,8 @@ class ExchangeRate extends ChangeNotifier {
       return "";
     }
 
-    NumberFormat currencyFormatter =
-        NumberFormat.currency(locale: currentLocale, symbol: "");
+    NumberFormat currencyFormatter = NumberFormat.currency(
+        locale: currentLocale, symbol: "", name: Settings().selectedFiat);
 
     String formattedAmount;
 

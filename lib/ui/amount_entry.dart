@@ -116,7 +116,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
       setState(() {
         unit = decodedInfo.unit ?? unit;
         ref.read(displayFiatSendAmountProvider.notifier).state =
-            decodedInfo.displayFiatSendAmount;
+            decodedInfo.displayFiat;
       });
 
       if (widget.onPaste != null) {
