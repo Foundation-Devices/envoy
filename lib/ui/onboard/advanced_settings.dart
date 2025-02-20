@@ -252,37 +252,84 @@ class _AdvancedSettingsOptionsState
                                         const SizedBox(
                                             height: EnvoySpacing.medium2),
                                         Material(
-                                          color: Colors.transparent,
-                                          child: EnvoyDropdown(
-                                            initialIndex: ConnectivityManager()
-                                                    .usingDefaultServer
-                                                ? 0
-                                                : 1,
-                                            options: [
-                                              EnvoyDropdownOption(S()
-                                                  .privacy_node_nodeType_foundation),
-                                              EnvoyDropdownOption(
-                                                  S()
-                                                      .privacy_node_nodeType_personal,
-                                                  type: EnvoyDropdownOptionType
-                                                      .personalNode),
-                                            ],
-                                            onOptionChanged: (selectedOption) {
-                                              if (selectedOption != null) {
-                                                setState(() {
-                                                  _handleDropdownChange(
-                                                      selectedOption);
-                                                  if (!(selectedOption.type ==
-                                                      EnvoyDropdownOptionType
-                                                          .personalNode)) {
-                                                    s.useDefaultElectrumServer(
-                                                        true);
-                                                  }
-                                                });
-                                              }
-                                            },
-                                          ),
-                                        ),
+                                            color: Colors.transparent,
+                                            child: EnvoyDropdown(
+                                              initialIndex:
+                                                  getInitialElectrumDropdownIndex(),
+                                              options: [
+                                                EnvoyDropdownOption(S()
+                                                    .privacy_node_nodeType_foundation),
+                                                EnvoyDropdownOption(
+                                                    S()
+                                                        .privacy_node_nodeType_personal,
+                                                    type:
+                                                        EnvoyDropdownOptionType
+                                                            .personalNode),
+                                                EnvoyDropdownOption(
+                                                    "Public Servers",
+                                                    // TODO: localazy
+                                                    //S().privacy_node_nodeType_publicServers
+                                                    type:
+                                                        EnvoyDropdownOptionType
+                                                            .sectionBreak),
+                                                EnvoyDropdownOption(
+                                                    PublicServer.bitaroo.label,
+                                                    type:
+                                                        EnvoyDropdownOptionType
+                                                            .bitaroo),
+                                                EnvoyDropdownOption(
+                                                    PublicServer
+                                                        .blockStream.label,
+                                                    type:
+                                                        EnvoyDropdownOptionType
+                                                            .blockStream),
+                                                EnvoyDropdownOption(
+                                                    PublicServer.diyNodes.label,
+                                                    type:
+                                                        EnvoyDropdownOptionType
+                                                            .diyNodes),
+                                              ],
+                                              onOptionChanged:
+                                                  (selectedOption) {
+                                                if (selectedOption != null) {
+                                                  setState(() {
+                                                    _handleDropdownChange(
+                                                        selectedOption);
+                                                    switch (
+                                                        selectedOption.type) {
+                                                      case EnvoyDropdownOptionType
+                                                            .normal:
+                                                        s.useDefaultElectrumServer(
+                                                            true);
+                                                      case EnvoyDropdownOptionType
+                                                            .personalNode:
+                                                        s.useDefaultElectrumServer(
+                                                            false);
+                                                      case EnvoyDropdownOptionType
+                                                            .bitaroo:
+                                                        s.setCustomElectrumAddress(
+                                                            PublicServer.bitaroo
+                                                                .address);
+                                                      case EnvoyDropdownOptionType
+                                                            .blockStream:
+                                                        s.setCustomElectrumAddress(
+                                                            PublicServer
+                                                                .blockStream
+                                                                .address);
+                                                      case EnvoyDropdownOptionType
+                                                            .diyNodes:
+                                                        s.setCustomElectrumAddress(
+                                                            PublicServer
+                                                                .diyNodes
+                                                                .address);
+                                                      case EnvoyDropdownOptionType
+                                                            .sectionBreak:
+                                                      // do nothing
+                                                    }
+                                                  });
+                                                }
+                                              },
+                                            )),
                                         if (!ConnectivityManager()
                                                 .usingDefaultServer ||
                                             _showPersonalNodeTextField)

@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'package:collection/collection.dart';
 import 'package:envoy/business/feed_manager.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
@@ -16,6 +17,22 @@ enum ConnectivityManagerEvent {
   electrumUnreachable,
   electrumReachable,
   foundationServerDown,
+}
+
+enum PublicServer {
+  bitaroo("Bitaroo", "ssl://electrum.bitaroo.net:50002"),
+  blockStream("BlockStream", "ssl://blockstream.info:700"),
+  diyNodes("DIYnodes", "ssl://electrum.diynodes.com:50022");
+
+  final String label;
+  final String address;
+
+  const PublicServer(this.label, this.address);
+
+  static PublicServer? fromAddress(String address) {
+    return PublicServer.values
+        .firstWhereOrNull((server) => server.address == address);
+  }
 }
 
 const Duration _tempDisablementTimeout = Duration(hours: 24);

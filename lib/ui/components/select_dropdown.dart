@@ -8,8 +8,17 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
+import 'package:envoy/business/connectivity_manager.dart';
+import 'package:envoy/business/settings.dart';
 
-enum EnvoyDropdownOptionType { normal, personalNode }
+enum EnvoyDropdownOptionType {
+  normal,
+  personalNode,
+  bitaroo,
+  blockStream,
+  diyNodes,
+  sectionBreak
+}
 
 class EnvoyDropdownOption {
   final String label;
@@ -105,12 +114,14 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
             borderRadius: BorderRadius.circular(EnvoySpacing.small),
             onChanged: widget.isDropdownActive
                 ? (EnvoyDropdownOption? newValue) {
+                    if (newValue == null ||
+                        newValue.type == EnvoyDropdownOptionType.sectionBreak) {
+                      return;
+                    }
                     setState(() {
                       _selectedOption = newValue;
-                      _selectedIndex = widget.options.indexOf(newValue!);
-                      if (widget.onOptionChanged != null) {
-                        widget.onOptionChanged!(newValue);
-                      }
+                      _selectedIndex = widget.options.indexOf(newValue);
+                      widget.onOptionChanged?.call(newValue);
                     });
                   }
                 : null,
@@ -155,11 +166,16 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
                             children: [
                               Text(
                                 option.label,
-                                style: EnvoyTypography.body.copyWith(
-                                  color: isSelectedOption && _isTapped
-                                      ? EnvoyColors.textPrimaryInverse
-                                      : EnvoyColors.textPrimary,
-                                ),
+                                style: option.type ==
+                                        EnvoyDropdownOptionType.sectionBreak
+                                    ? EnvoyTypography.info.copyWith(
+                                        color: EnvoyColors.textTertiary,
+                                      )
+                                    : EnvoyTypography.body.copyWith(
+                                        color: isSelectedOption && _isTapped
+                                            ? EnvoyColors.textPrimaryInverse
+                                            : EnvoyColors.textPrimary,
+                                      ),
                                 overflow: TextOverflow.ellipsis,
                               ),
                               if (_isTapped)
@@ -195,4 +211,20 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
       ),
     );
   }
+}
+
+int getInitialElectrumDropdownIndex() {
+  if (ConnectivityManager().usingDefaultServer) {
+    return 0;
+  }
+
+  final customAddress = Settings().selectedElectrumAddress;
+  final matchedServer = PublicServer.fromAddress(customAddress);
+
+  if (matchedServer != null) {
+    return PublicServer.values.indexOf(matchedServer) +
+        3; // Offset for section break and personal nodes
+  }
+
+  return 1; // Default to personal node
 }
