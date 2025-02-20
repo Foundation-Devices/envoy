@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/updates_manager.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -198,8 +199,8 @@ class Notifications {
       if (version != null) {
         bool fwUpdateAvailable =
             await UpdatesManager().shouldUpdate(version, device.type);
-        final newVersion =
-            await UpdatesManager().getStoredFwVersionString(device.type.index);
+        final newVersion = await UpdatesManager()
+            .getStoredFirmwareVersionString(device.type.index);
         for (var notification in notifications) {
           if (notification.body == newVersion!) {
             fwUpdateAvailable = false;
@@ -342,9 +343,13 @@ class Notifications {
         final version = data['tag_name'];
         return version;
       } else {
+        EnvoyReport().log(
+            "EnvoyGHVersionCheck", "Couldn't find tag_name in GitHub response");
         throw Exception("Couldn't find tag_name in GitHub response");
       }
     } else {
+      EnvoyReport().log("EnvoyGHVersionCheck",
+          "Couldn't reach GitHub,${response.statusCode} ${response.body}");
       throw Exception("Couldn't reach GitHub");
     }
   }

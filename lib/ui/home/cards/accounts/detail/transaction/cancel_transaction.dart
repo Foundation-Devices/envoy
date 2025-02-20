@@ -245,7 +245,7 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
         Navigator.pop(context);
       },
       icon: EnvoyIcons.alert,
-      typeOfMessage: PopUpState.danger,
+      typeOfMessage: PopUpState.warning,
     );
   }
 }

@@ -22,6 +22,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider/path_provider.dart';
@@ -32,23 +33,52 @@ Future<void> goBackHome(WidgetTester tester) async {
   await tester.pumpWidget(const EnvoyApp());
 }
 
-Future<void> fromHomeToBuyOptions(WidgetTester tester) async {
+Future<void> fromHomeToBuyOptions(WidgetTester tester,
+    {bool selectFirstCountryAvailable = true}) async {
   await tester.pump();
   final buyBitcoinButton = find.text('Buy');
+  await tester.pumpUntilFound(buyBitcoinButton);
   expect(buyBitcoinButton, findsOneWidget);
 
   await tester.tap(buyBitcoinButton);
+  await tester.pump(Durations.long2);
   await tester.pump(Durations.long2);
 
   final selectRegionDropDown = find.text('Select State');
   await tester.pumpUntilFound(selectRegionDropDown,
       tries: 50, duration: Durations.long2);
   expect(selectRegionDropDown, findsOneWidget);
+
+  if (!selectFirstCountryAvailable) {
+    final selectCountryDropDown = find.text("United States");
+    expect(selectCountryDropDown, findsOneWidget);
+    await tester.tap(selectCountryDropDown);
+    await tester.pump(Durations.long2);
+    await scrollUntilVisible(tester, "Spain",
+        scrollableWidgetType: ListView, scrollIncrement: 100);
+    final countryFinder = find.text('Spain');
+    expect(countryFinder, findsOneWidget);
+    await tester.tap(countryFinder);
+    await tester.pump(Durations.long2);
+    await tester.pump(Durations.long2);
+  }
+
   await tester.tap(selectRegionDropDown);
   await tester.pump(Durations.long2);
 
-  final dropdownItems = find.byType(DropdownMenuItem<EnvoyDropdownOption>);
-  await tester.tap(dropdownItems.at(1)); // Tap at first state
+  if (selectFirstCountryAvailable) {
+    final dropdownItems = find.byType(DropdownMenuItem<EnvoyDropdownOption>);
+    await tester.tap(dropdownItems.at(1)); // Tap at first state
+  }
+
+  if (!selectFirstCountryAvailable) {
+    await scrollUntilVisible(tester, "Granada", scrollableWidgetType: ListView);
+    await scrollHome(tester, -100, scrollableWidgetType: ListView);
+    final granada = find.text('Granada');
+    expect(granada, findsOneWidget);
+    await tester.tap(granada);
+  }
+
   await tester.pump(Durations.long2);
 
   final continueButtonFinder = find.text('Continue');
@@ -61,16 +91,12 @@ Future<void> fromHomeToBuyOptions(WidgetTester tester) async {
 Future<void> setUpAppFromStart(WidgetTester tester) async {
   await tester.pump();
 
-  final setUpButtonFinder = find.text('Set Up Envoy Wallet');
+  await disableTorOnboarding(tester);
+
+  final setUpButtonFinder = find.text('Create a\nMobile Wallet');
   expect(setUpButtonFinder, findsOneWidget);
   await tester.tap(setUpButtonFinder);
   await tester.pump(const Duration(milliseconds: 500));
-
-  final continueButtonFinder = find.text('Continue');
-  expect(continueButtonFinder, findsOneWidget);
-  await tester.tap(continueButtonFinder);
-  await tester.pump(Durations.long2);
-  await tester.pump(Durations.long2);
 
   final enableMagicButtonFinder = find.text('Enable Magic Backups');
   expect(enableMagicButtonFinder, findsOneWidget);
@@ -83,6 +109,9 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
   await tester.tap(createMagicButtonFinder);
   await tester.pump(const Duration(milliseconds: 1500));
 
+  final continueButtonFinder = find.text('Continue');
+  await tester.pump(Durations.long2);
+
   await tester.pumpUntilFound(continueButtonFinder,
       tries: 50, duration: Durations.long2);
 
@@ -94,13 +123,18 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
   expect(continueButtonFinder, findsOneWidget);
   await tester.tap(continueButtonFinder);
   await tester.pump(const Duration(milliseconds: 500));
+
+  //Android has an additional info screen about backup
+  if (Platform.isAndroid) {
+    expect(continueButtonFinder, findsOneWidget);
+    await tester.tap(continueButtonFinder);
+    await tester.pump(const Duration(milliseconds: 500));
+  }
 }
 
+/// Send Signet money back to test Account
 Future<void> sendFromBaseWallet(
-
-    /// Send Signet money back to test Account
-    WidgetTester tester,
-    String hotSignetAddress) async {
+    WidgetTester tester, String hotSignetAddress) async {
   final baseWalletFinder = find.text("Base Wallet");
   expect(baseWalletFinder, findsWidgets);
   await tester.tap(baseWalletFinder.first);
@@ -495,12 +529,15 @@ Future<void> setUpWalletFromSeedViaBackupFile(
       tries: 100, duration: Durations.long2);
   final continueButtonFinder = find.text('Continue');
   expect(successMessage, findsOneWidget);
+  await tester.pump(Durations.long2);
   expect(continueButtonFinder, findsOneWidget);
   await tester.tap(continueButtonFinder);
-  await tester.pump(const Duration(milliseconds: 500));
+  await tester.pump(Durations.long2);
+  await tester.pump(Durations.long2);
 
   // Scroll down by 600 pixels
   await scrollHome(tester, -600);
+  await tester.pump(Durations.long2);
 
   // search for passport account
   final passportAccount = find.text("Passport");
@@ -523,14 +560,17 @@ Future<void> enterSeedWords(
   }
 }
 
-Future<void> scrollHome(WidgetTester tester, double pixels) async {
+Future<void> scrollHome(WidgetTester tester, double pixels,
+    {Type scrollableWidgetType = ReorderableListView}) async {
   // Perform the drag operation on the ReorderableListView by the specified number of pixels
-  await tester.drag(find.byType(ReorderableListView), Offset(0, pixels));
+  await tester.drag(find.byType(scrollableWidgetType).last, Offset(0, pixels));
   await tester.pump(Durations.long2);
 }
 
 Future<void> scrollUntilVisible(WidgetTester tester, String text,
-    {int maxScrolls = 50, double scrollIncrement = -100}) async {
+    {int maxScrolls = 50,
+    double scrollIncrement = -100,
+    Type scrollableWidgetType = ReorderableListView}) async {
   Finder finder = find.text(text);
 
   for (int i = 0; i < maxScrolls; i++) {
@@ -539,7 +579,8 @@ Future<void> scrollUntilVisible(WidgetTester tester, String text,
       return; // Widget found, stop scrolling
     }
 
-    await scrollHome(tester, scrollIncrement);
+    await scrollHome(tester, scrollIncrement,
+        scrollableWidgetType: scrollableWidgetType);
   }
 
   // Optionally, you could throw an exception if the widget isn't found after maxScrolls
@@ -571,16 +612,14 @@ Future<void> scrollFindAndTapText(WidgetTester tester, String text,
 
 Future<void> onboardingAndEnterSeed(
     WidgetTester tester, List<String> seed) async {
-  final setUpButtonFinder = find.text('Set Up Envoy Wallet');
+  await tester.pump(Durations.long2);
+
+  await disableTorOnboarding(tester);
+
+  final setUpButtonFinder = find.text('Create a\nMobile Wallet');
   expect(setUpButtonFinder, findsOneWidget);
   await tester.tap(setUpButtonFinder);
   await tester.pump(const Duration(milliseconds: 500));
-
-  final continueButtonFinder = find.text('Continue');
-  expect(continueButtonFinder, findsOneWidget);
-  await tester.tap(continueButtonFinder);
-  await tester.pump(Durations.long2);
-  await tester.pump(Durations.long2);
 
   final manuallyConfigureSeedWords = find.text('Manually Configure Seed Words');
   expect(manuallyConfigureSeedWords, findsOneWidget);
@@ -612,6 +651,15 @@ Future<void> onboardingAndEnterSeed(
   expect(doneButton, findsOneWidget);
   await tester.tap(doneButton);
   await tester.pump(const Duration(milliseconds: 500));
+}
+
+Future<void> disableTorOnboarding(WidgetTester tester) async {
+  await findAndPressTextButton(tester, "Advanced Options");
+  await enablePerformance(tester);
+  Finder backButtonFinder = find.byType(CupertinoNavigationBarBackButton);
+  expect(backButtonFinder, findsOne);
+  await tester.tap(backButtonFinder);
+  await tester.pump(Durations.long2);
 }
 
 Future<void> findAndPressBuyOptions(WidgetTester tester) async {
@@ -657,19 +705,14 @@ Future<void> checkBuyOptionAndTitle(WidgetTester tester) async {
 Future<void> setUpFromStartNoAccounts(WidgetTester tester) async {
   await tester.pump();
 
-  final setUpButtonFinder = find.text('Set Up Envoy Wallet');
+  final setUpButtonFinder = find.text('Create a\nMobile Wallet');
   expect(setUpButtonFinder, findsOneWidget);
   await tester.tap(setUpButtonFinder);
   await tester.pump(Durations.long2);
 
-  final continueButtonFinder = find.text('Continue');
-  expect(continueButtonFinder, findsOneWidget);
-  await tester.tap(continueButtonFinder);
-  await tester.pump(Durations.long2);
-  await tester.pump(Durations.long2);
-
   // go to home w no accounts
   final skipButtonFinder = find.text('Skip');
+  await tester.pumpUntilFound(skipButtonFinder);
   expect(skipButtonFinder, findsOneWidget);
   await tester.tap(skipButtonFinder);
   await tester.pump(Durations.long2);
@@ -1250,6 +1293,16 @@ Future<void> openDeviceCard(WidgetTester tester, String deviceName) async {
 Future<void> openEditDevice(WidgetTester tester) async {
   await tester.pump();
   final editNameButton = find.text('EDIT DEVICE NAME');
+  expect(editNameButton, findsOneWidget);
+
+  await tester.tap(editNameButton);
+  await tester.pump(Durations.long2);
+}
+
+Future<void> openMenuAndPressDeleteDevice(WidgetTester tester) async {
+  await openDotsMenu(tester);
+  await tester.pump();
+  final editNameButton = find.text('DELETE');
   expect(editNameButton, findsOneWidget);
 
   await tester.tap(editNameButton);

@@ -21,6 +21,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'cards/accounts/accounts_state.dart';
+import 'cards/accounts/spend/coin_selection_overlay.dart';
 
 class HomeAppBar extends ConsumerStatefulWidget {
   final bool backGroundShown;
@@ -126,6 +128,21 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
 
     String title = _getTitle(path, homePageTitle);
 
+    Future show(SpendOverlayContext overlayContext) async {
+      ref.read(spendEditModeProvider.notifier).state = overlayContext;
+      final account = ref.read(selectedAccountProvider);
+      if (account == null || overlayEntry != null) return;
+      overlayEntry = OverlayEntry(
+          builder: (context) {
+            return SpendRequirementOverlay(account: account);
+          },
+          maintainState: true,
+          opaque: false);
+      if (context.mounted) {
+        Overlay.of(context, rootOverlay: true).insert(overlayEntry!);
+      }
+    }
+
     return AppBar(
       // Get rid of the shadow
       elevation: 0,
@@ -160,6 +177,15 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                 } else if (path == ROUTE_BUY_BITCOIN) {
                   if (context.mounted) {
                     GoRouter.of(context).go(ROUTE_ACCOUNTS_HOME);
+                  }
+                } else if (ref.read(coinSelectionStateProvider).isNotEmpty &&
+                    ref.read(showSpendRequirementOverlayProvider)) {
+                  final account = ref.read(selectedAccountProvider);
+                  if (account != null) {
+                    show(SpendOverlayContext.preselectCoins);
+                  }
+                  if (context.mounted) {
+                    context.go(ROUTE_ACCOUNT_DETAIL);
                   }
                 } else {
                   if (context.mounted && GoRouter.of(context).canPop()) {
@@ -338,7 +364,8 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
             behavior: HitTestBehavior.opaque,
             onTap: () {
               if (EnvoySeed().walletDerived()) {
-                context.push(ONBOARD_PASSPORT_SETUP);
+                //TODO: replace with bottom sheet options menu, onboarding 2.0
+                context.pushNamed(ONBOARD_PASSPORT_SETUP);
               } else {
                 context.pushNamed(ROUTE_SPLASH);
               }

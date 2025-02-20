@@ -42,6 +42,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
 import 'package:wallet/wallet.dart';
+import 'package:envoy/ui/shield_path.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 
 //ignore: must_be_immutable
 class TxReview extends ConsumerStatefulWidget {
@@ -489,46 +491,40 @@ class _TransactionReviewScreenState
           GoRouter.of(context).pop();
         },
       ),
-      bottom: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(8),
-          topRight: Radius.circular(7),
-        ),
+      bottom: ClipPath(
+        clipper: ShieldClipper(isBlurShield: true),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-          child: Container(
-            color: Colors.white12,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-              ).add(const EdgeInsets.only(bottom: EnvoySpacing.large1)),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  if (!transactionModel.isPSBTFinalized)
-                    EnvoyButton(
-                      enabled: !transactionModel.loading,
-                      S().coincontrol_tx_detail_cta2,
-                      type: EnvoyButtonTypes.secondary,
-                      onTap: () {
-                        ref.read(userHasChangedFeesProvider.notifier).state =
-                            false;
-                        editTransaction(context, ref);
-                      },
-                    ),
-                  const Padding(padding: EdgeInsets.all(6)),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+            ).add(const EdgeInsets.only(bottom: EnvoySpacing.large1)),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (!transactionModel.isPSBTFinalized)
                   EnvoyButton(
                     enabled: !transactionModel.loading,
-                    (account.wallet.hot || transactionModel.isPSBTFinalized)
-                        ? S().coincontrol_tx_detail_cta1
-                        : S().coincontrol_txDetail_cta1_passport,
+                    S().coincontrol_tx_detail_cta2,
+                    type: EnvoyButtonTypes.secondary,
                     onTap: () {
-                      widget.onBroadcast();
+                      ref.read(userHasChangedFeesProvider.notifier).state =
+                          false;
+                      editTransaction(context, ref);
                     },
                   ),
-                ],
-              ),
+                const Padding(padding: EdgeInsets.all(6)),
+                EnvoyButton(
+                  enabled: !transactionModel.loading,
+                  (account.wallet.hot || transactionModel.isPSBTFinalized)
+                      ? S().coincontrol_tx_detail_cta1
+                      : S().coincontrol_txDetail_cta1_passport,
+                  onTap: () {
+                    widget.onBroadcast();
+                  },
+                ),
+              ],
             ),
           ),
         ),
@@ -726,56 +722,27 @@ class _DiscardTransactionDialogState
   Widget build(BuildContext context) {
     Account? account = ref.watch(selectedAccountProvider);
 
-    return Container(
-      padding: const EdgeInsets.all(28).add(const EdgeInsets.only(top: -6)),
-      constraints: const BoxConstraints(
-        minHeight: 300,
-        maxWidth: 280,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          const Icon(
-            Icons.warning_amber_rounded,
-            color: EnvoyColors.accentSecondary,
-            size: 42,
-          ),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          Text(S().manage_account_remove_heading,
-              style: Theme.of(context).textTheme.titleSmall),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          Text(
-            S().coincontrol_tx_detail_passport_subheading,
-            style: Theme.of(context).textTheme.titleSmall,
-            textAlign: TextAlign.center,
-          ),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          EnvoyButton(
-            S().coincontrol_tx_detail_passport_cta2,
-            type: EnvoyButtonTypes.secondary,
-            onTap: () async {
-              final router = GoRouter.of(context);
-              resetFeeChangeNoticeUserInteractionProviders(ref);
-              router.pop(true);
-              await Future.delayed(const Duration(milliseconds: 50));
-              ref.read(selectedAccountProvider.notifier).state = account;
-              router.pushReplacement(ROUTE_ACCOUNT_DETAIL, extra: account);
-              await Future.delayed(const Duration(milliseconds: 50));
-              router.pop();
-            },
-          ),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          EnvoyButton(
-            S().coincontrol_txDetail_ReviewTransaction,
-            type: EnvoyButtonTypes.primaryModal,
-            onTap: () {
-              Navigator.of(context).pop(false);
-            },
-          )
-        ],
-      ),
+    return EnvoyPopUp(
+      icon: EnvoyIcons.alert,
+      typeOfMessage: PopUpState.warning,
+      title: S().manage_account_remove_heading,
+      showCloseButton: false,
+      content: S().coincontrol_tx_detail_passport_subheading,
+      primaryButtonLabel: S().coincontrol_txDetail_ReviewTransaction,
+      onPrimaryButtonTap: (context) {
+        Navigator.of(context).pop(false);
+      },
+      secondaryButtonLabel: S().coincontrol_tx_detail_passport_cta2,
+      onSecondaryButtonTap: (context) async {
+        final router = GoRouter.of(context);
+        resetFeeChangeNoticeUserInteractionProviders(ref);
+        router.pop(true);
+        await Future.delayed(const Duration(milliseconds: 50));
+        ref.read(selectedAccountProvider.notifier).state = account;
+        router.pushReplacement(ROUTE_ACCOUNT_DETAIL, extra: account);
+        await Future.delayed(const Duration(milliseconds: 50));
+        router.pop();
+      },
     );
   }
 }

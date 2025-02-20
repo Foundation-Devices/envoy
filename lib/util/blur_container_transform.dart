@@ -629,7 +629,15 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
       _currentAnimationStatus = status;
       switch (status) {
         case AnimationStatus.dismissed:
+          // First attempt to restore the hideable widget
           _toggleHideable(hide: false);
+
+          // Schedule another attempt after a short delay (50ms)
+          // This ensures that if the first attempt happens before measurements update,
+          // the second attempt will correctly restore the placeholder size after the frame stabilizes.
+          Future.delayed(const Duration(milliseconds: 50), () {
+            _toggleHideable(hide: false);
+          });
           break;
         case AnimationStatus.completed:
           _toggleHideable(hide: true);

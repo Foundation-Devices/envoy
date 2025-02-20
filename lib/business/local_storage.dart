@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:io';
+import 'package:archive/archive_io.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -126,5 +127,16 @@ class LocalStorage {
   Future<bool> fileExists(String name) async {
     final file = File('${appSupportDir.path}/$name');
     return file.exists();
+  }
+
+  Future<void> extractTarFile(String path) async {
+    final file = File('${appSupportDir.path}/$path');
+    if (!await file.exists()) {
+      throw Exception('Tar file does not exist: $path');
+    }
+
+    final folderName = path.replaceAll('.tar', '');
+    await extractFileToDisk(
+        '${appSupportDir.path}/$path', '${appSupportDir.path}/$folderName');
   }
 }

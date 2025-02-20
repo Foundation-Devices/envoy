@@ -20,6 +20,7 @@ class EnvoyColors {
 
   static const Color teal500 = Color(0xff009db9);
   static const Color copper500 = Color(0xffbf755f);
+  static const Color copperLight500 = Color(0xFFD68B6E);
   static const Color pine500 = Color(0xff2e9483);
   static const Color apple500 = Color(0xff3fde4a);
   static const Color sunglow500 = Color(0xffffbb33);
@@ -44,6 +45,6 @@ class EnvoyColors {
   static const Color accentSecondary = copper500;
   static const Color accentTertiary = pine500;
   static const Color success = apple500;
-  static const Color warning = sunglow500;
+  static const Color warning = copper500;
   static const Color danger = chilli500;
 }

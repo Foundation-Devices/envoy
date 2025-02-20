@@ -7,23 +7,24 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:backup/backup.dart';
 import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/business/blog_post.dart';
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/video.dart';
+import 'package:envoy/ui/routes/routes.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/services.dart';
 import 'package:tor/tor.dart';
 import 'package:wallet/wallet.dart';
-import 'package:envoy/business/devices.dart';
-import 'package:envoy/business/local_storage.dart';
-import 'package:file_saver/file_saver.dart';
-import 'package:envoy/ui/routes/routes.dart';
-import 'package:envoy/util/bug_report_helper.dart';
-import 'package:envoy/business/blog_post.dart';
-import 'package:envoy/business/notifications.dart';
 
 const String SEED_KEY = "seed";
 const String WALLET_DERIVED_PREFS = "wallet_derived";
@@ -228,12 +229,16 @@ class EnvoySeed {
 
     // SFT-2447: flip cloud syncing to false if we're making an offline file
     if (!isOnlineBackup) {
-      var settings = values[keys.indexOf(Settings.SETTINGS_PREFS)];
-      var jsonSettings = jsonDecode(settings);
-      jsonSettings["syncToCloudSetting"] = false;
-      settings = jsonEncode(jsonSettings);
-      json["stores"][indexOfPreferences]["values"]
-          [keys.indexOf(Settings.SETTINGS_PREFS)] = settings;
+      try {
+        var settings = values[keys.indexOf(Settings.SETTINGS_PREFS)];
+        var jsonSettings = jsonDecode(settings);
+        jsonSettings["syncToCloudSetting"] = false;
+        settings = jsonEncode(jsonSettings);
+        json["stores"][indexOfPreferences]["values"]
+            [keys.indexOf(Settings.SETTINGS_PREFS)] = settings;
+      } catch (e, stack) {
+        EnvoyReport().log("EnvoySeed", e.toString(), stackTrace: stack);
+      }
     }
 
     // Strip keys from hot wallets

@@ -54,7 +54,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       return false;
     }
 
-    final currentFwVersion = await UpdatesManager().getStoredFwVersion(1);
+    final currentFwVersion = await UpdatesManager().getStoredFirmwareVersion(1);
     if (currentFwVersion == null) {
       return false;
     }
@@ -65,6 +65,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
     return false;
   }
+
+  final s = Settings();
 
   @override
   void initState() {
@@ -91,7 +93,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    var s = Settings();
     double nestedMargin = 8;
     double marginBetweenItems = 6;
 
