@@ -41,7 +41,7 @@ class BitcoinParser {
       return ParseResult(
         address: data,
         amountSats: null,
-        displayFiat: null,
+        displayFiat: 0,
         unit: null,
       );
     }
@@ -90,7 +90,7 @@ class BitcoinParser {
     bool isError = !isNumber(data);
     if (isError) {
       return ParseResult(
-          address: null, amountSats: null, displayFiat: null, unit: null);
+          address: null, amountSats: null, displayFiat: 0, unit: null);
     } else {
       var copiedStringParsed = double.parse(data);
       String numberAsString = copiedStringParsed.toString();
@@ -115,7 +115,7 @@ class BitcoinParser {
         } else {
           if (!isFiatSelected) {
             return ParseResult(
-                address: null, amountSats: null, displayFiat: null, unit: unit);
+                address: null, amountSats: null, displayFiat: 0, unit: unit);
           } else {
             unit = AmountDisplayUnit.fiat;
             amountInSats = getSatsFromFiat(data, fiatExchangeRate);

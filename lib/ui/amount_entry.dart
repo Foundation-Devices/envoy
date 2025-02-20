@@ -26,6 +26,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/locale.dart';
+import 'package:intl/intl.dart' as intl;
 
 final isNumpadPressed = StateProvider<bool>((ref) => false);
 
@@ -459,6 +460,9 @@ class _NumPadState extends State<NumPad> {
     // Calculate the child aspect ratio, based on the width and height
     final childAspectRatio = (width / crossAxisCount) / (height / rowCount);
 
+    intl.NumberFormat currencyFormatter = intl.NumberFormat.currency(
+        locale: currentLocale, symbol: "", name: Settings().selectedFiat);
+
     return GridView.count(
       crossAxisCount: crossAxisCount,
       childAspectRatio: childAspectRatio,
@@ -478,8 +482,11 @@ class _NumPadState extends State<NumPad> {
             },
           );
         })),
-        widget.amountDisplayUnit != AmountDisplayUnit.sat
-            ? NumpadButton(
+        widget.amountDisplayUnit == AmountDisplayUnit.sat ||
+                (currencyFormatter.decimalDigits == 0 &&
+                    widget.amountDisplayUnit == AmountDisplayUnit.fiat)
+            ? const SizedBox.shrink()
+            : NumpadButton(
                 NumpadButtonType.text,
                 text: fiatDecimalSeparator,
                 onTap: () {
@@ -488,8 +495,7 @@ class _NumPadState extends State<NumPad> {
                     widget.onNumPadEvents(NumPadEvents.separator);
                   }
                 },
-              )
-            : const SizedBox.shrink(),
+              ),
         NumpadButton(
           NumpadButtonType.text,
           text: "0",
