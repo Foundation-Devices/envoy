@@ -1135,7 +1135,7 @@ Future<bool> isAccountTaproot(
   return meetsCriteria;
 }
 
-Future<void> openAdvanced(WidgetTester tester) async {
+Future<void> openAdvancedMenu(WidgetTester tester) async {
   await tester.pump();
   final advancedButton = find.text('Advanced');
   expect(advancedButton, findsOneWidget);
@@ -1209,7 +1209,7 @@ Future<void> findAndTapFirstAccText(
 Future<void> fromHomeToAdvancedMenu(WidgetTester tester) async {
   await pressHamburgerMenu(tester);
   await goToSettings(tester);
-  await openAdvanced(tester);
+  await openAdvancedMenu(tester);
 }
 
 Future<void> findAndTapPopUpText(WidgetTester tester, String tapText) async {
