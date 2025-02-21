@@ -1568,6 +1568,31 @@ Future<void> main() async {
           "bc1pgqnxzknhzyypgslhcevt96cnry4jkarv5gqp560a95uv6mzf4x7s0r67mm";
       await trySendToAddress(tester, p2trAddress);
     });
+    testWidgets('Account delete icon', (tester) async {
+      await goBackHome(tester);
+
+      await scrollHome(tester, 1000);
+
+      const String accountPassportName = "Primary (#0)";
+
+      await scrollUntilVisible(
+        tester,
+        accountPassportName,
+      );
+
+      await findAndPressTextButton(tester, accountPassportName);
+
+      // Go to Acc options
+      await findAndPressIcon(tester, Icons.more_horiz_outlined);
+      await findAndPressTextButton(tester, "DELETE");
+
+      final envoyIconFinder = find.byWidgetPredicate(
+        (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.alert,
+        description: 'EnvoyIcon finder == EnvoyIcons.alert',
+      );
+
+      expect(envoyIconFinder, findsOneWidget);
+    });
     testWidgets('Delete device', (tester) async {
       await goBackHome(tester);
       String deviceName = "Passport";
@@ -1635,29 +1660,6 @@ Future<void> main() async {
 
       await tester.pumpUntilFound(newElementFinder,
           duration: Durations.long1, tries: 100);
-    });
-    testWidgets('Account delete icon', (tester) async {
-      await goBackHome(tester);
-
-      const String accountPassportName = "Primary (#0)";
-
-      await scrollUntilVisible(
-        tester,
-        accountPassportName,
-      );
-
-      await findAndPressTextButton(tester, accountPassportName);
-
-      // Go to Acc options
-      await findAndPressIcon(tester, Icons.more_horiz_outlined);
-      await findAndPressTextButton(tester, "DELETE");
-
-      final envoyIconFinder = find.byWidgetPredicate(
-        (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.alert,
-        description: 'EnvoyIcon finder == EnvoyIcons.alert',
-      );
-
-      expect(envoyIconFinder, findsOneWidget);
     });
   });
 
