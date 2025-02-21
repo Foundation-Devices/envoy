@@ -14,7 +14,6 @@ import 'package:envoy/business/settings.dart';
 enum EnvoyDropdownOptionType {
   normal,
   personalNode,
-  bitaroo,
   blockStream,
   diyNodes,
   sectionBreak

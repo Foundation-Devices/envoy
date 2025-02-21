@@ -273,11 +273,6 @@ class _AdvancedSettingsOptionsState
                                                         EnvoyDropdownOptionType
                                                             .sectionBreak),
                                                 EnvoyDropdownOption(
-                                                    PublicServer.bitaroo.label,
-                                                    type:
-                                                        EnvoyDropdownOptionType
-                                                            .bitaroo),
-                                                EnvoyDropdownOption(
                                                     PublicServer
                                                         .blockStream.label,
                                                     type:
@@ -305,11 +300,6 @@ class _AdvancedSettingsOptionsState
                                                             .personalNode:
                                                         s.useDefaultElectrumServer(
                                                             false);
-                                                      case EnvoyDropdownOptionType
-                                                            .bitaroo:
-                                                        s.setCustomElectrumAddress(
-                                                            PublicServer.bitaroo
-                                                                .address);
                                                       case EnvoyDropdownOptionType
                                                             .blockStream:
                                                         s.setCustomElectrumAddress(

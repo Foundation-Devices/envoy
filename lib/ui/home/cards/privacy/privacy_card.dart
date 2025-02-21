@@ -168,8 +168,6 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
                               "Public Servers", // TODO: localazy
                               //S().privacy_node_nodeType_publicServers
                               type: EnvoyDropdownOptionType.sectionBreak),
-                          EnvoyDropdownOption(PublicServer.bitaroo.label,
-                              type: EnvoyDropdownOptionType.bitaroo),
                           EnvoyDropdownOption(PublicServer.blockStream.label,
                               type: EnvoyDropdownOptionType.blockStream),
                           EnvoyDropdownOption(PublicServer.diyNodes.label,
@@ -184,9 +182,6 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
                                   s.useDefaultElectrumServer(true);
                                 case EnvoyDropdownOptionType.personalNode:
                                   s.useDefaultElectrumServer(false);
-                                case EnvoyDropdownOptionType.bitaroo:
-                                  s.setCustomElectrumAddress(
-                                      PublicServer.bitaroo.address);
                                 case EnvoyDropdownOptionType.blockStream:
                                   s.setCustomElectrumAddress(
                                       PublicServer.blockStream.address);
