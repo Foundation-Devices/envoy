@@ -266,9 +266,8 @@ class _AdvancedSettingsOptionsState
                                                         EnvoyDropdownOptionType
                                                             .personalNode),
                                                 EnvoyDropdownOption(
-                                                    "Public Servers",
-                                                    // TODO: localazy
-                                                    //S().privacy_node_nodeType_publicServers
+                                                    S()
+                                                        .privacy_node_nodeType_publicServers,
                                                     type:
                                                         EnvoyDropdownOptionType
                                                             .sectionBreak),

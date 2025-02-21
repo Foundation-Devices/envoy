@@ -165,8 +165,7 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
                               S().privacy_node_nodeType_personal,
                               type: EnvoyDropdownOptionType.personalNode),
                           EnvoyDropdownOption(
-                              "Public Servers", // TODO: localazy
-                              //S().privacy_node_nodeType_publicServers
+                              S().privacy_node_nodeType_publicServers,
                               type: EnvoyDropdownOptionType.sectionBreak),
                           EnvoyDropdownOption(PublicServer.blockStream.label,
                               type: EnvoyDropdownOptionType.blockStream),
