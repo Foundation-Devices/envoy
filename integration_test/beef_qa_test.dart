@@ -1571,7 +1571,7 @@ Future<void> main() async {
     testWidgets('Account delete icon', (tester) async {
       await goBackHome(tester);
 
-      await scrollHome(tester, 1000);
+      await scrollHome(tester, 1500);
 
       const String accountPassportName = "Primary (#0)";
 
@@ -1579,6 +1579,8 @@ Future<void> main() async {
         tester,
         accountPassportName,
       );
+
+      await scrollHome(tester, -100);
 
       await findAndPressTextButton(tester, accountPassportName);
 
