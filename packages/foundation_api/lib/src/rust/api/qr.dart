@@ -4,7 +4,6 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
-import '../third_party/bc_envelope/base/envelope.dart';
 import '../third_party/bc_ur.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
@@ -20,6 +19,9 @@ Future<DecoderStatus> decodeQr(
 
 Future<void> pairDevice({required Envelope envelope}) =>
     RustLib.instance.api.crateApiQrPairDevice(envelope: envelope);
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Envelope>>
+abstract class Envelope implements RustOpaqueInterface {}
 
 class DecoderStatus {
   final double progress;
