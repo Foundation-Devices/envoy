@@ -52,7 +52,7 @@ class AmountEntry extends ConsumerStatefulWidget {
 }
 
 class AmountEntryState extends ConsumerState<AmountEntry> {
-  String _enteredAmount = "";
+  String _enteredAmount = "0";
   int _amountSats = 0;
   final GlobalKey _fittedBoxKey = GlobalKey();
   double? _fittedBoxHeight;
@@ -250,7 +250,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
           // Format it nicely
           _enteredAmount = getDisplayAmount(
               _amountSats,
-              displayFiat: ref.read(displayFiatSendAmountProvider)!,
+              displayFiat: ref.read(displayFiatSendAmountProvider),
               unit);
         });
       }
