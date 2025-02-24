@@ -1,4 +1,4 @@
-rust_input: crate::api, bc-envelope::Envelope, bc-ur::MultipartDecoder
+rust_input: crate::api, bc-envelope::Envelope, bc-ur::MultipartDecoder, bc-envelope::base::format
 rust_root: rust/
 dart_output: lib/src/rust
 enable_lifetime: true

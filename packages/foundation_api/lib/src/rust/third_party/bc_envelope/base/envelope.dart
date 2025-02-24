@@ -5,7 +5,60 @@
 
 import '../../../frb_generated.dart';
 import 'format.dart';
+import 'format_context.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Envelope>>
-abstract class Envelope implements RustOpaqueInterface, EnvelopeFormat {}
+abstract class Envelope
+    implements RustOpaqueInterface, EnvelopeFormat, EnvelopeFormat {
+  /// Returns the CBOR diagnostic notation for this envelope.
+  ///
+  /// Uses the current format context.
+  ///
+  /// See [RFC-8949 §8](https://www.rfc-editor.org/rfc/rfc8949.html#name-diagnostic-notation)
+  /// for information on CBOR diagnostic notation.
+  /// Support for the various text output formats for ``Envelope``.
+  Future<String> diagnostic();
+
+  /// Returns the CBOR diagnostic notation for this envelope, with annotations.
+  ///
+  /// See [RFC-8949 §8](https://www.rfc-editor.org/rfc/rfc8949.html#name-diagnostic-notation)
+  /// for information on CBOR diagnostic notation.
+  /// Support for the various text output formats for ``Envelope``.
+  Future<String> diagnosticAnnotated();
+
+  /// Returns the envelope notation for this envelope.
+  ///
+  /// Uses the current format context.
+  /// Support for the various text output formats for ``Envelope``.
+  Future<String> format();
+
+  /// Returns the envelope notation for this envelope in flat format.
+  ///
+  /// In flat format, the envelope is printed on a single line.
+  /// Support for the various text output formats for ``Envelope``.
+  Future<String> formatFlat();
+
+  @override
+  Future<EnvelopeFormatItem> formatItem({required FormatContext context});
+
+  /// Returns the envelope notation for this envelope.
+  /// Support for the various text output formats for ``Envelope``.
+  Future<String> formatOpt({FormatContext? context});
+
+  /// Returns the CBOR hex dump of this envelope.
+  ///
+  /// Uses the current format context.
+  ///
+  /// See [RFC-8949](https://www.rfc-editor.org/rfc/rfc8949.html) for information on
+  /// the CBOR binary format.
+  /// Support for the various text output formats for ``Envelope``.
+  Future<String> hex();
+
+  /// Returns the CBOR hex dump of this envelope.
+  ///
+  /// See [RFC-8949](https://www.rfc-editor.org/rfc/rfc8949.html) for information on
+  /// the CBOR binary format.
+  /// Support for the various text output formats for ``Envelope``.
+  Future<String> hexOpt({required bool annotate, FormatContext? context});
+}
