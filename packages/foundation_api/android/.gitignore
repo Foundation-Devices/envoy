@@ -1,13 +1,13 @@
-# SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
-#
-# SPDX-License-Identifier: GPL-3.0-or-later
-
-*.iml
-.gradle
+gradle-wrapper.jar
+/.gradle
+/captures/
+/gradlew
+/gradlew.bat
 /local.properties
-/.idea/workspace.xml
-/.idea/libraries
-.DS_Store
-/build
-/captures
-.cxx
+GeneratedPluginRegistrant.java
+
+# Remember to never publicly share your keystore.
+# See https://flutter.dev/to/reference-keystore
+key.properties
+**/*.keystore
+**/*.jks

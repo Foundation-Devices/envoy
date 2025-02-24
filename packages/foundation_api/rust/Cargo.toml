@@ -1,24 +1,33 @@
-# SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
-#
-# SPDX-License-Identifier: GPL-3.0-or-later
-
 [package]
-name = "foundation_api"
+name = "rust_lib_foundation_api"
 version = "0.1.0"
 edition = "2021"
 
 [lib]
 crate-type = ["cdylib", "staticlib"]
 
-[workspace]
-
 [dependencies]
-flutter_rust_bridge = "=2.6.0"
+flutter_rust_bridge = "=2.8.0"
 foundation-api = { path = "/home/igor/Code/foundation-api/api" }
-foundation-abstracted = { path = "/home/igor/Code/foundation-api/abstracted" }
-bc-envelope = "0.21.0"
-bc-xid = "0.3.0"
-bc-components = "0.15.0"
+foundation-ur = { git = "https://github.com/Foundation-Devices/foundation-rs" }
+#minicbor = { version = "0.24.2", features = ["alloc"] }
 
-#foundation-api = { git = "https://github.com/Foundation-Devices/foundation-api.git", rev = "0207eb18d8384a2fd75de437c87e1540efdde5b7" }
-#foundation-abstracted = { git = "https://github.com/Foundation-Devices/foundation-api.git", rev = "0207eb18d8384a2fd75de437c87e1540efdde5b7" }
+bc-envelope = { version = "0.22.0", default-features = false, features = [
+    "multithreaded",
+    "attachment",
+    "compress",
+    "encrypt",
+    "expression",
+    "known_value",
+    "proof",
+    "recipient",
+    "salt",
+    "signature",
+    "sskr",
+    "types"
+]}
+
+bc-ur = "0.6.2"
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }

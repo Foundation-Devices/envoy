@@ -26,6 +26,14 @@ class BluetoothManager {
     await bluart.init();
 
     await api.RustLib.init();
+
+
+
+    var decoder = await api.getDecoder();
+    api.decodeQr(qr: "test", decoder: decoder);
+
+    decoder.dispose();
+
     return singleton;
   }
 
