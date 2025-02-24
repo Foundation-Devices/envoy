@@ -36,11 +36,13 @@ Future<void> main() async {
 
   group('Hot wallet tests', () {
     // These tests use wallet which is set up from zero (no need for passport account)
-    testWidgets('Flow to map', (tester) async {
+    testWidgets('Buy ATM filter by country first and flow to map',
+        (tester) async {
       await tester.pumpWidget(const EnvoyApp());
 
       await setUpAppFromStart(tester);
-      await fromHomeToBuyOptions(tester);
+      await tester.pump(Durations.long2);
+      await fromHomeToBuyOptions(tester, selectFirstCountryAvailable: false);
 
       await tester.pump(Durations.long2);
 
@@ -63,6 +65,23 @@ Future<void> main() async {
         (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.plus,
       );
       expect(iconFinder, findsOneWidget);
+
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
+
+      final iconLocationFinder = find.byWidgetPredicate(
+        (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.location,
+      );
+
+      expect(iconLocationFinder, findsAny);
+      await tester.tap(iconLocationFinder.last);
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
+
+      // Check that the ATM name widget is present.
+      // If found, it indicates that the map has loaded correctly for the specified region (Granada, Spain).
+      final atmName = find.text("Kurant Bitcoin ATM");
+      expect(atmName, findsAny);
     });
 
     testWidgets('About', (tester) async {
@@ -309,28 +328,6 @@ Future<void> main() async {
       reorderPromptFinder = find.text(reorderPromptMessage);
       expect(tapCardsPromptFinder, findsNothing);
     });
-    testWidgets('Test send to all address types', (tester) async {
-      await goBackHome(tester);
-      await disableAllNetworks(tester);
-
-      final walletWithBalance = find.text("GH TEST ACC (#1)");
-      expect(walletWithBalance, findsAny);
-      await tester.tap(walletWithBalance);
-      await tester.pump(Durations.long2);
-
-      String p2pkhAddress = "12rYgz414HBXdhhK72BkR9VHZSU23dqqG7";
-      await trySendToAddress(tester, p2pkhAddress);
-
-      String p2shAddress = "3BY19nUKCAkrnzrgRezJoekGv4AFzsTs2z";
-      await trySendToAddress(tester, p2shAddress);
-
-      String p2wpkhAddress = "bc1qhrnucvul769yld6q09m8skwkp6zrecxhc00jcw";
-      await trySendToAddress(tester, p2wpkhAddress);
-
-      String p2trAddress =
-          "bc1pgqnxzknhzyypgslhcevt96cnry4jkarv5gqp560a95uv6mzf4x7s0r67mm";
-      await trySendToAddress(tester, p2trAddress);
-    });
     testWidgets('Edit device name', (tester) async {
       await goBackHome(tester);
 
@@ -404,6 +401,8 @@ Future<void> main() async {
 
       await findAndPressTextButton(tester, "Continue");
       await findAndPressTextButton(tester, "Verify Address with Passport");
+      Finder doneButton = find.text("Done");
+      await tester.pumpUntilFound(doneButton);
       await findAndPressTextButton(tester, "Done");
       await pressHamburgerMenu(tester);
       await pressHamburgerMenu(tester);
@@ -888,6 +887,7 @@ Future<void> main() async {
       expect(reconnectPassportButton, findsOneWidget);
       await tester.tap(reconnectPassportButton);
       await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
       final connectPassportButton = find.text('Get Started');
       expect(connectPassportButton, findsOneWidget);
     });
@@ -1006,6 +1006,13 @@ Future<void> main() async {
 
       bool isSettingsSignetSwitchOn = await isSlideSwitchOn(tester, 'Signet');
       bool isSettingsTaprootSwitchOn = await isSlideSwitchOn(tester, 'Taproot');
+      bool isSettingsViewSatsSwitchOn =
+          await isSlideSwitchOn(tester, 'View Amount in Sats');
+
+      if (!isSettingsViewSatsSwitchOn) {
+        // find And Toggle DisplayFiat Switch
+        await findAndToggleSettingsSwitch(tester, 'View Amount in Sats');
+      }
 
       if (!isSettingsSignetSwitchOn) {
         // find And Toggle Signet Switch
@@ -1539,6 +1546,28 @@ Future<void> main() async {
       // Check if the numbers differ from different Fiats
       expect(newFiatAmount != usdFiatAmount, isTrue);
     });
+    testWidgets('Test send to all address types', (tester) async {
+      await goBackHome(tester);
+      await disableAllNetworks(tester);
+
+      final walletWithBalance = find.text("GH TEST ACC (#1)");
+      expect(walletWithBalance, findsAny);
+      await tester.tap(walletWithBalance);
+      await tester.pump(Durations.long2);
+
+      String p2pkhAddress = "12rYgz414HBXdhhK72BkR9VHZSU23dqqG7";
+      await trySendToAddress(tester, p2pkhAddress);
+
+      String p2shAddress = "3BY19nUKCAkrnzrgRezJoekGv4AFzsTs2z";
+      await trySendToAddress(tester, p2shAddress);
+
+      String p2wpkhAddress = "bc1qhrnucvul769yld6q09m8skwkp6zrecxhc00jcw";
+      await trySendToAddress(tester, p2wpkhAddress);
+
+      String p2trAddress =
+          "bc1pgqnxzknhzyypgslhcevt96cnry4jkarv5gqp560a95uv6mzf4x7s0r67mm";
+      await trySendToAddress(tester, p2trAddress);
+    });
     testWidgets('Delete device', (tester) async {
       await goBackHome(tester);
       String deviceName = "Passport";
@@ -1558,6 +1587,7 @@ Future<void> main() async {
       final closeDialogButton = find.byIcon(Icons.close);
       await tester.tap(closeDialogButton.last);
       await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
       // Check that a pop up close on 'x'
       expect(popUpText, findsNothing);
 
@@ -1573,10 +1603,12 @@ Future<void> main() async {
 
       // Make sure device is removed
       final emptyDevices = find.byType(GhostDevice);
+      await tester.pumpUntilFound(emptyDevices);
       expect(emptyDevices, findsOne);
 
       // Verify that deleting the device also removes its associated accounts
       await findAndPressTextButton(tester, 'Accounts');
+      await tester.pump(Durations.long2);
       final passportAccount = find.text(
         deviceName,
       );
@@ -1592,6 +1624,7 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
 
       await findAndPressIcon(tester, Icons.copy);
+      //await tester.pump(const Duration(seconds: 5));
 
       await checkForToast(tester);
       // Perform an action that should trigger a UI update
@@ -1615,6 +1648,26 @@ Future<void> main() async {
 
       await findAndPressBuyOptions(tester);
       await checkBuyOptionAndTitle(tester);
+    });
+    testWidgets('Buy button - enable from Settings', (tester) async {
+      await goBackHome(tester);
+
+      // Find the Buy button (enabled in Settings by default)
+      final buyButtonFinder = find.descendant(
+        of: find.byType(GestureDetector),
+        matching: find.text('Buy'),
+      );
+      expect(buyButtonFinder, findsOneWidget);
+
+      // now turn it off from settings
+      await fromHomeToAdvancedMenu(tester);
+      await findAndToggleSettingsSwitch(tester, "Buy in Envoy");
+
+      // back to Accounts
+      await pressHamburgerMenu(tester);
+      await pressHamburgerMenu(tester);
+
+      expect(buyButtonFinder, findsNothing);
     });
   });
 }

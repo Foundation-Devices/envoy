@@ -455,7 +455,7 @@ class GhostListTile extends StatelessWidget {
   }
 }
 
-class TransactionListTile extends StatelessWidget {
+class TransactionListTile extends ConsumerWidget {
   TransactionListTile({
     super.key,
     required this.transaction,
@@ -478,7 +478,7 @@ class TransactionListTile extends StatelessWidget {
   final Settings s = Settings();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     final Locale activeLocale = Localizations.localeOf(context);
 
     return BlurContainerTransform(
@@ -486,7 +486,10 @@ class TransactionListTile extends StatelessWidget {
       closedBuilder: (context, action) {
         return GestureDetector(
           onTap: () {
-            action();
+            if (!ref.read(transactionDetailsOpen.notifier).state) {
+              ref.read(transactionDetailsOpen.notifier).state = true;
+              action();
+            }
           },
           onLongPress: () async {
             await copyTxId(context, transaction.txId, transaction.type);
@@ -794,23 +797,38 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
             if (!widget.account.wallet.hot) {
               showEnvoyDialog(
                   context: context,
-                  dialog: EnvoyDialog(
-                    title: S().manage_account_remove_heading,
-                    content: Text(S().manage_account_remove_subheading),
-                    actions: [
-                      EnvoyButton(
-                        S().component_delete,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(8)),
-                        onTap: () async {
-                          Navigator.pop(context);
-                          GoRouter.of(context).pop();
-                          await Future.delayed(
-                              const Duration(milliseconds: 50));
-                          AccountManager().deleteAccount(widget.account);
-                        },
-                      ),
-                    ],
+                  dialog: EnvoyPopUp(
+                    icon: EnvoyIcons.alert,
+                    typeOfMessage: PopUpState.warning,
+                    showCloseButton: true,
+                    customWidget: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          S().manage_account_remove_heading,
+                          style: EnvoyTypography.info,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(
+                          height: EnvoySpacing.medium1,
+                        ),
+                        Text(
+                          S().manage_account_remove_subheading,
+                          style: EnvoyTypography.info,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(
+                          height: EnvoySpacing.medium1,
+                        ),
+                      ],
+                    ),
+                    primaryButtonLabel: S().component_delete,
+                    onPrimaryButtonTap: (context) async {
+                      Navigator.pop(context);
+                      GoRouter.of(context).pop();
+                      await Future.delayed(const Duration(milliseconds: 50));
+                      AccountManager().deleteAccount(widget.account);
+                    },
                   ));
             } else {
               ref.read(homePageBackgroundProvider.notifier).state =

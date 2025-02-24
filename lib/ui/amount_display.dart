@@ -35,7 +35,8 @@ class AmountDisplay extends ConsumerStatefulWidget {
       super.key});
 
   void setDisplayAmount(AmountDisplayUnit unit) {
-    displayedAmount = getDisplayAmount(amountSats!, unit);
+    displayedAmount = getDisplayAmount(amountSats!, unit,
+        trailingZeroes: showBtcTrailingZeroes(amountSats!, false));
   }
 
   @override
@@ -175,4 +176,10 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
       },
     );
   }
+}
+
+bool showBtcTrailingZeroes(int amountSats, bool numpadPressed) {
+  bool isBtcZero = amountSats == 0;
+  bool trailingZeros = isBtcZero || numpadPressed ? false : true;
+  return trailingZeros;
 }

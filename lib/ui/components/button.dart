@@ -34,12 +34,14 @@ class EnvoyButton extends StatefulWidget {
   final double height;
   final Function? onTap;
   final EdgeInsets edgeInsets;
+  final Color? textColor;
 
   const EnvoyButton({
     super.key,
     required this.label,
     required this.type,
     required this.state,
+    this.textColor,
     this.icon,
     this.onTap,
     this.height = 48.0,
@@ -169,6 +171,11 @@ class EnvoyButtonState extends State<EnvoyButton> {
     if (isPressed) {
       return EnvoyColors.accentPrimary;
     }
+
+    if (widget.textColor != null) {
+      return widget.textColor!;
+    }
+
     if (widget.type == ButtonType.secondary ||
         widget.type == ButtonType.tertiary) {
       return EnvoyColors.accentPrimary;
