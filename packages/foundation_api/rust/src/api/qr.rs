@@ -43,5 +43,5 @@ pub async fn decode_qr(qr: String, decoder: &mut MultipartDecoder) -> anyhow::Re
 
 // Only after user presses 'continue'
 pub fn pair_device(envelope: Envelope) {
-    
+
 }

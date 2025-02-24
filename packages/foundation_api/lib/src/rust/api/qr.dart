@@ -18,8 +18,8 @@ Future<DecoderStatus> decodeQr(
         {required String qr, required MultipartDecoder decoder}) =>
     RustLib.instance.api.crateApiQrDecodeQr(qr: qr, decoder: decoder);
 
-Future<void> pairDevice({required String payload}) =>
-    RustLib.instance.api.crateApiQrPairDevice(payload: payload);
+Future<void> pairDevice({required Envelope envelope}) =>
+    RustLib.instance.api.crateApiQrPairDevice(envelope: envelope);
 
 class DecoderStatus {
   final double progress;

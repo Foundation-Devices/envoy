@@ -90,7 +90,7 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiQrInitApp();
 
-  Future<void> crateApiQrPairDevice({required String payload});
+  Future<void> crateApiQrPairDevice({required Envelope envelope});
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_Envelope;
@@ -216,11 +216,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<void> crateApiQrPairDevice({required String payload}) {
+  Future<void> crateApiQrPairDevice({required Envelope envelope}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_String(payload, serializer);
+        sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
+            envelope, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 5, port: port_);
       },
@@ -229,14 +230,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: null,
       ),
       constMeta: kCrateApiQrPairDeviceConstMeta,
-      argValues: [payload],
+      argValues: [envelope],
       apiImpl: this,
     ));
   }
 
   TaskConstMeta get kCrateApiQrPairDeviceConstMeta => const TaskConstMeta(
         debugName: "pair_device",
-        argNames: ["payload"],
+        argNames: ["envelope"],
       );
 
   RustArcIncrementStrongCountFnType

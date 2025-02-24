@@ -227,12 +227,12 @@ fn wire__crate__api__qr__pair_device_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_payload = <String>::sse_decode(&mut deserializer);
+            let api_envelope = <Envelope>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, ()>((move || {
                     let output_ok = Result::<_, ()>::Ok({
-                        crate::api::qr::pair_device(api_payload);
+                        crate::api::qr::pair_device(api_envelope);
                     })?;
                     Ok(output_ok)
                 })())
