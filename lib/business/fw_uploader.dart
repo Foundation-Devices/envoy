@@ -32,13 +32,12 @@ class FwUploader {
   static const platform = MethodChannel('envoy');
 
   FwUploader(this.fw) {
-    // Get the last used SD CARD path
-    if (EnvoyStorage().containsKey(lastSDCardPathPrefs)) {
-      _sdCardPath = EnvoyStorage().getString(lastSDCardPathPrefs)!;
-    }
-
-    // Android
     if (Platform.isAndroid) {
+      // Get the last used SD CARD path
+      if (EnvoyStorage().containsKey(lastSDCardPathPrefs)) {
+        _sdCardPath = EnvoyStorage().getString(lastSDCardPathPrefs)!;
+      }
+
       platform.invokeMethod('get_sd_card_path').then((value) {
         _sdCardPath = value;
         EnvoyStorage().setString(lastSDCardPathPrefs, _sdCardPath);
