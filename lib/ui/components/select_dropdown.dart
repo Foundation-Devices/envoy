@@ -16,6 +16,7 @@ enum EnvoyDropdownOptionType {
   personalNode,
   blockStream,
   diyNodes,
+  sethForPrivacy,
   sectionBreak
 }
 

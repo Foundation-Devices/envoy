@@ -21,7 +21,8 @@ enum ConnectivityManagerEvent {
 
 enum PublicServer {
   blockStream("BlockStream", "ssl://blockstream.info:700"),
-  diyNodes("DIYnodes", "ssl://electrum.diynodes.com:50022");
+  diyNodes("DIYnodes", "ssl://electrum.diynodes.com:50022"),
+  sethForPrivacy("Seth For Privacy", "ssl://fulcrum.sethforprivacy.com:50002");
 
   final String label;
   final String address;
