@@ -1,5 +1,6 @@
 use bc_envelope::base::envelope;
 use bc_envelope::prelude::*;
+use bc_ur::URType;
 use flutter_rust_bridge::for_generated::anyhow;
 use foundation_ur::{Decoder, UR};
 

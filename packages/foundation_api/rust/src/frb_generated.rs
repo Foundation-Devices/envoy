@@ -25,6 +25,7 @@
 
 // Section: imports
 
+use bc_envelope::Envelope;
 use crate::api::qr::*;
 use bc_ur::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
