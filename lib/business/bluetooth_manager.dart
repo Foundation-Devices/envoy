@@ -9,7 +9,6 @@ import 'package:bluart/bluart.dart' as bluart;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/uuid_value.dart';
-import 'package:foundation_api/foundation_api.dart' as api;
 
 class BluetoothManager {
   static final BluetoothManager _instance = BluetoothManager._internal();
@@ -24,16 +23,6 @@ class BluetoothManager {
     var singleton = BluetoothManager._instance;
     await bluart.RustLib.init();
     await bluart.init();
-
-    await api.RustLib.init();
-
-
-
-    var decoder = await api.getDecoder();
-    api.decodeQr(qr: "test", decoder: decoder);
-
-    decoder.dispose();
-
     return singleton;
   }
 
@@ -44,7 +33,6 @@ class BluetoothManager {
   void getPermissions() {
     Permission.bluetooth.request();
     Permission.bluetoothConnect.request();
-
     // TODO: remove this
     // Envoy will be getting the BT addresses via QR
     Permission.bluetoothScan.request();

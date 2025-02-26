@@ -6,6 +6,7 @@
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/account_manager.dart';
@@ -73,7 +74,7 @@ class ScannerPage extends StatefulWidget {
   final Function(String)? onSeedValidated;
   final Function(String)? onNodeUrlParsed;
   final Function(String)? deviceScan;
-  final Function(api.Envelope)? onPrimePair;
+  final Function(api.U8Array6)? onPrimePair;
   final Function(String, int, String?)? onAddressValidated;
 
   ScannerPage(this._acceptableTypes,
@@ -318,16 +319,16 @@ class ScannerPageState extends State<ScannerPage> {
           _progress = .5;
         });
         if (value.payload != null) {
+          setState(() {
+            _progress = .8;
+          });
           final payload = value.payload;
           final discovery = await api.extractDiscovery(envelope: payload!);
-
-          final bleAddress = await api.getBleAddress(discovery: discovery);
-
+          api.U8Array6 bleAddress = await api.getBleAddress(discovery: discovery);
           setState(() {
             _progress = 1;
           });
-          await Future.delayed(const Duration(milliseconds: 500));
-          widget.onPrimePair!(value.payload!);
+          widget.onPrimePair!(bleAddress);
         }
       } catch (e, s) {
         kPrint(e,stackTrace: s);

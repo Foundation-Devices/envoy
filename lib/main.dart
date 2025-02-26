@@ -66,6 +66,7 @@ Future<void> initSingletons() async {
     kPrint("API init failed");
     kPrint(e);
   }
+  await BluetoothManager.init();
   // This is notoriously low on iOS, causing 'too many open files errors'
   kPrint("Process nofile_limit: ${getNofileLimit()}");
 
@@ -87,7 +88,6 @@ Future<void> initSingletons() async {
   await EnvoySeed.init();
   await FMTCObjectBoxBackend().initialise();
   await const FMTCStore('mapStore').manage.create();
-  await BluetoothManager.init();
 
   // Start Tor regardless of whether we are using it or not
   try {
