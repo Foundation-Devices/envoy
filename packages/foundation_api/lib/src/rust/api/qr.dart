@@ -17,8 +17,11 @@ Future<DecoderStatus> decodeQr(
         {required String qr, required MultipartDecoder decoder}) =>
     RustLib.instance.api.crateApiQrDecodeQr(qr: qr, decoder: decoder);
 
-Future<void> pairDevice({required Envelope envelope}) =>
+Future<Discovery> pairDevice({required Envelope envelope}) =>
     RustLib.instance.api.crateApiQrPairDevice(envelope: envelope);
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Discovery>>
+abstract class Discovery implements RustOpaqueInterface {}
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Envelope>>
 abstract class Envelope implements RustOpaqueInterface {}
