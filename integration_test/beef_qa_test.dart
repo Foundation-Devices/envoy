@@ -1549,19 +1549,12 @@ Future<void> main() async {
     testWidgets('Account delete icon', (tester) async {
       await goBackHome(tester);
 
-      await scrollHome(tester, 1500);
+      await disableAllNetworks(tester);
 
       const String accountPassportName = "GH TEST ACC (#1)";
 
-      await scrollUntilVisible(
-        tester,
-        accountPassportName,
-      );
-
-      await scrollHome(tester, -100);
-
       await findAndPressTextButton(tester, accountPassportName);
-
+      await tester.pump(Durations.long2);
       // Go to Acc options
       await findAndPressIcon(tester, Icons.more_horiz_outlined);
       await findAndPressTextButton(tester, "DELETE");
