@@ -31,6 +31,7 @@ import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:tor/tor.dart';
 import 'package:tor/util.dart';
 
@@ -57,6 +58,14 @@ Future<void> main() async {
 }
 
 Future<void> initSingletons() async {
+  try {
+    kPrint("Init RustLib");
+    await api.RustLib.init();
+    kPrint("Decoder init success");
+  } catch (e) {
+    kPrint("API init failed");
+    kPrint(e);
+  }
   // This is notoriously low on iOS, causing 'too many open files errors'
   kPrint("Process nofile_limit: ${getNofileLimit()}");
 

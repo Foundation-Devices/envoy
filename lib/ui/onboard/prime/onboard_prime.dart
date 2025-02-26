@@ -7,12 +7,15 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
+import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/routes/routes.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:go_router/go_router.dart';
 
 class OnboardPrimeWelcome extends StatefulWidget {
@@ -24,11 +27,30 @@ class OnboardPrimeWelcome extends StatefulWidget {
 
 class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
   final s = Settings();
+  api.Envelope? _payloadEnvelope = null;
 
   @override
   void initState() {
     super.initState();
     LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) {
+            return ScannerPage(
+              const [ScannerType.pairPrime],
+              onPrimePair: (api.Envelope envelope) {
+                Navigator.pop(context);
+                setState(() {
+                  _payloadEnvelope = envelope;
+                });
+                kPrint("Envolope: ${envelope}");
+              },
+            );
+          },
+        ));
+      },
+    );
   }
 
   @override

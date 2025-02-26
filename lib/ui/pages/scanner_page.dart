@@ -27,6 +27,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -36,6 +37,7 @@ enum ScannerType {
   generic,
   scv,
   pair,
+  pairPrime,
   validate,
   address,
   tx,
@@ -71,6 +73,7 @@ class ScannerPage extends StatefulWidget {
   final Function(String)? onSeedValidated;
   final Function(String)? onNodeUrlParsed;
   final Function(String)? deviceScan;
+  final Function(api.Envelope)? onPrimePair;
   final Function(String, int, String?)? onAddressValidated;
 
   ScannerPage(this._acceptableTypes,
@@ -81,6 +84,7 @@ class ScannerPage extends StatefulWidget {
       this.onSeedValidated,
       this.onNodeUrlParsed,
       this.deviceScan,
+      this.onPrimePair,
       this.onAddressValidated});
 
   ScannerPage.address(
@@ -125,6 +129,7 @@ class ScannerPageState extends State<ScannerPage> {
   List<int>? _lastRawBytesDetected = [];
 
   Timer? _snackbarTimer;
+  api.MultipartDecoder? decoder;
 
   ScannerPageState(UniformResourceReader urDecoder) {
     _urDecoder = urDecoder;
@@ -133,7 +138,6 @@ class ScannerPageState extends State<ScannerPage> {
   @override
   void initState() {
     super.initState();
-
     _permissionsGranted = _permissionsCompleter.future;
     if (Platform.isAndroid || Platform.isIOS) {
       Permission.camera.status.then((status) {
@@ -156,8 +160,10 @@ class ScannerPageState extends State<ScannerPage> {
     }
   }
 
+
   @override
   void dispose() {
+    decoder?.dispose();
     controller?.dispose();
     _snackbarTimer?.cancel();
     super.dispose();
@@ -300,6 +306,29 @@ class ScannerPageState extends State<ScannerPage> {
   _onDetect(String code, List<int>? rawBytes, BuildContext context) async {
     final NavigatorState navigator = Navigator.of(context);
     final scaffold = ScaffoldMessenger.of(context);
+
+    ///https://mwn367.csb.app/
+    if (widget._acceptableTypes.contains(ScannerType.pairPrime) ) {
+      decoder ??= await api.getDecoder();
+      try {
+        final value = await api.decodeQr(
+            qr: code.replaceAll("https://qr.foundation.xyz/?p=", ""),
+            decoder: decoder!);
+        setState(() {
+          _progress = .5;
+        });
+        if (value.payload != null) {
+          setState(() {
+            _progress = 1;
+          });
+          await Future.delayed(const Duration(milliseconds: 500));
+          widget.onPrimePair!(value.payload!);
+        }
+      } catch (e, s) {
+        kPrint(e,stackTrace: s);
+      }
+      return;
+    }
     if (widget._acceptableTypes.contains(ScannerType.azteco)) {
       if (AztecoVoucher.isVoucher(code)) {
         final voucher = AztecoVoucher(code);
