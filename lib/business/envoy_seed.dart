@@ -274,14 +274,16 @@ class EnvoySeed {
 
     bool isDeleted = false;
 
-    try {
-      isDeleted = await Backup.delete(
-          seed!, Settings().envoyServerAddress, Tor.instance);
-    } on Exception {
-      return false;
-    }
-    if (!isDeleted) {
-      return false;
+    if (Settings().syncToCloud) {
+      try {
+        isDeleted = await Backup.delete(
+            seed!, Settings().envoyServerAddress, Tor.instance);
+      } on Exception {
+        return false;
+      }
+      if (!isDeleted) {
+        return false;
+      }
     }
 
     AccountManager().deleteHotWalletAccounts();
@@ -298,6 +300,7 @@ class EnvoySeed {
     await removeSeedFromSecure();
     EnvoyReport().log("QA", "Removed seed from secure storage!");
     await LocalStorage().saveSecure(SEED_CLEAR_FLAG, "1");
+    isDeleted = true;
 
     //add minor delay to allow the seed to be removed from secure storage (specifically on iOS)
     await Future.delayed(const Duration(milliseconds: 500));
