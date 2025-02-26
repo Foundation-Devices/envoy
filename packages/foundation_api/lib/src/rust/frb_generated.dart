@@ -9,8 +9,10 @@ import 'dart:convert';
 import 'frb_generated.dart';
 import 'frb_generated.io.dart'
     if (dart.library.js_interop) 'frb_generated.web.dart';
+import 'lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'third_party/bc_ur.dart';
+import 'third_party/foundation_api/api/discovery.dart';
 
 /// Main entrypoint of the Rust API
 class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
@@ -69,7 +71,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.8.0';
 
   @override
-  int get rustContentHash => 1269803360;
+  int get rustContentHash => -918662760;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -83,13 +85,15 @@ abstract class RustLibApi extends BaseApi {
   Future<DecoderStatus> crateApiQrDecodeQr(
       {required String qr, required MultipartDecoder decoder});
 
+  Future<Discovery> crateApiQrExtractDiscovery({required Envelope envelope});
+
+  Future<U8Array6> crateApiQrGetBleAddress({required Discovery discovery});
+
   Future<MultipartDecoder> crateApiQrGetDecoder();
 
   String crateApiQrGreet({required String name});
 
   Future<void> crateApiQrInitApp();
-
-  Future<Discovery> crateApiQrPairDevice({required Envelope envelope});
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_Discovery;
@@ -153,12 +157,63 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<Discovery> crateApiQrExtractDiscovery({required Envelope envelope}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
+            envelope, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 2, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDiscovery,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiQrExtractDiscoveryConstMeta,
+      argValues: [envelope],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQrExtractDiscoveryConstMeta => const TaskConstMeta(
+        debugName: "extract_discovery",
+        argNames: ["envelope"],
+      );
+
+  @override
+  Future<U8Array6> crateApiQrGetBleAddress({required Discovery discovery}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDiscovery(
+            discovery, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 3, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_8_array_6,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQrGetBleAddressConstMeta,
+      argValues: [discovery],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQrGetBleAddressConstMeta => const TaskConstMeta(
+        debugName: "get_ble_address",
+        argNames: ["discovery"],
+      );
+
+  @override
   Future<MultipartDecoder> crateApiQrGetDecoder() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 2, port: port_);
+            funcId: 4, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -182,7 +237,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(name, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -205,7 +260,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 4, port: port_);
+            funcId: 6, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -220,32 +275,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiQrInitAppConstMeta => const TaskConstMeta(
         debugName: "init_app",
         argNames: [],
-      );
-
-  @override
-  Future<Discovery> crateApiQrPairDevice({required Envelope envelope}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
-            envelope, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 5, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData:
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDiscovery,
-        decodeErrorData: sse_decode_AnyhowException,
-      ),
-      constMeta: kCrateApiQrPairDeviceConstMeta,
-      argValues: [envelope],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiQrPairDeviceConstMeta => const TaskConstMeta(
-        debugName: "pair_device",
-        argNames: ["envelope"],
       );
 
   RustArcIncrementStrongCountFnType
@@ -393,6 +422,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  U8Array6 dco_decode_u_8_array_6(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return U8Array6(dco_decode_list_prim_u_8_strict(raw));
+  }
+
+  @protected
   void dco_decode_unit(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return;
@@ -531,6 +566,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   int sse_decode_u_8(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint8();
+  }
+
+  @protected
+  U8Array6 sse_decode_u_8_array_6(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_list_prim_u_8_strict(deserializer);
+    return U8Array6(inner);
   }
 
   @protected
@@ -683,6 +725,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_u_8(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint8(self);
+  }
+
+  @protected
+  void sse_encode_u_8_array_6(U8Array6 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_8_strict(self.inner, serializer);
   }
 
   @protected

@@ -4,7 +4,9 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+import '../lib.dart';
 import '../third_party/bc_ur.dart';
+import '../third_party/foundation_api/api/discovery.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 String greet({required String name}) =>
@@ -17,11 +19,11 @@ Future<DecoderStatus> decodeQr(
         {required String qr, required MultipartDecoder decoder}) =>
     RustLib.instance.api.crateApiQrDecodeQr(qr: qr, decoder: decoder);
 
-Future<Discovery> pairDevice({required Envelope envelope}) =>
-    RustLib.instance.api.crateApiQrPairDevice(envelope: envelope);
+Future<Discovery> extractDiscovery({required Envelope envelope}) =>
+    RustLib.instance.api.crateApiQrExtractDiscovery(envelope: envelope);
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Discovery>>
-abstract class Discovery implements RustOpaqueInterface {}
+Future<U8Array6> getBleAddress({required Discovery discovery}) =>
+    RustLib.instance.api.crateApiQrGetBleAddress(discovery: discovery);
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Envelope>>
 abstract class Envelope implements RustOpaqueInterface {}

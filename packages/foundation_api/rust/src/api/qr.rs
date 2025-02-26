@@ -48,7 +48,7 @@ pub async fn decode_qr(
 }
 
 // Only after user presses 'continue'
-pub async fn pair_device(envelope: Envelope) -> anyhow::Result<Discovery> {
+pub async fn extract_discovery(envelope: Envelope) -> anyhow::Result<Discovery> {
     println!("{}", envelope.format_flat());
 
     let inner = envelope.unwrap_envelope()?.unwrap_envelope()?;
@@ -57,6 +57,10 @@ pub async fn pair_device(envelope: Envelope) -> anyhow::Result<Discovery> {
     let discovery = Discovery::try_from(expression)?;
 
     Ok(discovery)
+}
+
+pub async fn get_ble_address(discovery: Discovery) -> [u8; 6] {
+    discovery.sender_ble_address()
 }
 
 #[cfg(test)]
@@ -99,7 +103,7 @@ mod tests {
 
             if result.progress == 1.0 {
                 assert!(result.payload.is_some());
-                let discovery = pair_device(result.payload.unwrap()).await;
+                let discovery = extract_discovery(result.payload.unwrap()).await?;
                 println!("");
             } else {
                 assert!(result.payload.is_none());

@@ -318,6 +318,11 @@ class ScannerPageState extends State<ScannerPage> {
           _progress = .5;
         });
         if (value.payload != null) {
+          final payload = value.payload;
+          final discovery = await api.extractDiscovery(envelope: payload!);
+
+          final bleAddress = await api.getBleAddress(discovery: discovery);
+
           setState(() {
             _progress = 1;
           });
