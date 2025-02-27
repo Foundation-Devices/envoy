@@ -283,11 +283,10 @@ class _AdvancedSettingsOptionsState
                                                         EnvoyDropdownOptionType
                                                             .diyNodes),
                                                 EnvoyDropdownOption(
-                                                    PublicServer
-                                                        .sethForPrivacy.label,
+                                                    PublicServer.luke.label,
                                                     type:
                                                         EnvoyDropdownOptionType
-                                                            .sethForPrivacy),
+                                                            .luke),
                                               ],
                                               onOptionChanged:
                                                   (selectedOption) {
@@ -343,9 +342,8 @@ class _AdvancedSettingsOptionsState
         Settings().setCustomElectrumAddress(PublicServer.blockStream.address);
       case EnvoyDropdownOptionType.diyNodes:
         Settings().setCustomElectrumAddress(PublicServer.diyNodes.address);
-      case EnvoyDropdownOptionType.sethForPrivacy:
-        Settings()
-            .setCustomElectrumAddress(PublicServer.sethForPrivacy.address);
+      case EnvoyDropdownOptionType.luke:
+        Settings().setCustomElectrumAddress(PublicServer.luke.address);
       case EnvoyDropdownOptionType.sectionBreak:
       // do nothing
     }

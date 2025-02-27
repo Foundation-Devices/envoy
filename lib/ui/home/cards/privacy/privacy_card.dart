@@ -68,9 +68,8 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
         Settings().setCustomElectrumAddress(PublicServer.blockStream.address);
       case EnvoyDropdownOptionType.diyNodes:
         Settings().setCustomElectrumAddress(PublicServer.diyNodes.address);
-      case EnvoyDropdownOptionType.sethForPrivacy:
-        Settings()
-            .setCustomElectrumAddress(PublicServer.sethForPrivacy.address);
+      case EnvoyDropdownOptionType.luke:
+        Settings().setCustomElectrumAddress(PublicServer.luke.address);
       case EnvoyDropdownOptionType.sectionBreak:
       // do nothing
     }
@@ -186,8 +185,8 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
                               type: EnvoyDropdownOptionType.blockStream),
                           EnvoyDropdownOption(PublicServer.diyNodes.label,
                               type: EnvoyDropdownOptionType.diyNodes),
-                          EnvoyDropdownOption(PublicServer.sethForPrivacy.label,
-                              type: EnvoyDropdownOptionType.sethForPrivacy),
+                          EnvoyDropdownOption(PublicServer.luke.label,
+                              type: EnvoyDropdownOptionType.luke),
                         ],
                         onOptionChanged: (selectedOption) {
                           if (selectedOption != null) {
