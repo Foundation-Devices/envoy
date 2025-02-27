@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:bluart/bluart.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
@@ -73,14 +74,13 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
         BluetoothManager().getPermissions();
         kPrint("Connecting to Prime with ID: $bleId");
         // connect(id: bleId);
-        // connect(id: "63:89:95:2E:A2:23");
+        await connect(id: bleId!);
         await Future.delayed(const Duration(seconds: 1));
         if (mounted) {
           setState(() {
             bleConnectState = BleConnectState.connected;
           });
         }
-
         if (context.mounted && mounted) {
           context.goNamed(ONBOARD_PRIME_BLUETOOTH);
         }
