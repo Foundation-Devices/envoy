@@ -10,6 +10,7 @@ import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
+import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -18,6 +19,7 @@ import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:go_router/go_router.dart';
 
 class OnboardPrimeBluetooth extends StatefulWidget {
@@ -30,7 +32,7 @@ class OnboardPrimeBluetooth extends StatefulWidget {
 class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
     with SingleTickerProviderStateMixin {
   final s = Settings();
-  late AnimationController _controller;
+  bool scanForPayload = false;
 
   bool deniedBluetooth = false;
 
@@ -40,61 +42,56 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
   }
 
   @override
-  void dispose() {
-    _controller.reverse(); // Reverse the animation when exiting
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     //TODO: update copy based on s.syncToCloud
     // bool enabledMagicBackup = s.syncToCloud;
 
-    return EnvoyPatternScaffold(
-        gradientHeight: 1.8,
-        appBar: AppBar(
-          elevation: 0,
-          toolbarHeight: kToolbarHeight,
-          backgroundColor: Colors.transparent,
-          leading: CupertinoNavigationBarBackButton(
-            color: Colors.white,
-            onPressed: () {
-              context.pop();
-              return;
-            },
+    return wrapWithQRScannerPage(
+      child: EnvoyPatternScaffold(
+          gradientHeight: 1.8,
+          appBar: AppBar(
+            elevation: 0,
+            toolbarHeight: kToolbarHeight,
+            backgroundColor: Colors.transparent,
+            leading: CupertinoNavigationBarBackButton(
+              color: Colors.white,
+              onPressed: () {
+                context.pop();
+                return;
+              },
+            ),
+            automaticallyImplyLeading: false,
           ),
-          automaticallyImplyLeading: false,
-        ),
-        header: Transform.translate(
-          offset: const Offset(0, 54),
-          child: TweenAnimationBuilder(
-            duration: const Duration(milliseconds: 600),
-            tween: Tween<double>(end: 1.0, begin: 0.0),
-            curve: Curves.decelerate,
-            builder: (context, value, child) {
-              return Opacity(opacity: value, child: child);
-            },
-            child: Image.asset(
-              "assets/images/prime_bluetooth_shield.png",
-              alignment: Alignment.bottomCenter,
-              width: MediaQuery.of(context).size.width * 0.8,
-              height: 320,
+          header: Transform.translate(
+            offset: const Offset(0, 54),
+            child: TweenAnimationBuilder(
+              duration: const Duration(milliseconds: 600),
+              tween: Tween<double>(end: 1.0, begin: 0.0),
+              curve: Curves.decelerate,
+              builder: (context, value, child) {
+                return Opacity(opacity: value, child: child);
+              },
+              child: Image.asset(
+                "assets/images/prime_bluetooth_shield.png",
+                alignment: Alignment.bottomCenter,
+                width: MediaQuery.of(context).size.width * 0.8,
+                height: 320,
+              ),
             ),
           ),
-        ),
-        shield: PageTransitionSwitcher(
-            transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
-              return SharedAxisTransition(
-                  fillColor: Colors.transparent,
-                  animation: primaryAnimation,
-                  secondaryAnimation: secondaryAnimation,
-                  transitionType: SharedAxisTransitionType.vertical,
-                  child: child);
-            },
-            child: !deniedBluetooth
-                ? quantumLinkIntro(context)
-                : bluetoothPermission(context)));
+          shield: PageTransitionSwitcher(
+              transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
+                return SharedAxisTransition(
+                    fillColor: Colors.transparent,
+                    animation: primaryAnimation,
+                    secondaryAnimation: secondaryAnimation,
+                    transitionType: SharedAxisTransitionType.vertical,
+                    child: child);
+              },
+              child: !deniedBluetooth
+                  ? quantumLinkIntro(context)
+                  : bluetoothPermission(context))),
+    );
   }
 
   requestBluetooth(BuildContext context) async {
@@ -104,6 +101,45 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
     // });
 
     context.goNamed(ONBOARD_PRIME_PAIR);
+  }
+
+  Widget wrapWithQRScannerPage({required Widget child}) {
+    return PageTransitionSwitcher(
+      duration: const Duration(milliseconds: 340),
+      transitionBuilder: (child, animation, secondaryAnimation) {
+        return SharedAxisTransition(
+          animation: animation,
+          secondaryAnimation: secondaryAnimation,
+          transitionType: SharedAxisTransitionType.vertical,
+          child: child,
+        );
+      },
+      child: !scanForPayload
+          ? child
+          : ScannerPage(
+              const [ScannerType.pairPrime],
+              onPrimePair: (api.U8Array6 primeSerial) async {
+                // kPrint(
+                //     "Prime Serial  ${primeSerial.inner.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join(':').toUpperCase()} \n UInt8Array ${primeSerial.inner}");
+                //TODO: save prime public key
+                // LocalStorage().prefs.setString(
+                //     PRIME_SERIAL,
+                //      );
+                if (mounted) {
+                  setState(() {
+                    scanForPayload = true;
+                  });
+                }
+              },
+              onBackPressed: () {
+                if (mounted) {
+                  setState(() {
+                    scanForPayload = false;
+                  });
+                }
+              },
+            ),
+    );
   }
 
   Widget quantumLinkIntro(BuildContext context) {
@@ -183,7 +219,7 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
               //   },
               // ),
               const SizedBox(height: EnvoySpacing.medium1),
-              EnvoyButton("Connect", onTap: () {
+              EnvoyButton(S().component_continue, onTap: () {
                 showCommunicationModal(context);
               }),
               const SizedBox(height: EnvoySpacing.small),
@@ -275,7 +311,7 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
               //   },
               // ),
               const SizedBox(height: EnvoySpacing.medium1),
-              EnvoyButton("Connect", onTap: () {
+              EnvoyButton("Scan", onTap: () {
                 requestBluetooth(context);
               }),
               const SizedBox(height: EnvoySpacing.small),
@@ -291,7 +327,11 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
         context: context,
         dismissible: false,
         dialog: QuantumLinkCommunicationInfo(
-          onContinue: () => requestBluetooth(context),
+          onContinue: () => {
+            setState(() {
+              scanForPayload = true;
+            })
+          },
         ));
   }
 }
@@ -299,6 +339,7 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
 //TODO: implement platform specific copy with appropriate
 class QuantumLinkCommunicationInfo extends StatefulWidget {
   final GestureTapCallback onContinue;
+
   const QuantumLinkCommunicationInfo({super.key, required this.onContinue});
 
   @override
@@ -320,7 +361,8 @@ class _QuantumLinkCommunicationInfoState
         padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
           children: [
             Align(
               alignment: Alignment.topRight,

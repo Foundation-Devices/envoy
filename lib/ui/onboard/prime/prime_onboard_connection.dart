@@ -45,7 +45,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
         await Permission.bluetoothConnect.request();
         _connectBLE();
       } catch (e) {
-        if (context.mounted) {
+        if (mounted && context.mounted) {
           //TODO: fix this dialog
           showDialog(
             context: context,
@@ -73,46 +73,46 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
   _connectBLE() async {
     try {
       if (mounted) {
-            setState(() {
-              canPop = false;
-            });
-          }
+        setState(() {
+          canPop = false;
+        });
+      }
       final bleStepNotifier = ref.read(bleConnectionProvider.notifier);
       final deviceSecurityStepNotifier =
-              ref.read(deviceSecurityProvider.notifier);
+          ref.read(deviceSecurityProvider.notifier);
       final firmWareUpdateStepNotifier =
-              ref.read(firmWareUpdateProvider.notifier);
+          ref.read(firmWareUpdateProvider.notifier);
 
-      String id = LocalStorage().prefs.getString(PRIME_SERIAL) ?? "";
+      String id = LocalStorage().prefs.getString(primeSerialPref) ?? "";
       device = BleDevice(id: id, name: "Passport Prime", connected: false);
       kPrint("Connecting to Prime with ID: $id");
       await bleStepNotifier.updateStep(
-              "Connecting to Prime", EnvoyStepState.LOADING);
+          "Connecting to Prime", EnvoyStepState.LOADING);
       await connect(id: id);
       setState(() {
         device = BleDevice(id: id, name: "Passport Prime", connected: true);
       });
       await Future.delayed(const Duration(seconds: 1));
       await bleStepNotifier.updateStep(
-              "Connected to Passport Prime", EnvoyStepState.FINISHED);
+          "Connected to Passport Prime", EnvoyStepState.FINISHED);
 
       await deviceSecurityStepNotifier.updateStep(
-              "Checking Device Security", EnvoyStepState.LOADING);
+          "Checking Device Security", EnvoyStepState.LOADING);
       await Future.delayed(const Duration(seconds: 2));
       await deviceSecurityStepNotifier.updateStep(
-              "Checked Device Security", EnvoyStepState.FINISHED);
+          "Checked Device Security", EnvoyStepState.FINISHED);
 
       await firmWareUpdateStepNotifier.updateStep(
-              "Checking firmware updates", EnvoyStepState.LOADING);
+          "Checking firmware updates", EnvoyStepState.LOADING);
       await Future.delayed(const Duration(seconds: 3));
       await firmWareUpdateStepNotifier.updateStep(
-              "New Update available", EnvoyStepState.FINISHED);
+          "New Update available", EnvoyStepState.FINISHED);
       if (mounted) {
-            setState(() {
-              canPop = true;
-              updateAvailable = true;
-            });
-          }
+        setState(() {
+          canPop = true;
+          updateAvailable = true;
+        });
+      }
     } catch (e) {
       kPrint(e);
     }

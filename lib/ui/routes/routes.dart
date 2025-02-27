@@ -57,7 +57,8 @@ final GoRouter mainRouter = GoRouter(
         name: "/",
         redirect: (context, state) {
           if (state.uri.queryParameters.containsKey("p")) {
-            return state.namedLocation(ONBOARD_PRIME);
+            return state.namedLocation(ONBOARD_PRIME,
+                queryParameters: state.uri.queryParameters);
           }
           if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) != true) {
             return ROUTE_SPLASH;

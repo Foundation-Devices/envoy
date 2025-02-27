@@ -6,7 +6,6 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/account_manager.dart';
@@ -71,6 +70,7 @@ class ScannerPage extends StatefulWidget {
   final Account? account;
   final Challenge? challengeToValidate;
   final Function(String)? onTxParsed;
+  final Function()? onBackPressed;
   final Function(String)? onSeedValidated;
   final Function(String)? onNodeUrlParsed;
   final Function(String)? deviceScan;
@@ -86,7 +86,8 @@ class ScannerPage extends StatefulWidget {
       this.onNodeUrlParsed,
       this.deviceScan,
       this.onPrimePair,
-      this.onAddressValidated});
+      this.onAddressValidated,
+      this.onBackPressed});
 
   ScannerPage.address(
       Function(String, int, String?) onAddressValidated, Account account)
@@ -161,7 +162,6 @@ class ScannerPageState extends State<ScannerPage> {
     }
   }
 
-
   @override
   void dispose() {
     decoder?.dispose();
@@ -195,7 +195,11 @@ class ScannerPageState extends State<ScannerPage> {
                 color: Colors.white54,
               ),
               onPressed: () {
-                Navigator.of(context).pop();
+                if (widget.onBackPressed != null) {
+                  widget.onBackPressed!();
+                } else {
+                  Navigator.of(context).pop();
+                }
               })),
       body: _buildQrView(context),
     );
@@ -308,8 +312,14 @@ class ScannerPageState extends State<ScannerPage> {
     final NavigatorState navigator = Navigator.of(context);
     final scaffold = ScaffoldMessenger.of(context);
 
+    if (code.startsWith("https://qr.foundation.xyz") &&
+        widget._acceptableTypes.contains(ScannerType.pair)) {
+      widget.deviceScan?.call(code);
+      return;
+    }
+
     ///https://mwn367.csb.app/
-    if (widget._acceptableTypes.contains(ScannerType.pairPrime) ) {
+    if (widget._acceptableTypes.contains(ScannerType.pairPrime)) {
       decoder ??= await api.getDecoder();
       try {
         final value = await api.decodeQr(
@@ -324,14 +334,15 @@ class ScannerPageState extends State<ScannerPage> {
           });
           final payload = value.payload;
           final discovery = await api.extractDiscovery(envelope: payload!);
-          api.U8Array6 bleAddress = await api.getBleAddress(discovery: discovery);
+          api.U8Array6 bleAddress =
+              await api.getBleAddress(discovery: discovery);
           setState(() {
             _progress = 1;
           });
           widget.onPrimePair!(bleAddress);
         }
       } catch (e, s) {
-        kPrint(e,stackTrace: s);
+        kPrint(e, stackTrace: s);
       }
       return;
     }

@@ -42,8 +42,7 @@ class BluetoothDiagnosticsPageState
       appBar: AppBar(
         title: const Text('BLE diagnostics'),
       ),
-      body:
-      ListView(
+      body: ListView(
         shrinkWrap: true,
         children: [
           ElevatedButton(
