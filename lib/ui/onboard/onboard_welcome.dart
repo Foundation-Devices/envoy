@@ -90,7 +90,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
       child: EnvoyPatternScaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
-          leading: isOnboardingComplete
+          leading: isOnboardingComplete &&   GoRouter.of(context).canPop()
               ? CupertinoNavigationBarBackButton(
                   color: EnvoyColors.textPrimaryInverse,
                   onPressed: () => context.go("/"),
