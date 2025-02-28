@@ -30,12 +30,12 @@ class BluetoothManager {
     kPrint("Instance of BluetoothManager created!");
   }
 
-  void getPermissions() {
-    Permission.bluetooth.request();
-    Permission.bluetoothConnect.request();
+  getPermissions() async {
+    await Permission.bluetooth.request();
+    await Permission.bluetoothConnect.request();
     // TODO: remove this
     // Envoy will be getting the BT addresses via QR
-    Permission.bluetoothScan.request();
+    await Permission.bluetoothScan.request();
   }
 
   void scan() {
