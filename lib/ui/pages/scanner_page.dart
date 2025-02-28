@@ -322,9 +322,8 @@ class ScannerPageState extends State<ScannerPage> {
     if (widget._acceptableTypes.contains(ScannerType.pairPrime)) {
       decoder ??= await api.getDecoder();
       try {
-        final value = await api.decodeQr(
-            qr: code.toLowerCase(),
-            decoder: decoder!);
+        final value =
+            await api.decodeQr(qr: code.toLowerCase(), decoder: decoder!);
         setState(() {
           _progress = .5;
         });
