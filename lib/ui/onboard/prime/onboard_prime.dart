@@ -75,10 +75,9 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
         kPrint("Connecting to Prime with ID: $bleId");
         // connect(id: bleId);
         await connect(id: bleId!);
-        await Future.delayed(const Duration(seconds: 1));
-        // TODO: use the nudge API to nudge prime onto animated QR with XIDDocument
-
-
+        //wait for connection to be established
+        await Future.delayed(const Duration(milliseconds:  1500));
+        await write(id: bleId, data: "123".codeUnits);
         if (mounted) {
           setState(() {
             bleConnectState = BleConnectState.connected;
