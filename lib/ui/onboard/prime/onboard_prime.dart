@@ -47,9 +47,15 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
     try {
       final bleId = GoRouter.of(context).state.uri.queryParameters["p"];
       final regex = RegExp(r'^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$');
+      kPrint("bleId ${bleId}");
       if (regex.hasMatch(bleId ?? "")) {
         await BluetoothManager().getPermissions();
         kPrint("Connecting to Prime with ID: $bleId");
+        scan(filter: []).listen((event) {
+          kPrint("Scanned: $event");
+        });
+        kPrint("Scan finished...");
+        await Future.delayed(const Duration(milliseconds: 3000));
         // connect(id: bleId);
         await connect(id: bleId!);
         //wait for connection to be established
