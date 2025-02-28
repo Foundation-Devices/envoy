@@ -74,7 +74,7 @@ class ScannerPage extends StatefulWidget {
   final Function(String)? onSeedValidated;
   final Function(String)? onNodeUrlParsed;
   final Function(String)? deviceScan;
-  final Function(api.U8Array6)? onPrimePair;
+  final Function(api.XidDocument)? onPrimePair;
   final Function(String, int, String?)? onAddressValidated;
 
   ScannerPage(this._acceptableTypes,
@@ -328,19 +328,15 @@ class ScannerPageState extends State<ScannerPage> {
         setState(() {
           _progress = .5;
         });
-
         if (value.payload != null) {
           setState(() {
             _progress = .8;
           });
           final payload = value.payload;
-          final discovery = await api.extractDiscovery(envelope: payload!);
-          api.U8Array6 bleAddress =
-              await api.getBleAddress(discovery: discovery);
           setState(() {
             _progress = 1;
           });
-          widget.onPrimePair!(bleAddress);
+          widget.onPrimePair!(payload!);
         }
       } catch (e, s) {
         kPrint(e, stackTrace: s);

@@ -118,16 +118,15 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
           ? child
           : ScannerPage(
               const [ScannerType.pairPrime],
-              onPrimePair: (api.U8Array6 primeSerial) async {
-                // kPrint(
-                //     "Prime Serial  ${primeSerial.inner.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join(':').toUpperCase()} \n UInt8Array ${primeSerial.inner}");
+              onPrimePair: (api.XidDocument xidDoc) async {
+                print("XID Document: $xidDoc");
                 //TODO: IGOR: save prime public key
                 // LocalStorage().prefs.setString(
-                //     PRIME_SERIAL,
+                //     xidDoc,
                 //      );
                 if (mounted) {
                   setState(() {
-                    scanForPayload = true;
+                    scanForPayload = false;
                   });
                 }
               },
