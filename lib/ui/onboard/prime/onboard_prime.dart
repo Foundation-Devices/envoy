@@ -38,29 +38,6 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
   void initState() {
     super.initState();
     LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final bleId = GoRouter.of(context).state.uri.queryParameters["p"];
-      final regex = RegExp(r'^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$');
-      if (!regex.hasMatch(bleId ?? "")) {
-        showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-                  title: const Text("Invalid Prime Serial"),
-                  content: const Text("Invalid Prime Serial"),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text("OK"),
-                    ),
-                  ],
-                ));
-        setState(() {
-          bleConnectState = BleConnectState.invalidId;
-        });
-      }
-    });
   }
 
   _connectToPrime() async {
@@ -76,7 +53,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
         // connect(id: bleId);
         await connect(id: bleId!);
         //wait for connection to be established
-        await Future.delayed(const Duration(milliseconds:  1500));
+        await Future.delayed(const Duration(milliseconds: 1500));
         await write(id: bleId, data: "123".codeUnits);
         if (mounted) {
           setState(() {
