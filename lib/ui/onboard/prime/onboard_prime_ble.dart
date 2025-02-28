@@ -121,7 +121,7 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
               onPrimePair: (api.U8Array6 primeSerial) async {
                 // kPrint(
                 //     "Prime Serial  ${primeSerial.inner.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join(':').toUpperCase()} \n UInt8Array ${primeSerial.inner}");
-                //TODO: save prime public key
+                //TODO: IGOR: save prime public key
                 // LocalStorage().prefs.setString(
                 //     PRIME_SERIAL,
                 //      );

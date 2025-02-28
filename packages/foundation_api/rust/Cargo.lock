@@ -1858,6 +1858,7 @@ version = "0.1.0"
 dependencies = [
  "bc-envelope",
  "bc-ur",
+ "bc-xid",
  "flutter_rust_bridge",
  "foundation-api",
  "foundation-ur",

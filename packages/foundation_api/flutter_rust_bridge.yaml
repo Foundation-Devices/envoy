@@ -1,3 +1,3 @@
-rust_input: crate::api, bc-ur::MultipartDecoder, foundation-api::api::Discovery #, bc-envelope::Envelope
+rust_input: crate::api, bc-ur::MultipartDecoder
 dart_output: lib/src/rust
 enable_lifetime: true

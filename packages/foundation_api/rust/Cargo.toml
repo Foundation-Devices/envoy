@@ -11,6 +11,7 @@ flutter_rust_bridge = "=2.8.0"
 foundation-api = { git = "https://github.com/Foundation-Devices/foundation-api", rev = "30e800fa97eb99d10383229575f92fea7bbd8572" }
 foundation-ur = { git = "https://github.com/Foundation-Devices/foundation-rs" }
 #minicbor = { version = "0.24.2", features = ["alloc"] }
+bc-xid = "0.4.0"
 
 bc-envelope = { version = "0.22.0", default-features = false, features = [
     "multithreaded",

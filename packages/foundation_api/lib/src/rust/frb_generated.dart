@@ -9,10 +9,8 @@ import 'dart:convert';
 import 'frb_generated.dart';
 import 'frb_generated.io.dart'
     if (dart.library.js_interop) 'frb_generated.web.dart';
-import 'lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'third_party/bc_ur.dart';
-import 'third_party/foundation_api/api/discovery.dart';
 
 /// Main entrypoint of the Rust API
 class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
@@ -71,7 +69,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.8.0';
 
   @override
-  int get rustContentHash => -918662760;
+  int get rustContentHash => 18459433;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -85,31 +83,11 @@ abstract class RustLibApi extends BaseApi {
   Future<DecoderStatus> crateApiQrDecodeQr(
       {required String qr, required MultipartDecoder decoder});
 
-  Future<Discovery> crateApiQrExtractDiscovery({required Envelope envelope});
-
-  Future<U8Array6> crateApiQrGetBleAddress({required Discovery discovery});
-
   Future<MultipartDecoder> crateApiQrGetDecoder();
 
   String crateApiQrGreet({required String name});
 
   Future<void> crateApiQrInitApp();
-
-  RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_Discovery;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_Discovery;
-
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_DiscoveryPtr;
-
-  RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_Envelope;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_Envelope;
-
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_EnvelopePtr;
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_MultipartDecoder;
@@ -119,6 +97,14 @@ abstract class RustLibApi extends BaseApi {
 
   CrossPlatformFinalizerArg
       get rust_arc_decrement_strong_count_MultipartDecoderPtr;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_XidDocument;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_XidDocument;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_XidDocumentPtr;
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -157,63 +143,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<Discovery> crateApiQrExtractDiscovery({required Envelope envelope}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
-            envelope, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 2, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData:
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDiscovery,
-        decodeErrorData: sse_decode_AnyhowException,
-      ),
-      constMeta: kCrateApiQrExtractDiscoveryConstMeta,
-      argValues: [envelope],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiQrExtractDiscoveryConstMeta => const TaskConstMeta(
-        debugName: "extract_discovery",
-        argNames: ["envelope"],
-      );
-
-  @override
-  Future<U8Array6> crateApiQrGetBleAddress({required Discovery discovery}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDiscovery(
-            discovery, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 3, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_u_8_array_6,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiQrGetBleAddressConstMeta,
-      argValues: [discovery],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiQrGetBleAddressConstMeta => const TaskConstMeta(
-        debugName: "get_ble_address",
-        argNames: ["discovery"],
-      );
-
-  @override
   Future<MultipartDecoder> crateApiQrGetDecoder() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 4, port: port_);
+            funcId: 2, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -237,7 +172,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(name, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -260,7 +195,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 6, port: port_);
+            funcId: 4, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -278,22 +213,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_Discovery => wire
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDiscovery;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_Discovery => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDiscovery;
-
-  RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_Envelope => wire
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_Envelope => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope;
-
-  RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_MultipartDecoder => wire
           .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultipartDecoder;
 
@@ -301,26 +220,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       get rust_arc_decrement_strong_count_MultipartDecoder => wire
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultipartDecoder;
 
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_XidDocument => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_XidDocument => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument;
+
   @protected
   AnyhowException dco_decode_AnyhowException(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return AnyhowException(raw as String);
-  }
-
-  @protected
-  Discovery
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDiscovery(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return DiscoveryImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  Envelope
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return EnvelopeImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -332,27 +243,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  XidDocument
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return XidDocumentImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   MultipartDecoder
       dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultipartDecoder(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return MultipartDecoderImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  Discovery
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDiscovery(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return DiscoveryImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  Envelope
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return EnvelopeImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -364,17 +267,25 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  XidDocument
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return XidDocumentImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   String dco_decode_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as String;
   }
 
   @protected
-  Envelope
-      dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
+  XidDocument
+      dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
+    return dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
         raw);
   }
 
@@ -387,7 +298,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     return DecoderStatus(
       progress: dco_decode_f_64(arr[0]),
       payload:
-          dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
+          dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
               arr[1]),
     );
   }
@@ -405,13 +316,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Envelope?
-      dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
+  XidDocument?
+      dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null
         ? null
-        : dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
+        : dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
             raw);
   }
 
@@ -419,12 +330,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   int dco_decode_u_8(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
-  }
-
-  @protected
-  U8Array6 dco_decode_u_8_array_6(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return U8Array6(dco_decode_list_prim_u_8_strict(raw));
   }
 
   @protected
@@ -447,29 +352,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Discovery
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDiscovery(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return DiscoveryImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  Envelope
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return EnvelopeImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
   MultipartDecoder
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultipartDecoder(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return MultipartDecoderImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  XidDocument
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return XidDocumentImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -483,29 +379,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Discovery
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDiscovery(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return DiscoveryImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  Envelope
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return EnvelopeImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
   MultipartDecoder
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultipartDecoder(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return MultipartDecoderImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  XidDocument
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return XidDocumentImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -517,11 +404,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Envelope
-      sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
+  XidDocument
+      sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
+    return (sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
         deserializer));
   }
 
@@ -530,7 +417,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_progress = sse_decode_f_64(deserializer);
     var var_payload =
-        sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
+        sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
             deserializer);
     return DecoderStatus(progress: var_progress, payload: var_payload);
   }
@@ -549,13 +436,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Envelope?
-      sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
+  XidDocument?
+      sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     if (sse_decode_bool(deserializer)) {
-      return (sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
+      return (sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           deserializer));
     } else {
       return null;
@@ -566,13 +453,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   int sse_decode_u_8(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint8();
-  }
-
-  @protected
-  U8Array6 sse_decode_u_8_array_6(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var inner = sse_decode_list_prim_u_8_strict(deserializer);
-    return U8Array6(inner);
   }
 
   @protected
@@ -607,30 +487,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDiscovery(
-          Discovery self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as DiscoveryImpl).frbInternalSseEncode(move: true), serializer);
-  }
-
-  @protected
-  void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
-          Envelope self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as EnvelopeImpl).frbInternalSseEncode(move: true), serializer);
-  }
-
-  @protected
-  void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultipartDecoder(
           MultipartDecoder self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
         (self as MultipartDecoderImpl).frbInternalSseEncode(move: true),
         serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          XidDocument self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as XidDocumentImpl).frbInternalSseEncode(move: true), serializer);
   }
 
   @protected
@@ -645,30 +516,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDiscovery(
-          Discovery self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as DiscoveryImpl).frbInternalSseEncode(move: null), serializer);
-  }
-
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
-          Envelope self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as EnvelopeImpl).frbInternalSseEncode(move: null), serializer);
-  }
-
-  @protected
-  void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultipartDecoder(
           MultipartDecoder self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
         (self as MultipartDecoderImpl).frbInternalSseEncode(move: null),
         serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          XidDocument self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as XidDocumentImpl).frbInternalSseEncode(move: null), serializer);
   }
 
   @protected
@@ -679,10 +541,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
-          Envelope self, SseSerializer serializer) {
+      sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          XidDocument self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
+    sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
         self, serializer);
   }
 
@@ -690,7 +552,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_decoder_status(DecoderStatus self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_f_64(self.progress, serializer);
-    sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
+    sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
         self.payload, serializer);
   }
 
@@ -710,13 +572,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
-          Envelope? self, SseSerializer serializer) {
+      sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          XidDocument? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     sse_encode_bool(self != null, serializer);
     if (self != null) {
-      sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvelope(
+      sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           self, serializer);
     }
   }
@@ -725,12 +587,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_u_8(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint8(self);
-  }
-
-  @protected
-  void sse_encode_u_8_array_6(U8Array6 self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_list_prim_u_8_strict(self.inner, serializer);
   }
 
   @protected
@@ -758,46 +614,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 }
 
 @sealed
-class DiscoveryImpl extends RustOpaque implements Discovery {
-  // Not to be used by end users
-  DiscoveryImpl.frbInternalDcoDecode(List<dynamic> wire)
-      : super.frbInternalDcoDecode(wire, _kStaticData);
-
-  // Not to be used by end users
-  DiscoveryImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
-      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-  static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_Discovery,
-    rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_Discovery,
-    rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_DiscoveryPtr,
-  );
-}
-
-@sealed
-class EnvelopeImpl extends RustOpaque implements Envelope {
-  // Not to be used by end users
-  EnvelopeImpl.frbInternalDcoDecode(List<dynamic> wire)
-      : super.frbInternalDcoDecode(wire, _kStaticData);
-
-  // Not to be used by end users
-  EnvelopeImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
-      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-  static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_Envelope,
-    rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_Envelope,
-    rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_EnvelopePtr,
-  );
-}
-
-@sealed
 class MultipartDecoderImpl extends RustOpaque implements MultipartDecoder {
   // Not to be used by end users
   MultipartDecoderImpl.frbInternalDcoDecode(List<dynamic> wire)
@@ -815,5 +631,25 @@ class MultipartDecoderImpl extends RustOpaque implements MultipartDecoder {
         RustLib.instance.api.rust_arc_decrement_strong_count_MultipartDecoder,
     rustArcDecrementStrongCountPtr: RustLib
         .instance.api.rust_arc_decrement_strong_count_MultipartDecoderPtr,
+  );
+}
+
+@sealed
+class XidDocumentImpl extends RustOpaque implements XidDocument {
+  // Not to be used by end users
+  XidDocumentImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  XidDocumentImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_XidDocument,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_XidDocument,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_XidDocumentPtr,
   );
 }

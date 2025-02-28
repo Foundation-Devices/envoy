@@ -10,6 +10,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 class U8Array6 extends NonGrowableListView<int> {
   static const arraySize = 6;
 
+  @internal
   Uint8List get inner => _inner;
   final Uint8List _inner;
 

@@ -323,11 +323,12 @@ class ScannerPageState extends State<ScannerPage> {
       decoder ??= await api.getDecoder();
       try {
         final value = await api.decodeQr(
-            qr: code.replaceAll("https://qr.foundation.xyz/?p=", ""),
+            qr: code.toLowerCase(),
             decoder: decoder!);
         setState(() {
           _progress = .5;
         });
+
         if (value.payload != null) {
           setState(() {
             _progress = .8;
