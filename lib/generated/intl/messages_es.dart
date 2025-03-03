@@ -1261,6 +1261,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Foundation (Predeterminado)"),
         "privacy_node_nodeType_personal":
             MessageLookupByLibrary.simpleMessage("Nodo Personal"),
+        "privacy_node_nodeType_publicServers":
+            MessageLookupByLibrary.simpleMessage("Servidores públicos"),
         "privacy_node_title": MessageLookupByLibrary.simpleMessage("Nodo"),
         "privacy_privacyMode_betterPerformance":
             MessageLookupByLibrary.simpleMessage("Mejor \nRendimiento"),
@@ -1429,7 +1431,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Aprende a hacerlo [[aquí]]."),
         "settings_advanced_enabled_testnet_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Al habilitar Testnet, se añade una versión de Testnet de tu Cartera Envoy y te permite conectar cuentas de Testnet de tu Passport."),
+                "Al habilitar Testnet, se añade una versión de Testnet3 de tu Cartera Envoy y te permite conectar cuentas de Testnet de tu Passport."),
         "settings_advanced_signet":
             MessageLookupByLibrary.simpleMessage("Signet"),
         "settings_advanced_taproot":
