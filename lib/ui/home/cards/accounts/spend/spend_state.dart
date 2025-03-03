@@ -8,10 +8,12 @@ import 'package:envoy/business/coins.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
+import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -21,8 +23,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/wallet.dart';
-import 'package:envoy/ui/amount_entry.dart';
-import 'package:envoy/ui/state/send_screen_state.dart';
 
 enum BroadcastProgress {
   inProgress,
@@ -670,6 +670,7 @@ void clearSpendState(ProviderContainer ref) {
       Settings().displayUnit == DisplayUnit.btc
           ? AmountDisplayUnit.btc
           : AmountDisplayUnit.sat;
+  ref.read(displayFiatSendAmountProvider.notifier).state = 0;
 }
 
 Future<Psbt> getPsbt(

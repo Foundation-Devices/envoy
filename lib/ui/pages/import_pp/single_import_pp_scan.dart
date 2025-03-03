@@ -27,7 +27,7 @@ class SingleImportPpScanPage extends OnboardingPage {
               onTap: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
-                  return ScannerPage(const [ScannerType.pair]);
+                  return const ScannerPage([ScannerType.pair]);
                 }));
               }),
         ],
