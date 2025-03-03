@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("Secondary action"),
+        "_": MessageLookupByLibrary.simpleMessage("DIYnodes"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versão da Aplicação"),
         "about_openSourceLicences":
@@ -114,9 +114,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "azteco_connection_modal_fail_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "A Envoy não consegue estabelecer ligação com a Azteco.\n\nPor favor entra em contacto com support@azte.co ou tenta novamente mais tarde."),
-        "azteco_note": MessageLookupByLibrary.simpleMessage("Azteco Voucher"),
+        "azteco_note": MessageLookupByLibrary.simpleMessage("Voucher Azteco"),
         "azteco_pendingVoucher":
-            MessageLookupByLibrary.simpleMessage("Pending Azteco Voucher"),
+            MessageLookupByLibrary.simpleMessage("Voucher Azteco Pendente"),
         "azteco_redeem_modal__voucher_code":
             MessageLookupByLibrary.simpleMessage("CÓDIGO DO VALE"),
         "azteco_redeem_modal_amount":
@@ -138,7 +138,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Em breve irá aparecer uma transacção a receber na tua conta."),
         "backups_downloadBIP329BackupFile":
             MessageLookupByLibrary.simpleMessage(
-                "Download BIP-329 Backup File"),
+                "Descarregar Cópia de Segurança BIP-329"),
         "backups_erase_wallets_and_backups":
             MessageLookupByLibrary.simpleMessage(
                 "Apagar Carteiras e Cópias de Segurança"),
@@ -169,7 +169,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "btcpay_connection_modal_onchainOnly_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "O vale digitalizado não foi criado com suporte onchain.\n\nPor favor entra em contacto com o criador do vale."),
-        "btcpay_note": MessageLookupByLibrary.simpleMessage("BTCPay voucher"),
+        "btcpay_note": MessageLookupByLibrary.simpleMessage("Voucher BTCPay"),
         "btcpay_pendingVoucher":
             MessageLookupByLibrary.simpleMessage("Vale BYCPay Pendente"),
         "btcpay_redeem_modal_description":
@@ -471,10 +471,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Isto deve-se ao facto de não existirem moedas confirmadas ou desbloqueadas suficientes para escolher. \n\nSempre que possível permite que as moedas pendentes sejam confirmadas ou deslobqueia algumas moedas e tenta novamente."),
         "coindetails_overlay_noCancelNoFunds_heading":
-            MessageLookupByLibrary.simpleMessage("Cannot Cancel Transaction"),
+            MessageLookupByLibrary.simpleMessage(
+                "Impossível Cancelar Transacção"),
         "coindetails_overlay_noCanceltNoFunds_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Not enough confirmed or unlocked coins available to cancel this transaction. \n\nWhere possible, allow pending coins to confirm, or unlock some coins and try again."),
+                "Não estão disponíveis moedas confirmadas ou desbloqueadas suficientes para cancelar esta transação. \n\nSempre que possível, deixa que as moedas pendentes sejam confirmadas ou desbloqueia algumas moedas e tenta novamente."),
         "coindetails_overlay_notes":
             MessageLookupByLibrary.simpleMessage("Nota"),
         "coindetails_overlay_paymentID":
@@ -496,7 +497,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_Apply": MessageLookupByLibrary.simpleMessage("Aplicar"),
         "component_back": MessageLookupByLibrary.simpleMessage("Voltar"),
         "component_cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
-        "component_confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
+        "component_confirm": MessageLookupByLibrary.simpleMessage("Confirmar"),
         "component_content": MessageLookupByLibrary.simpleMessage("Conteúdo"),
         "component_continue": MessageLookupByLibrary.simpleMessage("Continuar"),
         "component_delete": MessageLookupByLibrary.simpleMessage("Eliminar"),
@@ -529,8 +530,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_update": MessageLookupByLibrary.simpleMessage("Actualizar"),
         "component_warning": MessageLookupByLibrary.simpleMessage("AVISO"),
         "component_yes": MessageLookupByLibrary.simpleMessage("Sim"),
-        "contactRampForSupport":
-            MessageLookupByLibrary.simpleMessage("Contact Ramp for support"),
+        "contactRampForSupport": MessageLookupByLibrary.simpleMessage(
+            "Contacta a Ramp para assistência"),
         "copyToClipboard_address": MessageLookupByLibrary.simpleMessage(
             "O teu endereço será copiado para a área de transferência e poderá ficar visível para outras aplicações no teu telemóvel."),
         "copyToClipboard_txid": MessageLookupByLibrary.simpleMessage(
@@ -796,7 +797,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_scv_show_qr_subheading": MessageLookupByLibrary.simpleMessage(
             "Este código QR fornece informação para validação e configuração."),
         "envoy_support_community":
-            MessageLookupByLibrary.simpleMessage("COMMUNITY"),
+            MessageLookupByLibrary.simpleMessage("COMUNIDADE"),
         "envoy_support_documentation":
             MessageLookupByLibrary.simpleMessage("Documentação"),
         "envoy_support_email": MessageLookupByLibrary.simpleMessage("E-mail"),
@@ -1259,6 +1260,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Foundation (Predefinido)"),
         "privacy_node_nodeType_personal":
             MessageLookupByLibrary.simpleMessage("Nó Pessoal"),
+        "privacy_node_nodeType_publicServers":
+            MessageLookupByLibrary.simpleMessage("Servidores públicos"),
         "privacy_node_title": MessageLookupByLibrary.simpleMessage("Nó"),
         "privacy_privacyMode_betterPerformance":
             MessageLookupByLibrary.simpleMessage("Desempenho\nMelhorado"),
@@ -1294,10 +1297,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "De que forma é que gostarias que a Envoy se ligasse à Internet?"),
         "qrTooBig_warning_subheading": MessageLookupByLibrary.simpleMessage(
-            "The scanned QR code contains a large amount of data and could make Envoy unstable. Are you sure you want to continue?"),
-        "ramp_note": MessageLookupByLibrary.simpleMessage("Ramp Purchase"),
+            "O código QR digitalizado contém uma grande quantidade de dados e pode tornar o Envoy instável. Tens a certeza que desejas continuar?"),
+        "ramp_note": MessageLookupByLibrary.simpleMessage("Compra da Ramp"),
         "ramp_pendingVoucher":
-            MessageLookupByLibrary.simpleMessage("Pending Ramp Purchase"),
+            MessageLookupByLibrary.simpleMessage("Compra da Ramp Pendente"),
         "receive_QR_code_receive_QR_code_taproot_on_taproot_toggle":
             MessageLookupByLibrary.simpleMessage("Utilizar Endereço Taproot"),
         "receive_qr_code_heading":
@@ -1427,7 +1430,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Aprende a fazer isso [[aqui]]."),
         "settings_advanced_enabled_testnet_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "A activação do Testnet adiciona uma versão Testnet à tua Carteira Envoy, permitindo que estabeleças ligações com contas Testnet a partir do teu Passport."),
+                "A activação do Testnet adiciona uma versão Testnet3 à tua Carteira Envoy, permitindo que estabeleças ligações com contas Testnet a partir do teu Passport."),
         "settings_advanced_signet":
             MessageLookupByLibrary.simpleMessage("Signet"),
         "settings_advanced_taproot":
@@ -1516,10 +1519,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Podes experienciar um desempenho degradado da aplicação até que a Envoy consiga restabelecer a ligação à rede Tor.\n\nAo desactivares o Tor irás estabelecer uma ligação directa ao servidor da Envoy, mas com [[contrapartidas]] na vertente de privacidade."),
         "tor_connectivity_toast_warning": MessageLookupByLibrary.simpleMessage(
             "Erro ao estabelecer ligação à rede Tor"),
-        "video_connectingToTorNetwork": MessageLookupByLibrary.simpleMessage(
-            "Connecting to the Tor Network"),
+        "video_connectingToTorNetwork":
+            MessageLookupByLibrary.simpleMessage("A ligar à Rede Tor"),
         "video_loadingTorText": MessageLookupByLibrary.simpleMessage(
-            "Envoy is loading your video over the Tor Network"),
+            "A Envoy está a carregar o teu vídeo através da Rede Tor"),
         "wallet_security_modal_1_4_android_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "A Envoy faz a cópia de segurança da semente da tua carteira de uma forma segura e automática através da [[Cópia de Segurança do Android]].\n\nA tua semente está sempre encriptada ponta a ponta e nunca é tornada visível para o Google."),

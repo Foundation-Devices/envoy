@@ -250,7 +250,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
           // Format it nicely
           _enteredAmount = getDisplayAmount(
               _amountSats,
-              displayFiat: ref.read(displayFiatSendAmountProvider)!,
+              displayFiat: ref.read(displayFiatSendAmountProvider),
               unit);
         });
       }

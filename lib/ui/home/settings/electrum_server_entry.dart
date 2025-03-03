@@ -82,6 +82,14 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
   @override
   void didUpdateWidget(ElectrumServerEntry oldWidget) {
     super.didUpdateWidget(oldWidget);
+
+    if (widget.getter() != _controller.text) {
+      setState(() {
+        _controller.text = widget.getter();
+        _onAddressChanged(_controller.text);
+      });
+    }
+
     _updateTorEnabledStatus();
   }
 

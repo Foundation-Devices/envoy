@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("Secondary action"),
+        "_": MessageLookupByLibrary.simpleMessage("DIYnodes"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences":
             MessageLookupByLibrary.simpleMessage("Open Source Licences"),
@@ -1227,6 +1227,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Foundation (Default)"),
         "privacy_node_nodeType_personal":
             MessageLookupByLibrary.simpleMessage("Personal Node"),
+        "privacy_node_nodeType_publicServers":
+            MessageLookupByLibrary.simpleMessage("Public servers"),
         "privacy_node_title": MessageLookupByLibrary.simpleMessage("Node"),
         "privacy_privacyMode_betterPerformance":
             MessageLookupByLibrary.simpleMessage("Better \nPerformance"),
@@ -1397,7 +1399,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Learn how to do that [[here]]."),
         "settings_advanced_enabled_testnet_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Enabling Testnet adds a Testnet version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport."),
+                "Enabling Testnet adds a Testnet3 version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport."),
         "settings_advanced_signet":
             MessageLookupByLibrary.simpleMessage("Signet"),
         "settings_advanced_taproot":

@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("Secondary action"),
+        "_": MessageLookupByLibrary.simpleMessage("DIYnodes"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versió de l\'aplicació"),
         "about_openSourceLicences":
@@ -115,9 +115,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "azteco_connection_modal_fail_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Envoy no pot connectar amb Azteco.\n\nPoseu-vos en contacte amb support@azte.co o torneu-ho a provar més tard."),
-        "azteco_note": MessageLookupByLibrary.simpleMessage("Azteco Voucher"),
+        "azteco_note": MessageLookupByLibrary.simpleMessage("Val Azteco"),
         "azteco_pendingVoucher":
-            MessageLookupByLibrary.simpleMessage("Pending Azteco Voucher"),
+            MessageLookupByLibrary.simpleMessage("Val Azteco Pendent"),
         "azteco_redeem_modal__voucher_code":
             MessageLookupByLibrary.simpleMessage("CODI DE CUPÓ"),
         "azteco_redeem_modal_amount":
@@ -169,7 +169,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "btcpay_connection_modal_onchainOnly_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "El val escanejat no s\'ha creat amb suport onchain. Poseu-vos en contacte amb el creador del val."),
-        "btcpay_note": MessageLookupByLibrary.simpleMessage("BTCPay voucher"),
+        "btcpay_note": MessageLookupByLibrary.simpleMessage("Val BTCPay"),
         "btcpay_pendingVoucher":
             MessageLookupByLibrary.simpleMessage("Val BTCPay pendent"),
         "btcpay_redeem_modal_description":
@@ -471,7 +471,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Això es deu al fet que no hi ha prou monedes confirmades o desbloquejades per triar. \n\nSempre que sigui possible, permeteu que les monedes pendents confirmin o desbloquegin algunes monedes i torneu-ho a provar."),
         "coindetails_overlay_noCancelNoFunds_heading":
-            MessageLookupByLibrary.simpleMessage("Cannot Cancel Transaction"),
+            MessageLookupByLibrary.simpleMessage(
+                "No es Pot Cancel·lar la Transacció"),
         "coindetails_overlay_noCanceltNoFunds_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Not enough confirmed or unlocked coins available to cancel this transaction. \n\nWhere possible, allow pending coins to confirm, or unlock some coins and try again."),
@@ -496,7 +497,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_Apply": MessageLookupByLibrary.simpleMessage("Aplica"),
         "component_back": MessageLookupByLibrary.simpleMessage("Enrere"),
         "component_cancel": MessageLookupByLibrary.simpleMessage("Cancel·la"),
-        "component_confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
+        "component_confirm": MessageLookupByLibrary.simpleMessage("Confirmar"),
         "component_content": MessageLookupByLibrary.simpleMessage("Contingut"),
         "component_continue": MessageLookupByLibrary.simpleMessage("Continuar"),
         "component_delete": MessageLookupByLibrary.simpleMessage("Esborrar"),
@@ -1269,6 +1270,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Foundation (per defecte)"),
         "privacy_node_nodeType_personal":
             MessageLookupByLibrary.simpleMessage("Node Personal"),
+        "privacy_node_nodeType_publicServers":
+            MessageLookupByLibrary.simpleMessage("Servidors públics"),
         "privacy_node_title": MessageLookupByLibrary.simpleMessage("Node"),
         "privacy_privacyMode_betterPerformance":
             MessageLookupByLibrary.simpleMessage("Millor\nRendiment"),
@@ -1305,9 +1308,9 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Com voleu que Envoy es connecti a Internet?"),
         "qrTooBig_warning_subheading": MessageLookupByLibrary.simpleMessage(
             "The scanned QR code contains a large amount of data and could make Envoy unstable. Are you sure you want to continue?"),
-        "ramp_note": MessageLookupByLibrary.simpleMessage("Ramp Purchase"),
+        "ramp_note": MessageLookupByLibrary.simpleMessage("Compra Ramp"),
         "ramp_pendingVoucher":
-            MessageLookupByLibrary.simpleMessage("Pending Ramp Purchase"),
+            MessageLookupByLibrary.simpleMessage("Compra Ramp Pendent"),
         "receive_QR_code_receive_QR_code_taproot_on_taproot_toggle":
             MessageLookupByLibrary.simpleMessage(
                 "Utilitzeu una Adreça Taproot"),
@@ -1441,7 +1444,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Apreneu a fer-ho [[aqui]] ."),
         "settings_advanced_enabled_testnet_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Si activeu Testnet, s\'afegeix una versió de Testnet del vostre Envoy Wallet i us permet connectar comptes de Testnet des del vostre Passport."),
+                "Si activeu Testnet, s\'afegeix una versió de Testnet3 del vostre Envoy Wallet i us permet connectar comptes de Testnet des del vostre Passport."),
         "settings_advanced_signet":
             MessageLookupByLibrary.simpleMessage("Signet"),
         "settings_advanced_taproot":
