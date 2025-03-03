@@ -1546,6 +1546,26 @@ Future<void> main() async {
       // Check if the numbers differ from different Fiats
       expect(newFiatAmount != usdFiatAmount, isTrue);
     });
+    testWidgets('Account delete icon', (tester) async {
+      await goBackHome(tester);
+
+      await disableAllNetworks(tester);
+
+      const String accountPassportName = "GH TEST ACC (#1)";
+
+      await findAndPressTextButton(tester, accountPassportName);
+      await tester.pump(Durations.long2);
+      // Go to Acc options
+      await findAndPressIcon(tester, Icons.more_horiz_outlined);
+      await findAndPressTextButton(tester, "DELETE");
+
+      final envoyIconFinder = find.byWidgetPredicate(
+        (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.alert,
+        description: 'EnvoyIcon finder == EnvoyIcons.alert',
+      );
+
+      expect(envoyIconFinder, findsOneWidget);
+    });
     testWidgets('Test send to all address types', (tester) async {
       await goBackHome(tester);
       await disableAllNetworks(tester);
