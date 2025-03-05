@@ -8,8 +8,16 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi' as ffi;
 import 'frb_generated.dart';
+import 'lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart';
 import 'third_party/bc_ur.dart';
+import 'third_party/foundation_api/api/firmware.dart';
+import 'third_party/foundation_api/api/fx.dart';
+import 'third_party/foundation_api/api/message.dart';
+import 'third_party/foundation_api/api/onboarding.dart';
+import 'third_party/foundation_api/api/pairing.dart';
+import 'third_party/foundation_api/api/passport.dart';
+import 'third_party/foundation_api/api/status.dart';
 
 abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RustLibApiImplPlatform({
@@ -64,18 +72,93 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
+  DeviceStatus dco_decode_box_autoadd_device_status(dynamic raw);
+
+  @protected
+  EnvoyStatus dco_decode_box_autoadd_envoy_status(dynamic raw);
+
+  @protected
+  ExchangeRate dco_decode_box_autoadd_exchange_rate(dynamic raw);
+
+  @protected
+  FirmwareUpdate dco_decode_box_autoadd_firmware_update(dynamic raw);
+
+  @protected
+  PairingRequest dco_decode_box_autoadd_pairing_request(dynamic raw);
+
+  @protected
+  PairingResponse dco_decode_box_autoadd_pairing_response(dynamic raw);
+
+  @protected
   DecoderStatus dco_decode_decoder_status(dynamic raw);
+
+  @protected
+  DeviceState dco_decode_device_state(dynamic raw);
+
+  @protected
+  DeviceStatus dco_decode_device_status(dynamic raw);
+
+  @protected
+  EnvoyState dco_decode_envoy_state(dynamic raw);
+
+  @protected
+  EnvoyStatus dco_decode_envoy_status(dynamic raw);
+
+  @protected
+  ExchangeRate dco_decode_exchange_rate(dynamic raw);
+
+  @protected
+  double dco_decode_f_32(dynamic raw);
 
   @protected
   double dco_decode_f_64(dynamic raw);
 
   @protected
+  FirmwareUpdate dco_decode_firmware_update(dynamic raw);
+
+  @protected
+  int dco_decode_i_32(dynamic raw);
+
+  @protected
+  int dco_decode_i_8(dynamic raw);
+
+  @protected
+  List<int> dco_decode_list_prim_u_8_loose(dynamic raw);
+
+  @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
+
+  @protected
+  OnboardingState dco_decode_onboarding_state(dynamic raw);
 
   @protected
   XidDocument?
       dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           dynamic raw);
+
+  @protected
+  PairingRequest dco_decode_pairing_request(dynamic raw);
+
+  @protected
+  PairingResponse dco_decode_pairing_response(dynamic raw);
+
+  @protected
+  PassportFirmwareVersion dco_decode_passport_firmware_version(dynamic raw);
+
+  @protected
+  PassportMessage dco_decode_passport_message(dynamic raw);
+
+  @protected
+  PassportModel dco_decode_passport_model(dynamic raw);
+
+  @protected
+  PassportSerial dco_decode_passport_serial(dynamic raw);
+
+  @protected
+  QuantumLinkMessage dco_decode_quantum_link_message(dynamic raw);
+
+  @protected
+  int dco_decode_u_32(dynamic raw);
 
   @protected
   int dco_decode_u_8(dynamic raw);
@@ -123,18 +206,100 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  DeviceStatus sse_decode_box_autoadd_device_status(
+      SseDeserializer deserializer);
+
+  @protected
+  EnvoyStatus sse_decode_box_autoadd_envoy_status(SseDeserializer deserializer);
+
+  @protected
+  ExchangeRate sse_decode_box_autoadd_exchange_rate(
+      SseDeserializer deserializer);
+
+  @protected
+  FirmwareUpdate sse_decode_box_autoadd_firmware_update(
+      SseDeserializer deserializer);
+
+  @protected
+  PairingRequest sse_decode_box_autoadd_pairing_request(
+      SseDeserializer deserializer);
+
+  @protected
+  PairingResponse sse_decode_box_autoadd_pairing_response(
+      SseDeserializer deserializer);
+
+  @protected
   DecoderStatus sse_decode_decoder_status(SseDeserializer deserializer);
+
+  @protected
+  DeviceState sse_decode_device_state(SseDeserializer deserializer);
+
+  @protected
+  DeviceStatus sse_decode_device_status(SseDeserializer deserializer);
+
+  @protected
+  EnvoyState sse_decode_envoy_state(SseDeserializer deserializer);
+
+  @protected
+  EnvoyStatus sse_decode_envoy_status(SseDeserializer deserializer);
+
+  @protected
+  ExchangeRate sse_decode_exchange_rate(SseDeserializer deserializer);
+
+  @protected
+  double sse_decode_f_32(SseDeserializer deserializer);
 
   @protected
   double sse_decode_f_64(SseDeserializer deserializer);
 
   @protected
+  FirmwareUpdate sse_decode_firmware_update(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_i_8(SseDeserializer deserializer);
+
+  @protected
+  List<int> sse_decode_list_prim_u_8_loose(SseDeserializer deserializer);
+
+  @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
+
+  @protected
+  OnboardingState sse_decode_onboarding_state(SseDeserializer deserializer);
 
   @protected
   XidDocument?
       sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           SseDeserializer deserializer);
+
+  @protected
+  PairingRequest sse_decode_pairing_request(SseDeserializer deserializer);
+
+  @protected
+  PairingResponse sse_decode_pairing_response(SseDeserializer deserializer);
+
+  @protected
+  PassportFirmwareVersion sse_decode_passport_firmware_version(
+      SseDeserializer deserializer);
+
+  @protected
+  PassportMessage sse_decode_passport_message(SseDeserializer deserializer);
+
+  @protected
+  PassportModel sse_decode_passport_model(SseDeserializer deserializer);
+
+  @protected
+  PassportSerial sse_decode_passport_serial(SseDeserializer deserializer);
+
+  @protected
+  QuantumLinkMessage sse_decode_quantum_link_message(
+      SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_u_32(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_8(SseDeserializer deserializer);
@@ -144,9 +309,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   BigInt sse_decode_usize(SseDeserializer deserializer);
-
-  @protected
-  int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
   bool sse_decode_bool(SseDeserializer deserializer);
@@ -189,19 +351,108 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           XidDocument self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_device_status(
+      DeviceStatus self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_envoy_status(
+      EnvoyStatus self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_exchange_rate(
+      ExchangeRate self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_firmware_update(
+      FirmwareUpdate self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_pairing_request(
+      PairingRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_pairing_response(
+      PairingResponse self, SseSerializer serializer);
+
+  @protected
   void sse_encode_decoder_status(DecoderStatus self, SseSerializer serializer);
 
   @protected
+  void sse_encode_device_state(DeviceState self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_device_status(DeviceStatus self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_envoy_state(EnvoyState self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_envoy_status(EnvoyStatus self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_exchange_rate(ExchangeRate self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_f_32(double self, SseSerializer serializer);
+
+  @protected
   void sse_encode_f_64(double self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_firmware_update(
+      FirmwareUpdate self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_i_8(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_prim_u_8_loose(List<int> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_prim_u_8_strict(
       Uint8List self, SseSerializer serializer);
 
   @protected
+  void sse_encode_onboarding_state(
+      OnboardingState self, SseSerializer serializer);
+
+  @protected
   void
       sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           XidDocument? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_pairing_request(
+      PairingRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_pairing_response(
+      PairingResponse self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_passport_firmware_version(
+      PassportFirmwareVersion self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_passport_message(
+      PassportMessage self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_passport_model(PassportModel self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_passport_serial(
+      PassportSerial self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_quantum_link_message(
+      QuantumLinkMessage self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_u_32(int self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_8(int self, SseSerializer serializer);
@@ -211,9 +462,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_usize(BigInt self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_i_32(int self, SseSerializer serializer);
 
   @protected
   void sse_encode_bool(bool self, SseSerializer serializer);

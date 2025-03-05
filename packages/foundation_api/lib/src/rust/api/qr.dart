@@ -4,7 +4,15 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+import '../lib.dart';
 import '../third_party/bc_ur.dart';
+import '../third_party/foundation_api/api/firmware.dart';
+import '../third_party/foundation_api/api/fx.dart';
+import '../third_party/foundation_api/api/message.dart';
+import '../third_party/foundation_api/api/onboarding.dart';
+import '../third_party/foundation_api/api/pairing.dart';
+import '../third_party/foundation_api/api/passport.dart';
+import '../third_party/foundation_api/api/status.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 String greet({required String name}) =>
@@ -17,8 +25,8 @@ Future<DecoderStatus> decodeQr(
         {required String qr, required MultipartDecoder decoder}) =>
     RustLib.instance.api.crateApiQrDecodeQr(qr: qr, decoder: decoder);
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<XIDDocument>>
-abstract class XidDocument implements RustOpaqueInterface {}
+Future<PassportMessage> decodeBleMessage({required List<int> data}) =>
+    RustLib.instance.api.crateApiQrDecodeBleMessage(data: data);
 
 class DecoderStatus {
   final double progress;

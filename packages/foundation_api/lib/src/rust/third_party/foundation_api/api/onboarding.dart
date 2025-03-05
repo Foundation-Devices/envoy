@@ -6,5 +6,14 @@
 import '../../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Discovery>>
-abstract class Discovery implements RustOpaqueInterface {}
+enum OnboardingState {
+  securingDevice,
+  creatingWallet,
+  creatingMagicBackup,
+  creatingManualBackup,
+  creatingKeycardBackup,
+  writingDownSeedWords,
+  connectingWallet,
+  completed,
+  ;
+}

@@ -8,7 +8,9 @@ crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
 flutter_rust_bridge = "=2.8.0"
-foundation-api = { git = "https://github.com/Foundation-Devices/foundation-api", rev = "1a0d4d3ba7f369853a3e87b3cd9cbdf5baee0c23" }
+#foundation-api = { git = "https://github.com/Foundation-Devices/foundation-api", rev = "1a0d4d3ba7f369853a3e87b3cd9cbdf5baee0c23" }
+foundation-api = {path = "../../../../foundation-api/api"}
+
 foundation-ur = { git = "https://github.com/Foundation-Devices/foundation-rs" }
 #minicbor = { version = "0.24.2", features = ["alloc"] }
 bc-xid = "0.5.0"

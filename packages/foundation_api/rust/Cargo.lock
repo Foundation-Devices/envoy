@@ -785,11 +785,11 @@ dependencies = [
 [[package]]
 name = "foundation-api"
 version = "0.3.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?rev=1a0d4d3ba7f369853a3e87b3cd9cbdf5baee0c23#1a0d4d3ba7f369853a3e87b3cd9cbdf5baee0c23"
 dependencies = [
  "anyhow",
  "bc-envelope",
  "bc-xid",
+ "flutter_rust_bridge",
  "minicbor 0.24.4",
  "minicbor-derive 0.15.3",
  "quantum-link-macros",
@@ -1725,7 +1725,6 @@ dependencies = [
 [[package]]
 name = "quantum-link-macros"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?rev=1a0d4d3ba7f369853a3e87b3cd9cbdf5baee0c23#1a0d4d3ba7f369853a3e87b3cd9cbdf5baee0c23"
 dependencies = [
  "quote",
  "syn 2.0.99",

@@ -37,8 +37,11 @@ dependencies:
   rust_lib_foundation_api:
     path: rust_builder
   flutter_rust_bridge: 2.8.0
+  freezed_annotation: ^2.0.0
 
 dev_dependencies:
+  freezed: ^2.0.0
+  build_runner: ^2.4.15
   flutter_test:
     sdk: flutter
 

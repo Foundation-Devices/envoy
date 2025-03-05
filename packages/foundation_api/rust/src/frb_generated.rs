@@ -25,7 +25,7 @@
 
 // Section: imports
 
-use crate::api::qr::*;
+use crate::*;
 use bc_ur::*;
 use bc_xid::XIDDocument;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
@@ -40,7 +40,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.8.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 18459433;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 724596722;
 
 // Section: executor
 
@@ -48,6 +48,44 @@ flutter_rust_bridge::frb_generated_default_handler!();
 
 // Section: wire_funcs
 
+fn wire__crate__api__qr__decode_ble_message_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "decode_ble_message",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_data = <Vec<u8>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, ()>(
+                    (move || async move {
+                        let output_ok = Result::<_, ()>::Ok(
+                            crate::api::qr::decode_ble_message(api_data).await,
+                        )?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__qr__decode_qr_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -207,6 +245,83 @@ fn wire__crate__api__qr__init_app_impl(
     )
 }
 
+// Section: static_checks
+
+#[allow(clippy::unnecessary_literal_unwrap)]
+const _: fn() = || {
+    {
+        let DeviceStatus = None::<foundation_api::api::status::DeviceStatus>.unwrap();
+        let _: foundation_api::api::status::DeviceState = DeviceStatus.state;
+        let _: u8 = DeviceStatus.battery_level;
+        let _: i8 = DeviceStatus.ble_signal;
+        let _: String = DeviceStatus.version;
+    }
+    {
+        let EnvoyStatus = None::<foundation_api::api::status::EnvoyStatus>.unwrap();
+        let _: foundation_api::api::status::EnvoyState = EnvoyStatus.state;
+        let _: String = EnvoyStatus.version;
+    }
+    {
+        let ExchangeRate = None::<foundation_api::api::fx::ExchangeRate>.unwrap();
+        let _: String = ExchangeRate.currency_code;
+        let _: f32 = ExchangeRate.rate;
+    }
+    {
+        let FirmwareUpdate = None::<foundation_api::api::firmware::FirmwareUpdate>.unwrap();
+        let _: String = FirmwareUpdate.version;
+        let _: u32 = FirmwareUpdate.timestamp;
+        let _: String = FirmwareUpdate.changelog;
+    }
+    {
+        let PairingRequest = None::<foundation_api::api::pairing::PairingRequest>.unwrap();
+    }
+    {
+        let PairingResponse = None::<foundation_api::api::pairing::PairingResponse>.unwrap();
+        let _: foundation_api::api::passport::PassportModel = PairingResponse.passport_model;
+        let _: foundation_api::api::passport::PassportFirmwareVersion =
+            PairingResponse.passport_firmware_version;
+        let _: foundation_api::api::passport::PassportSerial = PairingResponse.passport_serial;
+        let _: String = PairingResponse.descriptor;
+    }
+    {
+        let PassportFirmwareVersion_ =
+            None::<foundation_api::api::passport::PassportFirmwareVersion>.unwrap();
+        let _: String = PassportFirmwareVersion_.0;
+    }
+    {
+        let PassportMessage = None::<foundation_api::api::message::PassportMessage>.unwrap();
+        let _: foundation_api::api::message::QuantumLinkMessage = PassportMessage.message;
+        let _: foundation_api::api::status::DeviceStatus = PassportMessage.status;
+    }
+    {
+        let PassportSerial_ = None::<foundation_api::api::passport::PassportSerial>.unwrap();
+        let _: String = PassportSerial_.0;
+    }
+    match None::<foundation_api::api::message::QuantumLinkMessage>.unwrap() {
+        foundation_api::api::message::QuantumLinkMessage::ExchangeRate(field0) => {
+            let _: foundation_api::api::fx::ExchangeRate = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::FirmwareUpdate(field0) => {
+            let _: foundation_api::api::firmware::FirmwareUpdate = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::DeviceStatus(field0) => {
+            let _: foundation_api::api::status::DeviceStatus = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::EnvoyStatus(field0) => {
+            let _: foundation_api::api::status::EnvoyStatus = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::PairingResponse(field0) => {
+            let _: foundation_api::api::pairing::PairingResponse = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::PairingRequest(field0) => {
+            let _: foundation_api::api::pairing::PairingRequest = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::OnboardingState(field0) => {
+            let _: foundation_api::api::onboarding::OnboardingState = field0;
+        }
+    }
+};
+
 // Section: related_funcs
 
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
@@ -286,10 +401,110 @@ impl SseDecode for crate::api::qr::DecoderStatus {
     }
 }
 
+impl SseDecode for foundation_api::api::status::DeviceState {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => foundation_api::api::status::DeviceState::Normal,
+            1 => foundation_api::api::status::DeviceState::UpdatingFirmware,
+            2 => foundation_api::api::status::DeviceState::Rebooting,
+            _ => unreachable!("Invalid variant for DeviceState: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::status::DeviceStatus {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_state = <foundation_api::api::status::DeviceState>::sse_decode(deserializer);
+        let mut var_batteryLevel = <u8>::sse_decode(deserializer);
+        let mut var_bleSignal = <i8>::sse_decode(deserializer);
+        let mut var_version = <String>::sse_decode(deserializer);
+        return foundation_api::api::status::DeviceStatus {
+            state: var_state,
+            battery_level: var_batteryLevel,
+            ble_signal: var_bleSignal,
+            version: var_version,
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::status::EnvoyState {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => foundation_api::api::status::EnvoyState::Normal,
+            1 => foundation_api::api::status::EnvoyState::DownloadingFirmware,
+            _ => unreachable!("Invalid variant for EnvoyState: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::status::EnvoyStatus {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_state = <foundation_api::api::status::EnvoyState>::sse_decode(deserializer);
+        let mut var_version = <String>::sse_decode(deserializer);
+        return foundation_api::api::status::EnvoyStatus {
+            state: var_state,
+            version: var_version,
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::fx::ExchangeRate {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_currencyCode = <String>::sse_decode(deserializer);
+        let mut var_rate = <f32>::sse_decode(deserializer);
+        return foundation_api::api::fx::ExchangeRate {
+            currency_code: var_currencyCode,
+            rate: var_rate,
+        };
+    }
+}
+
+impl SseDecode for f32 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_f32::<NativeEndian>().unwrap()
+    }
+}
+
 impl SseDecode for f64 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         deserializer.cursor.read_f64::<NativeEndian>().unwrap()
+    }
+}
+
+impl SseDecode for foundation_api::api::firmware::FirmwareUpdate {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_version = <String>::sse_decode(deserializer);
+        let mut var_timestamp = <u32>::sse_decode(deserializer);
+        let mut var_changelog = <String>::sse_decode(deserializer);
+        return foundation_api::api::firmware::FirmwareUpdate {
+            version: var_version,
+            timestamp: var_timestamp,
+            changelog: var_changelog,
+        };
+    }
+}
+
+impl SseDecode for i32 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_i32::<NativeEndian>().unwrap()
+    }
+}
+
+impl SseDecode for i8 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_i8().unwrap()
     }
 }
 
@@ -305,6 +520,24 @@ impl SseDecode for Vec<u8> {
     }
 }
 
+impl SseDecode for foundation_api::api::onboarding::OnboardingState {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => foundation_api::api::onboarding::OnboardingState::SecuringDevice,
+            1 => foundation_api::api::onboarding::OnboardingState::CreatingWallet,
+            2 => foundation_api::api::onboarding::OnboardingState::CreatingMagicBackup,
+            3 => foundation_api::api::onboarding::OnboardingState::CreatingManualBackup,
+            4 => foundation_api::api::onboarding::OnboardingState::CreatingKeycardBackup,
+            5 => foundation_api::api::onboarding::OnboardingState::WritingDownSeedWords,
+            6 => foundation_api::api::onboarding::OnboardingState::ConnectingWallet,
+            7 => foundation_api::api::onboarding::OnboardingState::Completed,
+            _ => unreachable!("Invalid variant for OnboardingState: {}", inner),
+        };
+    }
+}
+
 impl SseDecode for Option<XIDDocument> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -313,6 +546,136 @@ impl SseDecode for Option<XIDDocument> {
         } else {
             return None;
         }
+    }
+}
+
+impl SseDecode for foundation_api::api::pairing::PairingRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        return foundation_api::api::pairing::PairingRequest {};
+    }
+}
+
+impl SseDecode for foundation_api::api::pairing::PairingResponse {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_passportModel =
+            <foundation_api::api::passport::PassportModel>::sse_decode(deserializer);
+        let mut var_passportFirmwareVersion =
+            <foundation_api::api::passport::PassportFirmwareVersion>::sse_decode(deserializer);
+        let mut var_passportSerial =
+            <foundation_api::api::passport::PassportSerial>::sse_decode(deserializer);
+        let mut var_descriptor = <String>::sse_decode(deserializer);
+        return foundation_api::api::pairing::PairingResponse {
+            passport_model: var_passportModel,
+            passport_firmware_version: var_passportFirmwareVersion,
+            passport_serial: var_passportSerial,
+            descriptor: var_descriptor,
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::passport::PassportFirmwareVersion {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_field0 = <String>::sse_decode(deserializer);
+        return foundation_api::api::passport::PassportFirmwareVersion(var_field0);
+    }
+}
+
+impl SseDecode for foundation_api::api::message::PassportMessage {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_message =
+            <foundation_api::api::message::QuantumLinkMessage>::sse_decode(deserializer);
+        let mut var_status = <foundation_api::api::status::DeviceStatus>::sse_decode(deserializer);
+        return foundation_api::api::message::PassportMessage {
+            message: var_message,
+            status: var_status,
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::passport::PassportModel {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => foundation_api::api::passport::PassportModel::Gen1,
+            1 => foundation_api::api::passport::PassportModel::Gen2,
+            2 => foundation_api::api::passport::PassportModel::Prime,
+            _ => unreachable!("Invalid variant for PassportModel: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::passport::PassportSerial {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_field0 = <String>::sse_decode(deserializer);
+        return foundation_api::api::passport::PassportSerial(var_field0);
+    }
+}
+
+impl SseDecode for foundation_api::api::message::QuantumLinkMessage {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                let mut var_field0 =
+                    <foundation_api::api::fx::ExchangeRate>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::ExchangeRate(var_field0);
+            }
+            1 => {
+                let mut var_field0 =
+                    <foundation_api::api::firmware::FirmwareUpdate>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::FirmwareUpdate(
+                    var_field0,
+                );
+            }
+            2 => {
+                let mut var_field0 =
+                    <foundation_api::api::status::DeviceStatus>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::DeviceStatus(var_field0);
+            }
+            3 => {
+                let mut var_field0 =
+                    <foundation_api::api::status::EnvoyStatus>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::EnvoyStatus(var_field0);
+            }
+            4 => {
+                let mut var_field0 =
+                    <foundation_api::api::pairing::PairingResponse>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::PairingResponse(
+                    var_field0,
+                );
+            }
+            5 => {
+                let mut var_field0 =
+                    <foundation_api::api::pairing::PairingRequest>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::PairingRequest(
+                    var_field0,
+                );
+            }
+            6 => {
+                let mut var_field0 =
+                    <foundation_api::api::onboarding::OnboardingState>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::OnboardingState(
+                    var_field0,
+                );
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
+impl SseDecode for u32 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_u32::<NativeEndian>().unwrap()
     }
 }
 
@@ -335,13 +698,6 @@ impl SseDecode for usize {
     }
 }
 
-impl SseDecode for i32 {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        deserializer.cursor.read_i32::<NativeEndian>().unwrap()
-    }
-}
-
 impl SseDecode for bool {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -358,9 +714,10 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        1 => wire__crate__api__qr__decode_qr_impl(port, ptr, rust_vec_len, data_len),
-        2 => wire__crate__api__qr__get_decoder_impl(port, ptr, rust_vec_len, data_len),
-        4 => wire__crate__api__qr__init_app_impl(port, ptr, rust_vec_len, data_len),
+        1 => wire__crate__api__qr__decode_ble_message_impl(port, ptr, rust_vec_len, data_len),
+        2 => wire__crate__api__qr__decode_qr_impl(port, ptr, rust_vec_len, data_len),
+        3 => wire__crate__api__qr__get_decoder_impl(port, ptr, rust_vec_len, data_len),
+        5 => wire__crate__api__qr__init_app_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -373,7 +730,7 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        3 => wire__crate__api__qr__greet_impl(ptr, rust_vec_len, data_len),
+        4 => wire__crate__api__qr__greet_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -426,6 +783,335 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::qr::DecoderStatus>
 {
     fn into_into_dart(self) -> crate::api::qr::DecoderStatus {
         self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::status::DeviceState> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            foundation_api::api::status::DeviceState::Normal => 0.into_dart(),
+            foundation_api::api::status::DeviceState::UpdatingFirmware => 1.into_dart(),
+            foundation_api::api::status::DeviceState::Rebooting => 2.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::status::DeviceState>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::status::DeviceState>>
+    for foundation_api::api::status::DeviceState
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::status::DeviceState> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::status::DeviceStatus> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.state.into_into_dart().into_dart(),
+            self.0.battery_level.into_into_dart().into_dart(),
+            self.0.ble_signal.into_into_dart().into_dart(),
+            self.0.version.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::status::DeviceStatus>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::status::DeviceStatus>>
+    for foundation_api::api::status::DeviceStatus
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::status::DeviceStatus> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::status::EnvoyState> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            foundation_api::api::status::EnvoyState::Normal => 0.into_dart(),
+            foundation_api::api::status::EnvoyState::DownloadingFirmware => 1.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::status::EnvoyState>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::status::EnvoyState>>
+    for foundation_api::api::status::EnvoyState
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::status::EnvoyState> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::status::EnvoyStatus> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.state.into_into_dart().into_dart(),
+            self.0.version.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::status::EnvoyStatus>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::status::EnvoyStatus>>
+    for foundation_api::api::status::EnvoyStatus
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::status::EnvoyStatus> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::fx::ExchangeRate> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.currency_code.into_into_dart().into_dart(),
+            self.0.rate.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::fx::ExchangeRate>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::fx::ExchangeRate>>
+    for foundation_api::api::fx::ExchangeRate
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::fx::ExchangeRate> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::firmware::FirmwareUpdate> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.version.into_into_dart().into_dart(),
+            self.0.timestamp.into_into_dart().into_dart(),
+            self.0.changelog.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::firmware::FirmwareUpdate>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::firmware::FirmwareUpdate>>
+    for foundation_api::api::firmware::FirmwareUpdate
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::firmware::FirmwareUpdate> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::onboarding::OnboardingState>
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            foundation_api::api::onboarding::OnboardingState::SecuringDevice => 0.into_dart(),
+            foundation_api::api::onboarding::OnboardingState::CreatingWallet => 1.into_dart(),
+            foundation_api::api::onboarding::OnboardingState::CreatingMagicBackup => 2.into_dart(),
+            foundation_api::api::onboarding::OnboardingState::CreatingManualBackup => 3.into_dart(),
+            foundation_api::api::onboarding::OnboardingState::CreatingKeycardBackup => {
+                4.into_dart()
+            }
+            foundation_api::api::onboarding::OnboardingState::WritingDownSeedWords => 5.into_dart(),
+            foundation_api::api::onboarding::OnboardingState::ConnectingWallet => 6.into_dart(),
+            foundation_api::api::onboarding::OnboardingState::Completed => 7.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::onboarding::OnboardingState>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::onboarding::OnboardingState>>
+    for foundation_api::api::onboarding::OnboardingState
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::onboarding::OnboardingState> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::pairing::PairingRequest> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        Vec::<u8>::new().into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::pairing::PairingRequest>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::pairing::PairingRequest>>
+    for foundation_api::api::pairing::PairingRequest
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::pairing::PairingRequest> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::pairing::PairingResponse> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.passport_model.into_into_dart().into_dart(),
+            self.0
+                .passport_firmware_version
+                .into_into_dart()
+                .into_dart(),
+            self.0.passport_serial.into_into_dart().into_dart(),
+            self.0.descriptor.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::pairing::PairingResponse>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::pairing::PairingResponse>>
+    for foundation_api::api::pairing::PairingResponse
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::pairing::PairingResponse> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::passport::PassportFirmwareVersion>
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.0 .0.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::passport::PassportFirmwareVersion>
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<
+        FrbWrapper<foundation_api::api::passport::PassportFirmwareVersion>,
+    > for foundation_api::api::passport::PassportFirmwareVersion
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::passport::PassportFirmwareVersion> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::message::PassportMessage> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.message.into_into_dart().into_dart(),
+            self.0.status.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::message::PassportMessage>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::message::PassportMessage>>
+    for foundation_api::api::message::PassportMessage
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::message::PassportMessage> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::passport::PassportModel> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            foundation_api::api::passport::PassportModel::Gen1 => 0.into_dart(),
+            foundation_api::api::passport::PassportModel::Gen2 => 1.into_dart(),
+            foundation_api::api::passport::PassportModel::Prime => 2.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::passport::PassportModel>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::passport::PassportModel>>
+    for foundation_api::api::passport::PassportModel
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::passport::PassportModel> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::passport::PassportSerial> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.0 .0.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::passport::PassportSerial>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::passport::PassportSerial>>
+    for foundation_api::api::passport::PassportSerial
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::passport::PassportSerial> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::message::QuantumLinkMessage>
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            foundation_api::api::message::QuantumLinkMessage::ExchangeRate(field0) => {
+                [0.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::FirmwareUpdate(field0) => {
+                [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::DeviceStatus(field0) => {
+                [2.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::EnvoyStatus(field0) => {
+                [3.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::PairingResponse(field0) => {
+                [4.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::PairingRequest(field0) => {
+                [5.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::OnboardingState(field0) => {
+                [6.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::message::QuantumLinkMessage>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::message::QuantumLinkMessage>>
+    for foundation_api::api::message::QuantumLinkMessage
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::message::QuantumLinkMessage> {
+        self.into()
     }
 }
 
@@ -487,10 +1173,99 @@ impl SseEncode for crate::api::qr::DecoderStatus {
     }
 }
 
+impl SseEncode for foundation_api::api::status::DeviceState {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                foundation_api::api::status::DeviceState::Normal => 0,
+                foundation_api::api::status::DeviceState::UpdatingFirmware => 1,
+                foundation_api::api::status::DeviceState::Rebooting => 2,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for foundation_api::api::status::DeviceStatus {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <foundation_api::api::status::DeviceState>::sse_encode(self.state, serializer);
+        <u8>::sse_encode(self.battery_level, serializer);
+        <i8>::sse_encode(self.ble_signal, serializer);
+        <String>::sse_encode(self.version, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::status::EnvoyState {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                foundation_api::api::status::EnvoyState::Normal => 0,
+                foundation_api::api::status::EnvoyState::DownloadingFirmware => 1,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for foundation_api::api::status::EnvoyStatus {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <foundation_api::api::status::EnvoyState>::sse_encode(self.state, serializer);
+        <String>::sse_encode(self.version, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::fx::ExchangeRate {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.currency_code, serializer);
+        <f32>::sse_encode(self.rate, serializer);
+    }
+}
+
+impl SseEncode for f32 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_f32::<NativeEndian>(self).unwrap();
+    }
+}
+
 impl SseEncode for f64 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         serializer.cursor.write_f64::<NativeEndian>(self).unwrap();
+    }
+}
+
+impl SseEncode for foundation_api::api::firmware::FirmwareUpdate {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.version, serializer);
+        <u32>::sse_encode(self.timestamp, serializer);
+        <String>::sse_encode(self.changelog, serializer);
+    }
+}
+
+impl SseEncode for i32 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_i32::<NativeEndian>(self).unwrap();
+    }
+}
+
+impl SseEncode for i8 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_i8(self).unwrap();
     }
 }
 
@@ -504,6 +1279,28 @@ impl SseEncode for Vec<u8> {
     }
 }
 
+impl SseEncode for foundation_api::api::onboarding::OnboardingState {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                foundation_api::api::onboarding::OnboardingState::SecuringDevice => 0,
+                foundation_api::api::onboarding::OnboardingState::CreatingWallet => 1,
+                foundation_api::api::onboarding::OnboardingState::CreatingMagicBackup => 2,
+                foundation_api::api::onboarding::OnboardingState::CreatingManualBackup => 3,
+                foundation_api::api::onboarding::OnboardingState::CreatingKeycardBackup => 4,
+                foundation_api::api::onboarding::OnboardingState::WritingDownSeedWords => 5,
+                foundation_api::api::onboarding::OnboardingState::ConnectingWallet => 6,
+                foundation_api::api::onboarding::OnboardingState::Completed => 7,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
 impl SseEncode for Option<XIDDocument> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -511,6 +1308,112 @@ impl SseEncode for Option<XIDDocument> {
         if let Some(value) = self {
             <XIDDocument>::sse_encode(value, serializer);
         }
+    }
+}
+
+impl SseEncode for foundation_api::api::pairing::PairingRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
+}
+
+impl SseEncode for foundation_api::api::pairing::PairingResponse {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <foundation_api::api::passport::PassportModel>::sse_encode(self.passport_model, serializer);
+        <foundation_api::api::passport::PassportFirmwareVersion>::sse_encode(
+            self.passport_firmware_version,
+            serializer,
+        );
+        <foundation_api::api::passport::PassportSerial>::sse_encode(
+            self.passport_serial,
+            serializer,
+        );
+        <String>::sse_encode(self.descriptor, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::passport::PassportFirmwareVersion {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.0, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::message::PassportMessage {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <foundation_api::api::message::QuantumLinkMessage>::sse_encode(self.message, serializer);
+        <foundation_api::api::status::DeviceStatus>::sse_encode(self.status, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::passport::PassportModel {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                foundation_api::api::passport::PassportModel::Gen1 => 0,
+                foundation_api::api::passport::PassportModel::Gen2 => 1,
+                foundation_api::api::passport::PassportModel::Prime => 2,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for foundation_api::api::passport::PassportSerial {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.0, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::message::QuantumLinkMessage {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            foundation_api::api::message::QuantumLinkMessage::ExchangeRate(field0) => {
+                <i32>::sse_encode(0, serializer);
+                <foundation_api::api::fx::ExchangeRate>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::message::QuantumLinkMessage::FirmwareUpdate(field0) => {
+                <i32>::sse_encode(1, serializer);
+                <foundation_api::api::firmware::FirmwareUpdate>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::message::QuantumLinkMessage::DeviceStatus(field0) => {
+                <i32>::sse_encode(2, serializer);
+                <foundation_api::api::status::DeviceStatus>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::message::QuantumLinkMessage::EnvoyStatus(field0) => {
+                <i32>::sse_encode(3, serializer);
+                <foundation_api::api::status::EnvoyStatus>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::message::QuantumLinkMessage::PairingResponse(field0) => {
+                <i32>::sse_encode(4, serializer);
+                <foundation_api::api::pairing::PairingResponse>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::message::QuantumLinkMessage::PairingRequest(field0) => {
+                <i32>::sse_encode(5, serializer);
+                <foundation_api::api::pairing::PairingRequest>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::message::QuantumLinkMessage::OnboardingState(field0) => {
+                <i32>::sse_encode(6, serializer);
+                <foundation_api::api::onboarding::OnboardingState>::sse_encode(field0, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
+impl SseEncode for u32 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_u32::<NativeEndian>(self).unwrap();
     }
 }
 
@@ -536,13 +1439,6 @@ impl SseEncode for usize {
     }
 }
 
-impl SseEncode for i32 {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        serializer.cursor.write_i32::<NativeEndian>(self).unwrap();
-    }
-}
-
 impl SseEncode for bool {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -558,7 +1454,7 @@ mod io {
     // Section: imports
 
     use super::*;
-    use crate::api::qr::*;
+    use crate::*;
     use bc_ur::*;
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
@@ -610,7 +1506,7 @@ mod web {
     // Section: imports
 
     use super::*;
-    use crate::api::qr::*;
+    use crate::*;
     use bc_ur::*;
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
