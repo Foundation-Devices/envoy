@@ -785,6 +785,7 @@ dependencies = [
 [[package]]
 name = "foundation-api"
 version = "0.3.0"
+source = "git+https://github.com/Foundation-Devices/foundation-api?rev=6b5a977b5875dd32d88631a85e9219884521e44e#6b5a977b5875dd32d88631a85e9219884521e44e"
 dependencies = [
  "anyhow",
  "bc-envelope",
@@ -1725,6 +1726,7 @@ dependencies = [
 [[package]]
 name = "quantum-link-macros"
 version = "0.1.0"
+source = "git+https://github.com/Foundation-Devices/foundation-api?rev=6b5a977b5875dd32d88631a85e9219884521e44e#6b5a977b5875dd32d88631a85e9219884521e44e"
 dependencies = [
  "quote",
  "syn 2.0.99",
