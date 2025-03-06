@@ -5,14 +5,16 @@
 import 'dart:convert';
 
 import 'package:envoy/business/account.dart';
+import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/animated_qr_image.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
-import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/shield.dart';
+import 'package:envoy/ui/widgets/scanner/decoders/crypto_tx_decoder.dart';
+import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -109,19 +111,23 @@ class PsbtCard extends StatelessWidget {
                                 ),
                                 onPressed: () {
                                   final navigator = Navigator.of(context,
-                                      rootNavigator: false);
-                                  Navigator.of(context, rootNavigator: true)
-                                      .push(MaterialPageRoute(builder: (_) {
-                                    return ScannerPage.tx((psbt) async {
-                                      Psbt psbtParsed =
-                                          await account.wallet.decodePsbt(psbt);
-                                      if (onSignedPsbtScanned == null) {
-                                        navigator.pop(psbtParsed);
-                                      } else {
-                                        onSignedPsbtScanned?.call(psbtParsed);
-                                      }
-                                    });
-                                  }));
+                                      rootNavigator: true);
+
+                                  showScannerDialog(
+                                      context: context,
+                                      onBackPressed: (context) {
+                                        navigator.pop();
+                                      },
+                                      decoder: CryptoTxDecoder(onScan:
+                                          (CryptoPsbt cryptoPsbt) async {
+                                        Psbt psbtParsed = await account.wallet
+                                            .decodePsbt(cryptoPsbt.decoded);
+                                        if (onSignedPsbtScanned == null) {
+                                          navigator.pop(psbtParsed);
+                                        } else {
+                                          onSignedPsbtScanned?.call(psbtParsed);
+                                        }
+                                      }));
                                 },
                               );
                             },

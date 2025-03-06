@@ -15,10 +15,11 @@ import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
-import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/scanner/decoders/seed_decoder.dart';
+import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/util/build_context_extension.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
@@ -283,31 +284,35 @@ class SeedIntroScreen extends StatelessWidget {
                                 label: S().manual_setup_import_seed_CTA1,
                                 fontWeight: FontWeight.w600,
                                 onTap: () {
-                                  Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) {
-                                    return ScannerPage(const [ScannerType.seed],
-                                        onSeedValidated: (result) async {
-                                      List<String> seedWords =
-                                          result.split(" ");
-                                      bool isValid = seedWords
-                                          .map((e) => seedEn.contains(e))
-                                          .reduce((value, element) =>
-                                              value && element);
-                                      if (!isValid) {
-                                        showInvalidSeedDialog(
-                                          context: context,
-                                        );
-                                        return;
-                                      }
+                                  showScannerDialog(
+                                      context: context,
+                                      onBackPressed: (context) {
+                                        Navigator.pop(context);
+                                      },
+                                      decoder: SeedQrDecoder(
+                                        onSeedValidated: (String result) {
+                                          context.pop();
+                                          List<String> seedWords =
+                                              result.split(" ");
+                                          bool isValid = seedWords
+                                              .map((e) => seedEn.contains(e))
+                                              .reduce((value, element) =>
+                                                  value && element);
+                                          if (!isValid) {
+                                            showInvalidSeedDialog(
+                                              context: context,
+                                            );
+                                            return;
+                                          }
 
-                                      kPrint("isValid $isValid $seedWords");
-                                      Future.delayed(Duration.zero, () {
-                                        if (context.mounted) {
-                                          checkSeed(context, result);
-                                        }
-                                      });
-                                    });
-                                  }));
+                                          kPrint("isValid $isValid $seedWords");
+                                          Future.delayed(Duration.zero, () {
+                                            if (context.mounted) {
+                                              checkSeed(context, result);
+                                            }
+                                          });
+                                        },
+                                      ));
                                 }),
                           ],
                         ),

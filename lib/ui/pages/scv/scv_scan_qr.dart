@@ -2,13 +2,16 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ui/pages/scanner_page.dart';
-import 'package:envoy/ui/pages/scv/scv_show_qr.dart';
-import 'package:flutter/material.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
-import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/business/scv_server.dart';
+import 'package:envoy/business/uniform_resource.dart';
+import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/pages/scv/scv_loading.dart';
+import 'package:envoy/ui/pages/scv/scv_show_qr.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/widgets/scanner/decoders/scv_decoder.dart';
+import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
+import 'package:flutter/material.dart';
 
 class ScvScanQrPage extends StatelessWidget {
   final Challenge challenge;
@@ -41,15 +44,22 @@ class ScvScanQrPage extends StatelessWidget {
         OnboardingButton(
             label: S().component_continue,
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return ScannerPage(
-                  challengeToValidate: challenge,
-                  const [
-                    ScannerType.scv,
-                    ScannerType.pair,
-                  ],
-                );
-              }));
+              showScannerDialog(
+                  context: context,
+                  onBackPressed: (context) {
+                    Navigator.pop(context);
+                  },
+                  decoder: ScvDecoder(
+                    onScan: (CryptoResponse cryptoResponse) {
+                      Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (context) {
+                        return ScvLoadingPage(
+                          cryptoResponse,
+                          challenge,
+                        );
+                      }));
+                    },
+                  ));
             }),
       ],
     );
