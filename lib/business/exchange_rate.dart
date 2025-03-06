@@ -270,9 +270,30 @@ class ExchangeRate extends ChangeNotifier {
     return (_usdRate ?? 0) * amountSats / 100000000;
   }
 
+  // double FIAT to string FIAT
+  String formatFiatToString(double amount, {bool isPrimaryValue = false}) {
+    if (isPrimaryValue && amount == 0) {
+      return "0";
+    }
+    // format via Settings().selectedFiat
+    NumberFormat currencyFormatter = NumberFormat.currency(
+        locale: currentLocale, symbol: "", name: Settings().selectedFiat);
+
+    return currencyFormatter.format(amount);
+  }
+
+  // SATS to double FIAT
+  double convertSatsToFiat(int amountSats) {
+    if (_selectedCurrencyRate == null) {
+      return 0;
+    }
+
+    return (amountSats / 100000000) * _selectedCurrencyRate!;
+  }
+
   // SATS to FIAT
   String getFormattedAmount(int amountSats,
-      {bool includeSymbol = true, Wallet? wallet}) {
+      {bool includeSymbol = true, Wallet? wallet, double? displayFiat}) {
     // Hide test coins on production builds only
     if (!kDebugMode && wallet != null && wallet.network != Network.Mainnet) {
       return "";
@@ -282,20 +303,26 @@ class ExchangeRate extends ChangeNotifier {
       return "";
     }
 
-    NumberFormat currencyFormatter =
-        NumberFormat.currency(locale: currentLocale, symbol: "");
-
     if (_selectedCurrencyRate == null) {
       return "";
     }
 
-    String formattedAmount = currencyFormatter
-        .format(_selectedCurrencyRate! * amountSats / 100000000);
+    NumberFormat currencyFormatter = NumberFormat.currency(
+        locale: currentLocale, symbol: "", name: Settings().selectedFiat);
 
-    // NumberFormat still adds a non-breaking space if symbol is empty
-    const int nonBreakingSpace = 0x00A0;
-    formattedAmount =
-        formattedAmount.replaceAll(String.fromCharCode(nonBreakingSpace), "");
+    String formattedAmount;
+
+    if (displayFiat != null) {
+      formattedAmount = currencyFormatter.format(displayFiat);
+    } else {
+      formattedAmount = currencyFormatter
+          .format(_selectedCurrencyRate! * amountSats / 100000000);
+
+      // NumberFormat still adds a non-breaking space if symbol is empty
+      const int nonBreakingSpace = 0x00A0;
+      formattedAmount =
+          formattedAmount.replaceAll(String.fromCharCode(nonBreakingSpace), "");
+    }
 
     return (includeSymbol ? _selectedCurrency?.symbol ?? '' : "") +
         formattedAmount;

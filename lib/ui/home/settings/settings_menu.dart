@@ -3,28 +3,28 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/bluetooth_manager.dart';
-import 'package:envoy/ui/home/settings/bluetooth_diag.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/settings.dart';
+import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/home/home_page.dart';
+import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/home/settings/about_page.dart';
 import 'package:envoy/ui/home/settings/backup/backup_page.dart';
+import 'package:envoy/ui/home/settings/bluetooth_diag.dart';
 import 'package:envoy/ui/home/settings/settings_page.dart';
 import 'package:envoy/ui/home/settings/support_page.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/ui/home/home_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:envoy/ui/home/settings/about_page.dart';
-import 'package:envoy/business/settings.dart';
-import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/business/envoy_seed.dart';
-import 'package:envoy/ui/home/home_state.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/routes/accounts_router.dart';
 
 class SettingsMenu extends ConsumerStatefulWidget {
   const SettingsMenu({super.key});
@@ -225,12 +225,14 @@ class SettingsMenuWidget extends ConsumerWidget {
                           // launchUrl(Uri.parse(
                           //     "https://github.com/Foundation-Devices"));
                           await BluetoothManager().getPermissions();
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const BluetoothDiagnosticsPage(),
-                              ));
+                          if (context.mounted) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const BluetoothDiagnosticsPage(),
+                                ));
+                          }
                         },
                         child: SvgPicture.asset(
                           "assets/github.svg",

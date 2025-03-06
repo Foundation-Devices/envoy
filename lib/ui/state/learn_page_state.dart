@@ -12,6 +12,7 @@ final learnVideosProvider =
     Provider.family<List<Video>, String?>((ref, String? searchText) {
   final learnFilterState = ref.watch(learnFilterStateProvider);
   final learnSortState = ref.watch(learnSortStateProvider);
+  final deviceFilterState = ref.watch(deviceFilterStateProvider);
   List<Video> allVideos = FeedManager().videos;
 
   List<Video> videosWithTag = [];
@@ -52,15 +53,34 @@ final learnVideosProvider =
       break;
   }
   if (learnFilterState.contains(LearnFilters.all) ||
-      learnFilterState.contains(LearnFilters.videos)) {
+      learnFilterState.contains(LearnFilters.videos) ||
+      deviceFilterState.contains(DeviceFilters.all)) {
     //do nothing
   } else {
     allVideos = [];
   }
 
-  if (learnFilterState.isEmpty) {
+  if (learnFilterState.isEmpty || deviceFilterState.isEmpty) {
     allVideos = [];
   }
+
+  final Map<DeviceFilters, String> deviceTagMap = {
+    DeviceFilters.envoy: "Envoy",
+    DeviceFilters.passport: "Passport",
+    DeviceFilters.passportPrime: "PassportPrime",
+  };
+
+  if (!deviceFilterState.contains(DeviceFilters.all)) {
+    allVideos = allVideos.where((video) {
+      final List<String> videoTags = video.tags ?? [];
+
+      return deviceFilterState.any((device) {
+        final String expectedTag = deviceTagMap[device] ?? "";
+        return videoTags.contains(expectedTag);
+      });
+    }).toList();
+  }
+
   if (searchText == null || searchText == "") {
     return allVideos;
   } else {
@@ -76,6 +96,7 @@ final learnBlogsProvider =
     Provider.family<List<BlogPost>, String?>((ref, String? searchText) {
   final learnFilterState = ref.watch(learnFilterStateProvider);
   final learnSortState = ref.watch(learnSortStateProvider);
+  final deviceFilterState = ref.watch(deviceFilterStateProvider);
   List<BlogPost> allBlogs = FeedManager().blogs;
 
   switch (learnSortState) {
@@ -91,15 +112,34 @@ final learnBlogsProvider =
       break;
   }
   if (learnFilterState.contains(LearnFilters.all) ||
-      learnFilterState.contains(LearnFilters.blogs)) {
+      learnFilterState.contains(LearnFilters.blogs) ||
+      deviceFilterState.contains(DeviceFilters.all)) {
     //do nothing
   } else {
     allBlogs = [];
   }
 
-  if (learnFilterState.isEmpty) {
+  if (learnFilterState.isEmpty || deviceFilterState.isEmpty) {
     allBlogs = [];
   }
+
+  final Map<DeviceFilters, String> deviceTagMap = {
+    DeviceFilters.envoy: "envoy",
+    DeviceFilters.passport: "passport",
+    DeviceFilters.passportPrime: "passportPrime",
+  };
+
+  if (!deviceFilterState.contains(DeviceFilters.all)) {
+    allBlogs = allBlogs.where((blog) {
+      final List<String> blogTags = blog.tags ?? [];
+
+      return deviceFilterState.any((device) {
+        final String expectedTag = deviceTagMap[device] ?? "";
+        return blogTags.contains(expectedTag);
+      });
+    }).toList();
+  }
+
   if (searchText == null || searchText == "") {
     return allBlogs;
   } else {

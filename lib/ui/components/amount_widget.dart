@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -19,6 +21,7 @@ class AmountWidget extends StatelessWidget {
   final AmountDisplayUnit primaryUnit;
   final AmountWidgetStyle style;
   final AmountDisplayUnit? secondaryUnit;
+  final double? displayFiat;
   final String symbolFiat;
   final double? fxRateFiat;
   final Color? badgeColor;
@@ -31,6 +34,7 @@ class AmountWidget extends StatelessWidget {
     super.key,
     required this.amountSats,
     required this.primaryUnit,
+    this.displayFiat,
     this.style = AmountWidgetStyle.normal,
     this.secondaryUnit,
     this.symbolFiat = "",
@@ -86,6 +90,7 @@ class AmountWidget extends StatelessWidget {
             if (secondaryUnit != null)
               SecondaryAmountWidget(
                   unit: secondaryUnit!,
+                  displayFiat: displayFiat,
                   style: SecondaryAmountWidgetStyle.large,
                   amountSats: amountSats,
                   symbolFiat: symbolFiat,
@@ -121,6 +126,7 @@ class AmountWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(top: EnvoySpacing.xs),
                 child: SecondaryAmountWidget(
                     unit: secondaryUnit!,
+                    displayFiat: displayFiat,
                     style: SecondaryAmountWidgetStyle.normal,
                     amountSats: amountSats,
                     symbolFiat: symbolFiat,
@@ -158,6 +164,7 @@ class AmountWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(left: EnvoySpacing.small),
                 child: SecondaryAmountWidget(
                     unit: secondaryUnit!,
+                    displayFiat: displayFiat,
                     style: SecondaryAmountWidgetStyle.normal,
                     amountSats: amountSats,
                     symbolFiat: symbolFiat,
@@ -323,6 +330,7 @@ class SecondaryAmountWidget extends StatelessWidget {
   final double? fxRateFiat;
   final String decimalSeparator;
   final String groupSeparator;
+  final double? displayFiat;
   final SecondaryAmountWidgetStyle style;
   final Color? badgeColor;
   final Network? network;
@@ -335,6 +343,7 @@ class SecondaryAmountWidget extends StatelessWidget {
       {super.key,
       required this.unit,
       required this.amountSats,
+      this.displayFiat,
       required this.locale,
       this.symbolFiat = "",
       this.fxRateFiat,
@@ -393,8 +402,14 @@ class SecondaryAmountWidget extends StatelessWidget {
           textScaler: TextScaler.linear(textScaleFactor),
           text: TextSpan(
               children: unit == AmountDisplayUnit.fiat
-                  ? buildFiatTextSpans(amountSats, fxRateFiat!, textStyle,
-                      locale, decimalSeparator, groupSeparator,
+                  ? buildFiatTextSpans(
+                      amountSats,
+                      fxRateFiat!,
+                      displayFiat: displayFiat,
+                      textStyle,
+                      locale,
+                      decimalSeparator,
+                      groupSeparator,
                       millionaireMode: millionaireMode)
                   : buildSecondaryBtcTextSpans(amountSats, decimalSeparator,
                       groupSeparator, textStyle, textStyle)),
@@ -578,7 +593,8 @@ List<TextSpan> buildFiatTextSpans(
     String locale,
     String decimalSeparator,
     String groupSeparator,
-    {required bool millionaireMode}) {
+    {required bool millionaireMode,
+    double? displayFiat}) {
   List<TextSpan> textSpans = [];
 
   String amountFiatString =
@@ -607,9 +623,16 @@ List<TextSpan> buildFiatTextSpans(
     }
   } else {
     // Display the original amount
-    for (int i = 0; i < amountFiatString.length; i++) {
-      String char = amountFiatString[i];
-      textSpans.add(_createTextSpan(char, textStyle!));
+
+    if (displayFiat != null) {
+      String formattedDisplayFiat =
+          ExchangeRate().formatFiatToString(displayFiat);
+      textSpans.add(_createTextSpan(formattedDisplayFiat, textStyle!));
+    } else {
+      for (int i = 0; i < amountFiatString.length; i++) {
+        String char = amountFiatString[i];
+        textSpans.add(_createTextSpan(char, textStyle!));
+      }
     }
   }
 
@@ -727,8 +750,9 @@ double convertFiatStringToFiat(
 
 String convertSatsToFiatString(
     int amountSats, double fxRateFiat, String locale) {
-  NumberFormat currencyFormatter =
-      NumberFormat.currency(locale: locale, symbol: "");
+  // format via Settings().selectedFiat
+  NumberFormat currencyFormatter = NumberFormat.currency(
+      locale: locale, symbol: "", name: Settings().selectedFiat);
 
   String formattedAmount =
       currencyFormatter.format(fxRateFiat * amountSats / 100000000);

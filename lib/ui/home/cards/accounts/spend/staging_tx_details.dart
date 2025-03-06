@@ -7,6 +7,7 @@ import 'dart:ui';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
+import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_entry.dart';
@@ -173,6 +174,12 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
     }
     final CoinTag? userChosenTag = ref.watch(stagingTxChangeOutPutTagProvider);
 
+    double? displayFiatSendAmount = ref.watch(displayFiatSendAmountProvider);
+    double? displayFiatTotalChangeAmount =
+        ExchangeRate().convertSatsToFiat(totalChangeAmount);
+    double? displayFiatTotalInputAmount =
+        displayFiatSendAmount! + displayFiatTotalChangeAmount;
+
     if (userChosenTag != null) {
       changeOutputTag = userChosenTag;
     }
@@ -275,6 +282,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                       topWidget: EnvoyAmount(
                           unit: formatUnit,
                           account: account,
+                          displayFiatAmount: displayFiatSendAmount,
                           amountSats: totalReceiveAmount,
                           millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine),
@@ -290,6 +298,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                               unit: formatUnit,
                               account: account,
                               amountSats: totalInputAmount,
+                              displayFiatAmount: displayFiatTotalInputAmount,
                               millionaireMode: false,
                               amountWidgetStyle: AmountWidgetStyle.normal),
                         ),

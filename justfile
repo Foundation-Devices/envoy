@@ -78,6 +78,7 @@ build-ffi:
 
 copy:
     localazy download
+    flutter pub run intl_utils:generate
 
 passport-deps:
     sudo apt install -y autotools-dev automake libusb-1.0-0-dev libtool python3-virtualenv libsdl2-dev pkg-config curl vlc v4l2loopback-dkms

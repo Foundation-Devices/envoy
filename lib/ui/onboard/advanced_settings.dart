@@ -252,40 +252,51 @@ class _AdvancedSettingsOptionsState
                                         const SizedBox(
                                             height: EnvoySpacing.medium2),
                                         Material(
-                                          color: Colors.transparent,
-                                          child: EnvoyDropdown(
-                                            initialIndex: ConnectivityManager()
-                                                    .usingDefaultServer
-                                                ? 0
-                                                : 1,
-                                            options: [
-                                              EnvoyDropdownOption(S()
-                                                  .privacy_node_nodeType_foundation),
-                                              EnvoyDropdownOption(
-                                                  S()
-                                                      .privacy_node_nodeType_personal,
-                                                  type: EnvoyDropdownOptionType
-                                                      .personalNode),
-                                            ],
-                                            onOptionChanged: (selectedOption) {
-                                              if (selectedOption != null) {
-                                                setState(() {
+                                            color: Colors.transparent,
+                                            child: EnvoyDropdown(
+                                              initialIndex:
+                                                  getInitialElectrumDropdownIndex(),
+                                              options: [
+                                                EnvoyDropdownOption(S()
+                                                    .privacy_node_nodeType_foundation),
+                                                EnvoyDropdownOption(
+                                                    S()
+                                                        .privacy_node_nodeType_personal,
+                                                    type:
+                                                        EnvoyDropdownOptionType
+                                                            .personalNode),
+                                                EnvoyDropdownOption(
+                                                    S()
+                                                        .privacy_node_nodeType_publicServers,
+                                                    type:
+                                                        EnvoyDropdownOptionType
+                                                            .sectionBreak),
+                                                EnvoyDropdownOption(
+                                                    PublicServer
+                                                        .blockStream.label,
+                                                    type:
+                                                        EnvoyDropdownOptionType
+                                                            .blockStream),
+                                                EnvoyDropdownOption(
+                                                    PublicServer.diyNodes.label,
+                                                    type:
+                                                        EnvoyDropdownOptionType
+                                                            .diyNodes),
+                                                EnvoyDropdownOption(
+                                                    PublicServer.luke.label,
+                                                    type:
+                                                        EnvoyDropdownOptionType
+                                                            .luke),
+                                              ],
+                                              onOptionChanged:
+                                                  (selectedOption) {
+                                                if (selectedOption != null) {
                                                   _handleDropdownChange(
                                                       selectedOption);
-                                                  if (!(selectedOption.type ==
-                                                      EnvoyDropdownOptionType
-                                                          .personalNode)) {
-                                                    s.useDefaultElectrumServer(
-                                                        true);
-                                                  }
-                                                });
-                                              }
-                                            },
-                                          ),
-                                        ),
-                                        if (!ConnectivityManager()
-                                                .usingDefaultServer ||
-                                            _showPersonalNodeTextField)
+                                                }
+                                              },
+                                            )),
+                                        if (_showPersonalNodeTextField)
                                           Padding(
                                             padding: const EdgeInsets.only(
                                                 top: EnvoySpacing.medium1),
@@ -321,6 +332,21 @@ class _AdvancedSettingsOptionsState
       _showPersonalNodeTextField =
           newOption.type == EnvoyDropdownOptionType.personalNode;
     });
+
+    switch (newOption.type) {
+      case EnvoyDropdownOptionType.normal:
+        Settings().useDefaultElectrumServer(true);
+      case EnvoyDropdownOptionType.personalNode:
+        Settings().useDefaultElectrumServer(false);
+      case EnvoyDropdownOptionType.blockStream:
+        Settings().setCustomElectrumAddress(PublicServer.blockStream.address);
+      case EnvoyDropdownOptionType.diyNodes:
+        Settings().setCustomElectrumAddress(PublicServer.diyNodes.address);
+      case EnvoyDropdownOptionType.luke:
+        Settings().setCustomElectrumAddress(PublicServer.luke.address);
+      case EnvoyDropdownOptionType.sectionBreak:
+      // do nothing
+    }
   }
 
   Widget buildDivider() {

@@ -154,7 +154,7 @@ final accountsRouter = StatefulShellBranch(
                       /// but only if we are not in edit mode
                       if (ProviderScope.containerOf(context)
                               .read(spendEditModeProvider) !=
-                          SpendOverlayContext.hidden) {
+                          SpendOverlayContext.editCoins) {
                         clearSpendState(ProviderScope.containerOf(context));
                       }
                       return true;

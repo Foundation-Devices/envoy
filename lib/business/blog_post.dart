@@ -12,10 +12,11 @@ part 'blog_post.g.dart';
 @JsonSerializable()
 class BlogPost extends Media {
   bool? read;
+  List<String>? tags;
 
   BlogPost(String title, String? description, DateTime publicationDate,
       String url, String id, this.read,
-      {String? thumbnailUrl})
+      {this.tags, String? thumbnailUrl})
       : super(title, description, thumbnailUrl, publicationDate, url, id);
 
   // Generated

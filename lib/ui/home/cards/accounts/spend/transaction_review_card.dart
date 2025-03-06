@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/account.dart';
+import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_entry.dart';
@@ -83,6 +84,27 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
     Psbt psbt = widget.psbt;
     // total amount to spend including fee
     int totalSpendAmount = amount + psbt.fee;
+
+    TransactionModel transactionModel = ref.watch(spendTransactionProvider);
+
+    final s = Settings();
+
+    /// Leave total as it is (total will be visible after sending)
+    double displayFiatTotalAmount =
+        ExchangeRate().convertSatsToFiat(totalSpendAmount);
+
+    double? displayFiatSendAmount;
+    double? displayFiatFeeAmount;
+
+    if (s.displayFiat() != null) {
+      if (transactionModel.mode == SpendMode.sendMax) {
+        displayFiatFeeAmount = ExchangeRate().convertSatsToFiat(psbt.fee);
+        displayFiatSendAmount = displayFiatTotalAmount - displayFiatFeeAmount;
+      } else {
+        displayFiatSendAmount = ref.watch(displayFiatSendAmountProvider)!;
+        displayFiatFeeAmount = displayFiatTotalAmount - displayFiatSendAmount;
+      }
+    }
 
     Account account = ref.read(selectedAccountProvider)!;
 
@@ -189,6 +211,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           account: account,
                           unit: formatUnit,
                           amountSats: amount,
+                          displayFiatAmount: displayFiatSendAmount,
                           millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                   Padding(
@@ -289,6 +312,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           unit: formatUnit,
                           account: account,
                           amountSats: psbt.fee,
+                          displayFiatAmount: displayFiatFeeAmount,
                           millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                   Padding(
@@ -333,6 +357,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           account: account,
                           unit: formatUnit,
                           amountSats: totalSpendAmount,
+                          displayFiatAmount: displayFiatTotalAmount,
                           millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                 ],
