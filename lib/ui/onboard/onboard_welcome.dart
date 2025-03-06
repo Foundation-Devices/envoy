@@ -13,14 +13,15 @@ import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
-import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
+import 'package:envoy/ui/widgets/scanner/decoders/generic_qr_decoder.dart';
+import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/cupertino.dart';
@@ -200,7 +201,15 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       ),
                       title: "Set Up a\nPassport Device",
                       onTap: () {
-                        showScanDialog(context);
+                        showScannerDialog(
+                            context: context,
+                            decoder: GenericQrDecoder(onScan: (value) {
+                              Navigator.pop(context);
+                            }),
+                            onBackPressed: (context) {
+                              Navigator.pop(context);
+                            });
+                        // showScanDialog(context);
                       },
                     ),
                   ),
@@ -294,24 +303,22 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                             //   EnvoyStorage().addPromptState(
                             //       DismissiblePrompt.scanToConnect);
                             // }
-                            Navigator.pop(context);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  fullscreenDialog: true,
-                                  builder: (context) {
-                                    return ScannerPage.devicePair(
-                                      (payload) {
-                                        Navigator.pop(context);
-                                        final uri = Uri.parse(payload);
-                                        context.pushNamed(
-                                          ONBOARD_PRIME,
-                                          queryParameters: uri.queryParameters,
-                                        );
-                                      },
-                                    );
-                                  },
-                                ));
+                            // Navigator.pop(context);
+
+                            showScannerDialog(
+                                context: context,
+                                onBackPressed: (context) {
+                                  Navigator.pop(context);
+                                },
+                                decoder:
+                                    GenericQrDecoder(onScan: (String payload) {
+                                  Navigator.pop(context);
+                                  final uri = Uri.parse(payload);
+                                  context.pushNamed(
+                                    ONBOARD_PRIME,
+                                    queryParameters: uri.queryParameters,
+                                  );
+                                }));
                           },
                         )
                       ],

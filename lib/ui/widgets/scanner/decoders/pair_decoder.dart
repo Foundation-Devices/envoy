@@ -61,8 +61,9 @@ class PairPayloadDecoder extends ScannerDecoder {
 
   Future<bool> _binaryValidated(Binary object) async {
     try {
-      Account? pairedAccount = await AccountManager().processPassportAccounts(object!);
-      if(pairedAccount == null) {
+      Account? pairedAccount =
+          await AccountManager().processPassportAccounts(object!);
+      if (pairedAccount == null) {
         return true;
       } else {
         throw AccountAlreadyPairedException();

@@ -46,7 +46,6 @@ class _QrScannerState extends State<QrScanner> {
   String _lastScan = "";
   double _progress = 0.0;
 
-  //imme
   bool _viewReady = false;
 
   @override
