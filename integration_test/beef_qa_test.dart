@@ -224,6 +224,42 @@ Future<void> main() async {
       await fromHomeToAdvancedMenu(tester);
       await findAndToggleSettingsSwitch(tester, "Taproot");
     });
+
+    testWidgets('Test decimal point in Send', (tester) async {
+      await goBackHome(tester);
+
+      await pressHamburgerMenu(tester);
+      await goToSettings(tester);
+
+      bool isSettingsViewSatsSwitchOn =
+          await isSlideSwitchOn(tester, 'View Amount in Sats');
+
+      /// Check that the Amount is in BTC
+      if (isSettingsViewSatsSwitchOn) {
+        // find And Toggle DisplayFiat Switch
+        await findAndToggleSettingsSwitch(tester, 'View Amount in Sats');
+      }
+      // Go back to Home
+      await pressHamburgerMenu(tester);
+      await pressHamburgerMenu(tester);
+
+      await fromHomeToHotWallet(tester);
+
+      final sendButtonText = find.text("Send");
+      await tester.pumpUntilFound(sendButtonText,
+          tries: 10, duration: Durations.long1);
+      await tester.tap(sendButtonText.last);
+      await tester.pump(Durations.long2);
+
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, -200));
+      await tester.pump();
+
+      await findAndPressTextButton(tester, '.');
+      await tester.pump(Durations.long2);
+      // Check the main amount to see if pressing the dot was successful.
+      final sendAmount = find.text("0.");
+      expect(sendAmount.first, findsOneWidget);
+    });
   });
 
   group('Passport wallet tests', () {
@@ -583,7 +619,7 @@ Future<void> main() async {
         await findAndToggleSettingsSwitch(tester, 'View Amount in Sats');
       }
 
-      await openAdvanced(tester);
+      await openAdvancedMenu(tester);
 
       bool isSettingsSignetSwitchOn = await isSlideSwitchOn(tester, 'Signet');
       if (!isSettingsSignetSwitchOn) {
@@ -833,7 +869,7 @@ Future<void> main() async {
 
       await pressHamburgerMenu(tester);
       await goToSettings(tester);
-      await openAdvanced(tester);
+      await openAdvancedMenu(tester);
       bool taprootAlreadyEnabled = await isSlideSwitchOn(tester, "Taproot");
       if (taprootAlreadyEnabled) {
         // Disable it
@@ -872,7 +908,7 @@ Future<void> main() async {
       // Check if the Taproot account disappears after being disabled
       await pressHamburgerMenu(tester);
       await goToSettings(tester);
-      await openAdvanced(tester);
+      await openAdvancedMenu(tester);
       await findAndToggleSettingsSwitch(tester, "Taproot"); // Disable
       await pressHamburgerMenu(tester); // back to settings menu
       await pressHamburgerMenu(tester); // back to home
@@ -881,7 +917,7 @@ Future<void> main() async {
       // Check if "Reconnect Passport" button working
       await pressHamburgerMenu(tester);
       await goToSettings(tester);
-      await openAdvanced(tester);
+      await openAdvancedMenu(tester);
       await findAndToggleSettingsSwitch(tester, "Taproot"); // Enable again
       final reconnectPassportButton = find.text('Reconnect Passport');
       expect(reconnectPassportButton, findsOneWidget);
@@ -1143,7 +1179,7 @@ Future<void> main() async {
       // go to menu / settings / advanced
       await pressHamburgerMenu(tester);
       await goToSettings(tester);
-      await openAdvanced(tester);
+      await openAdvancedMenu(tester);
 
       // turn Testnet ON
       bool isSettingsTestnetSwitchOn = await isSlideSwitchOn(tester, 'Testnet');
@@ -1200,7 +1236,7 @@ Future<void> main() async {
       // go to menu / settings / advanced
       await pressHamburgerMenu(tester);
       await goToSettings(tester);
-      await openAdvanced(tester);
+      await openAdvancedMenu(tester);
 
       /// turn Testnet OFF
       isSettingsTestnetSwitchOn = await isSlideSwitchOn(tester, 'Testnet');
@@ -1263,7 +1299,7 @@ Future<void> main() async {
       // go to menu / settings / advanced
       await pressHamburgerMenu(tester);
       await goToSettings(tester);
-      await openAdvanced(tester);
+      await openAdvancedMenu(tester);
 
       // turn Testnet ON
       isSettingsTestnetSwitchOn = await isSlideSwitchOn(tester, 'Testnet');
@@ -1338,7 +1374,7 @@ Future<void> main() async {
       // go to menu / settings / advanced
       await pressHamburgerMenu(tester);
       await goToSettings(tester);
-      await openAdvanced(tester);
+      await openAdvancedMenu(tester);
 
       // turn taproot ON
       isSettingsTaprootSwitchOn = await isSlideSwitchOn(tester, 'Taproot');
@@ -1545,6 +1581,26 @@ Future<void> main() async {
           await extractFiatAmountFromAccount(tester, accountPassportName);
       // Check if the numbers differ from different Fiats
       expect(newFiatAmount != usdFiatAmount, isTrue);
+    });
+    testWidgets('Account delete icon', (tester) async {
+      await goBackHome(tester);
+
+      await disableAllNetworks(tester);
+
+      const String accountPassportName = "GH TEST ACC (#1)";
+
+      await findAndPressTextButton(tester, accountPassportName);
+      await tester.pump(Durations.long2);
+      // Go to Acc options
+      await findAndPressIcon(tester, Icons.more_horiz_outlined);
+      await findAndPressTextButton(tester, "DELETE");
+
+      final envoyIconFinder = find.byWidgetPredicate(
+        (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.alert,
+        description: 'EnvoyIcon finder == EnvoyIcons.alert',
+      );
+
+      expect(envoyIconFinder, findsOneWidget);
     });
     testWidgets('Test send to all address types', (tester) async {
       await goBackHome(tester);

@@ -52,10 +52,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `Secondary action`
+  /// `DIYnodes`
   String get _ {
     return Intl.message(
-      'Secondary action',
+      'DIYnodes',
       name: '_',
       desc: '',
       args: [],
@@ -5748,6 +5748,16 @@ class S {
     );
   }
 
+  /// `Public servers`
+  String get privacy_node_nodeType_publicServers {
+    return Intl.message(
+      'Public servers',
+      name: 'privacy_node_nodeType_publicServers',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Node`
   String get privacy_node_title {
     return Intl.message(
@@ -6488,10 +6498,10 @@ class S {
     );
   }
 
-  /// `Enabling Testnet adds a Testnet version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport.`
+  /// `Enabling Testnet adds a Testnet3 version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport.`
   String get settings_advanced_enabled_testnet_modal_subheading {
     return Intl.message(
-      'Enabling Testnet adds a Testnet version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport.',
+      'Enabling Testnet adds a Testnet3 version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport.',
       name: 'settings_advanced_enabled_testnet_modal_subheading',
       desc: '',
       args: [],

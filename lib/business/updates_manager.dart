@@ -140,17 +140,35 @@ class UpdatesManager {
     final storedInfo = await _envoyStorage.getStoredFirmware(deviceId);
     final storedPath = storedInfo?.path;
 
-    if (storedPath == null || !await _localStorage.fileExists(storedPath)) {
+    if (!await isFirmwareDownloaded(deviceId)) {
+      fetchAndDownloadFirmwareUpdate(deviceId);
       throw Exception("Firmware file does not exist");
     }
 
-    final file = _localStorage.openFileBytes(storedPath);
+    final file = _localStorage.openFileBytes(storedPath!);
 
     if (!_isFileNameValid(deviceId, file.path)) {
       return _migrateFileName(deviceId, file);
     }
 
     return file;
+  }
+
+  Future<bool> isFirmwareDownloaded(int deviceId) async {
+    final storedInfo = await _envoyStorage.getStoredFirmware(deviceId);
+    final storedPath = storedInfo?.path;
+
+    // Check if the firmware file exists
+    if (storedPath == null || !await _localStorage.fileExists(storedPath)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<void> fetchAndDownloadFirmwareUpdate(int deviceId) async {
+    FirmwareUpdate info = await Server().fetchFirmwareUpdateInfo(deviceId);
+    await _downloadAndStoreFirmware(info);
   }
 
   bool _isFileNameValid(int deviceId, String path) {

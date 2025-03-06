@@ -13,6 +13,7 @@ BlogPost _$BlogPostFromJson(Map<String, dynamic> json) => BlogPost(
       json['url'] as String,
       json['id'] as String,
       json['read'] as bool?,
+      tags: (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
       thumbnailUrl: json['thumbnailUrl'] as String?,
     );
 
@@ -24,4 +25,5 @@ Map<String, dynamic> _$BlogPostToJson(BlogPost instance) => <String, dynamic>{
       'url': instance.url,
       'id': instance.id,
       'read': instance.read,
+      'tags': instance.tags,
     };

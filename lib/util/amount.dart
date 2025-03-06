@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/account.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ NumberFormat satsFormatter =
     NumberFormat("###,###,###,###,###,###,###", currentLocale);
 
 String getDisplayAmount(int amountSats, AmountDisplayUnit unit,
-    {bool trailingZeroes = false}) {
+    {bool trailingZeroes = false, double? displayFiat}) {
   switch (unit) {
     case AmountDisplayUnit.btc:
       return convertSatsToBtcString(amountSats);
@@ -30,6 +31,7 @@ String getDisplayAmount(int amountSats, AmountDisplayUnit unit,
       var formattedString = ExchangeRate().getFormattedAmount(
         amountSats,
         includeSymbol: false,
+        displayFiat: displayFiat,
       );
       return removeFiatTrailingZeros(formattedString);
   }
@@ -117,11 +119,12 @@ String getFormattedAmount(int amountSats,
   return text;
 }
 
-Widget getSatsIcon(Account account, {EnvoyIconSize? iconSize}) {
+Widget getSatsIcon(Account account, {EnvoyIconSize? iconSize, Color? color}) {
   if (account.wallet.network != Network.Testnet) {
     return EnvoyIcon(
       EnvoyIcons.sats,
       size: iconSize ?? EnvoyIconSize.normal,
+      color: color,
     );
   } else {
     return NonMainnetIcon(
@@ -133,12 +136,10 @@ Widget getSatsIcon(Account account, {EnvoyIconSize? iconSize}) {
   }
 }
 
-Widget getBtcIcon(Account account, {EnvoyIconSize? iconSize}) {
+Widget getBtcIcon(Account account, {EnvoyIconSize? iconSize, Color? color}) {
   if (account.wallet.network != Network.Testnet) {
-    return EnvoyIcon(
-      EnvoyIcons.btc,
-      size: iconSize ?? EnvoyIconSize.normal,
-    );
+    return EnvoyIcon(EnvoyIcons.btc,
+        size: iconSize ?? EnvoyIconSize.normal, color: color);
   } else {
     return NonMainnetIcon(
       EnvoyIcons.btc,
@@ -166,8 +167,10 @@ String truncateWithEllipsisInCenter(String text, int maxLength) {
 
 Widget getUnitIcon(Account account, {EnvoyIconSize? iconSize}) {
   Widget iconUint = Settings().displayUnit == DisplayUnit.btc
-      ? getBtcIcon(account, iconSize: iconSize)
-      : getSatsIcon(account, iconSize: iconSize);
+      ? getBtcIcon(account,
+          iconSize: iconSize, color: EnvoyColors.accentPrimary)
+      : getSatsIcon(account,
+          iconSize: iconSize, color: EnvoyColors.accentPrimary);
 
   return iconUint;
 }

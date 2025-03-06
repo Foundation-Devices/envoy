@@ -24,11 +24,13 @@ class LearnFilterWidget extends ConsumerStatefulWidget {
 class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
   LearnSortTypes? _sortState;
   Set<LearnFilters>? _filterState;
+  Set<DeviceFilters>? _deviceFilterState;
 
   @override
   Widget build(BuildContext context) {
     final learnFilterState = ref.watch(learnFilterStateProvider);
     final learnSortState = ref.watch(learnSortStateProvider);
+    final deviceFilterState = ref.watch(deviceFilterStateProvider);
     final filterButtonTextStyle = Theme.of(context)
         .textTheme
         .bodyMedium
@@ -39,6 +41,7 @@ class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
 
     _sortState ??= learnSortState;
     _filterState ??= learnFilterState;
+    _deviceFilterState ??= deviceFilterState;
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -61,6 +64,7 @@ class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                 onPressed: () {
                   setState(() {
                     _filterState = {}..addAll(LearnFilters.values);
+                    _deviceFilterState = {}..addAll(DeviceFilters.values);
                     _sortState = LearnSortTypes.newestFirst;
                   });
                 },
@@ -76,103 +80,194 @@ class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
             ],
           ),
           const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-          SizedBox(
-            height: 34,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: [
-                EnvoyFilterChip(
-                  text: S().learning_center_filter_all,
-                  selected: _filterState?.contains(LearnFilters.all) ?? false,
-                  onTap: () {
-                    final Set<LearnFilters> newState = {}
-                      ..addAll(_filterState!);
-                    if (_filterState!.contains(LearnFilters.all)) {
-                      newState.remove(LearnFilters.all);
-                      newState.remove(LearnFilters.videos);
-                      newState.remove(LearnFilters.blogs);
-                      newState.remove(LearnFilters.faqs);
-                    } else {
-                      newState.add(LearnFilters.all);
-                      newState.add(LearnFilters.videos);
-                      newState.add(LearnFilters.blogs);
-                      newState.add(LearnFilters.faqs);
-                    }
-                    setState(() {
-                      _filterState = newState;
-                    });
-                  },
-                ),
-                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                EnvoyFilterChip(
-                  selected:
-                      ((_filterState?.contains(LearnFilters.videos) ?? false) &&
-                          !(_filterState?.contains(LearnFilters.all) ?? true)),
-                  text: S().learning_center_title_video,
-                  onTap: () {
-                    final Set<LearnFilters> newState = {}
-                      ..addAll(_filterState!);
-                    if (_filterState!.contains(LearnFilters.all)) {
-                      newState.removeAll(_filterState!);
-                    }
-                    if (newState.contains(LearnFilters.videos)) {
-                      newState.remove(LearnFilters.videos);
-                    } else {
-                      newState.add(LearnFilters.videos);
-                    }
-                    setState(() {
-                      _filterState = newState;
-                    });
-                  },
-                ),
-                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                EnvoyFilterChip(
-                  selected:
-                      ((_filterState?.contains(LearnFilters.faqs) ?? false) &&
-                          !(_filterState?.contains(LearnFilters.all) ?? true)),
-                  text: S().learning_center_title_faq,
-                  onTap: () {
-                    final Set<LearnFilters> newState = {}
-                      ..addAll(_filterState!);
-                    if (_filterState!.contains(LearnFilters.all)) {
-                      newState.removeAll(_filterState!);
-                    }
-                    if (newState.contains(LearnFilters.faqs)) {
-                      newState.remove(LearnFilters.faqs);
-                    } else {
-                      newState.add(LearnFilters.faqs);
-                    }
-                    setState(() {
-                      _filterState = newState;
-                    });
-                  },
-                ),
-                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                EnvoyFilterChip(
-                  selected:
-                      ((_filterState?.contains(LearnFilters.blogs) ?? false) &&
-                          !(_filterState?.contains(LearnFilters.all) ?? true)),
-                  text: S().learning_center_title_blog,
-                  onTap: () {
-                    final Set<LearnFilters> newState = {}
-                      ..addAll(_filterState!);
-                    if (_filterState!.contains(LearnFilters.all)) {
-                      newState.removeAll(_filterState!);
-                    }
-                    if (newState.contains(LearnFilters.blogs)) {
-                      newState.remove(LearnFilters.blogs);
-                    } else {
-                      newState.add(LearnFilters.blogs);
-                    }
-                    setState(() {
-                      _filterState = newState;
-                    });
-                  },
-                ),
-                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-              ],
-            ),
+          Wrap(
+            runSpacing: EnvoySpacing.small,
+            children: [
+              EnvoyFilterChip(
+                text: S().learning_center_filter_all,
+                selected: _filterState?.contains(LearnFilters.all) ?? false,
+                onTap: () {
+                  final Set<LearnFilters> newState = {}..addAll(_filterState!);
+                  if (_filterState!.contains(LearnFilters.all)) {
+                    newState.remove(LearnFilters.all);
+                    newState.remove(LearnFilters.videos);
+                    newState.remove(LearnFilters.blogs);
+                    newState.remove(LearnFilters.faqs);
+                  } else {
+                    newState.add(LearnFilters.all);
+                    newState.add(LearnFilters.videos);
+                    newState.add(LearnFilters.blogs);
+                    newState.add(LearnFilters.faqs);
+                  }
+                  setState(() {
+                    _filterState = newState;
+                  });
+                },
+              ),
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+              EnvoyFilterChip(
+                selected:
+                    ((_filterState?.contains(LearnFilters.videos) ?? false) &&
+                        !(_filterState?.contains(LearnFilters.all) ?? true)),
+                text: S().learning_center_title_video,
+                onTap: () {
+                  final Set<LearnFilters> newState = {}..addAll(_filterState!);
+                  if (_filterState!.contains(LearnFilters.all)) {
+                    newState.removeAll(_filterState!);
+                  }
+                  if (newState.contains(LearnFilters.videos)) {
+                    newState.remove(LearnFilters.videos);
+                  } else {
+                    newState.add(LearnFilters.videos);
+                  }
+                  setState(() {
+                    _filterState = newState;
+                  });
+                },
+              ),
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+              EnvoyFilterChip(
+                selected:
+                    ((_filterState?.contains(LearnFilters.faqs) ?? false) &&
+                        !(_filterState?.contains(LearnFilters.all) ?? true)),
+                text: S().learning_center_title_faq,
+                onTap: () {
+                  final Set<LearnFilters> newState = {}..addAll(_filterState!);
+                  if (_filterState!.contains(LearnFilters.all)) {
+                    newState.removeAll(_filterState!);
+                  }
+                  if (newState.contains(LearnFilters.faqs)) {
+                    newState.remove(LearnFilters.faqs);
+                  } else {
+                    newState.add(LearnFilters.faqs);
+                  }
+                  setState(() {
+                    _filterState = newState;
+                  });
+                },
+              ),
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+              EnvoyFilterChip(
+                selected:
+                    ((_filterState?.contains(LearnFilters.blogs) ?? false) &&
+                        !(_filterState?.contains(LearnFilters.all) ?? true)),
+                text: S().learning_center_title_blog,
+                onTap: () {
+                  final Set<LearnFilters> newState = {}..addAll(_filterState!);
+                  if (_filterState!.contains(LearnFilters.all)) {
+                    newState.removeAll(_filterState!);
+                  }
+                  if (newState.contains(LearnFilters.blogs)) {
+                    newState.remove(LearnFilters.blogs);
+                  } else {
+                    newState.add(LearnFilters.blogs);
+                  }
+                  setState(() {
+                    _filterState = newState;
+                  });
+                },
+              ),
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+            ],
           ),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          Text(S().component_device,
+              style: EnvoyTypography.subheading
+                  .copyWith(color: EnvoyColors.textPrimary)),
+          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          Wrap(runSpacing: EnvoySpacing.small, children: [
+            EnvoyFilterChip(
+              text: S().component_filter_button_all,
+              selected:
+                  _deviceFilterState?.contains(DeviceFilters.all) ?? false,
+              onTap: () {
+                final Set<DeviceFilters> newState = {}
+                  ..addAll(_deviceFilterState!);
+                if (_deviceFilterState!.contains(DeviceFilters.all)) {
+                  newState.remove(DeviceFilters.all);
+                  newState.remove(DeviceFilters.envoy);
+                  newState.remove(DeviceFilters.passport);
+                  newState.remove(DeviceFilters.passportPrime);
+                } else {
+                  newState.add(DeviceFilters.all);
+                  newState.add(DeviceFilters.envoy);
+                  newState.add(DeviceFilters.passport);
+                  newState.add(DeviceFilters.passportPrime);
+                }
+                setState(() {
+                  _deviceFilterState = newState;
+                });
+              },
+            ),
+            const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+            EnvoyFilterChip(
+              selected: ((_deviceFilterState?.contains(DeviceFilters.envoy) ??
+                      false) &&
+                  !(_deviceFilterState?.contains(DeviceFilters.all) ?? true)),
+              text: S().learning_center_device_envoy,
+              onTap: () {
+                final Set<DeviceFilters> newState = {}
+                  ..addAll(_deviceFilterState!);
+                if (_deviceFilterState!.contains(DeviceFilters.all)) {
+                  newState.removeAll(_deviceFilterState!);
+                }
+                if (newState.contains(DeviceFilters.envoy)) {
+                  newState.remove(DeviceFilters.envoy);
+                } else {
+                  newState.add(DeviceFilters.envoy);
+                }
+                setState(() {
+                  _deviceFilterState = newState;
+                });
+              },
+            ),
+            const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+            EnvoyFilterChip(
+              selected: ((_deviceFilterState
+                          ?.contains(DeviceFilters.passport) ??
+                      false) &&
+                  !(_deviceFilterState?.contains(DeviceFilters.all) ?? true)),
+              text: S().learning_center_device_passport,
+              onTap: () {
+                final Set<DeviceFilters> newState = {}
+                  ..addAll(_deviceFilterState!);
+                if (_deviceFilterState!.contains(DeviceFilters.all)) {
+                  newState.removeAll(_deviceFilterState!);
+                }
+                if (newState.contains(DeviceFilters.passport)) {
+                  newState.remove(DeviceFilters.passport);
+                } else {
+                  newState.add(DeviceFilters.passport);
+                }
+                setState(() {
+                  _deviceFilterState = newState;
+                });
+              },
+            ),
+            const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+            EnvoyFilterChip(
+              selected: ((_deviceFilterState
+                          ?.contains(DeviceFilters.passportPrime) ??
+                      false) &&
+                  !(_deviceFilterState?.contains(DeviceFilters.all) ?? true)),
+              text: S().learning_center_device_passportPrime,
+              onTap: () {
+                final Set<DeviceFilters> newState = {}
+                  ..addAll(_deviceFilterState!);
+                if (_deviceFilterState!.contains(DeviceFilters.all)) {
+                  newState.removeAll(_deviceFilterState!);
+                }
+                if (newState.contains(DeviceFilters.passportPrime)) {
+                  newState.remove(DeviceFilters.passportPrime);
+                } else {
+                  newState.add(DeviceFilters.passportPrime);
+                }
+                setState(() {
+                  _deviceFilterState = newState;
+                });
+              },
+            )
+          ]),
           const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Text(S().account_details_filter_tags_sortBy,
               style: EnvoyTypography.subheading
@@ -209,6 +304,10 @@ class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
               if (_filterState != null) {
                 ref.read(learnFilterStateProvider.notifier).state =
                     _filterState!;
+              }
+              if (_deviceFilterState != null) {
+                ref.read(deviceFilterStateProvider.notifier).state =
+                    _deviceFilterState!;
               }
             },
           ),

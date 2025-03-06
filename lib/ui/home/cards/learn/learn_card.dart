@@ -34,6 +34,32 @@ class LearnCard extends ConsumerStatefulWidget {
 }
 
 class _LearnCardState extends ConsumerState<LearnCard> {
+  final ScrollController _videoScrollController = ScrollController();
+  final ScrollController _blogScrollController = ScrollController();
+
+  void _resetScrollOnFilterChange() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_videoScrollController.hasClients) {
+        _videoScrollController.jumpTo(0);
+      }
+      if (_blogScrollController.hasClients) {
+        _blogScrollController.jumpTo(0);
+      }
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    ref.listenManual(
+        learnFilterStateProvider, (_, __) => _resetScrollOnFilterChange());
+    ref.listenManual(
+        deviceFilterStateProvider, (_, __) => _resetScrollOnFilterChange());
+    ref.listenManual(
+        learnSortStateProvider, (_, __) => _resetScrollOnFilterChange());
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Video> videos = ref.watch(learnVideosProvider(widget.controller.text));
@@ -41,8 +67,10 @@ class _LearnCardState extends ConsumerState<LearnCard> {
         ref.watch(learnBlogsProvider(widget.controller.text));
     final learnFilterState = ref.watch(learnFilterStateProvider);
     final learnSortState = ref.watch(learnSortStateProvider);
+    final deviceFilterState = ref.watch(deviceFilterStateProvider);
     final bool isDefaultFilterAndSorting =
         learnFilterState.contains(LearnFilters.all) &&
+            deviceFilterState.contains(DeviceFilters.all) &&
             learnSortState == LearnSortTypes.newestFirst;
 
     var faqs = ref.watch(faqsProvider);
@@ -54,6 +82,12 @@ class _LearnCardState extends ConsumerState<LearnCard> {
           .toList();
     }
 
+    final bool isDeviceFilterNotEmpty =
+        deviceFilterState.contains(DeviceFilters.all) ||
+            deviceFilterState.contains(DeviceFilters.envoy) ||
+            deviceFilterState.contains(DeviceFilters.passport) ||
+            deviceFilterState.contains(DeviceFilters.passportPrime);
+
     final bool isFilterEmpty =
         !(learnFilterState.contains(LearnFilters.videos) ||
             learnFilterState.contains(LearnFilters.blogs) ||
@@ -62,7 +96,8 @@ class _LearnCardState extends ConsumerState<LearnCard> {
 
     final bool isSearchEmpty = videos.isEmpty && faqs.isEmpty && blogs.isEmpty;
 
-    final bool isAllEmpty = isSearchEmpty || isFilterEmpty;
+    final bool isAllEmpty =
+        isSearchEmpty || isFilterEmpty || !isDeviceFilterNotEmpty;
 
     return PopScope(
       canPop: false,
@@ -141,7 +176,8 @@ class _LearnCardState extends ConsumerState<LearnCard> {
               ),
             ),
             if (learnFilterState.contains(LearnFilters.videos) &&
-                videos.isNotEmpty)
+                videos.isNotEmpty &&
+                isDeviceFilterNotEmpty)
               SliverToBoxAdapter(
                   child: Padding(
                 padding: const EdgeInsets.only(
@@ -163,6 +199,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                     SizedBox(
                         height: videoImageHeight + videoInfoHeight,
                         child: ListView.builder(
+                            controller: _videoScrollController,
                             scrollDirection: Axis.horizontal,
                             itemCount: videos.length,
                             itemBuilder: (context, index) {
@@ -179,7 +216,8 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                 ),
               )),
             if (learnFilterState.contains(LearnFilters.blogs) &&
-                blogs.isNotEmpty)
+                blogs.isNotEmpty &&
+                isDeviceFilterNotEmpty)
               SliverToBoxAdapter(
                   child: Padding(
                 padding: const EdgeInsets.only(
@@ -199,6 +237,7 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                     SizedBox(
                         height: 270.0,
                         child: ListView.builder(
+                            controller: _blogScrollController,
                             scrollDirection: Axis.horizontal,
                             itemCount: blogs.length,
                             itemBuilder: (context, index) {
@@ -217,7 +256,9 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                   ],
                 ),
               )),
-            if (learnFilterState.contains(LearnFilters.faqs))
+            if (learnFilterState.contains(LearnFilters.faqs) &&
+                faqs.isNotEmpty &&
+                isDeviceFilterNotEmpty)
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
