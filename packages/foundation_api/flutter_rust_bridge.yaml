@@ -1,3 +1,3 @@
-rust_input: crate::api, bc-ur::MultipartDecoder, foundation-api::api::message::PassportMessage
+rust_input: crate::api, bc-ur::MultipartDecoder, bc-xid::xid::XIDDocument, foundation-api::api::message::PassportMessage
 dart_output: lib/src/rust
 enable_lifetime: true

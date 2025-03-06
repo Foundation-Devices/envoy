@@ -5,7 +5,6 @@
 import 'package:envoy/util/console.dart';
 import 'package:test/test.dart';
 import 'package:foundation_api/foundation_api.dart';
-import 'package:foundation_api/src/rust/api/api.dart';
 import 'package:foundation_api/src/rust/third_party/foundation_api/api/pairing.dart';
 
 void main() async {

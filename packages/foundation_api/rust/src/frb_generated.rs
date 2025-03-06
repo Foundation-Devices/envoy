@@ -25,9 +25,8 @@
 
 // Section: imports
 
-use crate::*;
 use bc_ur::*;
-use bc_xid::XIDDocument;
+use bc_xid::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::{transform_result_dco, Lifetimeable, Lockable};
 use flutter_rust_bridge::{Handler, IntoIntoDart};
@@ -526,13 +525,19 @@ impl SseDecode for foundation_api::api::onboarding::OnboardingState {
         let mut inner = <i32>::sse_decode(deserializer);
         return match inner {
             0 => foundation_api::api::onboarding::OnboardingState::SecuringDevice,
-            1 => foundation_api::api::onboarding::OnboardingState::CreatingWallet,
-            2 => foundation_api::api::onboarding::OnboardingState::CreatingMagicBackup,
-            3 => foundation_api::api::onboarding::OnboardingState::CreatingManualBackup,
-            4 => foundation_api::api::onboarding::OnboardingState::CreatingKeycardBackup,
-            5 => foundation_api::api::onboarding::OnboardingState::WritingDownSeedWords,
-            6 => foundation_api::api::onboarding::OnboardingState::ConnectingWallet,
-            7 => foundation_api::api::onboarding::OnboardingState::Completed,
+            1 => foundation_api::api::onboarding::OnboardingState::DeviceSecured,
+            2 => foundation_api::api::onboarding::OnboardingState::WalletCreationScreen,
+            3 => foundation_api::api::onboarding::OnboardingState::CreatingWallet,
+            4 => foundation_api::api::onboarding::OnboardingState::WalletCreated,
+            5 => foundation_api::api::onboarding::OnboardingState::MagicBackupScreen,
+            6 => foundation_api::api::onboarding::OnboardingState::CreatingMagicBackup,
+            7 => foundation_api::api::onboarding::OnboardingState::MagicBackupCreated,
+            8 => foundation_api::api::onboarding::OnboardingState::CreatingManualBackup,
+            9 => foundation_api::api::onboarding::OnboardingState::CreatingKeycardBackup,
+            10 => foundation_api::api::onboarding::OnboardingState::WritingDownSeedWords,
+            11 => foundation_api::api::onboarding::OnboardingState::ConnectingWallet,
+            12 => foundation_api::api::onboarding::OnboardingState::WalletConected,
+            13 => foundation_api::api::onboarding::OnboardingState::Completed,
             _ => unreachable!("Invalid variant for OnboardingState: {}", inner),
         };
     }
@@ -922,15 +927,23 @@ impl flutter_rust_bridge::IntoDart
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         match self.0 {
             foundation_api::api::onboarding::OnboardingState::SecuringDevice => 0.into_dart(),
-            foundation_api::api::onboarding::OnboardingState::CreatingWallet => 1.into_dart(),
-            foundation_api::api::onboarding::OnboardingState::CreatingMagicBackup => 2.into_dart(),
-            foundation_api::api::onboarding::OnboardingState::CreatingManualBackup => 3.into_dart(),
+            foundation_api::api::onboarding::OnboardingState::DeviceSecured => 1.into_dart(),
+            foundation_api::api::onboarding::OnboardingState::WalletCreationScreen => 2.into_dart(),
+            foundation_api::api::onboarding::OnboardingState::CreatingWallet => 3.into_dart(),
+            foundation_api::api::onboarding::OnboardingState::WalletCreated => 4.into_dart(),
+            foundation_api::api::onboarding::OnboardingState::MagicBackupScreen => 5.into_dart(),
+            foundation_api::api::onboarding::OnboardingState::CreatingMagicBackup => 6.into_dart(),
+            foundation_api::api::onboarding::OnboardingState::MagicBackupCreated => 7.into_dart(),
+            foundation_api::api::onboarding::OnboardingState::CreatingManualBackup => 8.into_dart(),
             foundation_api::api::onboarding::OnboardingState::CreatingKeycardBackup => {
-                4.into_dart()
+                9.into_dart()
             }
-            foundation_api::api::onboarding::OnboardingState::WritingDownSeedWords => 5.into_dart(),
-            foundation_api::api::onboarding::OnboardingState::ConnectingWallet => 6.into_dart(),
-            foundation_api::api::onboarding::OnboardingState::Completed => 7.into_dart(),
+            foundation_api::api::onboarding::OnboardingState::WritingDownSeedWords => {
+                10.into_dart()
+            }
+            foundation_api::api::onboarding::OnboardingState::ConnectingWallet => 11.into_dart(),
+            foundation_api::api::onboarding::OnboardingState::WalletConected => 12.into_dart(),
+            foundation_api::api::onboarding::OnboardingState::Completed => 13.into_dart(),
             _ => unreachable!(),
         }
     }
@@ -1285,13 +1298,19 @@ impl SseEncode for foundation_api::api::onboarding::OnboardingState {
         <i32>::sse_encode(
             match self {
                 foundation_api::api::onboarding::OnboardingState::SecuringDevice => 0,
-                foundation_api::api::onboarding::OnboardingState::CreatingWallet => 1,
-                foundation_api::api::onboarding::OnboardingState::CreatingMagicBackup => 2,
-                foundation_api::api::onboarding::OnboardingState::CreatingManualBackup => 3,
-                foundation_api::api::onboarding::OnboardingState::CreatingKeycardBackup => 4,
-                foundation_api::api::onboarding::OnboardingState::WritingDownSeedWords => 5,
-                foundation_api::api::onboarding::OnboardingState::ConnectingWallet => 6,
-                foundation_api::api::onboarding::OnboardingState::Completed => 7,
+                foundation_api::api::onboarding::OnboardingState::DeviceSecured => 1,
+                foundation_api::api::onboarding::OnboardingState::WalletCreationScreen => 2,
+                foundation_api::api::onboarding::OnboardingState::CreatingWallet => 3,
+                foundation_api::api::onboarding::OnboardingState::WalletCreated => 4,
+                foundation_api::api::onboarding::OnboardingState::MagicBackupScreen => 5,
+                foundation_api::api::onboarding::OnboardingState::CreatingMagicBackup => 6,
+                foundation_api::api::onboarding::OnboardingState::MagicBackupCreated => 7,
+                foundation_api::api::onboarding::OnboardingState::CreatingManualBackup => 8,
+                foundation_api::api::onboarding::OnboardingState::CreatingKeycardBackup => 9,
+                foundation_api::api::onboarding::OnboardingState::WritingDownSeedWords => 10,
+                foundation_api::api::onboarding::OnboardingState::ConnectingWallet => 11,
+                foundation_api::api::onboarding::OnboardingState::WalletConected => 12,
+                foundation_api::api::onboarding::OnboardingState::Completed => 13,
                 _ => {
                     unimplemented!("");
                 }
@@ -1454,8 +1473,8 @@ mod io {
     // Section: imports
 
     use super::*;
-    use crate::*;
     use bc_ur::*;
+    use bc_xid::*;
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
     };
@@ -1506,8 +1525,8 @@ mod web {
     // Section: imports
 
     use super::*;
-    use crate::*;
     use bc_ur::*;
+    use bc_xid::*;
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
     };

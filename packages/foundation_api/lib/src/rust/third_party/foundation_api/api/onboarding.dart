@@ -8,12 +8,18 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 enum OnboardingState {
   securingDevice,
+  deviceSecured,
+  walletCreationScreen,
   creatingWallet,
+  walletCreated,
+  magicBackupScreen,
   creatingMagicBackup,
+  magicBackupCreated,
   creatingManualBackup,
   creatingKeycardBackup,
   writingDownSeedWords,
   connectingWallet,
+  walletConected,
   completed,
   ;
 }
