@@ -15,6 +15,9 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
+import 'package:envoy/ui/widgets/scanner/decoders/generic_qr_decoder.dart';
+import 'package:envoy/ui/widgets/scanner/decoders/prime_ql_payload_decoder.dart';
+import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -283,10 +286,18 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
         context: context,
         dismissible: false,
         dialog: QuantumLinkCommunicationInfo(
-          onContinue: () => {
-            setState(() {
-              scanForPayload = true;
-            })
+          onContinue: () {
+            showScannerDialog(
+                context: context,
+                onBackPressed: (context) {
+                  Navigator.pop(context);
+                },
+                decoder:
+                    //parse UR payload
+                    PrimeQlPayloadDecoder(onScan: (payload) {
+                  Navigator.pop(context);
+                  //TODO: get xif doc
+                }));
           },
         ));
   }

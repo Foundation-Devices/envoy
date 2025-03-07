@@ -203,13 +203,17 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       onTap: () {
                         showScannerDialog(
                             context: context,
-                            decoder: GenericQrDecoder(onScan: (value) {
-                              Navigator.pop(context);
-                            }),
                             onBackPressed: (context) {
                               Navigator.pop(context);
-                            });
-                        // showScanDialog(context);
+                            },
+                            decoder: GenericQrDecoder(onScan: (String payload) {
+                              Navigator.pop(context);
+                              final uri = Uri.parse(payload);
+                              context.pushNamed(
+                                ONBOARD_PRIME,
+                                queryParameters: uri.queryParameters,
+                              );
+                            }));
                       },
                     ),
                   ),
@@ -314,6 +318,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                     GenericQrDecoder(onScan: (String payload) {
                                   Navigator.pop(context);
                                   final uri = Uri.parse(payload);
+                                  print("object params ${uri.queryParameters}");
                                   context.pushNamed(
                                     ONBOARD_PRIME,
                                     queryParameters: uri.queryParameters,
