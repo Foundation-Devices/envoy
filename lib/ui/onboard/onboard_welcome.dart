@@ -22,6 +22,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/generic_qr_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/cupertino.dart';
@@ -318,7 +319,8 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                     GenericQrDecoder(onScan: (String payload) {
                                   Navigator.pop(context);
                                   final uri = Uri.parse(payload);
-                                  print("object params ${uri.queryParameters}");
+                                  kPrint(
+                                      "BLE UriParams ${uri.queryParameters}");
                                   context.pushNamed(
                                     ONBOARD_PRIME,
                                     queryParameters: uri.queryParameters,

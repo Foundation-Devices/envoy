@@ -282,7 +282,8 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
     );
   }
 
-  showCommunicationModal(BuildContext context) {
+  showCommunicationModal(BuildContext context) async {
+    final decoder = await getDecoder();
     showEnvoyDialog(
         context: context,
         dismissible: false,
@@ -295,11 +296,13 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
                 },
                 decoder:
                     //parse UR payload
-                    PrimeQlPayloadDecoder(onScan: (XidDocument payload) {
-                  kPrint("payload ${payload}");
-                  Navigator.pop(context);
-                  //TODO: process XidDocument for connection
-                }));
+                    PrimeQlPayloadDecoder(
+                        decoder: decoder,
+                        onScan: (XidDocument payload) {
+                          kPrint("payload ${payload}");
+                          Navigator.pop(context);
+                          //TODO: process XidDocument for connection
+                        }));
           },
         ));
   }

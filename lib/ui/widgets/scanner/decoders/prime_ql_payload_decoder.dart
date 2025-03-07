@@ -2,27 +2,29 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/ui/widgets/scanner/scanner_decoder.dart';
+import 'package:envoy/util/console.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class PrimeQlPayloadDecoder extends ScannerDecoder {
   final Function(XidDocument binary) onScan;
+  final MultipartDecoder decoder;
 
-  PrimeQlPayloadDecoder({required this.onScan});
+  PrimeQlPayloadDecoder({required this.decoder, required this.onScan});
 
   @override
   Future<void> onDetectBarCode(Barcode barCode) async {
     final String code = barCode.code?.toLowerCase() ?? "";
     if (code.startsWith("ur:") == true) {
-      //TODO: implement  XidDocument parsing
-      final payload = processUr(barCode);
-      if (payload is XidDocument) {
-        //valid UR
-        onScan(payload);
-      } else if (urDecoder.urDecoder.progress == 1) {
-        // invalid UR
+      try {
+        final decoderStatus = await decodeQr(decoder: decoder, qr: code);
+        if (decoderStatus.payload != null) {
+          kPrint("Got the xidDoc ${decoderStatus.payload}");
+          onScan(decoderStatus.payload!);
+        }
+      } catch (e) {
+        kPrint(e);
       }
     }
     return;
