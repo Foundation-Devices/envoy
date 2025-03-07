@@ -10,8 +10,8 @@ use tokio::time;
 use tokio::time::Instant;
 use uuid::Uuid;
 
-const WRITE_CHARACTERISTIC_UUID: Uuid = Uuid::from_u128(0x6E400002_B5A3_F393_E0A9_E50E24DCCA9E);
-const APP_MTU: usize = 240;
+pub const WRITE_CHARACTERISTIC_UUID: Uuid = Uuid::from_u128(0x6E400002_B5A3_F393_E0A9_E50E24DCCA9E);
+pub const APP_MTU: usize = 240;
 
 /// Wrapper struct around btleplug::platform::Peripheral that adds the last_seen variable.
 ///

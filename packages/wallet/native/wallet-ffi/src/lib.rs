@@ -1240,7 +1240,7 @@ pub unsafe extern "C" fn wallet_cancel_tx(
             };
         }
     }
-    return match unwrap_or_return!(wallet.get_tx(&txid, true), error_return) {
+    match unwrap_or_return!(wallet.get_tx(&txid, true), error_return) {
         //tx not found in the database
         None => error_return,
         Some(raw_transaction) => {
@@ -1415,7 +1415,7 @@ pub unsafe extern "C" fn wallet_cancel_tx(
                 }
             };
         }
-    };
+    }
 }
 
 #[no_mangle]

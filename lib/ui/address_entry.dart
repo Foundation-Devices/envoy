@@ -8,8 +8,9 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
-import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/widgets/scanner/decoders/payment_qr_decoder.dart';
+import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/bitcoin_parser.dart';
@@ -166,26 +167,28 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                                 //   context,
                                 //   MaterialPageRoute(builder: (context) => const SelectionScreen()),
                                 // );
-
-                                Navigator.of(context, rootNavigator: true)
-                                    .push(MaterialPageRoute(builder: (context) {
-                                  return MediaQuery.removePadding(
+                                showScannerDialog(
                                     context: context,
-                                    child: ScannerPage.address(
-                                        (address, amount, message) {
-                                      widget.controller?.text = address;
-                                      ref
-                                          .read(stagingTxNoteProvider.notifier)
-                                          .state = message;
-                                      if (widget.onAddressChanged != null) {
-                                        widget.onAddressChanged?.call(address);
-                                      }
-                                      if (widget.onAmountChanged != null) {
-                                        widget.onAmountChanged!(amount);
-                                      }
-                                    }, widget.account),
-                                  );
-                                }));
+                                    onBackPressed: (context) {
+                                      Navigator.pop(context);
+                                    },
+                                    decoder: PaymentQrDecoder(
+                                        onAddressValidated:
+                                            (address, amount, message) {
+                                          widget.controller?.text = address;
+                                          ref
+                                              .read(stagingTxNoteProvider
+                                                  .notifier)
+                                              .state = message;
+                                          if (widget.onAddressChanged != null) {
+                                            widget.onAddressChanged
+                                                ?.call(address);
+                                          }
+                                          if (widget.onAmountChanged != null) {
+                                            widget.onAmountChanged!(amount);
+                                          }
+                                        },
+                                        account: widget.account));
                               },
                             )
                           ],

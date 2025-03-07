@@ -30,7 +30,7 @@ class OnboardPrimeBluetooth extends StatefulWidget {
 class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
     with SingleTickerProviderStateMixin {
   final s = Settings();
-  late AnimationController _controller;
+  bool scanForPayload = false;
 
   bool deniedBluetooth = false;
 
@@ -40,17 +40,9 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
   }
 
   @override
-  void dispose() {
-    _controller.reverse(); // Reverse the animation when exiting
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     //TODO: update copy based on s.syncToCloud
     // bool enabledMagicBackup = s.syncToCloud;
-
     return EnvoyPatternScaffold(
         gradientHeight: 1.8,
         appBar: AppBar(
@@ -183,7 +175,7 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
               //   },
               // ),
               const SizedBox(height: EnvoySpacing.medium1),
-              EnvoyButton("Connect", onTap: () {
+              EnvoyButton(S().component_continue, onTap: () {
                 showCommunicationModal(context);
               }),
               const SizedBox(height: EnvoySpacing.small),
@@ -275,7 +267,7 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
               //   },
               // ),
               const SizedBox(height: EnvoySpacing.medium1),
-              EnvoyButton("Connect", onTap: () {
+              EnvoyButton("Scan", onTap: () {
                 requestBluetooth(context);
               }),
               const SizedBox(height: EnvoySpacing.small),
@@ -291,7 +283,11 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
         context: context,
         dismissible: false,
         dialog: QuantumLinkCommunicationInfo(
-          onContinue: () => requestBluetooth(context),
+          onContinue: () => {
+            setState(() {
+              scanForPayload = true;
+            })
+          },
         ));
   }
 }
@@ -299,6 +295,7 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
 //TODO: implement platform specific copy with appropriate
 class QuantumLinkCommunicationInfo extends StatefulWidget {
   final GestureTapCallback onContinue;
+
   const QuantumLinkCommunicationInfo({super.key, required this.onContinue});
 
   @override
@@ -320,7 +317,8 @@ class _QuantumLinkCommunicationInfoState
         padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
           children: [
             Align(
               alignment: Alignment.topRight,

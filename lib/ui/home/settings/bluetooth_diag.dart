@@ -42,57 +42,50 @@ class BluetoothDiagnosticsPageState
       appBar: AppBar(
         title: const Text('BLE diagnostics'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ElevatedButton(
+      body: ListView(
+        shrinkWrap: true,
+        children: [
+          ElevatedButton(
+              onPressed: () {
+                kPrint('Scanning...');
+                ref.read(scanProvider.notifier).start();
+              },
+              child: const Text('Scan')),
+          for (final d in devices)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
                   onPressed: () {
-                    kPrint('Scanning...');
-                    ref.read(scanProvider.notifier).start();
+                    if (!d.connected) {
+                      kPrint('Connecting to ${d.id}');
+                      connect(id: d.id);
+                    } else {
+                      kPrint('Disconnecting from ${d.id}');
+                      disconnect(id: d.id);
+                    }
                   },
-                  child: const Text('Scan')),
-              ListView(
-                shrinkWrap: true,
-                children: [
-                  for (final d in devices)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            if (!d.connected) {
-                              kPrint('Connecting to ${d.id}');
-                              connect(id: d.id);
-                            } else {
-                              kPrint('Disconnecting from ${d.id}');
-                              disconnect(id: d.id);
-                            }
-                          },
-                          child: Text(d.connected
-                              ? 'Disconnect from ${d.name}'
-                              : 'Connect to ${d.name}'),
-                        ),
-                        if (d.connected)
-                          ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  benchmarkStream = benchmark(id: d.id);
-                                });
-                              },
-                              child: StreamBuilder(
-                                  stream: benchmarkStream,
-                                  builder: (context, snapshot) {
-                                    return Text(snapshot.hasData
-                                        ? snapshot.data.toString()
-                                        : "Benchmark");
-                                  })),
-                      ],
-                    )
-                ],
-              ),
-            ]),
+                  child: Text(d.connected
+                      ? 'Disconnect from ${d.name}'
+                      : 'Connect to ${d.name} ${d.id}'),
+                ),
+                if (d.connected)
+                  ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          benchmarkStream = benchmark(id: d.id);
+                        });
+                      },
+                      child: StreamBuilder(
+                          stream: benchmarkStream,
+                          builder: (context, snapshot) {
+                            return Text(snapshot.hasData
+                                ? snapshot.data.toString()
+                                : "Benchmark");
+                          })),
+              ],
+            )
+        ],
       ),
     );
   }

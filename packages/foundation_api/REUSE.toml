@@ -1,9 +1,10 @@
 # SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
+# SPDX-FileCopyrightText: 2025 Foundation Devices Inc.
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 version = 1
-SPDX-PackageName = "bluart"
+SPDX-PackageName = "foundation-api"
 SPDX-PackageSupplier = "Igor Cota <hello@foundation.xyz>"
 SPDX-PackageDownloadLocation = "https://github.com/Foundation-Devices/envoy"
 

@@ -3,21 +3,23 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+
+import 'package:envoy/business/connectivity_manager.dart';
+import 'package:envoy/business/node_url.dart';
+import 'package:envoy/business/scheduler.dart';
+import 'package:envoy/business/settings.dart';
+import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/text_field.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/widgets/scanner/decoders/generic_qr_decoder.dart';
+import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:tor/tor.dart';
-import 'package:wallet/wallet.dart';
 import 'package:wallet/exceptions.dart';
-import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/business/connectivity_manager.dart';
-import 'package:envoy/business/node_url.dart';
-import 'package:envoy/ui/components/text_field.dart';
-import 'package:envoy/ui/pages/scanner_page.dart';
-import 'package:envoy/business/settings.dart';
-import 'package:envoy/business/scheduler.dart';
+import 'package:wallet/wallet.dart';
 
 enum ElectrumServerEntryState { pending, valid, invalid }
 
@@ -133,15 +135,18 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
             },
             isError: _isError,
             onQrScan: () {
-              Navigator.of(context, rootNavigator: true)
-                  .push(MaterialPageRoute(builder: (context) {
-                return ScannerPage.nodeUrl((result) {
-                  var parsedUrl = parseNodeUrl(result);
-                  _controller.text = parsedUrl;
-                  _onAddressChanged(parsedUrl);
-                  return parsedUrl;
-                });
-              }));
+              showScannerDialog(
+                  context: context,
+                  onBackPressed: (context) {
+                    Navigator.pop(context);
+                  },
+                  decoder: GenericQrDecoder(onScan: (result) {
+                    Navigator.pop(context);
+                    var parsedUrl = parseNodeUrl(result);
+                    _controller.text = parsedUrl;
+                    _onAddressChanged(parsedUrl);
+                    return parsedUrl;
+                  }));
             },
             infoContent: (isPrivateAddress(_controller.text) &&
                     ConnectivityManager().torEnabled)

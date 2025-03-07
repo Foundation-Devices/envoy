@@ -91,32 +91,36 @@ class EnvoyToast<T> extends StatefulWidget {
 class EnvoyToastState extends State<EnvoyToast> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-        constraints: BoxConstraints(minHeight: Platform.isIOS ? 65 : 55),
-        decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: [
-              .2,
-              1,
-              1
-            ],
-                colors: [
-              Color(0xFF000000),
-              Color(0xff2f3334),
-              Color(0xFF000000),
-            ])),
-        child: Material(
-          color: Colors.transparent,
-          child: SafeArea(
-            bottom: false,
-            top: true,
-            left: false,
-            right: false,
-            child: createGenericToast(context),
-          ),
-        ));
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
+            constraints: BoxConstraints(minHeight: Platform.isIOS ? 65 : 55),
+            decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: [
+                  .2,
+                  1,
+                  1
+                ],
+                    colors: [
+                  Color(0xFF000000),
+                  Color(0xff2f3334),
+                  Color(0xFF000000),
+                ])),
+            child: Material(
+              color: Colors.transparent,
+              child: SafeArea(
+                bottom: false,
+                top: true,
+                left: false,
+                right: false,
+                child: createGenericToast(context),
+              ),
+            ));
+      },
+    );
   }
 
   Widget createGenericToast(context) {

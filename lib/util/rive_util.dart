@@ -13,3 +13,9 @@ final riveLoaderProvider = FutureProvider.family<RiveFile, String>(
 final coinLockRiveProvider = Provider<RiveFile?>((ref) {
   return ref.watch(riveLoaderProvider('assets/coin_lock.riv')).value;
 });
+
+final animatedQrScannerRiveProvider = Provider<RiveFile?>((ref) {
+  return ref
+      .watch(riveLoaderProvider('assets/anim/animated_qr_scanner.riv'))
+      .value;
+});
