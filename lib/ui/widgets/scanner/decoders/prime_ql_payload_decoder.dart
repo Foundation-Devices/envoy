@@ -19,7 +19,9 @@ class PrimeQlPayloadDecoder extends ScannerDecoder {
     if (code.startsWith("ur:") == true) {
       try {
         final decoderStatus = await decodeQr(decoder: decoder, qr: code);
+        progressCallBack?.call(0.5);
         if (decoderStatus.payload != null) {
+          progressCallBack?.call(1);
           kPrint("Got the xidDoc ${decoderStatus.payload}");
           onScan(decoderStatus.payload!);
         }
