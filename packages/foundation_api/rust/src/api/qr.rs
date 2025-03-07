@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 use bc_envelope::base::envelope;
 use bc_envelope::prelude::*;
 use bc_ur::URType;
