@@ -6,12 +6,21 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/button.dart';
+import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/scanner/scanner_decoder.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/rive_util.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:rive/rive.dart' as rive;
 
 showScannerDialog(
     {required BuildContext context,
@@ -39,7 +48,8 @@ class QrScanner extends StatefulWidget {
 
 class _QrScannerState extends State<QrScanner> {
   final GlobalKey qrViewKey = GlobalKey(debugLabel: "qr_view");
-  QRViewController? controller;
+  late Timer _userInteractionTimer;
+  QRViewController? _controller;
   StreamSubscription? _qrStreamSubscription;
   List<int>? _lastRawBytesDetected = [];
   String _lastCodeDetected = "";
@@ -50,6 +60,12 @@ class _QrScannerState extends State<QrScanner> {
 
   @override
   void initState() {
+    _userInteractionTimer = Timer(const Duration(seconds: 8), () {
+      if (context.mounted) {
+        showScanDialog(context);
+        _userInteractionTimer.cancel();
+      }
+    });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await Future.delayed(const Duration(milliseconds: 100));
       if (mounted) {
@@ -69,19 +85,27 @@ class _QrScannerState extends State<QrScanner> {
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-          // Get rid of the shadow
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          toolbarHeight: 100,
-          leading: IconButton(
-              icon: const Icon(
-                Icons.close_rounded,
-                size: 25,
-                color: Colors.white54,
-              ),
+        // Get rid of the shadow
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        toolbarHeight: 100,
+        leading: IconButton(
+            icon: const Icon(
+              Icons.close_rounded,
+              size: 25,
+              color: Colors.white54,
+            ),
+            onPressed: () {
+              widget.onBackPressed(context);
+            }),
+        actions: [
+          IconButton(
               onPressed: () {
-                widget.onBackPressed(context);
-              })),
+                showScanDialog(context);
+              },
+              icon: const Icon(Icons.info_outline, color: Colors.white54))
+        ],
+      ),
       body: Stack(
         children: [
           Container(
@@ -91,9 +115,9 @@ class _QrScannerState extends State<QrScanner> {
             Expanded(
               child: AnimatedOpacity(
                 duration: const Duration(milliseconds: 600),
-                opacity: controller != null ? 1 : 0,
+                opacity: _controller != null ? 1 : 0,
                 child: AnimatedScale(
-                  scale: controller != null ? 1 : 1.2,
+                  scale: _controller != null ? 1 : 1.2,
                   curve: Curves.linear,
                   duration: const Duration(milliseconds: 900),
                   child: QRView(
@@ -128,7 +152,13 @@ class _QrScannerState extends State<QrScanner> {
                           strokeCap: StrokeCap.round,
                           strokeWidth: 5,
                         );
-                      })))
+                      }))),
+          Consumer(
+            builder: (context, ref, child) {
+              ref.read(animatedQrScannerRiveProvider);
+              return Container();
+            },
+          )
         ],
       ),
     );
@@ -136,7 +166,7 @@ class _QrScannerState extends State<QrScanner> {
 
   void _onQRViewCreated(QRViewController controller, BuildContext context) {
     setState(() {
-      this.controller = controller;
+      _controller = controller;
     });
 
     widget.decoder.onProgressUpdates(
@@ -151,6 +181,7 @@ class _QrScannerState extends State<QrScanner> {
 
     _qrStreamSubscription =
         controller.scannedDataStream.listen((barcode) async {
+      _userInteractionTimer.cancel();
       if ((barcode.code != null && barcode.code != _lastCodeDetected) ||
           (barcode.rawBytes != null &&
               barcode.rawBytes != _lastRawBytesDetected)) {
@@ -202,15 +233,15 @@ class _QrScannerState extends State<QrScanner> {
   void reassemble() {
     super.reassemble();
     if (Platform.isAndroid) {
-      controller?.pauseCamera();
+      _controller?.pauseCamera();
     }
-    controller?.resumeCamera();
+    _controller?.resumeCamera();
   }
 
   @override
   void dispose() {
     _qrStreamSubscription?.cancel();
-    controller?.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 }
@@ -323,6 +354,110 @@ class _AnimatedQrViewfinderState extends State<AnimatedQrViewfinder>
           ),
         );
       },
+    );
+  }
+}
+
+void showScanDialog(BuildContext context) async {
+  bool promptDismissed = await EnvoyStorage()
+      .checkPromptDismissed(DismissiblePrompt.scanToConnect);
+
+  if (!promptDismissed && context.mounted) {
+    showEnvoyDialog(
+        context: context,
+        useRootNavigator: true,
+        dialog: const ScanInfoAnimDialog(),
+        dismissible: true);
+  }
+}
+
+class ScanInfoAnimDialog extends StatefulWidget {
+  const ScanInfoAnimDialog({super.key});
+
+  @override
+  State<ScanInfoAnimDialog> createState() => _ScanInfoAnimDialogState();
+}
+
+class _ScanInfoAnimDialogState extends State<ScanInfoAnimDialog> {
+  bool dismissed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.85,
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(
+          Radius.circular(EnvoySpacing.medium2),
+        ),
+        color: Colors.white,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(EnvoySpacing.medium2),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Consumer(builder: (context, ref, child) {
+                final riveFile = ref.watch(animatedQrScannerRiveProvider);
+                return SizedBox(
+                  height: 200,
+                  child: rive.RiveAnimation.direct(
+                    riveFile!,
+                    animations: [Platform.isIOS ? "ios_scan" : "android_scan"],
+                    fit: BoxFit.contain,
+                  ),
+                );
+              }),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    dismissed = !dismissed;
+                  });
+                },
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      child: EnvoyCheckbox(
+                        value: dismissed,
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              dismissed = value;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                    Text(
+                      S().component_dontShowAgain,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: dismissed
+                                ? Colors.black
+                                : const Color(0xff808080),
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+              EnvoyButton(
+                label: "Continue",
+                type: ButtonType.primary,
+                state: ButtonState.defaultState,
+                onTap: () {
+                  if (dismissed) {
+                    EnvoyStorage()
+                        .addPromptState(DismissiblePrompt.scanToConnect);
+                  }
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

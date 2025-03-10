@@ -59,8 +59,10 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
         // connect(id: bleId);
         await connect(id: bleId!);
         //wait for connection to be established
-        await Future.delayed(const Duration(milliseconds: 1500));
-        await write(id: bleId, data: "123".codeUnits);
+
+        // No more nudging
+        //await write(id: bleId, data: "123".codeUnits);
+
         if (mounted) {
           setState(() {
             bleConnectState = BleConnectState.connected;
