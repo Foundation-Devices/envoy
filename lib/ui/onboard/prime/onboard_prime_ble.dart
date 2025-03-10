@@ -285,39 +285,41 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
 
   showCommunicationModal(BuildContext context) async {
     final decoder = await getDecoder();
-    showEnvoyDialog(
-        context: context,
-        dismissible: false,
-        dialog: QuantumLinkCommunicationInfo(
-          onContinue: () {
-            showScannerDialog(
-                context: context,
-                onBackPressed: (context) {
-                  Navigator.pop(context);
-                },
-                decoder:
-                    //parse UR payload
-                    PrimeQlPayloadDecoder(
-                        decoder: decoder,
-                        onScan: (XidDocument payload) {
-                          kPrint("payload ${payload}");
-                          Navigator.pop(context);
-                          showEnvoyDialog(
-                            context: context,
-                            dialog: EnvoyDialog(
-                              title: "Envoy",
-                              content: Column(
-                                children: [
-                                  Text(
-                                      "Received prime public key\n ${payload}"),
-                                ],
+    if (context.mounted) {
+      showEnvoyDialog(
+          context: context,
+          dismissible: false,
+          dialog: QuantumLinkCommunicationInfo(
+            onContinue: () {
+              showScannerDialog(
+                  context: context,
+                  onBackPressed: (context) {
+                    Navigator.pop(context);
+                  },
+                  decoder:
+                      //parse UR payload
+                      PrimeQlPayloadDecoder(
+                          decoder: decoder,
+                          onScan: (XidDocument payload) {
+                            kPrint("payload $payload");
+                            Navigator.pop(context);
+                            showEnvoyDialog(
+                              context: context,
+                              dialog: EnvoyDialog(
+                                title: "Envoy",
+                                content: Column(
+                                  children: [
+                                    Text(
+                                        "Received prime public key\n $payload"),
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                          //TODO: process XidDocument for connection
-                        }));
-          },
-        ));
+                            );
+                            //TODO: process XidDocument for connection
+                          }));
+            },
+          ));
+    }
   }
 }
 

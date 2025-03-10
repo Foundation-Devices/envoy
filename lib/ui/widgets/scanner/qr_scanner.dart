@@ -9,7 +9,6 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
@@ -104,7 +103,7 @@ class _QrScannerState extends State<QrScanner> {
               onPressed: () {
                 showScanDialog(context);
               },
-              icon: Icon(Icons.info_outline, color: Colors.white54))
+              icon: const Icon(Icons.info_outline, color: Colors.white54))
         ],
       ),
       body: Stack(
