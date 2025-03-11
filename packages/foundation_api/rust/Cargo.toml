@@ -11,7 +11,7 @@ edition = "2021"
 crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
-flutter_rust_bridge = "=2.8.0"
+flutter_rust_bridge = "=2.9.0"
 foundation-api = { git = "https://github.com/Foundation-Devices/foundation-api", rev = "6b5a977b5875dd32d88631a85e9219884521e44e" }
 #foundation-api = {path = "../../../../foundation-api/api"}
 
