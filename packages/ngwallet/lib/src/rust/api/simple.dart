@@ -4,13 +4,16 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
-import '../third_party/ngwallet.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 String greet({required String name}) =>
     RustLib.instance.api.crateApiSimpleGreet(name: name);
 
-Future<NgWallet> getWallet() => RustLib.instance.api.crateApiSimpleGetWallet();
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Wallet>>
+abstract class Wallet implements RustOpaqueInterface {
+  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
+  static Future<Wallet> newInstance() =>
+      RustLib.instance.api.crateApiSimpleWalletNew();
 
-Future<String> nextAddress({required NgWallet wallet}) =>
-    RustLib.instance.api.crateApiSimpleNextAddress(wallet: wallet);
+  Future<String> nextAddress();
+}

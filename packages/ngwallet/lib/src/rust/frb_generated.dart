@@ -10,7 +10,6 @@ import 'frb_generated.dart';
 import 'frb_generated.io.dart'
     if (dart.library.js_interop) 'frb_generated.web.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
-import 'third_party/ngwallet.dart';
 
 /// Main entrypoint of the Rust API
 class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
@@ -69,7 +68,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.9.0';
 
   @override
-  int get rustContentHash => -1512987336;
+  int get rustContentHash => -1535938694;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -80,21 +79,19 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
-  Future<NgWallet> crateApiSimpleGetWallet();
+  Future<Wallet> crateApiSimpleWalletNew();
+
+  Future<String> crateApiSimpleWalletNextAddress({required Wallet that});
 
   String crateApiSimpleGreet({required String name});
 
   Future<void> crateApiSimpleInitApp();
 
-  Future<String> crateApiSimpleNextAddress({required NgWallet wallet});
+  RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Wallet;
 
-  RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_NgWallet;
+  RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Wallet;
 
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_NgWallet;
-
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_NgWalletPtr;
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_WalletPtr;
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -106,7 +103,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  Future<NgWallet> crateApiSimpleGetWallet() {
+  Future<Wallet> crateApiSimpleWalletNew() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
@@ -115,18 +112,44 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: SseCodec(
         decodeSuccessData:
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNgWallet,
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet,
         decodeErrorData: null,
       ),
-      constMeta: kCrateApiSimpleGetWalletConstMeta,
+      constMeta: kCrateApiSimpleWalletNewConstMeta,
       argValues: [],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateApiSimpleGetWalletConstMeta => const TaskConstMeta(
-        debugName: "get_wallet",
+  TaskConstMeta get kCrateApiSimpleWalletNewConstMeta => const TaskConstMeta(
+        debugName: "Wallet_new",
         argNames: [],
+      );
+
+  @override
+  Future<String> crateApiSimpleWalletNextAddress({required Wallet that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 2, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiSimpleWalletNextAddressConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleWalletNextAddressConstMeta =>
+      const TaskConstMeta(
+        debugName: "Wallet_next_address",
+        argNames: ["that"],
       );
 
   @override
@@ -135,7 +158,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(name, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -158,7 +181,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 3, port: port_);
+            funcId: 4, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -175,61 +198,36 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         argNames: [],
       );
 
-  @override
-  Future<String> crateApiSimpleNextAddress({required NgWallet wallet}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNgWallet(
-            wallet, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 4, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_String,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiSimpleNextAddressConstMeta,
-      argValues: [wallet],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiSimpleNextAddressConstMeta => const TaskConstMeta(
-        debugName: "next_address",
-        argNames: ["wallet"],
-      );
-
   RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_NgWallet => wire
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNgWallet;
+      get rust_arc_increment_strong_count_Wallet => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet;
 
   RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_NgWallet => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNgWallet;
+      get rust_arc_decrement_strong_count_Wallet => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet;
 
   @protected
-  NgWallet
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNgWallet(
+  Wallet
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return NgWalletImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return WalletImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
-  NgWallet
-      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNgWallet(
+  Wallet
+      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return NgWalletImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return WalletImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
-  NgWallet
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNgWallet(
+  Wallet
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return NgWalletImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return WalletImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -263,29 +261,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  NgWallet
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNgWallet(
+  Wallet
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return NgWalletImpl.frbInternalSseDecode(
+    return WalletImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
   @protected
-  NgWallet
-      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNgWallet(
+  Wallet
+      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return NgWalletImpl.frbInternalSseDecode(
+    return WalletImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
   @protected
-  NgWallet
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNgWallet(
+  Wallet
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return NgWalletImpl.frbInternalSseDecode(
+    return WalletImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -334,29 +332,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNgWallet(
-          NgWallet self, SseSerializer serializer) {
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet(
+          Wallet self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-        (self as NgWalletImpl).frbInternalSseEncode(move: true), serializer);
+        (self as WalletImpl).frbInternalSseEncode(move: true), serializer);
   }
 
   @protected
   void
-      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNgWallet(
-          NgWallet self, SseSerializer serializer) {
+      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet(
+          Wallet self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-        (self as NgWalletImpl).frbInternalSseEncode(move: false), serializer);
+        (self as WalletImpl).frbInternalSseEncode(move: false), serializer);
   }
 
   @protected
   void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNgWallet(
-          NgWallet self, SseSerializer serializer) {
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet(
+          Wallet self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-        (self as NgWalletImpl).frbInternalSseEncode(move: null), serializer);
+        (self as WalletImpl).frbInternalSseEncode(move: null), serializer);
   }
 
   @protected
@@ -404,21 +402,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 }
 
 @sealed
-class NgWalletImpl extends RustOpaque implements NgWallet {
+class WalletImpl extends RustOpaque implements Wallet {
   // Not to be used by end users
-  NgWalletImpl.frbInternalDcoDecode(List<dynamic> wire)
+  WalletImpl.frbInternalDcoDecode(List<dynamic> wire)
       : super.frbInternalDcoDecode(wire, _kStaticData);
 
   // Not to be used by end users
-  NgWalletImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+  WalletImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
       : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
 
   static final _kStaticData = RustArcStaticData(
     rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_NgWallet,
+        RustLib.instance.api.rust_arc_increment_strong_count_Wallet,
     rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_NgWallet,
+        RustLib.instance.api.rust_arc_decrement_strong_count_Wallet,
     rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_NgWalletPtr,
+        RustLib.instance.api.rust_arc_decrement_strong_count_WalletPtr,
   );
+
+  Future<String> nextAddress() =>
+      RustLib.instance.api.crateApiSimpleWalletNextAddress(
+        that: this,
+      );
 }

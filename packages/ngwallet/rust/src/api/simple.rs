@@ -18,12 +18,21 @@ pub fn init_app() {
     flutter_rust_bridge::setup_default_user_utils();
 }
 
-pub fn get_wallet() -> NgWallet {
-    NgWallet::new().unwrap_or(NgWallet::load().unwrap())
+#[flutter_rust_bridge::frb(opaque)]
+pub struct Wallet {
+    ngwallet: NgWallet,
 }
 
-pub fn next_address(wallet: &mut NgWallet) -> String {
-    wallet.next_address().unwrap().address.to_string()
+impl Wallet {
+    pub fn new() -> Wallet {
+        Wallet {
+            ngwallet: NgWallet::new().unwrap_or(NgWallet::load().unwrap())
+        }
+    }
+
+    pub fn next_address(&mut self) -> String {
+        self.ngwallet.next_address().unwrap().address.to_string()
+    }
 }
 
 // #[frb(external)]

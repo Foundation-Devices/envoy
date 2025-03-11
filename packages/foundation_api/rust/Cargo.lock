@@ -733,9 +733,9 @@ checksum = "28dea519a9695b9977216879a3ebfddf92f1c08c05d984f8996aecd6ecdc811d"
 
 [[package]]
 name = "flutter_rust_bridge"
-version = "2.8.0"
+version = "2.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fdc62f583dff79c7ea34b775b2cc4158adc17cb69ad4c1d276be7fe95c63d597"
+checksum = "2f8c0dee6249225e815dcff3f3a39b98d9f66fdb3c392a432715b646bfa4da02"
 dependencies = [
  "allo-isolate",
  "android_logger",
@@ -762,9 +762,9 @@ dependencies = [
 
 [[package]]
 name = "flutter_rust_bridge_macros"
-version = "2.8.0"
+version = "2.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ac75354933904c334c13a7c9e08c65be528f0820ab587e03f255203a28d5efec"
+checksum = "8e88d604908d9eccb4ca9c26640ce41033165cbef041460e704ae28bd5208bce"
 dependencies = [
  "hex",
  "md-5",
@@ -785,7 +785,7 @@ dependencies = [
 [[package]]
 name = "foundation-api"
 version = "0.3.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?rev=6b5a977b5875dd32d88631a85e9219884521e44e#6b5a977b5875dd32d88631a85e9219884521e44e"
+source = "git+https://github.com/Foundation-Devices/foundation-api?rev=04ed7150e128aa80088cd101d5fa63d0b50c8be3#04ed7150e128aa80088cd101d5fa63d0b50c8be3"
 dependencies = [
  "anyhow",
  "bc-envelope",
@@ -1726,7 +1726,7 @@ dependencies = [
 [[package]]
 name = "quantum-link-macros"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?rev=6b5a977b5875dd32d88631a85e9219884521e44e#6b5a977b5875dd32d88631a85e9219884521e44e"
+source = "git+https://github.com/Foundation-Devices/foundation-api?rev=04ed7150e128aa80088cd101d5fa63d0b50c8be3#04ed7150e128aa80088cd101d5fa63d0b50c8be3"
 dependencies = [
  "quote",
  "syn 2.0.99",

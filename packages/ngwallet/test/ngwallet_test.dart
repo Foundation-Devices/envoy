@@ -9,8 +9,8 @@ import 'package:ngwallet/src/rust/api/simple.dart';
 void main() {
   test("Test converting large amount BTC string to Sats", () async {
     await RustLib.init();
-    var wallet = await getWallet();
-    final address = await nextAddress(wallet: wallet);
+    var wallet = await Wallet.newInstance();
+    final address = await wallet.nextAddress();
 
     print(address);
   });
