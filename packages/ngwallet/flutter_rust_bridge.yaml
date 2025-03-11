@@ -1,4 +1,4 @@
-rust_input: crate::api, ngwallet::NgWallet
+rust_input: crate::api, ngwallet::NgWallet, ngwallet::NgTransaction
 rust_root: rust/
 dart_output: lib/src/rust
 enable_lifetime: true

@@ -47,6 +47,8 @@ dependencies:
     path: packages/bluart
   foundation_api:
     path: packages/foundation_api
+  ngwallet:
+    path: packages/ngwallet
 
 
   # qr_code_scanner fork

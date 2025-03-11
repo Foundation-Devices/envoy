@@ -12,17 +12,5 @@ String greet({required String name}) =>
 
 Future<NgWallet> getWallet() => RustLib.instance.api.crateApiSimpleGetWallet();
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AddressInfo>>
-abstract class AddressInfo implements RustOpaqueInterface {}
-
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner< Balance>>
-abstract class Balance implements RustOpaqueInterface {}
-
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<FullScanResponse < KeychainKind >>>
-abstract class FullScanResponseKeychainKind implements RustOpaqueInterface {}
-
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Psbt>>
-abstract class Psbt implements RustOpaqueInterface {}
-
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Update>>
-abstract class Update implements RustOpaqueInterface {}
+Future<String> nextAddress({required NgWallet wallet}) =>
+    RustLib.instance.api.crateApiSimpleNextAddress(wallet: wallet);

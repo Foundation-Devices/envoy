@@ -11,6 +11,6 @@ mkdir -p lib/src/rust
 set -e
 
 flutter_rust_bridge_codegen generate
-#cargo build --manifest-path=rust/Cargo.toml
+cargo build --manifest-path=rust/Cargo.toml
 
 

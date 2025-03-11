@@ -3,52 +3,8 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
-import '../api/simple.dart';
 import '../frb_generated.dart';
-import '../lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<NgWallet>>
-abstract class NgWallet implements RustOpaqueInterface {
-  Future<void> apply({required Update update});
-
-  Future<Balance> balance();
-
-  Future<void> broadcast({required Psbt psbt});
-
-  Future<Psbt> createSend({required String address, required BigInt amount});
-
-  static Future<NgWallet> load() => RustLib.instance.api.ngwalletNgWalletLoad();
-
-  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
-  static Future<NgWallet> newInstance() =>
-      RustLib.instance.api.ngwalletNgWalletNew();
-
-  Future<AddressInfo> nextAddress();
-
-  Future<bool> persist();
-
-  Future<FullScanResponseKeychainKind> scan();
-
-  Future<Psbt> sign({required Psbt psbt});
-
-  Future<List<NgTransaction>> transactions();
-}
-
-class NgTransaction {
-  final List<TxOut> output;
-
-  const NgTransaction({
-    required this.output,
-  });
-
-  @override
-  int get hashCode => output.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is NgTransaction &&
-          runtimeType == other.runtimeType &&
-          output == other.output;
-}
+abstract class NgWallet implements RustOpaqueInterface {}
