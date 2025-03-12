@@ -11,7 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/business/exchange_rate.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/business/locale.dart';
 
 String btcSatoshiSeparator = fiatDecimalSeparator;

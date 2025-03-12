@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/business/locale.dart';
 import 'package:envoy/ui/amount_entry.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/business/account.dart';
 
 class EnvoyAmount extends StatelessWidget {

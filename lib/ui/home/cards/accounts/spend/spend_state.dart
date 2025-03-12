@@ -21,8 +21,8 @@ import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:wallet/exceptions.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/exceptions.dart';
+import 'package:ngwallet/src/wallet.dart';
 
 enum BroadcastProgress {
   inProgress,

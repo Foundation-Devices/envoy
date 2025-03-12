@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 import 'package:collection/collection.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/business/account.dart';
