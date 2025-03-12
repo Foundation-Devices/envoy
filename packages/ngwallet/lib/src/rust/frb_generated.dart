@@ -79,7 +79,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
-  Future<Wallet> crateApiSimpleWalletNew();
+  Future<Wallet> crateApiSimpleWalletNew({required String dbPath});
 
   Future<String> crateApiSimpleWalletNextAddress({required Wallet that});
 
@@ -103,10 +103,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  Future<Wallet> crateApiSimpleWalletNew() {
+  Future<Wallet> crateApiSimpleWalletNew({required String dbPath}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(dbPath, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 1, port: port_);
       },
@@ -116,14 +117,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: null,
       ),
       constMeta: kCrateApiSimpleWalletNewConstMeta,
-      argValues: [],
+      argValues: [dbPath],
       apiImpl: this,
     ));
   }
 
   TaskConstMeta get kCrateApiSimpleWalletNewConstMeta => const TaskConstMeta(
         debugName: "Wallet_new",
-        argNames: [],
+        argNames: ["dbPath"],
       );
 
   @override

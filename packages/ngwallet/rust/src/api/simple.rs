@@ -24,9 +24,9 @@ pub struct Wallet {
 }
 
 impl Wallet {
-    pub fn new() -> Wallet {
+    pub fn new(db_path: String) -> Wallet {
         Wallet {
-            ngwallet: NgWallet::new().unwrap_or(NgWallet::load().unwrap())
+            ngwallet: NgWallet::new(Some(db_path)).unwrap()
         }
     }
 

@@ -68,10 +68,12 @@ fn wire__crate__api__simple__Wallet_new_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_db_path = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(crate::api::simple::Wallet::new())?;
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::simple::Wallet::new(api_db_path))?;
                     Ok(output_ok)
                 })())
             }
