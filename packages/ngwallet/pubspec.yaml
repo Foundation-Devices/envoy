@@ -37,11 +37,17 @@ dependencies:
   rust_lib_ngwallet:
     path: rust_builder
   flutter_rust_bridge: 2.9.0
+  ffi: ^2.0.1
+  path_provider: ^2.0.2
+  json_annotation: ^4.8.1
+  freezed_annotation: ^2.2.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  json_serializable: ^6.7.1
+  ffigen: ^18.0.0
+  freezed: ^2.4.0
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
