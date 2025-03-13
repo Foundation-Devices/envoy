@@ -17,7 +17,7 @@ import 'package:envoy/business/local_storage.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:tor/tor.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 
 // Generated
 part 'settings.g.dart';

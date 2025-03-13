@@ -6,7 +6,7 @@ import 'dart:core';
 
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/util/amount.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/business/bip21.dart';
 import 'package:envoy/business/locale.dart';
 

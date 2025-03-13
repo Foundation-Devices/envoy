@@ -12,7 +12,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/loader_ghost.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 
 enum AmountWidgetStyle { normal, large, singleLine, sendScreen }
 

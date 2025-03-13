@@ -7,7 +7,7 @@ import 'package:envoy/business/fees.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 
 /// Shared Fee rate state for both normal spend and RBF spend screens
 

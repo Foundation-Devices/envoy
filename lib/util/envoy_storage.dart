@@ -22,7 +22,7 @@ import 'package:sembast/sembast_io.dart';
 import 'package:sembast/src/type.dart';
 import 'package:sembast/utils/sembast_import_export.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wallet/wallet.dart' as wallet;
+import 'package:ngwallet/src/wallet.dart' as wallet;
 import 'package:envoy/business/country.dart';
 import 'package:envoy/business/server.dart';
 

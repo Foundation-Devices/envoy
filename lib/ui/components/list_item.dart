@@ -23,7 +23,7 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/tx_utils.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/util/blur_container_transform.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';

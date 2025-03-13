@@ -26,8 +26,8 @@ import 'package:envoy/util/console.dart';
 import 'package:envoy/util/xfp_endian.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
-import 'package:wallet/exceptions.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/exceptions.dart';
+import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/business/bip329.dart';
 
 class AccountAlreadyPaired implements Exception {}

@@ -1876,13 +1876,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.2"
-  wallet:
-    dependency: "direct main"
-    description:
-      path: "packages/wallet"
-      relative: true
-    source: path
-    version: "0.0.1"
   watcher:
     dependency: "direct overridden"
     description:

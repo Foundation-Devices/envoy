@@ -10,7 +10,7 @@ import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 
 final coinBlockStateStreamProvider =
     StreamProvider((ref) => CoinRepository().getCoinBlockStateStream());

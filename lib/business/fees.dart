@@ -13,7 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:tor/tor.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/business/fee_rates.dart';
 import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/util/tuple.dart';

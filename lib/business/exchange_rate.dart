@@ -16,7 +16,7 @@ import 'package:flutter/services.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:intl/intl.dart';
 import 'package:tor/tor.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/locale.dart';
 

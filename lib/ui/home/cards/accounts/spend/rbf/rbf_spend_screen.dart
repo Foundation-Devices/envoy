@@ -44,9 +44,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
-import 'package:wallet/exceptions.dart';
-import 'package:wallet/generated_bindings.dart' as rust;
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/exceptions.dart';
+import 'package:ngwallet/src/generated_bindings.dart' as rust;
+import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 

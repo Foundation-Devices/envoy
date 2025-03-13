@@ -27,8 +27,8 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:wallet/generated_bindings.dart' as rust;
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/generated_bindings.dart' as rust;
+import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 
 class RBFSpendState {
