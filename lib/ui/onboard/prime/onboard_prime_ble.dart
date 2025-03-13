@@ -284,7 +284,7 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
   }
 
   showCommunicationModal(BuildContext context) async {
-    final decoder = await getDecoder();
+    final decoder = await getQrDecoder();
     if (context.mounted) {
       showEnvoyDialog(
           context: context,

@@ -24,11 +24,11 @@ pub fn init_app() {
     flutter_rust_bridge::setup_default_user_utils();
 }
 
-pub async fn get_decoder() -> MultipartDecoder {
+pub async fn get_qr_decoder() -> MultipartDecoder {
     MultipartDecoder::new()
 }
 
-pub struct DecoderStatus {
+pub struct QrDecoderStatus {
     pub progress: f64,
     pub payload: Option<XIDDocument>,
 }
@@ -36,7 +36,7 @@ pub struct DecoderStatus {
 pub async fn decode_qr(
     qr: String,
     decoder: &mut MultipartDecoder,
-) -> anyhow::Result<DecoderStatus> {
+) -> anyhow::Result<QrDecoderStatus> {
     decoder.receive(&*qr)?;
 
     register_tags();
@@ -45,13 +45,13 @@ pub async fn decode_qr(
         let envelope = Envelope::try_from_cbor(ur.cbor())?;
         let xid_document = XIDDocument::from_unsigned_envelope(&envelope)?;
 
-        return Ok(DecoderStatus {
+        return Ok(QrDecoderStatus {
             progress: 1.0,
             payload: Some(xid_document),
         });
     }
 
-    Ok(DecoderStatus {
+    Ok(QrDecoderStatus {
         progress: 0.5,
         payload: None,
     })
@@ -96,7 +96,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_decode_qr() -> Result<()> {
-        let mut decoder = get_decoder().await;
+        let mut decoder = get_qr_decoder().await;
         let ur_codes = get_test_array();
 
         for ur in ur_codes {

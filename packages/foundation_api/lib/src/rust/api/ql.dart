@@ -4,7 +4,7 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
-import '../third_party/bc_ur.dart';
+import '../lib.dart';
 import '../third_party/bc_xid.dart';
 import '../third_party/foundation_api/api/firmware.dart';
 import '../third_party/foundation_api/api/fx.dart';
@@ -15,24 +15,34 @@ import '../third_party/foundation_api/api/passport.dart';
 import '../third_party/foundation_api/api/status.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-String greet({required String name}) =>
-    RustLib.instance.api.crateApiQrGreet(name: name);
+Future<Dechunker> getDecoder() => RustLib.instance.api.crateApiQlGetDecoder();
 
-Future<MultipartDecoder> getQrDecoder() =>
-    RustLib.instance.api.crateApiQrGetQrDecoder();
+Future<DecoderStatus> decode(
+        {required List<int> data,
+        required Dechunker decoder,
+        required PrivateKeys privateKeys}) =>
+    RustLib.instance.api.crateApiQlDecode(
+        data: data, decoder: decoder, privateKeys: privateKeys);
 
-Future<QrDecoderStatus> decodeQr(
-        {required String qr, required MultipartDecoder decoder}) =>
-    RustLib.instance.api.crateApiQrDecodeQr(qr: qr, decoder: decoder);
+Future<List<Uint8List>> encode(
+        {required EnvoyMessage message,
+        required PrivateKeys privateKeys,
+        required XidDocument sender,
+        required XidDocument recipient}) =>
+    RustLib.instance.api.crateApiQlEncode(
+        message: message,
+        privateKeys: privateKeys,
+        sender: sender,
+        recipient: recipient);
 
-Future<PassportMessage> decodeBleMessage({required List<int> data}) =>
-    RustLib.instance.api.crateApiQrDecodeBleMessage(data: data);
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>>
+abstract class Dechunker implements RustOpaqueInterface {}
 
-class QrDecoderStatus {
+class DecoderStatus {
   final double progress;
-  final XidDocument? payload;
+  final PassportMessage? payload;
 
-  const QrDecoderStatus({
+  const DecoderStatus({
     required this.progress,
     this.payload,
   });
@@ -43,7 +53,7 @@ class QrDecoderStatus {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is QrDecoderStatus &&
+      other is DecoderStatus &&
           runtimeType == other.runtimeType &&
           progress == other.progress &&
           payload == other.payload;

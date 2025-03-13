@@ -23,21 +23,11 @@ pub async fn decode(data: Vec<u8>, decoder: &mut Dechunker, private_keys: &Priva
     if decoder.is_complete() {
         let message = decoder.data();
         let envelope = Envelope::try_from_cbor_data(message.to_owned())?;
-        let event: SealedEvent<Expression> =
-            SealedEvent::try_from_envelope(&envelope, None, None, private_keys)?;
-
-        let expression= event.content().clone();
-        let function = expression.function().clone();
-
-        if function != QUANTUM_LINK {
-            anyhow!("Unknown function: {}", function);
-        }
-
-        let message: PassportMessage = PassportMessage::decode(&expression).unwrap();
+        let passport_message = PassportMessage::unseal_passport_message(&envelope, private_keys).unwrap();
 
         return Ok(DecoderStatus {
             progress: 1.0,
-            payload: Some(message),
+            payload: Some(passport_message),
         });
     }
 
@@ -45,7 +35,6 @@ pub async fn decode(data: Vec<u8>, decoder: &mut Dechunker, private_keys: &Priva
         progress: 0.5,
         payload: None,
     })
-
 }
 
 pub async fn encode(message: EnvoyMessage, private_keys: &PrivateKeys, sender: &XIDDocument, recipient: &XIDDocument) -> Vec<Vec<u8>> {
