@@ -335,6 +335,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "btp"
+version = "0.1.0"
+source = "git+https://github.com/Foundation-Devices/foundation-api?rev=1754021d4b8bc9fe164e74232e35f42ab5506641#1754021d4b8bc9fe164e74232e35f42ab5506641"
+dependencies = [
+ "anyhow",
+ "consts",
+ "minicbor 0.24.4",
+]
+
+[[package]]
 name = "build-target"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -446,6 +456,11 @@ name = "const-oid"
 version = "0.9.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2459377285ad874054d797f3ccebf984978aa39129f6eafde5cdc8315b612f8"
+
+[[package]]
+name = "consts"
+version = "0.1.0"
+source = "git+https://github.com/Foundation-Devices/prime-ble-firmware.git#e238c1000cf462db760129d0de7a79c2a3f09ee7"
 
 [[package]]
 name = "core-foundation-sys"
@@ -949,6 +964,20 @@ dependencies = [
  "ff",
  "rand_core",
  "subtle",
+]
+
+[[package]]
+name = "gstp"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "442348749432257264e75666b6d18f42cb3db36a9d0d2a06f5f5405e0bb5f89b"
+dependencies = [
+ "anyhow",
+ "bc-components",
+ "bc-envelope",
+ "bc-rand",
+ "bc-xid",
+ "dcbor",
 ]
 
 [[package]]
@@ -1875,12 +1904,16 @@ dependencies = [
 name = "rust_lib_foundation_api"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
+ "bc-components",
  "bc-envelope",
  "bc-ur",
  "bc-xid",
+ "btp",
  "flutter_rust_bridge",
  "foundation-api",
  "foundation-ur",
+ "gstp",
  "tokio",
 ]
 
