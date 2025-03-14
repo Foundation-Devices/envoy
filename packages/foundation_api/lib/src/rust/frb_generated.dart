@@ -20,6 +20,7 @@ import 'third_party/foundation_api/api/message.dart';
 import 'third_party/foundation_api/api/onboarding.dart';
 import 'third_party/foundation_api/api/pairing.dart';
 import 'third_party/foundation_api/api/passport.dart';
+import 'third_party/foundation_api/api/quantum_link.dart';
 import 'third_party/foundation_api/api/status.dart';
 
 /// Main entrypoint of the Rust API
@@ -79,7 +80,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.9.0';
 
   @override
-  int get rustContentHash => -1935009972;
+  int get rustContentHash => 28850318;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -105,6 +106,8 @@ abstract class RustLibApi extends BaseApi {
       required PrivateKeys privateKeys,
       required XidDocument sender,
       required XidDocument recipient});
+
+  Future<QuantumLinkIdentity> crateApiQrGenerateQlIdentity();
 
   Future<Dechunker> crateApiQlGetDecoder();
 
@@ -138,6 +141,15 @@ abstract class RustLibApi extends BaseApi {
       get rust_arc_decrement_strong_count_PrivateKeys;
 
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_PrivateKeysPtr;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_QuantumLinkIdentity;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_QuantumLinkIdentity;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_QuantumLinkIdentityPtr;
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_XidDocument;
@@ -274,12 +286,37 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<Dechunker> crateApiQlGetDecoder() {
+  Future<QuantumLinkIdentity> crateApiQrGenerateQlIdentity() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 5, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQrGenerateQlIdentityConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQrGenerateQlIdentityConstMeta =>
+      const TaskConstMeta(
+        debugName: "generate_ql_identity",
+        argNames: [],
+      );
+
+  @override
+  Future<Dechunker> crateApiQlGetDecoder() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 6, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -303,7 +340,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 6, port: port_);
+            funcId: 7, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -327,7 +364,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(name, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 7)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 8)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -350,7 +387,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 8, port: port_);
+            funcId: 9, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -392,6 +429,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrivateKeys;
 
   RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_QuantumLinkIdentity => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_QuantumLinkIdentity => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity;
+
+  RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_XidDocument => wire
           .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument;
 
@@ -419,6 +464,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return MultipartDecoderImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  QuantumLinkIdentity
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return QuantumLinkIdentityImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -483,6 +536,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return PrivateKeysImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  QuantumLinkIdentity
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return QuantumLinkIdentityImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -872,6 +933,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  QuantumLinkIdentity
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return QuantumLinkIdentityImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
   XidDocument
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           SseDeserializer deserializer) {
@@ -940,6 +1010,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return PrivateKeysImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  QuantumLinkIdentity
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return QuantumLinkIdentityImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -1331,6 +1410,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+          QuantumLinkIdentity self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as QuantumLinkIdentityImpl).frbInternalSseEncode(move: true),
+        serializer);
+  }
+
+  @protected
+  void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           XidDocument self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1403,6 +1492,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
         (self as PrivateKeysImpl).frbInternalSseEncode(move: null), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+          QuantumLinkIdentity self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as QuantumLinkIdentityImpl).frbInternalSseEncode(move: null),
+        serializer);
   }
 
   @protected
@@ -1796,6 +1895,28 @@ class PrivateKeysImpl extends RustOpaque implements PrivateKeys {
         RustLib.instance.api.rust_arc_decrement_strong_count_PrivateKeys,
     rustArcDecrementStrongCountPtr:
         RustLib.instance.api.rust_arc_decrement_strong_count_PrivateKeysPtr,
+  );
+}
+
+@sealed
+class QuantumLinkIdentityImpl extends RustOpaque
+    implements QuantumLinkIdentity {
+  // Not to be used by end users
+  QuantumLinkIdentityImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  QuantumLinkIdentityImpl.frbInternalSseDecode(
+      BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount: RustLib
+        .instance.api.rust_arc_increment_strong_count_QuantumLinkIdentity,
+    rustArcDecrementStrongCount: RustLib
+        .instance.api.rust_arc_decrement_strong_count_QuantumLinkIdentity,
+    rustArcDecrementStrongCountPtr: RustLib
+        .instance.api.rust_arc_decrement_strong_count_QuantumLinkIdentityPtr,
   );
 }
 
