@@ -4,7 +4,31 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../../../frb_generated.dart';
+import '../../../lib.dart';
+import '../../bc_xid.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<QuantumLinkIdentity>>
-abstract class QuantumLinkIdentity implements RustOpaqueInterface {}
+class QuantumLinkIdentity {
+  final PrivateKeys? privateKeys;
+  final PublicKeys? publicKeys;
+  final XidDocument? xidDocument;
+
+  const QuantumLinkIdentity({
+    this.privateKeys,
+    this.publicKeys,
+    this.xidDocument,
+  });
+
+  @override
+  int get hashCode =>
+      privateKeys.hashCode ^ publicKeys.hashCode ^ xidDocument.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is QuantumLinkIdentity &&
+          runtimeType == other.runtimeType &&
+          privateKeys == other.privateKeys &&
+          publicKeys == other.publicKeys &&
+          xidDocument == other.xidDocument;
+}

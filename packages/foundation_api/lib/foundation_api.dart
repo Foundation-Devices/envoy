@@ -17,4 +17,5 @@ export 'src/rust/third_party/foundation_api/api/pairing.dart';
 export 'src/rust/third_party/foundation_api/api/passport.dart';
 export 'src/rust/third_party/foundation_api/api/status.dart';
 export 'src/rust/third_party/foundation_api/api/firmware.dart';
+export 'src/rust/third_party/foundation_api/api/quantum_link.dart';
 export 'src/rust/third_party/bc_xid.dart';

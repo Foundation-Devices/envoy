@@ -12,7 +12,6 @@ import '../third_party/foundation_api/api/message.dart';
 import '../third_party/foundation_api/api/onboarding.dart';
 import '../third_party/foundation_api/api/pairing.dart';
 import '../third_party/foundation_api/api/passport.dart';
-import '../third_party/foundation_api/api/quantum_link.dart';
 import '../third_party/foundation_api/api/status.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
@@ -28,9 +27,6 @@ Future<QrDecoderStatus> decodeQr(
 
 Future<PassportMessage> decodeBleMessage({required List<int> data}) =>
     RustLib.instance.api.crateApiQrDecodeBleMessage(data: data);
-
-Future<QuantumLinkIdentity> generateQlIdentity() =>
-    RustLib.instance.api.crateApiQrGenerateQlIdentity();
 
 class QrDecoderStatus {
   final double progress;

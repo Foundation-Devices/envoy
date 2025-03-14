@@ -25,7 +25,7 @@
 
 // Section: imports
 
-use bc_components::PrivateKeys;
+use bc_components::{PrivateKeys, PublicKeys};
 use crate::api::ql::*;
 use crate::*;
 use bc_ur::*;
@@ -44,7 +44,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.9.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 28850318;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -39995335;
 
 // Section: executor
 
@@ -78,29 +78,22 @@ fn wire__crate__api__ql__decode_impl(
             let api_decoder = <RustOpaqueMoi<
                 flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>,
             >>::sse_decode(&mut deserializer);
-            let api_private_keys = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<PrivateKeys>,
-            >>::sse_decode(&mut deserializer);
+            let api_quantum_link_identity =
+                <foundation_api::api::quantum_link::QuantumLinkIdentity>::sse_decode(
+                    &mut deserializer,
+                );
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || async move {
                         let mut api_decoder_guard = None;
-                        let mut api_private_keys_guard = None;
                         let decode_indices_ =
                             flutter_rust_bridge::for_generated::lockable_compute_decode_order(
-                                vec![
-                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
-                                        &api_decoder,
-                                        0,
-                                        true,
-                                    ),
-                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
-                                        &api_private_keys,
-                                        1,
-                                        false,
-                                    ),
-                                ],
+                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                    &api_decoder,
+                                    0,
+                                    true,
+                                )],
                             );
                         for i in decode_indices_ {
                             match i {
@@ -108,19 +101,14 @@ fn wire__crate__api__ql__decode_impl(
                                     api_decoder_guard =
                                         Some(api_decoder.lockable_decode_async_ref_mut().await)
                                 }
-                                1 => {
-                                    api_private_keys_guard =
-                                        Some(api_private_keys.lockable_decode_async_ref().await)
-                                }
                                 _ => unreachable!(),
                             }
                         }
                         let mut api_decoder_guard = api_decoder_guard.unwrap();
-                        let api_private_keys_guard = api_private_keys_guard.unwrap();
                         let output_ok = crate::api::ql::decode(
                             api_data,
                             &mut *api_decoder_guard,
-                            &*api_private_keys_guard,
+                            &api_quantum_link_identity,
                         )
                         .await?;
                         Ok(output_ok)
@@ -252,12 +240,9 @@ fn wire__crate__api__ql__encode_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_message =
                 <foundation_api::api::message::EnvoyMessage>::sse_decode(&mut deserializer);
-            let api_private_keys = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<PrivateKeys>,
-            >>::sse_decode(&mut deserializer);
-            let api_sender = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<XIDDocument>,
-            >>::sse_decode(&mut deserializer);
+            let api_sender = <foundation_api::api::quantum_link::QuantumLinkIdentity>::sse_decode(
+                &mut deserializer,
+            );
             let api_recipient = <RustOpaqueMoi<
                 flutter_rust_bridge::for_generated::RustAutoOpaqueInner<XIDDocument>,
             >>::sse_decode(&mut deserializer);
@@ -265,57 +250,28 @@ fn wire__crate__api__ql__encode_impl(
             move |context| async move {
                 transform_result_sse::<_, ()>(
                     (move || async move {
-                        let mut api_private_keys_guard = None;
-                        let mut api_sender_guard = None;
                         let mut api_recipient_guard = None;
                         let decode_indices_ =
                             flutter_rust_bridge::for_generated::lockable_compute_decode_order(
-                                vec![
-                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
-                                        &api_private_keys,
-                                        0,
-                                        false,
-                                    ),
-                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
-                                        &api_sender,
-                                        1,
-                                        false,
-                                    ),
-                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
-                                        &api_recipient,
-                                        2,
-                                        false,
-                                    ),
-                                ],
+                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                    &api_recipient,
+                                    0,
+                                    false,
+                                )],
                             );
                         for i in decode_indices_ {
                             match i {
                                 0 => {
-                                    api_private_keys_guard =
-                                        Some(api_private_keys.lockable_decode_async_ref().await)
-                                }
-                                1 => {
-                                    api_sender_guard =
-                                        Some(api_sender.lockable_decode_async_ref().await)
-                                }
-                                2 => {
                                     api_recipient_guard =
                                         Some(api_recipient.lockable_decode_async_ref().await)
                                 }
                                 _ => unreachable!(),
                             }
                         }
-                        let api_private_keys_guard = api_private_keys_guard.unwrap();
-                        let api_sender_guard = api_sender_guard.unwrap();
                         let api_recipient_guard = api_recipient_guard.unwrap();
                         let output_ok = Result::<_, ()>::Ok(
-                            crate::api::ql::encode(
-                                api_message,
-                                &*api_private_keys_guard,
-                                &*api_sender_guard,
-                                &*api_recipient_guard,
-                            )
-                            .await,
+                            crate::api::ql::encode(api_message, api_sender, &*api_recipient_guard)
+                                .await,
                         )?;
                         Ok(output_ok)
                     })()
@@ -325,7 +281,7 @@ fn wire__crate__api__ql__encode_impl(
         },
     )
 }
-fn wire__crate__api__qr__generate_ql_identity_impl(
+fn wire__crate__api__ql__generate_ql_identity_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -352,7 +308,7 @@ fn wire__crate__api__qr__generate_ql_identity_impl(
                 transform_result_sse::<_, ()>(
                     (move || async move {
                         let output_ok =
-                            Result::<_, ()>::Ok(crate::api::qr::generate_ql_identity().await)?;
+                            Result::<_, ()>::Ok(crate::api::ql::generate_ql_identity().await)?;
                         Ok(output_ok)
                     })()
                     .await,
@@ -554,6 +510,13 @@ const _: fn() = || {
         let PassportSerial_ = None::<foundation_api::api::passport::PassportSerial>.unwrap();
         let _: String = PassportSerial_.0;
     }
+    {
+        let QuantumLinkIdentity =
+            None::<foundation_api::api::quantum_link::QuantumLinkIdentity>.unwrap();
+        let _: Option<PrivateKeys> = QuantumLinkIdentity.private_keys;
+        let _: Option<PublicKeys> = QuantumLinkIdentity.public_keys;
+        let _: Option<XIDDocument> = QuantumLinkIdentity.xid_document;
+    }
     match None::<foundation_api::api::message::QuantumLinkMessage>.unwrap() {
         foundation_api::api::message::QuantumLinkMessage::ExchangeRate(field0) => {
             let _: foundation_api::api::fx::ExchangeRate = field0;
@@ -591,7 +554,7 @@ flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::RustAutoOpaqueInner<PrivateKeys>
 );
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
-    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<QuantumLinkIdentity>
+    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<PublicKeys>
 );
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::RustAutoOpaqueInner<XIDDocument>
@@ -627,11 +590,21 @@ impl SseDecode for MultipartDecoder {
     }
 }
 
-impl SseDecode for QuantumLinkIdentity {
+impl SseDecode for PrivateKeys {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <RustOpaqueMoi<
-            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<QuantumLinkIdentity>,
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<PrivateKeys>,
+        >>::sse_decode(deserializer);
+        return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
+    }
+}
+
+impl SseDecode for PublicKeys {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <RustOpaqueMoi<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<PublicKeys>,
         >>::sse_decode(deserializer);
         return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
     }
@@ -678,7 +651,7 @@ impl SseDecode
 }
 
 impl SseDecode
-    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<QuantumLinkIdentity>>
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<PublicKeys>>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -893,6 +866,28 @@ impl SseDecode for foundation_api::api::onboarding::OnboardingState {
     }
 }
 
+impl SseDecode for Option<PrivateKeys> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<PrivateKeys>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<PublicKeys> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<PublicKeys>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for Option<XIDDocument> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -993,6 +988,20 @@ impl SseDecode for crate::api::qr::QrDecoderStatus {
         return crate::api::qr::QrDecoderStatus {
             progress: var_progress,
             payload: var_payload,
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::quantum_link::QuantumLinkIdentity {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_privateKeys = <Option<PrivateKeys>>::sse_decode(deserializer);
+        let mut var_publicKeys = <Option<PublicKeys>>::sse_decode(deserializer);
+        let mut var_xidDocument = <Option<XIDDocument>>::sse_decode(deserializer);
+        return foundation_api::api::quantum_link::QuantumLinkIdentity {
+            private_keys: var_privateKeys,
+            public_keys: var_publicKeys,
+            xid_document: var_xidDocument,
         };
     }
 }
@@ -1098,7 +1107,7 @@ fn pde_ffi_dispatcher_primary_impl(
         2 => wire__crate__api__qr__decode_ble_message_impl(port, ptr, rust_vec_len, data_len),
         3 => wire__crate__api__qr__decode_qr_impl(port, ptr, rust_vec_len, data_len),
         4 => wire__crate__api__ql__encode_impl(port, ptr, rust_vec_len, data_len),
-        5 => wire__crate__api__qr__generate_ql_identity_impl(port, ptr, rust_vec_len, data_len),
+        5 => wire__crate__api__ql__generate_ql_identity_impl(port, ptr, rust_vec_len, data_len),
         6 => wire__crate__api__ql__get_decoder_impl(port, ptr, rust_vec_len, data_len),
         7 => wire__crate__api__qr__get_qr_decoder_impl(port, ptr, rust_vec_len, data_len),
         9 => wire__crate__api__qr__init_app_impl(port, ptr, rust_vec_len, data_len),
@@ -1152,19 +1161,31 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<MultipartDecoder>> for Multipa
 }
 
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for FrbWrapper<QuantumLinkIdentity> {
+impl flutter_rust_bridge::IntoDart for FrbWrapper<PrivateKeys> {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
             .into_dart()
     }
 }
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for FrbWrapper<QuantumLinkIdentity>
-{
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for FrbWrapper<PrivateKeys> {}
+
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<PrivateKeys>> for PrivateKeys {
+    fn into_into_dart(self) -> FrbWrapper<PrivateKeys> {
+        self.into()
+    }
 }
 
-impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<QuantumLinkIdentity>> for QuantumLinkIdentity {
-    fn into_into_dart(self) -> FrbWrapper<QuantumLinkIdentity> {
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<PublicKeys> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
+            .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for FrbWrapper<PublicKeys> {}
+
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<PublicKeys>> for PublicKeys {
+    fn into_into_dart(self) -> FrbWrapper<PublicKeys> {
         self.into()
     }
 }
@@ -1548,6 +1569,32 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::qr::QrDecoderStatus>
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::quantum_link::QuantumLinkIdentity>
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.private_keys.into_into_dart().into_dart(),
+            self.0.public_keys.into_into_dart().into_dart(),
+            self.0.xid_document.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::quantum_link::QuantumLinkIdentity>
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<
+        FrbWrapper<foundation_api::api::quantum_link::QuantumLinkIdentity>,
+    > for foundation_api::api::quantum_link::QuantumLinkIdentity
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::quantum_link::QuantumLinkIdentity> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
     for FrbWrapper<foundation_api::api::message::QuantumLinkMessage>
 {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
@@ -1612,10 +1659,17 @@ impl SseEncode for MultipartDecoder {
     }
 }
 
-impl SseEncode for QuantumLinkIdentity {
+impl SseEncode for PrivateKeys {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<QuantumLinkIdentity>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
+        <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<PrivateKeys>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
+    }
+}
+
+impl SseEncode for PublicKeys {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<PublicKeys>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
     }
 }
 
@@ -1660,7 +1714,7 @@ impl SseEncode
 }
 
 impl SseEncode
-    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<QuantumLinkIdentity>>
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<PublicKeys>>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1858,6 +1912,26 @@ impl SseEncode for foundation_api::api::onboarding::OnboardingState {
     }
 }
 
+impl SseEncode for Option<PrivateKeys> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <PrivateKeys>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<PublicKeys> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <PublicKeys>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for Option<XIDDocument> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1943,6 +2017,15 @@ impl SseEncode for crate::api::qr::QrDecoderStatus {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <f64>::sse_encode(self.progress, serializer);
         <Option<XIDDocument>>::sse_encode(self.payload, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::quantum_link::QuantumLinkIdentity {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<PrivateKeys>>::sse_encode(self.private_keys, serializer);
+        <Option<PublicKeys>>::sse_encode(self.public_keys, serializer);
+        <Option<XIDDocument>>::sse_encode(self.xid_document, serializer);
     }
 }
 
@@ -2038,7 +2121,6 @@ mod io {
     };
     use flutter_rust_bridge::for_generated::{transform_result_dco, Lifetimeable, Lockable};
     use flutter_rust_bridge::{Handler, IntoIntoDart};
-    use foundation_api::api::quantum_link::*;
 
     // Section: boilerplate
 
@@ -2087,17 +2169,17 @@ mod io {
     }
 
     #[unsafe(no_mangle)]
-    pub extern "C" fn frbgen_foundation_api_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+    pub extern "C" fn frbgen_foundation_api_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPublicKeys(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<QuantumLinkIdentity>>::increment_strong_count(ptr as _);
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<PublicKeys>>::increment_strong_count(ptr as _);
     }
 
     #[unsafe(no_mangle)]
-    pub extern "C" fn frbgen_foundation_api_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+    pub extern "C" fn frbgen_foundation_api_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPublicKeys(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<QuantumLinkIdentity>>::decrement_strong_count(ptr as _);
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<PublicKeys>>::decrement_strong_count(ptr as _);
     }
 
     #[unsafe(no_mangle)]
@@ -2137,7 +2219,6 @@ mod web {
     use flutter_rust_bridge::for_generated::wasm_bindgen::prelude::*;
     use flutter_rust_bridge::for_generated::{transform_result_dco, Lifetimeable, Lockable};
     use flutter_rust_bridge::{Handler, IntoIntoDart};
-    use foundation_api::api::quantum_link::*;
 
     // Section: boilerplate
 
@@ -2186,17 +2267,17 @@ mod web {
     }
 
     #[wasm_bindgen]
-    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPublicKeys(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<QuantumLinkIdentity>>::increment_strong_count(ptr as _);
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<PublicKeys>>::increment_strong_count(ptr as _);
     }
 
     #[wasm_bindgen]
-    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPublicKeys(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<QuantumLinkIdentity>>::decrement_strong_count(ptr as _);
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<PublicKeys>>::decrement_strong_count(ptr as _);
     }
 
     #[wasm_bindgen]

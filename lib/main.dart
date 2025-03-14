@@ -3,6 +3,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:io';
+
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
@@ -30,10 +32,15 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:foundation_api/foundation_api.dart' as api;
+import 'package:ngwallet/ngwallet.dart' show RustLib;
 import 'package:tor/tor.dart';
 import 'package:tor/util.dart';
+
+import 'package:ngwallet/src/rust/frb_generated.dart';
+import 'package:ngwallet/src/rust/api/simple.dart';
 
 import 'business/feed_manager.dart';
 import 'business/fees.dart';
@@ -59,14 +66,10 @@ Future<void> main() async {
 
 Future<void> initSingletons() async {
   try {
-    kPrint("Init RustLib");
-    await api.RustLib.init();
-    kPrint("Decoder init success");
-  } catch (e) {
-    kPrint("API init failed");
-    kPrint(e);
+    await BluetoothManager.init();
+  } catch (e, stack) {
+     kPrint("Error initializing BluetoothManager: $e",stackTrace: stack);
   }
-  await BluetoothManager.init();
   // This is notoriously low on iOS, causing 'too many open files errors'
   kPrint("Process nofile_limit: ${getNofileLimit()}");
 
@@ -93,7 +96,6 @@ Future<void> initSingletons() async {
   try {
     Tor.instance.start();
   } on Exception catch (e) {
-    EnvoyReport().log("tor", e.toString());
   }
 
   Fees.restore();

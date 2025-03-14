@@ -5,6 +5,12 @@
 
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation_api/foundation_api.dart';
+
+
+
+final primeBleIdProvider = StateProvider<String?>((ref) => null);
+final primePublicKeyProvider = StateProvider<XidDocument?>((ref) => null);
 
 class StepNotifier extends StateNotifier<StepModel> {
   StepNotifier({stepName = "Loading", state = EnvoyStepState.HIDDEN})

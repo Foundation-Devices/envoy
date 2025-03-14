@@ -3,14 +3,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:animations/animations.dart';
+import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
+import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -21,6 +22,7 @@ import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
@@ -42,6 +44,13 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
   @override
   void initState() {
     super.initState();
+    _listenForPassPortMessages();
+  }
+
+  void _listenForPassPortMessages() {
+    BluetoothManager().passPortMessageStream.listen((event) {
+      kPrint("Got the Passport Event : $event");
+    });
   }
 
   @override
@@ -283,42 +292,40 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
     );
   }
 
+  pairWithPrime(XidDocument payload, String bleId) async {
+    await BluetoothManager().pair(payload, bleId);
+  }
+
   showCommunicationModal(BuildContext context) async {
     final decoder = await getQrDecoder();
     if (context.mounted) {
       showEnvoyDialog(
           context: context,
           dismissible: false,
-          dialog: QuantumLinkCommunicationInfo(
-            onContinue: () {
-              showScannerDialog(
-                  context: context,
-                  onBackPressed: (context) {
-                    Navigator.pop(context);
-                  },
-                  decoder:
-                      //parse UR payload
-                      PrimeQlPayloadDecoder(
-                          decoder: decoder,
-                          onScan: (XidDocument payload) {
-                            kPrint("payload $payload");
-                            Navigator.pop(context);
-                            showEnvoyDialog(
-                              context: context,
-                              dialog: EnvoyDialog(
-                                title: "Envoy",
-                                content: Column(
-                                  children: [
-                                    Text(
-                                        "Received prime public key\n $payload"),
-                                  ],
-                                ),
-                              ),
-                            );
-                            //TODO: process XidDocument for connection
-                          }));
-            },
-          ));
+          dialog: Consumer(builder: (context, ref, child) {
+            return QuantumLinkCommunicationInfo(
+              onContinue: () {
+                showScannerDialog(
+                    context: context,
+                    onBackPressed: (context) {
+                      Navigator.pop(context);
+                    },
+                    decoder:
+                        //parse UR payload
+                        PrimeQlPayloadDecoder(
+                            decoder: decoder,
+                            onScan: (XidDocument payload) {
+                              kPrint("payload $payload");
+                              ref.read(primePublicKeyProvider.notifier).state =
+                                  payload;
+                              pairWithPrime(
+                                  payload, ref.read(primeBleIdProvider)!);
+                              Navigator.pop(context);
+                              //TODO: process XidDocument for connection
+                            }));
+              },
+            );
+          }));
     }
   }
 }

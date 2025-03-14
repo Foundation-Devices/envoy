@@ -68,9 +68,6 @@ pub async fn decode_ble_message(data: Vec<u8>) -> PassportMessage {
     PassportMessage::new(msg, DeviceStatus::new(DeviceState::Normal, 100, 100, "1.0.0".to_string()))
 }
 
-pub async fn generate_ql_identity() -> QuantumLinkIdentity {
-    generate_identity()
-}
 
 #[cfg(test)]
 mod tests {

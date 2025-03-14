@@ -12,6 +12,7 @@ import '../third_party/foundation_api/api/message.dart';
 import '../third_party/foundation_api/api/onboarding.dart';
 import '../third_party/foundation_api/api/pairing.dart';
 import '../third_party/foundation_api/api/passport.dart';
+import '../third_party/foundation_api/api/quantum_link.dart';
 import '../third_party/foundation_api/api/status.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
@@ -20,20 +21,19 @@ Future<Dechunker> getDecoder() => RustLib.instance.api.crateApiQlGetDecoder();
 Future<DecoderStatus> decode(
         {required List<int> data,
         required Dechunker decoder,
-        required PrivateKeys privateKeys}) =>
+        required QuantumLinkIdentity quantumLinkIdentity}) =>
     RustLib.instance.api.crateApiQlDecode(
-        data: data, decoder: decoder, privateKeys: privateKeys);
+        data: data, decoder: decoder, quantumLinkIdentity: quantumLinkIdentity);
 
 Future<List<Uint8List>> encode(
         {required EnvoyMessage message,
-        required PrivateKeys privateKeys,
-        required XidDocument sender,
+        required QuantumLinkIdentity sender,
         required XidDocument recipient}) =>
     RustLib.instance.api.crateApiQlEncode(
-        message: message,
-        privateKeys: privateKeys,
-        sender: sender,
-        recipient: recipient);
+        message: message, sender: sender, recipient: recipient);
+
+Future<QuantumLinkIdentity> generateQlIdentity() =>
+    RustLib.instance.api.crateApiQlGenerateQlIdentity();
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>>
 abstract class Dechunker implements RustOpaqueInterface {}

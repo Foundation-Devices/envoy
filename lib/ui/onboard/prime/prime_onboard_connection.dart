@@ -4,6 +4,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:bluart/bluart.dart';
+import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -88,7 +89,8 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
       kPrint("Connecting to Prime with ID: $id");
       await bleStepNotifier.updateStep(
           "Connecting to Prime", EnvoyStepState.LOADING);
-      await connect(id: id);
+      await BluetoothManager().connect(id: id);
+      ref.read(primeBleIdProvider.notifier).state = id;
       setState(() {
         device = BleDevice(id: id, name: "Passport Prime", connected: true);
       });
