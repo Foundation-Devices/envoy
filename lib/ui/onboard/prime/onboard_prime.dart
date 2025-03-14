@@ -57,7 +57,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
         kPrint("Scan finished...");
         await Future.delayed(const Duration(milliseconds: 3000));
         // connect(id: bleId);
-        await connect(id: bleId!);
+        await BluetoothManager().connect(id: bleId!);
         //wait for connection to be established
 
         // No more nudging

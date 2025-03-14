@@ -21,11 +21,16 @@ class BluetoothManager {
   final StreamController<api.PassportMessage> _passPortMessageStream =
       StreamController<api.PassportMessage>();
 
+  api.Dechunker? _deChunker;
+
+
   factory BluetoothManager() {
     return _instance;
   }
 
   get passPortMessageStream => _passPortMessageStream.stream;
+
+  String bleId = "";
 
   static Future<BluetoothManager> init() async {
     print("INIT CALLED ");
@@ -68,14 +73,21 @@ class BluetoothManager {
     );
   }
 
-  Future<void> pair(api.XidDocument recipient, String id) async {
+  Future<void> pair(api.XidDocument recipient) async {
+    kPrint("pair: $hashCode");
+
+    kPrint("Pairing...");
     api.PairingRequest request = api.PairingRequest();
+    kPrint("Encoding...");
+
     final encoded = await encodeMessage(
         message: api.QuantumLinkMessage.pairingRequest(request),
         recipient: recipient);
+    kPrint("Encoded...");
 
     for (var element in encoded) {
-      bluart.write(id: id, data: element);
+      kPrint("Writing to {$bleId}: {$element}");
+      bluart.write(id: bleId, data: element);
     }
   }
 
@@ -89,12 +101,14 @@ class BluetoothManager {
     }
   }
 
-  connect({required String id}) async {
+  Future<void> connect({required String id}) async {
+    kPrint("before connect: $hashCode");
+
+    bleId = id;
     await bluart.connect(id: id);
+    kPrint("after connect: $hashCode");
     listen(id: id);
   }
-
-  api.Dechunker? _deChunker;
 
   void listen({required String id}) async {
     _deChunker = await api.getDecoder();

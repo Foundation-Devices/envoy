@@ -27,14 +27,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 
-class OnboardPrimeBluetooth extends StatefulWidget {
+class OnboardPrimeBluetooth extends ConsumerStatefulWidget {
   const OnboardPrimeBluetooth({super.key});
 
   @override
-  State<OnboardPrimeBluetooth> createState() => _OnboardPrimeBluetoothState();
+  ConsumerState<OnboardPrimeBluetooth> createState() => _OnboardPrimeBluetoothState();
 }
 
-class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
+class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     with SingleTickerProviderStateMixin {
   final s = Settings();
   bool scanForPayload = false;
@@ -292,8 +292,8 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
     );
   }
 
-  pairWithPrime(XidDocument payload, String bleId) async {
-    await BluetoothManager().pair(payload, bleId);
+  pairWithPrime(XidDocument payload) async {
+    await BluetoothManager().pair(payload);
   }
 
   showCommunicationModal(BuildContext context) async {
@@ -302,30 +302,26 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
       showEnvoyDialog(
           context: context,
           dismissible: false,
-          dialog: Consumer(builder: (context, ref, child) {
-            return QuantumLinkCommunicationInfo(
-              onContinue: () {
-                showScannerDialog(
-                    context: context,
-                    onBackPressed: (context) {
-                      Navigator.pop(context);
-                    },
-                    decoder:
-                        //parse UR payload
-                        PrimeQlPayloadDecoder(
-                            decoder: decoder,
-                            onScan: (XidDocument payload) {
-                              kPrint("payload $payload");
-                              ref.read(primePublicKeyProvider.notifier).state =
-                                  payload;
-                              pairWithPrime(
-                                  payload, ref.read(primeBleIdProvider)!);
-                              Navigator.pop(context);
-                              //TODO: process XidDocument for connection
-                            }));
-              },
-            );
-          }));
+          dialog: QuantumLinkCommunicationInfo(
+            onContinue: () {
+              showScannerDialog(
+                  context: context,
+                  onBackPressed: (context) {
+                    Navigator.pop(context);
+                  },
+                  decoder:
+                  //parse UR payload
+                  PrimeQlPayloadDecoder(
+                      decoder: decoder,
+                      onScan: (XidDocument payload) {
+                        kPrint("payload $payload");
+                        pairWithPrime(
+                            payload);
+                        Navigator.pop(context);
+                        //TODO: process XidDocument for connection
+                      }));
+            },
+          ));
     }
   }
 }

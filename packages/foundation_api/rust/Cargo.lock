@@ -337,7 +337,7 @@ dependencies = [
 [[package]]
 name = "btp"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?rev=1754021d4b8bc9fe164e74232e35f42ab5506641#1754021d4b8bc9fe164e74232e35f42ab5506641"
+source = "git+https://github.com/Foundation-Devices/foundation-api?rev=ef64c28598412c017f2b3068fef4346228607910#ef64c28598412c017f2b3068fef4346228607910"
 dependencies = [
  "anyhow",
  "consts",
@@ -807,6 +807,7 @@ dependencies = [
  "bc-xid",
  "flutter_rust_bridge",
  "gstp",
+ "log",
  "minicbor 0.24.4",
  "minicbor-derive 0.15.3",
  "quantum-link-macros",
@@ -1914,6 +1915,7 @@ dependencies = [
  "foundation-api",
  "foundation-ur",
  "gstp",
+ "log",
  "tokio",
 ]
 

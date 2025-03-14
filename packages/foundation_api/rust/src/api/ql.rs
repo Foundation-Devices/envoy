@@ -7,6 +7,7 @@ use btp::{chunk, Dechunker};
 use foundation_api::message::{EnvoyMessage, PassportMessage};
 use foundation_api::quantum_link::{QuantumLink, QUANTUM_LINK, QuantumLinkIdentity, generate_identity};
 use gstp::SealedEvent;
+use log::debug;
 
 pub async fn get_decoder() -> Dechunker {
     Dechunker::new()
@@ -60,6 +61,26 @@ pub async fn encode(message: EnvoyMessage, sender: QuantumLinkIdentity, recipien
 
     chunks
 }
+
 pub async fn generate_ql_identity() -> QuantumLinkIdentity {
-    generate_identity()
+    debug!("Generating identity");
+    let identity = generate_identity();
+    debug!("{:?}", identity);
+    identity
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use anyhow::Result;
+    use tokio::test;
+
+    #[tokio::test]
+    async fn test_generate_identity() -> Result<()> {
+            let identity = generate_identity();
+            println!("{:?}", identity);
+
+        Ok(())
+    }
 }
