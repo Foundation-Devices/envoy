@@ -446,8 +446,10 @@ void showNoBoostNoFundsDialog(BuildContext context) {
       showCloseButton: true,
       content: S().coindetails_overlay_noBoostNoFunds_subheading,
       learnMoreText: S().component_learnMore,
-      linkUrl:
-          "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions",
+      onLearnMore: () {
+        launchUrl(Uri.parse(
+            "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions"));
+      },
       primaryButtonLabel: S().component_continue,
       onPrimaryButtonTap: (context) {
         Navigator.of(context, rootNavigator: true).pop();

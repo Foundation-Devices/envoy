@@ -87,6 +87,8 @@ enum EnvoyIcons {
   wallet,
   mail,
   chevron_right,
+  phone,
+  prime,
 }
 
 class EnvoyIcon extends StatelessWidget {

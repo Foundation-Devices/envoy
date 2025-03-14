@@ -52,10 +52,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `DIYnodes`
+  /// `Informational text`
   String get _ {
     return Intl.message(
-      'DIYnodes',
+      'Informational text',
       name: '_',
       desc: '',
       args: [],
@@ -247,6 +247,26 @@ class S {
     return Intl.message(
       'Mobile Wallet',
       name: 'accounts_screen_walletType_defaultName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Default`
+  String get accounts_switchDefault {
+    return Intl.message(
+      'Default',
+      name: 'accounts_switchDefault',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passphrase`
+  String get accounts_switchPassphrase {
+    return Intl.message(
+      'Passphrase',
+      name: 'accounts_switchPassphrase',
       desc: '',
       args: [],
     );
@@ -592,11 +612,31 @@ class S {
     );
   }
 
-  /// `Download BIP-329 Backup File`
+  /// `Advanced Backups`
+  String get backups_advancedBackups {
+    return Intl.message(
+      'Advanced Backups',
+      name: 'backups_advancedBackups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export Tags & Labels (BIP-329)`
   String get backups_downloadBIP329BackupFile {
     return Intl.message(
-      'Download BIP-329 Backup File',
+      'Export Tags & Labels (BIP-329)',
       name: 'backups_downloadBIP329BackupFile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download Settings & Metadata Backup File`
+  String get backups_downloadSettingsMetadataBackupFile {
+    return Intl.message(
+      'Download Settings & Metadata Backup File',
+      name: 'backups_downloadSettingsMetadataBackupFile',
       desc: '',
       args: [],
     );
@@ -647,6 +687,106 @@ class S {
     return Intl.message(
       'Show Seed',
       name: 'backups_erase_wallets_and_backups_show_seed_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to Continue`
+  String get backups_magicToManualErrorModal_header {
+    return Intl.message(
+      'Unable to Continue',
+      name: 'backups_magicToManualErrorModal_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy Magic Backup cannot be disabled while a Passport Prime Magic Backup is active.\n\nTo continue, first disable the Passport Prime Magic Backup on device.`
+  String get backups_magicToManualErrorModal_subheader {
+    return Intl.message(
+      'Envoy Magic Backup cannot be disabled while a Passport Prime Magic Backup is active.\n\nTo continue, first disable the Passport Prime Magic Backup on device.',
+      name: 'backups_magicToManualErrorModal_subheader',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enabling Magic Backups`
+  String get backups_manualToMagicrModal_header {
+    return Intl.message(
+      'Enabling Magic Backups',
+      name: 'backups_manualToMagicrModal_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This will enable a Magic Backup of your Envoy wallet. Your Envoy seed will be encrypted and backed up to your Apple or Google account. Envoy metadata will be encrypted and sent to the Foundation Server.`
+  String get backups_manualToMagicrModal_subheader {
+    return Intl.message(
+      'This will enable a Magic Backup of your Envoy wallet. Your Envoy seed will be encrypted and backed up to your Apple or Google account. Envoy metadata will be encrypted and sent to the Foundation Server.',
+      name: 'backups_manualToMagicrModal_subheader',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passport Prime Magic Backup\n”{0}”`
+  String get backups_primeMagicBackups {
+    return Intl.message(
+      'Passport Prime Magic Backup\n”{0}”',
+      name: 'backups_primeMagicBackups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Master Key Backup (1 of 3 parts)`
+  String get backups_primeMasterKeyBackup {
+    return Intl.message(
+      'Master Key Backup (1 of 3 parts)',
+      name: 'backups_primeMasterKeyBackup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Settings & Metadata`
+  String get backups_settingsAndMetadata {
+    return Intl.message(
+      'Settings & Metadata',
+      name: 'backups_settingsAndMetadata',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy Magic Backup`
+  String get backups_toggle_envoy_magic_backups {
+    return Intl.message(
+      'Envoy Magic Backup',
+      name: 'backups_toggle_envoy_magic_backups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mobile Wallet Key`
+  String get backups_toggle_envoy_mobile_wallet_key {
+    return Intl.message(
+      'Mobile Wallet Key',
+      name: 'backups_toggle_envoy_mobile_wallet_key',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Mobile Wallet Seed`
+  String get backups_viewMobileWalletSeed {
+    return Intl.message(
+      'View Mobile Wallet Seed',
+      name: 'backups_viewMobileWalletSeed',
       desc: '',
       args: [],
     );
@@ -2196,6 +2336,16 @@ class S {
     );
   }
 
+  /// `Advanced`
+  String get component_advanced {
+    return Intl.message(
+      'Advanced',
+      name: 'component_advanced',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Back`
   String get component_back {
     return Intl.message(
@@ -2376,6 +2526,16 @@ class S {
     );
   }
 
+  /// `Recover`
+  String get component_recover {
+    return Intl.message(
+      'Recover',
+      name: 'component_recover',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Redeem`
   String get component_redeem {
     return Intl.message(
@@ -2456,10 +2616,10 @@ class S {
     );
   }
 
-  /// `WARNING`
+  /// `Warning`
   String get component_warning {
     return Intl.message(
-      'WARNING',
+      'Warning',
       name: 'component_warning',
       desc: '',
       args: [],
@@ -4090,16 +4250,6 @@ class S {
     );
   }
 
-  /// `Defender`
-  String get learning_center_device_defender {
-    return Intl.message(
-      'Defender',
-      name: 'learning_center_device_defender',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Envoy`
   String get learning_center_device_envoy {
     return Intl.message(
@@ -4585,6 +4735,46 @@ class S {
     return Intl.message(
       'This will discard any coin selection changes. Do you want to proceed?',
       name: 'manual_coin_preselection_dialog_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Magic Backups deactivated`
+  String get manual_setup_change_from_magic_header {
+    return Intl.message(
+      'Magic Backups deactivated',
+      name: 'manual_setup_change_from_magic_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Magic backup is about to be permanently erased. Ensure your seed is securely backed up and that you download your Envoy backup file.\n\nThis action will permanently delete your Envoy seed from your Apple or Google account, and your encrypted Envoy data from Foundation Servers.`
+  String get manual_setup_change_from_magic_modal_subheader {
+    return Intl.message(
+      'Your Magic backup is about to be permanently erased. Ensure your seed is securely backed up and that you download your Envoy backup file.\n\nThis action will permanently delete your Envoy seed from your Apple or Google account, and your encrypted Envoy data from Foundation Servers.',
+      name: 'manual_setup_change_from_magic_modal_subheader',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Envoy Magic Backup data was successfully deleted from your Apple account and Foundation servers.`
+  String get manual_setup_change_from_magic_subheaderApple {
+    return Intl.message(
+      'Your Envoy Magic Backup data was successfully deleted from your Apple account and Foundation servers.',
+      name: 'manual_setup_change_from_magic_subheaderApple',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Envoy Magic Backup data was successfully deleted from your Google account and Foundation servers.`
+  String get manual_setup_change_from_magic_subheaderGoogle {
+    return Intl.message(
+      'Your Envoy Magic Backup data was successfully deleted from your Google account and Foundation servers.',
+      name: 'manual_setup_change_from_magic_subheaderGoogle',
       desc: '',
       args: [],
     );
@@ -5274,20 +5464,20 @@ class S {
     );
   }
 
-  /// `Back Up Now`
+  /// `Back up now`
   String get manual_toggle_on_seed_backedup_iOS_backup_now {
     return Intl.message(
-      'Back Up Now',
+      'Back up now',
       name: 'manual_toggle_on_seed_backedup_iOS_backup_now',
       desc: '',
       args: [],
     );
   }
 
-  /// `Stored in iCloud Keychain`
+  /// `Backed up to iCloud Keychain`
   String get manual_toggle_on_seed_backedup_iOS_stored_in_cloud {
     return Intl.message(
-      'Stored in iCloud Keychain',
+      'Backed up to iCloud Keychain',
       name: 'manual_toggle_on_seed_backedup_iOS_stored_in_cloud',
       desc: '',
       args: [],
@@ -5299,6 +5489,16 @@ class S {
     return Intl.message(
       'to Foundation Servers',
       name: 'manual_toggle_on_seed_backedup_iOS_toFoundationServers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Backing up…`
+  String get manual_toggle_on_seed_backingup {
+    return Intl.message(
+      'Backing up…',
+      name: 'manual_toggle_on_seed_backingup',
       desc: '',
       args: [],
     );
@@ -5378,6 +5578,16 @@ class S {
     );
   }
 
+  /// `Uploading to Foundation Servers`
+  String get manual_toggle_on_seed_uploading_foundation_servers {
+    return Intl.message(
+      'Uploading to Foundation Servers',
+      name: 'manual_toggle_on_seed_uploading_foundation_servers',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `ABOUT`
   String get menu_about {
     return Intl.message(
@@ -5427,6 +5637,8 @@ class S {
       args: [],
     );
   }
+
+  // skipped getter for the 'onboarding.backups.createMobileWalletFirst' key
 
   /// `Connect Passport\nwith Envoy`
   String get pair_existing_device_intro_heading {
@@ -6907,6 +7119,14 @@ class S {
       args: [],
     );
   }
+
+  // skipped getter for the 'tutorial.coldWallet.header' key
+
+  // skipped getter for the 'tutorial.coldWallet.subheader' key
+
+  // skipped getter for the 'tutorial.hotWallet.content' key
+
+  // skipped getter for the 'tutorial.hotWallet.header' key
 
   /// `Connecting to the Tor Network`
   String get video_connectingToTorNetwork {

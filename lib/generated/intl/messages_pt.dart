@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("DIYnodes"),
+        "_": MessageLookupByLibrary.simpleMessage("Informational text"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versão da Aplicação"),
         "about_openSourceLicences":
@@ -71,6 +71,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Passport"),
         "accounts_screen_walletType_defaultName":
             MessageLookupByLibrary.simpleMessage("Carteira Móvel"),
+        "accounts_switchDefault":
+            MessageLookupByLibrary.simpleMessage("Default"),
+        "accounts_switchPassphrase":
+            MessageLookupByLibrary.simpleMessage("Passphrase"),
         "activity_boosted": MessageLookupByLibrary.simpleMessage("Reforçada"),
         "activity_canceling":
             MessageLookupByLibrary.simpleMessage("A cancelar"),
@@ -136,9 +140,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "azteco_redeem_modal_success_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Em breve irá aparecer uma transacção a receber na tua conta."),
+        "backups_advancedBackups":
+            MessageLookupByLibrary.simpleMessage("Advanced Backups"),
         "backups_downloadBIP329BackupFile":
             MessageLookupByLibrary.simpleMessage(
                 "Descarregar Cópia de Segurança BIP-329"),
+        "backups_downloadSettingsMetadataBackupFile":
+            MessageLookupByLibrary.simpleMessage(
+                "Download Settings & Metadata Backup File"),
         "backups_erase_wallets_and_backups":
             MessageLookupByLibrary.simpleMessage(
                 "Apagar Carteiras e Cópias de Segurança"),
@@ -153,6 +162,28 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Qualquer conta Passport associada não será removida como parte deste processo.\n\nAntes de eliminares a tua Carteira Envoy, vamos garantir que a tua Semente e Cópia de Segurança são guardadas."),
         "backups_erase_wallets_and_backups_show_seed_CTA":
             MessageLookupByLibrary.simpleMessage("Mostrar Semente"),
+        "backups_magicToManualErrorModal_header":
+            MessageLookupByLibrary.simpleMessage("Unable to Continue"),
+        "backups_magicToManualErrorModal_subheader":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy Magic Backup cannot be disabled while a Passport Prime Magic Backup is active.\n\nTo continue, first disable the Passport Prime Magic Backup on device."),
+        "backups_manualToMagicrModal_header":
+            MessageLookupByLibrary.simpleMessage("Enabling Magic Backups"),
+        "backups_manualToMagicrModal_subheader":
+            MessageLookupByLibrary.simpleMessage(
+                "This will enable a Magic Backup of your Envoy wallet. Your Envoy seed will be encrypted and backed up to your Apple or Google account. Envoy metadata will be encrypted and sent to the Foundation Server."),
+        "backups_primeMagicBackups": MessageLookupByLibrary.simpleMessage(
+            "Passport Prime Magic Backup\n”{0}”"),
+        "backups_primeMasterKeyBackup": MessageLookupByLibrary.simpleMessage(
+            "Master Key Backup (1 of 3 parts)"),
+        "backups_settingsAndMetadata":
+            MessageLookupByLibrary.simpleMessage("Settings & Metadata"),
+        "backups_toggle_envoy_magic_backups":
+            MessageLookupByLibrary.simpleMessage("Envoy Magic Backup"),
+        "backups_toggle_envoy_mobile_wallet_key":
+            MessageLookupByLibrary.simpleMessage("Mobile Wallet Key"),
+        "backups_viewMobileWalletSeed":
+            MessageLookupByLibrary.simpleMessage("View Mobile Wallet Seed"),
         "bottomNav_accounts": MessageLookupByLibrary.simpleMessage("Contas"),
         "bottomNav_activity": MessageLookupByLibrary.simpleMessage("Atividade"),
         "bottomNav_devices":
@@ -495,6 +526,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "coindetails_overlay_transactionID":
             MessageLookupByLibrary.simpleMessage("ID de Transacção"),
         "component_Apply": MessageLookupByLibrary.simpleMessage("Aplicar"),
+        "component_advanced": MessageLookupByLibrary.simpleMessage("Advanced"),
         "component_back": MessageLookupByLibrary.simpleMessage("Voltar"),
         "component_cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
         "component_confirm": MessageLookupByLibrary.simpleMessage("Confirmar"),
@@ -518,6 +550,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_next": MessageLookupByLibrary.simpleMessage("Próximo"),
         "component_no": MessageLookupByLibrary.simpleMessage("Não"),
         "component_ok": MessageLookupByLibrary.simpleMessage("OK"),
+        "component_recover": MessageLookupByLibrary.simpleMessage("Recover"),
         "component_redeem": MessageLookupByLibrary.simpleMessage("Resgatar"),
         "component_reset": MessageLookupByLibrary.simpleMessage("Repor"),
         "component_retry":
@@ -870,8 +903,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "launch_screen_lockedout_wait_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Autenticação Biométrica desactivada. Por favor fecha a Envoy, espera 30 segundos e tenta novamente."),
-        "learning_center_device_defender":
-            MessageLookupByLibrary.simpleMessage("Defender"),
         "learning_center_device_envoy":
             MessageLookupByLibrary.simpleMessage("Envoy"),
         "learning_center_device_passport":
@@ -990,6 +1021,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_coin_preselection_dialog_description":
             MessageLookupByLibrary.simpleMessage(
                 "Isto anulará quaisquer alterações na seleção de moedas. Desejas continuar?"),
+        "manual_setup_change_from_magic_header":
+            MessageLookupByLibrary.simpleMessage("Magic Backups deactivated"),
+        "manual_setup_change_from_magic_modal_subheader":
+            MessageLookupByLibrary.simpleMessage(
+                "Your Magic backup is about to be permanently erased. Ensure your seed is securely backed up and that you download your Envoy backup file.\n\nThis action will permanently delete your Envoy seed from your Apple or Google account, and your encrypted Envoy data from Foundation Servers."),
+        "manual_setup_change_from_magic_subheaderApple":
+            MessageLookupByLibrary.simpleMessage(
+                "Your Envoy Magic Backup data was successfully deleted from your Apple account and Foundation servers."),
+        "manual_setup_change_from_magic_subheaderGoogle":
+            MessageLookupByLibrary.simpleMessage(
+                "Your Envoy Magic Backup data was successfully deleted from your Google account and Foundation servers."),
         "manual_setup_create_and_store_backup_CTA":
             MessageLookupByLibrary.simpleMessage("Escolher Destino"),
         "manual_setup_create_and_store_backup_heading":
@@ -1164,6 +1206,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_toggle_on_seed_backedup_iOS_toFoundationServers":
             MessageLookupByLibrary.simpleMessage(
                 "para os Servidores da Foundation"),
+        "manual_toggle_on_seed_backingup":
+            MessageLookupByLibrary.simpleMessage("Backing up…"),
         "manual_toggle_on_seed_backup_in_progress_ios_backup_in_progress":
             MessageLookupByLibrary.simpleMessage("Cópia de Segurança em Curso"),
         "manual_toggle_on_seed_backup_in_progress_toast_heading":
@@ -1183,6 +1227,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_toggle_on_seed_not_backedup_pending_iOS_seed_pending_backup":
             MessageLookupByLibrary.simpleMessage(
                 "Cópia de Segurança para o Porta-chaves iCloud pendente"),
+        "manual_toggle_on_seed_uploading_foundation_servers":
+            MessageLookupByLibrary.simpleMessage(
+                "Uploading to Foundation Servers"),
         "menu_about": MessageLookupByLibrary.simpleMessage("SOBRE"),
         "menu_backups":
             MessageLookupByLibrary.simpleMessage("CÓPIAS DE SEGURANÇA"),

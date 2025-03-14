@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:envoy/business/locale.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BtcPayFail extends StatelessWidget {
   const BtcPayFail({super.key, required this.voucher});
@@ -22,8 +23,10 @@ class BtcPayFail extends StatelessWidget {
       typeOfMessage: PopUpState.warning,
       title: getTitle(voucher.errorType),
       content: getErrorContent(voucher.errorType, voucher.expiresAt),
-      linkUrl: voucher.errorType == BtcPayVoucherErrorType.onChain
-          ? voucher.link
+      onLearnMore: voucher.errorType == BtcPayVoucherErrorType.onChain
+          ? () {
+              launchUrl(Uri.parse(voucher.link));
+            }
           : null,
       primaryButtonLabel: S().component_continue,
       onPrimaryButtonTap: (context) {

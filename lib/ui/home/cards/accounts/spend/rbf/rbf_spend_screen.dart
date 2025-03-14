@@ -44,6 +44,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wallet/exceptions.dart';
 import 'package:wallet/generated_bindings.dart' as rust;
 import 'package:wallet/wallet.dart';
@@ -508,8 +509,10 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
               showCloseButton: false,
               content:
                   S().replaceByFee_warning_extraUTXO_overlay_modal_subheading,
-              linkUrl:
-                  "https://docs.foundation.xyz/en/troubleshooting#why-is-envoy-adding-more-coins-to-my-boost-or-cancel-transaction",
+              onLearnMore: () {
+                launchUrl(Uri.parse(
+                    "https://docs.foundation.xyz/en/troubleshooting#why-is-envoy-adding-more-coins-to-my-boost-or-cancel-transaction"));
+              },
               primaryButtonLabel: S().component_continue,
               onPrimaryButtonTap: (context) {
                 _warningShown = true;

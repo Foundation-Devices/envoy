@@ -71,6 +71,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Passport"),
         "accounts_screen_walletType_defaultName":
             MessageLookupByLibrary.simpleMessage("Cartera Móvil"),
+        "accounts_switchDefault":
+            MessageLookupByLibrary.simpleMessage("Predeterminado"),
+        "accounts_switchPassphrase":
+            MessageLookupByLibrary.simpleMessage("Passphrase"),
         "activity_boosted": MessageLookupByLibrary.simpleMessage("Acelerado"),
         "activity_canceling":
             MessageLookupByLibrary.simpleMessage("Cancelando"),
@@ -136,9 +140,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "azteco_redeem_modal_success_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "En breve aparecerá una transacción entrante en tu cuenta."),
+        "backups_advancedBackups": MessageLookupByLibrary.simpleMessage(
+            "Copias de Seguridad Avanzadas"),
         "backups_downloadBIP329BackupFile":
             MessageLookupByLibrary.simpleMessage(
-                "Descargar copia de seguridad BIP-329"),
+                "Exportar Notas y Etiquetas (BIP-329)"),
+        "backups_downloadSettingsMetadataBackupFile":
+            MessageLookupByLibrary.simpleMessage(
+                "Descargar Copia de Seguridad de Ajustes y Metadatos"),
         "backups_erase_wallets_and_backups":
             MessageLookupByLibrary.simpleMessage(
                 "Eliminar Carteras y Copias de Seguridad"),
@@ -153,6 +162,30 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Las cuentas de Passport conectadas no se eliminarán como parte de este proceso.\n\nAntes de eliminar tu Cartera Envoy, vamos a asegurarnbos de que tu semilla y de copia de seguridad estén bien guardados.\n"),
         "backups_erase_wallets_and_backups_show_seed_CTA":
             MessageLookupByLibrary.simpleMessage("Mostrar semilla"),
+        "backups_magicToManualErrorModal_header":
+            MessageLookupByLibrary.simpleMessage("No Se Puede Continuar"),
+        "backups_magicToManualErrorModal_subheader":
+            MessageLookupByLibrary.simpleMessage(
+                "La Copia de Seguridad Mágica de Envoy no puede desactivarse mientras la Copia de Seguridad de Passport Prime esté activa.\n\nPara continuar, desactiva primero la Copia de Seguridad de Passport Prime en el dispositivo."),
+        "backups_manualToMagicrModal_header":
+            MessageLookupByLibrary.simpleMessage(
+                "Habilitar Copia de Seguridad Mágica"),
+        "backups_manualToMagicrModal_subheader":
+            MessageLookupByLibrary.simpleMessage(
+                "Esto habilitará la Copia de Seguridad Mágica de Envoy. Tu semilla de Envoy se cifrará y se hará una Copia de Seguridad en tu cuenta de Apple o Google. Los metadatos de Envoy se cifrarán y se enviarán a los servidores de Foundation."),
+        "backups_primeMagicBackups": MessageLookupByLibrary.simpleMessage(
+            "Copia de Seguridad Mágica de Passport Prime\n\"{0}\""),
+        "backups_primeMasterKeyBackup": MessageLookupByLibrary.simpleMessage(
+            "Copia de Seguridad de Llave Maestra (1 parte de 3)"),
+        "backups_settingsAndMetadata":
+            MessageLookupByLibrary.simpleMessage("Ajustes y Metadatos"),
+        "backups_toggle_envoy_magic_backups":
+            MessageLookupByLibrary.simpleMessage(
+                "Copia de Seguridad Mágica de Envoy"),
+        "backups_toggle_envoy_mobile_wallet_key":
+            MessageLookupByLibrary.simpleMessage("Llave de Cartera Móvil"),
+        "backups_viewMobileWalletSeed": MessageLookupByLibrary.simpleMessage(
+            "Ver Semilla de Cartera Móvil"),
         "bottomNav_accounts": MessageLookupByLibrary.simpleMessage("Cuentas"),
         "bottomNav_activity": MessageLookupByLibrary.simpleMessage("Actividad"),
         "bottomNav_devices":
@@ -492,6 +525,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("ID de Transacción"),
         "component_Apply":
             MessageLookupByLibrary.simpleMessage("Aplicar Filtro"),
+        "component_advanced": MessageLookupByLibrary.simpleMessage("Avanzado"),
         "component_back": MessageLookupByLibrary.simpleMessage("Atrás"),
         "component_cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
         "component_confirm": MessageLookupByLibrary.simpleMessage("Confirmar"),
@@ -500,7 +534,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_delete": MessageLookupByLibrary.simpleMessage("Eliminar"),
         "component_device": MessageLookupByLibrary.simpleMessage("Dispositivo"),
         "component_dismiss": MessageLookupByLibrary.simpleMessage("Cerrar"),
-        "component_done": MessageLookupByLibrary.simpleMessage("Listo"),
+        "component_done": MessageLookupByLibrary.simpleMessage("Hecho"),
         "component_dontShowAgain":
             MessageLookupByLibrary.simpleMessage("No volver a mostrar"),
         "component_filter": MessageLookupByLibrary.simpleMessage("Filtrar"),
@@ -515,6 +549,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_next": MessageLookupByLibrary.simpleMessage("Siguiente"),
         "component_no": MessageLookupByLibrary.simpleMessage("No"),
         "component_ok": MessageLookupByLibrary.simpleMessage("OK"),
+        "component_recover": MessageLookupByLibrary.simpleMessage("Recuperar"),
         "component_redeem": MessageLookupByLibrary.simpleMessage("Canjear"),
         "component_reset":
             MessageLookupByLibrary.simpleMessage("Restablecer filtro"),
@@ -868,8 +903,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "launch_screen_lockedout_wait_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Autenticación biométrica desactivada temporalmente. Cierra Envoy, espera 30 segundos e inténtalo de nuevo."),
-        "learning_center_device_defender":
-            MessageLookupByLibrary.simpleMessage("Defender"),
         "learning_center_device_envoy":
             MessageLookupByLibrary.simpleMessage("Envoy"),
         "learning_center_device_passport":
@@ -987,6 +1020,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_coin_preselection_dialog_description":
             MessageLookupByLibrary.simpleMessage(
                 "Esto descartará cualquier cambio en la selección de monedas. ¿Quieres continuar?"),
+        "manual_setup_change_from_magic_header":
+            MessageLookupByLibrary.simpleMessage(
+                "Copia de Seguridad Mágica desactivada"),
+        "manual_setup_change_from_magic_modal_subheader":
+            MessageLookupByLibrary.simpleMessage(
+                "Tu Copia de Seguridad de Mágica está a punto de eliminarse de forma permanente. Asegúrate de tener una copia de seguridad segura de tu semilla y de descargar tu Copia de Seguridad de Envoy.\n\nEsta acción eliminará permanentemente tu semilla de Envoy de tu cuenta de Apple o Google, y también eliminará tus datos cifrados de Envoy de los servidores de Foundation."),
+        "manual_setup_change_from_magic_subheaderApple":
+            MessageLookupByLibrary.simpleMessage(
+                "Los datos de tu Copia de Seguridad Mágica de Envoy se han eliminado correctamente de tu cuenta Apple y de los servidores de Foundation."),
+        "manual_setup_change_from_magic_subheaderGoogle":
+            MessageLookupByLibrary.simpleMessage(
+                "Los datos de tu Copia de Seguridad Mágica de Envoy se han eliminado correctamente de tu cuenta Google y de los servidores de Foundation."),
         "manual_setup_create_and_store_backup_CTA":
             MessageLookupByLibrary.simpleMessage("Elegir Destino"),
         "manual_setup_create_and_store_backup_heading":
@@ -1163,6 +1208,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_toggle_on_seed_backedup_iOS_toFoundationServers":
             MessageLookupByLibrary.simpleMessage(
                 "a los servidores de Foundation"),
+        "manual_toggle_on_seed_backingup": MessageLookupByLibrary.simpleMessage(
+            "Realizando copia de seguridad…"),
         "manual_toggle_on_seed_backup_in_progress_ios_backup_in_progress":
             MessageLookupByLibrary.simpleMessage("Copia de Seguridad en Curso"),
         "manual_toggle_on_seed_backup_in_progress_toast_heading":
@@ -1182,6 +1229,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_toggle_on_seed_not_backedup_pending_iOS_seed_pending_backup":
             MessageLookupByLibrary.simpleMessage(
                 "Copia de seguridad pendiente en el llavero iCloud"),
+        "manual_toggle_on_seed_uploading_foundation_servers":
+            MessageLookupByLibrary.simpleMessage(
+                "Subiendo a los servidores de Foundation"),
         "menu_about": MessageLookupByLibrary.simpleMessage("Acerca de"),
         "menu_backups":
             MessageLookupByLibrary.simpleMessage("COPIAS DE SEGURIDAD"),
