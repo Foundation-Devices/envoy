@@ -8,6 +8,7 @@ use std::sync::{Arc, OnceLock};
 use anyhow::Result;
 use btleplug::api::{bleuuid::BleUuid, Central, CentralEvent, Manager as _, ScanFilter};
 pub use btleplug::platform::Manager;
+use btleplug::platform::PeripheralId;
 use futures::stream::StreamExt;
 use tokio::{
     sync::{mpsc, Mutex},
@@ -75,7 +76,8 @@ fn send(command: Command) -> Result<()> {
 /// The init() function must be called before anything else.
 /// At the moment the developer has to make sure it is only called once.
 pub fn init() -> Result<()> {
-    flutter_rust_bridge::setup_default_user_utils();
+    // Disabled for now -> way too chatty
+    //flutter_rust_bridge::setup_default_user_utils();
     create_runtime()?;
     let runtime = RUNTIME
         .get()
@@ -244,10 +246,17 @@ pub fn connect(id: String) -> Result<()> {
 
 async fn inner_connect(id: String) -> Result<()> {
     debug!("{}", format!("Try to connect to: {id}"));
-    let devices = DEVICES.get().unwrap().lock().await;
-    let device = devices
-        .get(&id)
-        .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
+
+    let mut devices = DEVICES.get().unwrap().lock().await;
+    let device = match devices
+        .get(&id) {
+            Some(device) => device,
+            None => {
+                // TODO: create peripheral and add to DEVICES IF NOT THERE
+                return Err(anyhow::anyhow!("UnknownPeripheral(id)"));
+            }
+        };
+
     device.connect().await
 }
 

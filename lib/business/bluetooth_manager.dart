@@ -57,7 +57,8 @@ class BluetoothManager {
     await Permission.bluetoothScan.request();
   }
 
-  void scan() {
+  scan() {
+    // TODO: maybe listen here?
     bluart.scan(filter: [""]);
   }
 
@@ -91,6 +92,9 @@ class BluetoothManager {
       kPrint("Writing to {$bleId}: {$element}");
       await bluart.write(id: bleId, data: element);
     }
+
+    // Listen for response
+    listen(id: bleId);
   }
 
   void _generateQlIdentity() async {
@@ -109,7 +113,6 @@ class BluetoothManager {
     bleId = id;
     await bluart.connect(id: id);
     kPrint("after connect: $hashCode");
-    //listen(id: id);
   }
 
   void listen({required String id}) async {
@@ -121,6 +124,8 @@ class BluetoothManager {
         kPrint("Error decoding: $e");
       });
     });
+
+    kPrint("listen finished: $hashCode");
   }
 
   Future<api.PassportMessage?> dechunkThis(Uint8List bleData) async {

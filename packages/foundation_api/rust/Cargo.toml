@@ -46,3 +46,8 @@ log = "0.4.26"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
+
+[patch.crates-io]
+pqcrypto-traits = { git = "https://github.com/icota/pqcrypto", branch = "aarch64-feature-detection" }
+pqcrypto-mldsa = { git = "https://github.com/icota/pqcrypto", branch = "aarch64-feature-detection" }
+pqcrypto-mlkem = { git = "https://github.com/icota/pqcrypto", branch = "aarch64-feature-detection" }
