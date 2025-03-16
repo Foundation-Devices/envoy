@@ -25,6 +25,8 @@ use crate::frb_generated::StreamSink;
 pub use device::*;
 pub use peripheral::*;
 
+use log::{debug, error};
+
 enum Command {
     Scan {
         sink: StreamSink<Vec<BleDevice>>,
@@ -62,14 +64,18 @@ static TX: OnceLock<mpsc::UnboundedSender<Command>> = OnceLock::new();
 
 /// Internal send function to send [Command]s into the message loop.
 fn send(command: Command) -> Result<()> {
+    debug!("send: {:?}", command);
     let tx = TX.get().ok_or(anyhow::anyhow!("TxNotInitialized"))?;
+    debug!("send: tx: {:?}", tx);
     tx.send(command)?;
+    debug!("sent command");
     Ok(())
 }
 
 /// The init() function must be called before anything else.
 /// At the moment the developer has to make sure it is only called once.
 pub fn init() -> Result<()> {
+    flutter_rust_bridge::setup_default_user_utils();
     create_runtime()?;
     let runtime = RUNTIME
         .get()
@@ -77,11 +83,14 @@ pub fn init() -> Result<()> {
 
     let _ = DEVICES.set(Arc::new(Mutex::new(HashMap::new())));
 
-    let (tx, mut rx) = mpsc::unbounded_channel::<Command>();
-    TX.set(tx).map_err(|_| anyhow::anyhow!("TxAlreadySet"))?;
 
     runtime.spawn(async move {
+        let (tx, mut rx) = mpsc::unbounded_channel::<Command>();
+        TX.set(tx).unwrap();
+
         while let Some(msg) = rx.recv().await {
+                    debug!("got message");
+
             match msg {
                 Command::Scan { sink, filter } => {
                     tokio::spawn(async { inner_scan(sink, filter).await.unwrap() });
@@ -155,7 +164,7 @@ async fn inner_scan(sink: StreamSink<Vec<BleDevice>>, _filter: Vec<String>) -> R
     let mut events = central.events().await?;
 
     // start scanning for devices
-    tracing::debug!(
+    debug!(
         "{}",
         format!("start scanning on {}", central.adapter_info().await?)
     );
@@ -171,10 +180,10 @@ async fn inner_scan(sink: StreamSink<Vec<BleDevice>>, _filter: Vec<String>) -> R
                 }
             }
             Some(event) = events.next() => {
-                tracing::debug!("{:?}", event);
+                debug!("{:?}", event);
                 match event {
                     CentralEvent::DeviceDiscovered(id) => {
-                        tracing::debug!("{}",format!("DeviceDiscovered: {:?}", &id));
+                        debug!("{}",format!("DeviceDiscovered: {:?}", &id));
                         let peripheral = central.peripheral(&id).await?;
                         let peripheral = Peripheral::new(peripheral);
                         let mut devices = DEVICES.get().unwrap().lock().await;
@@ -187,14 +196,14 @@ async fn inner_scan(sink: StreamSink<Vec<BleDevice>>, _filter: Vec<String>) -> R
                         }
                     }
                     CentralEvent::DeviceConnected(id) => {
-                        tracing::debug!("{}",format!("DeviceConnected: {:?}", id));
+                        debug!("{}",format!("DeviceConnected: {:?}", id));
                         let mut devices = DEVICES.get().unwrap().lock().await;
                         if let Some(device) = devices.get_mut(&id.to_string()) {
                             device.is_connected = true;
                         }
                     }
                     CentralEvent::DeviceDisconnected(id) => {
-                        tracing::debug!("{}",format!("DeviceDisconnected: {:?}", id));
+                        debug!("{}",format!("DeviceDisconnected: {:?}", id));
                         let mut devices = DEVICES.get().unwrap().lock().await;
                         if let Some(device) = devices.get_mut(&id.to_string()) {
                             device.is_connected = false;
@@ -229,12 +238,12 @@ async fn inner_scan(sink: StreamSink<Vec<BleDevice>>, _filter: Vec<String>) -> R
 }
 
 pub fn connect(id: String) -> Result<()> {
-    tracing::debug!("{}", format!("Try to connect to: {id}"));
+    debug!("{}", format!("Try to connect to: {id}"));
     send(Command::Connect { id })
 }
 
 async fn inner_connect(id: String) -> Result<()> {
-    tracing::debug!("{}", format!("Try to connect to: {id}"));
+    debug!("{}", format!("Try to connect to: {id}"));
     let devices = DEVICES.get().unwrap().lock().await;
     let device = devices
         .get(&id)
@@ -247,7 +256,7 @@ pub fn disconnect(id: String) -> Result<()> {
 }
 
 async fn inner_disconnect(id: String) -> Result<()> {
-    tracing::debug!("{}", format!("Try to disconnect from: {id}"));
+    debug!("{}", format!("Try to disconnect from: {id}"));
     let devices = DEVICES.get().unwrap().lock().await;
     let device = devices
         .get(&id)
@@ -260,7 +269,7 @@ pub fn benchmark(id: String, sink: StreamSink<u64>) -> Result<()> {
 }
 
 async fn inner_benchmark(id: String, sink: StreamSink<u64>) -> Result<()> {
-    tracing::debug!("{}", format!("Trying to benchmark: {id}"));
+    debug!("{}", format!("Trying to benchmark: {id}"));
     let devices = DEVICES.get().unwrap().lock().await;
     let device = devices
         .get(&id)
@@ -273,7 +282,7 @@ async fn inner_benchmark(id: String, sink: StreamSink<u64>) -> Result<()> {
                 sink.add(result as u64).unwrap();
             }
             Err(e) => {
-                tracing::error!("{}", format!("Benchmark failed: {e}"));
+                error!("{}", format!("Benchmark failed: {e}"));
                 break;
             }
         }
@@ -283,12 +292,13 @@ async fn inner_benchmark(id: String, sink: StreamSink<u64>) -> Result<()> {
 }
 
 pub fn write(id: String, data: Vec<u8>) -> Result<()> {
-    tracing::debug!("{}", format!("Writing to: {id}"));
+    debug!("{}", format!("Writing to: {id}"));
     send(Command::Write { id, data })
 }
 
 async fn inner_write(id: String, data: Vec<u8>) -> Result<()> {
-    tracing::debug!("{}", format!("Writing to: {id}"));
+   debug!("inner write");
+    debug!("{}", format!("Writing to: {id}"));
     let devices = DEVICES.get().unwrap().lock().await;
     let device = devices
         .get(&id)
@@ -297,12 +307,12 @@ async fn inner_write(id: String, data: Vec<u8>) -> Result<()> {
 }
 
 pub fn read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
-    tracing::debug!("{}", format!("Reading from: {id}"));
+    debug!("{}", format!("Reading from: {id}"));
     send(Command::Read { id, sink })
 }
 
 async fn inner_read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
-    tracing::debug!("{}", format!("Reading from: {id}"));
+    debug!("{}", format!("Reading from: {id}"));
     let devices = DEVICES.get().unwrap().lock().await;
     let device = devices
         .get(&id)

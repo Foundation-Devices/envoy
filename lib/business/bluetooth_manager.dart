@@ -86,8 +86,10 @@ class BluetoothManager {
     kPrint("Encoded...");
 
     for (var element in encoded) {
+      final size = element.length;
+      kPrint("Writing to {$bleId}: {$size}");
       kPrint("Writing to {$bleId}: {$element}");
-      bluart.write(id: bleId, data: element);
+      await bluart.write(id: bleId, data: element);
     }
   }
 
@@ -107,7 +109,7 @@ class BluetoothManager {
     bleId = id;
     await bluart.connect(id: id);
     kPrint("after connect: $hashCode");
-    listen(id: id);
+    //listen(id: id);
   }
 
   void listen({required String id}) async {

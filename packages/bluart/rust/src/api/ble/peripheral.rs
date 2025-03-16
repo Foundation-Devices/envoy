@@ -9,6 +9,7 @@ use flutter_rust_bridge::frb;
 use tokio::time;
 use tokio::time::Instant;
 use uuid::Uuid;
+use log::debug;
 
 pub const WRITE_CHARACTERISTIC_UUID: Uuid = Uuid::from_u128(0x6E400002_B5A3_F393_E0A9_E50E24DCCA9E);
 pub const APP_MTU: usize = 240;
@@ -63,6 +64,7 @@ impl Peripheral {
     }
 
     pub async fn write(&self, data: Vec<u8>) -> Result<()> {
+        debug!("before uart_characteristic");
         let uart_characteristic = self.get_uart_characteristic();
         self.peripheral.write(&uart_characteristic, &data, WriteType::WithoutResponse)
             .await?;

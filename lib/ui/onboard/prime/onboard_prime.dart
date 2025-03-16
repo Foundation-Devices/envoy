@@ -52,10 +52,10 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
         await BluetoothManager().getPermissions();
         kPrint("Connecting to Prime with ID: $bleId");
         scan(filter: []).listen((event) {
-          kPrint("Scanned: $event");
+          //kPrint("Scanned: $event");
         });
         kPrint("Scan finished...");
-        await Future.delayed(const Duration(milliseconds: 3000));
+        await Future.delayed(const Duration(milliseconds: 1000));
         // connect(id: bleId);
         await BluetoothManager().connect(id: bleId!);
         //wait for connection to be established
