@@ -44,6 +44,7 @@ enum DismissiblePrompt {
   openTxDetailsInExplorer,
   buyTxWarning,
   scanToConnect,
+  afterOnboardingTutorial,
 
   ///warning for exiting manual coin selection
   txDiscardWarning,

@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
+// import 'package:envoy/ui/components/button.dart' as button;
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -13,6 +14,7 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/components/bottom_navigation.dart';
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
@@ -139,6 +141,10 @@ class HomePageState extends ConsumerState<HomePage>
         _notifyAboutRemovedRampTx(expiredBuyTx, context);
       }
     });
+    if (mounted) {
+      _notifyAfterOnboardingTutorial(context);
+    }
+
     Future.delayed(const Duration(milliseconds: 10), () {
       ///register for back button press
       backButtonDispatcher.takePriority();
@@ -245,6 +251,27 @@ class HomePageState extends ConsumerState<HomePage>
               EnvoyStorage().removePromptState(DismissiblePrompt.buyTxWarning);
             }
           });
+    }
+  }
+
+  void _notifyAfterOnboardingTutorial(context) async {
+    bool dismissed = await EnvoyStorage()
+        .checkPromptDismissed(DismissiblePrompt.afterOnboardingTutorial);
+
+    if (context.mounted) {
+      // TODO: add Prime and "first time" and dismissed check!!!
+      // !dismissed &&
+      showEnvoyDialog(
+          context: context,
+          useRootNavigator: true,
+          cardColor: EnvoyColors.gray1000,
+          //blurColor: EnvoyColors.dimmer,
+          alignment: Alignment.bottomCenter,
+          linearGradient: true,
+          dismissible: false,
+          dialog: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.85,
+              child: const TutorialDialog()));
     }
   }
 
@@ -702,6 +729,134 @@ class _RemovedBuyTransactionsListState
             );
           }).toList(),
         ),
+      ),
+    );
+  }
+}
+
+class TutorialDialog extends ConsumerStatefulWidget {
+  const TutorialDialog({super.key});
+
+  @override
+  ConsumerState<TutorialDialog> createState() => _TutorialDialogState();
+}
+
+class _TutorialDialogState extends ConsumerState<TutorialDialog> {
+  int pageNumber = 1;
+
+  String get description => pageNumber == 1
+      ? "Also known as a “hot wallet.” Spending from this wallet requires only your phone for authorization. \n\n Since your Mobile Wallet is connected to the Internet, use this wallet to store small amounts of Bitcoin for frequent transactions."
+      : "Also known as a “cold wallet.” Spending from this wallet requires authorization from your Passport device. \n\n Your Passport Master Key is always stored securely offline. Use this wallet to secure the majority of your Bitcoin savings.";
+
+  String get title => pageNumber == 1 ? "Mobile Wallet" : "Cold Wallet";
+
+  void _nextPage(BuildContext context) {
+    if (pageNumber < 2) {
+      setState(() {
+        pageNumber++;
+      });
+    } else {
+      // Close the dialog when "Done" is pressed
+      Navigator.of(context).pop();
+    }
+  }
+
+  void _prevPage() {
+    if (pageNumber > 1) {
+      setState(() {
+        pageNumber--;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(EnvoySpacing.medium1),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(title,
+              textAlign: TextAlign.center,
+              style: EnvoyTypography.subheading
+                  .copyWith(color: EnvoyColors.textPrimaryInverse)),
+          const SizedBox(height: EnvoySpacing.medium1),
+          Text(
+            description,
+            textAlign: TextAlign.center,
+            style:
+                EnvoyTypography.info.copyWith(color: EnvoyColors.textTertiary),
+          ),
+          const SizedBox(height: EnvoySpacing.medium3),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.medium3),
+                  child: pageNumber != 1
+                      ? GestureDetector(
+                          onTap: () {
+                            _prevPage();
+                          },
+                          child: Row(
+                            children: [
+                              const EnvoyIcon(
+                                EnvoyIcons.chevron_left,
+                                size: EnvoyIconSize.small,
+                                color: EnvoyColors.accentPrimary,
+                              ),
+                              Text(
+                                S().component_back,
+                                style: EnvoyTypography.body.copyWith(
+                                  color: EnvoyColors.accentPrimary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : const SizedBox.shrink()),
+              Text(
+                "$pageNumber/2",
+                textAlign: TextAlign.center,
+                style: EnvoyTypography.body.copyWith(
+                  color: EnvoyColors.textPrimaryInverse,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: EnvoySpacing.medium3),
+                child: GestureDetector(
+                  onTap: () {
+                    _nextPage(context);
+                  },
+                  child: Row(
+                    children: [
+                      Text(
+                        pageNumber == 2
+                            ? S().component_done
+                            : S().component_next,
+                        style: EnvoyTypography.body.copyWith(
+                          color: EnvoyColors.accentPrimary,
+                        ),
+                      ),
+                      pageNumber != 2
+                          ? const EnvoyIcon(
+                              EnvoyIcons.chevron_right,
+                              size: EnvoyIconSize.small,
+                              color: EnvoyColors.accentPrimary,
+                            )
+                          : const SizedBox.shrink()
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
