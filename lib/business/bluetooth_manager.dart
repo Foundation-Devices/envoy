@@ -33,7 +33,6 @@ class BluetoothManager {
   String bleId = "";
 
   static Future<BluetoothManager> init() async {
-    print("INIT CALLED ");
     var singleton = BluetoothManager._instance;
     return singleton;
   }
@@ -124,6 +123,8 @@ class BluetoothManager {
         kPrint("Error decoding: $e");
       });
     });
+    //TODO PAIR
+    // AccountNg().restore("tr(tprv8ZgxMBicQKsPdrjwWCyXqqJ4YqcyG4DmKtjjsRt29v1PtD3r3PuFJAjWytzcvSTKnZAGAkPSmnrdnuHWxCAwy3i1iPhrtKAfXRH7dVCNGp6/86'/1'/0'/0/*)#g9xn7wf9");
 
     kPrint("listen finished: $hashCode");
   }

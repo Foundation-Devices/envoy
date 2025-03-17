@@ -1,6 +1,6 @@
 use anyhow::Result;
 use bdk_wallet::bitcoin::Psbt;
-use bdk_wallet::chain::spk_client::FullScanResponse;
+use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse};
 use bdk_wallet::rusqlite::Connection;
 use bdk_wallet::{AddressInfo, KeychainKind, PersistedWallet, Update, WalletTx};
 use flutter_rust_bridge::frb;
@@ -29,10 +29,21 @@ impl Wallet {
             ngwallet: NgWallet::new(Some(db_path)).unwrap()
         }
     }
-
+    pub fn new_from_descriptor(db_path: Option<String>,descriptor: String) -> Wallet {
+        Wallet {
+            ngwallet: NgWallet::new_from_descriptor(db_path,descriptor).unwrap()
+        }
+    }
     pub fn next_address(&mut self) -> String {
         self.ngwallet.next_address().unwrap().address.to_string()
     }
+
+    pub fn balance(&mut self) -> u64 {
+        self.ngwallet.balance().unwrap().total().to_sat()
+    }
+
+
+
 }
 
 // #[frb(external)]

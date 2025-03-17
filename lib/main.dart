@@ -5,6 +5,7 @@
 
 import 'dart:io';
 
+import 'package:envoy/business/AccountNg.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
@@ -77,6 +78,7 @@ Future<void> initSingletons() async {
   // ~10k on iPhone 11 which is much better than the default 256
   kPrint("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
 
+  await AccountNg().init();
   await NTPUtil.init();
   await EnvoyStorage().init();
   await LocalStorage.init();
