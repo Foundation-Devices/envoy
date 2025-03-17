@@ -326,6 +326,8 @@ async fn inner_read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
     let device = devices
         .get(&id)
         .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
+
+
     sink.add(device.read().await?).unwrap();
     Ok(())
 }

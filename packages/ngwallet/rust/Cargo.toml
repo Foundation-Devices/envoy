@@ -8,9 +8,7 @@ crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
 flutter_rust_bridge = "=2.9.0"
-#ngwallet = { path = "../../../../ngwallet" }
-ngwallet = { git = "https://github.com/icota/ngwallet", rev = "42dfad0da62b934f5d1872e00d39f17be82be63d" }
-
+ngwallet = { path = "../../../../ngwallet", features = ["electrum"] }
 bdk_wallet = { version = "1.1.0", features = ["rusqlite"] }
 anyhow = "1.0.97"
 

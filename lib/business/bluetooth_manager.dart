@@ -85,7 +85,10 @@ class BluetoothManager {
         recipient: recipient);
     kPrint("Encoded...");
 
+    kPrint("Number of chunks: ${encoded.length}");
+
     for (var element in encoded) {
+      await Future.delayed(Duration(milliseconds: 100));
       final size = element.length;
       kPrint("Writing to {$bleId}: {$size}");
       kPrint("Writing to {$bleId}: {$element}");
@@ -94,6 +97,9 @@ class BluetoothManager {
 
     // Listen for response
     listen(id: bleId);
+    Future.delayed(Duration(seconds: 1));
+    kPrint("writing after listen...");
+    await bluart.write(id: bleId, data: "123".codeUnits);
   }
 
   void _generateQlIdentity() async {
@@ -117,6 +123,7 @@ class BluetoothManager {
   void listen({required String id}) async {
     _deChunker = await api.getDecoder();
     _subscription = bluart.read(id: id).listen((bleData) {
+      kPrint("Got QL message: {$bleData}");
       dechunkThis(bleData).then((value) {
         _passPortMessageStream.add(value!);
       }, onError: (e) {
