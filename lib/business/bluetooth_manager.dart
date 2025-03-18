@@ -98,8 +98,8 @@ class BluetoothManager {
     // Listen for response
     listen(id: bleId);
     Future.delayed(Duration(seconds: 1));
-    kPrint("writing after listen...");
-    await bluart.write(id: bleId, data: "123".codeUnits);
+    //kPrint("writing after listen...");
+    //await bluart.write(id: bleId, data: "123".codeUnits);
   }
 
   void _generateQlIdentity() async {

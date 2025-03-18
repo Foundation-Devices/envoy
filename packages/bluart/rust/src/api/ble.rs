@@ -327,7 +327,14 @@ async fn inner_read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
         .get(&id)
         .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
 
+    loop {
+        tokio::time::sleep(time::Duration::from_millis(50)).await;
 
-    sink.add(device.read().await?).unwrap();
-    Ok(())
+        match device.read().await {
+            Ok(data) => {
+                sink.add(data).unwrap();
+            }
+            Err(_) => {}
+        }
+    }
 }

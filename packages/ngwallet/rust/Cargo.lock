@@ -839,7 +839,6 @@ dependencies = [
 [[package]]
 name = "ngwallet"
 version = "0.1.0"
-source = "git+https://github.com/icota/ngwallet?rev=42dfad0da62b934f5d1872e00d39f17be82be63d#42dfad0da62b934f5d1872e00d39f17be82be63d"
 dependencies = [
  "anyhow",
  "bdk_electrum",
