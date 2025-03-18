@@ -77,7 +77,7 @@ fn send(command: Command) -> Result<()> {
 /// At the moment the developer has to make sure it is only called once.
 pub fn init() -> Result<()> {
     // Disabled for now -> way too chatty
-    //flutter_rust_bridge::setup_default_user_utils();
+    flutter_rust_bridge::setup_default_user_utils();
     create_runtime()?;
     let runtime = RUNTIME
         .get()
@@ -328,13 +328,17 @@ async fn inner_read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
         .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
 
     loop {
-        tokio::time::sleep(time::Duration::from_millis(50)).await;
-
+        tokio::time::sleep(time::Duration::from_millis(100)).await;
+        debug!("{}", format!("Reading from: {id}"));
         match device.read().await {
             Ok(data) => {
+                debug!("{}", format!("Got data from: {id}"));
+
                 sink.add(data).unwrap();
             }
-            Err(_) => {}
+            Err(e) => {
+                debug!("{}", format!("Got error: {:?}", e));
+            }
         }
     }
 }
