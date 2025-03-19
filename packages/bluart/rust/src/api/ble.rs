@@ -331,10 +331,15 @@ async fn inner_read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
         tokio::time::sleep(time::Duration::from_millis(100)).await;
         debug!("{}", format!("Reading from: {id}"));
         match device.read().await {
-            Ok(data) => {
-                debug!("{}", format!("Got data from: {id}"));
-
-                sink.add(data).unwrap();
+            Ok(mut stream) => {
+                debug!("{}", format!("Got stream from: {id}"));
+                while let Some(data) = stream.next().await {
+                    println!(
+                        "Received data from [{:?}]: {:?}",
+                        data.uuid, data.value
+                    );
+                    sink.add(data.value).unwrap();
+                }
             }
             Err(e) => {
                 debug!("{}", format!("Got error: {:?}", e));

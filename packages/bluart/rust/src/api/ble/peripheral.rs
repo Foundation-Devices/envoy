@@ -2,10 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use std::pin::Pin;
 use anyhow::Result;
 use btleplug::{api::Peripheral as _, platform::PeripheralId};
-use btleplug::api::{Characteristic, WriteType};
+use btleplug::api::{Characteristic, ValueNotification, WriteType};
 use flutter_rust_bridge::frb;
+use futures::Stream;
 use tokio::time;
 use tokio::time::Instant;
 use uuid::Uuid;
@@ -24,6 +26,7 @@ pub struct Peripheral {
     pub peripheral: btleplug::platform::Peripheral,
     pub last_seen: time::Instant,
     pub is_connected: bool,
+    //pub read_characteristic: Option<Characteristic>
 }
 
 impl Peripheral {
@@ -60,9 +63,11 @@ impl Peripheral {
         Ok(())
     }
 
-    pub async fn read(&self) -> Result<Vec<u8>> {
+    pub async fn read(&self) -> Result<Pin<Box<dyn Stream<Item = ValueNotification> + Send>>> {
         let uart_characteristic = self.get_uart_read_characteristic();
-        Ok(self.peripheral.read(&uart_characteristic).await?)
+        self.peripheral.subscribe(&uart_characteristic).await?;
+
+        self.peripheral.notifications().await.map_err(|e| e.into())
     }
 
     pub async fn write(&self, data: Vec<u8>) -> Result<()> {
