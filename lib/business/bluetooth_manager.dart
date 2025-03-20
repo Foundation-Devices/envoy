@@ -18,17 +18,16 @@ class BluetoothManager {
   UuidValue rxCharacteristic =
       UuidValue.fromString("6E400002B5A3F393E0A9E50E24DCCA9E");
   api.QuantumLinkIdentity? qlIdentity;
-  final StreamController<api.PassportMessage> _passPortMessageStream =
+  final StreamController<api.PassportMessage> _passportMessageStream =
       StreamController<api.PassportMessage>();
 
   api.Dechunker? _decoder;
-
 
   factory BluetoothManager() {
     return _instance;
   }
 
-  get passPortMessageStream => _passPortMessageStream.stream;
+  get passportMessageStream => _passportMessageStream.stream;
 
   String bleId = "";
 
@@ -126,7 +125,7 @@ class BluetoothManager {
       decode(bleData).then((value) {
         kPrint("Dechunked: {$value}");
         if (value != null) {
-          _passPortMessageStream.add(value);
+          _passportMessageStream.add(value);
         }
       }, onError: (e) {
         kPrint("Error decoding: $e");

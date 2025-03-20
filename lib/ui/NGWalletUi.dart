@@ -31,9 +31,7 @@ final balanceProvider =
 });
 
 class NGWalletUi extends ConsumerStatefulWidget {
-  final String descriptor;
-
-  const NGWalletUi({super.key, required this.descriptor});
+  const NGWalletUi({super.key});
 
   @override
   ConsumerState<NGWalletUi> createState() => _NGWalletUiState();
@@ -60,7 +58,6 @@ class _NGWalletUiState extends ConsumerState<NGWalletUi>
   }
 
   onInit()async {
-    await AccountNg().restore(widget.descriptor);
     setState(() {
     });
     //TODO: listen for ql messages and call onReceiveSignedPSBT

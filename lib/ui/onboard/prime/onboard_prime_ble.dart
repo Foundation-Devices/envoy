@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:animations/animations.dart';
+import 'package:envoy/business/AccountNg.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -27,6 +28,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../NGWalletUi.dart';
+
 class OnboardPrimeBluetooth extends ConsumerStatefulWidget {
   const OnboardPrimeBluetooth({super.key});
 
@@ -48,8 +51,21 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   }
 
   void _listenForPassPortMessages() {
-    BluetoothManager().passPortMessageStream.listen((event) {
-      kPrint("Got the Passport Event : $event");
+    BluetoothManager().passportMessageStream.listen((PassportMessage message) {
+      kPrint("Got the Passport Message : ${message.message}");
+      
+      if (message.message is QuantumLinkMessage_PairingResponse) {
+        kPrint("Found it!");
+        final response = message.message as QuantumLinkMessage_PairingResponse;
+
+        kPrint("GOT DESCRIPTOR: ${response.field0.descriptor}");
+        // Create the thing that I'm gonna reveal later
+        AccountNg().restore(response.field0.descriptor);
+
+        Navigator.of(context, rootNavigator: true).push(
+            MaterialPageRoute(
+                builder: (context) =>  Theme(data: Theme.of(context),child: NGWalletUi(),)));
+      }
     });
   }
 
