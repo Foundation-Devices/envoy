@@ -1,7 +1,9 @@
 use std::collections::BTreeMap;
+use std::str::FromStr;
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
+use anyhow::{anyhow, Error};
 use bdk_wallet::bitcoin::{Psbt, ScriptBuf};
 use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse};
 use bdk_wallet::rusqlite::Connection;
@@ -111,5 +113,25 @@ impl EnvoyAccount {
         self.ng_account
             .lock().unwrap()
             .wallet.set_note(tx_id, note);
+    }
+
+    pub fn send(&mut self, address: String, amount: u64) -> Result<String, Error> {
+        let result = self.ng_account
+            .lock().unwrap()
+            .wallet.
+            create_send(address, amount)
+            .map_err(|e| {
+                anyhow!("Failed to create send transaction: {}", e)
+            })?;
+        Ok(result.serialize_hex())
+    }
+    pub fn broadcast(&mut self, psbt: String) -> Result<(), Error> {
+        self.ng_account
+            .lock().unwrap()
+            .wallet.
+            broadcast(Psbt::from_str(&psbt).unwrap())
+            .map_err(|e| {
+                anyhow!("Failed to broadcast: {}", e)
+            })
     }
 }

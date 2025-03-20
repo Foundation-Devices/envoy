@@ -29,6 +29,8 @@ abstract class EnvoyAccount implements RustOpaqueInterface {
 
   Future<BigInt> balance();
 
+  Future<void> broadcast({required String psbt});
+
   static Future<EnvoyAccount> newFromDescriptor(
           {required String name,
           required String descriptor,
@@ -52,6 +54,8 @@ abstract class EnvoyAccount implements RustOpaqueInterface {
           {required ArcMutexOptionFullScanRequestKeychainKind scanRequest}) =>
       RustLib.instance.api
           .crateApiEnvoyWalletEnvoyAccountScan(scanRequest: scanRequest);
+
+  Future<String> send({required String address, required BigInt amount});
 
   Future<void> setDoNotSpend({required Output utxo, required bool doNotSpend});
 
