@@ -8,6 +8,7 @@ use foundation_api::message::{EnvoyMessage, PassportMessage};
 use foundation_api::quantum_link::{QuantumLink, QUANTUM_LINK, QuantumLinkIdentity, generate_identity};
 use gstp::SealedEvent;
 use log::debug;
+use anyhow::Result;
 
 pub async fn get_decoder() -> Dechunker {
     Dechunker::new()
@@ -18,13 +19,21 @@ pub struct DecoderStatus {
     pub payload: Option<PassportMessage>,
 }
 
-pub async fn decode(data: Vec<u8>, decoder: &mut Dechunker, quantum_link_identity:  &QuantumLinkIdentity) -> anyhow::Result<DecoderStatus> {
+pub async fn serialize_xid(quantum_link_identity:  &QuantumLinkIdentity) -> Vec<u8> {
+   quantum_link_identity.clone().xid_document.unwrap().to_unsigned_envelope().to_cbor_data()
+}
+
+pub async fn decode(data: Vec<u8>, decoder: &mut Dechunker, quantum_link_identity:  &QuantumLinkIdentity) -> Result<DecoderStatus> {
+    debug!("receiving data");
+
     decoder.receive(&data)?;
 
-
     if decoder.is_complete() {
+        debug!("We're complete!");
         let message = decoder.data();
+        debug!("Trying to get envelope...");
         let envelope = Envelope::try_from_cbor_data(message.to_owned())?;
+        debug!("Unsealing envelope...");
         let passport_message = PassportMessage::unseal_passport_message(&envelope, &quantum_link_identity.clone().private_keys.unwrap()).unwrap();
 
         return Ok(DecoderStatus {
@@ -39,7 +48,7 @@ pub async fn decode(data: Vec<u8>, decoder: &mut Dechunker, quantum_link_identit
     })
 }
 
-pub async fn encode(message: EnvoyMessage, sender: QuantumLinkIdentity, recipient: &XIDDocument) -> Vec<Vec<u8>> {
+pub async fn encode(message: EnvoyMessage, sender: &QuantumLinkIdentity, recipient: &XIDDocument) -> Vec<Vec<u8>> {
     let expression = QuantumLink::encode(&message);
     let event: SealedEvent<Expression> =
         SealedEvent::new(expression, ARID::new(), sender.clone().xid_document.unwrap());
@@ -47,7 +56,7 @@ pub async fn encode(message: EnvoyMessage, sender: QuantumLinkIdentity, recipien
     let envelope = event
         .to_envelope(
             None,
-            Some(&sender.private_keys.unwrap()),
+            Some(&sender.clone().private_keys.unwrap()),
             Some(Some(recipient)).unwrap(),
         )
         .unwrap();
@@ -69,14 +78,13 @@ pub async fn generate_ql_identity() -> QuantumLinkIdentity {
     identity
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
     use anyhow::Result;
     use tokio::test;
 
-    #[tokio::test]
+    #[test]
     async fn test_generate_identity() -> Result<()> {
             let identity = generate_identity();
             println!("{:?}", identity);

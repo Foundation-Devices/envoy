@@ -8,15 +8,21 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'passport.dart';
 
 class PairingRequest {
-  const PairingRequest();
+  final Uint8List xidDocument;
+
+  const PairingRequest({
+    required this.xidDocument,
+  });
 
   @override
-  int get hashCode => 0;
+  int get hashCode => xidDocument.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is PairingRequest && runtimeType == other.runtimeType;
+      other is PairingRequest &&
+          runtimeType == other.runtimeType &&
+          xidDocument == other.xidDocument;
 }
 
 class PairingResponse {
