@@ -21,7 +21,7 @@ class BluetoothManager {
   final StreamController<api.PassportMessage> _passPortMessageStream =
       StreamController<api.PassportMessage>();
 
-  api.Dechunker? _deChunker;
+  api.Dechunker? _decoder;
 
 
   factory BluetoothManager() {
@@ -66,6 +66,7 @@ class BluetoothManager {
       required api.XidDocument recipient}) async {
     api.EnvoyMessage envoyMessage =
         api.EnvoyMessage(message: message, timestamp: 0);
+
     return await api.encode(
       message: envoyMessage,
       sender: qlIdentity!,
@@ -77,29 +78,34 @@ class BluetoothManager {
     kPrint("pair: $hashCode");
 
     kPrint("Pairing...");
-    api.PairingRequest request = api.PairingRequest();
+    final xid = await api.serializeXid(quantumLinkIdentity: qlIdentity!);
+    api.PairingRequest request = api.PairingRequest(xidDocument: xid);
     kPrint("Encoding...");
 
     final encoded = await encodeMessage(
         message: api.QuantumLinkMessage.pairingRequest(request),
         recipient: recipient);
+
     kPrint("Encoded...");
 
-    for (var element in encoded) {
-      final size = element.length;
-      kPrint("Writing to {$bleId}: {$size}");
-      kPrint("Writing to {$bleId}: {$element}");
-      await bluart.write(id: bleId, data: element);
-    }
+    kPrint("post-decode quantum isDisposed = ${qlIdentity!.isDisposed}");
+
+    kPrint("Number of chunks: ${encoded.length}");
+
+    await bluart.writeAll(id: bleId, data: encoded);
 
     // Listen for response
     listen(id: bleId);
+    Future.delayed(Duration(seconds: 1));
+    //kPrint("writing after listen...");
+    //await bluart.write(id: bleId, data: "123".codeUnits);
   }
 
   void _generateQlIdentity() async {
     try {
       kPrint("Generating ql identity...");
       qlIdentity = await api.generateQlIdentity();
+      kPrint("boot quantum isDisposed = ${qlIdentity!.isDisposed}");
       // kPrint("Generated ql identity: $qlIdentity");
     } catch (e, stack) {
       kPrint("Couldn't generate ql identity: $e", stackTrace: stack);
@@ -115,28 +121,27 @@ class BluetoothManager {
   }
 
   void listen({required String id}) async {
-    _deChunker = await api.getDecoder();
+    _decoder = await api.getDecoder();
     _subscription = bluart.read(id: id).listen((bleData) {
-      dechunkThis(bleData).then((value) {
-        _passPortMessageStream.add(value!);
+      decode(bleData).then((value) {
+        kPrint("Dechunked: {$value}");
+        if (value != null) {
+          _passPortMessageStream.add(value);
+        }
       }, onError: (e) {
         kPrint("Error decoding: $e");
       });
     });
-    //TODO PAIR
-    // AccountNg().restore("tr(tprv8ZgxMBicQKsPdrjwWCyXqqJ4YqcyG4DmKtjjsRt29v1PtD3r3PuFJAjWytzcvSTKnZAGAkPSmnrdnuHWxCAwy3i1iPhrtKAfXRH7dVCNGp6/86'/1'/0'/0/*)#g9xn7wf9");
-
-    kPrint("listen finished: $hashCode");
   }
 
-  Future<api.PassportMessage?> dechunkThis(Uint8List bleData) async {
-    _deChunker ??= await api.getDecoder();
+  Future<api.PassportMessage?> decode(Uint8List bleData) async {
+    _decoder ??= await api.getDecoder();
     api.DecoderStatus decoderStatus = await api.decode(
         data: bleData.toList(),
-        decoder: _deChunker!,
+        decoder: _decoder!,
         quantumLinkIdentity: qlIdentity!);
     if (decoderStatus.payload != null) {
-      _deChunker = await api.getDecoder();
+      _decoder = await api.getDecoder();
       return decoderStatus.payload;
     } else {
       return null;

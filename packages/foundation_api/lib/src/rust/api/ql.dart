@@ -4,7 +4,6 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
-import '../lib.dart';
 import '../third_party/bc_xid.dart';
 import '../third_party/foundation_api/api/firmware.dart';
 import '../third_party/foundation_api/api/fx.dart';
@@ -17,6 +16,11 @@ import '../third_party/foundation_api/api/status.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 Future<Dechunker> getDecoder() => RustLib.instance.api.crateApiQlGetDecoder();
+
+Future<Uint8List> serializeXid(
+        {required QuantumLinkIdentity quantumLinkIdentity}) =>
+    RustLib.instance.api
+        .crateApiQlSerializeXid(quantumLinkIdentity: quantumLinkIdentity);
 
 Future<DecoderStatus> decode(
         {required List<int> data,

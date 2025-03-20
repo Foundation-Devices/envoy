@@ -17,6 +17,7 @@ class PrimeQlPayloadDecoder extends ScannerDecoder {
   Future<void> onDetectBarCode(Barcode barCode) async {
     final String code = barCode.code?.toLowerCase() ?? "";
     if (code.startsWith("ur:") == true) {
+      kPrint(code);
       try {
         final decoderStatus = await decodeQr(decoder: decoder, qr: code);
         progressCallBack?.call(0.5);
