@@ -1,15 +1,12 @@
 import 'package:envoy/business/account.dart';
 import 'package:envoy/util/console.dart';
-import 'package:ngwallet/src/rust/api/simple.dart' as NgWallet;
-import 'package:ngwallet/src/rust/frb_generated.dart' as api;
+import 'package:ngwallet/ngwallet.dart';
 
 class AccountNg {
-
   Account? account;
   String? descriptor;
-  NgWallet.Wallet? wallet;
+  EnvoyAccount? envoyAccount;
   static final AccountNg _instance = AccountNg._internal();
-
 
   factory AccountNg() {
     return _instance;
@@ -17,16 +14,50 @@ class AccountNg {
 
   restore(String descriptor) async {
     //makes an in memory wallet
-    wallet = await NgWallet.Wallet.newFromDescriptor(descriptor: descriptor);
-    this.descriptor = descriptor;
+    try {
+      print("Restoring account $descriptor");
+
+      /**
+       *   "Passport Prime".to_string(),
+          "red".to_string(),
+          None,
+          EXTERNAL_DESCRIPTOR.to_string(),
+          0,
+          None
+       */
+      envoyAccount = await EnvoyAccount.newFromDescriptor(
+          name: "Passport Prime",
+          color: "red",
+          deviceSerial: null,
+          descriptor: descriptor,
+          index: 0,
+          dbPath: null);
+      this.descriptor = descriptor;
+    } catch (e) {
+      print(e);
+    }
   }
 
   nextAddress() async {
-    return await wallet?.nextAddress() ?? "";
+    return await envoyAccount?.nextAddress() ?? "";
+  }
+
+  Future<ArcMutexOptionFullScanRequestKeychainKind?> scanRequest() async {
+    return await envoyAccount?.requestScan();
+  }
+
+  Future<bool?>? apply_update(
+      ArcMutexOptionFullScanResponseKeychainKind scanResponse) async {
+    return await envoyAccount?.applyUpdate(scanRequest: scanResponse);
+  }
+
+  Future<ArcMutexOptionFullScanResponseKeychainKind?>? scan(
+      ArcMutexOptionFullScanRequestKeychainKind scanRequest) async {
+    return await EnvoyAccount.scan(scanRequest: scanRequest);
   }
 
   init() async {
-    await api.RustLib.init();
+    await RustLib.init();
   }
 
   AccountNg._internal() {

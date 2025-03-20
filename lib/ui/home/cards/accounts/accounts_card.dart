@@ -5,6 +5,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:envoy/ui/NGWalletUi.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -178,6 +179,7 @@ class _AccountsListState extends ConsumerState<AccountsList> {
   @override
   void initState() {
     super.initState();
+
   }
 
   @override
@@ -255,7 +257,15 @@ class _AccountsListState extends ConsumerState<AccountsList> {
               child: AccountListTile(
                 account,
                 onTap: () async {
+                  Future.delayed(const Duration(milliseconds: 100)).then((value) async {
+                    Navigator.of(context, rootNavigator: true).push(
+                        MaterialPageRoute(
+                            builder: (context) =>  Theme(child: NGWalletUi(),data: Theme.of(context),)));
+                  });
+
+                  return;
                   clearFilterState(ref);
+
                   ref.read(selectedAccountProvider.notifier).state = account;
                   context.go(ROUTE_ACCOUNT_DETAIL, extra: account);
                   return;

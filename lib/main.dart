@@ -33,15 +33,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:foundation_api/foundation_api.dart' as api;
-import 'package:ngwallet/ngwallet.dart' show RustLib;
 import 'package:tor/tor.dart';
 import 'package:tor/util.dart';
-
-import 'package:ngwallet/src/rust/frb_generated.dart';
-import 'package:ngwallet/src/rust/api/simple.dart';
 
 import 'business/feed_manager.dart';
 import 'business/fees.dart';
@@ -79,6 +73,8 @@ Future<void> initSingletons() async {
   kPrint("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
 
   await AccountNg().init();
+  AccountNg().restore("tr(tprv8ZgxMBicQKsPdrjwWCyXqqJ4YqcyG4DmKtjjsRt29v1PtD3r3PuFJAjWytzcvSTKnZAGAkPSmnrdnuHWxCAwy3i1iPhrtKAfXRH7dVCNGp6/86'/1'/0'/0/*)#g9xn7wf9");
+
   await NTPUtil.init();
   await EnvoyStorage().init();
   await LocalStorage.init();
