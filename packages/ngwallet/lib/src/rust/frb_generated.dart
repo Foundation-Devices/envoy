@@ -3,13 +3,14 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
-import 'api/simple.dart';
+import 'api/envoy_wallet.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
 import 'frb_generated.io.dart'
     if (dart.library.js_interop) 'frb_generated.web.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'third_party/ngwallet/transaction.dart';
 
 /// Main entrypoint of the Rust API
 class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
@@ -57,7 +58,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 
   @override
   Future<void> executeRustInitializers() async {
-    await api.crateApiSimpleInitApp();
+    await api.crateApiEnvoyWalletInitApp();
   }
 
   @override
@@ -68,7 +69,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.9.0';
 
   @override
-  int get rustContentHash => 317454403;
+  int get rustContentHash => -892267196;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -79,24 +80,90 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
-  Future<BigInt> crateApiSimpleWalletBalance({required Wallet that});
+  Future<bool> crateApiEnvoyWalletEnvoyAccountApplyUpdate(
+      {required EnvoyAccount that,
+      required ArcMutexOptionFullScanResponseKeychainKind scanRequest});
 
-  Future<Wallet> crateApiSimpleWalletNew({required String dbPath});
+  ArcMutexNgAccount crateApiEnvoyWalletEnvoyAccountAutoAccessorGetNgAccount(
+      {required EnvoyAccount that});
 
-  Future<Wallet> crateApiSimpleWalletNewFromDescriptor(
-      {String? dbPath, required String descriptor});
+  void crateApiEnvoyWalletEnvoyAccountAutoAccessorSetNgAccount(
+      {required EnvoyAccount that, required ArcMutexNgAccount ngAccount});
 
-  Future<String> crateApiSimpleWalletNextAddress({required Wallet that});
+  Future<BigInt> crateApiEnvoyWalletEnvoyAccountBalance(
+      {required EnvoyAccount that});
 
-  String crateApiSimpleGreet({required String name});
+  Future<EnvoyAccount> crateApiEnvoyWalletEnvoyAccountNewFromDescriptor(
+      {required String name,
+      required String descriptor,
+      String? deviceSerial,
+      required String color,
+      required int index,
+      String? dbPath});
 
-  Future<void> crateApiSimpleInitApp();
+  Future<String> crateApiEnvoyWalletEnvoyAccountNextAddress(
+      {required EnvoyAccount that});
 
-  RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Wallet;
+  Future<ArcMutexOptionFullScanRequestKeychainKind>
+      crateApiEnvoyWalletEnvoyAccountRequestScan({required EnvoyAccount that});
 
-  RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Wallet;
+  Future<ArcMutexOptionFullScanResponseKeychainKind>
+      crateApiEnvoyWalletEnvoyAccountScan(
+          {required ArcMutexOptionFullScanRequestKeychainKind scanRequest});
 
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_WalletPtr;
+  Future<void> crateApiEnvoyWalletEnvoyAccountSetDoNotSpend(
+      {required EnvoyAccount that,
+      required Output utxo,
+      required bool doNotSpend});
+
+  Future<void> crateApiEnvoyWalletEnvoyAccountSetNote(
+      {required EnvoyAccount that, required String txId, required String note});
+
+  Future<void> crateApiEnvoyWalletEnvoyAccountSetTag(
+      {required EnvoyAccount that, required Output utxo, required String tag});
+
+  Future<List<BitcoinTransaction>> crateApiEnvoyWalletEnvoyAccountTransactions(
+      {required EnvoyAccount that});
+
+  Future<List<Output>> crateApiEnvoyWalletEnvoyAccountUtxo(
+      {required EnvoyAccount that});
+
+  Future<void> crateApiEnvoyWalletInitApp();
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_ArcMutexNgAccount;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_ArcMutexNgAccount;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_ArcMutexNgAccountPtr;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_ArcMutexOptionFullScanRequestKeychainKind;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_ArcMutexOptionFullScanRequestKeychainKind;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_ArcMutexOptionFullScanRequestKeychainKindPtr;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_ArcMutexOptionFullScanResponseKeychainKind;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_ArcMutexOptionFullScanResponseKeychainKind;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_ArcMutexOptionFullScanResponseKeychainKindPtr;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_EnvoyAccount;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_EnvoyAccount;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_EnvoyAccountPtr;
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -108,192 +175,604 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  Future<BigInt> crateApiSimpleWalletBalance({required Wallet that}) {
+  Future<bool> crateApiEnvoyWalletEnvoyAccountApplyUpdate(
+      {required EnvoyAccount that,
+      required ArcMutexOptionFullScanResponseKeychainKind scanRequest}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet(
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
             that, serializer);
+        sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanResponseKeychainKind(
+            scanRequest, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 1, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_u_64,
+        decodeSuccessData: sse_decode_bool,
         decodeErrorData: null,
       ),
-      constMeta: kCrateApiSimpleWalletBalanceConstMeta,
-      argValues: [that],
+      constMeta: kCrateApiEnvoyWalletEnvoyAccountApplyUpdateConstMeta,
+      argValues: [that, scanRequest],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateApiSimpleWalletBalanceConstMeta =>
+  TaskConstMeta get kCrateApiEnvoyWalletEnvoyAccountApplyUpdateConstMeta =>
       const TaskConstMeta(
-        debugName: "Wallet_balance",
-        argNames: ["that"],
+        debugName: "EnvoyAccount_apply_update",
+        argNames: ["that", "scanRequest"],
       );
 
   @override
-  Future<Wallet> crateApiSimpleWalletNew({required String dbPath}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_String(dbPath, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 2, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData:
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiSimpleWalletNewConstMeta,
-      argValues: [dbPath],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiSimpleWalletNewConstMeta => const TaskConstMeta(
-        debugName: "Wallet_new",
-        argNames: ["dbPath"],
-      );
-
-  @override
-  Future<Wallet> crateApiSimpleWalletNewFromDescriptor(
-      {String? dbPath, required String descriptor}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_opt_String(dbPath, serializer);
-        sse_encode_String(descriptor, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 3, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData:
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiSimpleWalletNewFromDescriptorConstMeta,
-      argValues: [dbPath, descriptor],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiSimpleWalletNewFromDescriptorConstMeta =>
-      const TaskConstMeta(
-        debugName: "Wallet_new_from_descriptor",
-        argNames: ["dbPath", "descriptor"],
-      );
-
-  @override
-  Future<String> crateApiSimpleWalletNextAddress({required Wallet that}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet(
-            that, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 4, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_String,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiSimpleWalletNextAddressConstMeta,
-      argValues: [that],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiSimpleWalletNextAddressConstMeta =>
-      const TaskConstMeta(
-        debugName: "Wallet_next_address",
-        argNames: ["that"],
-      );
-
-  @override
-  String crateApiSimpleGreet({required String name}) {
+  ArcMutexNgAccount crateApiEnvoyWalletEnvoyAccountAutoAccessorGetNgAccount(
+      {required EnvoyAccount that}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_String(name, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_String,
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccount,
         decodeErrorData: null,
       ),
-      constMeta: kCrateApiSimpleGreetConstMeta,
-      argValues: [name],
+      constMeta:
+          kCrateApiEnvoyWalletEnvoyAccountAutoAccessorGetNgAccountConstMeta,
+      argValues: [that],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateApiSimpleGreetConstMeta => const TaskConstMeta(
-        debugName: "greet",
-        argNames: ["name"],
-      );
+  TaskConstMeta
+      get kCrateApiEnvoyWalletEnvoyAccountAutoAccessorGetNgAccountConstMeta =>
+          const TaskConstMeta(
+            debugName: "EnvoyAccount_auto_accessor_get_ng_account",
+            argNames: ["that"],
+          );
 
   @override
-  Future<void> crateApiSimpleInitApp() {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
+  void crateApiEnvoyWalletEnvoyAccountAutoAccessorSetNgAccount(
+      {required EnvoyAccount that, required ArcMutexNgAccount ngAccount}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 6, port: port_);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+            that, serializer);
+        sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccount(
+            ngAccount, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
         decodeErrorData: null,
       ),
-      constMeta: kCrateApiSimpleInitAppConstMeta,
+      constMeta:
+          kCrateApiEnvoyWalletEnvoyAccountAutoAccessorSetNgAccountConstMeta,
+      argValues: [that, ngAccount],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiEnvoyWalletEnvoyAccountAutoAccessorSetNgAccountConstMeta =>
+          const TaskConstMeta(
+            debugName: "EnvoyAccount_auto_accessor_set_ng_account",
+            argNames: ["that", "ngAccount"],
+          );
+
+  @override
+  Future<BigInt> crateApiEnvoyWalletEnvoyAccountBalance(
+      {required EnvoyAccount that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 4, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_64,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiEnvoyWalletEnvoyAccountBalanceConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiEnvoyWalletEnvoyAccountBalanceConstMeta =>
+      const TaskConstMeta(
+        debugName: "EnvoyAccount_balance",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<EnvoyAccount> crateApiEnvoyWalletEnvoyAccountNewFromDescriptor(
+      {required String name,
+      required String descriptor,
+      String? deviceSerial,
+      required String color,
+      required int index,
+      String? dbPath}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(name, serializer);
+        sse_encode_String(descriptor, serializer);
+        sse_encode_opt_String(deviceSerial, serializer);
+        sse_encode_String(color, serializer);
+        sse_encode_u_32(index, serializer);
+        sse_encode_opt_String(dbPath, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 5, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiEnvoyWalletEnvoyAccountNewFromDescriptorConstMeta,
+      argValues: [name, descriptor, deviceSerial, color, index, dbPath],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiEnvoyWalletEnvoyAccountNewFromDescriptorConstMeta =>
+          const TaskConstMeta(
+            debugName: "EnvoyAccount_new_from_descriptor",
+            argNames: [
+              "name",
+              "descriptor",
+              "deviceSerial",
+              "color",
+              "index",
+              "dbPath"
+            ],
+          );
+
+  @override
+  Future<String> crateApiEnvoyWalletEnvoyAccountNextAddress(
+      {required EnvoyAccount that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 6, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiEnvoyWalletEnvoyAccountNextAddressConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiEnvoyWalletEnvoyAccountNextAddressConstMeta =>
+      const TaskConstMeta(
+        debugName: "EnvoyAccount_next_address",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<ArcMutexOptionFullScanRequestKeychainKind>
+      crateApiEnvoyWalletEnvoyAccountRequestScan({required EnvoyAccount that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 7, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiEnvoyWalletEnvoyAccountRequestScanConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiEnvoyWalletEnvoyAccountRequestScanConstMeta =>
+      const TaskConstMeta(
+        debugName: "EnvoyAccount_request_scan",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<ArcMutexOptionFullScanResponseKeychainKind>
+      crateApiEnvoyWalletEnvoyAccountScan(
+          {required ArcMutexOptionFullScanRequestKeychainKind scanRequest}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(
+            scanRequest, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 8, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanResponseKeychainKind,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiEnvoyWalletEnvoyAccountScanConstMeta,
+      argValues: [scanRequest],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiEnvoyWalletEnvoyAccountScanConstMeta =>
+      const TaskConstMeta(
+        debugName: "EnvoyAccount_scan",
+        argNames: ["scanRequest"],
+      );
+
+  @override
+  Future<void> crateApiEnvoyWalletEnvoyAccountSetDoNotSpend(
+      {required EnvoyAccount that,
+      required Output utxo,
+      required bool doNotSpend}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+            that, serializer);
+        sse_encode_box_autoadd_output(utxo, serializer);
+        sse_encode_bool(doNotSpend, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 9, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiEnvoyWalletEnvoyAccountSetDoNotSpendConstMeta,
+      argValues: [that, utxo, doNotSpend],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiEnvoyWalletEnvoyAccountSetDoNotSpendConstMeta =>
+      const TaskConstMeta(
+        debugName: "EnvoyAccount_set_do_not_spend",
+        argNames: ["that", "utxo", "doNotSpend"],
+      );
+
+  @override
+  Future<void> crateApiEnvoyWalletEnvoyAccountSetNote(
+      {required EnvoyAccount that,
+      required String txId,
+      required String note}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+            that, serializer);
+        sse_encode_String(txId, serializer);
+        sse_encode_String(note, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 10, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiEnvoyWalletEnvoyAccountSetNoteConstMeta,
+      argValues: [that, txId, note],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiEnvoyWalletEnvoyAccountSetNoteConstMeta =>
+      const TaskConstMeta(
+        debugName: "EnvoyAccount_set_note",
+        argNames: ["that", "txId", "note"],
+      );
+
+  @override
+  Future<void> crateApiEnvoyWalletEnvoyAccountSetTag(
+      {required EnvoyAccount that, required Output utxo, required String tag}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+            that, serializer);
+        sse_encode_box_autoadd_output(utxo, serializer);
+        sse_encode_String(tag, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 11, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiEnvoyWalletEnvoyAccountSetTagConstMeta,
+      argValues: [that, utxo, tag],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiEnvoyWalletEnvoyAccountSetTagConstMeta =>
+      const TaskConstMeta(
+        debugName: "EnvoyAccount_set_tag",
+        argNames: ["that", "utxo", "tag"],
+      );
+
+  @override
+  Future<List<BitcoinTransaction>> crateApiEnvoyWalletEnvoyAccountTransactions(
+      {required EnvoyAccount that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 12, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_bitcoin_transaction,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiEnvoyWalletEnvoyAccountTransactionsConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiEnvoyWalletEnvoyAccountTransactionsConstMeta =>
+      const TaskConstMeta(
+        debugName: "EnvoyAccount_transactions",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<List<Output>> crateApiEnvoyWalletEnvoyAccountUtxo(
+      {required EnvoyAccount that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 13, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_output,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiEnvoyWalletEnvoyAccountUtxoConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiEnvoyWalletEnvoyAccountUtxoConstMeta =>
+      const TaskConstMeta(
+        debugName: "EnvoyAccount_utxo",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<void> crateApiEnvoyWalletInitApp() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 14, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiEnvoyWalletInitAppConstMeta,
       argValues: [],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateApiSimpleInitAppConstMeta => const TaskConstMeta(
+  TaskConstMeta get kCrateApiEnvoyWalletInitAppConstMeta => const TaskConstMeta(
         debugName: "init_app",
         argNames: [],
       );
 
   RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_Wallet => wire
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet;
+      get rust_arc_increment_strong_count_ArcMutexNgAccount => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccount;
 
   RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_Wallet => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet;
+      get rust_arc_decrement_strong_count_ArcMutexNgAccount => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccount;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_ArcMutexOptionFullScanRequestKeychainKind =>
+          wire.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_ArcMutexOptionFullScanRequestKeychainKind =>
+          wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_ArcMutexOptionFullScanResponseKeychainKind =>
+          wire.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanResponseKeychainKind;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_ArcMutexOptionFullScanResponseKeychainKind =>
+          wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanResponseKeychainKind;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_EnvoyAccount => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_EnvoyAccount => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount;
 
   @protected
-  Wallet
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet(
+  ArcMutexNgAccount
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccount(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return WalletImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return ArcMutexNgAccountImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
-  Wallet
-      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet(
+  ArcMutexOptionFullScanRequestKeychainKind
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return WalletImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return ArcMutexOptionFullScanRequestKeychainKindImpl.frbInternalDcoDecode(
+        raw as List<dynamic>);
   }
 
   @protected
-  Wallet
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet(
+  ArcMutexOptionFullScanResponseKeychainKind
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanResponseKeychainKind(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return WalletImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return ArcMutexOptionFullScanResponseKeychainKindImpl.frbInternalDcoDecode(
+        raw as List<dynamic>);
+  }
+
+  @protected
+  EnvoyAccount
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return EnvoyAccountImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  EnvoyAccount
+      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return EnvoyAccountImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  EnvoyAccount
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return EnvoyAccountImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  ArcMutexNgAccount
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccount(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ArcMutexNgAccountImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  ArcMutexOptionFullScanRequestKeychainKind
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ArcMutexOptionFullScanRequestKeychainKindImpl.frbInternalDcoDecode(
+        raw as List<dynamic>);
+  }
+
+  @protected
+  ArcMutexOptionFullScanResponseKeychainKind
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanResponseKeychainKind(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ArcMutexOptionFullScanResponseKeychainKindImpl.frbInternalDcoDecode(
+        raw as List<dynamic>);
+  }
+
+  @protected
+  EnvoyAccount
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return EnvoyAccountImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
   String dco_decode_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as String;
+  }
+
+  @protected
+  BitcoinTransaction dco_decode_bitcoin_transaction(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
+    return BitcoinTransaction(
+      txId: dco_decode_String(arr[0]),
+      blockHeight: dco_decode_u_32(arr[1]),
+      confirmations: dco_decode_u_32(arr[2]),
+      fee: dco_decode_u_64(arr[3]),
+      amount: dco_decode_u_64(arr[4]),
+      inputs: dco_decode_list_input(arr[5]),
+      outputs: dco_decode_list_output(arr[6]),
+      note: dco_decode_opt_String(arr[7]),
+    );
+  }
+
+  @protected
+  bool dco_decode_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as bool;
+  }
+
+  @protected
+  bool dco_decode_box_autoadd_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as bool;
+  }
+
+  @protected
+  Output dco_decode_box_autoadd_output(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_output(raw);
+  }
+
+  @protected
+  Input dco_decode_input(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return Input(
+      txId: dco_decode_String(arr[0]),
+      vout: dco_decode_u_32(arr[1]),
+    );
+  }
+
+  @protected
+  List<BitcoinTransaction> dco_decode_list_bitcoin_transaction(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_bitcoin_transaction).toList();
+  }
+
+  @protected
+  List<Input> dco_decode_list_input(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_input).toList();
+  }
+
+  @protected
+  List<Output> dco_decode_list_output(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_output).toList();
   }
 
   @protected
@@ -306,6 +785,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   String? dco_decode_opt_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_String(raw);
+  }
+
+  @protected
+  bool? dco_decode_opt_box_autoadd_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_bool(raw);
+  }
+
+  @protected
+  Output dco_decode_output(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return Output(
+      txId: dco_decode_String(arr[0]),
+      vout: dco_decode_u_32(arr[1]),
+      amount: dco_decode_u_64(arr[2]),
+      tag: dco_decode_opt_String(arr[3]),
+      doNotSpend: dco_decode_opt_box_autoadd_bool(arr[4]),
+    );
+  }
+
+  @protected
+  int dco_decode_u_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
   }
 
   @protected
@@ -333,29 +839,92 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Wallet
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet(
+  ArcMutexNgAccount
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccount(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return WalletImpl.frbInternalSseDecode(
+    return ArcMutexNgAccountImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
   @protected
-  Wallet
-      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet(
+  ArcMutexOptionFullScanRequestKeychainKind
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return WalletImpl.frbInternalSseDecode(
+    return ArcMutexOptionFullScanRequestKeychainKindImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
   @protected
-  Wallet
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet(
+  ArcMutexOptionFullScanResponseKeychainKind
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanResponseKeychainKind(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return WalletImpl.frbInternalSseDecode(
+    return ArcMutexOptionFullScanResponseKeychainKindImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  EnvoyAccount
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return EnvoyAccountImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  EnvoyAccount
+      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return EnvoyAccountImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  EnvoyAccount
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return EnvoyAccountImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  ArcMutexNgAccount
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccount(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ArcMutexNgAccountImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  ArcMutexOptionFullScanRequestKeychainKind
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ArcMutexOptionFullScanRequestKeychainKindImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  ArcMutexOptionFullScanResponseKeychainKind
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanResponseKeychainKind(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ArcMutexOptionFullScanResponseKeychainKindImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  EnvoyAccount
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return EnvoyAccountImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -364,6 +933,92 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_list_prim_u_8_strict(deserializer);
     return utf8.decoder.convert(inner);
+  }
+
+  @protected
+  BitcoinTransaction sse_decode_bitcoin_transaction(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_txId = sse_decode_String(deserializer);
+    var var_blockHeight = sse_decode_u_32(deserializer);
+    var var_confirmations = sse_decode_u_32(deserializer);
+    var var_fee = sse_decode_u_64(deserializer);
+    var var_amount = sse_decode_u_64(deserializer);
+    var var_inputs = sse_decode_list_input(deserializer);
+    var var_outputs = sse_decode_list_output(deserializer);
+    var var_note = sse_decode_opt_String(deserializer);
+    return BitcoinTransaction(
+        txId: var_txId,
+        blockHeight: var_blockHeight,
+        confirmations: var_confirmations,
+        fee: var_fee,
+        amount: var_amount,
+        inputs: var_inputs,
+        outputs: var_outputs,
+        note: var_note);
+  }
+
+  @protected
+  bool sse_decode_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint8() != 0;
+  }
+
+  @protected
+  bool sse_decode_box_autoadd_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_bool(deserializer));
+  }
+
+  @protected
+  Output sse_decode_box_autoadd_output(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_output(deserializer));
+  }
+
+  @protected
+  Input sse_decode_input(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_txId = sse_decode_String(deserializer);
+    var var_vout = sse_decode_u_32(deserializer);
+    return Input(txId: var_txId, vout: var_vout);
+  }
+
+  @protected
+  List<BitcoinTransaction> sse_decode_list_bitcoin_transaction(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <BitcoinTransaction>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_bitcoin_transaction(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<Input> sse_decode_list_input(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <Input>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_input(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<Output> sse_decode_list_output(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <Output>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_output(deserializer));
+    }
+    return ans_;
   }
 
   @protected
@@ -382,6 +1037,39 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     } else {
       return null;
     }
+  }
+
+  @protected
+  bool? sse_decode_opt_box_autoadd_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_bool(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  Output sse_decode_output(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_txId = sse_decode_String(deserializer);
+    var var_vout = sse_decode_u_32(deserializer);
+    var var_amount = sse_decode_u_64(deserializer);
+    var var_tag = sse_decode_opt_String(deserializer);
+    var var_doNotSpend = sse_decode_opt_box_autoadd_bool(deserializer);
+    return Output(
+        txId: var_txId,
+        vout: var_vout,
+        amount: var_amount,
+        tag: var_tag,
+        doNotSpend: var_doNotSpend);
+  }
+
+  @protected
+  int sse_decode_u_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint32();
   }
 
   @protected
@@ -414,42 +1102,184 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  bool sse_decode_bool(SseDeserializer deserializer) {
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccount(
+          ArcMutexNgAccount self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getUint8() != 0;
+    sse_encode_usize(
+        (self as ArcMutexNgAccountImpl).frbInternalSseEncode(move: true),
+        serializer);
   }
 
   @protected
   void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet(
-          Wallet self, SseSerializer serializer) {
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(
+          ArcMutexOptionFullScanRequestKeychainKind self,
+          SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-        (self as WalletImpl).frbInternalSseEncode(move: true), serializer);
+        (self as ArcMutexOptionFullScanRequestKeychainKindImpl)
+            .frbInternalSseEncode(move: true),
+        serializer);
   }
 
   @protected
   void
-      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet(
-          Wallet self, SseSerializer serializer) {
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanResponseKeychainKind(
+          ArcMutexOptionFullScanResponseKeychainKind self,
+          SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-        (self as WalletImpl).frbInternalSseEncode(move: false), serializer);
+        (self as ArcMutexOptionFullScanResponseKeychainKindImpl)
+            .frbInternalSseEncode(move: true),
+        serializer);
   }
 
   @protected
   void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWallet(
-          Wallet self, SseSerializer serializer) {
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+          EnvoyAccount self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-        (self as WalletImpl).frbInternalSseEncode(move: null), serializer);
+        (self as EnvoyAccountImpl).frbInternalSseEncode(move: true),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+          EnvoyAccount self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as EnvoyAccountImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+          EnvoyAccount self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as EnvoyAccountImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccount(
+          ArcMutexNgAccount self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ArcMutexNgAccountImpl).frbInternalSseEncode(move: null),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(
+          ArcMutexOptionFullScanRequestKeychainKind self,
+          SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ArcMutexOptionFullScanRequestKeychainKindImpl)
+            .frbInternalSseEncode(move: null),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanResponseKeychainKind(
+          ArcMutexOptionFullScanResponseKeychainKind self,
+          SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ArcMutexOptionFullScanResponseKeychainKindImpl)
+            .frbInternalSseEncode(move: null),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+          EnvoyAccount self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as EnvoyAccountImpl).frbInternalSseEncode(move: null),
+        serializer);
   }
 
   @protected
   void sse_encode_String(String self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_prim_u_8_strict(utf8.encoder.convert(self), serializer);
+  }
+
+  @protected
+  void sse_encode_bitcoin_transaction(
+      BitcoinTransaction self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.txId, serializer);
+    sse_encode_u_32(self.blockHeight, serializer);
+    sse_encode_u_32(self.confirmations, serializer);
+    sse_encode_u_64(self.fee, serializer);
+    sse_encode_u_64(self.amount, serializer);
+    sse_encode_list_input(self.inputs, serializer);
+    sse_encode_list_output(self.outputs, serializer);
+    sse_encode_opt_String(self.note, serializer);
+  }
+
+  @protected
+  void sse_encode_bool(bool self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint8(self ? 1 : 0);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_bool(bool self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_bool(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_output(Output self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_output(self, serializer);
+  }
+
+  @protected
+  void sse_encode_input(Input self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.txId, serializer);
+    sse_encode_u_32(self.vout, serializer);
+  }
+
+  @protected
+  void sse_encode_list_bitcoin_transaction(
+      List<BitcoinTransaction> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_bitcoin_transaction(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_input(List<Input> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_input(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_output(List<Output> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_output(item, serializer);
+    }
   }
 
   @protected
@@ -468,6 +1298,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     if (self != null) {
       sse_encode_String(self, serializer);
     }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_bool(bool? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_bool(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_output(Output self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.txId, serializer);
+    sse_encode_u_32(self.vout, serializer);
+    sse_encode_u_64(self.amount, serializer);
+    sse_encode_opt_String(self.tag, serializer);
+    sse_encode_opt_box_autoadd_bool(self.doNotSpend, serializer);
+  }
+
+  @protected
+  void sse_encode_u_32(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint32(self);
   }
 
   @protected
@@ -498,39 +1354,143 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putInt32(self);
   }
-
-  @protected
-  void sse_encode_bool(bool self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putUint8(self ? 1 : 0);
-  }
 }
 
 @sealed
-class WalletImpl extends RustOpaque implements Wallet {
+class ArcMutexNgAccountImpl extends RustOpaque implements ArcMutexNgAccount {
   // Not to be used by end users
-  WalletImpl.frbInternalDcoDecode(List<dynamic> wire)
+  ArcMutexNgAccountImpl.frbInternalDcoDecode(List<dynamic> wire)
       : super.frbInternalDcoDecode(wire, _kStaticData);
 
   // Not to be used by end users
-  WalletImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+  ArcMutexNgAccountImpl.frbInternalSseDecode(
+      BigInt ptr, int externalSizeOnNative)
       : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
 
   static final _kStaticData = RustArcStaticData(
     rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_Wallet,
+        RustLib.instance.api.rust_arc_increment_strong_count_ArcMutexNgAccount,
     rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_Wallet,
+        RustLib.instance.api.rust_arc_decrement_strong_count_ArcMutexNgAccount,
+    rustArcDecrementStrongCountPtr: RustLib
+        .instance.api.rust_arc_decrement_strong_count_ArcMutexNgAccountPtr,
+  );
+}
+
+@sealed
+class ArcMutexOptionFullScanRequestKeychainKindImpl extends RustOpaque
+    implements ArcMutexOptionFullScanRequestKeychainKind {
+  // Not to be used by end users
+  ArcMutexOptionFullScanRequestKeychainKindImpl.frbInternalDcoDecode(
+      List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  ArcMutexOptionFullScanRequestKeychainKindImpl.frbInternalSseDecode(
+      BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount: RustLib.instance.api
+        .rust_arc_increment_strong_count_ArcMutexOptionFullScanRequestKeychainKind,
+    rustArcDecrementStrongCount: RustLib.instance.api
+        .rust_arc_decrement_strong_count_ArcMutexOptionFullScanRequestKeychainKind,
+    rustArcDecrementStrongCountPtr: RustLib.instance.api
+        .rust_arc_decrement_strong_count_ArcMutexOptionFullScanRequestKeychainKindPtr,
+  );
+}
+
+@sealed
+class ArcMutexOptionFullScanResponseKeychainKindImpl extends RustOpaque
+    implements ArcMutexOptionFullScanResponseKeychainKind {
+  // Not to be used by end users
+  ArcMutexOptionFullScanResponseKeychainKindImpl.frbInternalDcoDecode(
+      List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  ArcMutexOptionFullScanResponseKeychainKindImpl.frbInternalSseDecode(
+      BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount: RustLib.instance.api
+        .rust_arc_increment_strong_count_ArcMutexOptionFullScanResponseKeychainKind,
+    rustArcDecrementStrongCount: RustLib.instance.api
+        .rust_arc_decrement_strong_count_ArcMutexOptionFullScanResponseKeychainKind,
+    rustArcDecrementStrongCountPtr: RustLib.instance.api
+        .rust_arc_decrement_strong_count_ArcMutexOptionFullScanResponseKeychainKindPtr,
+  );
+}
+
+@sealed
+class EnvoyAccountImpl extends RustOpaque implements EnvoyAccount {
+  // Not to be used by end users
+  EnvoyAccountImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  EnvoyAccountImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_EnvoyAccount,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_EnvoyAccount,
     rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_WalletPtr,
+        RustLib.instance.api.rust_arc_decrement_strong_count_EnvoyAccountPtr,
   );
 
-  Future<BigInt> balance() => RustLib.instance.api.crateApiSimpleWalletBalance(
+  Future<bool> applyUpdate(
+          {required ArcMutexOptionFullScanResponseKeychainKind scanRequest}) =>
+      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountApplyUpdate(
+          that: this, scanRequest: scanRequest);
+
+  ArcMutexNgAccount get ngAccount => RustLib.instance.api
+          .crateApiEnvoyWalletEnvoyAccountAutoAccessorGetNgAccount(
+        that: this,
+      );
+
+  set ngAccount(ArcMutexNgAccount ngAccount) => RustLib.instance.api
+      .crateApiEnvoyWalletEnvoyAccountAutoAccessorSetNgAccount(
+          that: this, ngAccount: ngAccount);
+
+  Future<BigInt> balance() =>
+      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountBalance(
         that: this,
       );
 
   Future<String> nextAddress() =>
-      RustLib.instance.api.crateApiSimpleWalletNextAddress(
+      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountNextAddress(
+        that: this,
+      );
+
+  Future<ArcMutexOptionFullScanRequestKeychainKind> requestScan() =>
+      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountRequestScan(
+        that: this,
+      );
+
+  Future<void> setDoNotSpend(
+          {required Output utxo, required bool doNotSpend}) =>
+      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountSetDoNotSpend(
+          that: this, utxo: utxo, doNotSpend: doNotSpend);
+
+  Future<void> setNote({required String txId, required String note}) =>
+      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountSetNote(
+          that: this, txId: txId, note: note);
+
+  Future<void> setTag({required Output utxo, required String tag}) => RustLib
+      .instance.api
+      .crateApiEnvoyWalletEnvoyAccountSetTag(that: this, utxo: utxo, tag: tag);
+
+  Future<List<BitcoinTransaction>> transactions() =>
+      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountTransactions(
+        that: this,
+      );
+
+  Future<List<Output>> utxo() =>
+      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountUtxo(
         that: this,
       );
 }

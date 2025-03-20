@@ -2,3 +2,8 @@ rust_input: crate::api, ngwallet::NgWallet, ngwallet::NgTransaction
 rust_root: rust/
 dart_output: lib/src/rust
 enable_lifetime: true
+rust_preamble: |
+  use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse};
+  use std::sync::{Mutex};
+  use bdk_wallet::KeychainKind;
+  use ngwallet::account::NgAccount;
