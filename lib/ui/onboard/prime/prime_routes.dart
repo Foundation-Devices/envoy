@@ -6,6 +6,7 @@
 import 'package:envoy/ui/onboard/prime/onboard_prime.dart';
 import 'package:envoy/ui/onboard/prime/onboard_prime_ble.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update.dart';
+import 'package:envoy/ui/onboard/prime/prime_magic_backup.dart';
 import 'package:envoy/ui/onboard/prime/prime_onboard_connection.dart';
 import 'package:envoy/ui/onboard/prime/setup/create_prime_wallet.dart';
 import 'package:envoy/ui/onboard/prime/setup/prime_pin_setup.dart';
@@ -19,6 +20,7 @@ const ONBOARD_PRIME_PIN_SETUP = "pin_setup";
 const ONBOARD_PRIME_SEED_SETUP = "seed_setup";
 const ONBOARD_PRIME_CREATE = "restore";
 const ONBOARD_PRIME_RESTORE = "seed_setup";
+const ONBOARD_PRIME_MAGIC_BACKUP = "magic";
 
 final primeRoutes = GoRoute(
   path: "prime",
@@ -43,7 +45,11 @@ final primeRoutes = GoRoute(
         GoRoute(
             path: "seed",
             name: ONBOARD_PRIME_SEED_SETUP,
-            builder: (context, state) => const PrimeSeedSetup())
+            builder: (context, state) => const PrimeSeedSetup()),
+        GoRoute(
+            path: "magic",
+            name: ONBOARD_PRIME_MAGIC_BACKUP,
+            builder: (context, state) => const PrimeMagicBackup()),
       ],
       builder: (context, state) => const OnboardPrimeBluetooth(),
     )

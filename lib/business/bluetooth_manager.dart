@@ -22,6 +22,7 @@ class BluetoothManager {
       StreamController<api.PassportMessage>();
 
   api.Dechunker? _decoder;
+  api.XidDocument? _recipientXid;
 
   factory BluetoothManager() {
     return _instance;
@@ -61,19 +62,19 @@ class BluetoothManager {
   }
 
   Future<List<Uint8List>> encodeMessage(
-      {required api.QuantumLinkMessage message,
-      required api.XidDocument recipient}) async {
+      {required api.QuantumLinkMessage message}) async {
     api.EnvoyMessage envoyMessage =
         api.EnvoyMessage(message: message, timestamp: 0);
 
     return await api.encode(
       message: envoyMessage,
       sender: qlIdentity!,
-      recipient: recipient,
+      recipient: _recipientXid!,
     );
   }
 
   Future<void> pair(api.XidDocument recipient) async {
+    _recipientXid = recipient;
     kPrint("pair: $hashCode");
 
     kPrint("Pairing...");
@@ -82,8 +83,7 @@ class BluetoothManager {
     kPrint("Encoding...");
 
     final encoded = await encodeMessage(
-        message: api.QuantumLinkMessage.pairingRequest(request),
-        recipient: recipient);
+        message: api.QuantumLinkMessage.pairingRequest(request));
 
     kPrint("Encoded...");
 
@@ -145,6 +145,18 @@ class BluetoothManager {
     } else {
       return null;
     }
+  }
+
+  Future<void> sendOnboardingState(api.OnboardingState state) async {
+    final encoded = await encodeMessage(
+      message: api.QuantumLinkMessage.onboardingState(state),
+    );
+
+
+
+    await bluart.writeAll(id: bleId, data: encoded);
+
+
   }
 
   dispose() {

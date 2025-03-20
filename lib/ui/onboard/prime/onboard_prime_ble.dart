@@ -29,12 +29,14 @@ import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../NGWalletUi.dart';
+import '../routes/onboard_routes.dart';
 
 class OnboardPrimeBluetooth extends ConsumerStatefulWidget {
   const OnboardPrimeBluetooth({super.key});
 
   @override
-  ConsumerState<OnboardPrimeBluetooth> createState() => _OnboardPrimeBluetoothState();
+  ConsumerState<OnboardPrimeBluetooth> createState() =>
+      _OnboardPrimeBluetoothState();
 }
 
 class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
@@ -53,7 +55,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   void _listenForPassPortMessages() {
     BluetoothManager().passportMessageStream.listen((PassportMessage message) {
       kPrint("Got the Passport Message : ${message.message}");
-      
+
       if (message.message is QuantumLinkMessage_PairingResponse) {
         kPrint("Found it!");
         final response = message.message as QuantumLinkMessage_PairingResponse;
@@ -62,11 +64,92 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         // Create the thing that I'm gonna reveal later
         AccountNg().restore(response.field0.descriptor);
 
-        Navigator.of(context, rootNavigator: true).push(
-            MaterialPageRoute(
-                builder: (context) =>  Theme(data: Theme.of(context),child: NGWalletUi(),)));
+        Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+            builder: (context) => Theme(
+                  data: Theme.of(context),
+                  child: NGWalletUi(),
+                )));
+      }
+
+      if (message.message is QuantumLinkMessage_OnboardingState) {
+        final onboardingState =
+            (message.message as QuantumLinkMessage_OnboardingState).field0;
+
+        _handleOnboardingState(onboardingState);
       }
     });
+  }
+
+  void _handleOnboardingState(OnboardingState state) {
+    switch (state) {
+      case OnboardingState.firmwareUpdateScreen:
+        context.goNamed(ONBOARD_PRIME_FIRMWARE_UPDATE);
+        break;
+      case OnboardingState.downloadingUpdate:
+        // TODO: Handle downloading update
+        break;
+      case OnboardingState.receivingUpdate:
+        // TODO: Handle receiving update
+        break;
+      case OnboardingState.veryfyingSignatures:
+        // TODO: Handle verifying signatures
+        break;
+      case OnboardingState.installingUpdate:
+        // TODO: Handle installing update
+        break;
+      case OnboardingState.rebooting:
+        // TODO: Handle rebooting
+        break;
+      case OnboardingState.firmwareUpdated:
+        // TODO: Handle firmware updated
+        break;
+      case OnboardingState.securingDevice:
+        context.goNamed(ONBOARD_PRIME_PIN_SETUP);
+        break;
+      case OnboardingState.deviceSecured:
+        // TODO: Handle device secured
+        break;
+      case OnboardingState.walletCreationScreen:
+        context.goNamed(ONBOARD_PRIME_SEED_SETUP);
+        break;
+      case OnboardingState.creatingWallet:
+        // TODO: Handle creating wallet
+        break;
+      case OnboardingState.walletCreated:
+        // TODO: Handle wallet created
+        break;
+      case OnboardingState.magicBackupScreen:
+        context.goNamed(ONBOARD_PRIME_MAGIC_BACKUP);
+        // TODO: Handle magic backup screen
+        break;
+      case OnboardingState.creatingMagicBackup:
+        // TODO: Handle creating magic backup
+        break;
+      case OnboardingState.magicBackupCreated:
+        // TODO: Handle magic backup created
+        break;
+      case OnboardingState.creatingManualBackup:
+        // TODO: Handle creating manual backup
+        break;
+      case OnboardingState.creatingKeycardBackup:
+        // TODO: Handle creating keycard backup
+        break;
+      case OnboardingState.writingDownSeedWords:
+        // TODO: Handle writing down seed words
+        break;
+      case OnboardingState.connectingWallet:
+        // TODO: Handle connecting wallet
+        break;
+      case OnboardingState.walletConected:
+
+        // this screen just for test
+        context.pushNamed(ONBOARD_ENVOY_MAGIC_WALLET_READY);
+        // TODO: Handle wallet connected
+        break;
+      case OnboardingState.completed:
+        // TODO: Handle onboarding completed
+        break;
+    }
   }
 
   @override
@@ -326,16 +409,17 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                     Navigator.pop(context);
                   },
                   decoder:
-                  //parse UR payload
-                  PrimeQlPayloadDecoder(
-                      decoder: decoder,
-                      onScan: (XidDocument payload) {
-                        kPrint("payload $payload");
-                        pairWithPrime(
-                            payload);
-                        Navigator.pop(context);
-                        //TODO: process XidDocument for connection
-                      }));
+                      //parse UR payload
+                      PrimeQlPayloadDecoder(
+                          decoder: decoder,
+                          onScan: (XidDocument payload) {
+                            kPrint("payload $payload");
+                            pairWithPrime(payload);
+                            Navigator.pop(context);
+                            //TODO: process XidDocument for connection
+
+                            context.goNamed(ONBOARD_PRIME_PAIR);
+                          }));
             },
           ));
     }
