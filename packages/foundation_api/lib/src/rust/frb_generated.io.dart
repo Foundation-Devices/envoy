@@ -12,6 +12,7 @@ import 'frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart';
 import 'third_party/bc_ur.dart';
 import 'third_party/bc_xid.dart';
+import 'third_party/foundation_api/api/bitcoin.dart';
 import 'third_party/foundation_api/api/firmware.dart';
 import 'third_party/foundation_api/api/fx.dart';
 import 'third_party/foundation_api/api/message.dart';
@@ -140,6 +141,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   PassportMessage dco_decode_box_autoadd_passport_message(dynamic raw);
 
   @protected
+  SignPsbt dco_decode_box_autoadd_sign_psbt(dynamic raw);
+
+  @protected
+  SyncUpdate dco_decode_box_autoadd_sync_update(dynamic raw);
+
+  @protected
   DecoderStatus dco_decode_decoder_status(dynamic raw);
 
   @protected
@@ -218,6 +225,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   QuantumLinkMessage dco_decode_quantum_link_message(dynamic raw);
+
+  @protected
+  SignPsbt dco_decode_sign_psbt(dynamic raw);
+
+  @protected
+  SyncUpdate dco_decode_sync_update(dynamic raw);
 
   @protected
   int dco_decode_u_32(dynamic raw);
@@ -334,6 +347,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  SignPsbt sse_decode_box_autoadd_sign_psbt(SseDeserializer deserializer);
+
+  @protected
+  SyncUpdate sse_decode_box_autoadd_sync_update(SseDeserializer deserializer);
+
+  @protected
   DecoderStatus sse_decode_decoder_status(SseDeserializer deserializer);
 
   @protected
@@ -416,6 +435,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   QuantumLinkMessage sse_decode_quantum_link_message(
       SseDeserializer deserializer);
+
+  @protected
+  SignPsbt sse_decode_sign_psbt(SseDeserializer deserializer);
+
+  @protected
+  SyncUpdate sse_decode_sync_update(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_32(SseDeserializer deserializer);
@@ -537,6 +562,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       PassportMessage self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_sign_psbt(
+      SignPsbt self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_sync_update(
+      SyncUpdate self, SseSerializer serializer);
+
+  @protected
   void sse_encode_decoder_status(DecoderStatus self, SseSerializer serializer);
 
   @protected
@@ -627,6 +660,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_quantum_link_message(
       QuantumLinkMessage self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_sign_psbt(SignPsbt self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_sync_update(SyncUpdate self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_32(int self, SseSerializer serializer);

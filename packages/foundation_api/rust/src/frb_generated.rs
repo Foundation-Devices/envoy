@@ -28,13 +28,14 @@
 use crate::api::ql::*;
 use bc_ur::*;
 use bc_xid::*;
-use btp::Dechunker;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::{transform_result_dco, Lifetimeable, Lockable};
 use flutter_rust_bridge::{Handler, IntoIntoDart};
 use foundation_api::api::quantum_link::*;
 
 // Section: boilerplate
+
+use btp::Dechunker;
 
 flutter_rust_bridge::frb_generated_boilerplate!(
     default_stream_sink_codec = SseCodec,
@@ -623,6 +624,22 @@ const _: fn() = || {
         foundation_api::api::message::QuantumLinkMessage::OnboardingState(field0) => {
             let _: foundation_api::api::onboarding::OnboardingState = field0;
         }
+        foundation_api::api::message::QuantumLinkMessage::SignPsbt(field0) => {
+            let _: foundation_api::api::bitcoin::SignPsbt = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::SyncUpdate(field0) => {
+            let _: foundation_api::api::bitcoin::SyncUpdate = field0;
+        }
+    }
+    {
+        let SignPsbt = None::<foundation_api::api::bitcoin::SignPsbt>.unwrap();
+        let _: String = SignPsbt.descriptor;
+        let _: String = SignPsbt.psbt;
+    }
+    {
+        let SyncUpdate = None::<foundation_api::api::bitcoin::SyncUpdate>.unwrap();
+        let _: String = SyncUpdate.descriptor;
+        let _: Vec<u8> = SyncUpdate.update;
     }
 };
 
@@ -1082,10 +1099,44 @@ impl SseDecode for foundation_api::api::message::QuantumLinkMessage {
                     var_field0,
                 );
             }
+            7 => {
+                let mut var_field0 =
+                    <foundation_api::api::bitcoin::SignPsbt>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::SignPsbt(var_field0);
+            }
+            8 => {
+                let mut var_field0 =
+                    <foundation_api::api::bitcoin::SyncUpdate>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::SyncUpdate(var_field0);
+            }
             _ => {
                 unimplemented!("");
             }
         }
+    }
+}
+
+impl SseDecode for foundation_api::api::bitcoin::SignPsbt {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_descriptor = <String>::sse_decode(deserializer);
+        let mut var_psbt = <String>::sse_decode(deserializer);
+        return foundation_api::api::bitcoin::SignPsbt {
+            descriptor: var_descriptor,
+            psbt: var_psbt,
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::bitcoin::SyncUpdate {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_descriptor = <String>::sse_decode(deserializer);
+        let mut var_update = <Vec<u8>>::sse_decode(deserializer);
+        return foundation_api::api::bitcoin::SyncUpdate {
+            descriptor: var_descriptor,
+            update: var_update,
+        };
     }
 }
 
@@ -1611,6 +1662,12 @@ impl flutter_rust_bridge::IntoDart
             foundation_api::api::message::QuantumLinkMessage::OnboardingState(field0) => {
                 [6.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
+            foundation_api::api::message::QuantumLinkMessage::SignPsbt(field0) => {
+                [7.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::SyncUpdate(field0) => {
+                [8.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
             _ => {
                 unimplemented!("");
             }
@@ -1625,6 +1682,48 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::message::
     for foundation_api::api::message::QuantumLinkMessage
 {
     fn into_into_dart(self) -> FrbWrapper<foundation_api::api::message::QuantumLinkMessage> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::bitcoin::SignPsbt> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.descriptor.into_into_dart().into_dart(),
+            self.0.psbt.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::bitcoin::SignPsbt>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::bitcoin::SignPsbt>>
+    for foundation_api::api::bitcoin::SignPsbt
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::bitcoin::SignPsbt> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::bitcoin::SyncUpdate> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.descriptor.into_into_dart().into_dart(),
+            self.0.update.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::bitcoin::SyncUpdate>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::bitcoin::SyncUpdate>>
+    for foundation_api::api::bitcoin::SyncUpdate
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::bitcoin::SyncUpdate> {
         self.into()
     }
 }
@@ -2007,10 +2106,34 @@ impl SseEncode for foundation_api::api::message::QuantumLinkMessage {
                 <i32>::sse_encode(6, serializer);
                 <foundation_api::api::onboarding::OnboardingState>::sse_encode(field0, serializer);
             }
+            foundation_api::api::message::QuantumLinkMessage::SignPsbt(field0) => {
+                <i32>::sse_encode(7, serializer);
+                <foundation_api::api::bitcoin::SignPsbt>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::message::QuantumLinkMessage::SyncUpdate(field0) => {
+                <i32>::sse_encode(8, serializer);
+                <foundation_api::api::bitcoin::SyncUpdate>::sse_encode(field0, serializer);
+            }
             _ => {
                 unimplemented!("");
             }
         }
+    }
+}
+
+impl SseEncode for foundation_api::api::bitcoin::SignPsbt {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.descriptor, serializer);
+        <String>::sse_encode(self.psbt, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::bitcoin::SyncUpdate {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.descriptor, serializer);
+        <Vec<u8>>::sse_encode(self.update, serializer);
     }
 }
 
@@ -2069,6 +2192,8 @@ mod io {
     use foundation_api::api::quantum_link::*;
 
     // Section: boilerplate
+
+    use btp::Dechunker;
 
     flutter_rust_bridge::frb_generated_boilerplate_io!();
 
@@ -2153,6 +2278,8 @@ mod web {
     use foundation_api::api::quantum_link::*;
 
     // Section: boilerplate
+
+    use btp::Dechunker;
 
     flutter_rust_bridge::frb_generated_boilerplate_web!();
 

@@ -4,6 +4,7 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../../../frb_generated.dart';
+import 'bitcoin.dart';
 import 'firmware.dart';
 import 'fx.dart';
 import 'onboarding.dart';
@@ -81,4 +82,10 @@ sealed class QuantumLinkMessage with _$QuantumLinkMessage {
   const factory QuantumLinkMessage.onboardingState(
     OnboardingState field0,
   ) = QuantumLinkMessage_OnboardingState;
+  const factory QuantumLinkMessage.signPsbt(
+    SignPsbt field0,
+  ) = QuantumLinkMessage_SignPsbt;
+  const factory QuantumLinkMessage.syncUpdate(
+    SyncUpdate field0,
+  ) = QuantumLinkMessage_SyncUpdate;
 }

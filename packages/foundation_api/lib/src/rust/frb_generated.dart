@@ -13,6 +13,7 @@ import 'frb_generated.io.dart'
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'third_party/bc_ur.dart';
 import 'third_party/bc_xid.dart';
+import 'third_party/foundation_api/api/bitcoin.dart';
 import 'third_party/foundation_api/api/firmware.dart';
 import 'third_party/foundation_api/api/fx.dart';
 import 'third_party/foundation_api/api/message.dart';
@@ -618,6 +619,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  SignPsbt dco_decode_box_autoadd_sign_psbt(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_sign_psbt(raw);
+  }
+
+  @protected
+  SyncUpdate dco_decode_box_autoadd_sync_update(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_sync_update(raw);
+  }
+
+  @protected
   DecoderStatus dco_decode_decoder_status(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -880,9 +893,41 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return QuantumLinkMessage_OnboardingState(
           dco_decode_onboarding_state(raw[1]),
         );
+      case 7:
+        return QuantumLinkMessage_SignPsbt(
+          dco_decode_box_autoadd_sign_psbt(raw[1]),
+        );
+      case 8:
+        return QuantumLinkMessage_SyncUpdate(
+          dco_decode_box_autoadd_sync_update(raw[1]),
+        );
       default:
         throw Exception("unreachable");
     }
+  }
+
+  @protected
+  SignPsbt dco_decode_sign_psbt(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return SignPsbt(
+      descriptor: dco_decode_String(arr[0]),
+      psbt: dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
+  SyncUpdate dco_decode_sync_update(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return SyncUpdate(
+      descriptor: dco_decode_String(arr[0]),
+      update: dco_decode_list_prim_u_8_strict(arr[1]),
+    );
   }
 
   @protected
@@ -1094,6 +1139,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_passport_message(deserializer));
+  }
+
+  @protected
+  SignPsbt sse_decode_box_autoadd_sign_psbt(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_sign_psbt(deserializer));
+  }
+
+  @protected
+  SyncUpdate sse_decode_box_autoadd_sync_update(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_sync_update(deserializer));
   }
 
   @protected
@@ -1342,9 +1399,31 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 6:
         var var_field0 = sse_decode_onboarding_state(deserializer);
         return QuantumLinkMessage_OnboardingState(var_field0);
+      case 7:
+        var var_field0 = sse_decode_box_autoadd_sign_psbt(deserializer);
+        return QuantumLinkMessage_SignPsbt(var_field0);
+      case 8:
+        var var_field0 = sse_decode_box_autoadd_sync_update(deserializer);
+        return QuantumLinkMessage_SyncUpdate(var_field0);
       default:
         throw UnimplementedError('');
     }
+  }
+
+  @protected
+  SignPsbt sse_decode_sign_psbt(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_descriptor = sse_decode_String(deserializer);
+    var var_psbt = sse_decode_String(deserializer);
+    return SignPsbt(descriptor: var_descriptor, psbt: var_psbt);
+  }
+
+  @protected
+  SyncUpdate sse_decode_sync_update(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_descriptor = sse_decode_String(deserializer);
+    var var_update = sse_decode_list_prim_u_8_strict(deserializer);
+    return SyncUpdate(descriptor: var_descriptor, update: var_update);
   }
 
   @protected
@@ -1570,6 +1649,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_sign_psbt(
+      SignPsbt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_sign_psbt(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_sync_update(
+      SyncUpdate self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_sync_update(self, serializer);
+  }
+
+  @protected
   void sse_encode_decoder_status(DecoderStatus self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_f_64(self.progress, serializer);
@@ -1790,7 +1883,27 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case QuantumLinkMessage_OnboardingState(field0: final field0):
         sse_encode_i_32(6, serializer);
         sse_encode_onboarding_state(field0, serializer);
+      case QuantumLinkMessage_SignPsbt(field0: final field0):
+        sse_encode_i_32(7, serializer);
+        sse_encode_box_autoadd_sign_psbt(field0, serializer);
+      case QuantumLinkMessage_SyncUpdate(field0: final field0):
+        sse_encode_i_32(8, serializer);
+        sse_encode_box_autoadd_sync_update(field0, serializer);
     }
+  }
+
+  @protected
+  void sse_encode_sign_psbt(SignPsbt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.descriptor, serializer);
+    sse_encode_String(self.psbt, serializer);
+  }
+
+  @protected
+  void sse_encode_sync_update(SyncUpdate self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.descriptor, serializer);
+    sse_encode_list_prim_u_8_strict(self.update, serializer);
   }
 
   @protected
