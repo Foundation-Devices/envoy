@@ -73,7 +73,6 @@ Future<void> initSingletons() async {
   kPrint("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
 
   await AccountNg().init();
-  AccountNg().restore("tr(tprv8ZgxMBicQKsPdrjwWCyXqqJ4YqcyG4DmKtjjsRt29v1PtD3r3PuFJAjWytzcvSTKnZAGAkPSmnrdnuHWxCAwy3i1iPhrtKAfXRH7dVCNGp6/86'/1'/0'/0/*)#g9xn7wf9");
 
   await NTPUtil.init();
   await EnvoyStorage().init();
