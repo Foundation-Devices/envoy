@@ -92,13 +92,7 @@ class BluetoothManager {
 
     kPrint("Number of chunks: ${encoded.length}");
 
-    for (var element in encoded) {
-      await Future.delayed(Duration(milliseconds: 100));
-      final size = element.length;
-      kPrint("Writing to {$bleId}: {$size}");
-      kPrint("Writing to {$bleId}: {$element}");
-      await bluart.write(id: bleId, data: element);
-    }
+    await bluart.writeAll(id: bleId, data: encoded);
 
     // Listen for response
     listen(id: bleId);

@@ -7,7 +7,7 @@ import '../frb_generated.dart';
 import 'ble/device.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `inner_benchmark`, `inner_connect`, `inner_disconnect`, `inner_read`, `inner_scan`, `inner_write`, `remove_stale_devices`, `send_devices`, `send`
+// These functions are ignored because they are not marked as `pub`: `inner_benchmark`, `inner_connect`, `inner_disconnect`, `inner_read`, `inner_scan`, `inner_write_all`, `inner_write`, `remove_stale_devices`, `send_devices`, `send`
 // These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `Command`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`
 
@@ -36,6 +36,9 @@ Stream<BigInt> benchmark({required String id}) =>
 
 Future<void> write({required String id, required List<int> data}) =>
     RustLib.instance.api.crateApiBleWrite(id: id, data: data);
+
+Future<void> writeAll({required String id, required List<Uint8List> data}) =>
+    RustLib.instance.api.crateApiBleWriteAll(id: id, data: data);
 
 Stream<Uint8List> read({required String id}) =>
     RustLib.instance.api.crateApiBleRead(id: id);

@@ -51,6 +51,10 @@ enum Command {
         id: String,
         data: Vec<u8>,
     },
+    WriteAll {
+        id: String,
+        data: Vec<Vec<u8>>,
+    },
 }
 
 impl std::fmt::Debug for Command {
@@ -102,6 +106,7 @@ pub fn init() -> Result<()> {
                 Command::Benchmark { id, sink } => inner_benchmark(id, sink).await.unwrap(),
                 Command::Read { id, sink } => inner_read(id, sink).await.unwrap(),
                 Command::Write { id, data } => inner_write(id, data).await.unwrap(),
+                Command::WriteAll { id, data } => inner_write_all(id, data).await.unwrap(),
             }
         }
     });
@@ -247,7 +252,7 @@ pub fn connect(id: String) -> Result<()> {
 async fn inner_connect(id: String) -> Result<()> {
     debug!("{}", format!("Try to connect to: {id}"));
 
-    let mut devices = DEVICES.get().unwrap().lock().await;
+    let devices = DEVICES.get().unwrap().lock().await;
     let device = match devices
         .get(&id) {
             Some(device) => device,
@@ -313,6 +318,27 @@ async fn inner_write(id: String, data: Vec<u8>) -> Result<()> {
         .get(&id)
         .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
     device.write(data).await
+}
+
+pub fn write_all(id: String, data: Vec<Vec<u8>>) -> Result<()> {
+    debug!("{}", format!("Writing all to: {id}"));
+    send(Command::WriteAll { id, data })
+}
+
+async fn inner_write_all(id: String, data: Vec<Vec<u8>>) -> Result<()> {
+    debug!("inner write_all");
+    debug!("{}", format!("Writing all to: {id}"));
+    let devices = DEVICES.get().unwrap().lock().await;
+    let device = devices
+        .get(&id)
+        .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
+
+    for data in data {
+        device.write(data).await?;
+        tokio::time::sleep(time::Duration::from_millis(80)).await;
+    }
+
+    Ok(())
 }
 
 pub fn read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {

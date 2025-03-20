@@ -69,7 +69,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.9.0';
 
   @override
-  int get rustContentHash => 1255975905;
+  int get rustContentHash => -1977856222;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -98,6 +98,9 @@ abstract class RustLibApi extends BaseApi {
   Stream<List<BleDevice>> crateApiBleScan({required List<String> filter});
 
   Future<void> crateApiBleWrite({required String id, required List<int> data});
+
+  Future<void> crateApiBleWriteAll(
+      {required String id, required List<Uint8List> data});
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_Peripheral;
@@ -344,6 +347,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         argNames: ["id", "data"],
       );
 
+  @override
+  Future<void> crateApiBleWriteAll(
+      {required String id, required List<Uint8List> data}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        sse_encode_list_list_prim_u_8_strict(data, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 10, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBleWriteAllConstMeta,
+      argValues: [id, data],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBleWriteAllConstMeta => const TaskConstMeta(
+        debugName: "write_all",
+        argNames: ["id", "data"],
+      );
+
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_Peripheral => wire
           .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPeripheral;
@@ -429,6 +458,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   List<BleDevice> dco_decode_list_ble_device(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_ble_device).toList();
+  }
+
+  @protected
+  List<Uint8List> dco_decode_list_list_prim_u_8_strict(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_list_prim_u_8_strict).toList();
   }
 
   @protected
@@ -555,6 +590,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var ans_ = <BleDevice>[];
     for (var idx_ = 0; idx_ < len_; ++idx_) {
       ans_.add(sse_decode_ble_device(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<Uint8List> sse_decode_list_list_prim_u_8_strict(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <Uint8List>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_list_prim_u_8_strict(deserializer));
     }
     return ans_;
   }
@@ -702,6 +750,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_i_32(self.length, serializer);
     for (final item in self) {
       sse_encode_ble_device(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_list_prim_u_8_strict(
+      List<Uint8List> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_list_prim_u_8_strict(item, serializer);
     }
   }
 
