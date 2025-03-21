@@ -28,8 +28,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../NGWalletUi.dart';
-import '../routes/onboard_routes.dart';
+import 'package:envoy/ui/NGWalletUi.dart';
+import 'package:envoy/ui/widgets/envoy_step_item.dart';
+import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 
 class OnboardPrimeBluetooth extends ConsumerStatefulWidget {
   const OnboardPrimeBluetooth({super.key});
@@ -80,10 +81,18 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     });
   }
 
-  void _handleOnboardingState(OnboardingState state) {
+  Future<void> _handleOnboardingState(OnboardingState state) async {
+    ProviderContainer providerContainer = ProviderScope.containerOf(context);
+
+    final bleStepNotifier = ref.read(bleConnectionProvider.notifier);
+    await bleStepNotifier.updateStep(
+        "Connecting to Prime", EnvoyStepState.LOADING);
+
     switch (state) {
       case OnboardingState.firmwareUpdateScreen:
-        context.goNamed(ONBOARD_PRIME_FIRMWARE_UPDATE);
+        if (mounted) {
+          context.goNamed(ONBOARD_PRIME_FIRMWARE_UPDATE);
+        }
         break;
       case OnboardingState.downloadingUpdate:
         // TODO: Handle downloading update
@@ -104,29 +113,43 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         // TODO: Handle firmware updated
         break;
       case OnboardingState.securingDevice:
-        context.goNamed(ONBOARD_PRIME_PIN_SETUP);
+        if (mounted) {
+          context.goNamed(ONBOARD_PRIME_CONTINUING_SETUP);
+        }
         break;
       case OnboardingState.deviceSecured:
-        // TODO: Handle device secured
+        ref
+            .read(creatingPinProvider.notifier)
+            .updateStep("PIN created", EnvoyStepState.FINISHED);
         break;
       case OnboardingState.walletCreationScreen:
-        context.goNamed(ONBOARD_PRIME_SEED_SETUP);
+        ref
+            .read(setUpMasterKeyProvider.notifier)
+            .updateStep("Setting Up Master Key", EnvoyStepState.LOADING);
+        // context.goNamed(ONBOARD_PRIME_SEED_SETUP);
         break;
       case OnboardingState.creatingWallet:
         // TODO: Handle creating wallet
         break;
       case OnboardingState.walletCreated:
-        // TODO: Handle wallet created
+        ref
+            .read(setUpMasterKeyProvider.notifier)
+            .updateStep("Master Key Set Up", EnvoyStepState.FINISHED);
         break;
       case OnboardingState.magicBackupScreen:
-        context.goNamed(ONBOARD_PRIME_MAGIC_BACKUP);
+        ref
+            .read(backUpMasterKeyProvider.notifier)
+            .updateStep("Backing Up Master Key", EnvoyStepState.LOADING);
+        // context.goNamed(ONBOARD_PRIME_MAGIC_BACKUP);
         // TODO: Handle magic backup screen
         break;
       case OnboardingState.creatingMagicBackup:
         // TODO: Handle creating magic backup
         break;
       case OnboardingState.magicBackupCreated:
-        // TODO: Handle magic backup created
+        ref
+            .read(backUpMasterKeyProvider.notifier)
+            .updateStep("Master Key Backed Up", EnvoyStepState.FINISHED);
         break;
       case OnboardingState.creatingManualBackup:
         // TODO: Handle creating manual backup
@@ -138,12 +161,15 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         // TODO: Handle writing down seed words
         break;
       case OnboardingState.connectingWallet:
-        // TODO: Handle connecting wallet
+        ref
+            .read(connectAccountProvider.notifier)
+            .updateStep("Connecting Account", EnvoyStepState.LOADING);
         break;
       case OnboardingState.walletConected:
-
         // this screen just for test
-        context.pushNamed(ONBOARD_ENVOY_MAGIC_WALLET_READY);
+        if (mounted) {
+          context.pushNamed(ONBOARD_ENVOY_MAGIC_WALLET_READY);
+        }
         // TODO: Handle wallet connected
         break;
       case OnboardingState.completed:

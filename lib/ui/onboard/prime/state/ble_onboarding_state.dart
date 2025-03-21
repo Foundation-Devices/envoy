@@ -7,8 +7,6 @@ import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart';
 
-
-
 final primeBleIdProvider = StateProvider<String?>((ref) => null);
 final primePublicKeyProvider = StateProvider<XidDocument?>((ref) => null);
 
@@ -34,4 +32,26 @@ final deviceSecurityProvider =
 final firmWareUpdateProvider =
     StateNotifierProvider<StepNotifier, StepModel>((ref) {
   return StepNotifier();
+});
+
+final creatingPinProvider =
+    StateNotifierProvider<StepNotifier, StepModel>((ref) {
+  return StepNotifier(stepName: "Creating Pin", state: EnvoyStepState.LOADING);
+});
+
+final setUpMasterKeyProvider =
+    StateNotifierProvider<StepNotifier, StepModel>((ref) {
+  return StepNotifier(
+      stepName: "Set Up Master Key", state: EnvoyStepState.IDLE);
+});
+
+final backUpMasterKeyProvider =
+    StateNotifierProvider<StepNotifier, StepModel>((ref) {
+  return StepNotifier(
+      stepName: "Back Up Master Key", state: EnvoyStepState.IDLE);
+});
+
+final connectAccountProvider =
+    StateNotifierProvider<StepNotifier, StepModel>((ref) {
+  return StepNotifier(stepName: "Connect Account", state: EnvoyStepState.IDLE);
 });
