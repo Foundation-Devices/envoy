@@ -54,7 +54,9 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   }
 
   void _listenForPassPortMessages() {
-    BluetoothManager().passportMessageStream.listen((PassportMessage message) {
+    final navigator = Navigator.of(context, rootNavigator: true);
+
+    BluetoothManager().passportMessageStream.listen((PassportMessage message) async {
       kPrint("Got the Passport Message : ${message.message}");
 
       if (message.message is QuantumLinkMessage_PairingResponse) {
@@ -63,7 +65,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
         kPrint("GOT DESCRIPTOR: ${response.field0.descriptor}");
         // Create the thing that I'm gonna reveal later
-        AccountNg().restore(response.field0.descriptor);
+        await AccountNg().restore(response.field0.descriptor);
 
         Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
             builder: (context) => Theme(

@@ -100,6 +100,14 @@ class BluetoothManager {
     //await bluart.write(id: bleId, data: "123".codeUnits);
   }
 
+  Future<void> sendPsbt(String descriptor, String psbt) async {
+    final encoded = await encodeMessage(
+        message: api.QuantumLinkMessage.signPsbt(api.SignPsbt(descriptor: descriptor, psbt: psbt)));
+
+    kPrint("before sending psbt");
+    await bluart.writeAll(id: bleId, data: encoded);
+  }
+
   void _generateQlIdentity() async {
     try {
       kPrint("Generating ql identity...");

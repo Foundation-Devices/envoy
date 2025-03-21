@@ -335,7 +335,7 @@ async fn inner_write_all(id: String, data: Vec<Vec<u8>>) -> Result<()> {
 
     for data in data {
         device.write(data).await?;
-        tokio::time::sleep(time::Duration::from_millis(80)).await;
+        tokio::time::sleep(time::Duration::from_millis(100)).await;
     }
 
     Ok(())
@@ -353,8 +353,7 @@ async fn inner_read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
         .get(&id)
         .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
 
-    loop {
-        tokio::time::sleep(time::Duration::from_millis(100)).await;
+
         debug!("{}", format!("Reading from: {id}"));
         match device.read().await {
             Ok(mut stream) => {
@@ -371,5 +370,7 @@ async fn inner_read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
                 debug!("{}", format!("Got error: {:?}", e));
             }
         }
-    }
+
+    Ok(())
+
 }

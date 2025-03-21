@@ -112,7 +112,7 @@ impl EnvoyAccount {
     pub fn set_note(&mut self, tx_id: String, note: String) {
         self.ng_account
             .lock().unwrap()
-            .wallet.set_note(tx_id, note);
+            .wallet.set_note(&tx_id, &note);
     }
 
     pub fn send(&mut self, address: String, amount: u64) -> Result<String, Error> {
