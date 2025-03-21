@@ -11,6 +11,7 @@ import 'package:envoy/ui/onboard/prime/prime_onboard_connection.dart';
 import 'package:envoy/ui/onboard/prime/setup/create_prime_wallet.dart';
 import 'package:envoy/ui/onboard/prime/setup/prime_continuing_setup.dart';
 import 'package:envoy/ui/onboard/prime/setup/prime_pin_setup.dart';
+import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:go_router/go_router.dart';
 
 const ONBOARD_PRIME = "prime";
@@ -23,6 +24,7 @@ const ONBOARD_PRIME_CREATE = "restore";
 const ONBOARD_PRIME_RESTORE = "seed_setup";
 const ONBOARD_PRIME_MAGIC_BACKUP = "magic";
 const ONBOARD_PRIME_CONTINUING_SETUP = "continuing_setup";
+const ONBOARD_PRIME_CONNECTED_SUCCESS = "connected_success";
 
 final primeRoutes = GoRoute(
   path: "prime",
@@ -56,6 +58,12 @@ final primeRoutes = GoRoute(
             path: "magic",
             name: ONBOARD_PRIME_MAGIC_BACKUP,
             builder: (context, state) => const PrimeMagicBackup()),
+        GoRoute(
+            path: "connected_success",
+            name: ONBOARD_PRIME_CONNECTED_SUCCESS,
+            builder: (context, state) => const WalletSetupSuccess(
+                  isPrimeWallet: true,
+                )),
       ],
       builder: (context, state) => const OnboardPrimeBluetooth(),
     )

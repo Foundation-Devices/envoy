@@ -166,14 +166,14 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             .updateStep("Connecting Account", EnvoyStepState.LOADING);
         break;
       case OnboardingState.walletConected:
-        // this screen just for test
         if (mounted) {
-          context.pushNamed(ONBOARD_ENVOY_MAGIC_WALLET_READY);
+          context.goNamed(ONBOARD_PRIME_CONNECTED_SUCCESS);
         }
-        // TODO: Handle wallet connected
         break;
       case OnboardingState.completed:
-        // TODO: Handle onboarding completed
+        if (mounted) {
+          context.go("/");
+        }
         break;
     }
   }
