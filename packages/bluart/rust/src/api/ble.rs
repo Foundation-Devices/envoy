@@ -89,13 +89,12 @@ pub fn init() -> Result<()> {
 
     let _ = DEVICES.set(Arc::new(Mutex::new(HashMap::new())));
 
-
     runtime.spawn(async move {
         let (tx, mut rx) = mpsc::unbounded_channel::<Command>();
         TX.set(tx).unwrap();
 
         while let Some(msg) = rx.recv().await {
-                    debug!("got message");
+            debug!("got message");
 
             match msg {
                 Command::Scan { sink, filter } => {
@@ -253,14 +252,13 @@ async fn inner_connect(id: String) -> Result<()> {
     debug!("{}", format!("Try to connect to: {id}"));
 
     let devices = DEVICES.get().unwrap().lock().await;
-    let device = match devices
-        .get(&id) {
-            Some(device) => device,
-            None => {
-                // TODO: create peripheral and add to DEVICES IF NOT THERE
-                return Err(anyhow::anyhow!("UnknownPeripheral(id)"));
-            }
-        };
+    let device = match devices.get(&id) {
+        Some(device) => device,
+        None => {
+            // TODO: create peripheral and add to DEVICES IF NOT THERE
+            return Err(anyhow::anyhow!("UnknownPeripheral(id)"));
+        }
+    };
 
     device.connect().await
 }
@@ -311,7 +309,7 @@ pub fn write(id: String, data: Vec<u8>) -> Result<()> {
 }
 
 async fn inner_write(id: String, data: Vec<u8>) -> Result<()> {
-   debug!("inner write");
+    debug!("inner write");
     debug!("{}", format!("Writing to: {id}"));
     let devices = DEVICES.get().unwrap().lock().await;
     let device = devices
@@ -353,24 +351,22 @@ async fn inner_read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
         .get(&id)
         .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
 
-
-        debug!("{}", format!("Reading from: {id}"));
-        match device.read().await {
-            Ok(mut stream) => {
-                debug!("{}", format!("Got stream from: {id}"));
+    debug!("{}", format!("Reading from: {id}"));
+    match device.read().await {
+        Ok(mut stream) => {
+            debug!("{}", format!("Got stream from: {id}"));
+            tokio::spawn(async move {
                 while let Some(data) = stream.next().await {
-                    println!(
-                        "Received data from [{:?}]: {:?}",
-                        data.uuid, data.value
-                    );
+                    println!("Received data from [{:?}]: {:?}", data.uuid, data.value);
                     sink.add(data.value).unwrap();
                 }
-            }
-            Err(e) => {
-                debug!("{}", format!("Got error: {:?}", e));
-            }
+            });
+
         }
+        Err(e) => {
+            debug!("{}", format!("Got error: {:?}", e));
+        }
+    }
 
     Ok(())
-
 }
