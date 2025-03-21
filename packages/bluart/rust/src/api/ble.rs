@@ -63,7 +63,7 @@ impl std::fmt::Debug for Command {
     }
 }
 
-static DEVICES: OnceLock<Arc<Mutex<HashMap<String, Peripheral>>>> = OnceLock::new();
+static DEVICES: OnceLock<Arc<Mutex<HashMap<String, Device>>>> = OnceLock::new();
 
 static TX: OnceLock<mpsc::UnboundedSender<Command>> = OnceLock::new();
 
@@ -191,7 +191,7 @@ async fn inner_scan(sink: StreamSink<Vec<BleDevice>>, _filter: Vec<String>) -> R
                     CentralEvent::DeviceDiscovered(id) => {
                         debug!("{}",format!("DeviceDiscovered: {:?}", &id));
                         let peripheral = central.peripheral(&id).await?;
-                        let peripheral = Peripheral::new(peripheral);
+                        let peripheral = Device::new(peripheral);
                         let mut devices = DEVICES.get().unwrap().lock().await;
                         devices.insert(id.to_string(), peripheral);
                     }
@@ -333,7 +333,6 @@ async fn inner_write_all(id: String, data: Vec<Vec<u8>>) -> Result<()> {
 
     for data in data {
         device.write(data).await?;
-        tokio::time::sleep(time::Duration::from_millis(100)).await;
     }
 
     Ok(())

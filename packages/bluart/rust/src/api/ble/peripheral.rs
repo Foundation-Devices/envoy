@@ -22,16 +22,16 @@ pub const APP_MTU: usize = 240;
 ///
 #[frb(ignore)]
 #[derive(Debug, Clone)]
-pub struct Peripheral {
+pub struct Device {
     pub peripheral: btleplug::platform::Peripheral,
     pub last_seen: time::Instant,
     pub is_connected: bool,
     //pub read_characteristic: Option<Characteristic>
 }
 
-impl Peripheral {
+impl Device {
     #[frb(ignore)]
-    pub fn new(peripheral: btleplug::platform::Peripheral) -> Peripheral {
+    pub fn new(peripheral: btleplug::platform::Peripheral) -> Device {
         Self {
             peripheral,
             last_seen: time::Instant::now(),
@@ -73,7 +73,7 @@ impl Peripheral {
     pub async fn write(&self, data: Vec<u8>) -> Result<()> {
         debug!("before uart_characteristic");
         let uart_characteristic = self.get_uart_write_characteristic();
-        self.peripheral.write(&uart_characteristic, &data, WriteType::WithoutResponse)
+        self.peripheral.write(&uart_characteristic, &data, WriteType::WithResponse)
             .await?;
 
         Ok(())
