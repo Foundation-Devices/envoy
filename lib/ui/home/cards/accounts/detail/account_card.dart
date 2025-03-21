@@ -47,6 +47,7 @@ import 'package:envoy/ui/widgets/scanner/decoders/payment_qr_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/util/blur_container_transform.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -517,7 +518,9 @@ class TransactionListTile extends ConsumerWidget {
                   subtitle: txSubtitle(activeLocale),
                   contentPadding: const EdgeInsets.all(0),
                   trailing: Column(
-                    mainAxisAlignment: s.displayFiat() == null
+                    mainAxisAlignment: s.displayFiat() == null ||
+                            (kDebugMode &&
+                                account.wallet.network != Network.Mainnet)
                         ? MainAxisAlignment.start
                         : MainAxisAlignment.center,
                     crossAxisAlignment: Settings().selectedFiat == null
@@ -552,10 +555,8 @@ class TransactionListTile extends ConsumerWidget {
                                     ),
                                   )
                                 : Padding(
-                                    padding: EdgeInsets.only(
-                                        top: s.displayFiat() == null
-                                            ? EnvoySpacing.small
-                                            : 0),
+                                    padding: const EdgeInsets.only(
+                                        top: EnvoySpacing.small),
                                     child: EnvoyAmount(
                                         account: account,
                                         amountSats: transaction.amount,
