@@ -122,14 +122,6 @@ class NativeLibrary {
           'http_get_ip');
   late final _http_get_ip =
       _http_get_ipPtr.asFunction<ffi.Pointer<ffi.Char> Function(int)>();
-
-  void http_hello() {
-    return _http_hello();
-  }
-
-  late final _http_helloPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function()>>('http_hello');
-  late final _http_hello = _http_helloPtr.asFunction<void Function()>();
 }
 
 abstract class Verb {

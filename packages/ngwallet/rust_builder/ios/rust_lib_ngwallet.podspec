@@ -1,7 +1,3 @@
-#
-# To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html.
-# Run `pod lib lint rust_lib_ngwallet.podspec` to validate before publishing.
-#
 Pod::Spec.new do |s|
   s.name             = 'rust_lib_ngwallet'
   s.version          = '0.0.1'
@@ -29,7 +25,7 @@ A new Flutter FFI plugin project.
   s.script_phase = {
     :name => 'Build Rust library',
     # First argument is relative path to the `rust` folder, second is name of rust library
-    :script => 'sh "$PODS_TARGET_SRCROOT/../cargokit/build_pod.sh" ../../rust rust_lib_ngwallet',
+    :script => 'export CMAKE="/opt/homebrew/bin/cmake" && sh "$PODS_TARGET_SRCROOT/../cargokit/build_pod.sh" ../../rust rust_lib_ngwallet',
     :execution_position => :before_compile,
     :input_files => ['${BUILT_PRODUCTS_DIR}/cargokit_phony'],
     # Let XCode know that the static library referenced in -force_load below is
