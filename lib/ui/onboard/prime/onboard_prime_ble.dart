@@ -31,6 +31,8 @@ import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/NGWalletUi.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 
+import 'firmware_update/prime_fw_update_state.dart';
+
 class OnboardPrimeBluetooth extends ConsumerStatefulWidget {
   const OnboardPrimeBluetooth({super.key});
 
@@ -83,10 +85,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   }
 
   Future<void> _handleOnboardingState(OnboardingState state) async {
-    final bleStepNotifier = ref.read(bleConnectionProvider.notifier);
-    await bleStepNotifier.updateStep(
-        "Connecting to Prime", EnvoyStepState.LOADING);
-
     switch (state) {
       case OnboardingState.firmwareUpdateScreen:
         if (mounted) {
@@ -94,22 +92,30 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         }
         break;
       case OnboardingState.downloadingUpdate:
-        // TODO: Handle downloading update
+        ref.read(primeUpdateStateProvider.notifier).state =
+            PrimeFwUpdateStep.downloading;
         break;
       case OnboardingState.receivingUpdate:
+        ref.read(primeUpdateStateProvider.notifier).state =
+            PrimeFwUpdateStep.transferring;
         // TODO: Handle receiving update
         break;
       case OnboardingState.veryfyingSignatures:
+        ref.read(primeUpdateStateProvider.notifier).state =
+            PrimeFwUpdateStep.verifying;
         // TODO: Handle verifying signatures
         break;
       case OnboardingState.installingUpdate:
-        // TODO: Handle installing update
+        ref.read(primeUpdateStateProvider.notifier).state =
+            PrimeFwUpdateStep.installing;
         break;
       case OnboardingState.rebooting:
-        // TODO: Handle rebooting
+        ref.read(primeUpdateStateProvider.notifier).state =
+            PrimeFwUpdateStep.rebooting;
         break;
       case OnboardingState.firmwareUpdated:
-        // TODO: Handle firmware updated
+        ref.read(primeUpdateStateProvider.notifier).state =
+            PrimeFwUpdateStep.finished;
         break;
       case OnboardingState.securingDevice:
         if (mounted) {
