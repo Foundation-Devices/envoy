@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:animations/animations.dart';
+import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
@@ -14,6 +15,7 @@ import 'package:envoy/ui/widgets/envoy_gradient_progress.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation_api/foundation_api.dart';
 import 'package:rive/rive.dart';
 
 class OnboardPrimeFwUpdate extends ConsumerStatefulWidget {
@@ -249,20 +251,22 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
             style: EnvoyTypography.explainer.copyWith(fontSize: 14),
           ),
         ),
-        Expanded(
-            child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.small)
-              .add(const EdgeInsets.only(
-            top: EnvoySpacing.medium2,
-          )),
-          child: const Placeholder(),
-        )),
-        OnboardingButton(
-            label: "Begin Firmware Update",
-            type: EnvoyButtonTypes.primary,
-            fontWeight: FontWeight.w600,
-            onTap: initFWUpdate),
+        // Expanded(
+        //     child: Container(
+        //   width: double.infinity,
+        //   padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.small)
+        //       .add(const EdgeInsets.only(
+        //     top: EnvoySpacing.medium2,
+        //   )),
+        //   child: const Placeholder(),
+        // )),
+        // OnboardingButton(
+        //     label: "Try to send",
+        //     type: EnvoyButtonTypes.primary,
+        //     fontWeight: FontWeight.w600,
+        //     onTap: (){
+        //       BluetoothManager().sendOnboardingState(OnboardingState.receivingUpdate);
+        //     }),
       ],
     );
   }

@@ -6,6 +6,7 @@
 import '../frb_generated.dart';
 import '../third_party/bc_ur.dart';
 import '../third_party/bc_xid.dart';
+import '../third_party/foundation_api/api/bitcoin.dart';
 import '../third_party/foundation_api/api/firmware.dart';
 import '../third_party/foundation_api/api/fx.dart';
 import '../third_party/foundation_api/api/message.dart';

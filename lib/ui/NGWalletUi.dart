@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:envoy/business/AccountNg.dart';
+import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/text_field.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -31,9 +32,7 @@ final balanceProvider =
 });
 
 class NGWalletUi extends ConsumerStatefulWidget {
-  final String descriptor;
-
-  const NGWalletUi({super.key, required this.descriptor});
+  const NGWalletUi({super.key});
 
   @override
   ConsumerState<NGWalletUi> createState() => _NGWalletUiState();
@@ -60,7 +59,6 @@ class _NGWalletUiState extends ConsumerState<NGWalletUi>
   }
 
   onInit()async {
-    await AccountNg().restore(widget.descriptor);
     setState(() {
     });
     //TODO: listen for ql messages and call onReceiveSignedPSBT
@@ -343,9 +341,6 @@ class _NGWalletUiState extends ConsumerState<NGWalletUi>
                               setState(() {
                                 print(serializedPSBT);
                               });
-                              setState(() {
-                                onReceiveSignedPSBT(serializedPSBT);
-                              });
                             } catch (e) {}
                           },
                         )),
@@ -369,7 +364,9 @@ class _NGWalletUiState extends ConsumerState<NGWalletUi>
                       label: "Send PSBT to Prime",
                       state: ButtonState.defaultState,
                       type: ButtonType.primary,
-                      onTap: () async {},
+                      onTap: () async {
+                        await BluetoothManager().sendPsbt(AccountNg().descriptor!, serializedPSBT);
+                      },
                     ),
                   ],
                 )),

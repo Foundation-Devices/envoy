@@ -7,21 +7,16 @@ import 'package:bluart/bluart.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
-import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/prime/onboard_prime.dart';
-import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
-import 'package:envoy/util/build_context_extension.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:foundation_api/foundation_api.dart';
 
 class PrimeOnboardParing extends ConsumerStatefulWidget {
   const PrimeOnboardParing({super.key});
@@ -42,8 +37,8 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       try {
-        await Permission.bluetooth.request();
-        await Permission.bluetoothConnect.request();
+        // await Permission.bluetooth.request();
+        // await Permission.bluetoothConnect.request();
         _connectBLE();
       } catch (e) {
         if (mounted && context.mounted) {
@@ -69,6 +64,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
         kPrint("Error getting permissions: $e");
       }
     });
+
   }
 
   _connectBLE() async {
@@ -89,7 +85,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
       kPrint("Connecting to Prime with ID: $id");
       await bleStepNotifier.updateStep(
           "Connecting to Prime", EnvoyStepState.LOADING);
-      await BluetoothManager().connect(id: id);
+      //  await BluetoothManager().connect(id: id);
       ref.read(primeBleIdProvider.notifier).state = id;
       setState(() {
         device = BleDevice(id: id, name: "Passport Prime", connected: true);
@@ -100,15 +96,20 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
 
       await deviceSecurityStepNotifier.updateStep(
           "Checking Device Security", EnvoyStepState.LOADING);
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 10));
       await deviceSecurityStepNotifier.updateStep(
           "Checked Device Security", EnvoyStepState.FINISHED);
 
+      await BluetoothManager()
+          .sendOnboardingState(OnboardingState.securityChecked);
+
       await firmWareUpdateStepNotifier.updateStep(
           "Checking firmware updates", EnvoyStepState.LOADING);
-      await Future.delayed(const Duration(seconds: 3));
+      await Future.delayed(const Duration(seconds: 10));
       await firmWareUpdateStepNotifier.updateStep(
           "New Update available", EnvoyStepState.FINISHED);
+      await BluetoothManager()
+          .sendOnboardingState(OnboardingState.updateAvailable);
       if (mounted) {
         setState(() {
           canPop = true;
@@ -179,38 +180,9 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
                         ),
                       );
                     })),
-                    const Text(
-                      "Optional place for a detailed message for\nour users so they understand the step.",
-                      textAlign: TextAlign.center,
-                    )
                   ],
                 ),
               )),
-              IntrinsicHeight(
-                child: AnimatedOpacity(
-                  opacity: updateAvailable ? 1 : 0,
-                  duration: const Duration(milliseconds: 300),
-                  child: Offstage(
-                    offstage: !updateAvailable,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        OnboardingButton(
-                            label: "Update Device",
-                            type: EnvoyButtonTypes.primary,
-                            fontWeight: FontWeight.w600,
-                            onTap: () {
-                              context.goNamed(ONBOARD_PRIME_FIRMWARE_UPDATE);
-                            }),
-                        SizedBox(
-                            height: context.isSmallScreen
-                                ? EnvoySpacing.xs
-                                : EnvoySpacing.medium2),
-                      ],
-                    ),
-                  ),
-                ),
-              )
             ],
           ),
         ),

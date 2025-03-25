@@ -260,9 +260,8 @@ class _AccountsListState extends ConsumerState<AccountsList> {
                   Future.delayed(const Duration(milliseconds: 100)).then((value) async {
                     Navigator.of(context, rootNavigator: true).push(
                         MaterialPageRoute(
-                            builder: (context) =>  Theme(child: NGWalletUi(
-                              descriptor: "tr(tprv8ZgxMBicQKsPdrjwWCyXqqJ4YqcyG4DmKtjjsRt29v1PtD3r3PuFJAjWytzcvSTKnZAGAkPSmnrdnuHWxCAwy3i1iPhrtKAfXRH7dVCNGp6/86'/1'/0'/0/*)#g9xn7wf9",
-                            ),data: Theme.of(context),)));
+                            builder: (context) =>  Theme(data: Theme.of(context),child: NGWalletUi(
+                            ),)));
                   });
 
                   return;

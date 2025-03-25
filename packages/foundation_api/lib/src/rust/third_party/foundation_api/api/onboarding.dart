@@ -28,5 +28,8 @@ enum OnboardingState {
   connectingWallet,
   walletConected,
   completed,
+  securityChecked,
+  updateAvailable,
+  updateNotAvailable,
   ;
 }

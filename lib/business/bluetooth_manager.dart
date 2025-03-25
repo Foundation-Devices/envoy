@@ -18,17 +18,17 @@ class BluetoothManager {
   UuidValue rxCharacteristic =
       UuidValue.fromString("6E400002B5A3F393E0A9E50E24DCCA9E");
   api.QuantumLinkIdentity? qlIdentity;
-  final StreamController<api.PassportMessage> _passPortMessageStream =
+  final StreamController<api.PassportMessage> _passportMessageStream =
       StreamController<api.PassportMessage>();
 
   api.Dechunker? _decoder;
-
+  api.XidDocument? _recipientXid;
 
   factory BluetoothManager() {
     return _instance;
   }
 
-  get passPortMessageStream => _passPortMessageStream.stream;
+  get passportMessageStream => _passportMessageStream.stream;
 
   String bleId = "";
 
@@ -62,19 +62,19 @@ class BluetoothManager {
   }
 
   Future<List<Uint8List>> encodeMessage(
-      {required api.QuantumLinkMessage message,
-      required api.XidDocument recipient}) async {
+      {required api.QuantumLinkMessage message}) async {
     api.EnvoyMessage envoyMessage =
         api.EnvoyMessage(message: message, timestamp: 0);
 
     return await api.encode(
       message: envoyMessage,
       sender: qlIdentity!,
-      recipient: recipient,
+      recipient: _recipientXid!,
     );
   }
 
   Future<void> pair(api.XidDocument recipient) async {
+    _recipientXid = recipient;
     kPrint("pair: $hashCode");
 
     kPrint("Pairing...");
@@ -83,8 +83,7 @@ class BluetoothManager {
     kPrint("Encoding...");
 
     final encoded = await encodeMessage(
-        message: api.QuantumLinkMessage.pairingRequest(request),
-        recipient: recipient);
+        message: api.QuantumLinkMessage.pairingRequest(request));
 
     kPrint("Encoded...");
 
@@ -99,6 +98,14 @@ class BluetoothManager {
     Future.delayed(Duration(seconds: 1));
     //kPrint("writing after listen...");
     //await bluart.write(id: bleId, data: "123".codeUnits);
+  }
+
+  Future<void> sendPsbt(String descriptor, String psbt) async {
+    final encoded = await encodeMessage(
+        message: api.QuantumLinkMessage.signPsbt(api.SignPsbt(descriptor: descriptor, psbt: psbt)));
+
+    kPrint("before sending psbt");
+    await bluart.writeAll(id: bleId, data: encoded);
   }
 
   void _generateQlIdentity() async {
@@ -126,7 +133,7 @@ class BluetoothManager {
       decode(bleData).then((value) {
         kPrint("Dechunked: {$value}");
         if (value != null) {
-          _passPortMessageStream.add(value);
+          _passportMessageStream.add(value);
         }
       }, onError: (e) {
         kPrint("Error decoding: $e");
@@ -146,6 +153,18 @@ class BluetoothManager {
     } else {
       return null;
     }
+  }
+
+  Future<void> sendOnboardingState(api.OnboardingState state) async {
+    final encoded = await encodeMessage(
+      message: api.QuantumLinkMessage.onboardingState(state),
+    );
+
+
+
+    await bluart.writeAll(id: bleId, data: encoded);
+
+
   }
 
   dispose() {

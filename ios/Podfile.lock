@@ -179,7 +179,7 @@ SPEC CHECKSUMS:
   ramp_flutter: aac85dee8bc93b5f7563c909ba15a37727fe3fe8
   rive_common: 3a4c254c6e4db7e4b9e05daeb3d1f47ae4f7bf76
   rust_lib_foundation_api: b926bd066994ff2c0354873b5335f7287ac62945
-  rust_lib_ngwallet: 3a8d019b362008e31221ba4b2263988fcc0bf802
+  rust_lib_ngwallet: a676d2f92f92a5f2b54ed711f4f1a459ca71af3a
   share_plus: 8b6f8b3447e494cca5317c8c3073de39b3600d1f
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   sqflite_darwin: 5a7236e3b501866c1c9befc6771dfd73ffb8702d
@@ -189,4 +189,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: dbcfe0eb16baa2f26e442d8dc652993159052923
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

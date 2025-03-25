@@ -16,7 +16,9 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/business/settings.dart';
 
 class WalletSetupSuccess extends ConsumerStatefulWidget {
-  const WalletSetupSuccess({super.key});
+  final bool isPrimeWallet;
+
+  const WalletSetupSuccess({super.key, this.isPrimeWallet = false});
 
   @override
   ConsumerState<WalletSetupSuccess> createState() => _WalletSetupSuccessState();
@@ -66,7 +68,9 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                     child: Column(
                       children: [
                         Text(
-                          S().wallet_setup_success_heading,
+                          widget.isPrimeWallet
+                              ? "Wallet connected successfully" // TODO: localazy
+                              : S().wallet_setup_success_heading,
                           style: EnvoyTypography.heading,
                           textAlign: TextAlign.center,
                         ),
@@ -81,25 +85,27 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                 ),
               ),
               const SizedBox(height: EnvoySpacing.medium1),
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: EnvoySpacing.xs,
-                  right: EnvoySpacing.xs,
-                  bottom: EnvoySpacing.medium2,
+              if (!widget.isPrimeWallet)
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: EnvoySpacing.xs,
+                    right: EnvoySpacing.xs,
+                    bottom: EnvoySpacing.medium2,
+                  ),
+                  child: Consumer(
+                    builder: (context, ref, child) {
+                      return OnboardingButton(
+                          label: S().component_continue,
+                          onTap: () async {
+                            Settings().updateAccountsViewSettings();
+                            if (context.mounted) {
+                              context.go("/");
+                            }
+                          });
+                    },
+                  ),
                 ),
-                child: Consumer(
-                  builder: (context, ref, child) {
-                    return OnboardingButton(
-                        label: S().component_continue,
-                        onTap: () async {
-                          Settings().updateAccountsViewSettings();
-                          if (context.mounted) {
-                            context.go("/");
-                          }
-                        });
-                  },
-                ),
-              ),
+              if (widget.isPrimeWallet) SizedBox.shrink()
             ],
           ),
         ),

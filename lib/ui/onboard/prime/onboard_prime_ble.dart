@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:animations/animations.dart';
+import 'package:envoy/business/AccountNg.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -27,11 +28,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:envoy/ui/NGWalletUi.dart';
+import 'package:envoy/ui/widgets/envoy_step_item.dart';
+
+import 'firmware_update/prime_fw_update_state.dart';
+
 class OnboardPrimeBluetooth extends ConsumerStatefulWidget {
   const OnboardPrimeBluetooth({super.key});
 
   @override
-  ConsumerState<OnboardPrimeBluetooth> createState() => _OnboardPrimeBluetoothState();
+  ConsumerState<OnboardPrimeBluetooth> createState() =>
+      _OnboardPrimeBluetoothState();
 }
 
 class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
@@ -48,9 +55,138 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   }
 
   void _listenForPassPortMessages() {
-    BluetoothManager().passPortMessageStream.listen((event) {
-      kPrint("Got the Passport Event : $event");
+    BluetoothManager()
+        .passportMessageStream
+        .listen((PassportMessage message) async {
+      kPrint("Got the Passport Message : ${message.message}");
+
+      if (message.message is QuantumLinkMessage_PairingResponse) {
+        kPrint("Found it!");
+        final response = message.message as QuantumLinkMessage_PairingResponse;
+
+        kPrint("GOT DESCRIPTOR: ${response.field0.descriptor}");
+        // Create the thing that I'm gonna reveal later
+        // await AccountNg().restore(response.field0.descriptor);
+        //
+        // Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+        //     builder: (context) => Theme(
+        //           data: Theme.of(context),
+        //           child: NGWalletUi(),
+        //         )));
+      }
+
+      if (message.message is QuantumLinkMessage_OnboardingState) {
+        final onboardingState =
+            (message.message as QuantumLinkMessage_OnboardingState).field0;
+
+        _handleOnboardingState(onboardingState);
+      }
     });
+  }
+
+  Future<void> _handleOnboardingState(OnboardingState state) async {
+    switch (state) {
+      case OnboardingState.firmwareUpdateScreen:
+        if (mounted) {
+          context.goNamed(ONBOARD_PRIME_FIRMWARE_UPDATE);
+        }
+        break;
+      case OnboardingState.downloadingUpdate:
+        ref.read(primeUpdateStateProvider.notifier).state =
+            PrimeFwUpdateStep.downloading;
+        break;
+      case OnboardingState.receivingUpdate:
+        ref.read(primeUpdateStateProvider.notifier).state =
+            PrimeFwUpdateStep.transferring;
+        // TODO: Handle receiving update
+        break;
+      case OnboardingState.veryfyingSignatures:
+        ref.read(primeUpdateStateProvider.notifier).state =
+            PrimeFwUpdateStep.verifying;
+        // TODO: Handle verifying signatures
+        break;
+      case OnboardingState.installingUpdate:
+        ref.read(primeUpdateStateProvider.notifier).state =
+            PrimeFwUpdateStep.installing;
+        break;
+      case OnboardingState.rebooting:
+        ref.read(primeUpdateStateProvider.notifier).state =
+            PrimeFwUpdateStep.rebooting;
+        break;
+      case OnboardingState.firmwareUpdated:
+        ref.read(primeUpdateStateProvider.notifier).state =
+            PrimeFwUpdateStep.finished;
+        break;
+      case OnboardingState.securingDevice:
+        if (mounted) {
+          context.goNamed(ONBOARD_PRIME_CONTINUING_SETUP);
+        }
+        break;
+      case OnboardingState.deviceSecured:
+        ref
+            .read(creatingPinProvider.notifier)
+            .updateStep("PIN created", EnvoyStepState.FINISHED);
+        break;
+      case OnboardingState.walletCreationScreen:
+        ref
+            .read(setUpMasterKeyProvider.notifier)
+            .updateStep("Setting Up Master Key", EnvoyStepState.LOADING);
+        // context.goNamed(ONBOARD_PRIME_SEED_SETUP);
+        break;
+      case OnboardingState.creatingWallet:
+        // TODO: Handle creating wallet
+        break;
+      case OnboardingState.walletCreated:
+        ref
+            .read(setUpMasterKeyProvider.notifier)
+            .updateStep("Master Key Set Up", EnvoyStepState.FINISHED);
+        break;
+      case OnboardingState.magicBackupScreen:
+        ref
+            .read(backUpMasterKeyProvider.notifier)
+            .updateStep("Backing Up Master Key", EnvoyStepState.LOADING);
+        // context.goNamed(ONBOARD_PRIME_MAGIC_BACKUP);
+        // TODO: Handle magic backup screen
+        break;
+      case OnboardingState.creatingMagicBackup:
+        // TODO: Handle creating magic backup
+        break;
+      case OnboardingState.magicBackupCreated:
+        ref
+            .read(backUpMasterKeyProvider.notifier)
+            .updateStep("Master Key Backed Up", EnvoyStepState.FINISHED);
+        break;
+      case OnboardingState.creatingManualBackup:
+        // TODO: Handle creating manual backup
+        break;
+      case OnboardingState.creatingKeycardBackup:
+        // TODO: Handle creating keycard backup
+        break;
+      case OnboardingState.writingDownSeedWords:
+        // TODO: Handle writing down seed words
+        break;
+      case OnboardingState.connectingWallet:
+        ref
+            .read(connectAccountProvider.notifier)
+            .updateStep("Connecting Account", EnvoyStepState.LOADING);
+        break;
+      case OnboardingState.walletConected:
+        if (mounted) {
+          context.goNamed(ONBOARD_PRIME_CONNECTED_SUCCESS);
+        }
+        break;
+      case OnboardingState.completed:
+        if (mounted) {
+          context.go("/");
+        }
+        break;
+      case OnboardingState.securityChecked:
+        break;
+      case OnboardingState.updateAvailable:
+        break;
+      case OnboardingState.updateNotAvailable:
+        break;
+    }
   }
 
   @override
@@ -109,7 +245,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     //   deniedBluetooth = true;
     // });
 
-    context.goNamed(ONBOARD_PRIME_PAIR);
+    // context.goNamed(ONBOARD_PRIME_PAIR);
   }
 
   Widget quantumLinkIntro(BuildContext context) {
@@ -303,23 +439,33 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
           context: context,
           dismissible: false,
           dialog: QuantumLinkCommunicationInfo(
-            onContinue: () {
-              showScannerDialog(
+            onContinue: () async {
+              await showScannerDialog(
                   context: context,
                   onBackPressed: (context) {
                     Navigator.pop(context);
                   },
                   decoder:
-                  //parse UR payload
-                  PrimeQlPayloadDecoder(
-                      decoder: decoder,
-                      onScan: (XidDocument payload) {
-                        kPrint("payload $payload");
-                        pairWithPrime(
-                            payload);
-                        Navigator.pop(context);
-                        //TODO: process XidDocument for connection
-                      }));
+                      //parse UR payload
+                      PrimeQlPayloadDecoder(
+                          decoder: decoder,
+                          onScan: (XidDocument payload) async {
+                            kPrint("payload $payload");
+                            await pairWithPrime(payload);
+
+                            //TODO: process XidDocument for connection
+
+                            if (context.mounted) {
+                              // Close the scanner properly before moving forward
+                              if (Navigator.canPop(context)) {
+                                Navigator.pop(context);
+                              }
+
+                              await Future.delayed(Duration(milliseconds: 200));
+
+                              context.goNamed(ONBOARD_PRIME_PAIR);
+                            }
+                          }));
             },
           ));
     }

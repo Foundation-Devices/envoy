@@ -60,6 +60,8 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
         // No more nudging
         //await write(id: bleId, data: "123".codeUnits);
 
+        await LocalStorage().prefs.setString(primeSerialPref, bleId);
+
         if (mounted) {
           setState(() {
             bleConnectState = BleConnectState.connected;
