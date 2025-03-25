@@ -939,6 +939,9 @@ impl SseDecode for foundation_api::api::onboarding::OnboardingState {
             18 => foundation_api::api::onboarding::OnboardingState::ConnectingWallet,
             19 => foundation_api::api::onboarding::OnboardingState::WalletConected,
             20 => foundation_api::api::onboarding::OnboardingState::Completed,
+            21 => foundation_api::api::onboarding::OnboardingState::SecurityChecked,
+            22 => foundation_api::api::onboarding::OnboardingState::UpdateAvailable,
+            23 => foundation_api::api::onboarding::OnboardingState::UpdateNotAvailable,
             _ => unreachable!("Invalid variant for OnboardingState: {}", inner),
         };
     }
@@ -1475,6 +1478,9 @@ impl flutter_rust_bridge::IntoDart
             foundation_api::api::onboarding::OnboardingState::ConnectingWallet => 18.into_dart(),
             foundation_api::api::onboarding::OnboardingState::WalletConected => 19.into_dart(),
             foundation_api::api::onboarding::OnboardingState::Completed => 20.into_dart(),
+            foundation_api::api::onboarding::OnboardingState::SecurityChecked => 21.into_dart(),
+            foundation_api::api::onboarding::OnboardingState::UpdateAvailable => 22.into_dart(),
+            foundation_api::api::onboarding::OnboardingState::UpdateNotAvailable => 23.into_dart(),
             _ => unreachable!(),
         }
     }
@@ -1975,6 +1981,9 @@ impl SseEncode for foundation_api::api::onboarding::OnboardingState {
                 foundation_api::api::onboarding::OnboardingState::ConnectingWallet => 18,
                 foundation_api::api::onboarding::OnboardingState::WalletConected => 19,
                 foundation_api::api::onboarding::OnboardingState::Completed => 20,
+                foundation_api::api::onboarding::OnboardingState::SecurityChecked => 21,
+                foundation_api::api::onboarding::OnboardingState::UpdateAvailable => 22,
+                foundation_api::api::onboarding::OnboardingState::UpdateNotAvailable => 23,
                 _ => {
                     unimplemented!("");
                 }

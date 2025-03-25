@@ -30,7 +30,6 @@ import 'package:go_router/go_router.dart';
 
 import 'package:envoy/ui/NGWalletUi.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
-import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 
 class OnboardPrimeBluetooth extends ConsumerStatefulWidget {
   const OnboardPrimeBluetooth({super.key});
@@ -54,9 +53,9 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   }
 
   void _listenForPassPortMessages() {
-    final navigator = Navigator.of(context, rootNavigator: true);
-
-    BluetoothManager().passportMessageStream.listen((PassportMessage message) async {
+    BluetoothManager()
+        .passportMessageStream
+        .listen((PassportMessage message) async {
       kPrint("Got the Passport Message : ${message.message}");
 
       if (message.message is QuantumLinkMessage_PairingResponse) {
@@ -65,13 +64,13 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
         kPrint("GOT DESCRIPTOR: ${response.field0.descriptor}");
         // Create the thing that I'm gonna reveal later
-        await AccountNg().restore(response.field0.descriptor);
-
-        Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-            builder: (context) => Theme(
-                  data: Theme.of(context),
-                  child: NGWalletUi(),
-                )));
+        // await AccountNg().restore(response.field0.descriptor);
+        //
+        // Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+        //     builder: (context) => Theme(
+        //           data: Theme.of(context),
+        //           child: NGWalletUi(),
+        //         )));
       }
 
       if (message.message is QuantumLinkMessage_OnboardingState) {
@@ -84,8 +83,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   }
 
   Future<void> _handleOnboardingState(OnboardingState state) async {
-    ProviderContainer providerContainer = ProviderScope.containerOf(context);
-
     final bleStepNotifier = ref.read(bleConnectionProvider.notifier);
     await bleStepNotifier.updateStep(
         "Connecting to Prime", EnvoyStepState.LOADING);
@@ -177,6 +174,12 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
           context.go("/");
         }
         break;
+      case OnboardingState.securityChecked:
+        break;
+      case OnboardingState.updateAvailable:
+        break;
+      case OnboardingState.updateNotAvailable:
+        break;
     }
   }
 
@@ -236,7 +239,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     //   deniedBluetooth = true;
     // });
 
-    context.goNamed(ONBOARD_PRIME_PAIR);
+    // context.goNamed(ONBOARD_PRIME_PAIR);
   }
 
   Widget quantumLinkIntro(BuildContext context) {
@@ -430,8 +433,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
           context: context,
           dismissible: false,
           dialog: QuantumLinkCommunicationInfo(
-            onContinue: () {
-              showScannerDialog(
+            onContinue: () async {
+              await showScannerDialog(
                   context: context,
                   onBackPressed: (context) {
                     Navigator.pop(context);
@@ -440,13 +443,22 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                       //parse UR payload
                       PrimeQlPayloadDecoder(
                           decoder: decoder,
-                          onScan: (XidDocument payload) {
+                          onScan: (XidDocument payload) async {
                             kPrint("payload $payload");
-                            pairWithPrime(payload);
-                            Navigator.pop(context);
+                            await pairWithPrime(payload);
+
                             //TODO: process XidDocument for connection
 
-                            context.goNamed(ONBOARD_PRIME_PAIR);
+                            if (context.mounted) {
+                              // Close the scanner properly before moving forward
+                              if (Navigator.canPop(context)) {
+                                Navigator.pop(context);
+                              }
+
+                              await Future.delayed(Duration(milliseconds: 200));
+
+                              context.goNamed(ONBOARD_PRIME_PAIR);
+                            }
                           }));
             },
           ));
