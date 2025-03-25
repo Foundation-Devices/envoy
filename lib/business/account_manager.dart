@@ -433,7 +433,7 @@ class AccountManager extends ChangeNotifier {
         Account restoredAccount = Account.fromJson(account);
         accounts.add(restoredAccount);
         try {
-          restoredAccount.wallet.init(walletsDirectory);
+          // restoredAccount.wallet.init(walletsDirectory);
         } on Exception catch (e) {
           EnvoyReport().log("recovery", e.toString());
         }
@@ -444,10 +444,10 @@ class AccountManager extends ChangeNotifier {
   }
 
   _startPeriodicSync() {
-    // Sync periodically
-    _syncTimer = Timer.periodic(const Duration(seconds: 15), (timer) {
-      syncAll();
-    });
+    // // Sync periodically
+    // _syncTimer = Timer.periodic(const Duration(seconds: 15), (timer) {
+    //   syncAll();
+    // });
   }
 
   static Future<Wallet> _getWallet(String fingerprint,

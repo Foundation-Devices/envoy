@@ -25,13 +25,13 @@ class AccountNg {
           0,
           None
        */
-      envoyAccount = await EnvoyAccount.newFromDescriptor(
-          name: "Passport Prime",
-          color: "red",
-          deviceSerial: null,
-          descriptor: descriptor,
-          index: 0,
-          dbPath: null);
+      // envoyAccount = await EnvoyAccount.newFromDescriptor(
+      //     name: "Passport Prime",
+      //     color: "red",
+      //     deviceSerial: null,
+      //     descriptor: descriptor,
+      //     index: 0,
+      //     dbPath: null);
       this.descriptor = descriptor;
     } catch (e) {
       print(e);
@@ -49,11 +49,6 @@ class AccountNg {
   Future<bool?>? apply_update(
       ArcMutexOptionFullScanResponseKeychainKind scanResponse) async {
     return await envoyAccount?.applyUpdate(scanRequest: scanResponse);
-  }
-
-  Future<ArcMutexOptionFullScanResponseKeychainKind?>? scan(
-      ArcMutexOptionFullScanRequestKeychainKind scanRequest) async {
-    return await EnvoyAccount.scan(scanRequest: scanRequest);
   }
 
   init() async {
