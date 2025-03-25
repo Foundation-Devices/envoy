@@ -4,11 +4,12 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+import '../third_party/ngwallet/config.dart';
 import '../third_party/ngwallet/transaction.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < NgAccount > >>>
-abstract class ArcMutexNgAccount implements RustOpaqueInterface {}
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < NgAccount < Connection > > >>>
+abstract class ArcMutexNgAccountConnection implements RustOpaqueInterface {}
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < Option < FullScanRequest < KeychainKind > > > >>>
 abstract class ArcMutexOptionFullScanRequestKeychainKind
@@ -23,47 +24,83 @@ abstract class EnvoyAccount implements RustOpaqueInterface {
   Future<bool> applyUpdate(
       {required ArcMutexOptionFullScanResponseKeychainKind scanRequest});
 
-  ArcMutexNgAccount get ngAccount;
+  ArcMutexNgAccountConnection get ngAccount;
 
-  set ngAccount(ArcMutexNgAccount ngAccount);
+  set ngAccount(ArcMutexNgAccountConnection ngAccount);
 
   Future<BigInt> balance();
 
-  Future<void> broadcast({required String psbt});
+  Future<void> broadcast(
+      {required String psbt, required String electrumServer});
+
+  Future<NgAccountConfig> getConfig();
 
   static Future<EnvoyAccount> newFromDescriptor(
           {required String name,
-          required String descriptor,
           String? deviceSerial,
+          String? dateAdded,
+          required AddressType addressType,
           required String color,
           required int index,
-          String? dbPath}) =>
+          required String internalDescriptor,
+          required String externalDescriptor,
+          required String dbPath,
+          required Network network}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountNewFromDescriptor(
           name: name,
-          descriptor: descriptor,
           deviceSerial: deviceSerial,
+          dateAdded: dateAdded,
+          addressType: addressType,
           color: color,
           index: index,
-          dbPath: dbPath);
+          internalDescriptor: internalDescriptor,
+          externalDescriptor: externalDescriptor,
+          dbPath: dbPath,
+          network: network);
 
   Future<String> nextAddress();
+
+  static Future<EnvoyAccount> openWallet({required String dbPath}) =>
+      RustLib.instance.api
+          .crateApiEnvoyWalletEnvoyAccountOpenWallet(dbPath: dbPath);
 
   Future<ArcMutexOptionFullScanRequestKeychainKind> requestScan();
 
   static Future<ArcMutexOptionFullScanResponseKeychainKind> scan(
-          {required ArcMutexOptionFullScanRequestKeychainKind scanRequest}) =>
-      RustLib.instance.api
-          .crateApiEnvoyWalletEnvoyAccountScan(scanRequest: scanRequest);
+          {required ArcMutexOptionFullScanRequestKeychainKind scanRequest,
+          required String electrumServer}) =>
+      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountScan(
+          scanRequest: scanRequest, electrumServer: electrumServer);
 
   Future<String> send({required String address, required BigInt amount});
 
-  Future<void> setDoNotSpend({required Output utxo, required bool doNotSpend});
+  Future<bool> setDoNotSpend({required Output utxo, required bool doNotSpend});
 
-  Future<void> setNote({required String txId, required String note});
+  Future<bool> setNote({required String txId, required String note});
 
-  Future<void> setTag({required Output utxo, required String tag});
+  Future<bool> setTag({required Output utxo, required String tag});
 
   Future<List<BitcoinTransaction>> transactions();
 
   Future<List<Output>> utxo();
+}
+
+enum Network {
+  /// Mainnet Bitcoin.
+  bitcoin,
+
+  /// Bitcoin's testnet network. (In future versions this will be combined
+  /// into a single variant containing the version)
+  testnet,
+
+  /// Bitcoin's testnet4 network. (In future versions this will be combined
+  /// into a single variant containing the version)
+  testnet4,
+
+  /// Bitcoin's signet network.
+  signet,
+
+  /// Bitcoin's regtest network.
+  regtest,
+  ;
 }

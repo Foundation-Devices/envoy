@@ -1,4 +1,4 @@
-rust_input: crate::api, ngwallet::NgWallet, ngwallet::NgTransaction
+rust_input: crate::api, ngwallet::NgWallet, ngwallet::NgTransaction,ngwallet::config
 rust_root: rust/
 dart_output: lib/src/rust
 enable_lifetime: true
@@ -7,3 +7,4 @@ rust_preamble: |
   use std::sync::{Mutex};
   use bdk_wallet::KeychainKind;
   use ngwallet::account::NgAccount;
+  use bdk_wallet::rusqlite::Connection;

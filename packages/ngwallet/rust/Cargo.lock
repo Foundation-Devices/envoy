@@ -788,9 +788,9 @@ checksum = "d26c52dbd32dccf2d10cac7725f8eae5296885fb5703b261f7d0a0739ec807ab"
 
 [[package]]
 name = "log"
-version = "0.4.20"
+version = "0.4.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b5e6163cb8c49088c2c36f57875e58ccd8c87c7427f7fbd50ea6710b2f3f2e8f"
+checksum = "30bde2b3dc3671ae49d8e2e9f044c7c005836e7a023ee57cffa25ab82764bb9e"
 
 [[package]]
 name = "md-5"
@@ -842,6 +842,10 @@ dependencies = [
  "bdk_electrum",
  "bdk_wallet",
  "flutter_rust_bridge",
+ "log",
+ "redb",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
@@ -982,6 +986,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "redb"
+version = "2.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ea0a72cd7140de9fc3e318823b883abf819c20d478ec89ce880466dc2ef263c6"
+dependencies = [
+ "libc",
+]
+
+[[package]]
 name = "regex"
 version = "1.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1045,6 +1058,7 @@ dependencies = [
  "anyhow",
  "bdk_wallet",
  "flutter_rust_bridge",
+ "log",
  "ngwallet",
 ]
 
