@@ -6,7 +6,7 @@
 import 'package:bluart/bluart.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/local_storage.dart';
-import 'package:envoy/ui/components/envoy_scaffold.dart';;
+import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/prime/onboard_prime.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
