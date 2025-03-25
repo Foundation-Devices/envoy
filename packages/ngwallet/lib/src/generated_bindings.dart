@@ -579,14 +579,6 @@ class NativeLibrary {
       'wallet_get_seed_from_entropy');
   late final _wallet_get_seed_from_entropy = _wallet_get_seed_from_entropyPtr
       .asFunction<Seed Function(int, ffi.Pointer<ffi.Uint8>)>();
-
-  void wallet_hello() {
-    return _wallet_hello();
-  }
-
-  late final _wallet_helloPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function()>>('wallet_hello');
-  late final _wallet_hello = _wallet_helloPtr.asFunction<void Function()>();
 }
 
 abstract class NetworkType {
