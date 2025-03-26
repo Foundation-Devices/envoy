@@ -202,7 +202,8 @@ mod tests {
 //     use sled::Config;
     use sled::{Db, IVec, Tree};
     use std::error::Error;
-
+    use std::fs;
+    use std::path::Path;
 
     #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum KeychainKind {
@@ -283,27 +284,42 @@ mod tests {
     #[test]
     fn migration_test() {
 
-        // Open the sled database
-        let db = sled::open("c6f1b522-testnet-wpkh").unwrap();
+        let root = Path::new("./wallets");
 
-        for (tn, tree_name) in db.tree_names().into_iter().enumerate() {
-            let tree = db.open_tree(&tree_name)
-                .unwrap();
-            println!("Tree name: {},is tree empty ? : {}\n", std::str::from_utf8(&tree_name).unwrap(), tree.is_empty());
-            // tree.iter().for_each(|item| {
-            //     let (key, value) = item.unwrap();
-            //     println!("Key: Value: {:?}", key);
-            // });
+        if root.is_dir() {
+            for entry in fs::read_dir(root).unwrap() {
+                let entry = entry.unwrap();
+                let path = entry.path();
 
-            // println!("\n");
+                if path.is_dir() {
+                    println!("Path: {:?}", path);
+                    let db = sled::open(path.clone()).unwrap();
+
+                    for (tn, tree_name) in db.tree_names().into_iter().enumerate() {
+                        let tree = db.open_tree(&tree_name)
+                            .unwrap();
+                        println!("Tree name: {},is tree empty ? : {}\n", std::str::from_utf8(&tree_name).unwrap(), tree.is_empty());
+                        // tree.iter().for_each(|item| {
+                        //     let (key, value) = item.unwrap();
+                        //     println!("Key: Value: {:?}", key);
+                        // });
+
+                        // println!("\n");
+                    }
+                    let tree = db.open_tree(format!("{}", path.file_name().unwrap().to_str().unwrap()))
+                        .unwrap();
+
+                    tree.iter().keys().for_each(|key| {
+                        println!("Key: {:?}", key);
+                    });
+
+                    let external = tree.get(MapKey::LastIndex(KeychainKind::External).as_map_key()).unwrap();
+                    let intenal = tree.get(MapKey::LastIndex(KeychainKind::Internal).as_map_key()).unwrap();
+
+                    println!("last sync External: {:?}", external);
+                    println!("last sync Internal: {:?}", intenal);
+                }
+            }
         }
-        let db = db.open_tree("c6f1b522-testnet-wpkh".as_bytes())
-            .unwrap();
-
-        let external = db.get(MapKey::LastIndex(KeychainKind::External).as_map_key()).unwrap();
-        let intenal = db.get(MapKey::LastIndex(KeychainKind::Internal).as_map_key()).unwrap();
-
-        println!("last sync External: {:?}", external);
-        println!("last sync Internal: {:?}", intenal);
     }
 }
