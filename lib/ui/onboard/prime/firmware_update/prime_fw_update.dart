@@ -212,6 +212,7 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
   }
 
   Widget _updateFinishedWidget(BuildContext context) {
+    _progressAnimationController?.findInput<bool>("happy")?.change(true);
     return Column(
       children: [
         Text(
