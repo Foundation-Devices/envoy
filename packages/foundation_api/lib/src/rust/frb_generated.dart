@@ -11,7 +11,6 @@ import 'frb_generated.dart';
 import 'frb_generated.io.dart'
     if (dart.library.js_interop) 'frb_generated.web.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
-import 'third_party/bc_ur.dart';
 import 'third_party/bc_xid.dart';
 import 'third_party/foundation_api/api/bitcoin.dart';
 import 'third_party/foundation_api/api/firmware.dart';
@@ -99,7 +98,7 @@ abstract class RustLibApi extends BaseApi {
   Future<PassportMessage> crateApiQrDecodeBleMessage({required List<int> data});
 
   Future<QrDecoderStatus> crateApiQrDecodeQr(
-      {required String qr, required MultipartDecoder decoder});
+      {required String qr, required ArcMutexDecoder decoder});
 
   Future<List<Uint8List>> crateApiQlEncode(
       {required EnvoyMessage message,
@@ -110,7 +109,7 @@ abstract class RustLibApi extends BaseApi {
 
   Future<Dechunker> crateApiQlGetDecoder();
 
-  Future<MultipartDecoder> crateApiQrGetQrDecoder();
+  Future<ArcMutexDecoder> crateApiQrGetQrDecoder();
 
   String crateApiQrGreet({required String name});
 
@@ -120,21 +119,21 @@ abstract class RustLibApi extends BaseApi {
       {required QuantumLinkIdentity quantumLinkIdentity});
 
   RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_ArcMutexDecoder;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_ArcMutexDecoder;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_ArcMutexDecoderPtr;
+
+  RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_Dechunker;
 
   RustArcDecrementStrongCountFnType
       get rust_arc_decrement_strong_count_Dechunker;
 
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_DechunkerPtr;
-
-  RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_MultipartDecoder;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_MultipartDecoder;
-
-  CrossPlatformFinalizerArg
-      get rust_arc_decrement_strong_count_MultipartDecoderPtr;
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_QuantumLinkIdentity;
@@ -220,12 +219,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<QrDecoderStatus> crateApiQrDecodeQr(
-      {required String qr, required MultipartDecoder decoder}) {
+      {required String qr, required ArcMutexDecoder decoder}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(qr, serializer);
-        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultipartDecoder(
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
             decoder, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 3, port: port_);
@@ -326,7 +325,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<MultipartDecoder> crateApiQrGetQrDecoder() {
+  Future<ArcMutexDecoder> crateApiQrGetQrDecoder() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
@@ -335,7 +334,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: SseCodec(
         decodeSuccessData:
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultipartDecoder,
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder,
         decodeErrorData: null,
       ),
       constMeta: kCrateApiQrGetQrDecoderConstMeta,
@@ -422,20 +421,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_ArcMutexDecoder => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_ArcMutexDecoder => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder;
+
+  RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_Dechunker => wire
           .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker;
 
   RustArcDecrementStrongCountFnType
       get rust_arc_decrement_strong_count_Dechunker => wire
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker;
-
-  RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_MultipartDecoder => wire
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultipartDecoder;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_MultipartDecoder => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultipartDecoder;
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_QuantumLinkIdentity => wire
@@ -460,19 +459,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ArcMutexDecoder
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ArcMutexDecoderImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   Dechunker
       dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return DechunkerImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  MultipartDecoder
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultipartDecoder(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return MultipartDecoderImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -500,11 +499,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  MultipartDecoder
-      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultipartDecoder(
+  ArcMutexDecoder
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return MultipartDecoderImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return ArcMutexDecoderImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -524,19 +523,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ArcMutexDecoder
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ArcMutexDecoderImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   Dechunker
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return DechunkerImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  MultipartDecoder
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultipartDecoder(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return MultipartDecoderImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -962,20 +961,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ArcMutexDecoder
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ArcMutexDecoderImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
   Dechunker
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return DechunkerImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  MultipartDecoder
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultipartDecoder(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return MultipartDecoderImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -1007,11 +1006,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  MultipartDecoder
-      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultipartDecoder(
+  ArcMutexDecoder
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return MultipartDecoderImpl.frbInternalSseDecode(
+    return ArcMutexDecoderImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -1034,20 +1033,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ArcMutexDecoder
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ArcMutexDecoderImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
   Dechunker
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return DechunkerImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  MultipartDecoder
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultipartDecoder(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return MultipartDecoderImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -1464,21 +1463,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
+          ArcMutexDecoder self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ArcMutexDecoderImpl).frbInternalSseEncode(move: true),
+        serializer);
+  }
+
+  @protected
+  void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
           Dechunker self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
         (self as DechunkerImpl).frbInternalSseEncode(move: true), serializer);
-  }
-
-  @protected
-  void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultipartDecoder(
-          MultipartDecoder self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as MultipartDecoderImpl).frbInternalSseEncode(move: true),
-        serializer);
   }
 
   @protected
@@ -1511,11 +1510,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultipartDecoder(
-          MultipartDecoder self, SseSerializer serializer) {
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
+          ArcMutexDecoder self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-        (self as MultipartDecoderImpl).frbInternalSseEncode(move: false),
+        (self as ArcMutexDecoderImpl).frbInternalSseEncode(move: false),
         serializer);
   }
 
@@ -1541,21 +1540,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
+          ArcMutexDecoder self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as ArcMutexDecoderImpl).frbInternalSseEncode(move: null),
+        serializer);
+  }
+
+  @protected
+  void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
           Dechunker self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
         (self as DechunkerImpl).frbInternalSseEncode(move: null), serializer);
-  }
-
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultipartDecoder(
-          MultipartDecoder self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as MultipartDecoderImpl).frbInternalSseEncode(move: null),
-        serializer);
   }
 
   @protected
@@ -1937,6 +1936,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 }
 
 @sealed
+class ArcMutexDecoderImpl extends RustOpaque implements ArcMutexDecoder {
+  // Not to be used by end users
+  ArcMutexDecoderImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  ArcMutexDecoderImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_ArcMutexDecoder,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_ArcMutexDecoder,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_ArcMutexDecoderPtr,
+  );
+}
+
+@sealed
 class DechunkerImpl extends RustOpaque implements Dechunker {
   // Not to be used by end users
   DechunkerImpl.frbInternalDcoDecode(List<dynamic> wire)
@@ -1953,27 +1972,6 @@ class DechunkerImpl extends RustOpaque implements Dechunker {
         RustLib.instance.api.rust_arc_decrement_strong_count_Dechunker,
     rustArcDecrementStrongCountPtr:
         RustLib.instance.api.rust_arc_decrement_strong_count_DechunkerPtr,
-  );
-}
-
-@sealed
-class MultipartDecoderImpl extends RustOpaque implements MultipartDecoder {
-  // Not to be used by end users
-  MultipartDecoderImpl.frbInternalDcoDecode(List<dynamic> wire)
-      : super.frbInternalDcoDecode(wire, _kStaticData);
-
-  // Not to be used by end users
-  MultipartDecoderImpl.frbInternalSseDecode(
-      BigInt ptr, int externalSizeOnNative)
-      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-  static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_MultipartDecoder,
-    rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_MultipartDecoder,
-    rustArcDecrementStrongCountPtr: RustLib
-        .instance.api.rust_arc_decrement_strong_count_MultipartDecoderPtr,
   );
 }
 

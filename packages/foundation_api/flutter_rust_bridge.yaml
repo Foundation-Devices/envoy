@@ -2,8 +2,10 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-rust_input: crate::api, bc-ur::MultipartDecoder, bc-xid::xid::XIDDocument, foundation-api::api::message::PassportMessage, foundation-api::api::message::EnvoyMessage
+rust_input: crate::api, bc-xid::xid::XIDDocument, foundation-api::api::message::PassportMessage, foundation-api::api::message::EnvoyMessage
 dart_output: lib/src/rust
 enable_lifetime: true
 rust_preamble: |
   use btp::Dechunker;
+  use std::sync::Mutex;
+  use foundation_ur::Decoder;
