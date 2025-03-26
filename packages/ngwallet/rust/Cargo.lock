@@ -842,7 +842,6 @@ dependencies = [
  "bdk_electrum",
  "bdk_wallet",
  "flutter_rust_bridge",
- "log",
  "redb",
  "serde",
  "serde_json",

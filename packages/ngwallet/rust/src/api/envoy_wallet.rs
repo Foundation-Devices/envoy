@@ -18,6 +18,7 @@ use ngwallet::ngwallet::NgWallet;
 use ngwallet::transaction::{BitcoinTransaction, Output};
 pub use bdk_wallet::bitcoin::{Network, Psbt, ScriptBuf};
 use log::info;
+use ngwallet::redb::backends::FileBackend;
 
 #[frb(init)]
 pub fn init_app() {
@@ -77,6 +78,7 @@ impl EnvoyAccount {
                     index,
                     Some(db_path),
                     Arc::new(Mutex::new(connection)),
+                    None::<FileBackend>
                 )
             )),
         }
@@ -94,6 +96,7 @@ impl EnvoyAccount {
                 NgAccount::open_wallet(
                     db_path,
                     Arc::new(Mutex::new(connection)),
+                    None::<FileBackend>
                 )))
         }
     }
