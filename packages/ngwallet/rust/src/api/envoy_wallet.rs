@@ -78,7 +78,7 @@ impl EnvoyAccount {
                     index,
                     Some(db_path),
                     Arc::new(Mutex::new(connection)),
-                    None::<FileBackend>
+                    None::<FileBackend>,
                 )
             )),
         }
@@ -96,7 +96,7 @@ impl EnvoyAccount {
                 NgAccount::open_wallet(
                     db_path,
                     Arc::new(Mutex::new(connection)),
-                    None::<FileBackend>
+                    None::<FileBackend>,
                 )))
         }
     }
@@ -193,5 +193,117 @@ impl EnvoyAccount {
             .map_err(|e| {
                 anyhow!("Failed to broadcast: {}", e)
             })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    //     use bdk_wallet::KeychainKind;
+//     use sled::Config;
+    use sled::{Db, IVec, Tree};
+    use std::error::Error;
+
+
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    pub enum KeychainKind {
+        /// External
+        External = 0,
+        /// Internal, usually used for change outputs
+        Internal = 1,
+    }
+
+    impl KeychainKind {
+        /// Return [`KeychainKind`] as a byte
+        pub fn as_byte(&self) -> u8 {
+            match self {
+                KeychainKind::External => b'e',
+                KeychainKind::Internal => b'i',
+            }
+        }
+    }
+
+    impl AsRef<[u8]> for KeychainKind {
+        fn as_ref(&self) -> &[u8] {
+            match self {
+                KeychainKind::External => b"e",
+                KeychainKind::Internal => b"i",
+            }
+        }
+    }
+
+    pub(crate) enum MapKey {
+        LastIndex(KeychainKind),
+        SyncTime,
+    }
+
+    impl MapKey {
+        fn as_prefix(&self) -> Vec<u8> {
+            match self {
+                MapKey::LastIndex(st) => [b"c", st.as_ref()].concat(),
+                MapKey::SyncTime => b"l".to_vec(),
+            }
+        }
+        fn serialize_content(&self) -> Vec<u8> {
+            match self {
+                _ => vec![],
+            }
+        }
+
+        pub fn as_map_key(&self) -> Vec<u8> {
+            let mut v = self.as_prefix();
+            v.extend_from_slice(&self.serialize_content());
+            v
+        }
+    }
+
+    fn ivec_to_u32(b: IVec) -> Result<u32, Box<dyn Error>> {
+        let array: [u8; 4] = b
+            .as_ref()
+            .try_into()
+            .map_err(|_| "Invalid U32 Bytes")?;
+        let val = u32::from_be_bytes(array);
+        Ok(val)
+    }
+
+    fn get_last_index(db: &Tree, keychain: KeychainKind) -> Result<Option<u32>, Box<dyn Error>> {
+        let key = MapKey::LastIndex(keychain).as_map_key();
+        db.get(key)?.map(ivec_to_u32).transpose()
+    }
+
+    fn list_db_contents(db: &Db) -> Result<(), Box<dyn Error>> {
+        for item in db.iter() {
+            let (key, value) = item?;
+            let key_str = std::str::from_utf8(&key)?;
+            let value_str = std::str::from_utf8(&value)?;
+            println!("Key: {}, Value: {}", key_str, value_str);
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn migration_test() {
+
+        // Open the sled database
+        let db = sled::open("c6f1b522-testnet-wpkh").unwrap();
+
+        for (tn, tree_name) in db.tree_names().into_iter().enumerate() {
+            let tree = db.open_tree(&tree_name)
+                .unwrap();
+            println!("Tree name: {},is tree empty ? : {}\n", std::str::from_utf8(&tree_name).unwrap(), tree.is_empty());
+            // tree.iter().for_each(|item| {
+            //     let (key, value) = item.unwrap();
+            //     println!("Key: Value: {:?}", key);
+            // });
+
+            // println!("\n");
+        }
+        let db = db.open_tree("c6f1b522-testnet-wpkh".as_bytes())
+            .unwrap();
+
+        let external = db.get(MapKey::LastIndex(KeychainKind::External).as_map_key()).unwrap();
+        let intenal = db.get(MapKey::LastIndex(KeychainKind::Internal).as_map_key()).unwrap();
+
+        println!("last sync External: {:?}", external);
+        println!("last sync Internal: {:?}", intenal);
     }
 }
