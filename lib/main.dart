@@ -50,7 +50,7 @@ Future<void> main() async {
   }
 
   final migrationStatus = EnvoyStorage().getBool("migration_envoy_v2_status");
-  if (migrationStatus == null || migrationStatus == false) {
+  if (/*migrationStatus == null || migrationStatus == */false) {
     runApp(MigrationApp());
   } else if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
     runApp(const AuthenticateApp());

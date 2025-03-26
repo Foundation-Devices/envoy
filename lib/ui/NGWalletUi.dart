@@ -113,10 +113,10 @@ class _NGWalletUiState extends ConsumerState<NGWalletUi>
               try {
                 final scanRq = await ngAccount.scanRequest();
                 if (scanRq != null) {
-                  final scanRes = await ngAccount.scan(scanRq);
-                  if (scanRes != null) {
-                    await ngAccount.apply_update(scanRes);
-                  }
+                  //final scanRes = await ngAccount.scan(scanRq);
+                  // if (scanRes != null) {
+                  //   await ngAccount.apply_update(scanRes);
+                  // }
                 }
                 ref.refresh(transactionsProvider(envoyAccount));
                 ref.refresh(balanceProvider(envoyAccount));
@@ -391,7 +391,7 @@ class _NGWalletUiState extends ConsumerState<NGWalletUi>
                           : () async {
                               try {
                                 final scaffoldMessenger = ScaffoldMessenger.of(context);
-                                await envoyAccount.broadcast(psbt: signedPSBT);
+                                //await envoyAccount.broadcast(psbt: signedPSBT);
                                 const snackBar = SnackBar(content: Text('Broadcasting successful'));
                                 scaffoldMessenger.showSnackBar(snackBar);
                               } catch (e,stack) {
