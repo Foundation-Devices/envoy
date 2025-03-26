@@ -4,7 +4,6 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
-import '../third_party/bc_ur.dart';
 import '../third_party/bc_xid.dart';
 import '../third_party/foundation_api/api/bitcoin.dart';
 import '../third_party/foundation_api/api/firmware.dart';
@@ -19,15 +18,18 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 String greet({required String name}) =>
     RustLib.instance.api.crateApiQrGreet(name: name);
 
-Future<MultipartDecoder> getQrDecoder() =>
+Future<ArcMutexDecoder> getQrDecoder() =>
     RustLib.instance.api.crateApiQrGetQrDecoder();
 
 Future<QrDecoderStatus> decodeQr(
-        {required String qr, required MultipartDecoder decoder}) =>
+        {required String qr, required ArcMutexDecoder decoder}) =>
     RustLib.instance.api.crateApiQrDecodeQr(qr: qr, decoder: decoder);
 
 Future<PassportMessage> decodeBleMessage({required List<int> data}) =>
     RustLib.instance.api.crateApiQrDecodeBleMessage(data: data);
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < Decoder > >>>
+abstract class ArcMutexDecoder implements RustOpaqueInterface {}
 
 class QrDecoderStatus {
   final double progress;

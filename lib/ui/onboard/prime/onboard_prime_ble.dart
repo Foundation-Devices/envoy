@@ -94,26 +94,53 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
       case OnboardingState.downloadingUpdate:
         ref.read(primeUpdateStateProvider.notifier).state =
             PrimeFwUpdateStep.downloading;
+        ref
+            .read(fwDownloadStateProvider.notifier)
+            .updateStep("Downloading Update", EnvoyStepState.LOADING);
+
+        await _fakeUpdateDownload();
+
+        BluetoothManager().sendOnboardingState(OnboardingState.receivingUpdate);
+
         break;
       case OnboardingState.receivingUpdate:
-        ref.read(primeUpdateStateProvider.notifier).state =
-            PrimeFwUpdateStep.transferring;
-        // TODO: Handle receiving update
         break;
       case OnboardingState.veryfyingSignatures:
+        ref.read(fwTransferStateProvider.notifier).updateStep(
+            "Transferred to Passport Prime", EnvoyStepState.FINISHED);
+
         ref.read(primeUpdateStateProvider.notifier).state =
             PrimeFwUpdateStep.verifying;
-        // TODO: Handle verifying signatures
+        ref
+            .read(primeFwSigVerifyStateProvider.notifier)
+            .updateStep("Verifying Update", EnvoyStepState.LOADING);
         break;
       case OnboardingState.installingUpdate:
+        ref
+            .read(primeFwSigVerifyStateProvider.notifier)
+            .updateStep("Update Verified", EnvoyStepState.FINISHED);
+        ref
+            .read(primeFwInstallStateProvider.notifier)
+            .updateStep("Installing Update", EnvoyStepState.LOADING);
+
         ref.read(primeUpdateStateProvider.notifier).state =
             PrimeFwUpdateStep.installing;
         break;
       case OnboardingState.rebooting:
+        ref
+            .read(primeFwInstallStateProvider.notifier)
+            .updateStep("Update Installed", EnvoyStepState.FINISHED);
+        ref
+            .read(primeFwRebootStateProvider.notifier)
+            .updateStep("Passport Prime is restarting", EnvoyStepState.LOADING);
+
         ref.read(primeUpdateStateProvider.notifier).state =
             PrimeFwUpdateStep.rebooting;
         break;
       case OnboardingState.firmwareUpdated:
+        ref
+            .read(primeFwRebootStateProvider.notifier)
+            .updateStep("Rebooted", EnvoyStepState.FINISHED);
         ref.read(primeUpdateStateProvider.notifier).state =
             PrimeFwUpdateStep.finished;
         break;
@@ -187,6 +214,19 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
       case OnboardingState.updateNotAvailable:
         break;
     }
+  }
+
+  Future<void> _fakeUpdateDownload() async {
+    await Future.delayed(Duration(seconds: 5));
+    ref
+        .read(fwDownloadStateProvider.notifier)
+        .updateStep("Update Downloaded", EnvoyStepState.FINISHED);
+    ref
+        .read(fwTransferStateProvider.notifier)
+        .updateStep("Transferring to Passport Prime", EnvoyStepState.LOADING);
+
+    ref.read(primeUpdateStateProvider.notifier).state =
+        PrimeFwUpdateStep.transferring;
   }
 
   @override

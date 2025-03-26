@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use std::sync::{Arc, Mutex};
 use bc_envelope::base::envelope;
 use bc_envelope::prelude::*;
 use bc_ur::URType;
@@ -25,8 +26,8 @@ pub fn init_app() {
     flutter_rust_bridge::setup_default_user_utils();
 }
 
-pub async fn get_qr_decoder() -> MultipartDecoder {
-    MultipartDecoder::new()
+pub async fn get_qr_decoder() -> Arc<Mutex<Decoder>> {
+    Arc::new(Mutex::new(Decoder::default()))
 }
 
 pub struct QrDecoderStatus {
@@ -36,14 +37,20 @@ pub struct QrDecoderStatus {
 
 pub async fn decode_qr(
     qr: String,
-    decoder: &mut MultipartDecoder,
+    decoder: &Arc<Mutex<Decoder>>,
 ) -> anyhow::Result<QrDecoderStatus> {
-    decoder.receive(&*qr)?;
+    let ur = UR::parse(&qr)?;
+    let mut decoder = decoder.lock().unwrap();
+    decoder.receive(ur)?;
 
     register_tags();
     if decoder.is_complete() {
-        let ur = decoder.message()?.unwrap();
-        let envelope = Envelope::try_from_cbor(ur.cbor())?;
+        let decoded = decoder.message()?.unwrap();
+        // TODO: convert raw data to CBoR
+
+        let cbor = CBOR::try_from_data(decoded)?;
+
+        let envelope = Envelope::try_from_cbor(cbor)?;
         let xid_document = XIDDocument::from_unsigned_envelope(&envelope)?;
 
         return Ok(QrDecoderStatus {
@@ -53,7 +60,7 @@ pub async fn decode_qr(
     }
 
     Ok(QrDecoderStatus {
-        progress: 0.5,
+        progress: decoder.estimated_percent_complete(),
         payload: None,
     })
 }
@@ -98,11 +105,13 @@ mod tests {
 
     #[tokio::test]
     async fn test_decode_qr() -> Result<()> {
-        let mut decoder = get_qr_decoder().await;
+        let decoder = get_qr_decoder().await;
         let ur_codes = get_test_array();
 
         for ur in ur_codes {
-            let result = decode_qr(ur, &mut decoder).await?;
+            let result = decode_qr(ur, decoder.clone()).await?;
+
+            println!("Progress: {}", result.progress);
 
             if result.progress == 1.0 {
                 assert!(result.payload.is_some());

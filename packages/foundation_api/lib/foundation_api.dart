@@ -8,7 +8,6 @@ library;
 export 'src/rust/frb_generated.dart' show RustLib;
 export 'src/rust/api/qr.dart';
 export 'src/rust/frb_generated.dart';
-export 'src/rust/third_party/bc_ur.dart';
 export 'src/rust/api/ql.dart';
 export 'src/rust/third_party/foundation_api/api/message.dart';
 export 'src/rust/third_party/foundation_api/api/fx.dart';
