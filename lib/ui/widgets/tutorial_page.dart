@@ -124,15 +124,18 @@ class _AccountTutorialOverlayState extends ConsumerState<AccountTutorialOverlay>
               ),
             ),
           ),
-          const Positioned(
+          Positioned(
             bottom: EnvoySpacing.medium3,
             left: 0,
             right: 0,
             child: TutorialDialog(
-              titles: ["Mobile Wallet", "Cold Wallet"],
+              titles: [
+                S().onboarding_tutorialHotWallet_header,
+                S().onboarding_tutorialColdWallet_header
+              ],
               descriptions: [
-                "Also known as a “hot wallet.” Spending from this wallet requires only your phone for authorization. \n\n Since your Mobile Wallet is connected to the Internet, use this wallet to store small amounts of Bitcoin for frequent transactions.",
-                "Also known as a “cold wallet.” Spending from this wallet requires authorization from your Passport device. \n\n Your Passport Master Key is always stored securely offline. \n\n  Use this wallet to secure the majority of your Bitcoin savings."
+                S().onboarding_tutorialHotWallet_content,
+                S().onboarding_tutorialColdWallet_content,
               ],
             ),
           ),
