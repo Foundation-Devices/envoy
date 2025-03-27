@@ -32,6 +32,8 @@ class BluetoothManager {
 
   String bleId = "";
 
+  Stream<List<bluart.BleDevice>>? devices;
+
   static Future<BluetoothManager> init() async {
     var singleton = BluetoothManager._instance;
     return singleton;
@@ -44,7 +46,7 @@ class BluetoothManager {
   _init() async {
     await api.RustLib.init();
     await bluart.RustLib.init();
-    await bluart.init();
+    devices = await bluart.init().asBroadcastStream();
     _generateQlIdentity();
   }
 
@@ -57,7 +59,6 @@ class BluetoothManager {
   }
 
   scan() {
-    // TODO: maybe listen here?
     bluart.scan(filter: [""]);
   }
 

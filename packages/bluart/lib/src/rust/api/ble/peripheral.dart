@@ -11,5 +11,5 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 // These functions are ignored (category: IgnoreBecauseExplicitAttribute): `id`, `new`
 // These functions are ignored (category: IgnoreBecauseOwnerTyShouldIgnore): `benchmark`, `connect`, `disconnect`, `is_connected`, `name`, `read`, `write`
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Peripheral>>
-abstract class Peripheral implements RustOpaqueInterface {}
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Device>>
+abstract class Device implements RustOpaqueInterface {}

@@ -3,12 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use std::collections::HashMap;
+use std::str::FromStr;
 use std::sync::{Arc, OnceLock};
 
 use anyhow::Result;
-use btleplug::api::{bleuuid::BleUuid, Central, CentralEvent, Manager as _, ScanFilter};
-pub use btleplug::platform::Manager;
-use btleplug::platform::PeripheralId;
+use btleplug::api::{bleuuid::BleUuid, BDAddr, Central, CentralEvent, Manager as _, ScanFilter};
+use btleplug::platform::{Manager, PeripheralId};
 use futures::stream::StreamExt;
 use tokio::{
     sync::{mpsc, Mutex},
@@ -30,7 +30,6 @@ use log::{debug, error};
 
 enum Command {
     Scan {
-        sink: StreamSink<Vec<BleDevice>>,
         filter: Vec<String>,
     },
     Connect {
@@ -79,7 +78,7 @@ fn send(command: Command) -> Result<()> {
 
 /// The init() function must be called before anything else.
 /// At the moment the developer has to make sure it is only called once.
-pub fn init() -> Result<()> {
+pub async fn init(sink: StreamSink<Vec<BleDevice>>) -> Result<()> {
     // Disabled for now -> way too chatty
     //flutter_rust_bridge::setup_default_user_utils();
     create_runtime()?;
@@ -89,6 +88,10 @@ pub fn init() -> Result<()> {
 
     let _ = DEVICES.set(Arc::new(Mutex::new(HashMap::new())));
 
+    let manager = Manager::new().await?;
+    let adapters = manager.adapters().await?;
+    let central = adapters.into_iter().next().expect("cannot fail");
+
     runtime.spawn(async move {
         let (tx, mut rx) = mpsc::unbounded_channel::<Command>();
         TX.set(tx).unwrap();
@@ -97,8 +100,8 @@ pub fn init() -> Result<()> {
             debug!("got message");
 
             match msg {
-                Command::Scan { sink, filter } => {
-                    tokio::spawn(async { inner_scan(sink, filter).await.unwrap() });
+                Command::Scan { filter } => {
+                    tokio::spawn(async { inner_scan(filter).await.unwrap() });
                 }
                 Command::Connect { id } => inner_connect(id).await.unwrap(),
                 Command::Disconnect { id } => inner_disconnect(id).await.unwrap(),
@@ -109,6 +112,75 @@ pub fn init() -> Result<()> {
             }
         }
     });
+
+    runtime.spawn(async move {
+        let mut events = central.events().await.unwrap();
+
+        let mut device_send_interval = time::interval(time::Duration::from_secs(1));
+        loop {
+            tokio::select! {
+                _ = device_send_interval.tick() => {
+                    remove_stale_devices(60).await;
+                    if send_devices(&sink).await.is_err() {
+                        break;
+                    }
+                }
+                Some(event) = events.next() => {
+                    debug!("{:?}", event);
+                    match event {
+                        CentralEvent::DeviceDiscovered(id) => {
+                            debug!("{}",format!("DeviceDiscovered: {:?}", &id));
+                            let peripheral = central.peripheral(&id).await.unwrap();
+                            let peripheral = Device::new(peripheral);
+                            let mut devices = DEVICES.get().unwrap().lock().await;
+                            devices.insert(id.to_string(), peripheral);
+                        }
+                        CentralEvent::DeviceUpdated(id) => {
+                            let mut devices = DEVICES.get().unwrap().lock().await;
+                            if let Some(device) = devices.get_mut(&id.to_string()) {
+                                device.last_seen = time::Instant::now();
+                            }
+                        }
+                        CentralEvent::DeviceConnected(id) => {
+                            debug!("{}",format!("DeviceConnected: {:?}", id));
+                            let mut devices = DEVICES.get().unwrap().lock().await;
+                            if let Some(device) = devices.get_mut(&id.to_string()) {
+                                device.is_connected = true;
+                            }
+                        }
+                        CentralEvent::DeviceDisconnected(id) => {
+                            debug!("{}",format!("DeviceDisconnected: {:?}", id));
+                            let mut devices = DEVICES.get().unwrap().lock().await;
+                            if let Some(device) = devices.get_mut(&id.to_string()) {
+                                device.is_connected = false;
+                            }
+                        }
+                        CentralEvent::ManufacturerDataAdvertisement {
+                            id:_,
+                            manufacturer_data:_,
+                        } => {
+                            // tracing::debug!("{}",format!(
+                            //     "ManufacturerDataAdvertisement: {:?}, {:?}",
+                            //     id, manufacturer_data
+                            // ));
+                        }
+                        CentralEvent::ServiceDataAdvertisement { id:_, service_data:_ } => {
+                            // tracing::debug!("{}",format!(
+                            //     "ServiceDataAdvertisement: {:?}, {:?}",
+                            //     id, service_data
+                            // ));
+                        }
+                        CentralEvent::ServicesAdvertisement { id:_, services } => {
+                            let _services: Vec<String> =
+                                services.into_iter().map(|s| s.to_short_string()).collect();
+                            // tracing::debug!("{}",format!("ServicesAdvertisement: {:?}, {:?}", id, services));
+                        }
+                    CentralEvent::StateUpdate(_) => {}}
+                }
+            }
+        }
+    });
+
     Ok(())
 }
 
@@ -159,86 +231,20 @@ async fn send_devices(sink: &StreamSink<Vec<BleDevice>>) -> Result<()> {
 /// sink: StreamSink<Vec<BleDevice>> - A stream sink to which the results are send
 ///
 /// filter: Vec<String> - A vector of strings to filter the results with
-pub fn scan(sink: StreamSink<Vec<BleDevice>>, filter: Vec<String>) -> Result<()> {
-    send(Command::Scan { sink, filter })
+pub fn scan(filter: Vec<String>) -> Result<()> {
+    send(Command::Scan { filter })
 }
 
-async fn inner_scan(sink: StreamSink<Vec<BleDevice>>, _filter: Vec<String>) -> Result<()> {
+async fn inner_scan(_filter: Vec<String>) -> Result<()> {
     let manager = Manager::new().await?;
     let adapters = manager.adapters().await?;
     let central = adapters.into_iter().next().expect("cannot fail");
-    let mut events = central.events().await?;
-
     // start scanning for devices
     debug!(
         "{}",
         format!("start scanning on {}", central.adapter_info().await?)
     );
     central.start_scan(ScanFilter::default()).await?;
-
-    let mut device_send_interval = time::interval(time::Duration::from_secs(1));
-    loop {
-        tokio::select! {
-            _ = device_send_interval.tick() => {
-                remove_stale_devices(60).await;
-                if send_devices(&sink).await.is_err() {
-                    break;
-                }
-            }
-            Some(event) = events.next() => {
-                debug!("{:?}", event);
-                match event {
-                    CentralEvent::DeviceDiscovered(id) => {
-                        debug!("{}",format!("DeviceDiscovered: {:?}", &id));
-                        let peripheral = central.peripheral(&id).await?;
-                        let peripheral = Device::new(peripheral);
-                        let mut devices = DEVICES.get().unwrap().lock().await;
-                        devices.insert(id.to_string(), peripheral);
-                    }
-                    CentralEvent::DeviceUpdated(id) => {
-                        let mut devices = DEVICES.get().unwrap().lock().await;
-                        if let Some(device) = devices.get_mut(&id.to_string()) {
-                            device.last_seen = time::Instant::now();
-                        }
-                    }
-                    CentralEvent::DeviceConnected(id) => {
-                        debug!("{}",format!("DeviceConnected: {:?}", id));
-                        let mut devices = DEVICES.get().unwrap().lock().await;
-                        if let Some(device) = devices.get_mut(&id.to_string()) {
-                            device.is_connected = true;
-                        }
-                    }
-                    CentralEvent::DeviceDisconnected(id) => {
-                        debug!("{}",format!("DeviceDisconnected: {:?}", id));
-                        let mut devices = DEVICES.get().unwrap().lock().await;
-                        if let Some(device) = devices.get_mut(&id.to_string()) {
-                            device.is_connected = false;
-                        }
-                    }
-                    CentralEvent::ManufacturerDataAdvertisement {
-                        id:_,
-                        manufacturer_data:_,
-                    } => {
-                        // tracing::debug!("{}",format!(
-                        //     "ManufacturerDataAdvertisement: {:?}, {:?}",
-                        //     id, manufacturer_data
-                        // ));
-                    }
-                    CentralEvent::ServiceDataAdvertisement { id:_, service_data:_ } => {
-                        // tracing::debug!("{}",format!(
-                        //     "ServiceDataAdvertisement: {:?}, {:?}",
-                        //     id, service_data
-                        // ));
-                    }
-                    CentralEvent::ServicesAdvertisement { id:_, services } => {
-                        let _services: Vec<String> =
-                            services.into_iter().map(|s| s.to_short_string()).collect();
-                        // tracing::debug!("{}",format!("ServicesAdvertisement: {:?}, {:?}", id, services));
-                    }
-                CentralEvent::StateUpdate(_) => {}}
-            }
-        }
-    }
     // tracing::debug!("Scan finished");
     Ok(())
 }
@@ -255,8 +261,24 @@ async fn inner_connect(id: String) -> Result<()> {
     let device = match devices.get(&id) {
         Some(device) => device,
         None => {
-            // TODO: create peripheral and add to DEVICES IF NOT THERE
             return Err(anyhow::anyhow!("UnknownPeripheral(id)"));
+
+            // TODO: create peripheral and add to DEVICES IF NOT THERE
+            // let manager = Manager::new().await?;
+            // let adapters = manager.adapters().await?;
+            // let central = adapters.into_iter().next().expect("cannot fail");
+            //
+            // let address = BDAddr::from_str(&id)?;
+            //
+            // let peripheral_id = PeripheralId::from(address);
+            // let peripheral = central
+            //     .add_peripheral(&peripheral_id)
+            //     .await?;
+            //
+            // let mut devices = DEVICES.get().unwrap().lock().await;
+            // let device = Device::new(peripheral);
+            // devices.insert(id, device);
+            // &device.clone()
         }
     };
 
@@ -360,7 +382,6 @@ async fn inner_read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
                     sink.add(data.value).unwrap();
                 }
             });
-
         }
         Err(e) => {
             debug!("{}", format!("Got error: {:?}", e));

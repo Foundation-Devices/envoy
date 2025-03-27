@@ -21,7 +21,7 @@ class BleDevice {
     required this.connected,
   });
 
-  static Future<BleDevice> fromPeripheral({required Peripheral peripheral}) =>
+  static Future<BleDevice> fromPeripheral({required Device peripheral}) =>
       RustLib.instance.api
           .crateApiBleDeviceBleDeviceFromPeripheral(peripheral: peripheral);
 

@@ -83,7 +83,7 @@ abstract class RustLibApi extends BaseApi {
   Stream<BigInt> crateApiBleBenchmark({required String id});
 
   Future<BleDevice> crateApiBleDeviceBleDeviceFromPeripheral(
-      {required Peripheral peripheral});
+      {required Device peripheral});
 
   Future<void> crateApiBleConnect({required String id});
 
@@ -91,24 +91,22 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiBleDisconnect({required String id});
 
-  Future<void> crateApiBleInit();
+  Stream<List<BleDevice>> crateApiBleInit();
 
   Stream<Uint8List> crateApiBleRead({required String id});
 
-  Stream<List<BleDevice>> crateApiBleScan({required List<String> filter});
+  Future<void> crateApiBleScan({required List<String> filter});
 
   Future<void> crateApiBleWrite({required String id, required List<int> data});
 
   Future<void> crateApiBleWriteAll(
       {required String id, required List<Uint8List> data});
 
-  RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_Peripheral;
+  RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Device;
 
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_Peripheral;
+  RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Device;
 
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_PeripheralPtr;
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_DevicePtr;
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -148,11 +146,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<BleDevice> crateApiBleDeviceBleDeviceFromPeripheral(
-      {required Peripheral peripheral}) {
+      {required Device peripheral}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPeripheral(
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDevice(
             peripheral, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 2, port: port_);
@@ -246,10 +244,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<void> crateApiBleInit() {
-    return handler.executeNormal(NormalTask(
+  Stream<List<BleDevice>> crateApiBleInit() {
+    final sink = RustStreamSink<List<BleDevice>>();
+    unawaited(handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_StreamSink_list_ble_device_Sse(sink, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 6, port: port_);
       },
@@ -258,14 +258,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiBleInitConstMeta,
-      argValues: [],
+      argValues: [sink],
       apiImpl: this,
-    ));
+    )));
+    return sink.stream;
   }
 
   TaskConstMeta get kCrateApiBleInitConstMeta => const TaskConstMeta(
         debugName: "init",
-        argNames: [],
+        argNames: ["sink"],
       );
 
   @override
@@ -296,12 +297,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Stream<List<BleDevice>> crateApiBleScan({required List<String> filter}) {
-    final sink = RustStreamSink<List<BleDevice>>();
-    unawaited(handler.executeNormal(NormalTask(
+  Future<void> crateApiBleScan({required List<String> filter}) {
+    return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_StreamSink_list_ble_device_Sse(sink, serializer);
         sse_encode_list_String(filter, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 8, port: port_);
@@ -311,15 +310,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiBleScanConstMeta,
-      argValues: [sink, filter],
+      argValues: [filter],
       apiImpl: this,
-    )));
-    return sink.stream;
+    ));
   }
 
   TaskConstMeta get kCrateApiBleScanConstMeta => const TaskConstMeta(
         debugName: "scan",
-        argNames: ["sink", "filter"],
+        argNames: ["filter"],
       );
 
   @override
@@ -374,12 +372,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_Peripheral => wire
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPeripheral;
+      get rust_arc_increment_strong_count_Device => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDevice;
 
   RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_Peripheral => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPeripheral;
+      get rust_arc_decrement_strong_count_Device => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDevice;
 
   @protected
   AnyhowException dco_decode_AnyhowException(dynamic raw) {
@@ -388,19 +386,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Peripheral
-      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPeripheral(
+  Device
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDevice(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return PeripheralImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return DeviceImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
-  Peripheral
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPeripheral(
+  Device
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDevice(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return PeripheralImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return DeviceImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -510,20 +508,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Peripheral
-      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPeripheral(
+  Device
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDevice(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return PeripheralImpl.frbInternalSseDecode(
+    return DeviceImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
   @protected
-  Peripheral
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPeripheral(
+  Device
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDevice(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return PeripheralImpl.frbInternalSseDecode(
+    return DeviceImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -659,20 +657,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPeripheral(
-          Peripheral self, SseSerializer serializer) {
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDevice(
+          Device self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-        (self as PeripheralImpl).frbInternalSseEncode(move: false), serializer);
+        (self as DeviceImpl).frbInternalSseEncode(move: false), serializer);
   }
 
   @protected
   void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPeripheral(
-          Peripheral self, SseSerializer serializer) {
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDevice(
+          Device self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-        (self as PeripheralImpl).frbInternalSseEncode(move: null), serializer);
+        (self as DeviceImpl).frbInternalSseEncode(move: null), serializer);
   }
 
   @protected
@@ -811,21 +809,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 }
 
 @sealed
-class PeripheralImpl extends RustOpaque implements Peripheral {
+class DeviceImpl extends RustOpaque implements Device {
   // Not to be used by end users
-  PeripheralImpl.frbInternalDcoDecode(List<dynamic> wire)
+  DeviceImpl.frbInternalDcoDecode(List<dynamic> wire)
       : super.frbInternalDcoDecode(wire, _kStaticData);
 
   // Not to be used by end users
-  PeripheralImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+  DeviceImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
       : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
 
   static final _kStaticData = RustArcStaticData(
     rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_Peripheral,
+        RustLib.instance.api.rust_arc_increment_strong_count_Device,
     rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_Peripheral,
+        RustLib.instance.api.rust_arc_decrement_strong_count_Device,
     rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_PeripheralPtr,
+        RustLib.instance.api.rust_arc_decrement_strong_count_DevicePtr,
   );
 }

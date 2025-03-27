@@ -13,7 +13,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 /// The init() function must be called before anything else.
 /// At the moment the developer has to make sure it is only called once.
-Future<void> init() => RustLib.instance.api.crateApiBleInit();
+Stream<List<BleDevice>> init() => RustLib.instance.api.crateApiBleInit();
 
 /// This function is used to scan for BLE devices and returns the results via the given stream sink.
 ///
@@ -22,7 +22,7 @@ Future<void> init() => RustLib.instance.api.crateApiBleInit();
 /// sink: StreamSink<Vec<BleDevice>> - A stream sink to which the results are send
 ///
 /// filter: Vec<String> - A vector of strings to filter the results with
-Stream<List<BleDevice>> scan({required List<String> filter}) =>
+Future<void> scan({required List<String> filter}) =>
     RustLib.instance.api.crateApiBleScan(filter: filter);
 
 Future<void> connect({required String id}) =>
