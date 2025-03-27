@@ -32,7 +32,20 @@ pub async fn decode(data: Vec<u8>, decoder: &mut Dechunker, quantum_link_identit
         debug!("We're complete!");
         let message = decoder.data();
         debug!("Trying to get envelope...");
-        let envelope = Envelope::try_from_cbor_data(message.to_owned())?;
+        let envelope = match Envelope::try_from_cbor_data(message.to_owned()) {
+            Ok(env) => {
+                decoder.clear();
+                env
+            },
+            Err(e) => {
+                debug!("Failed to decode CBOR: {:?}", e);
+                decoder.clear(); 
+                return Ok(DecoderStatus {
+                    progress: 0.0,
+                    payload: None,
+                });
+            }
+        };
         debug!("Unsealing envelope...");
         let passport_message = PassportMessage::unseal_passport_message(&envelope, &quantum_link_identity.clone().private_keys.unwrap()).unwrap();
 
