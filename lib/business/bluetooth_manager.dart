@@ -131,7 +131,7 @@ class BluetoothManager {
     _decoder = await api.getDecoder();
     _subscription = bluart.read(id: id).listen((bleData) {
       decode(bleData).then((value) {
-        kPrint("Dechunked: {$value}");
+        //kPrint("Dechunked: {$value}");
         if (value != null) {
           _passportMessageStream.add(value);
         }
