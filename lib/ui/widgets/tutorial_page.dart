@@ -15,8 +15,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/business/account.dart';
 
-final pageProvider =
-    StateProvider<int>((ref) => 1); // TODO: regular state instead ??
+final dialogPageProvider = StateProvider<int>((ref) => 1);
 
 class AccountTutorialOverlay extends ConsumerStatefulWidget {
   const AccountTutorialOverlay({
@@ -33,8 +32,8 @@ class _AccountTutorialOverlayState extends ConsumerState<AccountTutorialOverlay>
   @override
   Widget build(BuildContext context) {
     List<Account> accounts = ref.watch(accountsProvider);
-    final currentPageNumber = ref.watch(pageProvider);
-    const double accountHeight = 114;
+    final currentPageNumber = ref.watch(dialogPageProvider);
+    const double accountCardHeight = 114;
 
     return PopScope(
       canPop: false,
@@ -114,7 +113,7 @@ class _AccountTutorialOverlayState extends ConsumerState<AccountTutorialOverlay>
                                   )
                                 : const SizedBox(
                                     height:
-                                        accountHeight), // Keeps space when hidden
+                                        accountCardHeight), // Keeps space when hidden
                           );
                         },
                         itemCount: accounts.length,
@@ -160,8 +159,8 @@ class TutorialDialog extends ConsumerStatefulWidget {
 class _TutorialDialogState extends ConsumerState<TutorialDialog> {
   @override
   Widget build(BuildContext context) {
-    final pageNumber = ref.watch(pageProvider);
-    final pageNotifier = ref.read(pageProvider.notifier);
+    final pageNumber = ref.watch(dialogPageProvider);
+    final pageNotifier = ref.read(dialogPageProvider.notifier);
 
     final int totalPages = widget.titles.length; // Dynamic total page count
 
@@ -193,9 +192,6 @@ class _TutorialDialogState extends ConsumerState<TutorialDialog> {
           child: Center(
             child: Container(
               width: MediaQuery.of(context).size.width * 0.9,
-              // constraints: const BoxConstraints( // TODO:
-              //   maxHeight: 180,
-              // ),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   begin: Alignment.topRight,
@@ -229,13 +225,15 @@ class _TutorialDialogState extends ConsumerState<TutorialDialog> {
                                 color: EnvoyColors.textPrimaryInverse),
                           ),
                           const SizedBox(height: EnvoySpacing.medium1),
-                          SingleChildScrollView(
-                            // TODO: make this work with a Container ?
-                            child: Text(
-                              widget.descriptions[pageNumber - 1],
-                              textAlign: TextAlign.center,
-                              style: EnvoyTypography.info
-                                  .copyWith(color: EnvoyColors.textTertiary),
+                          SizedBox(
+                            height: 180,
+                            child: SingleChildScrollView(
+                              child: Text(
+                                widget.descriptions[pageNumber - 1],
+                                textAlign: TextAlign.center,
+                                style: EnvoyTypography.info
+                                    .copyWith(color: EnvoyColors.textTertiary),
+                              ),
                             ),
                           ),
                           const SizedBox(height: EnvoySpacing.medium1),

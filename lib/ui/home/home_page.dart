@@ -254,21 +254,14 @@ class HomePageState extends ConsumerState<HomePage>
   }
 
   void _notifyAfterOnboardingTutorial(context) async {
-    bool dismissed = await EnvoyStorage()
-        .checkPromptDismissed(DismissiblePrompt.afterOnboardingTutorial);
-
     if (context.mounted) {
-      // TODO: add Prime and "first time" and dismissed check!!!
-      // !dismissed &&
+      // TODO: add Prime signal check!!!
 
       Navigator.of(context).push(
         PageRouteBuilder(
           opaque: false,
           pageBuilder: (context, animation, secondaryAnimation) =>
               const AccountTutorialOverlay(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
         ),
       );
     }
