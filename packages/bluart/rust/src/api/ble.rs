@@ -27,6 +27,7 @@ pub use device::*;
 pub use peripheral::*;
 
 use log::{debug, error};
+use tokio::time::Instant;
 
 enum Command {
     Scan {
@@ -80,7 +81,7 @@ fn send(command: Command) -> Result<()> {
 /// At the moment the developer has to make sure it is only called once.
 pub async fn init(sink: StreamSink<Vec<BleDevice>>) -> Result<()> {
     // Disabled for now -> way too chatty
-    //flutter_rust_bridge::setup_default_user_utils();
+    flutter_rust_bridge::setup_default_user_utils();
     create_runtime()?;
     let runtime = RUNTIME
         .get()
@@ -346,18 +347,13 @@ pub fn write_all(id: String, data: Vec<Vec<u8>>) -> Result<()> {
 }
 
 async fn inner_write_all(id: String, data: Vec<Vec<u8>>) -> Result<()> {
-    debug!("inner write_all");
     debug!("{}", format!("Writing all to: {id}"));
     let devices = DEVICES.get().unwrap().lock().await;
     let device = devices
         .get(&id)
         .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
 
-    for data in data {
-        device.write(data).await?;
-    }
-
-    Ok(())
+    device.write_all(data).await
 }
 
 pub fn read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {

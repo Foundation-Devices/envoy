@@ -73,8 +73,24 @@ impl Device {
     pub async fn write(&self, data: Vec<u8>) -> Result<()> {
         debug!("before uart_characteristic");
         let uart_characteristic = self.get_uart_write_characteristic();
-        self.peripheral.write(&uart_characteristic, &data, WriteType::WithResponse)
+        self.peripheral.write(&uart_characteristic, &data, WriteType::WithoutResponse)
             .await?;
+
+        Ok(())
+    }
+
+    pub async fn write_all(&self, data: Vec<Vec<u8>>) -> Result<()> {
+        let uart_characteristic = self.get_uart_write_characteristic();
+
+        let start = Instant::now();
+        for data in data {
+            self.peripheral.write(&uart_characteristic, &data, WriteType::WithResponse)
+                .await?;
+            //tokio::time::sleep(time::Duration::from_millis(60)).await;
+        }
+
+        let duration = start.elapsed();
+        debug!("Time taken: {:?}", duration);
 
         Ok(())
     }

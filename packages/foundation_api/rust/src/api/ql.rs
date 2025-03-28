@@ -26,7 +26,13 @@ pub async fn serialize_xid(quantum_link_identity:  &QuantumLinkIdentity) -> Vec<
 pub async fn decode(data: Vec<u8>, decoder: &mut Dechunker, quantum_link_identity:  &QuantumLinkIdentity) -> Result<DecoderStatus> {
     debug!("receiving data");
 
-    decoder.receive(&data)?;
+    match decoder.receive(&data) {
+        Ok(_) => {}
+        Err(e) => {
+            decoder.clear();
+            return Err(anyhow!("Failed to receive data: {:?}", e));
+        }
+    };
 
     if decoder.is_complete() {
         debug!("We're complete!");

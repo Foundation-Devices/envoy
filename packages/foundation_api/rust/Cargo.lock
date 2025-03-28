@@ -337,7 +337,6 @@ dependencies = [
 [[package]]
 name = "btp"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?rev=9ed09f0a9e161910d083c2d4ff26f75aed256e0b#9ed09f0a9e161910d083c2d4ff26f75aed256e0b"
 dependencies = [
  "anyhow",
  "consts",
