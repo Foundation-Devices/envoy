@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -124,14 +125,11 @@ class _OnboardPassportWelcomeScreenState
         leading: CupertinoNavigationBarBackButton(
           color: Colors.white,
           onPressed: () {
-            Navigator.pop(context);
-            return;
-            //TODO: fix this
-            // if (GoRouter.of(context).canPop()) {
-            //   GoRouter.of(context).pop();
-            // } else {
-            //   GoRouter.of(context).push(ROUTE_ACCOUNTS_HOME);
-            // }
+            if (AccountManager().getHotWalletAccount() != null) {
+              context.go("/");
+            } else {
+              Navigator.pop(context);
+            }
           },
         ),
         automaticallyImplyLeading: false,
@@ -224,48 +222,36 @@ class _OnboardPassportWelcomeScreenState
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: EnvoySpacing.medium1,
-                    right: EnvoySpacing.medium1,
-                    bottom: EnvoySpacing.large2),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    LinkText(
-                      text: S().passport_welcome_screen_cta3,
-                      textStyle: EnvoyTypography.button.copyWith(
-                        color: EnvoyColors.inactiveDark,
-                      ),
-                      linkStyle: EnvoyTypography.button
-                          .copyWith(color: EnvoyColors.accentPrimary),
-                      onTap: () {
-                        launchUrl(Uri.parse("https://foundation.xyz/passport"));
-                      },
-                    ),
-                    const SizedBox(height: EnvoySpacing.medium1),
-                    EnvoyButton(
-                      S().passport_welcome_screen_cta2,
-                      type: EnvoyButtonTypes.secondary,
-                      onTap: () {
-                        context.goNamed(ONBOARD_PASSPORT_EXISTING);
-                      },
-                    ),
-                    const SizedBox(height: EnvoySpacing.medium1),
-                    EnvoyButton(
-                      S().passport_welcome_screen_cta1,
-                      onTap: () async {
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return const TouPage();
-                        }));
-                      },
-                    ),
-                    const SizedBox(height: EnvoySpacing.small),
-                  ],
+              LinkText(
+                text: S().passport_welcome_screen_cta3,
+                textStyle: EnvoyTypography.button.copyWith(
+                  color: EnvoyColors.inactiveDark,
                 ),
+                linkStyle: EnvoyTypography.button
+                    .copyWith(color: EnvoyColors.accentPrimary),
+                onTap: () {
+                  launchUrl(Uri.parse("https://foundation.xyz/passport"));
+                },
               ),
+              const SizedBox(height: EnvoySpacing.medium1),
+              EnvoyButton(
+                S().passport_welcome_screen_cta2,
+                type: EnvoyButtonTypes.secondary,
+                onTap: () {
+                  context.goNamed(ONBOARD_PASSPORT_EXISTING);
+                },
+              ),
+              const SizedBox(height: EnvoySpacing.medium1),
+              EnvoyButton(
+                S().passport_welcome_screen_cta1,
+                onTap: () async {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return const TouPage();
+                  }));
+                },
+              ),
+              const SizedBox(height: EnvoySpacing.small),
             ],
           )),
     );

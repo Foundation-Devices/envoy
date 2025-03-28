@@ -159,7 +159,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                 horizontal: EnvoySpacing.xs),
                             child: Text(
                               //TODO: sync latest copy and button links
-                              S().welcome_screen_subheading,
+                              S().onboarding_welcome_content,
                               style: Theme.of(context).textTheme.bodySmall,
                               textAlign: TextAlign.center,
                             ),

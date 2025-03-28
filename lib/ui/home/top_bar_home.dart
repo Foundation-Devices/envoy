@@ -7,6 +7,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/home/setup_overlay.dart';
 import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
@@ -365,7 +366,12 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
             onTap: () {
               if (EnvoySeed().walletDerived()) {
                 //TODO: replace with bottom sheet options menu, onboarding 2.0
-                context.pushNamed(ONBOARD_PASSPORT_SETUP);
+                Navigator.of(context).push(
+                  PageRouteBuilder(
+                    opaque: false,
+                    pageBuilder: (_, __, ___) => const AnimatedBottomOverlay(),
+                  ),
+                );
               } else {
                 context.pushNamed(ROUTE_SPLASH);
               }
