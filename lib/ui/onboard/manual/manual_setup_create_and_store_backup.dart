@@ -5,6 +5,7 @@
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/onboard/manual/manual_setup_change_from_magic.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/home/settings/backup/erase_warning.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
@@ -81,15 +82,28 @@ class _ManualSetupCreateAndStoreBackupState
                 onTap: () async {
                   await EnvoySeed().saveOfflineData();
 
-                  if (globalState == GlobalState.nuclearDelete &&
-                      context.mounted) {
-                    showEnvoyDialog(
-                        context: context,
-                        dialog: const EraseWalletsConfirmation());
-                  } else {
-                    if (context.mounted) {
-                      showWarningModal(context);
-                    }
+                  switch (globalState) {
+                    case GlobalState.normal:
+                      if (context.mounted) {
+                        showWarningModal(context);
+                      }
+                      break;
+
+                    case GlobalState.nuclearDelete:
+                      if (context.mounted) {
+                        showEnvoyDialog(
+                            context: context,
+                            dialog: const EraseWalletsConfirmation());
+                      }
+                      break;
+
+                    case GlobalState.backupDelete:
+                      if (context.mounted) {
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return const MagicBackupDeactivated();
+                        }));
+                      }
                   }
                 }),
           )

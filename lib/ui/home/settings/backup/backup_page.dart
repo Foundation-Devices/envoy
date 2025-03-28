@@ -22,6 +22,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
@@ -29,6 +30,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as new_colors;
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/ui/onboard/magic/wallet_security/wallet_security_modal.dart';
+import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 
 class BackupPage extends ConsumerStatefulWidget {
   const BackupPage({super.key});
@@ -130,6 +132,10 @@ class _BackupPageState extends ConsumerState<BackupPage>
                           onSwitch: (value) {
                             if (value) {
                               showEnablingBackupDialog(context);
+                            } else {
+                              showDisableBackupDialog(context, () {
+                                globalState.state = GlobalState.backupDelete;
+                              });
                             }
                             // todo: add flow
                             s.setSyncToCloud(value);
@@ -425,18 +431,12 @@ class _BackupPageState extends ConsumerState<BackupPage>
         S().component_continue,
         (_) {
           Navigator.of(context).pop();
+          context.pushNamed(ONBOARD_ENVOY_MAGIC_GENERATE_SETUP);
         },
         title: S().backups_manualToMagicrModal_header,
         secondaryButtonLabel: S().component_back,
         onSecondaryButtonTap: (_) {
           Navigator.of(context).pop();
-          showEnvoyDialog(
-              context: context,
-              dialog: WalletSecurityModal(
-                onLastStep: () {
-                  Navigator.pop(context);
-                },
-              ));
         },
         showCloseButton: false,
         icon: EnvoyIcons.info,
@@ -450,5 +450,26 @@ class _BackupPageState extends ConsumerState<BackupPage>
                 },
               ));
         });
+  }
+
+  showDisableBackupDialog(BuildContext context, Function onContinue) {
+    showEnvoyPopUp(
+      context,
+      S().manual_setup_change_from_magic_modal_subheader,
+      S().component_continue,
+      (_) {
+        //Navigator.of(context).pop();
+        onContinue();
+        displaySeedBeforeNuke(context);
+      },
+      title: S().component_warning,
+      secondaryButtonLabel: S().component_back,
+      onSecondaryButtonTap: (_) {
+        Navigator.of(context).pop();
+      },
+      showCloseButton: false,
+      icon: EnvoyIcons.alert,
+      typeOfMessage: PopUpState.warning,
+    );
   }
 }
