@@ -29,6 +29,7 @@ import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/business/envoy_seed.dart';
 
 class EraseWalletsAndBackupsWarning extends StatefulWidget {
   const EraseWalletsAndBackupsWarning({super.key});
@@ -409,7 +410,7 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       //wait for animation
       await Future.delayed(const Duration(seconds: 1));
       await Future.delayed(const Duration(seconds: 4));
-      // await EnvoySeed().delete();
+      await EnvoySeed().delete();
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
       _stateMachineController?.findInput<bool>("happy")?.change(true);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);

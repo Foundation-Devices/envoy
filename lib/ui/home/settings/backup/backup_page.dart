@@ -94,7 +94,8 @@ class _BackupPageState extends ConsumerState<BackupPage>
   @override
   Widget build(BuildContext context) {
     final globalState = ref.watch(globalStateProvider.notifier);
-    var s = Settings();
+
+    final s = ref.watch(settingsProvider);
 
     var lastEnvoyServerBackup = EnvoySeed().getLastBackupTime();
     var lastCloudBackup = EnvoySeed().getNonSecureLastBackupTimestamp();
@@ -137,9 +138,6 @@ class _BackupPageState extends ConsumerState<BackupPage>
                                 globalState.state = GlobalState.backupDelete;
                               });
                             }
-                            // todo: add flow
-                            s.setSyncToCloud(value);
-                            setState(() {});
                           },
                         ),
 

@@ -294,7 +294,7 @@ class EnvoySeed {
 
   Future<bool> deleteMagicBackup() async {
     final seed = await get();
-    Settings().syncToCloud = false;
+    Settings().setSyncToCloud(false);
     return Backup.delete(seed!, Settings().envoyServerAddress, Tor.instance);
   }
 
