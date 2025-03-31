@@ -15,6 +15,7 @@ bdk_wallet = { version = "1.1.0", features = ["rusqlite"] }
 anyhow = "1.0.97"
 log = "0.4.26"
 sled = { version = "0.34" }
+chrono = "0.4.40"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }

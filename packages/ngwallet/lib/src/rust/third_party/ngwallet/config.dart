@@ -36,7 +36,9 @@ class NgAccountConfig {
   final int index;
   final String internalDescriptor;
   final String? externalDescriptor;
+  final String? dateSynced;
   final Network network;
+  final String id;
 
   const NgAccountConfig({
     required this.name,
@@ -47,11 +49,18 @@ class NgAccountConfig {
     required this.index,
     required this.internalDescriptor,
     this.externalDescriptor,
+    this.dateSynced,
     required this.network,
+    required this.id,
   });
 
   static Future<NgAccountConfig> deserialize({required String data}) =>
       RustLib.instance.api.ngwalletConfigNgAccountConfigDeserialize(data: data);
+
+  Future<bool> isHot() =>
+      RustLib.instance.api.ngwalletConfigNgAccountConfigIsHot(
+        that: this,
+      );
 
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
   static Future<NgAccountConfig> newInstance(
@@ -63,7 +72,9 @@ class NgAccountConfig {
           required String internalDescriptor,
           String? externalDescriptor,
           required AddressType addressType,
-          required Network network}) =>
+          required Network network,
+          required String id,
+          String? dateSynced}) =>
       RustLib.instance.api.ngwalletConfigNgAccountConfigNew(
           name: name,
           color: color,
@@ -73,7 +84,9 @@ class NgAccountConfig {
           internalDescriptor: internalDescriptor,
           externalDescriptor: externalDescriptor,
           addressType: addressType,
-          network: network);
+          network: network,
+          id: id,
+          dateSynced: dateSynced);
 
   Future<String> serialize() =>
       RustLib.instance.api.ngwalletConfigNgAccountConfigSerialize(
@@ -90,7 +103,9 @@ class NgAccountConfig {
       index.hashCode ^
       internalDescriptor.hashCode ^
       externalDescriptor.hashCode ^
-      network.hashCode;
+      dateSynced.hashCode ^
+      network.hashCode ^
+      id.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -105,5 +120,7 @@ class NgAccountConfig {
           index == other.index &&
           internalDescriptor == other.internalDescriptor &&
           externalDescriptor == other.externalDescriptor &&
-          network == other.network;
+          dateSynced == other.dateSynced &&
+          network == other.network &&
+          id == other.id;
 }

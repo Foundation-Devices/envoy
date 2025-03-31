@@ -19,6 +19,8 @@ use ngwallet::transaction::{BitcoinTransaction, Output};
 pub use bdk_wallet::bitcoin::{Network, Psbt, ScriptBuf};
 use log::info;
 use ngwallet::redb::backends::FileBackend;
+use crate::api::migration::get_last_used_index;
+use chrono::{DateTime, Local};
 
 #[frb(init)]
 pub fn init_app() {
@@ -58,6 +60,7 @@ impl EnvoyAccount {
         external_descriptor: String,
         db_path: String,
         network: Network,
+        id: String,
     ) -> EnvoyAccount {
         let bdk_db_path = Path::new(&db_path).join("wallet.sqlite");
 
@@ -79,10 +82,67 @@ impl EnvoyAccount {
                     Some(db_path),
                     Arc::new(Mutex::new(connection)),
                     None::<FileBackend>,
+                    id.clone(),
+                    None,
                 )
             )),
         }
     }
+
+    pub fn migrate(
+        name: String,
+        id: String,
+        device_serial: Option<String>,
+        date_added: Option<String>,
+        address_type: AddressType,
+        color: String,
+        index: u32,
+        internal_descriptor: String,
+        external_descriptor: String,
+        db_path: String,
+        sled_db_path: String,
+        network: Network,
+    ) -> EnvoyAccount {
+        let bdk_db_path = Path::new(&db_path).join("wallet.sqlite");
+        let sled_db_path = Path::new(&sled_db_path).to_path_buf();
+        info!("Creating bdk file: {}", bdk_db_path.display());
+        info!("Working on sled path: {}", sled_db_path.display());
+        let connection = Connection::open(bdk_db_path).unwrap();
+        let indexes = get_last_used_index(&sled_db_path, name.clone());
+        info!("Indexes: {:?}", indexes);
+        let account = EnvoyAccount {
+            ng_account: Arc::new(Mutex::new(
+                NgAccount::new_from_descriptor(
+                    name,
+                    color,
+                    device_serial,
+                    date_added,
+                    network,
+                    address_type,
+                    internal_descriptor,
+                    Some(external_descriptor),
+                    index,
+                    Some(db_path),
+                    Arc::new(Mutex::new(connection)),
+                    None::<FileBackend>,
+                    id.clone(),
+                    None,
+                )
+            )),
+        };
+
+
+        account.ng_account.lock().unwrap().wallet
+            .reveal_addresses_up_to(KeychainKind::Internal, *indexes.get(&KeychainKind::Internal).unwrap_or(&0))
+            .unwrap();
+
+        account.ng_account.lock().unwrap().wallet
+            .reveal_addresses_up_to(KeychainKind::External, *indexes.get(&KeychainKind::External).unwrap_or(&0))
+            .unwrap();
+
+        account
+    }
+
 
     pub fn open_wallet(
         db_path: String,
@@ -114,7 +174,6 @@ impl EnvoyAccount {
         return Arc::new(Mutex::new(Some(scan_request)));
     }
 
-
     pub fn scan(scan_request: Arc<Mutex<Option<FullScanRequest<KeychainKind>>>>, electrum_server: &str) -> Arc<Mutex<Option<FullScanResponse<KeychainKind>>>> {
         let mut scan_request_guard = scan_request.lock().unwrap();
         return if let Some(scan_request) = scan_request_guard.take() {  // Use take() to move the value out
@@ -129,15 +188,17 @@ impl EnvoyAccount {
     pub fn apply_update(&mut self, scan_request: Arc<Mutex<Option<FullScanResponse<KeychainKind>>>>) -> bool {
         let mut scan_request_guard = scan_request.lock().unwrap();
         if let Some(scan_request) = scan_request_guard.take() {  // Use take() to move the value out
-            self.ng_account
-                .lock().unwrap()
-                .wallet.apply(Update::from(scan_request)).unwrap();
-            self.ng_account.lock().unwrap().persist().unwrap();
+            let mut account = self.ng_account
+                .lock().unwrap();
+
+            account.wallet.apply(Update::from(scan_request)).unwrap();
+            account.config.date_synced = Some(format!("{:?}", chrono::Utc::now()));
+            account.persist().unwrap();
             return true;
         }
         return false;
     }
-
+    #[frb(sync)]
     pub fn balance(&mut self) -> u64 {
         self.ng_account
             .lock().unwrap()
@@ -170,8 +231,14 @@ impl EnvoyAccount {
             .lock().unwrap()
             .wallet.set_note(tx_id, note)
     }
-
-    pub fn get_config(&self) -> NgAccountConfig {
+    #[frb(sync)]
+    pub fn is_hot(&self)-> bool {
+        self.ng_account
+            .lock().unwrap()
+            .config.is_hot()
+    }
+    #[frb(sync)]
+    pub fn config(&self) -> NgAccountConfig {
         self.ng_account.lock().unwrap().config.clone()
     }
 
@@ -193,133 +260,5 @@ impl EnvoyAccount {
             .map_err(|e| {
                 anyhow!("Failed to broadcast: {}", e)
             })
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    //     use bdk_wallet::KeychainKind;
-//     use sled::Config;
-    use sled::{Db, IVec, Tree};
-    use std::error::Error;
-    use std::fs;
-    use std::path::Path;
-
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-    pub enum KeychainKind {
-        /// External
-        External = 0,
-        /// Internal, usually used for change outputs
-        Internal = 1,
-    }
-
-    impl KeychainKind {
-        /// Return [`KeychainKind`] as a byte
-        pub fn as_byte(&self) -> u8 {
-            match self {
-                KeychainKind::External => b'e',
-                KeychainKind::Internal => b'i',
-            }
-        }
-    }
-
-    impl AsRef<[u8]> for KeychainKind {
-        fn as_ref(&self) -> &[u8] {
-            match self {
-                KeychainKind::External => b"e",
-                KeychainKind::Internal => b"i",
-            }
-        }
-    }
-
-    pub(crate) enum MapKey {
-        LastIndex(KeychainKind),
-        SyncTime,
-    }
-
-    impl MapKey {
-        fn as_prefix(&self) -> Vec<u8> {
-            match self {
-                MapKey::LastIndex(st) => [b"c", st.as_ref()].concat(),
-                MapKey::SyncTime => b"l".to_vec(),
-            }
-        }
-        fn serialize_content(&self) -> Vec<u8> {
-            match self {
-                _ => vec![],
-            }
-        }
-
-        pub fn as_map_key(&self) -> Vec<u8> {
-            let mut v = self.as_prefix();
-            v.extend_from_slice(&self.serialize_content());
-            v
-        }
-    }
-
-    fn ivec_to_u32(b: IVec) -> Result<u32, Box<dyn Error>> {
-        let array: [u8; 4] = b
-            .as_ref()
-            .try_into()
-            .map_err(|_| "Invalid U32 Bytes")?;
-        let val = u32::from_be_bytes(array);
-        Ok(val)
-    }
-
-    fn get_last_index(db: &Tree, keychain: KeychainKind) -> Result<Option<u32>, Box<dyn Error>> {
-        let key = MapKey::LastIndex(keychain).as_map_key();
-        db.get(key)?.map(ivec_to_u32).transpose()
-    }
-
-    fn list_db_contents(db: &Db) -> Result<(), Box<dyn Error>> {
-        for item in db.iter() {
-            let (key, value) = item?;
-            let key_str = std::str::from_utf8(&key)?;
-            let value_str = std::str::from_utf8(&value)?;
-            println!("Key: {}, Value: {}", key_str, value_str);
-        }
-        Ok(())
-    }
-
-    #[test]
-    fn migration_test() {
-
-        let root = Path::new("./wallets");
-
-        if root.is_dir() {
-            for entry in fs::read_dir(root).unwrap() {
-                let entry = entry.unwrap();
-                let path = entry.path();
-
-                if path.is_dir() {
-                    println!("Path: {:?}", path);
-                    let db = sled::open(path.clone()).unwrap();
-
-                    for (tn, tree_name) in db.tree_names().into_iter().enumerate() {
-                        let tree = db.open_tree(&tree_name)
-                            .unwrap();
-                        println!("Tree name: {},is tree empty ? : {}\n", std::str::from_utf8(&tree_name).unwrap(), tree.is_empty());
-                        // tree.iter().for_each(|item| {
-                        //     let (key, value) = item.unwrap();
-                        //     println!("Key: Value: {:?}", key);
-                        // });
-
-                        // println!("\n");
-                    }
-                    let tree = db.open_tree(format!("{}", path.file_name().unwrap().to_str().unwrap()))
-                        .unwrap();
-
-                    tree.iter().keys().for_each(|key| {
-                        println!("Key: {:?}", key);
-                    });
-
-                    let external = tree.get(MapKey::LastIndex(KeychainKind::External).as_map_key()).unwrap();
-                    let intenal = tree.get(MapKey::LastIndex(KeychainKind::Internal).as_map_key()).unwrap();
-
-                    println!("last sync External: {:?}", external);
-                    println!("last sync Internal: {:?}", intenal);
-                }
-            }
-        }
     }
 }

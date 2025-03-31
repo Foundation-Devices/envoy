@@ -28,12 +28,41 @@ abstract class EnvoyAccount implements RustOpaqueInterface {
 
   set ngAccount(ArcMutexNgAccountConnection ngAccount);
 
-  Future<BigInt> balance();
+  BigInt balance();
 
   Future<void> broadcast(
       {required String psbt, required String electrumServer});
 
-  Future<NgAccountConfig> getConfig();
+  NgAccountConfig config();
+
+  bool isHot();
+
+  static Future<EnvoyAccount> migrate(
+          {required String name,
+          required String id,
+          String? deviceSerial,
+          String? dateAdded,
+          required AddressType addressType,
+          required String color,
+          required int index,
+          required String internalDescriptor,
+          required String externalDescriptor,
+          required String dbPath,
+          required String sledDbPath,
+          required Network network}) =>
+      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountMigrate(
+          name: name,
+          id: id,
+          deviceSerial: deviceSerial,
+          dateAdded: dateAdded,
+          addressType: addressType,
+          color: color,
+          index: index,
+          internalDescriptor: internalDescriptor,
+          externalDescriptor: externalDescriptor,
+          dbPath: dbPath,
+          sledDbPath: sledDbPath,
+          network: network);
 
   static Future<EnvoyAccount> newFromDescriptor(
           {required String name,
@@ -45,7 +74,8 @@ abstract class EnvoyAccount implements RustOpaqueInterface {
           required String internalDescriptor,
           required String externalDescriptor,
           required String dbPath,
-          required Network network}) =>
+          required Network network,
+          required String id}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountNewFromDescriptor(
           name: name,
           deviceSerial: deviceSerial,
@@ -56,7 +86,8 @@ abstract class EnvoyAccount implements RustOpaqueInterface {
           internalDescriptor: internalDescriptor,
           externalDescriptor: externalDescriptor,
           dbPath: dbPath,
-          network: network);
+          network: network,
+          id: id);
 
   Future<String> nextAddress();
 

@@ -1,1 +1,4 @@
 pub mod envoy_wallet;
+
+/// flutter_rust_bridge:ignore
+mod migration;
