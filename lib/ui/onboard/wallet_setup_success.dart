@@ -69,7 +69,7 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                       children: [
                         Text(
                           widget.isPrimeWallet
-                              ? "Wallet connected successfully" // TODO: localazy
+                              ? S().finish_connectedSuccess_header
                               : S().wallet_setup_success_heading,
                           style: EnvoyTypography.heading,
                           textAlign: TextAlign.center,

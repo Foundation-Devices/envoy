@@ -6,6 +6,7 @@
 import 'package:bluart/bluart.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/prime/onboard_prime.dart';
@@ -64,7 +65,6 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
         kPrint("Error getting permissions: $e");
       }
     });
-
   }
 
   _connectBLE() async {
@@ -92,13 +92,16 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
       });
       await Future.delayed(const Duration(seconds: 1));
       await bleStepNotifier.updateStep(
-          "Connected to Passport Prime", EnvoyStepState.FINISHED);
+          S().onboarding_connectionIntro_connectedToPrime,
+          EnvoyStepState.FINISHED);
 
       await deviceSecurityStepNotifier.updateStep(
-          "Checking Device Security", EnvoyStepState.LOADING);
+          S().onboarding_connectionIntro_checkingDeviceSecurity,
+          EnvoyStepState.LOADING);
       await Future.delayed(const Duration(seconds: 10));
       await deviceSecurityStepNotifier.updateStep(
-          "Checked Device Security", EnvoyStepState.FINISHED);
+          S().onboarding_connectionChecking_SecurityPassed,
+          EnvoyStepState.FINISHED);
 
       await BluetoothManager()
           .sendOnboardingState(OnboardingState.securityChecked);
@@ -107,7 +110,8 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
           "Checking firmware updates", EnvoyStepState.LOADING);
       await Future.delayed(const Duration(seconds: 10));
       await firmWareUpdateStepNotifier.updateStep(
-          "New Update available", EnvoyStepState.FINISHED);
+          S().onboarding_connectionUpdatesAvailable_updatesAvailable,
+          EnvoyStepState.FINISHED);
       await BluetoothManager()
           .sendOnboardingState(OnboardingState.updateAvailable);
       if (mounted) {
@@ -152,8 +156,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
                 child: Column(
                   children: [
                     Text(
-                      //TODO: copy update
-                      "Passport Prime Connected",
+                      S().onboarding_connectionIntro_header,
                       textAlign: TextAlign.center,
                       style: EnvoyTypography.heading,
                     ),

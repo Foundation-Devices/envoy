@@ -31,7 +31,7 @@ enum TransactionType { normal, azteco, pending, btcPay, ramp }
 enum WalletType { witnessPublicKeyHash, taproot, superWallet }
 
 @JsonSerializable()
-class Transaction  {
+class Transaction {
   final String memo;
   final String txId;
   final DateTime date;

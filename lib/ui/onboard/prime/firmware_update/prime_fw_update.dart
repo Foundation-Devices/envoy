@@ -4,6 +4,7 @@
 
 import 'package:animations/animations.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
@@ -28,6 +29,7 @@ class OnboardPrimeFwUpdate extends ConsumerStatefulWidget {
 
 class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
   StateMachineController? _progressAnimationController;
+
   @override
   Widget build(BuildContext context) {
     final primeUpdateState = ref.watch(primeUpdateStateProvider);
@@ -157,19 +159,21 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
         ref.read(primeFwRebootStateProvider.notifier);
 
     primeUpdateNotifier.state = PrimeFwUpdateStep.downloading;
-    fwDownloadNotifier.updateStep("Downloading Update", EnvoyStepState.LOADING);
+    fwDownloadNotifier.updateStep(
+        S().firmware_updatingDownload_downloading, EnvoyStepState.LOADING);
     fwProgressNotifier.state = .4;
     await Future.delayed(const Duration(seconds: 2));
     fwProgressNotifier.state = .8;
     await Future.delayed(const Duration(seconds: 2));
     fwProgressNotifier.state = 1.0;
     await Future.delayed(const Duration(seconds: 2));
-    fwDownloadNotifier.updateStep("Update downloaded", EnvoyStepState.FINISHED);
+    fwDownloadNotifier.updateStep(
+        S().firmware_downloadingUpdate_downloaded, EnvoyStepState.FINISHED);
 
     primeUpdateNotifier.state = PrimeFwUpdateStep.transferring;
     fwProgressNotifier.state = 0.0;
     fwTransferStateNotifier.updateStep(
-        "Transfering to Passport Prime", EnvoyStepState.LOADING);
+        S().firmware_downloadingUpdate_transferring, EnvoyStepState.LOADING);
     await Future.delayed(const Duration(seconds: 1));
     fwProgressNotifier.state = 0.3;
     await Future.delayed(const Duration(seconds: 1));
@@ -216,8 +220,8 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     return Column(
       children: [
         Text(
-          //TODO: copy update
-          "Passport Prime was successfully\nupdated to Version 2.4.1.",
+          //TODO: Note to devs: {0} in firmware.updateSuccess.content1 should be programmatically replaced by the new keyOS version installed
+          S().firmware_updateSuccess_content1,
           textAlign: TextAlign.center,
           style: EnvoyTypography.explainer.copyWith(fontSize: 14),
         ),
@@ -225,7 +229,7 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
         Padding(
           padding: const EdgeInsets.all(EnvoySpacing.small),
           child: Text(
-            "Continue the setup on Passport Prime.",
+            S().firmware_updateSuccess_content2,
             textAlign: TextAlign.center,
             style: EnvoyTypography.explainer.copyWith(fontSize: 14),
           ),
@@ -238,8 +242,8 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     return Column(
       children: [
         Text(
-          //TODO: copy update
-          "Estimated Update Time ~5 min.",
+          //TODO: Note: {0} in firmware.updateAvailable.estimatedUpdateTime should be programmatically replaced by the estimated update time rounded to minutes
+          S().firmware_updateAvailable_estimatedUpdateTime,
           textAlign: TextAlign.center,
           style: EnvoyTypography.explainer.copyWith(fontSize: 14),
         ),
@@ -247,7 +251,8 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
         Padding(
           padding: const EdgeInsets.all(EnvoySpacing.small),
           child: Text(
-            "Your device is on Version 2.3.0 and there is an update available. We strongly suggest to update the device now.\n\nBut you could also trigger the update later from the settings menu. ",
+            // TODO: Note to devs: {0} in firmware.updateAvailable.whatsNew should be programmatically replaced by the new keyOS version found
+            S().firmware_updateAvailable_content2,
             textAlign: TextAlign.center,
             style: EnvoyTypography.explainer.copyWith(fontSize: 14),
           ),
@@ -276,15 +281,16 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     final primeUpdateState = ref.watch(primeUpdateStateProvider);
     //TODO: copy update
     return switch (primeUpdateState) {
-      PrimeFwUpdateStep.idle => "Firmware Update Available",
-      PrimeFwUpdateStep.downloading => "Updating Passport Prime",
+      PrimeFwUpdateStep.idle => S().firmware_updateAvailable_header,
+      PrimeFwUpdateStep.downloading =>
+        S().firmware_updatingDownload_downloading,
       PrimeFwUpdateStep.transferring ||
       PrimeFwUpdateStep.verifying ||
       PrimeFwUpdateStep.installing ||
       PrimeFwUpdateStep.rebooting =>
-        "Updating Passport Prime…",
-      PrimeFwUpdateStep.finished => "Update successful",
-      PrimeFwUpdateStep.error => "Firmware Update Error",
+        S().firmware_updatingDownload_header,
+      PrimeFwUpdateStep.finished => S().firmware_updateSuccess_header,
+      PrimeFwUpdateStep.error => S().firmware_updateError_header,
     };
   }
 
@@ -314,8 +320,7 @@ class _PrimeFwDownloadProgressState
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            //TODO: copy update
-            "Keep both Devices nearby.",
+            S().firmware_updatingDownload_content,
             textAlign: TextAlign.center,
             style: EnvoyTypography.explainer.copyWith(fontSize: 14),
           ),
@@ -348,7 +353,7 @@ class _PrimeFwDownloadProgressState
                           padding: EdgeInsets.all(EnvoySpacing.small)),
                       //TODO: update with time remaining
                       Text(
-                        "2 min remaining",
+                        S().firmware_downloadingUpdate_timeRemaining,
                         style: EnvoyTypography.explainer.copyWith(fontSize: 14),
                       ),
                     ],
@@ -382,8 +387,7 @@ class _PrimeFwFlashProgressState extends ConsumerState<PrimeFwFlashProgress> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            //TODO: copy update
-            "Keep both Devices nearby.",
+            S().firmware_updatingDownload_content,
             textAlign: TextAlign.center,
             style: EnvoyTypography.explainer.copyWith(fontSize: 14),
           ),
@@ -415,9 +419,8 @@ class _PrimeFwFlashProgressState extends ConsumerState<PrimeFwFlashProgress> {
           Consumer(builder: (context, ref, child) {
             final progress = ref.watch(primeFwRebootStateProvider);
             if (progress.state == EnvoyStepState.LOADING) {
-              //TODO: copy update
               return Text(
-                "Setup will resume afterwards automatically.",
+                S().firmware_updatingPrime_content2,
                 textAlign: TextAlign.center,
                 style: EnvoyTypography.explainer.copyWith(fontSize: 12),
               );

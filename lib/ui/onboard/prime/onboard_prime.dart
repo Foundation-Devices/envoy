@@ -5,6 +5,7 @@
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/home/settings/bluetooth_diag.dart';
@@ -166,7 +167,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text(
-                                  "Setup a new Passport Prime",
+                                  S().onboarding_primeIntro_header,
                                   textAlign: TextAlign.center,
                                   style: EnvoyTypography.body.copyWith(
                                     fontSize: 20,
@@ -176,9 +177,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
                                 ),
                                 const SizedBox(height: EnvoySpacing.small),
                                 Text(
-                                  "Passport Prime protects your Bitcoin keys by securing them offline while offering apps as your one go to security device. \n"
-                                  "With this type of \"cold\" wallet, transactions must be authorized with your Passport.\n\n"
-                                  "The Backup Strategy involves automatically saving one part in the cloud. That guarantees the easiest recovery path.",
+                                  S().onboarding_primeIntro_content,
                                   style: EnvoyTypography.info.copyWith(
                                     color: EnvoyColors.inactiveDark,
                                     decoration: TextDecoration.none,
@@ -228,7 +227,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
                         opacity: bleConnectState == BleConnectState.connecting
                             ? 0.5
                             : 1,
-                        child: EnvoyButton("Connect", onTap: () {
+                        child: EnvoyButton(S().component_continue, onTap: () {
                           _connectToPrime();
                         }),
                       ),

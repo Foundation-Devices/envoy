@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // ignore_for_file: constant_identifier_names
 
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart';
@@ -36,22 +37,28 @@ final firmWareUpdateProvider =
 
 final creatingPinProvider =
     StateNotifierProvider<StepNotifier, StepModel>((ref) {
-  return StepNotifier(stepName: "Creating Pin", state: EnvoyStepState.LOADING);
+  return StepNotifier(
+      stepName: S().finalize_catchAll_creatingPin,
+      state: EnvoyStepState.LOADING);
 });
 
 final setUpMasterKeyProvider =
     StateNotifierProvider<StepNotifier, StepModel>((ref) {
   return StepNotifier(
-      stepName: "Set Up Master Key", state: EnvoyStepState.IDLE);
+      stepName: S().finalize_catchAll_setUpMasterKey,
+      state: EnvoyStepState.IDLE);
 });
 
 final backUpMasterKeyProvider =
     StateNotifierProvider<StepNotifier, StepModel>((ref) {
   return StepNotifier(
-      stepName: "Back Up Master Key", state: EnvoyStepState.IDLE);
+      stepName: S().finalize_catchAll_backUpMasterKey,
+      state: EnvoyStepState.IDLE);
 });
 
 final connectAccountProvider =
     StateNotifierProvider<StepNotifier, StepModel>((ref) {
-  return StepNotifier(stepName: "Connect Account", state: EnvoyStepState.IDLE);
+  return StepNotifier(
+      stepName: S().finalize_catchAll_connectAccount,
+      state: EnvoyStepState.IDLE);
 });
