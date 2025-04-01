@@ -2,56 +2,63 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:collection/collection.dart';
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ngwallet/src/wallet.dart';
-import 'package:collection/collection.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 final accountManagerProvider =
-    ChangeNotifierProvider((ref) => AccountManager());
+    ChangeNotifierProvider((ref) => NgAccountManager());
 
-final accountsProvider = Provider<List<Account>>((ref) {
+final _transactionsProvider =
+    FutureProvider.family<List<BitcoinTransaction>, EnvoyAccount>(
+        (ref, account) async {
+  return await account.transactions();
+});
+
+final accountsProvider = Provider<List<EnvoyAccount>>((ref) {
   var testnetEnabled = ref.watch(showTestnetAccountsProvider);
   var signetEnabled = ref.watch(showSignetAccountsProvider);
   var taprootEnabled = ref.watch(showTaprootAccountsProvider);
   var accountManager = ref.watch(accountManagerProvider);
 
   return accountManager.accounts.where((account) {
-    if (!testnetEnabled && account.wallet.network == Network.Testnet) {
+    if (!testnetEnabled && account.config().network == Network.testnet) {
       return false;
     }
 
-    if (!signetEnabled && account.wallet.network == Network.Signet) {
+    if (!signetEnabled && account.config().network == Network.signet) {
       return false;
     }
 
-    if (!taprootEnabled && account.wallet.type == WalletType.taproot) {
+    if (!taprootEnabled && account.config().addressType == AddressType.p2Tr) {
       return false;
     }
-
     return true;
   }).toList();
 });
 
 final mainnetAccountsProvider =
-    Provider.family<List<Account>, Account?>((ref, selectedAccount) {
+    Provider.family<List<EnvoyAccount>, EnvoyAccount?>(
+        (ref, selectedEnvoyAccount) {
   final accounts = ref.watch(accountsProvider);
 
   // We filter everything but mainnet
-  final filteredAccounts = accounts
-      .where((account) => account.wallet.network == Network.Mainnet)
+  final filteredEnvoyAccounts = accounts
+      .where((account) => account.config().network == Network.bitcoin)
       .toList();
 
-  return filteredAccounts;
+  return filteredEnvoyAccounts;
 });
 
-final accountStateProvider = Provider.family<Account?, String?>((ref, id) {
+final accountStateProvider = Provider.family<EnvoyAccount?, String?>((ref, id) {
   final accountManager = ref.watch(accountManagerProvider);
   return accountManager.accounts
-      .singleWhereOrNull((element) => element.id == id);
+      .singleWhereOrNull((element) => element.config().id == id);
 });
 
 final accountBalanceProvider = Provider.family<int, String?>((ref, id) {
@@ -61,34 +68,38 @@ final accountBalanceProvider = Provider.family<int, String?>((ref, id) {
     return 0;
   }
 
-  final pendingTransactions = ref.watch(pendingTransactionsProvider(id));
+  //TODO: accomodate for pending transactions
+  // final pendingTransactions = ref.watch(pendingTransactionsProvider(id));
+  //
+  // List<BitcoinTransaction> walletTransactions =
+  //     ref.watch(accountStateProvider(id)).transactions() ?? [];
+  //
+  // List<BitcoinTransaction> transactionsToSum = [];
+  //
+  // for (var tx in pendingTransactions) {
+  //   final isTxIdExist = walletTransactions.any((tx) => tx.txId == tx.txId);
+  //   if (!isTxIdExist) transactionsToSum.add(tx);
+  // }
+  //
+  // final pendingTxSum = transactionsToSum
+  //     .where((tx) => tx.type == TransactionType.pending)
+  //     .map((tx) => tx.amount)
+  //     .toList()
+  //     .sum;
+  //
+  // return account.wallet.balance + pendingTxSum;
 
-  List<Transaction> walletTransactions =
-      ref.watch(accountStateProvider(id))?.wallet.transactions ?? [];
-
-  List<Transaction> transactionsToSum = [];
-
-  for (var tx in pendingTransactions) {
-    final isTxIdExist = walletTransactions.any((tx) => tx.txId == tx.txId);
-    if (!isTxIdExist) transactionsToSum.add(tx);
-  }
-
-  final pendingTxSum = transactionsToSum
-      .where((tx) => tx.type == TransactionType.pending)
-      .map((tx) => tx.amount)
-      .toList()
-      .sum;
-
-  return account.wallet.balance + pendingTxSum;
+  return account.balance().toInt();
 });
 
 // True if all the accounts have 0 balance
 final accountsZeroBalanceProvider = Provider<bool>((ref) {
   final accounts = ref.watch(accountsProvider);
   for (final account in accounts) {
-    if (account.wallet.balance > 0) {
-      return false;
-    }
+    //TODO: use EnvoyAccount
+    // if (account.balance > 0) {
+    //   return false;
+    // }
   }
 
   return true;

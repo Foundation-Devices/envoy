@@ -5,6 +5,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/ui/NGWalletUi.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/account_manager.dart';
@@ -32,6 +33,7 @@ import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/components/linear_gradient.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class AccountsCard extends ConsumerStatefulWidget {
   const AccountsCard({
@@ -193,7 +195,7 @@ class _AccountsListState extends ConsumerState<AccountsList> {
     final accounts = ref.watch(accountsProvider);
     final listContentHeight = accounts.length * _accountHeight;
 
-    ref.listen(accountsProvider, (List<Account>? previous, List<Account> next) {
+    ref.listen(accountsProvider, (List<EnvoyAccount>? previous, List<EnvoyAccount> next) {
       if (previous!.length < next.length) {
         if (_scrollController.hasClients) {
           _scrollController.animateTo(
@@ -247,27 +249,21 @@ class _AccountsListState extends ConsumerState<AccountsList> {
         onReorder: (oldIndex, newIndex) async {
           // SFT-2488: dismiss the drag and drop prompt after dragging
           EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
-          await AccountManager().moveAccount(oldIndex, newIndex, accounts);
+          NgAccountManager().moveAccount(oldIndex, newIndex, accounts);
+          // TODO: use EnvoyAccount
+          // await AccountManager().moveAccount(oldIndex, newIndex, accounts);
         },
         children: [
           for (final account in accounts)
             SizedBox(
-              key: ValueKey(account.id),
+              key: ValueKey(account.config().id),
               height: _accountHeight,
               child: AccountListTile(
                 account,
                 onTap: () async {
-                  Future.delayed(const Duration(milliseconds: 100)).then((value) async {
-                    Navigator.of(context, rootNavigator: true).push(
-                        MaterialPageRoute(
-                            builder: (context) =>  Theme(data: Theme.of(context),child: NGWalletUi(
-                            ),)));
-                  });
-
-                  return;
                   clearFilterState(ref);
-
-                  ref.read(selectedAccountProvider.notifier).state = account;
+                  //TODO: use EnvoyAccount
+                  // ref.read(selectedAccountProvider.notifier).state = account;
                   context.go(ROUTE_ACCOUNT_DETAIL, extra: account);
                   return;
                 },

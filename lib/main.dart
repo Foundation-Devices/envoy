@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
@@ -50,7 +51,7 @@ Future<void> main() async {
   }
 
   final migrationStatus = EnvoyStorage().getBool("migration_envoy_v2_status");
-  if (/*migrationStatus == null || migrationStatus == */false) {
+  if (migrationStatus == null || migrationStatus == false) {
     runApp(MigrationApp());
   } else if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
     runApp(const AuthenticateApp());
@@ -78,7 +79,7 @@ Future<void> initSingletons() async {
   kPrint("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
 
   // await AccountNg().init();
-
+  await NgAccountManager.init();
   await NTPUtil.init();
   EnvoyScheduler.init();
   await KeysManager.init();

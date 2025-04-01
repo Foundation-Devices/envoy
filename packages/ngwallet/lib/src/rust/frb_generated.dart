@@ -187,7 +187,8 @@ abstract class RustLibApi extends BaseApi {
       required AddressType addressType,
       required Network network,
       required String id,
-      String? dateSynced});
+      String? dateSynced,
+      String? walletPath});
 
   Future<String> ngwalletConfigNgAccountConfigSerialize(
       {required NgAccountConfig that});
@@ -957,7 +958,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       required AddressType addressType,
       required Network network,
       required String id,
-      String? dateSynced}) {
+      String? dateSynced,
+      String? walletPath}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
@@ -972,6 +974,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_network(network, serializer);
         sse_encode_String(id, serializer);
         sse_encode_opt_String(dateSynced, serializer);
+        sse_encode_opt_String(walletPath, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 23, port: port_);
       },
@@ -991,7 +994,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         addressType,
         network,
         id,
-        dateSynced
+        dateSynced,
+        walletPath
       ],
       apiImpl: this,
     ));
@@ -1011,7 +1015,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           "addressType",
           "network",
           "id",
-          "dateSynced"
+          "dateSynced",
+          "walletPath"
         ],
       );
 
@@ -1271,8 +1276,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   NgAccountConfig dco_decode_ng_account_config(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 11)
-      throw Exception('unexpected arr length: expect 11 but see ${arr.length}');
+    if (arr.length != 12)
+      throw Exception('unexpected arr length: expect 12 but see ${arr.length}');
     return NgAccountConfig(
       name: dco_decode_String(arr[0]),
       color: dco_decode_String(arr[1]),
@@ -1283,8 +1288,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       internalDescriptor: dco_decode_String(arr[6]),
       externalDescriptor: dco_decode_opt_String(arr[7]),
       dateSynced: dco_decode_opt_String(arr[8]),
-      network: dco_decode_network(arr[9]),
-      id: dco_decode_String(arr[10]),
+      walletPath: dco_decode_opt_String(arr[9]),
+      network: dco_decode_network(arr[10]),
+      id: dco_decode_String(arr[11]),
     );
   }
 
@@ -1581,6 +1587,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_internalDescriptor = sse_decode_String(deserializer);
     var var_externalDescriptor = sse_decode_opt_String(deserializer);
     var var_dateSynced = sse_decode_opt_String(deserializer);
+    var var_walletPath = sse_decode_opt_String(deserializer);
     var var_network = sse_decode_network(deserializer);
     var var_id = sse_decode_String(deserializer);
     return NgAccountConfig(
@@ -1593,6 +1600,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         internalDescriptor: var_internalDescriptor,
         externalDescriptor: var_externalDescriptor,
         dateSynced: var_dateSynced,
+        walletPath: var_walletPath,
         network: var_network,
         id: var_id);
   }
@@ -1900,6 +1908,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.internalDescriptor, serializer);
     sse_encode_opt_String(self.externalDescriptor, serializer);
     sse_encode_opt_String(self.dateSynced, serializer);
+    sse_encode_opt_String(self.walletPath, serializer);
     sse_encode_network(self.network, serializer);
     sse_encode_String(self.id, serializer);
   }

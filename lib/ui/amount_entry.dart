@@ -383,13 +383,14 @@ class SpendableAmountWidget extends ConsumerWidget {
                 text,
                 style: textStyle,
               ),
-              EnvoyAmount(
-                unit: sendScreenUnit,
-                amountSats: totalAmount,
-                amountWidgetStyle: AmountWidgetStyle.sendScreen,
-                account: account,
-                alignToEnd: true,
-              )
+              //TODO: use EnvoyAccount instead of account
+              // EnvoyAmount(
+              //   unit: sendScreenUnit,
+              //   amountSats: totalAmount,
+              //   amountWidgetStyle: AmountWidgetStyle.sendScreen,
+              //   account: account,
+              //   alignToEnd: true,
+              // )
             ],
           )
         : Row(
@@ -400,13 +401,14 @@ class SpendableAmountWidget extends ConsumerWidget {
                 text,
                 style: textStyle,
               ),
-              EnvoyAmount(
-                unit: sendScreenUnit,
-                amountSats: totalAmount,
-                amountWidgetStyle: AmountWidgetStyle.sendScreen,
-                account: account,
-                alignToEnd: true,
-              )
+              //TODO: use EnvoyAccount instead of account
+              // EnvoyAmount(
+              //   unit: sendScreenUnit,
+              //   amountSats: totalAmount,
+              //   amountWidgetStyle: AmountWidgetStyle.sendScreen,
+              //   account: account,
+              //   alignToEnd: true,
+              // )
             ],
           );
   }

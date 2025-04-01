@@ -166,18 +166,19 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
           Account? transactionAccount;
 
           // Check if the account of the current transaction is hidden
-          for (var account in accountManager.accounts) {
-            final transactions = ref.watch(transactionsProvider(account.id));
-            for (var tx in transactions) {
-              if (tx.txId == transaction.txId) {
-                transactionAccount = account;
-                isTransactionHidden =
-                    ref.watch(balanceHideStateStatusProvider(account.id));
-                break;
-              }
-            }
-            if (isTransactionHidden) break;
-          }
+        // TODO: use EnvoyAccount
+          // for (var account in accountManager.accounts) {
+          //   final transactions = ref.watch(transactionsProvider(account.id));
+          //   for (var tx in transactions) {
+          //     if (tx.txId == transaction.txId) {
+          //       transactionAccount = account;
+          //       isTransactionHidden =
+          //           ref.watch(balanceHideStateStatusProvider(account.id));
+          //       break;
+          //     }
+          //   }
+          //   if (isTransactionHidden) break;
+          // }
 
           if (isTransactionHidden) {
             return const Column(
@@ -200,16 +201,16 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
           } else {
             return Padding(
               padding: EdgeInsets.only(
-                  bottom: s.displayFiat() == null ? EnvoySpacing.medium1 : 0),
-              child: FittedBox(
-                child: EnvoyAmount(
-                  account: transactionAccount!,
-                  amountSats: transaction.amount,
-                  amountWidgetStyle: AmountWidgetStyle.normal,
-                  alignToEnd: true,
-                ),
-              ),
-            );
+                  bottom: s.displayFiat() == null ? EnvoySpacing.medium1 : 0));
+            // TODO: use EnvoyAccount
+          //   child: FittedBox(
+            //     child: EnvoyAmount(
+            //       account: transactionAccount!,
+            //       amountSats: transaction.amount,
+            //       amountWidgetStyle: AmountWidgetStyle.normal,
+            //       alignToEnd: true,
+            //     ),
+            //   ),
           }
         }();
       }

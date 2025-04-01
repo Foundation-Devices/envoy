@@ -103,13 +103,10 @@ impl EnvoyAccount {
         sled_db_path: String,
         network: Network,
     ) -> EnvoyAccount {
-        let bdk_db_path = Path::new(&db_path).join("wallet.sqlite");
+        let bdk_db_path = Path::new(&db_path.clone()).join("wallet.sqlite");
         let sled_db_path = Path::new(&sled_db_path).to_path_buf();
-        info!("Creating bdk file: {}", bdk_db_path.display());
-        info!("Working on sled path: {}", sled_db_path.display());
         let connection = Connection::open(bdk_db_path).unwrap();
         let indexes = get_last_used_index(&sled_db_path, name.clone());
-        info!("Indexes: {:?}", indexes);
         let account = EnvoyAccount {
             ng_account: Arc::new(Mutex::new(
                 NgAccount::new_from_descriptor(
@@ -122,7 +119,7 @@ impl EnvoyAccount {
                     internal_descriptor,
                     Some(external_descriptor),
                     index,
-                    Some(db_path),
+                    Some(db_path.clone()),
                     Arc::new(Mutex::new(connection)),
                     None::<FileBackend>,
                     id.clone(),

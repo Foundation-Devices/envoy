@@ -1162,6 +1162,7 @@ fn wire__ngwallet__config__ng_account_config_new_impl(
             let api_network = <crate::api::envoy_wallet::Network>::sse_decode(&mut deserializer);
             let api_id = <String>::sse_decode(&mut deserializer);
             let api_date_synced = <Option<String>>::sse_decode(&mut deserializer);
+            let api_wallet_path = <Option<String>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, ()>((move || {
@@ -1177,6 +1178,7 @@ fn wire__ngwallet__config__ng_account_config_new_impl(
                         api_network,
                         api_id,
                         api_date_synced,
+                        api_wallet_path,
                     ))?;
                     Ok(output_ok)
                 })())
@@ -1251,6 +1253,7 @@ const _: fn() = || {
         let _: String = NgAccountConfig.internal_descriptor;
         let _: Option<String> = NgAccountConfig.external_descriptor;
         let _: Option<String> = NgAccountConfig.date_synced;
+        let _: Option<String> = NgAccountConfig.wallet_path;
         let _: crate::api::envoy_wallet::Network = NgAccountConfig.network;
         let _: String = NgAccountConfig.id;
     }
@@ -1539,6 +1542,7 @@ impl SseDecode for ngwallet::config::NgAccountConfig {
         let mut var_internalDescriptor = <String>::sse_decode(deserializer);
         let mut var_externalDescriptor = <Option<String>>::sse_decode(deserializer);
         let mut var_dateSynced = <Option<String>>::sse_decode(deserializer);
+        let mut var_walletPath = <Option<String>>::sse_decode(deserializer);
         let mut var_network = <crate::api::envoy_wallet::Network>::sse_decode(deserializer);
         let mut var_id = <String>::sse_decode(deserializer);
         return ngwallet::config::NgAccountConfig {
@@ -1551,6 +1555,7 @@ impl SseDecode for ngwallet::config::NgAccountConfig {
             internal_descriptor: var_internalDescriptor,
             external_descriptor: var_externalDescriptor,
             date_synced: var_dateSynced,
+            wallet_path: var_walletPath,
             network: var_network,
             id: var_id,
         };
@@ -1962,6 +1967,7 @@ impl flutter_rust_bridge::IntoDart for FrbWrapper<ngwallet::config::NgAccountCon
             self.0.internal_descriptor.into_into_dart().into_dart(),
             self.0.external_descriptor.into_into_dart().into_dart(),
             self.0.date_synced.into_into_dart().into_dart(),
+            self.0.wallet_path.into_into_dart().into_dart(),
             self.0.network.into_into_dart().into_dart(),
             self.0.id.into_into_dart().into_dart(),
         ]
@@ -2247,6 +2253,7 @@ impl SseEncode for ngwallet::config::NgAccountConfig {
         <String>::sse_encode(self.internal_descriptor, serializer);
         <Option<String>>::sse_encode(self.external_descriptor, serializer);
         <Option<String>>::sse_encode(self.date_synced, serializer);
+        <Option<String>>::sse_encode(self.wallet_path, serializer);
         <crate::api::envoy_wallet::Network>::sse_encode(self.network, serializer);
         <String>::sse_encode(self.id, serializer);
     }

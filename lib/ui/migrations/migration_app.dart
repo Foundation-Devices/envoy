@@ -79,7 +79,7 @@ class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
   void initState() {
     super.initState();
     MigrationManager().onMigrationFinished((){
-      // EnvoyStorage().setBool("migration_envoy_v2_status",true);
+      EnvoyStorage().setBool("migration_envoy_v2_status",true);
       if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
         runApp(const AuthenticateApp());
       } else {
@@ -88,7 +88,6 @@ class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
     });
     Future.delayed(const Duration(seconds: 1)).then((value) {
       MigrationManager().migrate();
-
     });
   }
 

@@ -37,6 +37,7 @@ class NgAccountConfig {
   final String internalDescriptor;
   final String? externalDescriptor;
   final String? dateSynced;
+  final String? walletPath;
   final Network network;
   final String id;
 
@@ -50,6 +51,7 @@ class NgAccountConfig {
     required this.internalDescriptor,
     this.externalDescriptor,
     this.dateSynced,
+    this.walletPath,
     required this.network,
     required this.id,
   });
@@ -74,7 +76,8 @@ class NgAccountConfig {
           required AddressType addressType,
           required Network network,
           required String id,
-          String? dateSynced}) =>
+          String? dateSynced,
+          String? walletPath}) =>
       RustLib.instance.api.ngwalletConfigNgAccountConfigNew(
           name: name,
           color: color,
@@ -86,7 +89,8 @@ class NgAccountConfig {
           addressType: addressType,
           network: network,
           id: id,
-          dateSynced: dateSynced);
+          dateSynced: dateSynced,
+          walletPath: walletPath);
 
   Future<String> serialize() =>
       RustLib.instance.api.ngwalletConfigNgAccountConfigSerialize(
@@ -104,6 +108,7 @@ class NgAccountConfig {
       internalDescriptor.hashCode ^
       externalDescriptor.hashCode ^
       dateSynced.hashCode ^
+      walletPath.hashCode ^
       network.hashCode ^
       id.hashCode;
 
@@ -121,6 +126,7 @@ class NgAccountConfig {
           internalDescriptor == other.internalDescriptor &&
           externalDescriptor == other.externalDescriptor &&
           dateSynced == other.dateSynced &&
+          walletPath == other.walletPath &&
           network == other.network &&
           id == other.id;
 }

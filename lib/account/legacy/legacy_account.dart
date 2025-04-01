@@ -5,14 +5,14 @@ part 'legacy_account.g.dart';
 @JsonSerializable()
 class LegacyAccount {
   @JsonKey(name: 'wallet')
-  final Wallet wallet;
+  final LegacyWallet wallet;
 
   final String name;
   final String deviceSerial;
   final String dateAdded;
   final int number;
   final String id;
-  final String dateSynced;
+  final String? dateSynced;
 
   LegacyAccount({
     required this.wallet,
@@ -33,7 +33,7 @@ class LegacyAccount {
 }
 
 @JsonSerializable()
-class Wallet {
+class LegacyWallet {
   final String name;
   final String externalDescriptor;
   final String internalDescriptor;
@@ -55,7 +55,7 @@ class Wallet {
   final double feeRateFast;
   final double feeRateSlow;
 
-  Wallet({
+  LegacyWallet({
     required this.name,
     required this.externalDescriptor,
     required this.internalDescriptor,
@@ -73,7 +73,7 @@ class Wallet {
   });
 
   // Factory constructor to create a Wallet from JSON
-  factory Wallet.fromJson(Map<String, dynamic> json) => _$WalletFromJson(json);
+  factory LegacyWallet.fromJson(Map<String, dynamic> json) => _$WalletFromJson(json);
 
   // Method to convert Wallet to JSON
   Map<String, dynamic> toJson() => _$WalletToJson(this);

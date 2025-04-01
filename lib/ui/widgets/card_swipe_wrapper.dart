@@ -10,11 +10,12 @@ import 'package:envoy/util/haptics.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class CardSwipeWrapper extends ConsumerStatefulWidget {
   final Widget child;
   final double height;
-  final Account account;
+  final EnvoyAccount account;
   final bool draggable;
 
   const CardSwipeWrapper(
@@ -88,7 +89,7 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
       });
     });
 
-    hidden = ref.read(balanceHideStateStatusProvider(widget.account.id));
+    hidden = ref.read(balanceHideStateStatusProvider(widget.account.config().id));
   }
 
   @override
@@ -177,7 +178,7 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
           },
           onHorizontalDragStart: (details) {
             hidden =
-                ref.read(balanceHideStateStatusProvider(widget.account.id));
+                ref.read(balanceHideStateStatusProvider(widget.account.config().id));
           },
           onHorizontalDragUpdate: (details) {
             if (!widget.draggable) {
@@ -216,7 +217,7 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
             _runSpringSimulation(details.velocity.pixelsPerSecond, size);
             if (thresholdReached) {
               ref.read(balanceHideNotifierProvider).setHideState(
-                  !ref.read(balanceHideStateStatusProvider(widget.account.id)),
+                  !ref.read(balanceHideStateStatusProvider(widget.account.config().id)),
                   widget.account);
             }
           },

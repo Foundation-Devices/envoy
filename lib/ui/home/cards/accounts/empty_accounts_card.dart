@@ -30,16 +30,17 @@ class EmptyAccountsCard extends StatelessWidget {
                 Colors.grey,
                 BlendMode.saturation,
               ),
-              child: AccountListTile(
-                  Account(
-                      wallet: GhostWallet(),
-                      name: S().accounts_screen_walletType_defaultName,
-                      deviceSerial: 'envoy',
-                      dateAdded: DateTime.now(),
-                      number: 5,
-                      id: '',
-                      dateSynced: DateTime.now()),
-                  onTap: () {}),
+              // TODO: use EnvoyAccount
+              // child: AccountListTile(
+              //     Account(
+              //         wallet: GhostWallet(),
+              //         name: S().accounts_screen_walletType_defaultName,
+              //         deviceSerial: 'envoy',
+              //         dateAdded: DateTime.now(),
+              //         number: 5,
+              //         id: '',
+              //         dateSynced: DateTime.now()),
+              //     onTap: () {}),
             ),
           ),
         ),

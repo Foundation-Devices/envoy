@@ -108,43 +108,45 @@ class Equal<T> {
 
 final walletTransactionsProvider =
     Provider.family<List<Transaction>, String?>((ref, String? accountId) {
-  return ref
-          .watch(accountStateProvider(accountId).select(
-              (account) => Equal(account?.wallet.transactions, (one, other) {
-                    if (other is Equal) {
-                      final transactionListEqual =
-                          other as Equal<List<Transaction>?>;
-                      final otherList = transactionListEqual.value;
-                      if (one == null && otherList == null) {
-                        return true;
-                      }
-
-                      if (one == null && otherList != null) {
-                        return false;
-                      }
-
-                      if (one != null && otherList == null) {
-                        return false;
-                      }
-
-                      if (one!.length != otherList!.length) {
-                        return false;
-                      }
-
-                      // Beyond this point they're the same length
-                      // So let's naively compare the txids
-                      for (int i = 0; i < one.length; i++) {
-                        if (one[i].txId != otherList[i].txId ||
-                            one[i].isConfirmed != otherList[i].isConfirmed) {
-                          return false;
-                        }
-                      }
-                    }
-
-                    return true;
-                  })))
-          .value ??
-      [];
+      //TODO: implement envoyAccount
+  // return ref
+  //         .watch(accountStateProvider(accountId).select(
+  //             (account) => Equal(account?.wallet.transactions, (one, other) {
+  //                   if (other is Equal) {
+  //                     final transactionListEqual =
+  //                         other as Equal<List<Transaction>?>;
+  //                     final otherList = transactionListEqual.value;
+  //                     if (one == null && otherList == null) {
+  //                       return true;
+  //                     }
+  //
+  //                     if (one == null && otherList != null) {
+  //                       return false;
+  //                     }
+  //
+  //                     if (one != null && otherList == null) {
+  //                       return false;
+  //                     }
+  //
+  //                     if (one!.length != otherList!.length) {
+  //                       return false;
+  //                     }
+  //
+  //                     // Beyond this point they're the same length
+  //                     // So let's naively compare the txids
+  //                     for (int i = 0; i < one.length; i++) {
+  //                       if (one[i].txId != otherList[i].txId ||
+  //                           one[i].isConfirmed != otherList[i].isConfirmed) {
+  //                         return false;
+  //                       }
+  //                     }
+  //                   }
+  //
+  //                   return true;
+  //                 })))
+  //         .value ??
+  //     [];
+      return [];
 });
 
 final allTxProvider = Provider<List<Transaction>>((ref) {
@@ -217,11 +219,10 @@ final transactionsProvider =
 final isThereAnyTransactionsProvider = Provider<bool>((ref) {
   var accounts = ref.watch(accountsProvider);
   for (var account in accounts) {
-    if (ref.watch(filteredTransactionsProvider(account.id)).isNotEmpty) {
+    if (ref.watch(filteredTransactionsProvider(account.config().id)).isNotEmpty) {
       return true;
     }
   }
-
   return false;
 });
 

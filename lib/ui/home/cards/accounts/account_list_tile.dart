@@ -2,32 +2,31 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/components/amount_widget.dart';
+import 'package:envoy/ui/components/stripe_painter.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/card_swipe_wrapper.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:ngwallet/src/wallet.dart';
-import 'package:envoy/ui/components/amount_widget.dart';
-import 'package:envoy/util/envoy_storage.dart';
-import 'package:envoy/ui/state/home_page_state.dart';
-import 'package:envoy/ui/components/stripe_painter.dart';
-import 'package:envoy/business/exchange_rate.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class AccountListTile extends ConsumerStatefulWidget {
   final void Function() onTap;
-  final Account account;
+  final EnvoyAccount account;
   final bool draggable;
 
   const AccountListTile(
@@ -65,17 +64,19 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
   Widget build(BuildContext context) {
     ref.watch(settingsProvider);
     ref.watch(accountManagerProvider);
-    var account = widget.account.wallet is GhostWallet
-        ? widget.account
-        : ref.watch(accountStateProvider(widget.account.id!));
+    //TODO:/// work on ghost wallet
+    // var account = widget.account is GhostWallet
+    //     ? widget.account
+    //     : ref.watch(accountStateProvider(widget.account.id!));
 
+    final account = ref.watch(accountStateProvider(widget.account.config().id));
     if (account == null) {
       return const SizedBox.shrink();
     }
-
-    int balance = widget.account.wallet is GhostWallet
-        ? 0
-        : ref.watch(accountBalanceProvider(account.id));
+    //
+    // int balance = widget.account.wallet is GhostWallet
+    //     ? 0
+    //     : ref.watch(accountBalanceProvider(account.id));
 
     double cardRadius = EnvoySpacing.medium2;
 
@@ -93,7 +94,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                account.color,
+                fromHex(account.config().color),
                 Colors.black,
               ]),
         ),
@@ -101,7 +102,9 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(cardRadius - 3)),
               border: Border.all(
-                  color: account.color, width: 2, style: BorderStyle.solid)),
+                  color: fromHex(account.config().color),
+                  width: 2,
+                  style: BorderStyle.solid)),
           child: ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(cardRadius - 4)),
             child: GestureDetector(
@@ -146,7 +149,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                           .copyWith(
                                               color: EnvoyColors.solidWhite),
                                       child: Text(
-                                        account.name,
+                                        account.config().name,
                                         style: EnvoyTypography.subheading
                                             .copyWith(
                                                 color: EnvoyColors.solidWhite),
@@ -157,7 +160,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                           color: EnvoyColors.solidWhite),
                                       child: Text(
                                         Devices().getDeviceName(
-                                            account.deviceSerial),
+                                            account.config().deviceSerial ??""),
                                         style: EnvoyTypography.info.copyWith(
                                             color: EnvoyColors.solidWhite),
                                       ),
@@ -177,8 +180,8 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                       child: Consumer(
                         builder: (context, ref, child) {
                           final hide = ref.watch(
-                              balanceHideStateStatusProvider(account.id));
-                          if (hide || account.dateSynced == null) {
+                              balanceHideStateStatusProvider(account.config().id));
+                          if (hide || account.config().deviceSerial == null) {
                             return Container(
                               decoration: ShapeDecoration(
                                 color: const Color(0xFFF8F8F8),
@@ -197,12 +200,12 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                     LoaderGhost(
                                       width: 200,
                                       height: 24,
-                                      animate: account.dateSynced == null,
+                                      animate: account.config().dateAdded == null,
                                     ),
                                     LoaderGhost(
                                       width: 50,
                                       height: 24,
-                                      animate: account.dateSynced == null,
+                                      animate: account.config().dateSynced == null,
                                     ),
                                   ],
                                 ),
@@ -217,15 +220,16 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                     cardRadius - (EnvoySpacing.small)),
                               ),
                             ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: EnvoyAmount(
-                                  account: widget.account,
-                                  amountSats: balance,
-                                  amountWidgetStyle:
-                                      AmountWidgetStyle.singleLine),
-                            ),
+                            //TODO: use EnvoyAccount
+                            // child: Padding(
+                            //   padding:
+                            //       const EdgeInsets.symmetric(horizontal: 8.0),
+                            //   child: EnvoyAmount(
+                            //       account: widget.account,
+                            //       amountSats: account.balance().toInt(),
+                            //       amountWidgetStyle:
+                            //           AmountWidgetStyle.singleLine),
+                            // ),
                           );
                         },
                       ),
@@ -247,14 +251,15 @@ class AccountBadge extends StatelessWidget {
     required this.account,
   });
 
-  final Account? account;
+  final EnvoyAccount account;
   final double containerHeight = 100;
 
   @override
   Widget build(BuildContext context) {
-    bool isTaproot = account?.wallet.type == WalletType.taproot;
-    bool isTestnet = account?.wallet.network == Network.Testnet;
-    bool isSignet = account?.wallet.network == Network.Signet;
+    NgAccountConfig config = account.config();
+    bool isTaproot = config.addressType == AddressType.p2Tr;
+    bool isTestnet = config.network == Network.testnet;
+    bool isSignet = config.network == Network.signet;
 
     bool isNotCircular = isTestnet || isTaproot || isSignet;
     return Container(
@@ -267,7 +272,7 @@ class AccountBadge extends StatelessWidget {
                 : null,
             shape: isNotCircular ? BoxShape.rectangle : BoxShape.circle,
             border: Border.all(
-                color: account!.color, width: 3, style: BorderStyle.solid)),
+                color: fromHex(config.color), width: 3, style: BorderStyle.solid)),
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5.0),
@@ -322,11 +327,11 @@ class AccountBadge extends StatelessWidget {
 class BadgeIcon extends StatelessWidget {
   const BadgeIcon({super.key, required this.account});
 
-  final Account account;
+  final EnvoyAccount account;
 
   @override
   Widget build(BuildContext context) {
-    if (account.wallet.hot) {
+    if (account.isHot()) {
       return SvgPicture.asset(
         "assets/icons/ic_wallet_coins.svg",
         height: 24,
@@ -334,7 +339,7 @@ class BadgeIcon extends StatelessWidget {
         color: Colors.white,
       );
     }
-    if (account.deviceSerial == "prime") {
+    if (account.config().deviceSerial == "prime") {
       return SvgPicture.asset(
         "assets/icons/ic_wallet_coins.svg",
         height: 24,
@@ -342,7 +347,7 @@ class BadgeIcon extends StatelessWidget {
         color: Colors.white,
       );
     }
-    if (!account.wallet.hot) {
+    if (!account.isHot()) {
       return SvgPicture.asset(
         "assets/icons/ic_passport_account.svg",
         height: 24,

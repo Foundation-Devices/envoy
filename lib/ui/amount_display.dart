@@ -120,12 +120,13 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Padding(
-                padding: EdgeInsets.only(
-                    right: unit == AmountDisplayUnit.fiat ? 10 : 6.0,
-                    left: unit == AmountDisplayUnit.fiat ? 6 : 0),
-                child: displayIcon(widget.account!, unit),
-              ),
+              //TODO: fix with envoyAccount
+              // Padding(
+              //   padding: EdgeInsets.only(
+              //       right: unit == AmountDisplayUnit.fiat ? 10 : 6.0,
+              //       left: unit == AmountDisplayUnit.fiat ? 6 : 0),
+              //   child: displayIcon(widget.account!, unit),
+              // ),
               Text(
                   widget.displayedAmount.isEmpty ? "0" : widget.displayedAmount,
                   style: EnvoyTypography.digitsLarge
@@ -168,13 +169,14 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
                                     color: EnvoyColors.accentPrimary,
                                     fontSize: 16),
                             children: [
-                              if (unit == AmountDisplayUnit.fiat)
-                                WidgetSpan(
-                                  alignment: PlaceholderAlignment.middle,
-                                  child: SizedBox(
-                                      height: 20,
-                                      child: getUnitIcon(widget.account!)),
-                                ),
+                              //TODO: fix with envoyAccount
+                              // if (unit == AmountDisplayUnit.fiat)
+                              //   WidgetSpan(
+                              //     alignment: PlaceholderAlignment.middle,
+                              //     child: SizedBox(
+                              //         height: 20,
+                              //         child: getUnitIcon(widget.account!)),
+                              //   ),
                               TextSpan(
                                 text: unit != AmountDisplayUnit.fiat
                                     ? ExchangeRate().getFormattedAmount(

@@ -762,24 +762,28 @@ String convertSatsToFiatString(
 
 Widget getNonMainnetBtcIcon(Color badgeColor, Network network,
     {EnvoyIconSize? iconSize, Color? iconColor}) {
-  return NonMainnetIcon(
-    EnvoyIcons.btc,
-    badgeColor: badgeColor,
-    size: iconSize ?? EnvoyIconSize.normal,
-    iconColor: iconColor,
-    network: network,
-  );
+  //TODO: implement envoyAccount
+  // return NonMainnetIcon(
+  //   EnvoyIcons.btc,
+  //   badgeColor: badgeColor,
+  //   size: iconSize ?? EnvoyIconSize.normal,
+  //   iconColor: iconColor,
+  //   network: Netowrk.bitcoin,
+  // );
+  return Container();
 }
 
 Widget getNonMainnetSatsIcon(Color badgeColor, Network network,
     {EnvoyIconSize? iconSize, Color? iconColor}) {
-  return NonMainnetIcon(
-    EnvoyIcons.sats,
-    badgeColor: badgeColor,
-    size: iconSize ?? EnvoyIconSize.normal,
-    iconColor: iconColor,
-    network: network,
-  );
+  //TODO: implement envoyAccount
+  // return NonMainnetIcon(
+  //   EnvoyIcons.sats,
+  //   badgeColor: badgeColor,
+  //   size: iconSize ?? EnvoyIconSize.normal,
+  //   iconColor: iconColor,
+  //   network: network,
+  // );
+  return Container();
 }
 
 Widget getNonMainnetIcon(AmountDisplayUnit unit, Color color, Network network,

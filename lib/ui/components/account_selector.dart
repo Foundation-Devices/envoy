@@ -108,15 +108,16 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
                       0, _getBackStackOffset(_backStack.indexOf(account))),
                   child: Opacity(
                     opacity: _overlayVisible ? 0 : 1,
-                    child: AccountListTile(
-                      account,
-                      key: _cardStackKeys[account.id!],
-                      onTap: () {
-                        openChooserOverlay(context);
-                        return;
-                      },
-                      draggable: false,
-                    ),
+                    //TODO:fix with envoy account
+                    // child: AccountListTile(
+                    //   account,
+                    //   key: _cardStackKeys[account.id!],
+                    //   onTap: () {
+                    //     openChooserOverlay(context);
+                    //     return;
+                    //   },
+                    //   draggable: false,
+                    // ),
                   ),
                 ),
               for (var (account) in accounts)
@@ -444,14 +445,15 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
                               final account = widget.accounts[index];
                               return Padding(
                                 padding: const EdgeInsets.all(12),
-                                child: AccountListTile(
-                                  key: _shuttleCardKeys[account.id!],
-                                  account,
-                                  onTap: () async {
-                                    _selectAccount(account);
-                                  },
-                                  draggable: false,
-                                ),
+                                //TODO:fix with envoy account
+                                // child: AccountListTile(
+                                //   key: _shuttleCardKeys[account.id!],
+                                //   account,
+                                //   onTap: () async {
+                                //     _selectAccount(account);
+                                //   },
+                                //   draggable: false,
+                                // ),
                               );
                             },
                             itemCount: widget.accounts.length,
@@ -516,13 +518,14 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
                   child: child),
             ));
       },
-      child: AccountListTile(
-        account,
-        onTap: () {
-          _selectAccount(account);
-        },
-        draggable: false,
-      ),
+      //TODO:fix with envoy account
+      // child: AccountListTile(
+      //   account,
+      //   onTap: () {
+      //     _selectAccount(account);
+      //   },
+      //   draggable: false,
+      // ),
     );
   }
 

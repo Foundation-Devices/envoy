@@ -418,13 +418,14 @@ class SpendRequirementOverlayState
                                                   Text(S()
                                                       .coincontrol_edit_transaction_requiredAmount),
                                                   const Spacer(),
-                                                  EnvoyAmount(
-                                                      amountSats:
-                                                          requiredAmount,
-                                                      amountWidgetStyle:
-                                                          AmountWidgetStyle
-                                                              .sendScreen,
-                                                      account: widget.account)
+                                                  //TODO: use EnvoyAccount
+                                                  // EnvoyAmount(
+                                                  //     amountSats:
+                                                  //         requiredAmount,
+                                                  //     amountWidgetStyle:
+                                                  //         AmountWidgetStyle
+                                                  //             .sendScreen,
+                                                  //     account: widget.account)
                                                 ],
                                               ),
                                             )
@@ -472,12 +473,13 @@ class SpendRequirementOverlayState
                                                   .titleSmall,
                                             ),
                                             const Spacer(),
-                                            EnvoyAmount(
-                                                amountSats: totalSelectedAmount,
-                                                amountWidgetStyle:
-                                                    AmountWidgetStyle
-                                                        .sendScreen,
-                                                account: widget.account)
+                                            //TODO: use EnvoyAccount
+                                            // EnvoyAmount(
+                                            //     amountSats: totalSelectedAmount,
+                                            //     amountWidgetStyle:
+                                            //         AmountWidgetStyle
+                                            //             .sendScreen,
+                                            //     account: widget.account)
                                           ]);
                                           return Row(
                                             mainAxisSize: MainAxisSize.max,

@@ -6,12 +6,13 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/business/exchange_rate.dart';
-import 'package:ngwallet/src/wallet.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:envoy/business/locale.dart';
 
 String btcSatoshiSeparator = fiatDecimalSeparator;
@@ -119,8 +120,8 @@ String getFormattedAmount(int amountSats,
   return text;
 }
 
-Widget getSatsIcon(Account account, {EnvoyIconSize? iconSize, Color? color}) {
-  if (account.wallet.network != Network.Testnet) {
+Widget getSatsIcon(EnvoyAccount account, {EnvoyIconSize? iconSize, Color? color}) {
+  if (account.config().network != Network.testnet && account.config().network != Network.testnet4) {
     return EnvoyIcon(
       EnvoyIcons.sats,
       size: iconSize ?? EnvoyIconSize.normal,
@@ -129,23 +130,23 @@ Widget getSatsIcon(Account account, {EnvoyIconSize? iconSize, Color? color}) {
   } else {
     return NonMainnetIcon(
       EnvoyIcons.sats,
-      badgeColor: account.color,
+      badgeColor: fromHex(account.config().color),
       size: iconSize ?? EnvoyIconSize.normal,
-      network: account.wallet.network,
+      network: account.config().network,
     );
   }
 }
 
-Widget getBtcIcon(Account account, {EnvoyIconSize? iconSize, Color? color}) {
-  if (account.wallet.network != Network.Testnet) {
+Widget getBtcIcon(EnvoyAccount account, {EnvoyIconSize? iconSize, Color? color}) {
+  if (account.config().network != Network.testnet4 && account.config().network != Network.testnet) {
     return EnvoyIcon(EnvoyIcons.btc,
         size: iconSize ?? EnvoyIconSize.normal, color: color);
   } else {
     return NonMainnetIcon(
       EnvoyIcons.btc,
-      badgeColor: account.color,
+      badgeColor: fromHex(account.config().color),
       size: iconSize ?? EnvoyIconSize.normal,
-      network: account.wallet.network,
+      network: account.config().network,
     );
   }
 }
@@ -165,7 +166,7 @@ String truncateWithEllipsisInCenter(String text, int maxLength) {
   return '$firstHalf$ellipsis$secondHalf';
 }
 
-Widget getUnitIcon(Account account, {EnvoyIconSize? iconSize}) {
+Widget getUnitIcon(EnvoyAccount account, {EnvoyIconSize? iconSize}) {
   Widget iconUint = Settings().displayUnit == DisplayUnit.btc
       ? getBtcIcon(account,
           iconSize: iconSize, color: EnvoyColors.accentPrimary)
@@ -175,7 +176,7 @@ Widget getUnitIcon(Account account, {EnvoyIconSize? iconSize}) {
   return iconUint;
 }
 
-Widget displayIcon(Account account, AmountDisplayUnit unit) {
+Widget displayIcon(EnvoyAccount account, AmountDisplayUnit unit) {
   if (unit == AmountDisplayUnit.fiat) {
     return Text(
       ExchangeRate().getSymbol(),

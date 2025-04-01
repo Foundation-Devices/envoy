@@ -76,10 +76,11 @@ class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
                             left: 20,
                             right: 20,
                           ),
-                          child: AccountListTile(account, onTap: () {
-                            // ref.read(fullscreenHomePageProvider.notifier).state = true;
-                            Navigator.pop(context);
-                          }),
+                          //TODO: use EnvoyAccount
+                          // child: AccountListTile(account, onTap: () {
+                          //   // ref.read(fullscreenHomePageProvider.notifier).state = true;
+                          //   Navigator.pop(context);
+                          // }),
                         ),
                         const SizedBox(height: EnvoySpacing.small),
                         Expanded(

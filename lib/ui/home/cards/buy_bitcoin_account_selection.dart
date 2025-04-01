@@ -48,18 +48,19 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero).then((_) {
-      setState(() {
-        selectedAccount = ref.read(mainnetAccountsProvider(null)).first;
-        ref.read(homeShellOptionsProvider.notifier).state = null;
-      });
-      selectedAccount?.wallet.getAddress().then((value) {
-        setState(() {
-          address = value;
-          if (selectedAccount != null && selectedAccount?.id != null) {
-            accountAddressCache[selectedAccount!.id!] = address;
-          }
-        });
-      }).catchError((error) {});
+      // TODO: use EnvoyAccount
+      // setState(() {
+      //   selectedAccount = ref.read(mainnetAccountsProvider(null)).first;
+      //   ref.read(homeShellOptionsProvider.notifier).state = null;
+      // });
+      // selectedAccount?.wallet.getAddress().then((value) {
+      //   setState(() {
+      //     address = value;
+      //     if (selectedAccount != null && selectedAccount?.id != null) {
+      //       accountAddressCache[selectedAccount!.id!] = address;
+      //     }
+      //   });
+      // }).catchError((error) {});
     });
   }
 
@@ -93,7 +94,8 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
   Widget build(BuildContext context) {
     List<Account> filteredAccounts = [];
     if (selectedAccount != null) {
-      filteredAccounts = ref.watch(mainnetAccountsProvider(selectedAccount));
+      // TODO: use EnvoyAccount
+      // filteredAccounts = ref.watch(mainnetAccountsProvider(selectedAccount));
     }
     if ((selectedAccount == null)) {
       return const Center(child: CircularProgressIndicator());
@@ -421,23 +423,26 @@ class ChooseAccountState extends State<ChooseAccount> {
         transitionOnUserGestures: true,
         tag: account.id!,
         child: Consumer(builder: (context, ref, child) {
-          return AccountListTile(
-            account,
-            onTap: () async {
-              final navigator = Navigator.of(context);
-              setState(() {
-                _exiting = true;
-              });
-              await Future.delayed(const Duration(milliseconds: 100));
+          return Container();
 
-              _currentSelectedAccount = account;
-              widget.onSelectAccount(account);
-              // moveAccountToEnd(account);
-              await Future.delayed(const Duration(milliseconds: 100));
-              navigator.pop();
-            },
-            draggable: false,
-          );
+          //TODO: use EnvoyAccount
+          // return AccountListTile(
+          //   account,
+          //   onTap: () async {
+          //     final navigator = Navigator.of(context);
+          //     setState(() {
+          //       _exiting = true;
+          //     });
+          //     await Future.delayed(const Duration(milliseconds: 100));
+          //
+          //     _currentSelectedAccount = account;
+          //     widget.onSelectAccount(account);
+          //     // moveAccountToEnd(account);
+          //     await Future.delayed(const Duration(milliseconds: 100));
+          //     navigator.pop();
+          //   },
+          //   draggable: false,
+          // );
         }),
       ),
     );

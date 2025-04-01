@@ -167,12 +167,13 @@ class _AccountCardState extends ConsumerState<AccountCard>
                   left: 20,
                   right: 20,
                 ),
-                child: AccountListTile(account, onTap: () {
-                  Navigator.pop(context);
-                  ref.read(homePageAccountsProvider.notifier).state =
-                      HomePageAccountsState(
-                          HomePageAccountsNavigationState.list);
-                }),
+                //TODO: use EnvoyAccount
+                // child: AccountListTile(account, onTap: () {
+                //   Navigator.pop(context);
+                //   ref.read(homePageAccountsProvider.notifier).state =
+                //       HomePageAccountsState(
+                //           HomePageAccountsNavigationState.list);
+                // }),
               ),
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 200),
@@ -763,7 +764,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
             textEntry = TextEntry(
               focusNode: focusNode,
               maxLength: 20,
-              placeholder: account?.name ?? "",
+              placeholder: account?.config().name ?? "",
             );
             showEnvoyDialog(
               context: context,
