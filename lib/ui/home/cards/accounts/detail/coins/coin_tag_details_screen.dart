@@ -660,7 +660,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
 
   void selectCoin(BuildContext context, Coin coin) {
     final selectedAccount = ref.read(selectedAccountProvider);
-    final transactions = ref.read(transactionsProvider(selectedAccount!.id));
+    final transactions = ref.read(transactionsProvider(selectedAccount!.config().id));
     final tx = transactions
         .firstWhereOrNull((element) => element.txId == coin.utxo.txid);
     if (tx != null) {

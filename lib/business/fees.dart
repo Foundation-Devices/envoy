@@ -13,7 +13,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:tor/tor.dart';
-import 'package:ngwallet/src/wallet.dart';
+import 'package:ngwallet/ngwallet.dart';
+import 'package:ngwallet/src/wallet.dart' as OldWallet;
 import 'package:envoy/business/fee_rates.dart';
 import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/util/tuple.dart';
@@ -25,9 +26,9 @@ final mempoolBlocksMedianFeeRateProvider =
     Provider.family<List<double>, Network>((ref, network) {
   return Fees().fees[network]?.mempoolBlocksMedianFeeRate ?? [];
 });
-
+//TODO: fix with actual NgWallet Tx
 final txEstimatedConfirmationTimeProvider =
-    Provider.family<int, Tuple<Transaction, Network>>((ref, txNetwork) {
+    Provider.family<int, Tuple<OldWallet.Transaction, Network>>((ref, txNetwork) {
   final tx = txNetwork.item1;
   final network = txNetwork.item2;
 
@@ -64,9 +65,9 @@ class Fees {
 
   static _defaultFees() {
     return {
-      Network.Mainnet: FeeRates(),
-      Network.Testnet: FeeRates(),
-      Network.Signet: FeeRates()
+      Network.bitcoin: FeeRates(),
+      Network.testnet: FeeRates(),
+      Network.signet: FeeRates()
     };
   }
 
@@ -99,20 +100,20 @@ class Fees {
   static const testnetMempoolFoundationInstance =
       "https://testnet-mempool.foundation.xyz";
   static const _mempoolRecommendedFeesEndpoints = {
-    Network.Mainnet: "$mempoolFoundationInstance/api/v1/fees/recommended",
-    Network.Testnet:
+    Network.bitcoin: "$mempoolFoundationInstance/api/v1/fees/recommended",
+    Network.testnet:
         "$testnetMempoolFoundationInstance/api/v1/fees/recommended",
-    Network.Signet:
+    Network.signet:
         "$mutinynetMempoolFoundationInstance/api/v1/fees/recommended"
   };
   static const mutinynetMempoolFoundationInstance =
       "https://mutiny.foundation.xyz";
 
   static const _mempoolBlocksFeesEndpoints = {
-    Network.Mainnet: "$mempoolFoundationInstance/api/v1/fees/mempool-blocks",
-    Network.Testnet:
+    Network.bitcoin: "$mempoolFoundationInstance/api/v1/fees/mempool-blocks",
+    Network.testnet:
         "$testnetMempoolFoundationInstance/api/v1/fees/mempool-blocks",
-    Network.Signet:
+    Network.signet:
         "$mutinynetMempoolFoundationInstance/api/v1/fees/mempool-blocks"
   };
 
@@ -138,13 +139,13 @@ class Fees {
   }
 
   void _getRates() {
-    _getMempoolRecommendedRates(Network.Mainnet);
-    _getMempoolRecommendedRates(Network.Testnet);
-    _getMempoolRecommendedRates(Network.Signet);
+    _getMempoolRecommendedRates(Network.bitcoin);
+    _getMempoolRecommendedRates(Network.testnet);
+    _getMempoolRecommendedRates(Network.signet);
 
-    _getMempoolBlocksFees(Network.Mainnet);
-    _getMempoolBlocksFees(Network.Testnet);
-    _getMempoolBlocksFees(Network.Signet);
+    _getMempoolBlocksFees(Network.bitcoin);
+    _getMempoolBlocksFees(Network.testnet);
+    _getMempoolBlocksFees(Network.signet);
   }
 
   static restore() {

@@ -5,50 +5,52 @@
 import 'dart:ui';
 
 import 'package:envoy/business/account.dart';
+import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/locale.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/button.dart';
+import 'package:envoy/ui/components/envoy_info_card.dart';
+import 'package:envoy/ui/components/envoy_tag_list_item.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_button.dart';
 import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/transactions_note_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/tuple.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:ngwallet/ngwallet.dart';
+import 'package:ngwallet/src/wallet.dart' as OldWallet;
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:ngwallet/src/wallet.dart';
-import 'package:envoy/business/fees.dart';
-import 'package:envoy/util/tuple.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/components/envoy_info_card.dart';
-import 'package:envoy/ui/components/envoy_tag_list_item.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
-import 'package:envoy/ui/state/home_page_state.dart';
 
 final transactionDetailsOpen = StateProvider<bool>((ref) => false);
 
 class TransactionsDetailsWidget extends ConsumerStatefulWidget {
-  final Account account;
-  final Transaction tx;
+  final EnvoyAccount account;
+  final OldWallet.Transaction tx;
   final Widget? iconTitleWidget;
   final Widget? titleWidget;
 
@@ -93,8 +95,8 @@ class _TransactionsDetailsWidgetState
     final note = ref.watch(txNoteProvider(tx.txId)) ?? "";
 
     final hideBalance =
-        ref.watch(balanceHideStateStatusProvider(widget.account.id));
-    final accountAccentColor = widget.account.color;
+        ref.watch(balanceHideStateStatusProvider(widget.account.config().id));
+    final accountAccentColor = fromHex(widget.account.config().color);
     final trailingTextStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
           color: EnvoyColors.textPrimary,
           fontWeight: FontWeight.w600,
@@ -106,8 +108,9 @@ class _TransactionsDetailsWidgetState
     bool addressNotAvailable = tx.address == null || tx.address!.isEmpty;
     final address = tx.address ?? "";
 
-    bool rbfPossible =
-        (!tx.isConfirmed && tx.type == TransactionType.normal && tx.amount < 0);
+    bool rbfPossible = (!tx.isConfirmed &&
+        tx.type == OldWallet.TransactionType.normal &&
+        tx.amount < 0);
 
     final cancelState = ref.watch(cancelTxStateProvider(tx.txId));
 
@@ -304,7 +307,7 @@ class _TransactionsDetailsWidgetState
                             state: ButtonState.defaultState,
                             onTap: () {
                               openTxDetailsInExplorer(context, tx.txId,
-                                  widget.account.wallet.network);
+                                  widget.account.config().network);
                             },
                             edgeInsets: const EdgeInsets.symmetric(
                                 horizontal: EnvoySpacing.medium1),
@@ -418,7 +421,7 @@ class _TransactionsDetailsWidgetState
                           spacingPriority: FlexPriority.trailing,
                           title: _getConfirmationTimeString(ref.watch(
                               txEstimatedConfirmationTimeProvider(
-                                  Tuple(tx, widget.account.wallet.network)))),
+                                  Tuple(tx, widget.account.config().network)))),
                           icon: const EnvoyIcon(
                             EnvoyIcons.clock,
                             size: EnvoyIconSize.extraSmall,
@@ -429,7 +432,7 @@ class _TransactionsDetailsWidgetState
                           ),
                         )
                       : Container(),
-                  if (tx.type != TransactionType.ramp)
+                  if (tx.type != OldWallet.TransactionType.ramp)
                     _renderFeeWidget(context, tx),
                   GestureDetector(
                     onTap: () {
@@ -491,7 +494,7 @@ class _TransactionsDetailsWidgetState
                       : const SizedBox.shrink(),
                 ],
               ),
-              if (tx.type == TransactionType.ramp) ...[
+              if (tx.type == OldWallet.TransactionType.ramp) ...[
                 const EnvoyIcon(
                   EnvoyIcons.info,
                   color: EnvoyColors.textPrimaryInverse,
@@ -516,12 +519,12 @@ class _TransactionsDetailsWidgetState
     );
   }
 
-  Widget _renderFeeWidget(BuildContext context, Transaction tx) {
+  Widget _renderFeeWidget(BuildContext context, OldWallet.Transaction tx) {
     final isBoosted =
         (ref.watch(isTxBoostedProvider(tx.txId)) ?? false) && tx.amount < 0;
     final cancelState = ref.watch(cancelTxStateProvider(tx.txId));
     final hideBalance =
-        ref.watch(balanceHideStateStatusProvider(widget.account.id));
+        ref.watch(balanceHideStateStatusProvider(widget.account.config().id));
 
     String feeTitle = isBoosted
         ? S().coindetails_overlay_boostedFees
@@ -563,7 +566,7 @@ class _TransactionsDetailsWidgetState
   }
 }
 
-String getTransactionDateAndTimeString(Transaction transaction) {
+String getTransactionDateAndTimeString(OldWallet.Transaction transaction) {
   if (!transaction.isConfirmed) {
     return S().activity_pending;
   }
@@ -572,8 +575,8 @@ String getTransactionDateAndTimeString(Transaction transaction) {
   return transactionDateInfo;
 }
 
-String getTransactionStatusString(Transaction tx) {
-  return tx.type == TransactionType.normal && tx.isConfirmed
+String getTransactionStatusString(OldWallet.Transaction tx) {
+  return tx.type == OldWallet.TransactionType.normal && tx.isConfirmed
       ? S().coindetails_overlay_status_confirmed
       : S().activity_pending;
 }
@@ -625,19 +628,21 @@ void openTxDetailPage(Network network, String txId) {
 
 String? getBaseUrlForNetwork(Network network) {
   switch (network) {
-    case Network.Mainnet:
+    case Network.bitcoin:
       return Fees.mempoolFoundationInstance;
-    case Network.Signet:
+    case Network.signet:
       return Fees.mutinynetMempoolFoundationInstance;
-    case Network.Testnet:
+    case Network.testnet4:
       return Fees.testnetMempoolFoundationInstance;
-    case Network.Regtest:
+    case Network.testnet:
+      return Fees.testnetMempoolFoundationInstance;
+    case Network.regtest:
       return null;
   }
 }
 
-bool showTxId(TransactionType type) {
-  if (type == TransactionType.pending || type == TransactionType.normal) {
+bool showTxId(OldWallet.TransactionType type) {
+  if (type == OldWallet.TransactionType.pending || type == OldWallet.TransactionType.normal) {
     return true;
   } else {
     return false;

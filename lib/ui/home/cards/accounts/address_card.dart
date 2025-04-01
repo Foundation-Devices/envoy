@@ -16,11 +16,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 
 class AddressCard extends ConsumerStatefulWidget {
-  final Account account;
+  final EnvoyAccount account;
 
   AddressCard(this.account) : super(key: UniqueKey());
 
@@ -42,7 +43,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<String>(
-        future: widget.account.wallet.getAddress(),
+        future: widget.account.nextAddress(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             AddressWidget addressWidget =
@@ -69,7 +70,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                               children: [
                                 Flexible(
                                   child: QrTab(
-                                      title: widget.account.name,
+                                      title: widget.account.config().name,
                                       subtitle: S()
                                           .manage_account_address_card_subheading,
                                       account: widget.account,

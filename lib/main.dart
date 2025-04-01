@@ -4,7 +4,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/account/accounts_manager.dart';
-import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -18,6 +17,7 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/lock/authenticate_page.dart';
 import 'package:envoy/ui/migrations/migration_app.dart';
+import 'package:envoy/ui/migrations/migration_manager.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -34,7 +34,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:tor/tor.dart';
-import 'package:tor/util.dart';
 
 import 'business/feed_manager.dart';
 import 'business/fees.dart';
@@ -50,8 +49,11 @@ Future<void> main() async {
     EnvoyReport().log("Envoy init", stack.toString());
   }
 
-  final migrationStatus = EnvoyStorage().getBool("migration_envoy_v2_status");
-  if (migrationStatus == null || migrationStatus == false) {
+  final hasAccounts =
+      LocalStorage().prefs.containsKey(MigrationManager.AccountsPrefKey);
+  final migrationStatus = EnvoyStorage().getBool(migrationPrefs) ?? false;
+  kPrint("Migration status: $migrationStatus hasAccounts: $hasAccounts");
+  if (migrationStatus == false && hasAccounts) {
     runApp(MigrationApp());
   } else if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
     runApp(const AuthenticateApp());
@@ -68,17 +70,17 @@ Future<void> initSingletons() async {
     kPrint("Error initializing BluetoothManager: $e", stackTrace: stack);
   }
 
-  await LocalStorage.init();
+  //
+  // // This is notoriously low on iOS, causing 'too many open files errors'
+  // kPrint("Process nofile_limit: ${getNofileLimit()}");
+  //
+  // // Requesting a high number. The API will return the best we can get
+  // // ~10k on iPhone 11 which is much better than the default 256
+  // kPrint("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
+  //
   await EnvoyStorage().init();
+  await LocalStorage.init();
 
-  // This is notoriously low on iOS, causing 'too many open files errors'
-  kPrint("Process nofile_limit: ${getNofileLimit()}");
-
-  // Requesting a high number. The API will return the best we can get
-  // ~10k on iPhone 11 which is much better than the default 256
-  kPrint("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
-
-  // await AccountNg().init();
   await NgAccountManager.init();
   await NTPUtil.init();
   EnvoyScheduler.init();
@@ -99,7 +101,6 @@ Future<void> initSingletons() async {
   } on Exception catch (e) {}
 
   Fees.restore();
-  AccountManager.init();
   Notifications.init();
   FeedManager.init();
   MapData.init();

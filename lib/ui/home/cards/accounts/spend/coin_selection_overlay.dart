@@ -34,6 +34,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 OverlayEntry? overlayEntry;
 final GlobalKey<CoinSelectionOverlayState> coinSelectionOverlayKey =
@@ -126,7 +127,7 @@ class CoinSelectionOverlayState extends ConsumerState<CoinSelectionOverlay> {
 }
 
 class SpendRequirementOverlay extends ConsumerStatefulWidget {
-  final Account account;
+  final EnvoyAccount account;
 
   const SpendRequirementOverlay({super.key, required this.account});
 
@@ -245,7 +246,7 @@ class SpendRequirementOverlayState
   @override
   Widget build(BuildContext context) {
     final totalSelectedAmount =
-        ref.watch(getTotalSelectedAmount(widget.account.id!));
+        ref.watch(getTotalSelectedAmount(widget.account.config().id));
     final size = MediaQuery.of(context).size;
 
     ref.listen(spendEditModeProvider, (previous, next) {
@@ -570,7 +571,7 @@ class SpendRequirementOverlayState
       if (coinSelectionDiff.isNotEmpty) {
         ///reset fees if coin selection changed
         ref.read(spendFeeRateProvider.notifier).state =
-            Fees().slowRate(account!.wallet.network) * 100000;
+            Fees().slowRate(account!.config().network) * 100000;
         ref.read(spendTransactionProvider.notifier).validate(scope);
       }
 
@@ -606,7 +607,7 @@ class SpendRequirementOverlayState
   Widget transactionEditButton(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        ref.watch(getTotalSelectedAmount(widget.account.id!));
+        ref.watch(getTotalSelectedAmount(widget.account.config().id));
         Set<String> walletSelection = ref.watch(coinSelectionFromWallet);
         Set<String> coinSelection = ref.watch(coinSelectionStateProvider);
         Set coinSelectionDiff1 = walletSelection.difference(coinSelection);
@@ -709,13 +710,13 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (_, ref, child) {
-        Account? selectedAccount = ref.read(selectedAccountProvider);
+        EnvoyAccount? selectedAccount = ref.read(selectedAccountProvider);
         Set<String> selection = ref.watch(coinSelectionStateProvider);
 
         String buttonText = S().component_cancel;
         if (widget.inTagSelectionMode) {
           List<CoinTag> tags =
-              ref.read(coinsTagProvider(selectedAccount?.id ?? "")) ?? [];
+              ref.read(coinsTagProvider(selectedAccount?.config().id ?? "")) ?? [];
           bool isCoinsOnlyPartOfUntagged = false;
           CoinTag? untagged =
               tags.firstWhereOrNull((element) => element.untagged);
@@ -769,7 +770,7 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
                 },
                 builder: Builder(
                   builder: (context) => CreateCoinTag(
-                    accountId: selectedAccount.id ?? "",
+                    accountId: selectedAccount.config().id,
                     onTagUpdate: () async {
                       ref.read(coinSelectionStateProvider.notifier).reset();
                       await Future.delayed(const Duration(milliseconds: 100));
@@ -814,7 +815,7 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
                         },
                         builder: Builder(
                           builder: (context) => CreateCoinTag(
-                            accountId: selectedAccount.id ?? "",
+                            accountId: selectedAccount.config().id,
                             onTagUpdate: () async {
                               ref
                                   .read(coinSelectionStateProvider.notifier)

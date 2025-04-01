@@ -28,6 +28,7 @@ import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:ngwallet/src/exceptions.dart';
 import 'package:ngwallet/src/wallet.dart';
+import 'package:ngwallet/ngwallet.dart' as  NgWallet;
 import 'package:envoy/business/bip329.dart';
 
 class AccountAlreadyPaired implements Exception {}
@@ -145,7 +146,7 @@ class AccountManager extends ChangeNotifier {
 
   Future<Account> _syncAccount(Account account) async {
     bool? changed;
-    int port = Settings().getPort(account.wallet.network);
+    int port = Settings().getPort(NgWallet.Network.bitcoin);
     String server;
     String network = account.wallet.network.toString();
 
@@ -170,7 +171,7 @@ class AccountManager extends ChangeNotifier {
 
     try {
       changed = await account.wallet
-          .sync(Settings().electrumAddress(account.wallet.network), port);
+          .sync(Settings().electrumAddress(NgWallet.Network.bitcoin), port);
     } on Exception catch (e) {
       // Let ConnectivityManager know that we can't reach Electrum
       if (account.wallet.network == Network.Mainnet) {

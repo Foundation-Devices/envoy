@@ -17,6 +17,8 @@ use ngwallet::config::{AddressType, NgAccountConfig};
 use ngwallet::ngwallet::NgWallet;
 use ngwallet::transaction::{BitcoinTransaction, Output};
 pub use bdk_wallet::bitcoin::{Network, Psbt, ScriptBuf};
+use bdk_wallet::bitcoin::Address;
+use bdk_wallet::bitcoin::address::{NetworkUnchecked, ParseError};
 use log::info;
 use ngwallet::redb::backends::FileBackend;
 use crate::api::migration::get_last_used_index;
@@ -229,7 +231,7 @@ impl EnvoyAccount {
             .wallet.set_note(tx_id, note)
     }
     #[frb(sync)]
-    pub fn is_hot(&self)-> bool {
+    pub fn is_hot(&self) -> bool {
         self.ng_account
             .lock().unwrap()
             .config.is_hot()
@@ -257,5 +259,31 @@ impl EnvoyAccount {
             .map_err(|e| {
                 anyhow!("Failed to broadcast: {}", e)
             })
+    }
+
+    pub fn validate_address(address: &str, network: Option<Network>) -> bool {
+        return match Address::from_str(address) {
+            Ok(address) => {
+                match network {
+                    None => {
+                        true
+                    }
+                    Some(network) => {
+                        match address.require_network(network) {
+                            Ok(_) => {
+                                true
+                            }
+                            Err(_) => {
+                                false
+                            }
+                        }
+                    }
+                }
+
+            }
+            Err(_) => {
+                false
+            }
+        }
     }
 }

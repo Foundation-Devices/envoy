@@ -114,6 +114,11 @@ abstract class EnvoyAccount implements RustOpaqueInterface {
   Future<List<BitcoinTransaction>> transactions();
 
   Future<List<Output>> utxo();
+
+  static Future<bool> validateAddress(
+          {required String address, Network? network}) =>
+      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountValidateAddress(
+          address: address, network: network);
 }
 
 enum Network {

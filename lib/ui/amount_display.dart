@@ -12,7 +12,7 @@ import 'package:envoy/util/amount.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/business/account.dart';
-import 'package:ngwallet/src/wallet.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:envoy/business/locale.dart';
 
 //ignore: must_be_immutable
@@ -22,7 +22,7 @@ class AmountDisplay extends ConsumerStatefulWidget {
   String displayedAmount;
   final Function? onLongPress;
   double? displayFiat;
-  final Account? account;
+  final EnvoyAccount? account;
 
   final Function(String)? onUnitToggled;
 
@@ -57,7 +57,7 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
 
     // Fiat is always at the end of enum
     if (Settings().selectedFiat == null ||
-        widget.account?.wallet.network != Network.Mainnet) {
+        widget.account?.config().network != Network.bitcoin) {
       length--;
     }
 
@@ -110,7 +110,7 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
 
     bool isFormattedAmountEmpty = ExchangeRate().getFormattedAmount(
           widget.amountSats ?? 0,
-          wallet: widget.account?.wallet,
+          network: widget.account?.config().network,
         ) ==
         "";
 
@@ -182,7 +182,7 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
                                     ? ExchangeRate().getFormattedAmount(
                                         widget.amountSats ?? 0,
                                         displayFiat: widget.displayFiat,
-                                        wallet: widget.account?.wallet,
+                                        network: widget.account?.config().network,
                                         includeSymbol: false)
                                     : (Settings().displayUnit == DisplayUnit.btc
                                         ? getDisplayAmount(

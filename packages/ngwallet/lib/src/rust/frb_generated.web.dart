@@ -107,6 +107,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool dco_decode_box_autoadd_bool(dynamic raw);
 
   @protected
+  Network dco_decode_box_autoadd_network(dynamic raw);
+
+  @protected
   NgAccountConfig dco_decode_box_autoadd_ng_account_config(dynamic raw);
 
   @protected
@@ -141,6 +144,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   bool? dco_decode_opt_box_autoadd_bool(dynamic raw);
+
+  @protected
+  Network? dco_decode_opt_box_autoadd_network(dynamic raw);
 
   @protected
   Output dco_decode_output(dynamic raw);
@@ -230,6 +236,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool sse_decode_box_autoadd_bool(SseDeserializer deserializer);
 
   @protected
+  Network sse_decode_box_autoadd_network(SseDeserializer deserializer);
+
+  @protected
   NgAccountConfig sse_decode_box_autoadd_ng_account_config(
       SseDeserializer deserializer);
 
@@ -266,6 +275,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   bool? sse_decode_opt_box_autoadd_bool(SseDeserializer deserializer);
+
+  @protected
+  Network? sse_decode_opt_box_autoadd_network(SseDeserializer deserializer);
 
   @protected
   Output sse_decode_output(SseDeserializer deserializer);
@@ -360,6 +372,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_box_autoadd_bool(bool self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_network(Network self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_ng_account_config(
       NgAccountConfig self, SseSerializer serializer);
 
@@ -398,6 +413,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_opt_box_autoadd_bool(bool? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_network(
+      Network? self, SseSerializer serializer);
 
   @protected
   void sse_encode_output(Output self, SseSerializer serializer);

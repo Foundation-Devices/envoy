@@ -18,12 +18,13 @@ import 'package:envoy/ui/state/send_screen_state.dart';
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class AddressEntry extends ConsumerStatefulWidget {
   final Function(String)? onAddressChanged;
   final Function(int)? onAmountChanged;
   final bool canEdit;
-  final Account account;
+  final EnvoyAccount account;
   final String? initalAddress;
   final TextEditingController? controller;
   final Function(ParseResult)? onPaste;
@@ -131,7 +132,7 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                                       textCopied!,
                                       fiatExchangeRate:
                                           ExchangeRate().selectedCurrencyRate,
-                                      wallet: widget.account.wallet,
+                                      account: widget.account,
                                       selectedFiat: Settings().selectedFiat,
                                       currentUnit: unit);
                                   widget.onPaste!(decodedInfo);
@@ -201,7 +202,7 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
   }
 
   Future<void> validate(String value) async {
-    final check = await widget.account.wallet.validateAddress(value);
+    final check = await EnvoyAccount.validateAddress(address: value,network: widget.account.config().network);
     setState(() => addressValid = check);
     widget.onAddressChanged?.call(value);
   }

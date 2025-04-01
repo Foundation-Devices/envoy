@@ -14,6 +14,7 @@ import 'package:envoy/business/server.dart';
 import 'package:envoy/business/video.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // ignore: implementation_imports
 import 'package:ngwallet/src/wallet.dart' as wallet;
@@ -506,9 +507,7 @@ class EnvoyStorage {
   Future<Map<String, String>> getAllTags() async {
     Map<String, String> notes = {};
     await tagStore.find(_db).then((records) {
-      for (var record in records) {
-
-      }
+      for (var record in records) {}
     });
     return notes;
   }

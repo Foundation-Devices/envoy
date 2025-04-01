@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/util/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -12,6 +12,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -279,8 +280,8 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
 
   Widget openTransactionDetails(BuildContext context, Transaction transaction) {
     if (widget.notification.accountId != null) {
-      Account? account =
-          AccountManager().getAccountById(widget.notification.accountId!);
+      EnvoyAccount? account = NgAccountManager().getAccountById(
+          widget.notification.accountId!);
       if (account != null) {
         return TransactionsDetailsWidget(
           account: account,

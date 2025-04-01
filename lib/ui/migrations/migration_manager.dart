@@ -7,6 +7,7 @@ import 'package:envoy/account/legacy/legacy_account.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
@@ -21,15 +22,18 @@ class MigrationProgress {
   double get progress => completed / total;
 }
 
+const String migrationPrefs = "migration_envoy_v2_status";
+
 class MigrationManager {
   // Singleton instance
   static final MigrationManager _instance = MigrationManager._internal();
+  static const String AccountsPrefKey = "accounts";
 
   // Private constructor
   MigrationManager._internal();
 
   // Factory constructor to return the singleton instance
-  factory MigrationManager()  {
+  factory MigrationManager() {
     return _instance;
   }
 
@@ -41,7 +45,6 @@ class MigrationManager {
 
   Function(MigrationProgress progress)? onProgressListener;
 
-  static const String ACCOUNTS_PREFS = "accounts";
   final LocalStorage _ls = LocalStorage();
   static String walletsDirectory =
       "${LocalStorage().appDocumentsDir.path}/wallets/";
@@ -50,7 +53,7 @@ class MigrationManager {
   List<EnvoyAccount> accounts = [];
 
   final StreamController<MigrationProgress> _streamController =
-  StreamController<MigrationProgress>.broadcast();
+      StreamController<MigrationProgress>.broadcast();
 
   Stream<MigrationProgress> get migrationProgress =>
       _streamController.stream.asBroadcastStream();
@@ -59,24 +62,25 @@ class MigrationManager {
     _streamController.close();
   }
 
-  addMigrationEvent(MigrationProgress migrationProgress,) {
+  addMigrationEvent(
+    MigrationProgress migrationProgress,
+  ) {
     _streamController.sink.add(migrationProgress);
   }
 
   void migrate() async {
-    kPrint("Migration: Starting");
     try {
       //clean directory for new wallets
       if (Directory(newWalletDirectory).existsSync()) {
         Directory(newWalletDirectory).deleteSync(recursive: true);
       }
       final walletOrder = List<String>.empty(growable: true);
-      if (_ls.prefs.containsKey(ACCOUNTS_PREFS)) {
+      if (_ls.prefs.containsKey(AccountsPrefKey)) {
         List<dynamic> accountsJson =
-        jsonDecode(_ls.prefs.getString(ACCOUNTS_PREFS)!).toList();
+            jsonDecode(_ls.prefs.getString(AccountsPrefKey)!).toList();
 
         List<LegacyAccount> legacyAccounts =
-        accountsJson.map((json) => LegacyAccount.fromJson(json)).toList();
+            accountsJson.map((json) => LegacyAccount.fromJson(json)).toList();
 
         addMigrationEvent(
             MigrationProgress(total: legacyAccounts.length, completed: 0));
@@ -84,9 +88,9 @@ class MigrationManager {
         for (LegacyAccount legacyAccount in legacyAccounts) {
           //use externalDescriptor and internalDescriptor
           final newAccountDir =
-          Directory("$newWalletDirectory${legacyAccount.wallet.name}");
+              Directory("$newWalletDirectory${legacyAccount.wallet.name}");
           final oldWalletDir =
-          Directory("$walletsDirectory${legacyAccount.wallet.name}");
+              Directory("$walletsDirectory${legacyAccount.wallet.name}");
           if (!newAccountDir.existsSync()) {
             await newAccountDir.create(recursive: true);
           }
@@ -113,24 +117,28 @@ class MigrationManager {
               sledDbPath: oldWalletDir.path,
               id: legacyAccount.id,
               dbPath: newAccountDir.path);
-          envoyAccount
-              .config()
-              .id;
+          envoyAccount.config().id;
           //add dir names to
           walletOrder.add(newAccountDir.path);
           accounts.add(envoyAccount);
         }
-        await _ls.prefs.setString(NgAccountManager.ACCOUNT_ORDER, jsonEncode(walletOrder));
+        await _ls.prefs
+            .setString(NgAccountManager.ACCOUNT_ORDER, jsonEncode(walletOrder));
         await syncAccounts();
         for (var account in accounts) {
           migrateNotes(account);
         }
         for (var account in accounts) {
-           account.dispose();
+          account.dispose();
         }
+        //Load accounts to account manager
         NgAccountManager().restore();
+      } else {
+        kPrint("Migration: No accounts found");
+        EnvoyReport().log("Migration", "No accounts found");
       }
     } catch (e, stack) {
+      EnvoyReport().log("Migration", "Error $e", stackTrace: stack);
       kPrint("Migration: Error $e", stackTrace: stack);
     }
   }
@@ -147,11 +155,12 @@ class MigrationManager {
       }
       final scan = await account.requestScan();
       ArcMutexOptionFullScanResponseKeychainKind result =
-      await EnvoyAccount.scan(scanRequest: scan, electrumServer: network);
+          await EnvoyAccount.scan(scanRequest: scan, electrumServer: network);
       await account.applyUpdate(scanRequest: result);
       addMigrationEvent(MigrationProgress(
           total: accounts.length, completed: accounts.indexOf(account) + 1));
     }
+    await EnvoyStorage().setBool(migrationPrefs, true);
     _onMigrationFinished?.call();
   }
 
@@ -168,7 +177,9 @@ class MigrationManager {
     }
   }
 
-   Color getAccountColor(LegacyAccount account,) {
+  Color getAccountColor(
+    LegacyAccount account,
+  ) {
     // Postmix accounts are pure red
     if (account.number == 2147483646) {
       return Colors.red;
@@ -178,7 +189,6 @@ class MigrationManager {
         (EnvoyColors.listAccountTileColors.length);
     return EnvoyColors.listAccountTileColors[colorIndex];
   }
-
 
   String colorToHex(Color color) {
     // Convert double values to int (0-255 range)
@@ -191,5 +201,3 @@ class MigrationManager {
         '${b.toRadixString(16).padLeft(2, '0')}';
   }
 }
-
-

@@ -230,7 +230,7 @@ final getTransactionProvider = Provider.family<Transaction?, String>(
   (ref, txId) {
     final selectedAccount = ref.watch(selectedAccountProvider);
     final tx = ref
-        .watch(transactionsProvider(selectedAccount?.id ?? ""))
+        .watch(transactionsProvider(selectedAccount?.config().id ?? ""))
         .firstWhereOrNull((element) => element.txId == txId);
 
     if (tx == null) {

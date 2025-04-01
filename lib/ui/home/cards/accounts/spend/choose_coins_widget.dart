@@ -13,6 +13,7 @@ import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class ChooseCoinsWidget extends ConsumerStatefulWidget {
   const ChooseCoinsWidget({super.key});
@@ -24,7 +25,7 @@ class ChooseCoinsWidget extends ConsumerStatefulWidget {
 class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
   @override
   Widget build(BuildContext context) {
-    Account? account = ref.watch(selectedAccountProvider);
+    EnvoyAccount? account = ref.watch(selectedAccountProvider);
     if (account == null) {
       return Container();
     }

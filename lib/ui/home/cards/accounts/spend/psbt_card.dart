@@ -18,13 +18,14 @@ import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:ngwallet/src/wallet.dart';
 
 //ignore: must_be_immutable
 class PsbtCard extends StatelessWidget {
   final Psbt psbt;
-  final Account account;
+  final EnvoyAccount account;
   final Function(Psbt)? onSignedPsbtScanned;
 
   PsbtCard(this.psbt, this.account, {this.onSignedPsbtScanned})
@@ -120,13 +121,14 @@ class PsbtCard extends StatelessWidget {
                                       },
                                       decoder: CryptoTxDecoder(onScan:
                                           (CryptoPsbt cryptoPsbt) async {
-                                        Psbt psbtParsed = await account.wallet
-                                            .decodePsbt(cryptoPsbt.decoded);
-                                        if (onSignedPsbtScanned == null) {
-                                          navigator.pop(psbtParsed);
-                                        } else {
-                                          onSignedPsbtScanned?.call(psbtParsed);
-                                        }
+                                        //TODO: decode the psbt
+                                        // Psbt psbtParsed = await account.wallet
+                                        //     .decodePsbt(cryptoPsbt.decoded);
+                                        // if (onSignedPsbtScanned == null) {
+                                        //   navigator.pop(psbtParsed);
+                                        // } else {
+                                        //   onSignedPsbtScanned?.call(psbtParsed);
+                                        // }
                                       }));
                                 },
                               );

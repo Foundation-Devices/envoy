@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:animations/animations.dart';
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/exchange_rate.dart';
@@ -51,6 +52,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:ngwallet/src/wallet.dart';
 
 //ignore: must_be_immutable
@@ -69,7 +71,7 @@ class AccountCard extends ConsumerStatefulWidget {
 class _AccountCardState extends ConsumerState<AccountCard>
     with SingleTickerProviderStateMixin {
   late AnimationController animationController;
-  late Account account;
+  late EnvoyAccount account;
   late Animation<Alignment> animation;
 
   _redraw() {
@@ -90,7 +92,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
 
     Future.delayed(const Duration()).then((value) {
       account =
-          ref.read(selectedAccountProvider) ?? AccountManager().accounts[0];
+          ref.read(selectedAccountProvider) ?? NgAccountManager().accounts[0];
       ref.read(homePageTitleProvider.notifier).state = "";
 
       ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
@@ -136,10 +138,10 @@ class _AccountCardState extends ConsumerState<AccountCard>
   @override
   Widget build(BuildContext context) {
     ref.watch(settingsProvider);
-    account = ref.read(selectedAccountProvider) ?? AccountManager().accounts[0];
+    account = ref.read(selectedAccountProvider) ?? NgAccountManager().accounts[0];
 
     List<Transaction> transactions =
-        ref.watch(filteredTransactionsProvider(account.id));
+        ref.watch(filteredTransactionsProvider(account.config().id));
 
     bool txFiltersEnabled = ref.watch(isTransactionFiltersEnabled);
     bool isMenuOpen = ref.watch(homePageOptionsVisibilityProvider);
@@ -194,7 +196,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                       left: 20,
                       right: 20,
                       top: EnvoySpacing.small),
-                  child: account.dateSynced == null
+                  child: account.config().dateSynced == null
                       ? ListView.builder(
                           padding: EdgeInsets.zero,
                           itemCount: 4,
@@ -250,7 +252,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                     child: EnvoyTextButton(
                         label: S().receive_tx_list_receive,
                         onTap: () {
-                          context.go(ROUTE_ACCOUNT_RECEIVE, extra: account);
+                          context.go(ROUTE_ACCOUNT_RECEIVE, extra: account.config().id);
                         }),
                   ),
                 ),
@@ -474,7 +476,7 @@ class TransactionListTile extends ConsumerWidget {
   });
 
   final Transaction transaction;
-  final Account account;
+  final EnvoyAccount account;
 
   final TextStyle _transactionTextStyleInfo = EnvoyTypography.body.copyWith(
     fontWeight: FontWeight.w400,
@@ -529,7 +531,7 @@ class TransactionListTile extends ConsumerWidget {
                       Consumer(
                         builder: (context, ref, child) {
                           bool hide = ref.watch(
-                              balanceHideStateStatusProvider(account.id));
+                              balanceHideStateStatusProvider(account.config().id));
                           if (hide) {
                             return const LoaderGhost(
                               width: 100,
@@ -711,7 +713,7 @@ void showWarningOnTxIdCopy(BuildContext context, String txId) {
 }
 
 class AccountOptions extends ConsumerStatefulWidget {
-  final Account account;
+  final EnvoyAccount account;
 
   AccountOptions(
     this.account,
@@ -732,7 +734,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
 
   @override
   Widget build(context) {
-    final account = ref.watch(accountStateProvider(widget.account.id!));
+    final account = ref.watch(accountStateProvider(widget.account.config().id));
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -785,8 +787,9 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                       EnvoyButton(
                         S().component_save,
                         onTap: () {
-                          AccountManager().renameAccount(
-                              widget.account, textEntry.enteredText);
+                          //TODO: add rename
+                          // AccountManager().renameAccount(
+                          //     widget.account, textEntry.enteredText);
                           Navigator.pop(context);
                         },
                       ),
@@ -805,7 +808,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
               style: const TextStyle(color: EnvoyColors.accentSecondary)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
-            if (!widget.account.wallet.hot) {
+            if (!widget.account.isHot()) {
               showEnvoyDialog(
                   context: context,
                   dialog: EnvoyPopUp(
@@ -838,7 +841,8 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                       Navigator.pop(context);
                       GoRouter.of(context).pop();
                       await Future.delayed(const Duration(milliseconds: 50));
-                      AccountManager().deleteAccount(widget.account);
+                      //TODO: add delete account
+                      // AccountManager().deleteAccount(widget.account);
                     },
                   ));
             } else {

@@ -5,6 +5,7 @@
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:http_tor/http_tor.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:tor/tor.dart';
 import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/business/account.dart';
@@ -86,8 +87,8 @@ class AztecoVoucher {
   }
 }
 
-void addPendingTx(String address, Account account) {
-  EnvoyStorage().addPendingTx(address, account.id ?? "", DateTime.now(),
+void addPendingTx(String address, EnvoyAccount account) {
+  EnvoyStorage().addPendingTx(address, account.config().id ?? "", DateTime.now(),
       TransactionType.azteco, 0, 0, address);
   EnvoyStorage().addTxNote(note: S().azteco_note, key: address);
 }

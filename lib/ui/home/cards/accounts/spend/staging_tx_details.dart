@@ -26,6 +26,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
@@ -34,6 +35,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/ui/components/envoy_info_card.dart';
@@ -102,7 +104,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
         return (element.path == TxOutputPath.Internal);
       });
 
-      List<CoinTag> tags = ref.read(coinsTagProvider(account.id!));
+      List<CoinTag> tags = ref.read(coinsTagProvider(account.config().id));
 
       /// if the user is in RBF tx we need to load the tags from the previous transaction
       if (widget.previousTransaction != null) {
@@ -156,7 +158,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
         }
       }
 
-      final userSelectedCoins = ref.read(getSelectedCoinsProvider(account.id!));
+      final userSelectedCoins = ref.read(getSelectedCoinsProvider(account.config().id));
       if (userSelectedCoins.isNotEmpty) {}
       setState(() {
         totalReceiveAmount = receiveOutPut.amount;
@@ -168,7 +170,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
 
   @override
   Widget build(BuildContext context) {
-    Account? account = ref.watch(selectedAccountProvider);
+    EnvoyAccount? account = ref.watch(selectedAccountProvider);
     if (account == null) {
       return Container();
     }
@@ -203,7 +205,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
         .map((e) => e.item2)
         .fold(0, (previousValue, element) => previousValue + element);
 
-    final accountAccentColor = account.color;
+    final accountAccentColor = fromHex(account.config().color);
 
     Set<String> spendTags = inputTagData.map((e) => e.item1).toSet();
 
@@ -383,7 +385,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                           builder: Builder(
                                             builder: (context) =>
                                                 ChooseTagForStagingTx(
-                                              accountId: account.id!,
+                                              accountId: account.config().id,
                                               onEditTransaction: () async {
                                                 Navigator.pop(context);
 

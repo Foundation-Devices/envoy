@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/account.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 //Shared selected account provider.
-final selectedAccountProvider = StateProvider<Account?>((ref) => null);
+final selectedAccountProvider = StateProvider<EnvoyAccount?>((ref) => null);

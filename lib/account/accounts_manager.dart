@@ -10,7 +10,9 @@ import 'dart:io';
 
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:ngwallet/ngwallet.dart';
 
@@ -44,7 +46,12 @@ class NgAccountManager extends ChangeNotifier {
 
   static Future<NgAccountManager> init() async {
     var singleton = NgAccountManager._instance;
-    await RustLib.init();
+    try {
+      await RustLib.init();
+    } catch (e, stack) {
+      kPrint("Error initializing RustLib: $e");
+      EnvoyReport().log("Envoy init", e.toString(),stackTrace: stack);
+    }
     return singleton;
   }
 
@@ -75,6 +82,10 @@ class NgAccountManager extends ChangeNotifier {
     }
     accountsStream.add(accounts);
     notifyListeners();
+  }
+
+  EnvoyAccount? getAccountById(String id) {
+    return accounts.firstWhereOrNull((element) => element.config().id == id);
   }
 
   moveAccount(int oldIndex, int newIndex,

@@ -24,6 +24,7 @@ import 'package:envoy/ui/components/ramp_widget.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/home/home_state.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 GlobalKey<ChooseAccountState> chooseAccountKey =
     GlobalKey<ChooseAccountState>();
@@ -36,7 +37,7 @@ class SelectAccount extends ConsumerStatefulWidget {
 }
 
 class _SelectAccountState extends ConsumerState<SelectAccount> {
-  Account? selectedAccount;
+  EnvoyAccount? selectedAccount;
   GestureTapCallback? onTap;
   String? address;
   bool _canPop = true;
@@ -70,32 +71,32 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
     super.dispose();
   }
 
-  void updateSelectedAccount(Account account) async {
+  void updateSelectedAccount(EnvoyAccount account) async {
     setState(() {
       selectedAccount = account;
       address = null;
     });
-    if (accountAddressCache.containsKey(selectedAccount?.id!) &&
-        accountAddressCache[selectedAccount?.id!] != null) {
+    if (accountAddressCache.containsKey(selectedAccount?.config().id!) &&
+        accountAddressCache[selectedAccount?.config().id] != null) {
       setState(() {
-        address = accountAddressCache[selectedAccount?.id!];
+        address = accountAddressCache[selectedAccount?.config().id];
       });
     } else {
-      String? address = await account.wallet.getAddress();
+      String? address = await account.nextAddress();
       // Separate setState call to avoid UI lag during the async operation
       setState(() {
         this.address = address;
-        accountAddressCache[selectedAccount!.id!] = address;
+        accountAddressCache[selectedAccount!.config().id] = address;
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Account> filteredAccounts = [];
+    List<EnvoyAccount> filteredAccounts = [];
     if (selectedAccount != null) {
       // TODO: use EnvoyAccount
-      // filteredAccounts = ref.watch(mainnetAccountsProvider(selectedAccount));
+      filteredAccounts = ref.watch(mainnetAccountsProvider(selectedAccount));
     }
     if ((selectedAccount == null)) {
       return const Center(child: CircularProgressIndicator());
@@ -135,7 +136,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                             _canPop = !visible;
                           });
                         },
-                        onAccountSelected: (Account account) {
+                        onAccountSelected: (EnvoyAccount account) {
                           updateSelectedAccount(account);
                         },
                       ),
@@ -176,7 +177,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (!selectedAccount!.wallet.hot)
+                  if (!selectedAccount!.isHot())
                     Padding(
                       padding:
                           const EdgeInsets.only(bottom: EnvoySpacing.small),
@@ -196,7 +197,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                                 width: MediaQuery.of(context).size.width * 0.9,
                                 child: VerifyAddressDialog(
                                   address: address!,
-                                  accountName: selectedAccount!.name,
+                                  accountName: selectedAccount!.config().name,
                                 ),
                               ),
                             );
