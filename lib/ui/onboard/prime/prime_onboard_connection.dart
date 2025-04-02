@@ -107,7 +107,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
           .sendOnboardingState(OnboardingState.securityChecked);
 
       await firmWareUpdateStepNotifier.updateStep(
-          "Checking firmware updates", EnvoyStepState.LOADING);
+          S().onboarding_connectionChecking_forUpdates, EnvoyStepState.LOADING);
       await Future.delayed(const Duration(seconds: 10));
       await firmWareUpdateStepNotifier.updateStep(
           S().onboarding_connectionUpdatesAvailable_updatesAvailable,

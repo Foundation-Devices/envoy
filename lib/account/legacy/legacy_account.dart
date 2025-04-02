@@ -77,7 +77,4 @@ class Wallet {
 
   // Method to convert Wallet to JSON
   Map<String, dynamic> toJson() => _$WalletToJson(this);
-
-
-
 }

@@ -103,7 +103,8 @@ class BluetoothManager {
 
   Future<void> sendPsbt(String descriptor, String psbt) async {
     final encoded = await encodeMessage(
-        message: api.QuantumLinkMessage.signPsbt(api.SignPsbt(descriptor: descriptor, psbt: psbt)));
+        message: api.QuantumLinkMessage.signPsbt(
+            api.SignPsbt(descriptor: descriptor, psbt: psbt)));
 
     kPrint("before sending psbt");
     await bluart.writeAll(id: bleId, data: encoded);
@@ -161,11 +162,7 @@ class BluetoothManager {
       message: api.QuantumLinkMessage.onboardingState(state),
     );
 
-
-
     await bluart.writeAll(id: bleId, data: encoded);
-
-
   }
 
   dispose() {
