@@ -240,22 +240,27 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
 
   Widget _updateIntroWidget(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          //TODO: Note: {0} in firmware.updateAvailable.estimatedUpdateTime should be programmatically replaced by the estimated update time rounded to minutes
-          S().firmware_updateAvailable_estimatedUpdateTime,
-          textAlign: TextAlign.center,
-          style: EnvoyTypography.explainer.copyWith(fontSize: 14),
-        ),
-        const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-        Padding(
-          padding: const EdgeInsets.all(EnvoySpacing.small),
-          child: Text(
-            // TODO: Note to devs: {0} in firmware.updateAvailable.whatsNew should be programmatically replaced by the new keyOS version found
-            S().firmware_updateAvailable_content2,
-            textAlign: TextAlign.center,
-            style: EnvoyTypography.explainer.copyWith(fontSize: 14),
-          ),
+        Column(
+          children: [
+            Text(
+              //TODO: Note: {0} in firmware.updateAvailable.estimatedUpdateTime should be programmatically replaced by the estimated update time rounded to minutes
+              S().firmware_updateAvailable_estimatedUpdateTime,
+              textAlign: TextAlign.center,
+              style: EnvoyTypography.explainer.copyWith(fontSize: 14),
+            ),
+            const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+            Padding(
+              padding: const EdgeInsets.all(EnvoySpacing.small),
+              child: Text(
+                // TODO: Note to devs: {0} in firmware.updateAvailable.whatsNew should be programmatically replaced by the new keyOS version found
+                S().firmware_updateAvailable_content2,
+                textAlign: TextAlign.center,
+                style: EnvoyTypography.explainer.copyWith(fontSize: 14),
+              ),
+            ),
+          ],
         ),
         // Expanded(
         //     child: Container(
@@ -273,6 +278,13 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
         //     onTap: (){
         //       BluetoothManager().sendOnboardingState(OnboardingState.receivingUpdate);
         //     }),
+
+// TODO: Note to devs: {0} in firmware.updateAvailable.whatsNew should be programmatically replaced by the new keyOS version found
+        Padding(
+          padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+          child: EnvoyButton(S().firmware_updateAvailable_whatsNew,
+              type: EnvoyButtonTypes.secondary, onTap: () {}),
+        ),
       ],
     );
   }
