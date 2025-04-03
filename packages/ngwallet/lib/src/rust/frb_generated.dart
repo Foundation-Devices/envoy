@@ -70,7 +70,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.9.0';
 
   @override
-  int get rustContentHash => 1256952973;
+  int get rustContentHash => 1231539653;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -157,6 +157,9 @@ abstract class RustLibApi extends BaseApi {
   Future<NgAccountConfig> ngwalletConfigNgAccountConfigDeserialize(
       {required String data});
 
+  Future<bool> ngwalletConfigNgAccountConfigIsHot(
+      {required NgAccountConfig that});
+
   Future<NgAccountConfig> ngwalletConfigNgAccountConfigNew(
       {required String name,
       required String color,
@@ -166,7 +169,10 @@ abstract class RustLibApi extends BaseApi {
       required String internalDescriptor,
       String? externalDescriptor,
       required AddressType addressType,
-      required Network network});
+      required Network network,
+      required String id,
+      String? dateSynced,
+      String? walletPath});
 
   Future<String> ngwalletConfigNgAccountConfigSerialize(
       {required NgAccountConfig that});
@@ -798,6 +804,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<bool> ngwalletConfigNgAccountConfigIsHot(
+      {required NgAccountConfig that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_ng_account_config(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 20, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: null,
+      ),
+      constMeta: kNgwalletConfigNgAccountConfigIsHotConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kNgwalletConfigNgAccountConfigIsHotConstMeta =>
+      const TaskConstMeta(
+        debugName: "ng_account_config_is_hot",
+        argNames: ["that"],
+      );
+
+  @override
   Future<NgAccountConfig> ngwalletConfigNgAccountConfigNew(
       {required String name,
       required String color,
@@ -807,7 +839,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       required String internalDescriptor,
       String? externalDescriptor,
       required AddressType addressType,
-      required Network network}) {
+      required Network network,
+      required String id,
+      String? dateSynced,
+      String? walletPath}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
@@ -820,8 +855,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_opt_String(externalDescriptor, serializer);
         sse_encode_address_type(addressType, serializer);
         sse_encode_network(network, serializer);
+        sse_encode_String(id, serializer);
+        sse_encode_opt_String(dateSynced, serializer);
+        sse_encode_opt_String(walletPath, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 20, port: port_);
+            funcId: 21, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_ng_account_config,
@@ -837,7 +875,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         internalDescriptor,
         externalDescriptor,
         addressType,
-        network
+        network,
+        id,
+        dateSynced,
+        walletPath
       ],
       apiImpl: this,
     ));
@@ -855,7 +896,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           "internalDescriptor",
           "externalDescriptor",
           "addressType",
-          "network"
+          "network",
+          "id",
+          "dateSynced",
+          "walletPath"
         ],
       );
 
@@ -867,7 +911,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_ng_account_config(that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 21, port: port_);
+            funcId: 22, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -1115,8 +1159,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   NgAccountConfig dco_decode_ng_account_config(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 9)
-      throw Exception('unexpected arr length: expect 9 but see ${arr.length}');
+    if (arr.length != 12)
+      throw Exception('unexpected arr length: expect 12 but see ${arr.length}');
     return NgAccountConfig(
       name: dco_decode_String(arr[0]),
       color: dco_decode_String(arr[1]),
@@ -1126,7 +1170,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       index: dco_decode_u_32(arr[5]),
       internalDescriptor: dco_decode_String(arr[6]),
       externalDescriptor: dco_decode_opt_String(arr[7]),
-      network: dco_decode_network(arr[8]),
+      dateSynced: dco_decode_opt_String(arr[8]),
+      walletPath: dco_decode_opt_String(arr[9]),
+      network: dco_decode_network(arr[10]),
+      id: dco_decode_String(arr[11]),
     );
   }
 
@@ -1422,7 +1469,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_index = sse_decode_u_32(deserializer);
     var var_internalDescriptor = sse_decode_String(deserializer);
     var var_externalDescriptor = sse_decode_opt_String(deserializer);
+    var var_dateSynced = sse_decode_opt_String(deserializer);
+    var var_walletPath = sse_decode_opt_String(deserializer);
     var var_network = sse_decode_network(deserializer);
+    var var_id = sse_decode_String(deserializer);
     return NgAccountConfig(
         name: var_name,
         color: var_color,
@@ -1432,7 +1482,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         index: var_index,
         internalDescriptor: var_internalDescriptor,
         externalDescriptor: var_externalDescriptor,
-        network: var_network);
+        dateSynced: var_dateSynced,
+        walletPath: var_walletPath,
+        network: var_network,
+        id: var_id);
   }
 
   @protected
@@ -1737,7 +1790,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_u_32(self.index, serializer);
     sse_encode_String(self.internalDescriptor, serializer);
     sse_encode_opt_String(self.externalDescriptor, serializer);
+    sse_encode_opt_String(self.dateSynced, serializer);
+    sse_encode_opt_String(self.walletPath, serializer);
     sse_encode_network(self.network, serializer);
+    sse_encode_String(self.id, serializer);
   }
 
   @protected

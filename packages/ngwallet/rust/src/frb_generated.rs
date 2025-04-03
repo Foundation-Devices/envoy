@@ -44,7 +44,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.9.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1256952973;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1231539653;
 
 // Section: executor
 
@@ -993,6 +993,40 @@ fn wire__ngwallet__config__ng_account_config_deserialize_impl(
         },
     )
 }
+fn wire__ngwallet__config__ng_account_config_is_hot_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "ng_account_config_is_hot",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <ngwallet::config::NgAccountConfig>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok =
+                        Result::<_, ()>::Ok(ngwallet::config::NgAccountConfig::is_hot(&api_that))?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
 fn wire__ngwallet__config__ng_account_config_new_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1024,6 +1058,9 @@ fn wire__ngwallet__config__ng_account_config_new_impl(
             let api_external_descriptor = <Option<String>>::sse_decode(&mut deserializer);
             let api_address_type = <ngwallet::config::AddressType>::sse_decode(&mut deserializer);
             let api_network = <crate::api::envoy_wallet::Network>::sse_decode(&mut deserializer);
+            let api_id = <String>::sse_decode(&mut deserializer);
+            let api_date_synced = <Option<String>>::sse_decode(&mut deserializer);
+            let api_wallet_path = <Option<String>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, ()>((move || {
@@ -1037,6 +1074,9 @@ fn wire__ngwallet__config__ng_account_config_new_impl(
                         api_external_descriptor,
                         api_address_type,
                         api_network,
+                        api_id,
+                        api_date_synced,
+                        api_wallet_path,
                     ))?;
                     Ok(output_ok)
                 })())
@@ -1110,7 +1150,10 @@ const _: fn() = || {
         let _: u32 = NgAccountConfig.index;
         let _: String = NgAccountConfig.internal_descriptor;
         let _: Option<String> = NgAccountConfig.external_descriptor;
+        let _: Option<String> = NgAccountConfig.date_synced;
+        let _: Option<String> = NgAccountConfig.wallet_path;
         let _: crate::api::envoy_wallet::Network = NgAccountConfig.network;
+        let _: String = NgAccountConfig.id;
     }
     {
         let Output = None::<ngwallet::transaction::Output>.unwrap();
@@ -1396,7 +1439,10 @@ impl SseDecode for ngwallet::config::NgAccountConfig {
         let mut var_index = <u32>::sse_decode(deserializer);
         let mut var_internalDescriptor = <String>::sse_decode(deserializer);
         let mut var_externalDescriptor = <Option<String>>::sse_decode(deserializer);
+        let mut var_dateSynced = <Option<String>>::sse_decode(deserializer);
+        let mut var_walletPath = <Option<String>>::sse_decode(deserializer);
         let mut var_network = <crate::api::envoy_wallet::Network>::sse_decode(deserializer);
+        let mut var_id = <String>::sse_decode(deserializer);
         return ngwallet::config::NgAccountConfig {
             name: var_name,
             color: var_color,
@@ -1406,7 +1452,10 @@ impl SseDecode for ngwallet::config::NgAccountConfig {
             index: var_index,
             internal_descriptor: var_internalDescriptor,
             external_descriptor: var_externalDescriptor,
+            date_synced: var_dateSynced,
+            wallet_path: var_walletPath,
             network: var_network,
+            id: var_id,
         };
     }
 }
@@ -1590,8 +1639,11 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        20 => wire__ngwallet__config__ng_account_config_new_impl(port, ptr, rust_vec_len, data_len),
-        21 => wire__ngwallet__config__ng_account_config_serialize_impl(
+        20 => {
+            wire__ngwallet__config__ng_account_config_is_hot_impl(port, ptr, rust_vec_len, data_len)
+        }
+        21 => wire__ngwallet__config__ng_account_config_new_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire__ngwallet__config__ng_account_config_serialize_impl(
             port,
             ptr,
             rust_vec_len,
@@ -1815,7 +1867,10 @@ impl flutter_rust_bridge::IntoDart for FrbWrapper<ngwallet::config::NgAccountCon
             self.0.index.into_into_dart().into_dart(),
             self.0.internal_descriptor.into_into_dart().into_dart(),
             self.0.external_descriptor.into_into_dart().into_dart(),
+            self.0.date_synced.into_into_dart().into_dart(),
+            self.0.wallet_path.into_into_dart().into_dart(),
             self.0.network.into_into_dart().into_dart(),
+            self.0.id.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -2098,7 +2153,10 @@ impl SseEncode for ngwallet::config::NgAccountConfig {
         <u32>::sse_encode(self.index, serializer);
         <String>::sse_encode(self.internal_descriptor, serializer);
         <Option<String>>::sse_encode(self.external_descriptor, serializer);
+        <Option<String>>::sse_encode(self.date_synced, serializer);
+        <Option<String>>::sse_encode(self.wallet_path, serializer);
         <crate::api::envoy_wallet::Network>::sse_encode(self.network, serializer);
+        <String>::sse_encode(self.id, serializer);
     }
 }
 

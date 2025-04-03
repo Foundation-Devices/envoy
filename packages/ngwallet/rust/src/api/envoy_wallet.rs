@@ -79,6 +79,7 @@ impl EnvoyAccount {
                     Some(db_path),
                     Arc::new(Mutex::new(connection)),
                     None::<FileBackend>,
+                    "".to_string(), None
                 )
             )),
         }
