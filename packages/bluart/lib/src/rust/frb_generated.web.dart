@@ -40,8 +40,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
-  RustStreamSink<List<BleDevice>> dco_decode_StreamSink_list_ble_device_Sse(
-      dynamic raw);
+  RustStreamSink<Event> dco_decode_StreamSink_event_Sse(dynamic raw);
 
   @protected
   RustStreamSink<Uint8List> dco_decode_StreamSink_list_prim_u_8_strict_Sse(
@@ -58,6 +57,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   bool dco_decode_bool(dynamic raw);
+
+  @protected
+  Event dco_decode_event(dynamic raw);
 
   @protected
   List<String> dco_decode_list_String(dynamic raw);
@@ -100,7 +102,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
-  RustStreamSink<List<BleDevice>> sse_decode_StreamSink_list_ble_device_Sse(
+  RustStreamSink<Event> sse_decode_StreamSink_event_Sse(
       SseDeserializer deserializer);
 
   @protected
@@ -119,6 +121,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   bool sse_decode_bool(SseDeserializer deserializer);
+
+  @protected
+  Event sse_decode_event(SseDeserializer deserializer);
 
   @protected
   List<String> sse_decode_list_String(SseDeserializer deserializer);
@@ -166,8 +171,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           Device self, SseSerializer serializer);
 
   @protected
-  void sse_encode_StreamSink_list_ble_device_Sse(
-      RustStreamSink<List<BleDevice>> self, SseSerializer serializer);
+  void sse_encode_StreamSink_event_Sse(
+      RustStreamSink<Event> self, SseSerializer serializer);
 
   @protected
   void sse_encode_StreamSink_list_prim_u_8_strict_Sse(
@@ -185,6 +190,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_event(Event self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_String(List<String> self, SseSerializer serializer);

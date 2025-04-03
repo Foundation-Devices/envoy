@@ -9,7 +9,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 // These functions are ignored because they are not marked as `pub`: `get_uart_read_characteristic`, `get_uart_write_characteristic`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `fmt`
 // These functions are ignored (category: IgnoreBecauseExplicitAttribute): `id`, `new`
-// These functions are ignored (category: IgnoreBecauseOwnerTyShouldIgnore): `benchmark`, `connect`, `disconnect`, `is_connected`, `name`, `read`, `write`
+// These functions are ignored (category: IgnoreBecauseOwnerTyShouldIgnore): `benchmark`, `connect`, `disconnect`, `is_connected`, `name`, `read`, `write_all`, `write`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Device>>
 abstract class Device implements RustOpaqueInterface {}

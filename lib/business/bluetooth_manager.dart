@@ -32,7 +32,7 @@ class BluetoothManager {
 
   String bleId = "";
 
-  Stream<List<bluart.BleDevice>>? devices;
+  Stream<bluart.Event>? events;
 
   static Future<BluetoothManager> init() async {
     var singleton = BluetoothManager._instance;
@@ -46,7 +46,7 @@ class BluetoothManager {
   _init() async {
     await api.RustLib.init();
     await bluart.RustLib.init();
-    devices = await bluart.init().asBroadcastStream();
+    events = await bluart.init().asBroadcastStream();
     _generateQlIdentity();
   }
 

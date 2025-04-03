@@ -57,6 +57,11 @@ enum Command {
     },
 }
 
+pub enum Event {
+    ScanResult(Vec<BleDevice>),
+    DeviceDisconnected
+}
+
 impl std::fmt::Debug for Command {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("Scan").finish()
@@ -79,7 +84,7 @@ fn send(command: Command) -> Result<()> {
 
 /// The init() function must be called before anything else.
 /// At the moment the developer has to make sure it is only called once.
-pub async fn init(sink: StreamSink<Vec<BleDevice>>) -> Result<()> {
+pub async fn init(sink: StreamSink<Event>) -> Result<()> {
     // Disabled for now -> way too chatty
     flutter_rust_bridge::setup_default_user_utils();
     create_runtime()?;
@@ -154,6 +159,7 @@ pub async fn init(sink: StreamSink<Vec<BleDevice>>) -> Result<()> {
                             let mut devices = DEVICES.get().unwrap().lock().await;
                             if let Some(device) = devices.get_mut(&id.to_string()) {
                                 device.is_connected = false;
+                                sink.add(Event::DeviceDisconnected).unwrap();
                             }
                         }
                         CentralEvent::ManufacturerDataAdvertisement {
@@ -214,14 +220,14 @@ async fn remove_stale_devices(timeout: u64) {
 /// # Return
 ///
 /// Returns false if the stream is closed.
-async fn send_devices(sink: &StreamSink<Vec<BleDevice>>) -> Result<()> {
+async fn send_devices(sink: &StreamSink<Event>) -> Result<()> {
     let devices = DEVICES.get().unwrap().lock().await;
     let mut d = vec![];
     for device in devices.values() {
         let dev = BleDevice::from_peripheral(device).await;
         d.push(dev.clone())
     }
-    sink.add(d).map_err(|_| anyhow::anyhow!("No listeners"))?;
+    sink.add(Event::ScanResult(d)).map_err(|_| anyhow::anyhow!("No listeners"))?;
     Ok(())
 }
 
