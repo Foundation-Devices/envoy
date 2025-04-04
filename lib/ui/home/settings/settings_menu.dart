@@ -16,7 +16,6 @@ import 'package:envoy/ui/home/settings/support_page.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/util/easing.dart';
@@ -165,14 +164,18 @@ class SettingsMenuWidget extends ConsumerWidget {
                           background.state = HomePageBackgroundState.backups;
                         },
                       ),
-                    const SizedBox(height: 0),
+                    MenuOption(
+                      label: "Privacy".toUpperCase(), // TODO: localazy
+                      onTap: () {
+                        // TODO: implement the flow to "Privacy"
+                      },
+                    ),
                     MenuOption(
                       label: S().menu_support.toUpperCase(),
                       onTap: () {
                         background.state = HomePageBackgroundState.support;
                       },
                     ),
-                    const SizedBox(height: 0),
                     MenuOption(
                       label: S().menu_about.toUpperCase(),
                       onTap: () {
@@ -266,30 +269,16 @@ class MenuOption extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(
             horizontal: EnvoySpacing.large2, vertical: EnvoySpacing.medium1),
-        child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                constraints: const BoxConstraints(minWidth: 142),
-                child: Text(
-                  label.toUpperCase(),
-                  textAlign: TextAlign.start,
-                  style: EnvoyTypography.subheading
-                      .copyWith(
-                        color: EnvoyColors.textPrimaryInverse,
-                      )
-                      .setWeight(FontWeight.w500),
-                ),
-              ),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: const EnvoyIcon(
-                  EnvoyIcons.chevron_right,
-                  color: EnvoyColors.textPrimaryInverse,
-                ),
+        constraints: const BoxConstraints(minWidth: 142),
+        child: Text(
+          label.toUpperCase(),
+          textAlign: TextAlign.start,
+          style: EnvoyTypography.subheading
+              .copyWith(
+                color: EnvoyColors.textPrimaryInverse,
               )
-            ]),
+              .setWeight(FontWeight.w500),
+        ),
       ),
     );
   }

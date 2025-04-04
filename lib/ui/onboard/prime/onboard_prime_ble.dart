@@ -93,9 +93,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
       case OnboardingState.downloadingUpdate:
         ref.read(primeUpdateStateProvider.notifier).state =
             PrimeFwUpdateStep.downloading;
-        ref
-            .read(fwDownloadStateProvider.notifier)
-            .updateStep("Downloading Update", EnvoyStepState.LOADING);
+        ref.read(fwDownloadStateProvider.notifier).updateStep(
+            S().firmware_updatingDownload_downloading, EnvoyStepState.LOADING);
 
         await _fakeUpdateDownload();
 
@@ -110,28 +109,25 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
         ref.read(primeUpdateStateProvider.notifier).state =
             PrimeFwUpdateStep.verifying;
-        ref
-            .read(primeFwSigVerifyStateProvider.notifier)
-            .updateStep("Verifying Update", EnvoyStepState.LOADING);
+        ref.read(primeFwSigVerifyStateProvider.notifier).updateStep(
+            S().firmware_updatingPrime_verifying, EnvoyStepState.LOADING);
         break;
       case OnboardingState.installingUpdate:
-        ref
-            .read(primeFwSigVerifyStateProvider.notifier)
-            .updateStep("Update Verified", EnvoyStepState.FINISHED);
-        ref
-            .read(primeFwInstallStateProvider.notifier)
-            .updateStep("Installing Update", EnvoyStepState.LOADING);
+        ref.read(primeFwSigVerifyStateProvider.notifier).updateStep(
+            S().firmware_updatingPrime_verified, EnvoyStepState.FINISHED);
+        ref.read(primeFwInstallStateProvider.notifier).updateStep(
+            S().firmware_updatingPrime_installingUpdate,
+            EnvoyStepState.LOADING);
 
         ref.read(primeUpdateStateProvider.notifier).state =
             PrimeFwUpdateStep.installing;
         break;
       case OnboardingState.rebooting:
-        ref
-            .read(primeFwInstallStateProvider.notifier)
-            .updateStep("Update Installed", EnvoyStepState.FINISHED);
-        ref
-            .read(primeFwRebootStateProvider.notifier)
-            .updateStep("Passport Prime is restarting", EnvoyStepState.LOADING);
+        ref.read(primeFwInstallStateProvider.notifier).updateStep(
+            S().firmware_updatingPrime_updateInstalled,
+            EnvoyStepState.FINISHED);
+        ref.read(primeFwRebootStateProvider.notifier).updateStep(
+            S().firmware_updatingPrime_primeRestarting, EnvoyStepState.LOADING);
 
         ref.read(primeUpdateStateProvider.notifier).state =
             PrimeFwUpdateStep.rebooting;
@@ -149,28 +145,24 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         }
         break;
       case OnboardingState.deviceSecured:
-        ref
-            .read(creatingPinProvider.notifier)
-            .updateStep("PIN created", EnvoyStepState.FINISHED);
+        ref.read(creatingPinProvider.notifier).updateStep(
+            S().finalize_catchAll_pinCreated, EnvoyStepState.FINISHED);
         break;
       case OnboardingState.walletCreationScreen:
-        ref
-            .read(setUpMasterKeyProvider.notifier)
-            .updateStep("Setting Up Master Key", EnvoyStepState.LOADING);
+        ref.read(setUpMasterKeyProvider.notifier).updateStep(
+            S().finalize_catchAll_settingUpMasterKey, EnvoyStepState.LOADING);
         // context.goNamed(ONBOARD_PRIME_SEED_SETUP);
         break;
       case OnboardingState.creatingWallet:
         // TODO: Handle creating wallet
         break;
       case OnboardingState.walletCreated:
-        ref
-            .read(setUpMasterKeyProvider.notifier)
-            .updateStep("Master Key Set Up", EnvoyStepState.FINISHED);
+        ref.read(setUpMasterKeyProvider.notifier).updateStep(
+            S().finalize_catchAll_masterKeySetUp, EnvoyStepState.FINISHED);
         break;
       case OnboardingState.magicBackupScreen:
-        ref
-            .read(backUpMasterKeyProvider.notifier)
-            .updateStep("Backing Up Master Key", EnvoyStepState.LOADING);
+        ref.read(backUpMasterKeyProvider.notifier).updateStep(
+            S().finalize_catchAll_backingUpMasterKey, EnvoyStepState.LOADING);
         // context.goNamed(ONBOARD_PRIME_MAGIC_BACKUP);
         // TODO: Handle magic backup screen
         break;
@@ -178,9 +170,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         // TODO: Handle creating magic backup
         break;
       case OnboardingState.magicBackupCreated:
-        ref
-            .read(backUpMasterKeyProvider.notifier)
-            .updateStep("Master Key Backed Up", EnvoyStepState.FINISHED);
+        ref.read(backUpMasterKeyProvider.notifier).updateStep(
+            S().finalize_catchAll_masterKeyBackedUp, EnvoyStepState.FINISHED);
         break;
       case OnboardingState.creatingManualBackup:
         // TODO: Handle creating manual backup
@@ -192,9 +183,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         // TODO: Handle writing down seed words
         break;
       case OnboardingState.connectingWallet:
-        ref
-            .read(connectAccountProvider.notifier)
-            .updateStep("Connecting Account", EnvoyStepState.LOADING);
+        ref.read(connectAccountProvider.notifier).updateStep(
+            S().finalize_catchAll_connectingAccount, EnvoyStepState.LOADING);
         break;
       case OnboardingState.walletConected:
         if (mounted) {
@@ -217,12 +207,10 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
   Future<void> _fakeUpdateDownload() async {
     await Future.delayed(Duration(seconds: 5));
-    ref
-        .read(fwDownloadStateProvider.notifier)
-        .updateStep("Update Downloaded", EnvoyStepState.FINISHED);
-    ref
-        .read(fwTransferStateProvider.notifier)
-        .updateStep("Transferring to Passport Prime", EnvoyStepState.LOADING);
+    ref.read(fwDownloadStateProvider.notifier).updateStep(
+        S().firmware_downloadingUpdate_downloaded, EnvoyStepState.FINISHED);
+    ref.read(fwTransferStateProvider.notifier).updateStep(
+        S().firmware_downloadingUpdate_transferring, EnvoyStepState.LOADING);
 
     ref.read(primeUpdateStateProvider.notifier).state =
         PrimeFwUpdateStep.transferring;
@@ -315,8 +303,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Text(
-                                //TODO: copy update
-                                "Secure Bluetooth with\nQuantumLink",
+                                S().onboarding_bluetoothIntro_header,
                                 textAlign: TextAlign.center,
                                 style: EnvoyTypography.body.copyWith(
                                   fontSize: 20,
@@ -326,7 +313,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                               ),
                               const SizedBox(height: EnvoySpacing.small),
                               Text(
-                                "QuantumLink creates an end-to-end encrypted Bluetooth tunnel using post-quantum encryption technology.\nPassport Prime’s Bluetooth chip only relays already encrypted data, ensuring private and secure communications.",
+                                S().onboarding_bluetoothIntro_content,
                                 style: EnvoyTypography.info.copyWith(
                                   color: EnvoyColors.inactiveDark,
                                   decoration: TextDecoration.none,
@@ -364,7 +351,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
               //   },
               // ),
               const SizedBox(height: EnvoySpacing.medium1),
-              EnvoyButton(S().component_continue, onTap: () {
+              EnvoyButton(S().onboarding_bluetoothIntro_connect, onTap: () {
                 showCommunicationModal(context);
               }),
               const SizedBox(height: EnvoySpacing.small),
@@ -403,8 +390,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Text(
-                                //TODO: copy update
-                                "Enable Bluetooth for\nencrypted communication",
+                                S().onboarding_bluetoothDisabled_header,
                                 textAlign: TextAlign.center,
                                 style: EnvoyTypography.body.copyWith(
                                   fontSize: 20,
@@ -583,8 +569,8 @@ class _QuantumLinkCommunicationInfoState
                           controller: _pageController,
                           children: [
                             Text(
-                              //TODO: copy update
-                              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis dolor nec orci aliquam volutpat. Fusce non enim a nibh mattis condimentum id et tortor. Proin aliquet augue felis, vel vestibulum felis tincidunt id.",
+                              //TODO: implement [[iCloud Keychain.]] button
+                              S().wallet_security_modal_1_4_ios_subheading,
                               textAlign: TextAlign.center,
                               style: EnvoyTypography.info,
                             ),

@@ -13,8 +13,10 @@ class ScanNotifier extends StateNotifier<List<BleDevice>> {
 
   void start() {
     BluetoothManager().scan();
-    BluetoothManager().devices?.listen((d) {
-      state = d;
+    BluetoothManager().events?.listen((Event event) {
+      if (event is Event_ScanResult) {
+        state = event.field0;
+      }
     });
   }
 }

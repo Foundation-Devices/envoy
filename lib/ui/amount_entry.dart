@@ -39,12 +39,14 @@ class AmountEntry extends ConsumerStatefulWidget {
   final Function(int)? onAmountChanged;
   final int initalSatAmount;
   final Function(ParseResult)? onPaste;
+  final bool trailingZeroes;
 
   const AmountEntry(
       {this.account,
       this.onAmountChanged,
       this.initalSatAmount = 0,
       this.onPaste,
+      this.trailingZeroes = false,
       super.key});
 
   @override
@@ -71,7 +73,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
       } else {
         _enteredAmount = getDisplayAmount(
             _amountSats, ref.read(sendScreenUnitProvider),
-            trailingZeroes: showBtcTrailingZeroes(_amountSats, false));
+            trailingZeros: !widget.trailingZeroes && _amountSats != 0);
       }
     }
 
@@ -277,7 +279,9 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
         setState(() {
           // Format it nicely
           _enteredAmount = getDisplayAmount(_amountSats, unit,
-              trailingZeroes: showBtcTrailingZeroes(_amountSats, false));
+              trailingZeros: !widget.trailingZeroes &&
+                  _amountSats !=
+                      0); // Do not add trailing zeros when manually typing the amount
         });
       }
     }
@@ -325,8 +329,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
                 if (unit == AmountDisplayUnit.btc) {
                   enteredAmount = getDisplayAmount(
                       _amountSats, AmountDisplayUnit.btc,
-                      trailingZeroes: showBtcTrailingZeroes(_amountSats,
-                          false)); // Do not add trailing zeros when manually typing the amount
+                      trailingZeros: widget.trailingZeroes && _amountSats != 0);
                 }
                 _enteredAmount = enteredAmount;
               },

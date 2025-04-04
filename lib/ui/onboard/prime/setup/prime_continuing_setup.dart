@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // ignore_for_file: constant_identifier_names
 
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
@@ -63,8 +64,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeContinuingSetup> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      //TODO: copy update
-                      "Continue on Passport Prime",
+                      S().finalize_catchAll_header,
                       textAlign: TextAlign.center,
                       style: EnvoyTypography.heading,
                     ),

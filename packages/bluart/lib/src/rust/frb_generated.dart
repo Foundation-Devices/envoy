@@ -91,7 +91,7 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiBleDisconnect({required String id});
 
-  Stream<List<BleDevice>> crateApiBleInit();
+  Stream<Event> crateApiBleInit();
 
   Stream<Uint8List> crateApiBleRead({required String id});
 
@@ -244,12 +244,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Stream<List<BleDevice>> crateApiBleInit() {
-    final sink = RustStreamSink<List<BleDevice>>();
+  Stream<Event> crateApiBleInit() {
+    final sink = RustStreamSink<Event>();
     unawaited(handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_StreamSink_list_ble_device_Sse(sink, serializer);
+        sse_encode_StreamSink_event_Sse(sink, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 6, port: port_);
       },
@@ -402,8 +402,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  RustStreamSink<List<BleDevice>> dco_decode_StreamSink_list_ble_device_Sse(
-      dynamic raw) {
+  RustStreamSink<Event> dco_decode_StreamSink_event_Sse(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     throw UnimplementedError();
   }
@@ -444,6 +443,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   bool dco_decode_bool(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as bool;
+  }
+
+  @protected
+  Event dco_decode_event(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return Event_ScanResult(
+          dco_decode_list_ble_device(raw[1]),
+        );
+      case 1:
+        return const Event_DeviceDisconnected();
+      default:
+        throw Exception("unreachable");
+    }
   }
 
   @protected
@@ -526,7 +540,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  RustStreamSink<List<BleDevice>> sse_decode_StreamSink_list_ble_device_Sse(
+  RustStreamSink<Event> sse_decode_StreamSink_event_Sse(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     throw UnimplementedError('Unreachable ()');
@@ -566,6 +580,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   bool sse_decode_bool(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint8() != 0;
+  }
+
+  @protected
+  Event sse_decode_event(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_field0 = sse_decode_list_ble_device(deserializer);
+        return Event_ScanResult(var_field0);
+      case 1:
+        return const Event_DeviceDisconnected();
+      default:
+        throw UnimplementedError('');
+    }
   }
 
   @protected
@@ -674,13 +704,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_StreamSink_list_ble_device_Sse(
-      RustStreamSink<List<BleDevice>> self, SseSerializer serializer) {
+  void sse_encode_StreamSink_event_Sse(
+      RustStreamSink<Event> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(
         self.setupAndSerialize(
             codec: SseCodec(
-          decodeSuccessData: sse_decode_list_ble_device,
+          decodeSuccessData: sse_decode_event,
           decodeErrorData: sse_decode_AnyhowException,
         )),
         serializer);
@@ -730,6 +760,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_bool(bool self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint8(self ? 1 : 0);
+  }
+
+  @protected
+  void sse_encode_event(Event self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case Event_ScanResult(field0: final field0):
+        sse_encode_i_32(0, serializer);
+        sse_encode_list_ble_device(field0, serializer);
+      case Event_DeviceDisconnected():
+        sse_encode_i_32(1, serializer);
+    }
   }
 
   @protected

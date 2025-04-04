@@ -22,6 +22,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:rive/rive.dart' as rive;
 
+bool _isScanDialogOpen = false;
+
 showScannerDialog(
     {required BuildContext context,
     required Function(BuildContext context) onBackPressed,
@@ -359,15 +361,19 @@ class _AnimatedQrViewfinderState extends State<AnimatedQrViewfinder>
 }
 
 void showScanDialog(BuildContext context) async {
-  bool promptDismissed = await EnvoyStorage()
-      .checkPromptDismissed(DismissiblePrompt.scanToConnect);
+  if (_isScanDialogOpen) return;
+  _isScanDialogOpen = true;
 
-  if (!promptDismissed && context.mounted) {
+  if (context.mounted) {
     showEnvoyDialog(
-        context: context,
-        useRootNavigator: true,
-        dialog: const ScanInfoAnimDialog(),
-        dismissible: true);
+      context: context,
+      useRootNavigator: true,
+      cardColor: Colors.transparent,
+      dialog: const ScanInfoAnimDialog(),
+      dismissible: true,
+    ).then((_) {
+      _isScanDialogOpen = false;
+    });
   }
 }
 
@@ -379,84 +385,25 @@ class ScanInfoAnimDialog extends StatefulWidget {
 }
 
 class _ScanInfoAnimDialogState extends State<ScanInfoAnimDialog> {
-  bool dismissed = false;
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.85,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(
-          Radius.circular(EnvoySpacing.medium2),
-        ),
-        color: Colors.white,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(EnvoySpacing.medium2),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Consumer(builder: (context, ref, child) {
-                final riveFile = ref.watch(animatedQrScannerRiveProvider);
-                return SizedBox(
-                  height: 200,
-                  child: rive.RiveAnimation.direct(
-                    riveFile!,
-                    animations: [Platform.isIOS ? "ios_scan" : "android_scan"],
-                    fit: BoxFit.contain,
-                  ),
-                );
-              }),
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    dismissed = !dismissed;
-                  });
-                },
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      child: EnvoyCheckbox(
-                        value: dismissed,
-                        onChanged: (value) {
-                          if (value != null) {
-                            setState(() {
-                              dismissed = value;
-                            });
-                          }
-                        },
-                      ),
-                    ),
-                    Text(
-                      S().component_dontShowAgain,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: dismissed
-                                ? Colors.black
-                                : const Color(0xff808080),
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-              EnvoyButton(
-                label: "Continue",
-                type: ButtonType.primary,
-                state: ButtonState.defaultState,
-                onTap: () {
-                  if (dismissed) {
-                    EnvoyStorage()
-                        .addPromptState(DismissiblePrompt.scanToConnect);
-                  }
-                  Navigator.pop(context);
-                },
-              )
-            ],
-          ),
-        ),
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).pop();
+      },
+      behavior: HitTestBehavior.opaque,
+      child: Center(
+        child: Consumer(builder: (context, ref, child) {
+          final riveFile = ref.watch(animatedQrScannerRiveProvider);
+          return SizedBox(
+            height: 200,
+            child: rive.RiveAnimation.direct(
+              riveFile!,
+              //animations: [Platform.isIOS ? "ios_scan" : "android_scan"], // TODO make separate animations
+              fit: BoxFit.contain,
+            ),
+          );
+        }),
       ),
     );
   }

@@ -6,6 +6,8 @@
 import '../frb_generated.dart';
 import 'ble/device.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
+part 'ble.freezed.dart';
 
 // These functions are ignored because they are not marked as `pub`: `inner_benchmark`, `inner_connect`, `inner_disconnect`, `inner_read`, `inner_scan`, `inner_write_all`, `inner_write`, `remove_stale_devices`, `send_devices`, `send`
 // These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `Command`
@@ -13,7 +15,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 /// The init() function must be called before anything else.
 /// At the moment the developer has to make sure it is only called once.
-Stream<List<BleDevice>> init() => RustLib.instance.api.crateApiBleInit();
+Stream<Event> init() => RustLib.instance.api.crateApiBleInit();
 
 /// This function is used to scan for BLE devices and returns the results via the given stream sink.
 ///
@@ -42,3 +44,13 @@ Future<void> writeAll({required String id, required List<Uint8List> data}) =>
 
 Stream<Uint8List> read({required String id}) =>
     RustLib.instance.api.crateApiBleRead(id: id);
+
+@freezed
+sealed class Event with _$Event {
+  const Event._();
+
+  const factory Event.scanResult(
+    List<BleDevice> field0,
+  ) = Event_ScanResult;
+  const factory Event.deviceDisconnected() = Event_DeviceDisconnected;
+}

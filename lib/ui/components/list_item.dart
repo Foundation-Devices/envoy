@@ -3,7 +3,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/string_utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -200,11 +202,15 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
               ],
             );
           } else {
-            return Padding(
-                padding: EdgeInsets.only(
-                    bottom:
-                        s.displayFiat() == null ? EnvoySpacing.medium1 : 0));
-            // TODO: use EnvoyAccount
+            //TODO: use EnvoyAccount
+            // return Padding(
+            //   padding: EdgeInsets.only(
+            //       bottom: s.displayFiat() == null ||
+            //               (kDebugMode &&
+            //                   transactionAccount?.wallet.network !=
+            //                       Network.Mainnet)
+            //           ? EnvoySpacing.medium1
+            //           : 0),
             //   child: FittedBox(
             //     child: EnvoyAmount(
             //       account: transactionAccount!,
@@ -213,6 +219,7 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
             //       alignToEnd: true,
             //     ),
             //   ),
+            // );
           }
         }();
       }

@@ -290,6 +290,7 @@ class _SendCardState extends ConsumerState<SendCard>
                           }
                         }
                         if (spendAmount == 0) {
+                          /// Send Max
                           ref.read(spendAmountProvider.notifier).state =
                               ref.read(totalSpendableAmountProvider);
                           ref
@@ -305,6 +306,7 @@ class _SendCardState extends ConsumerState<SendCard>
                               key: UniqueKey(),
                               account: account!,
                               onPaste: _onPaste,
+                              trailingZeroes: true,
                             );
                           });
                           return;
