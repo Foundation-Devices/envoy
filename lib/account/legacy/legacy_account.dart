@@ -73,11 +73,9 @@ class LegacyWallet {
   });
 
   // Factory constructor to create a Wallet from JSON
-  factory LegacyWallet.fromJson(Map<String, dynamic> json) => _$WalletFromJson(json);
+  factory LegacyWallet.fromJson(Map<String, dynamic> json) =>
+      _$WalletFromJson(json);
 
   // Method to convert Wallet to JSON
   Map<String, dynamic> toJson() => _$WalletToJson(this);
-
-
-
 }

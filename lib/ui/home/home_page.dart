@@ -20,6 +20,7 @@ import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/home/top_bar_home.dart';
 import 'package:envoy/ui/lock/session_manager.dart';
 import 'package:envoy/ui/shield.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';

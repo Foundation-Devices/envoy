@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/legacy/legacy_account.dart';
+import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -50,7 +51,7 @@ class MigrationManager {
       "${LocalStorage().appDocumentsDir.path}/wallets/";
   static String newWalletDirectory =
       "${LocalStorage().appDocumentsDir.path}/wallets_new/";
-  List<EnvoyAccount> accounts = [];
+  List<EnvoyAccountHandler> accounts = [];
 
   final StreamController<MigrationProgress> _streamController =
       StreamController<MigrationProgress>.broadcast();
@@ -71,8 +72,8 @@ class MigrationManager {
   void migrate() async {
     try {
       //clean directory for new wallets
-      if (Directory(newWalletDirectory).existsSync()) {
-        Directory(newWalletDirectory).deleteSync(recursive: true);
+      if (await Directory(newWalletDirectory).exists()) {
+        await Directory(newWalletDirectory).delete(recursive: true);
       }
       final walletOrder = List<String>.empty(growable: true);
       if (_ls.prefs.containsKey(AccountsPrefKey)) {
@@ -104,7 +105,8 @@ class MigrationManager {
           if (legacyAccount.wallet.type == "taproot") {
             addressType = AddressType.p2Tr;
           }
-          final envoyAccount = await EnvoyAccount.migrate(
+          walletOrder.add(legacyAccount.id);
+          final envoyAccount = await EnvoyAccountHandler.migrate(
               name: legacyAccount.name,
               color: colorToHex(getAccountColor(legacyAccount)),
               deviceSerial: legacyAccount.deviceSerial,
@@ -119,20 +121,26 @@ class MigrationManager {
               dbPath: newAccountDir.path);
           envoyAccount.config().id;
           //add dir names to
-          walletOrder.add(newAccountDir.path);
           accounts.add(envoyAccount);
         }
         await _ls.prefs
             .setString(NgAccountManager.ACCOUNT_ORDER, jsonEncode(walletOrder));
-        await syncAccounts();
-        for (var account in accounts) {
-          migrateNotes(account);
-        }
-        for (var account in accounts) {
-          account.dispose();
+        try {
+          await syncAccounts();
+          for (var account in accounts) {
+            migrateNotes(account);
+          }
+          for (var account in accounts) {
+            account.dispose();
+          }
+        } catch (e) {
+          kPrint("Migration: Error $e");
+          EnvoyReport().log("Migration", "Error $e");
+        } finally {
+          //open wallets
+          await NgAccountManager().restore();
         }
         //Load accounts to account manager
-        NgAccountManager().restore();
       } else {
         kPrint("Migration: No accounts found");
         EnvoyReport().log("Migration", "No accounts found");
@@ -140,34 +148,34 @@ class MigrationManager {
     } catch (e, stack) {
       EnvoyReport().log("Migration", "Error $e", stackTrace: stack);
       kPrint("Migration: Error $e", stackTrace: stack);
+    } finally {
+      await EnvoyStorage().setBool(migrationPrefs, true);
+      _onMigrationFinished?.call();
     }
   }
 
   Future syncAccounts() async {
-    kPrint("Migration: Scanning");
-    for (EnvoyAccount account in accounts) {
+    for (EnvoyAccountHandler account in accounts) {
       final accountConfig = account.config();
-      var network = Settings.getDefaultFulcrumServers()[0];
-      if (accountConfig.network == Network.testnet) {
-        network = Settings.TESTNET_ELECTRUM_SERVER;
-      } else if (accountConfig.network == Network.signet) {
-        network = Settings.MUTINYNET_ELECTRUM_SERVER;
+      final server = SyncManager.getElectrumServer(accountConfig.network);
+      int? port = Settings().getPort(accountConfig.network);
+      if (port == -1) {
+        port = null;
       }
-      final scan = await account.requestScan();
-      ArcMutexOptionFullScanResponseKeychainKind result =
-          await EnvoyAccount.scan(scanRequest: scan, electrumServer: network);
-      await account.applyUpdate(scanRequest: result);
+
+      final scan = await account.requestFullScan();
+      final result = await EnvoyAccountHandler.scan(
+          scanRequest: scan, electrumServer: server, torPort: port);
+      await account.applyUpdate(update: result);
       addMigrationEvent(MigrationProgress(
           total: accounts.length, completed: accounts.indexOf(account) + 1));
     }
-    await EnvoyStorage().setBool(migrationPrefs, true);
-    _onMigrationFinished?.call();
   }
 
   //migrate notes to new db.
   //this will get all notes that try to set it to account,\
   //ngwallet will only take notes that are associated with its transactions
-  Future migrateNotes(EnvoyAccount envoyAccount) async {
+  Future migrateNotes(EnvoyAccountHandler envoyAccount) async {
     final storage = EnvoyStorage();
     final notes = await storage.getAllNotes();
     for (var entry in notes.entries) {

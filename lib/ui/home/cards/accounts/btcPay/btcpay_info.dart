@@ -9,7 +9,6 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/business/account.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:ngwallet/ngwallet.dart';
 

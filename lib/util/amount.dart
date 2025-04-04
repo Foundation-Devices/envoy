@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -120,8 +119,10 @@ String getFormattedAmount(int amountSats,
   return text;
 }
 
-Widget getSatsIcon(EnvoyAccount account, {EnvoyIconSize? iconSize, Color? color}) {
-  if (account.config().network != Network.testnet && account.config().network != Network.testnet4) {
+Widget getSatsIcon(EnvoyAccount account,
+    {EnvoyIconSize? iconSize, Color? color}) {
+  if (account.network != Network.testnet &&
+      account.network != Network.testnet4) {
     return EnvoyIcon(
       EnvoyIcons.sats,
       size: iconSize ?? EnvoyIconSize.normal,
@@ -130,23 +131,25 @@ Widget getSatsIcon(EnvoyAccount account, {EnvoyIconSize? iconSize, Color? color}
   } else {
     return NonMainnetIcon(
       EnvoyIcons.sats,
-      badgeColor: fromHex(account.config().color),
+      badgeColor: fromHex(account.color),
       size: iconSize ?? EnvoyIconSize.normal,
-      network: account.config().network,
+      network: account.network,
     );
   }
 }
 
-Widget getBtcIcon(EnvoyAccount account, {EnvoyIconSize? iconSize, Color? color}) {
-  if (account.config().network != Network.testnet4 && account.config().network != Network.testnet) {
+Widget getBtcIcon(EnvoyAccount account,
+    {EnvoyIconSize? iconSize, Color? color}) {
+  if (account.network != Network.testnet4 &&
+      account.network != Network.testnet) {
     return EnvoyIcon(EnvoyIcons.btc,
         size: iconSize ?? EnvoyIconSize.normal, color: color);
   } else {
     return NonMainnetIcon(
       EnvoyIcons.btc,
-      badgeColor: fromHex(account.config().color),
+      badgeColor: fromHex(account.color),
       size: iconSize ?? EnvoyIconSize.normal,
-      network: account.config().network,
+      network: account.network,
     );
   }
 }

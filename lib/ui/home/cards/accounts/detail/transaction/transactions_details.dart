@@ -95,8 +95,8 @@ class _TransactionsDetailsWidgetState
     final note = ref.watch(txNoteProvider(tx.txId)) ?? "";
 
     final hideBalance =
-        ref.watch(balanceHideStateStatusProvider(widget.account.config().id));
-    final accountAccentColor = fromHex(widget.account.config().color);
+        ref.watch(balanceHideStateStatusProvider(widget.account.id));
+    final accountAccentColor = fromHex(widget.account.color);
     final trailingTextStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
           color: EnvoyColors.textPrimary,
           fontWeight: FontWeight.w600,
@@ -306,8 +306,8 @@ class _TransactionsDetailsWidgetState
                             type: ButtonType.primary,
                             state: ButtonState.defaultState,
                             onTap: () {
-                              openTxDetailsInExplorer(context, tx.txId,
-                                  widget.account.config().network);
+                              openTxDetailsInExplorer(
+                                  context, tx.txId, widget.account.network);
                             },
                             edgeInsets: const EdgeInsets.symmetric(
                                 horizontal: EnvoySpacing.medium1),
@@ -421,7 +421,7 @@ class _TransactionsDetailsWidgetState
                           spacingPriority: FlexPriority.trailing,
                           title: _getConfirmationTimeString(ref.watch(
                               txEstimatedConfirmationTimeProvider(
-                                  Tuple(tx, widget.account.config().network)))),
+                                  Tuple(tx, widget.account.network)))),
                           icon: const EnvoyIcon(
                             EnvoyIcons.clock,
                             size: EnvoyIconSize.extraSmall,
@@ -524,7 +524,7 @@ class _TransactionsDetailsWidgetState
         (ref.watch(isTxBoostedProvider(tx.txId)) ?? false) && tx.amount < 0;
     final cancelState = ref.watch(cancelTxStateProvider(tx.txId));
     final hideBalance =
-        ref.watch(balanceHideStateStatusProvider(widget.account.config().id));
+        ref.watch(balanceHideStateStatusProvider(widget.account.id));
 
     String feeTitle = isBoosted
         ? S().coindetails_overlay_boostedFees
@@ -642,7 +642,8 @@ String? getBaseUrlForNetwork(Network network) {
 }
 
 bool showTxId(OldWallet.TransactionType type) {
-  if (type == OldWallet.TransactionType.pending || type == OldWallet.TransactionType.normal) {
+  if (type == OldWallet.TransactionType.pending ||
+      type == OldWallet.TransactionType.normal) {
     return true;
   } else {
     return false;

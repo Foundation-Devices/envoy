@@ -6,10 +6,9 @@ import 'dart:core';
 
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/util/amount.dart';
-import 'package:ngwallet/ngwallet.dart';
-import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/business/bip21.dart';
 import 'package:envoy/business/locale.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class ParseResult {
   String? address;
@@ -38,7 +37,9 @@ class BitcoinParser {
         (selectedFiat == null || selectedFiat == "") ? false : true;
 
     String urnScheme = "bitcoin";
-    if (account != null && await EnvoyAccount.validateAddress(address: data,network: account.config().network)) {
+    if (account != null &&
+        await EnvoyAccountHandler.validateAddress(
+            address: data, network: account.network)) {
       return ParseResult(
         address: data,
         amountSats: null,
@@ -55,7 +56,9 @@ class BitcoinParser {
       var bip21 = Bip21.decode(data);
       address = bip21.address;
 
-      if (account != null && !await EnvoyAccount.validateAddress(address: data,network: account.config().network)) {
+      if (account != null &&
+          !await EnvoyAccountHandler.validateAddress(
+              address: data, network: account.network)) {
         address = null;
       }
 
@@ -210,7 +213,7 @@ class BitcoinParser {
       if (account == null) {
         amountInWalletBtc = 0;
       } else {
-        amountInWalletBtc = account.balance().toInt() ~/ 100000000;
+        amountInWalletBtc = account.balance.toInt() ~/ 100000000;
       }
 
       if (copiedInBtc < amountInWalletBtc) {

@@ -6,10 +6,9 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:envoy/account/accounts_manager.dart';
-import 'package:envoy/ui/NGWalletUi.dart';
-import 'package:envoy/business/account.dart';
-import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/linear_gradient.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
@@ -18,21 +17,20 @@ import 'package:envoy/ui/home/cards/accounts/empty_accounts_card.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/shield.dart';
-import 'package:envoy/ui/components/linear_gradient.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:envoy/business/settings.dart';
 import 'package:ngwallet/ngwallet.dart';
 
 class AccountsCard extends ConsumerStatefulWidget {
@@ -181,7 +179,6 @@ class _AccountsListState extends ConsumerState<AccountsList> {
   @override
   void initState() {
     super.initState();
-
   }
 
   @override
@@ -195,7 +192,8 @@ class _AccountsListState extends ConsumerState<AccountsList> {
     final accounts = ref.watch(accountsProvider);
     final listContentHeight = accounts.length * _accountHeight;
 
-    ref.listen(accountsProvider, (List<EnvoyAccount>? previous, List<EnvoyAccount> next) {
+    ref.listen(accountsProvider,
+        (List<EnvoyAccount>? previous, List<EnvoyAccount> next) {
       if (previous!.length < next.length) {
         if (_scrollController.hasClients) {
           _scrollController.animateTo(
@@ -216,6 +214,7 @@ class _AccountsListState extends ConsumerState<AccountsList> {
         }
       }
     });
+    var accountsOrder = ref.watch(accountOrderStream).value ?? [];
 
     final scrollView = ScrollGradientMask(
       child: ReorderableListView(
@@ -247,29 +246,27 @@ class _AccountsListState extends ConsumerState<AccountsList> {
           });
         },
         onReorder: (oldIndex, newIndex) async {
-          // SFT-2488: dismiss the drag and drop prompt after dragging
-          EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
-          NgAccountManager().moveAccount(oldIndex, newIndex, accounts);
-          // TODO: use EnvoyAccount
-          // await AccountManager().moveAccount(oldIndex, newIndex, accounts);
+          final order = List<String>.from(accountsOrder);
+          final currentVisibleAccountsId = accounts.map((e) => e.id).toList();
+          final List<String> toReorder = order
+              .where((element) => currentVisibleAccountsId.contains(element))
+              .toList();
+
+          if (oldIndex < newIndex) {
+            newIndex -= 1;
+          }
+          final String item = toReorder.removeAt(oldIndex);
+          toReorder.insert(newIndex, item);
+          //After moving visible accounts, add the rest of the accounts to the end of the list
+          for (var element in order) {
+            if (!toReorder.contains(element)) {
+              toReorder.add(element);
+            }
+          }
+          await EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
+          await NgAccountManager().updateAccountOrder(toReorder);
         },
-        children: [
-          for (final account in accounts)
-            SizedBox(
-              key: ValueKey(account.config().id),
-              height: _accountHeight,
-              child: AccountListTile(
-                account,
-                onTap: () async {
-                  clearFilterState(ref);
-                  //TODO: use EnvoyAccount
-                  // ref.read(selectedAccountProvider.notifier).state = account;
-                  context.go(ROUTE_ACCOUNT_DETAIL, extra: account);
-                  return;
-                },
-              ),
-            )
-        ],
+        children: buildListItems(accountsOrder, accounts),
       ),
     );
 
@@ -279,6 +276,32 @@ class _AccountsListState extends ConsumerState<AccountsList> {
             child: EmptyAccountsCard(),
           )
         : scrollView;
+  }
+
+  List<Widget> buildListItems(
+      List<String> accountsOrder, List<EnvoyAccount> accounts) {
+    final List<Widget> items = [];
+    for (final id in accountsOrder) {
+      final account = accounts.firstWhereOrNull((element) => element.id == id);
+      if (account != null) {
+        items.add(
+          SizedBox(
+            key: ValueKey(account.id),
+            height: _accountHeight,
+            child: AccountListTile(
+              account,
+              onTap: () async {
+                clearFilterState(ref);
+                ref.read(selectedAccountProvider.notifier).state = account;
+                context.go(ROUTE_ACCOUNT_DETAIL, extra: account);
+                return;
+              },
+            ),
+          ),
+        );
+      }
+    }
+    return items;
   }
 }
 

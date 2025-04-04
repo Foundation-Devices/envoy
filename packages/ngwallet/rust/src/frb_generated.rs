@@ -26,15 +26,17 @@
 // Section: imports
 
 use crate::api::envoy_wallet::*;
+use crate::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::{transform_result_dco, Lifetimeable, Lockable};
 use flutter_rust_bridge::{Handler, IntoIntoDart};
 
 // Section: boilerplate
 
-use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse};
+use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse, SyncRequest};
 use bdk_wallet::rusqlite::Connection;
 use bdk_wallet::KeychainKind;
+use bdk_wallet::Update;
 use ngwallet::account::NgAccount;
 use std::sync::Mutex;
 
@@ -44,7 +46,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.9.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1621798250;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 816711339;
 
 // Section: executor
 
@@ -52,7 +54,7 @@ flutter_rust_bridge::frb_generated_default_handler!();
 
 // Section: wire_funcs
 
-fn wire__crate__api__envoy_wallet__EnvoyAccount_apply_update_impl(
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_apply_update_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -60,7 +62,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_apply_update_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "EnvoyAccount_apply_update",
+            debug_name: "EnvoyAccountHandler_apply_update",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -75,10 +77,9 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_apply_update_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_that = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>,
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
             >>::sse_decode(&mut deserializer);
-            let api_scan_request =
-                <Arc<Mutex<Option<FullScanResponse<KeychainKind>>>>>::sse_decode(&mut deserializer);
+            let api_update = <Arc<Mutex<Update>>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, ()>((move || {
@@ -96,25 +97,26 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_apply_update_impl(
                         }
                     }
                     let mut api_that_guard = api_that_guard.unwrap();
-                    let output_ok =
-                        Result::<_, ()>::Ok(crate::api::envoy_wallet::EnvoyAccount::apply_update(
+                    let output_ok = Result::<_, ()>::Ok(
+                        crate::api::envoy_wallet::EnvoyAccountHandler::apply_update(
                             &mut *api_that_guard,
-                            api_scan_request,
-                        ))?;
+                            api_update,
+                        ),
+                    )?;
                     Ok(output_ok)
                 })())
             }
         },
     )
 }
-fn wire__crate__api__envoy_wallet__EnvoyAccount_auto_accessor_get_ng_account_impl(
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_auto_accessor_get_ng_account_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "EnvoyAccount_auto_accessor_get_ng_account",
+            debug_name: "EnvoyAccountHandler_auto_accessor_get_ng_account",
             port: None,
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
         },
@@ -129,7 +131,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_auto_accessor_get_ng_account_imp
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_that = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>,
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse::<_, ()>((move || {
@@ -153,14 +155,14 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_auto_accessor_get_ng_account_imp
         },
     )
 }
-fn wire__crate__api__envoy_wallet__EnvoyAccount_auto_accessor_set_ng_account_impl(
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_auto_accessor_get_streamSink_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "EnvoyAccount_auto_accessor_set_ng_account",
+            debug_name: "EnvoyAccountHandler_auto_accessor_get_streamSink",
             port: None,
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
         },
@@ -175,7 +177,53 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_auto_accessor_set_ng_account_imp
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_that = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>,
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                        _ => unreachable!(),
+                    }
+                }
+                let api_that_guard = api_that_guard.unwrap();
+                let output_ok = Result::<_, ()>::Ok(api_that_guard.streamSink.clone())?;
+                Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_auto_accessor_set_ng_account_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "EnvoyAccountHandler_auto_accessor_set_ng_account",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
             >>::sse_decode(&mut deserializer);
             let api_ng_account = <Arc<Mutex<NgAccount<Connection>>>>::sse_decode(&mut deserializer);
             deserializer.end();
@@ -204,14 +252,14 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_auto_accessor_set_ng_account_imp
         },
     )
 }
-fn wire__crate__api__envoy_wallet__EnvoyAccount_balance_impl(
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_auto_accessor_set_streamSink_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "EnvoyAccount_balance",
+            debug_name: "EnvoyAccountHandler_auto_accessor_set_streamSink",
             port: None,
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
         },
@@ -226,7 +274,63 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_balance_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_that = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>,
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
+            >>::sse_decode(&mut deserializer);
+            let api_streamSink = <Option<
+                StreamSink<
+                    crate::api::envoy_account::EnvoyAccount,
+                    flutter_rust_bridge::for_generated::SseCodec,
+                >,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, true,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref_mut()),
+                        _ => unreachable!(),
+                    }
+                }
+                let mut api_that_guard = api_that_guard.unwrap();
+                let output_ok = Result::<_, ()>::Ok({
+                    {
+                        api_that_guard.streamSink = api_streamSink;
+                    };
+                })?;
+                Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_balance_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "EnvoyAccountHandler_balance",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse::<_, ()>((move || {
@@ -245,14 +349,14 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_balance_impl(
                 }
                 let mut api_that_guard = api_that_guard.unwrap();
                 let output_ok = Result::<_, ()>::Ok(
-                    crate::api::envoy_wallet::EnvoyAccount::balance(&mut *api_that_guard),
+                    crate::api::envoy_wallet::EnvoyAccountHandler::balance(&mut *api_that_guard),
                 )?;
                 Ok(output_ok)
             })())
         },
     )
 }
-fn wire__crate__api__envoy_wallet__EnvoyAccount_broadcast_impl(
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_broadcast_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -260,7 +364,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_broadcast_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "EnvoyAccount_broadcast",
+            debug_name: "EnvoyAccountHandler_broadcast",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -275,7 +379,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_broadcast_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_that = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>,
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
             >>::sse_decode(&mut deserializer);
             let api_psbt = <String>::sse_decode(&mut deserializer);
             let api_electrum_server = <String>::sse_decode(&mut deserializer);
@@ -297,7 +401,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_broadcast_impl(
                             }
                         }
                         let mut api_that_guard = api_that_guard.unwrap();
-                        let output_ok = crate::api::envoy_wallet::EnvoyAccount::broadcast(
+                        let output_ok = crate::api::envoy_wallet::EnvoyAccountHandler::broadcast(
                             &mut *api_that_guard,
                             api_psbt,
                             &api_electrum_server,
@@ -309,14 +413,14 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_broadcast_impl(
         },
     )
 }
-fn wire__crate__api__envoy_wallet__EnvoyAccount_config_impl(
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_config_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "EnvoyAccount_config",
+            debug_name: "EnvoyAccountHandler_config",
             port: None,
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
         },
@@ -331,7 +435,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_config_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_that = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>,
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse::<_, ()>((move || {
@@ -350,21 +454,21 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_config_impl(
                 }
                 let api_that_guard = api_that_guard.unwrap();
                 let output_ok = Result::<_, ()>::Ok(
-                    crate::api::envoy_wallet::EnvoyAccount::config(&*api_that_guard),
+                    crate::api::envoy_wallet::EnvoyAccountHandler::config(&*api_that_guard),
                 )?;
                 Ok(output_ok)
             })())
         },
     )
 }
-fn wire__crate__api__envoy_wallet__EnvoyAccount_is_hot_impl(
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_is_hot_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "EnvoyAccount_is_hot",
+            debug_name: "EnvoyAccountHandler_is_hot",
             port: None,
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
         },
@@ -379,7 +483,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_is_hot_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_that = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>,
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse::<_, ()>((move || {
@@ -398,14 +502,14 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_is_hot_impl(
                 }
                 let api_that_guard = api_that_guard.unwrap();
                 let output_ok = Result::<_, ()>::Ok(
-                    crate::api::envoy_wallet::EnvoyAccount::is_hot(&*api_that_guard),
+                    crate::api::envoy_wallet::EnvoyAccountHandler::is_hot(&*api_that_guard),
                 )?;
                 Ok(output_ok)
             })())
         },
     )
 }
-fn wire__crate__api__envoy_wallet__EnvoyAccount_migrate_impl(
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_migrate_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -413,7 +517,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_migrate_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "EnvoyAccount_migrate",
+            debug_name: "EnvoyAccountHandler_migrate",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -442,8 +546,8 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_migrate_impl(
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, ()>((move || {
-                    let output_ok =
-                        Result::<_, ()>::Ok(crate::api::envoy_wallet::EnvoyAccount::migrate(
+                    let output_ok = Result::<_, ()>::Ok(
+                        crate::api::envoy_wallet::EnvoyAccountHandler::migrate(
                             api_name,
                             api_id,
                             api_device_serial,
@@ -456,14 +560,15 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_migrate_impl(
                             api_db_path,
                             api_sled_db_path,
                             api_network,
-                        ))?;
+                        ),
+                    )?;
                     Ok(output_ok)
                 })())
             }
         },
     )
 }
-fn wire__crate__api__envoy_wallet__EnvoyAccount_new_from_descriptor_impl(
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_new_from_descriptor_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -471,7 +576,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_new_from_descriptor_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "EnvoyAccount_new_from_descriptor",
+            debug_name: "EnvoyAccountHandler_new_from_descriptor",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -500,7 +605,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_new_from_descriptor_impl(
             move |context| {
                 transform_result_sse::<_, ()>((move || {
                     let output_ok = Result::<_, ()>::Ok(
-                        crate::api::envoy_wallet::EnvoyAccount::new_from_descriptor(
+                        crate::api::envoy_wallet::EnvoyAccountHandler::new_from_descriptor(
                             api_name,
                             api_device_serial,
                             api_date_added,
@@ -520,7 +625,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_new_from_descriptor_impl(
         },
     )
 }
-fn wire__crate__api__envoy_wallet__EnvoyAccount_next_address_impl(
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_next_address_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -528,7 +633,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_next_address_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "EnvoyAccount_next_address",
+            debug_name: "EnvoyAccountHandler_next_address",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -543,7 +648,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_next_address_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_that = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>,
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
@@ -563,7 +668,9 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_next_address_impl(
                     }
                     let mut api_that_guard = api_that_guard.unwrap();
                     let output_ok = Result::<_, ()>::Ok(
-                        crate::api::envoy_wallet::EnvoyAccount::next_address(&mut *api_that_guard),
+                        crate::api::envoy_wallet::EnvoyAccountHandler::next_address(
+                            &mut *api_that_guard,
+                        ),
                     )?;
                     Ok(output_ok)
                 })())
@@ -571,7 +678,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_next_address_impl(
         },
     )
 }
-fn wire__crate__api__envoy_wallet__EnvoyAccount_open_wallet_impl(
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_open_wallet_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -579,7 +686,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_open_wallet_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "EnvoyAccount_open_wallet",
+            debug_name: "EnvoyAccountHandler_open_wallet",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -598,7 +705,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_open_wallet_impl(
             move |context| {
                 transform_result_sse::<_, ()>((move || {
                     let output_ok = Result::<_, ()>::Ok(
-                        crate::api::envoy_wallet::EnvoyAccount::open_wallet(api_db_path),
+                        crate::api::envoy_wallet::EnvoyAccountHandler::open_wallet(api_db_path),
                     )?;
                     Ok(output_ok)
                 })())
@@ -606,7 +713,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_open_wallet_impl(
         },
     )
 }
-fn wire__crate__api__envoy_wallet__EnvoyAccount_request_scan_impl(
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_request_full_scan_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -614,7 +721,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_request_scan_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "EnvoyAccount_request_scan",
+            debug_name: "EnvoyAccountHandler_request_full_scan",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -629,7 +736,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_request_scan_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_that = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>,
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
@@ -649,7 +756,9 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_request_scan_impl(
                     }
                     let mut api_that_guard = api_that_guard.unwrap();
                     let output_ok = Result::<_, ()>::Ok(
-                        crate::api::envoy_wallet::EnvoyAccount::request_scan(&mut *api_that_guard),
+                        crate::api::envoy_wallet::EnvoyAccountHandler::request_full_scan(
+                            &mut *api_that_guard,
+                        ),
                     )?;
                     Ok(output_ok)
                 })())
@@ -657,7 +766,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_request_scan_impl(
         },
     )
 }
-fn wire__crate__api__envoy_wallet__EnvoyAccount_scan_impl(
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_request_sync_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -665,7 +774,60 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_scan_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "EnvoyAccount_scan",
+            debug_name: "EnvoyAccountHandler_request_sync",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let mut api_that_guard = None;
+                    let decode_indices_ =
+                        flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                            flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                &api_that, 0, true,
+                            ),
+                        ]);
+                    for i in decode_indices_ {
+                        match i {
+                            0 => api_that_guard = Some(api_that.lockable_decode_sync_ref_mut()),
+                            _ => unreachable!(),
+                        }
+                    }
+                    let mut api_that_guard = api_that_guard.unwrap();
+                    let output_ok = Result::<_, ()>::Ok(
+                        crate::api::envoy_wallet::EnvoyAccountHandler::request_sync(
+                            &mut *api_that_guard,
+                        ),
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_scan_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "EnvoyAccountHandler_scan",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -682,21 +844,24 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_scan_impl(
             let api_scan_request =
                 <Arc<Mutex<Option<FullScanRequest<KeychainKind>>>>>::sse_decode(&mut deserializer);
             let api_electrum_server = <String>::sse_decode(&mut deserializer);
+            let api_tor_port = <Option<u16>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok =
-                        Result::<_, ()>::Ok(crate::api::envoy_wallet::EnvoyAccount::scan(
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || {
+                        let output_ok = crate::api::envoy_wallet::EnvoyAccountHandler::scan(
                             api_scan_request,
                             &api_electrum_server,
-                        ))?;
-                    Ok(output_ok)
-                })())
+                            api_tor_port,
+                        )?;
+                        Ok(output_ok)
+                    })(),
+                )
             }
         },
     )
 }
-fn wire__crate__api__envoy_wallet__EnvoyAccount_send_impl(
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_send_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -704,7 +869,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_send_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "EnvoyAccount_send",
+            debug_name: "EnvoyAccountHandler_send",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -719,7 +884,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_send_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_that = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>,
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
             >>::sse_decode(&mut deserializer);
             let api_address = <String>::sse_decode(&mut deserializer);
             let api_amount = <u64>::sse_decode(&mut deserializer);
@@ -741,7 +906,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_send_impl(
                             }
                         }
                         let mut api_that_guard = api_that_guard.unwrap();
-                        let output_ok = crate::api::envoy_wallet::EnvoyAccount::send(
+                        let output_ok = crate::api::envoy_wallet::EnvoyAccountHandler::send(
                             &mut *api_that_guard,
                             api_address,
                             api_amount,
@@ -753,7 +918,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_send_impl(
         },
     )
 }
-fn wire__crate__api__envoy_wallet__EnvoyAccount_set_do_not_spend_impl(
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_send_update_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -761,7 +926,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_set_do_not_spend_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "EnvoyAccount_set_do_not_spend",
+            debug_name: "EnvoyAccountHandler_send_update",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -776,7 +941,60 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_set_do_not_spend_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_that = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>,
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let mut api_that_guard = None;
+                    let decode_indices_ =
+                        flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                            flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                &api_that, 0, true,
+                            ),
+                        ]);
+                    for i in decode_indices_ {
+                        match i {
+                            0 => api_that_guard = Some(api_that.lockable_decode_sync_ref_mut()),
+                            _ => unreachable!(),
+                        }
+                    }
+                    let mut api_that_guard = api_that_guard.unwrap();
+                    let output_ok = Result::<_, ()>::Ok({
+                        crate::api::envoy_wallet::EnvoyAccountHandler::send_update(
+                            &mut *api_that_guard,
+                        );
+                    })?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_do_not_spend_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "EnvoyAccountHandler_set_do_not_spend",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
             >>::sse_decode(&mut deserializer);
             let api_utxo = <ngwallet::transaction::Output>::sse_decode(&mut deserializer);
             let api_do_not_spend = <bool>::sse_decode(&mut deserializer);
@@ -798,11 +1016,12 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_set_do_not_spend_impl(
                             }
                         }
                         let mut api_that_guard = api_that_guard.unwrap();
-                        let output_ok = crate::api::envoy_wallet::EnvoyAccount::set_do_not_spend(
-                            &mut *api_that_guard,
-                            &api_utxo,
-                            api_do_not_spend,
-                        )?;
+                        let output_ok =
+                            crate::api::envoy_wallet::EnvoyAccountHandler::set_do_not_spend(
+                                &mut *api_that_guard,
+                                &api_utxo,
+                                api_do_not_spend,
+                            )?;
                         Ok(output_ok)
                     })(),
                 )
@@ -810,7 +1029,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_set_do_not_spend_impl(
         },
     )
 }
-fn wire__crate__api__envoy_wallet__EnvoyAccount_set_note_impl(
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_note_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -818,7 +1037,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_set_note_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "EnvoyAccount_set_note",
+            debug_name: "EnvoyAccountHandler_set_note",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -833,7 +1052,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_set_note_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_that = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>,
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
             >>::sse_decode(&mut deserializer);
             let api_tx_id = <String>::sse_decode(&mut deserializer);
             let api_note = <String>::sse_decode(&mut deserializer);
@@ -855,7 +1074,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_set_note_impl(
                             }
                         }
                         let mut api_that_guard = api_that_guard.unwrap();
-                        let output_ok = crate::api::envoy_wallet::EnvoyAccount::set_note(
+                        let output_ok = crate::api::envoy_wallet::EnvoyAccountHandler::set_note(
                             &mut *api_that_guard,
                             &api_tx_id,
                             &api_note,
@@ -867,7 +1086,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_set_note_impl(
         },
     )
 }
-fn wire__crate__api__envoy_wallet__EnvoyAccount_set_tag_impl(
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_tag_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -875,7 +1094,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_set_tag_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "EnvoyAccount_set_tag",
+            debug_name: "EnvoyAccountHandler_set_tag",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -890,7 +1109,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_set_tag_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_that = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>,
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
             >>::sse_decode(&mut deserializer);
             let api_utxo = <ngwallet::transaction::Output>::sse_decode(&mut deserializer);
             let api_tag = <String>::sse_decode(&mut deserializer);
@@ -912,7 +1131,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_set_tag_impl(
                             }
                         }
                         let mut api_that_guard = api_that_guard.unwrap();
-                        let output_ok = crate::api::envoy_wallet::EnvoyAccount::set_tag(
+                        let output_ok = crate::api::envoy_wallet::EnvoyAccountHandler::set_tag(
                             &mut *api_that_guard,
                             &api_utxo,
                             &api_tag,
@@ -924,7 +1143,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_set_tag_impl(
         },
     )
 }
-fn wire__crate__api__envoy_wallet__EnvoyAccount_transactions_impl(
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_state_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -932,7 +1151,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_transactions_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "EnvoyAccount_transactions",
+            debug_name: "EnvoyAccountHandler_state",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -947,7 +1166,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_transactions_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_that = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>,
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
@@ -967,7 +1186,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_transactions_impl(
                     }
                     let mut api_that_guard = api_that_guard.unwrap();
                     let output_ok = Result::<_, ()>::Ok(
-                        crate::api::envoy_wallet::EnvoyAccount::transactions(&mut *api_that_guard),
+                        crate::api::envoy_wallet::EnvoyAccountHandler::state(&mut *api_that_guard),
                     )?;
                     Ok(output_ok)
                 })())
@@ -975,7 +1194,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_transactions_impl(
         },
     )
 }
-fn wire__crate__api__envoy_wallet__EnvoyAccount_utxo_impl(
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_stream_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -983,7 +1202,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_utxo_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "EnvoyAccount_utxo",
+            debug_name: "EnvoyAccountHandler_stream",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -998,7 +1217,109 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_utxo_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_that = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>,
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
+            >>::sse_decode(&mut deserializer);
+            let api_stream_sink = <StreamSink<
+                crate::api::envoy_account::EnvoyAccount,
+                flutter_rust_bridge::for_generated::SseCodec,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let mut api_that_guard = None;
+                    let decode_indices_ =
+                        flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                            flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                &api_that, 0, true,
+                            ),
+                        ]);
+                    for i in decode_indices_ {
+                        match i {
+                            0 => api_that_guard = Some(api_that.lockable_decode_sync_ref_mut()),
+                            _ => unreachable!(),
+                        }
+                    }
+                    let mut api_that_guard = api_that_guard.unwrap();
+                    let output_ok = Result::<_, ()>::Ok({
+                        crate::api::envoy_wallet::EnvoyAccountHandler::stream(
+                            &mut *api_that_guard,
+                            api_stream_sink,
+                        );
+                    })?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_sync_wallet_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "EnvoyAccountHandler_sync_wallet",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_sync_request =
+                <Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>>::sse_decode(
+                    &mut deserializer,
+                );
+            let api_electrum_server = <String>::sse_decode(&mut deserializer);
+            let api_tor_port = <Option<u16>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || {
+                        let output_ok = crate::api::envoy_wallet::EnvoyAccountHandler::sync_wallet(
+                            api_sync_request,
+                            &api_electrum_server,
+                            api_tor_port,
+                        )?;
+                        Ok(output_ok)
+                    })(),
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_transactions_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "EnvoyAccountHandler_transactions",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
@@ -1018,7 +1339,9 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_utxo_impl(
                     }
                     let mut api_that_guard = api_that_guard.unwrap();
                     let output_ok = Result::<_, ()>::Ok(
-                        crate::api::envoy_wallet::EnvoyAccount::utxo(&mut *api_that_guard),
+                        crate::api::envoy_wallet::EnvoyAccountHandler::transactions(
+                            &mut *api_that_guard,
+                        ),
                     )?;
                     Ok(output_ok)
                 })())
@@ -1026,7 +1349,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_utxo_impl(
         },
     )
 }
-fn wire__crate__api__envoy_wallet__EnvoyAccount_validate_address_impl(
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_utxo_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -1034,7 +1357,58 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_validate_address_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "EnvoyAccount_validate_address",
+            debug_name: "EnvoyAccountHandler_utxo",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let mut api_that_guard = None;
+                    let decode_indices_ =
+                        flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                            flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                &api_that, 0, true,
+                            ),
+                        ]);
+                    for i in decode_indices_ {
+                        match i {
+                            0 => api_that_guard = Some(api_that.lockable_decode_sync_ref_mut()),
+                            _ => unreachable!(),
+                        }
+                    }
+                    let mut api_that_guard = api_that_guard.unwrap();
+                    let output_ok = Result::<_, ()>::Ok(
+                        crate::api::envoy_wallet::EnvoyAccountHandler::utxo(&mut *api_that_guard),
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_validate_address_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "EnvoyAccountHandler_validate_address",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -1055,7 +1429,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccount_validate_address_impl(
             move |context| {
                 transform_result_sse::<_, ()>((move || {
                     let output_ok = Result::<_, ()>::Ok(
-                        crate::api::envoy_wallet::EnvoyAccount::validate_address(
+                        crate::api::envoy_wallet::EnvoyAccountHandler::validate_address(
                             &api_address,
                             api_network,
                         ),
@@ -1319,11 +1693,14 @@ flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
 );
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
-        Arc<Mutex<Option<FullScanResponse<KeychainKind>>>>,
+        Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>,
     >
 );
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
-    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>
+    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc<Mutex<Update>>>
+);
+flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
+    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>
 );
 
 // Section: dart2rust
@@ -1360,23 +1737,33 @@ impl SseDecode for Arc<Mutex<Option<FullScanRequest<KeychainKind>>>> {
     }
 }
 
-impl SseDecode for Arc<Mutex<Option<FullScanResponse<KeychainKind>>>> {
+impl SseDecode for Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <RustOpaqueMoi<
             flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
-                Arc<Mutex<Option<FullScanResponse<KeychainKind>>>>,
+                Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>,
             >,
         >>::sse_decode(deserializer);
         return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
     }
 }
 
-impl SseDecode for EnvoyAccount {
+impl SseDecode for Arc<Mutex<Update>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <RustOpaqueMoi<
-            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>,
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc<Mutex<Update>>>,
+        >>::sse_decode(deserializer);
+        return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
+    }
+}
+
+impl SseDecode for EnvoyAccountHandler {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <RustOpaqueMoi<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
         >>::sse_decode(deserializer);
         return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
     }
@@ -1411,7 +1798,7 @@ impl SseDecode
 impl SseDecode
     for RustOpaqueMoi<
         flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
-            Arc<Mutex<Option<FullScanResponse<KeychainKind>>>>,
+            Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>,
         >,
     >
 {
@@ -1423,12 +1810,35 @@ impl SseDecode
 }
 
 impl SseDecode
-    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>>
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc<Mutex<Update>>>>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <usize>::sse_decode(deserializer);
         return decode_rust_opaque_moi(inner);
+    }
+}
+
+impl SseDecode
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>>
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <usize>::sse_decode(deserializer);
+        return decode_rust_opaque_moi(inner);
+    }
+}
+
+impl SseDecode
+    for StreamSink<
+        crate::api::envoy_account::EnvoyAccount,
+        flutter_rust_bridge::for_generated::SseCodec,
+    >
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <String>::sse_decode(deserializer);
+        return StreamSink::deserialize(inner);
     }
 }
 
@@ -1483,6 +1893,49 @@ impl SseDecode for bool {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         deserializer.cursor.read_u8().unwrap() != 0
+    }
+}
+
+impl SseDecode for crate::api::envoy_account::EnvoyAccount {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_name = <String>::sse_decode(deserializer);
+        let mut var_color = <String>::sse_decode(deserializer);
+        let mut var_deviceSerial = <Option<String>>::sse_decode(deserializer);
+        let mut var_dateAdded = <Option<String>>::sse_decode(deserializer);
+        let mut var_addressType = <ngwallet::config::AddressType>::sse_decode(deserializer);
+        let mut var_index = <u32>::sse_decode(deserializer);
+        let mut var_internalDescriptor = <String>::sse_decode(deserializer);
+        let mut var_externalDescriptor = <Option<String>>::sse_decode(deserializer);
+        let mut var_dateSynced = <Option<String>>::sse_decode(deserializer);
+        let mut var_walletPath = <Option<String>>::sse_decode(deserializer);
+        let mut var_network = <crate::api::envoy_wallet::Network>::sse_decode(deserializer);
+        let mut var_id = <String>::sse_decode(deserializer);
+        let mut var_nextAddress = <String>::sse_decode(deserializer);
+        let mut var_balance = <u64>::sse_decode(deserializer);
+        let mut var_isHot = <bool>::sse_decode(deserializer);
+        let mut var_transactions =
+            <Vec<ngwallet::transaction::BitcoinTransaction>>::sse_decode(deserializer);
+        let mut var_utxo = <Vec<ngwallet::transaction::Output>>::sse_decode(deserializer);
+        return crate::api::envoy_account::EnvoyAccount {
+            name: var_name,
+            color: var_color,
+            device_serial: var_deviceSerial,
+            date_added: var_dateAdded,
+            address_type: var_addressType,
+            index: var_index,
+            internal_descriptor: var_internalDescriptor,
+            external_descriptor: var_externalDescriptor,
+            date_synced: var_dateSynced,
+            wallet_path: var_walletPath,
+            network: var_network,
+            id: var_id,
+            next_address: var_nextAddress,
+            balance: var_balance,
+            is_hot: var_isHot,
+            transactions: var_transactions,
+            utxo: var_utxo,
+        };
     }
 }
 
@@ -1602,6 +2055,27 @@ impl SseDecode for ngwallet::config::NgAccountConfig {
     }
 }
 
+impl SseDecode
+    for Option<
+        StreamSink<
+            crate::api::envoy_account::EnvoyAccount,
+            flutter_rust_bridge::for_generated::SseCodec,
+        >,
+    >
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<StreamSink<
+                crate::api::envoy_account::EnvoyAccount,
+                flutter_rust_bridge::for_generated::SseCodec,
+            >>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for Option<String> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1637,6 +2111,17 @@ impl SseDecode for Option<crate::api::envoy_wallet::Network> {
     }
 }
 
+impl SseDecode for Option<u16> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<u16>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for ngwallet::transaction::Output {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1652,6 +2137,13 @@ impl SseDecode for ngwallet::transaction::Output {
             tag: var_tag,
             do_not_spend: var_doNotSpend,
         };
+    }
+}
+
+impl SseDecode for u16 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_u16::<NativeEndian>().unwrap()
     }
 }
 
@@ -1697,108 +2189,138 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        1 => wire__crate__api__envoy_wallet__EnvoyAccount_apply_update_impl(
+        1 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_apply_update_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        5 => wire__crate__api__envoy_wallet__EnvoyAccount_broadcast_impl(
+        7 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_broadcast_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        8 => wire__crate__api__envoy_wallet__EnvoyAccount_migrate_impl(
+        10 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_migrate_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        9 => wire__crate__api__envoy_wallet__EnvoyAccount_new_from_descriptor_impl(
+        11 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_new_from_descriptor_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        10 => wire__crate__api__envoy_wallet__EnvoyAccount_next_address_impl(
+        12 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_next_address_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        11 => wire__crate__api__envoy_wallet__EnvoyAccount_open_wallet_impl(
+        13 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_open_wallet_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        12 => wire__crate__api__envoy_wallet__EnvoyAccount_request_scan_impl(
+        14 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_request_full_scan_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        13 => wire__crate__api__envoy_wallet__EnvoyAccount_scan_impl(
+        15 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_request_sync_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        14 => wire__crate__api__envoy_wallet__EnvoyAccount_send_impl(
+        16 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_scan_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        15 => wire__crate__api__envoy_wallet__EnvoyAccount_set_do_not_spend_impl(
+        17 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_send_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        16 => wire__crate__api__envoy_wallet__EnvoyAccount_set_note_impl(
+        18 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_send_update_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        17 => wire__crate__api__envoy_wallet__EnvoyAccount_set_tag_impl(
+        19 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_do_not_spend_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        18 => wire__crate__api__envoy_wallet__EnvoyAccount_transactions_impl(
+        20 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_note_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        19 => wire__crate__api__envoy_wallet__EnvoyAccount_utxo_impl(
+        21 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_tag_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        20 => wire__crate__api__envoy_wallet__EnvoyAccount_validate_address_impl(
+        22 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_state_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        21 => wire__crate__api__envoy_wallet__init_app_impl(port, ptr, rust_vec_len, data_len),
-        22 => wire__ngwallet__config__ng_account_config_deserialize_impl(
+        23 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_stream_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        23 => {
+        24 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_sync_wallet_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        25 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_transactions_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        26 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_utxo_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        27 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_validate_address_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        28 => wire__crate__api__envoy_wallet__init_app_impl(port, ptr, rust_vec_len, data_len),
+        29 => wire__ngwallet__config__ng_account_config_deserialize_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        30 => {
             wire__ngwallet__config__ng_account_config_is_hot_impl(port, ptr, rust_vec_len, data_len)
         }
-        24 => wire__ngwallet__config__ng_account_config_new_impl(port, ptr, rust_vec_len, data_len),
-        25 => wire__ngwallet__config__ng_account_config_serialize_impl(
+        31 => wire__ngwallet__config__ng_account_config_new_impl(port, ptr, rust_vec_len, data_len),
+        32 => wire__ngwallet__config__ng_account_config_serialize_impl(
             port,
             ptr,
             rust_vec_len,
@@ -1816,19 +2338,41 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        2 => wire__crate__api__envoy_wallet__EnvoyAccount_auto_accessor_get_ng_account_impl(
+        2 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_auto_accessor_get_ng_account_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        3 => wire__crate__api__envoy_wallet__EnvoyAccount_auto_accessor_set_ng_account_impl(
+        3 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_auto_accessor_get_streamSink_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        4 => wire__crate__api__envoy_wallet__EnvoyAccount_balance_impl(ptr, rust_vec_len, data_len),
-        6 => wire__crate__api__envoy_wallet__EnvoyAccount_config_impl(ptr, rust_vec_len, data_len),
-        7 => wire__crate__api__envoy_wallet__EnvoyAccount_is_hot_impl(ptr, rust_vec_len, data_len),
+        4 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_auto_accessor_set_ng_account_impl(
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        5 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_auto_accessor_set_streamSink_impl(
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        6 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_balance_impl(
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        8 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_config_impl(
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        9 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_is_hot_impl(
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
         _ => unreachable!(),
     }
 }
@@ -1880,7 +2424,7 @@ impl
 
 // Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart
-    for FrbWrapper<Arc<Mutex<Option<FullScanResponse<KeychainKind>>>>>
+    for FrbWrapper<Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>>
 {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
@@ -1888,31 +2432,52 @@ impl flutter_rust_bridge::IntoDart
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for FrbWrapper<Arc<Mutex<Option<FullScanResponse<KeychainKind>>>>>
+    for FrbWrapper<Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>>
 {
 }
 
 impl
     flutter_rust_bridge::IntoIntoDart<
-        FrbWrapper<Arc<Mutex<Option<FullScanResponse<KeychainKind>>>>>,
-    > for Arc<Mutex<Option<FullScanResponse<KeychainKind>>>>
+        FrbWrapper<Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>>,
+    > for Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>
 {
-    fn into_into_dart(self) -> FrbWrapper<Arc<Mutex<Option<FullScanResponse<KeychainKind>>>>> {
+    fn into_into_dart(self) -> FrbWrapper<Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>> {
         self.into()
     }
 }
 
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for FrbWrapper<EnvoyAccount> {
+impl flutter_rust_bridge::IntoDart for FrbWrapper<Arc<Mutex<Update>>> {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
             .into_dart()
     }
 }
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for FrbWrapper<EnvoyAccount> {}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<Arc<Mutex<Update>>>
+{
+}
 
-impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<EnvoyAccount>> for EnvoyAccount {
-    fn into_into_dart(self) -> FrbWrapper<EnvoyAccount> {
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<Arc<Mutex<Update>>>> for Arc<Mutex<Update>> {
+    fn into_into_dart(self) -> FrbWrapper<Arc<Mutex<Update>>> {
+        self.into()
+    }
+}
+
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<EnvoyAccountHandler> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
+            .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<EnvoyAccountHandler>
+{
+}
+
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<EnvoyAccountHandler>> for EnvoyAccountHandler {
+    fn into_into_dart(self) -> FrbWrapper<EnvoyAccountHandler> {
         self.into()
     }
 }
@@ -1966,6 +2531,42 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<ngwallet::transaction::Bitcoin
 {
     fn into_into_dart(self) -> FrbWrapper<ngwallet::transaction::BitcoinTransaction> {
         self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::envoy_account::EnvoyAccount {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.name.into_into_dart().into_dart(),
+            self.color.into_into_dart().into_dart(),
+            self.device_serial.into_into_dart().into_dart(),
+            self.date_added.into_into_dart().into_dart(),
+            self.address_type.into_into_dart().into_dart(),
+            self.index.into_into_dart().into_dart(),
+            self.internal_descriptor.into_into_dart().into_dart(),
+            self.external_descriptor.into_into_dart().into_dart(),
+            self.date_synced.into_into_dart().into_dart(),
+            self.wallet_path.into_into_dart().into_dart(),
+            self.network.into_into_dart().into_dart(),
+            self.id.into_into_dart().into_dart(),
+            self.next_address.into_into_dart().into_dart(),
+            self.balance.into_into_dart().into_dart(),
+            self.is_hot.into_into_dart().into_dart(),
+            self.transactions.into_into_dart().into_dart(),
+            self.utxo.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::envoy_account::EnvoyAccount
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::envoy_account::EnvoyAccount>
+    for crate::api::envoy_account::EnvoyAccount
+{
+    fn into_into_dart(self) -> crate::api::envoy_account::EnvoyAccount {
+        self
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -2104,12 +2705,12 @@ impl SseEncode for Arc<Mutex<Option<FullScanRequest<KeychainKind>>>> {
     }
 }
 
-impl SseEncode for Arc<Mutex<Option<FullScanResponse<KeychainKind>>>> {
+impl SseEncode for Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <RustOpaqueMoi<
             flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
-                Arc<Mutex<Option<FullScanResponse<KeychainKind>>>>,
+                Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>,
             >,
         >>::sse_encode(
             flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self),
@@ -2118,10 +2719,17 @@ impl SseEncode for Arc<Mutex<Option<FullScanResponse<KeychainKind>>>> {
     }
 }
 
-impl SseEncode for EnvoyAccount {
+impl SseEncode for Arc<Mutex<Update>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
+        <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < Update > >>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
+    }
+}
+
+impl SseEncode for EnvoyAccountHandler {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
     }
 }
 
@@ -2156,7 +2764,7 @@ impl SseEncode
 impl SseEncode
     for RustOpaqueMoi<
         flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
-            Arc<Mutex<Option<FullScanResponse<KeychainKind>>>>,
+            Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>,
         >,
     >
 {
@@ -2169,13 +2777,36 @@ impl SseEncode
 }
 
 impl SseEncode
-    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>>
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc<Mutex<Update>>>>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         let (ptr, size) = self.sse_encode_raw();
         <usize>::sse_encode(ptr, serializer);
         <i32>::sse_encode(size, serializer);
+    }
+}
+
+impl SseEncode
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>>
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        let (ptr, size) = self.sse_encode_raw();
+        <usize>::sse_encode(ptr, serializer);
+        <i32>::sse_encode(size, serializer);
+    }
+}
+
+impl SseEncode
+    for StreamSink<
+        crate::api::envoy_account::EnvoyAccount,
+        flutter_rust_bridge::for_generated::SseCodec,
+    >
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        unimplemented!("")
     }
 }
 
@@ -2223,6 +2854,29 @@ impl SseEncode for bool {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         serializer.cursor.write_u8(self as _).unwrap();
+    }
+}
+
+impl SseEncode for crate::api::envoy_account::EnvoyAccount {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.name, serializer);
+        <String>::sse_encode(self.color, serializer);
+        <Option<String>>::sse_encode(self.device_serial, serializer);
+        <Option<String>>::sse_encode(self.date_added, serializer);
+        <ngwallet::config::AddressType>::sse_encode(self.address_type, serializer);
+        <u32>::sse_encode(self.index, serializer);
+        <String>::sse_encode(self.internal_descriptor, serializer);
+        <Option<String>>::sse_encode(self.external_descriptor, serializer);
+        <Option<String>>::sse_encode(self.date_synced, serializer);
+        <Option<String>>::sse_encode(self.wallet_path, serializer);
+        <crate::api::envoy_wallet::Network>::sse_encode(self.network, serializer);
+        <String>::sse_encode(self.id, serializer);
+        <String>::sse_encode(self.next_address, serializer);
+        <u64>::sse_encode(self.balance, serializer);
+        <bool>::sse_encode(self.is_hot, serializer);
+        <Vec<ngwallet::transaction::BitcoinTransaction>>::sse_encode(self.transactions, serializer);
+        <Vec<ngwallet::transaction::Output>>::sse_encode(self.utxo, serializer);
     }
 }
 
@@ -2318,6 +2972,26 @@ impl SseEncode for ngwallet::config::NgAccountConfig {
     }
 }
 
+impl SseEncode
+    for Option<
+        StreamSink<
+            crate::api::envoy_account::EnvoyAccount,
+            flutter_rust_bridge::for_generated::SseCodec,
+        >,
+    >
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <StreamSink<
+                crate::api::envoy_account::EnvoyAccount,
+                flutter_rust_bridge::for_generated::SseCodec,
+            >>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for Option<String> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2348,6 +3022,16 @@ impl SseEncode for Option<crate::api::envoy_wallet::Network> {
     }
 }
 
+impl SseEncode for Option<u16> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <u16>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for ngwallet::transaction::Output {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2356,6 +3040,13 @@ impl SseEncode for ngwallet::transaction::Output {
         <u64>::sse_encode(self.amount, serializer);
         <Option<String>>::sse_encode(self.tag, serializer);
         <Option<bool>>::sse_encode(self.do_not_spend, serializer);
+    }
+}
+
+impl SseEncode for u16 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_u16::<NativeEndian>(self).unwrap();
     }
 }
 
@@ -2404,6 +3095,7 @@ mod io {
 
     use super::*;
     use crate::api::envoy_wallet::*;
+    use crate::*;
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
     };
@@ -2412,9 +3104,10 @@ mod io {
 
     // Section: boilerplate
 
-    use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse};
+    use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse, SyncRequest};
     use bdk_wallet::rusqlite::Connection;
     use bdk_wallet::KeychainKind;
+    use bdk_wallet::Update;
     use ngwallet::account::NgAccount;
     use std::sync::Mutex;
 
@@ -2465,39 +3158,53 @@ mod io {
     }
 
     #[unsafe(no_mangle)]
-    pub extern "C" fn frbgen_ngwallet_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanResponseKeychainKind(
+    pub extern "C" fn frbgen_ngwallet_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(
         ptr: *const std::ffi::c_void,
     ) {
         MoiArc::<
             flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
-                Arc<Mutex<Option<FullScanResponse<KeychainKind>>>>,
+                Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>,
             >,
         >::increment_strong_count(ptr as _);
     }
 
     #[unsafe(no_mangle)]
-    pub extern "C" fn frbgen_ngwallet_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanResponseKeychainKind(
+    pub extern "C" fn frbgen_ngwallet_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(
         ptr: *const std::ffi::c_void,
     ) {
         MoiArc::<
             flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
-                Arc<Mutex<Option<FullScanResponse<KeychainKind>>>>,
+                Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>,
             >,
         >::decrement_strong_count(ptr as _);
     }
 
     #[unsafe(no_mangle)]
-    pub extern "C" fn frbgen_ngwallet_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+    pub extern "C" fn frbgen_ngwallet_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>>::increment_strong_count(ptr as _);
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < Update > >>>::increment_strong_count(ptr as _);
     }
 
     #[unsafe(no_mangle)]
-    pub extern "C" fn frbgen_ngwallet_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+    pub extern "C" fn frbgen_ngwallet_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>>::decrement_strong_count(ptr as _);
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < Update > >>>::decrement_strong_count(ptr as _);
+    }
+
+    #[unsafe(no_mangle)]
+    pub extern "C" fn frbgen_ngwallet_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>>::increment_strong_count(ptr as _);
+    }
+
+    #[unsafe(no_mangle)]
+    pub extern "C" fn frbgen_ngwallet_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>>::decrement_strong_count(ptr as _);
     }
 }
 #[cfg(not(target_family = "wasm"))]
@@ -2513,6 +3220,7 @@ mod web {
 
     use super::*;
     use crate::api::envoy_wallet::*;
+    use crate::*;
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
     };
@@ -2523,9 +3231,10 @@ mod web {
 
     // Section: boilerplate
 
-    use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse};
+    use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse, SyncRequest};
     use bdk_wallet::rusqlite::Connection;
     use bdk_wallet::KeychainKind;
+    use bdk_wallet::Update;
     use ngwallet::account::NgAccount;
     use std::sync::Mutex;
 
@@ -2576,39 +3285,53 @@ mod web {
     }
 
     #[wasm_bindgen]
-    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanResponseKeychainKind(
+    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(
         ptr: *const std::ffi::c_void,
     ) {
         MoiArc::<
             flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
-                Arc<Mutex<Option<FullScanResponse<KeychainKind>>>>,
+                Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>,
             >,
         >::increment_strong_count(ptr as _);
     }
 
     #[wasm_bindgen]
-    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanResponseKeychainKind(
+    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(
         ptr: *const std::ffi::c_void,
     ) {
         MoiArc::<
             flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
-                Arc<Mutex<Option<FullScanResponse<KeychainKind>>>>,
+                Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>,
             >,
         >::decrement_strong_count(ptr as _);
     }
 
     #[wasm_bindgen]
-    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>>::increment_strong_count(ptr as _);
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < Update > >>>::increment_strong_count(ptr as _);
     }
 
     #[wasm_bindgen]
-    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccount(
+    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>>::decrement_strong_count(ptr as _);
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < Update > >>>::decrement_strong_count(ptr as _);
+    }
+
+    #[wasm_bindgen]
+    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>>::increment_strong_count(ptr as _);
+    }
+
+    #[wasm_bindgen]
+    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>>::decrement_strong_count(ptr as _);
     }
 }
 #[cfg(target_family = "wasm")]

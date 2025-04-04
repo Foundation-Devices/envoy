@@ -80,7 +80,7 @@ final coinsProvider = Provider.family<List<Coin>, String>((ref, accountId) {
   //Watch for any account changes
   final accounts = ref.watch(accountsProvider);
   final account =
-      accounts.firstWhereOrNull((element) => element.config().id == accountId);
+      accounts.firstWhereOrNull((element) => element.id == accountId);
   //if account is null, return empty list
   if (account == null) {
     return [];

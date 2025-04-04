@@ -61,7 +61,7 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       for (final element in widget.accounts) {
-        _cardStackKeys[element.config().id] = GlobalKey();
+        _cardStackKeys[element.id] = GlobalKey();
       }
     });
   }
@@ -69,7 +69,7 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
   List<Account> get _backStack {
     return accounts
         .where(
-          (element) => _selectedAccount.config().id != element.id,
+          (element) => _selectedAccount.id != element.id,
         )
         .toList();
   }
@@ -122,7 +122,7 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
                   ),
                 ),
               for (var (account) in accounts)
-                if (account.id == _selectedAccount.config().id)
+                if (account.id == _selectedAccount.id)
                   Align(
                     alignment: Alignment.center,
                     child: Opacity(
@@ -280,7 +280,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
     _selectedAccount = widget.account;
 
     for (var account in widget.accounts) {
-      _shuttleCardKeys[account.config().id] = GlobalKey();
+      _shuttleCardKeys[account.id] = GlobalKey();
     }
     animationController.addListener(() {
       setState(() {});
@@ -474,11 +474,11 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
                 child: Stack(
                   children: [
                     for (var (account) in widget.accounts.where(
-                      (element) => element.config().id != _selectedAccount.config().id,
+                      (element) => element.id != _selectedAccount.id,
                     ))
                       _buildHeroOverlay(account),
                     for (var (account) in widget.accounts.where(
-                      (element) => element.config().id == _selectedAccount.config().id,
+                      (element) => element.id == _selectedAccount.id,
                     ))
                       _buildHeroOverlay(account),
                   ],
@@ -498,8 +498,8 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
 
   // builds account tile for hero like animation,
   _buildHeroOverlay(EnvoyAccount account) {
-    final startRect = _stackCardRect[account.config().id];
-    final endRect = _listCardRect[account.config().id];
+    final startRect = _stackCardRect[account.id];
+    final endRect = _listCardRect[account.id];
     if (startRect == null || endRect == null) {
       return const SizedBox();
     }

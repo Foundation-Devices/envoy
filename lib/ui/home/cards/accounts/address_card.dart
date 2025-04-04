@@ -6,9 +6,11 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:envoy/util/build_context_extension.dart';
@@ -16,9 +18,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ngwallet/ngwallet.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:envoy/ui/components/address_widget.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class AddressCard extends ConsumerStatefulWidget {
   final EnvoyAccount account;
@@ -42,120 +44,102 @@ class _AddressCardState extends ConsumerState<AddressCard> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String>(
-        future: widget.account.nextAddress(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            AddressWidget addressWidget =
-                AddressWidget(address: snapshot.data!);
-            double optimalAddressHorizontalPadding =
-                addressWidget.calculateOptimalPadding(snapshot.data!, context);
-            return Padding(
-              padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    final address =
+        ref.watch(accountStateProvider(widget.account.id))?.nextAddress ?? "";
+    AddressWidget addressWidget = AddressWidget(address: address);
+    double optimalAddressHorizontalPadding =
+        addressWidget.calculateOptimalPadding(address, context);
+    return Padding(
+      padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
+      child:
+          Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: EnvoySpacing.medium2,
+                  right: EnvoySpacing.medium2,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: EnvoySpacing.medium2,
-                              right: EnvoySpacing.medium2,
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Flexible(
-                                  child: QrTab(
-                                      title: widget.account.config().name,
-                                      subtitle: S()
-                                          .manage_account_address_card_subheading,
-                                      account: widget.account,
-                                      qr: EnvoyQR(
-                                        data: snapshot.data!,
-                                      )),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              top: context.isSmallScreen
-                                  ? EnvoySpacing.xs
-                                  : EnvoySpacing.medium1,
-                              left: optimalAddressHorizontalPadding * 0.5,
-                              right: optimalAddressHorizontalPadding * 0.5,
-                            ),
-                            child: AddressWidget(
-                              address: snapshot.data!,
-                              short: false,
-                              align: TextAlign.center,
-                              showWarningOnCopy: false,
-                            ),
-                          ),
-                        ],
-                      ),
+                    Flexible(
+                      child: QrTab(
+                          title: widget.account.name,
+                          subtitle: S().manage_account_address_card_subheading,
+                          account: widget.account,
+                          qr: EnvoyQR(
+                            data: address,
+                          )),
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(
-                        left: EnvoySpacing.medium2,
-                        right: EnvoySpacing.medium2,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: EnvoySpacing.large2,
-                            right: EnvoySpacing.large2,
-                            bottom: EnvoySpacing.large1),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            IconButton(
-                                onPressed: () {
-                                  _copyAddressToClipboard(
-                                      context, snapshot.data!);
-                                },
-                                icon: const EnvoyIcon(
-                                  icon: "ic_copy.svg",
-                                  size: 21,
-                                  color: EnvoyColors.darkTeal,
-                                )),
-                            EnvoyTextButton(
-                              onTap: () {
-                                GoRouter.of(context).pop();
-                              },
-                              label: S().component_ok,
-                            ),
-                            IconButton(
-                                onPressed: () {
-                                  Share.share("bitcoin:${snapshot.data!}");
-                                },
-                                icon: const EnvoyIcon(
-                                  icon: "ic_envoy_share.svg",
-                                  size: 21,
-                                  color: EnvoyColors.darkTeal,
-                                )),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ]),
-            );
-          } else {
-            return const Center(
-              child: SizedBox(
-                height: 100,
-                width: 100,
-                child: CircularProgressIndicator(
-                  color: EnvoyColors.darkTeal,
+                  ],
                 ),
               ),
-            );
-          }
-        });
+              Padding(
+                padding: EdgeInsets.only(
+                  top: context.isSmallScreen
+                      ? EnvoySpacing.xs
+                      : EnvoySpacing.medium1,
+                  left: optimalAddressHorizontalPadding * 0.5,
+                  right: optimalAddressHorizontalPadding * 0.5,
+                ),
+                child: AddressWidget(
+                  address: address,
+                  short: false,
+                  align: TextAlign.center,
+                  showWarningOnCopy: false,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.only(
+            left: EnvoySpacing.medium2,
+            right: EnvoySpacing.medium2,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(
+                left: EnvoySpacing.large2,
+                right: EnvoySpacing.large2,
+                bottom: EnvoySpacing.large1),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconButton(
+                    onPressed: () {
+                      _copyAddressToClipboard(context, address);
+                    },
+                    icon: const EnvoyIcon(
+                      icon: "ic_copy.svg",
+                      size: 21,
+                      color: EnvoyColors.darkTeal,
+                    )),
+                EnvoyTextButton(
+                  onTap: () {
+                    GoRouter.of(context).pop();
+                  },
+                  label: S().component_ok,
+                ),
+                IconButton(
+                    onPressed: () {
+                      Share.share("bitcoin:${address}");
+                    },
+                    icon: const EnvoyIcon(
+                      icon: "ic_envoy_share.svg",
+                      size: 21,
+                      color: EnvoyColors.darkTeal,
+                    )),
+              ],
+            ),
+          ),
+        ),
+      ]),
+    );
   }
 
   void _copyAddressToClipboard(BuildContext context, String address) async {

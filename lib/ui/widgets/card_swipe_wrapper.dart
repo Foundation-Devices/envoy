@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/util/easing.dart';
@@ -89,7 +88,7 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
       });
     });
 
-    hidden = ref.read(balanceHideStateStatusProvider(widget.account.config().id));
+    hidden = ref.read(balanceHideStateStatusProvider(widget.account.id));
   }
 
   @override
@@ -178,7 +177,7 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
           },
           onHorizontalDragStart: (details) {
             hidden =
-                ref.read(balanceHideStateStatusProvider(widget.account.config().id));
+                ref.read(balanceHideStateStatusProvider(widget.account.id));
           },
           onHorizontalDragUpdate: (details) {
             if (!widget.draggable) {
@@ -217,7 +216,7 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
             _runSpringSimulation(details.velocity.pixelsPerSecond, size);
             if (thresholdReached) {
               ref.read(balanceHideNotifierProvider).setHideState(
-                  !ref.read(balanceHideStateStatusProvider(widget.account.config().id)),
+                  !ref.read(balanceHideStateStatusProvider(widget.account.id)),
                   widget.account);
             }
           },

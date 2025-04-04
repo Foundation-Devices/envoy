@@ -28,7 +28,7 @@ import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:ngwallet/src/exceptions.dart';
 import 'package:ngwallet/src/wallet.dart';
-import 'package:ngwallet/ngwallet.dart' as  NgWallet;
+import 'package:ngwallet/ngwallet.dart' as NgWallet;
 import 'package:envoy/business/bip329.dart';
 
 class AccountAlreadyPaired implements Exception {}

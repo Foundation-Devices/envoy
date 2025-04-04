@@ -35,8 +35,8 @@ class EnvoyAmount extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color? badgeColor;
-    if (account.config().network != Network.bitcoin) {
-      badgeColor = fromHex(account.config().color);
+    if (account.network != Network.bitcoin) {
+      badgeColor = fromHex(account.color);
     }
     AmountDisplayUnit mainUnit = Settings().displayUnitSat()
         ? AmountDisplayUnit.sat
@@ -49,7 +49,7 @@ class EnvoyAmount extends StatelessWidget {
 
     String? selectedFiat = Settings().selectedFiat;
     bool showFiat = selectedFiat != null &&
-        (kDebugMode || account.config().network == Network.bitcoin);
+        (kDebugMode || account.network == Network.bitcoin);
     AmountDisplayUnit primaryUnit = mainUnit;
     AmountDisplayUnit? secondaryUnit = showFiat ? AmountDisplayUnit.fiat : null;
     String symbolFiat = ExchangeRate().getSymbol();
@@ -64,7 +64,7 @@ class EnvoyAmount extends StatelessWidget {
       secondaryUnit: secondaryUnit,
       symbolFiat: symbolFiat,
       badgeColor: badgeColor,
-      network: account.config().network,
+      network: account.network,
       alignToEnd: alignToEnd,
       locale: currentLocale,
       millionaireMode: millionaireMode,

@@ -162,12 +162,12 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
         txIcon = getTransactionIcon(transaction, cancelState, isBoosted);
 
         unitIcon = () {
-          final accountManager = ref.watch(accountManagerProvider);
+          final accountManager = ref.watch(accountsProvider);
           bool isTransactionHidden = false;
           Account? transactionAccount;
 
           // Check if the account of the current transaction is hidden
-        // TODO: use EnvoyAccount
+          // TODO: use EnvoyAccount
           // for (var account in accountManager.accounts) {
           //   final transactions = ref.watch(transactionsProvider(account.id));
           //   for (var tx in transactions) {
@@ -201,10 +201,11 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
             );
           } else {
             return Padding(
-              padding: EdgeInsets.only(
-                  bottom: s.displayFiat() == null ? EnvoySpacing.medium1 : 0));
+                padding: EdgeInsets.only(
+                    bottom:
+                        s.displayFiat() == null ? EnvoySpacing.medium1 : 0));
             // TODO: use EnvoyAccount
-          //   child: FittedBox(
+            //   child: FittedBox(
             //     child: EnvoyAmount(
             //       account: transactionAccount!,
             //       amountSats: transaction.amount,
@@ -280,8 +281,8 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
 
   Widget openTransactionDetails(BuildContext context, Transaction transaction) {
     if (widget.notification.accountId != null) {
-      EnvoyAccount? account = NgAccountManager().getAccountById(
-          widget.notification.accountId!);
+      EnvoyAccount? account =
+          NgAccountManager().getAccountById(widget.notification.accountId!);
       if (account != null) {
         return TransactionsDetailsWidget(
           account: account,

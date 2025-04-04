@@ -7,7 +7,6 @@ import 'package:envoy/ui/theme/envoy_colors.dart' as design_system;
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/business/account.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -28,7 +27,7 @@ class QrTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color color = fromHex(account.config().color);
+    final Color color = fromHex(account.color);
     return Container(
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(20)),
@@ -49,8 +48,8 @@ class QrTab extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(18)),
-              border: Border.all(
-                  color: color, width: 2, style: BorderStyle.solid)),
+              border:
+                  Border.all(color: color, width: 2, style: BorderStyle.solid)),
           child: ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(16)),
               child: Stack(children: [

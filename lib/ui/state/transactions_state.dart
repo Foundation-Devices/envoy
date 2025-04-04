@@ -108,7 +108,7 @@ class Equal<T> {
 
 final walletTransactionsProvider =
     Provider.family<List<Transaction>, String?>((ref, String? accountId) {
-      //TODO: implement envoyAccount
+  //TODO: implement envoyAccount
   // return ref
   //         .watch(accountStateProvider(accountId).select(
   //             (account) => Equal(account?.wallet.transactions, (one, other) {
@@ -146,7 +146,7 @@ final walletTransactionsProvider =
   //                 })))
   //         .value ??
   //     [];
-      return [];
+  return [];
 });
 
 final allTxProvider = Provider<List<Transaction>>((ref) {
@@ -219,7 +219,7 @@ final transactionsProvider =
 final isThereAnyTransactionsProvider = Provider<bool>((ref) {
   var accounts = ref.watch(accountsProvider);
   for (var account in accounts) {
-    if (ref.watch(filteredTransactionsProvider(account.config().id)).isNotEmpty) {
+    if (ref.watch(filteredTransactionsProvider(account.id)).isNotEmpty) {
       return true;
     }
   }
@@ -230,7 +230,7 @@ final getTransactionProvider = Provider.family<Transaction?, String>(
   (ref, txId) {
     final selectedAccount = ref.watch(selectedAccountProvider);
     final tx = ref
-        .watch(transactionsProvider(selectedAccount?.config().id ?? ""))
+        .watch(transactionsProvider(selectedAccount?.id ?? ""))
         .firstWhereOrNull((element) => element.txId == txId);
 
     if (tx == null) {

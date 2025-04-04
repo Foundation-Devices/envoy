@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account.dart';
 import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/business/bip21.dart';
 import 'package:envoy/business/btcpay_voucher.dart';
@@ -65,7 +64,7 @@ class PaymentQrDecoder extends ScannerDecoder {
     // Remove bitcoin: prefix in case BIP-21 parsing failed
     address = address.replaceFirst("bitcoin:", "").trim();
     kPrint("address scanned $address");
-    if (await EnvoyAccount.validateAddress(address: address)) {
+    if (await EnvoyAccountHandler.validateAddress(address: address)) {
       // Convert the address to lowercase for consistent display in Envoy
       if (address.startsWith('bc') || address.startsWith("tb")) {
         address = address.toLowerCase();

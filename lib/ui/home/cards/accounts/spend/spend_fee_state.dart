@@ -42,10 +42,10 @@ final feeChooserStateProvider = StateProvider<FeeChooserState>((ref) {
     return _defaultFeeChooserState;
   }
   return FeeChooserState(
-    standardFeeRate: Fees().slowRate(account.config().network) * 100000,
-    fasterFeeRate: Fees().fastRate(account.config().network) * 100000,
+    standardFeeRate: Fees().slowRate(account.network) * 100000,
+    fasterFeeRate: Fees().fastRate(account.network) * 100000,
     minFeeRate: 1,
-    maxFeeRate: (Fees().fastRate(account.config().network) * 100000).floor(),
+    maxFeeRate: (Fees().fastRate(account.network) * 100000).floor(),
   );
 });
 
@@ -58,7 +58,7 @@ final spendFeeRateProvider = StateProvider<num>((ref) {
   if (account == null) {
     return 1;
   }
-  return Fees().slowRate(account.config().network) * 100000;
+  return Fees().slowRate(account.network) * 100000;
 });
 
 final spendFeeRateBlockEstimationProvider =
@@ -73,7 +73,7 @@ final spendEstimatedBlockTimeProvider = Provider<String>((ref) {
     return "~10";
   }
 
-  Network network = account.config().network;
+  Network network = account.network;
 
   //with in 10 minutes
   double feeRateFast = Fees().fees[network]!.mempoolFastestRate;

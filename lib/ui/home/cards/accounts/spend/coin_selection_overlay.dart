@@ -246,7 +246,7 @@ class SpendRequirementOverlayState
   @override
   Widget build(BuildContext context) {
     final totalSelectedAmount =
-        ref.watch(getTotalSelectedAmount(widget.account.config().id));
+        ref.watch(getTotalSelectedAmount(widget.account.id));
     final size = MediaQuery.of(context).size;
 
     ref.listen(spendEditModeProvider, (previous, next) {
@@ -571,7 +571,7 @@ class SpendRequirementOverlayState
       if (coinSelectionDiff.isNotEmpty) {
         ///reset fees if coin selection changed
         ref.read(spendFeeRateProvider.notifier).state =
-            Fees().slowRate(account!.config().network) * 100000;
+            Fees().slowRate(account!.network) * 100000;
         ref.read(spendTransactionProvider.notifier).validate(scope);
       }
 
@@ -607,7 +607,7 @@ class SpendRequirementOverlayState
   Widget transactionEditButton(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        ref.watch(getTotalSelectedAmount(widget.account.config().id));
+        ref.watch(getTotalSelectedAmount(widget.account.id));
         Set<String> walletSelection = ref.watch(coinSelectionFromWallet);
         Set<String> coinSelection = ref.watch(coinSelectionStateProvider);
         Set coinSelectionDiff1 = walletSelection.difference(coinSelection);
@@ -716,7 +716,7 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
         String buttonText = S().component_cancel;
         if (widget.inTagSelectionMode) {
           List<CoinTag> tags =
-              ref.read(coinsTagProvider(selectedAccount?.config().id ?? "")) ?? [];
+              ref.read(coinsTagProvider(selectedAccount?.id ?? "")) ?? [];
           bool isCoinsOnlyPartOfUntagged = false;
           CoinTag? untagged =
               tags.firstWhereOrNull((element) => element.untagged);
@@ -770,7 +770,7 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
                 },
                 builder: Builder(
                   builder: (context) => CreateCoinTag(
-                    accountId: selectedAccount.config().id,
+                    accountId: selectedAccount.id,
                     onTagUpdate: () async {
                       ref.read(coinSelectionStateProvider.notifier).reset();
                       await Future.delayed(const Duration(milliseconds: 100));
@@ -815,7 +815,7 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
                         },
                         builder: Builder(
                           builder: (context) => CreateCoinTag(
-                            accountId: selectedAccount.config().id,
+                            accountId: selectedAccount.id,
                             onTagUpdate: () async {
                               ref
                                   .read(coinSelectionStateProvider.notifier)

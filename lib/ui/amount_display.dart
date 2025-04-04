@@ -11,7 +11,6 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/business/account.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:envoy/business/locale.dart';
 
@@ -57,7 +56,7 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
 
     // Fiat is always at the end of enum
     if (Settings().selectedFiat == null ||
-        widget.account?.config().network != Network.bitcoin) {
+        widget.account?.network != Network.bitcoin) {
       length--;
     }
 
@@ -110,7 +109,7 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
 
     bool isFormattedAmountEmpty = ExchangeRate().getFormattedAmount(
           widget.amountSats ?? 0,
-          network: widget.account?.config().network,
+          network: widget.account?.network,
         ) ==
         "";
 
@@ -182,7 +181,7 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
                                     ? ExchangeRate().getFormattedAmount(
                                         widget.amountSats ?? 0,
                                         displayFiat: widget.displayFiat,
-                                        network: widget.account?.config().network,
+                                        network: widget.account?.network,
                                         includeSymbol: false)
                                     : (Settings().displayUnit == DisplayUnit.btc
                                         ? getDisplayAmount(

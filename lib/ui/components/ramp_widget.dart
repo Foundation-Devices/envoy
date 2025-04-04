@@ -23,7 +23,8 @@ import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class RampWidget {
-  static void showRamp(BuildContext context, EnvoyAccount account, String address) {
+  static void showRamp(
+      BuildContext context, EnvoyAccount account, String address) {
     if (KeysManager().keys == null) {
       return;
     }
@@ -72,7 +73,7 @@ class RampWidget {
     }
     String txID = purchase.id!;
 
-    await EnvoyStorage().addPendingTx(txID, account.config().id, DateTime.now(),
+    await EnvoyStorage().addPendingTx(txID, account.id, DateTime.now(),
         TransactionType.ramp, amount, 0, address,
         purchaseViewToken: purchaseViewToken,
         rampId: purchase.id,

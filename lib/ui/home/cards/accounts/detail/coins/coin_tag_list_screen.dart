@@ -38,7 +38,7 @@ class _CoinsListState extends ConsumerState<CoinsList> {
 
   @override
   Widget build(BuildContext context) {
-    List<CoinTag> tags = ref.watch(coinsTagProvider(widget.account.config().id ?? ""));
+    List<CoinTag> tags = ref.watch(coinsTagProvider(widget.account.id ?? ""));
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
       child: FadingEdgeScrollView.fromScrollView(

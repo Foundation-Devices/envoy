@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/ghost_wallet.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -63,23 +64,20 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
   @override
   Widget build(BuildContext context) {
     ref.watch(settingsProvider);
-    ref.watch(accountManagerProvider);
-    //TODO:/// work on ghost wallet
-    // var account = widget.account is GhostWallet
-    //     ? widget.account
-    //     : ref.watch(accountStateProvider(widget.account.id!));
+    ref.watch(accountsProvider);
 
-    final account = ref.watch(accountStateProvider(widget.account.config().id));
+    final account = ref.watch(accountStateProvider(widget.account.id));
     if (account == null) {
       return const SizedBox.shrink();
     }
+    //TODO: work on ghost wallet
+    int balance = ref.watch(accountBalanceProvider(account.id));
     //
-    // int balance = widget.account.wallet is GhostWallet
+    // int balance = widget.account is GhostWallet
     //     ? 0
-    //     : ref.watch(accountBalanceProvider(account.id));
+    //     : ref.watch(accountBalanceProvider(account.config().id));
 
     double cardRadius = EnvoySpacing.medium2;
-
     return CardSwipeWrapper(
       height: containerHeight,
       draggable: widget.draggable,
@@ -94,7 +92,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                fromHex(account.config().color),
+                fromHex(account.color),
                 Colors.black,
               ]),
         ),
@@ -102,7 +100,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(cardRadius - 3)),
               border: Border.all(
-                  color: fromHex(account.config().color),
+                  color: fromHex(account.color),
                   width: 2,
                   style: BorderStyle.solid)),
           child: ClipRRect(
@@ -149,7 +147,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                           .copyWith(
                                               color: EnvoyColors.solidWhite),
                                       child: Text(
-                                        account.config().name,
+                                        account.name,
                                         style: EnvoyTypography.subheading
                                             .copyWith(
                                                 color: EnvoyColors.solidWhite),
@@ -160,7 +158,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                           color: EnvoyColors.solidWhite),
                                       child: Text(
                                         Devices().getDeviceName(
-                                            account.config().deviceSerial ??""),
+                                            account.deviceSerial ?? ""),
                                         style: EnvoyTypography.info.copyWith(
                                             color: EnvoyColors.solidWhite),
                                       ),
@@ -180,8 +178,8 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                       child: Consumer(
                         builder: (context, ref, child) {
                           final hide = ref.watch(
-                              balanceHideStateStatusProvider(account.config().id));
-                          if (hide || account.config().deviceSerial == null) {
+                              balanceHideStateStatusProvider(account.id));
+                          if (hide || account.deviceSerial == null) {
                             return Container(
                               decoration: ShapeDecoration(
                                 color: const Color(0xFFF8F8F8),
@@ -200,12 +198,12 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                     LoaderGhost(
                                       width: 200,
                                       height: 24,
-                                      animate: account.config().dateAdded == null,
+                                      animate: account.dateAdded == null,
                                     ),
                                     LoaderGhost(
                                       width: 50,
                                       height: 24,
-                                      animate: account.config().dateSynced == null,
+                                      animate: account.dateSynced == null,
                                     ),
                                   ],
                                 ),
@@ -220,16 +218,15 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                     cardRadius - (EnvoySpacing.small)),
                               ),
                             ),
-                            //TODO: use EnvoyAccount
-                            // child: Padding(
-                            //   padding:
-                            //       const EdgeInsets.symmetric(horizontal: 8.0),
-                            //   child: EnvoyAmount(
-                            //       account: widget.account,
-                            //       amountSats: account.balance().toInt(),
-                            //       amountWidgetStyle:
-                            //           AmountWidgetStyle.singleLine),
-                            // ),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: EnvoyAmount(
+                                  account: widget.account,
+                                  amountSats: balance.toInt(),
+                                  amountWidgetStyle:
+                                      AmountWidgetStyle.singleLine),
+                            ),
                           );
                         },
                       ),
@@ -256,10 +253,9 @@ class AccountBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    NgAccountConfig config = account.config();
-    bool isTaproot = config.addressType == AddressType.p2Tr;
-    bool isTestnet = config.network == Network.testnet;
-    bool isSignet = config.network == Network.signet;
+    bool isTaproot = account.addressType == AddressType.p2Tr;
+    bool isTestnet = account.network == Network.testnet;
+    bool isSignet = account.network == Network.signet;
 
     bool isNotCircular = isTestnet || isTaproot || isSignet;
     return Container(
@@ -272,7 +268,9 @@ class AccountBadge extends StatelessWidget {
                 : null,
             shape: isNotCircular ? BoxShape.rectangle : BoxShape.circle,
             border: Border.all(
-                color: fromHex(config.color), width: 3, style: BorderStyle.solid)),
+                color: fromHex(account.color),
+                width: 3,
+                style: BorderStyle.solid)),
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5.0),
@@ -331,7 +329,7 @@ class BadgeIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (account.isHot()) {
+    if (account.isHot) {
       return SvgPicture.asset(
         "assets/icons/ic_wallet_coins.svg",
         height: 24,
@@ -339,7 +337,7 @@ class BadgeIcon extends StatelessWidget {
         color: Colors.white,
       );
     }
-    if (account.config().deviceSerial == "prime") {
+    if (account.deviceSerial == "prime") {
       return SvgPicture.asset(
         "assets/icons/ic_wallet_coins.svg",
         height: 24,
@@ -347,7 +345,7 @@ class BadgeIcon extends StatelessWidget {
         color: Colors.white,
       );
     }
-    if (!account.isHot()) {
+    if (!account.isHot) {
       return SvgPicture.asset(
         "assets/icons/ic_passport_account.svg",
         height: 24,

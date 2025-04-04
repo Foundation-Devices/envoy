@@ -17,9 +17,9 @@ import 'package:envoy/util/console.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ngwallet/ngwallet.dart';
 import 'package:ngwallet/src/exceptions.dart';
 import 'package:ngwallet/src/wallet.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 enum BroadcastProgress {
   inProgress,
@@ -291,7 +291,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
   Future broadcast(ProviderContainer ref) async {
     try {
       EnvoyAccount? account = ref.read(selectedAccountProvider);
-      final accountId = account?.config().id ?? "";
+      final accountId = account?.id ?? "";
       if (!(account != null &&
           state.psbt != null &&
           (state.broadcastProgress != BroadcastProgress.success ||
@@ -523,7 +523,7 @@ final spendInputTagsProvider = Provider<List<Tuple<CoinTag, Coin>>?>((ref) {
   if (account == null || rawTx == null) {
     return null;
   }
-  List<CoinTag> coinTags = ref.read(coinsTagProvider(account.config().id));
+  List<CoinTag> coinTags = ref.read(coinsTagProvider(account.id));
   List<String> inputs = rawTx.inputs
       .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}")
       .toList();
@@ -548,7 +548,7 @@ final _totalSpendableAmountProvider = FutureProvider<int>((ref) async {
     return 0;
   }
   final selectedUtxos = ref
-      .watch(getSelectedCoinsProvider(account.config().id))
+      .watch(getSelectedCoinsProvider(account.id))
       .map((e) => e.utxo)
       .toList();
   if (selectedUtxos.isNotEmpty) {
@@ -593,7 +593,7 @@ final isCoinsSelectedProvider = Provider<bool>((ref) {
     return false;
   }
   final selectedUtxos = ref
-      .watch(getSelectedCoinsProvider(account.config().id))
+      .watch(getSelectedCoinsProvider(account.id))
       .map((e) => e.utxo)
       .toList();
   return selectedUtxos.isNotEmpty;
@@ -612,8 +612,8 @@ final _spendValidationProviderFuture = FutureProvider<bool>((ref) async {
     return false;
   }
 
-  bool validAddress = await EnvoyAccount.validateAddress(
-      address: address, network: account.config().network);
+  bool validAddress = await EnvoyAccountHandler.validateAddress(
+      address: address, network: account.network);
   if (!validAddress) {
     ref.read(spendValidationErrorProvider.notifier).state =
         S().send_keyboard_amount_enter_valid_address;
@@ -652,7 +652,7 @@ final showSpendRequirementOverlayProvider = Provider<bool>(
     if (account == null) {
       return false;
     }
-    return ref.watch(getTotalSelectedAmount(account.config().id)) != 0;
+    return ref.watch(getTotalSelectedAmount(account.id)) != 0;
   },
 );
 

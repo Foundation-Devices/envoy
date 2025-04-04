@@ -20,7 +20,6 @@ import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ngwallet/ngwallet.dart';
 import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -29,6 +28,7 @@ import 'package:envoy/ui/components/stripe_painter.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class TransactionReviewCard extends ConsumerStatefulWidget {
   final Psbt psbt;
@@ -68,18 +68,10 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
     String address = widget.address;
     const double cardRadius = EnvoySpacing.medium2;
 
-    TextStyle? titleStyle = Theme
-        .of(context)
-        .textTheme
-        .titleSmall
-        ?.copyWith(
+    TextStyle? titleStyle = Theme.of(context).textTheme.titleSmall?.copyWith(
         color: EnvoyColors.textPrimaryInverse, fontWeight: FontWeight.w700);
 
-    TextStyle? trailingStyle = Theme
-        .of(context)
-        .textTheme
-        .titleSmall
-        ?.copyWith(
+    TextStyle? trailingStyle = Theme.of(context).textTheme.titleSmall?.copyWith(
         color: EnvoyColors.textPrimaryInverse,
         fontWeight: FontWeight.w400,
         fontSize: 13);
@@ -100,7 +92,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
 
     /// Leave total as it is (total will be visible after sending)
     double displayFiatTotalAmount =
-    ExchangeRate().convertSatsToFiat(totalSpendAmount);
+        ExchangeRate().convertSatsToFiat(totalSpendAmount);
 
     double? displayFiatSendAmount;
     double? displayFiatFeeAmount;
@@ -116,9 +108,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
     }
 
     EnvoyAccount account = ref.read(selectedAccountProvider)!;
-    final accountAccent = fromHex(account
-        .config()
-        .color);
+    final accountAccent = fromHex(account.color);
     final sendScreenUnit = ref.watch(sendScreenUnitProvider);
 
     /// if user selected unit from the form screen then use that, otherwise use the default
@@ -131,7 +121,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
     }
 
     AmountDisplayUnit formatUnit =
-    unit == DisplayUnit.btc ? AmountDisplayUnit.btc : AmountDisplayUnit.sat;
+        unit == DisplayUnit.btc ? AmountDisplayUnit.btc : AmountDisplayUnit.sat;
 
     RBFSpendState? rbfSpendState = ref.read(rbfSpendStateProvider);
     Transaction? originalTx = rbfSpendState?.originalTx;
@@ -139,14 +129,14 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(cardRadius - 1)),
-        color:accountAccent,
+        color: accountAccent,
         border:
-        Border.all(color: Colors.black, width: 2, style: BorderStyle.solid),
+            Border.all(color: Colors.black, width: 2, style: BorderStyle.solid),
       ),
       child: Container(
         decoration: BoxDecoration(
             borderRadius:
-            const BorderRadius.all(Radius.circular(cardRadius - 3)),
+                const BorderRadius.all(Radius.circular(cardRadius - 3)),
             gradient: LinearGradient(
               begin: const Alignment(0.00, 1.00),
               end: const Alignment(0, -1),
@@ -250,12 +240,12 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                             duration: const Duration(milliseconds: 120),
                             child: _whiteContainer(
                                 child: AddressWidget(
-                                  align: TextAlign.start,
-                                  address: address,
-                                  short: true,
-                                  sideChunks:
+                              align: TextAlign.start,
+                              address: address,
+                              short: true,
+                              sideChunks:
                                   2 + (value * (address.length / 4)).round(),
-                                )));
+                            )));
                       }),
                   Padding(
                     padding: const EdgeInsets.only(
@@ -274,19 +264,19 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                             ),
                             widget.feeTitleIconButton != null
                                 ? GestureDetector(
-                              onTap: () {
-                                showNewTransactionDialog(context, account,
-                                    psbt.fee, originalTx!.fee);
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: EnvoySpacing.xs),
-                                child: EnvoyIcon(
-                                    widget.feeTitleIconButton!,
-                                    color: EnvoyColors.textPrimaryInverse,
-                                    size: EnvoyIconSize.small),
-                              ),
-                            )
+                                    onTap: () {
+                                      showNewTransactionDialog(context, account,
+                                          psbt.fee, originalTx!.fee);
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: EnvoySpacing.xs),
+                                      child: EnvoyIcon(
+                                          widget.feeTitleIconButton!,
+                                          color: EnvoyColors.textPrimaryInverse,
+                                          size: EnvoyIconSize.small),
+                                    ),
+                                  )
                                 : const SizedBox.shrink(),
                           ],
                         ),
@@ -350,7 +340,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                               ),
                               Consumer(builder: (context, ref, child) {
                                 final spendTimeEstimationProvider =
-                                ref.watch(spendEstimatedBlockTimeProvider);
+                                    ref.watch(spendEstimatedBlockTimeProvider);
                                 return Text(
                                   " $spendTimeEstimationProvider min",
                                   //TODO: figma
@@ -392,7 +382,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
           width: double.infinity,
           decoration: const BoxDecoration(
               borderRadius:
-              BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
+                  BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
               color: EnvoyColors.textPrimaryInverse),
           padding: const EdgeInsets.symmetric(
               vertical: 6, horizontal: EnvoySpacing.small),
@@ -402,15 +392,12 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
     });
   }
 
-  void showNewTransactionDialog(BuildContext context, EnvoyAccount account,
-      int newFee, int oldFee) {
+  void showNewTransactionDialog(
+      BuildContext context, EnvoyAccount account, int newFee, int oldFee) {
     showEnvoyDialog(
         context: context,
         dialog: SizedBox(
-          width: MediaQuery
-              .of(context)
-              .size
-              .width * 0.85,
+          width: MediaQuery.of(context).size.width * 0.85,
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(EnvoySpacing.medium2),
@@ -428,7 +415,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                   ),
                   Padding(
                     padding:
-                    const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                        const EdgeInsets.only(bottom: EnvoySpacing.medium1),
                     child: Text(
                       S().replaceByFee_newFee_modal_heading,
                       textAlign: TextAlign.center,

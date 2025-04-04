@@ -4,7 +4,6 @@
 
 import 'dart:convert';
 
-import 'package:envoy/business/account.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
@@ -39,13 +38,13 @@ class HideStateNotifier extends ChangeNotifier {
 
   setHideState(bool hide, EnvoyAccount account) {
     if (hide) {
-      amountHiddenAccounts.add(account.config().id);
+      amountHiddenAccounts.add(account.id);
 
       // Hiding for the first time dismisses the "hide amount" prompt
       EnvoyStorage().addPromptState(DismissiblePrompt.hideAmount);
     } else {
-      if (amountHiddenAccounts.contains(account.config().id)) {
-        amountHiddenAccounts.remove(account.config().id);
+      if (amountHiddenAccounts.contains(account.id)) {
+        amountHiddenAccounts.remove(account.id);
       }
     }
     var stateAsList = amountHiddenAccounts.toList();

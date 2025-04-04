@@ -28,7 +28,8 @@ final mempoolBlocksMedianFeeRateProvider =
 });
 //TODO: fix with actual NgWallet Tx
 final txEstimatedConfirmationTimeProvider =
-    Provider.family<int, Tuple<OldWallet.Transaction, Network>>((ref, txNetwork) {
+    Provider.family<int, Tuple<OldWallet.Transaction, Network>>(
+        (ref, txNetwork) {
   final tx = txNetwork.item1;
   final network = txNetwork.item2;
 

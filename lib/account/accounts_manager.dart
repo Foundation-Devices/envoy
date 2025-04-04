@@ -8,6 +8,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/bug_report_helper.dart';
@@ -18,27 +19,35 @@ import 'package:ngwallet/ngwallet.dart';
 
 class AccountAlreadyPaired implements Exception {}
 
-class NgAccountManager extends ChangeNotifier {
-  @override
-  // ignore: must_call_super
-  void dispose({bool? force}) {
-    // prevents riverpods StateNotifierProvider from disposing it
-    if (force == true) {
-      super.dispose();
-    }
+extension AccountExtension on EnvoyAccount {
+  EnvoyAccountHandler? get handler {
+    return NgAccountManager().getHandler(this);
   }
+}
 
-  List<EnvoyAccount> accounts = [];
-  StreamController<List<EnvoyAccount>> accountsStream =
-      StreamController.broadcast();
-
-  final LocalStorage _ls = LocalStorage();
-  var s = Settings();
-
+class NgAccountManager extends ChangeNotifier {
   static const String ACCOUNT_ORDER = "accounts_order";
-  static final NgAccountManager _instance = NgAccountManager._internal();
   static String walletsDirectory =
       "${LocalStorage().appDocumentsDir.path}/wallets_new/";
+  final LocalStorage _ls = LocalStorage();
+  static final NgAccountManager _instance = NgAccountManager._internal();
+
+  late SyncManager _syncManager;
+  List<EnvoyAccount> _accounts = [];
+  final StreamController<List<String>> _accountsOrder =
+      StreamController(sync: true);
+
+  final List<EnvoyAccountHandler> _accountsHandler = [];
+  var s = Settings();
+
+  List<EnvoyAccount> get accounts => _accounts;
+
+  List<EnvoyAccountHandler> get handlers => _accountsHandler;
+
+  Stream<List<String>> get order => _accountsOrder.stream;
+
+  List<Stream<EnvoyAccount>> get streams =>
+      _accountsHandler.map((e) => e.stream()).toList();
 
   factory NgAccountManager() {
     return _instance;
@@ -50,85 +59,61 @@ class NgAccountManager extends ChangeNotifier {
       await RustLib.init();
     } catch (e, stack) {
       kPrint("Error initializing RustLib: $e");
-      EnvoyReport().log("Envoy init", e.toString(),stackTrace: stack);
+      EnvoyReport().log("Envoy init", e.toString(), stackTrace: stack);
     }
     return singleton;
   }
 
   NgAccountManager._internal() {
+    _syncManager = SyncManager(accountsCallback: () => _accounts);
     restore();
   }
 
-  //TODO:
-  void syncAll() {}
-
-  StreamController<bool> isAccountBalanceHigherThanUsd1000Stream =
-      StreamController.broadcast();
-
   restore() async {
-    accounts = [];
+    _accounts = [];
     final accountOrder = _ls.prefs.getString(ACCOUNT_ORDER);
-    final order = jsonDecode(accountOrder ?? "[]");
-    for (var dirPath in order) {
-      final dir = Directory(dirPath);
-      if (await dir.exists()) {
+    List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
+    _accountsOrder.sink.add(order);
+    final dirs = await Directory(walletsDirectory).list().toList();
+    for (var dir in dirs) {
+      if (dir is Directory) {
         try {
-          final account = await EnvoyAccount.openWallet(dbPath: dir.path);
-          accounts.add(account);
+          final accountHandler =
+              await EnvoyAccountHandler.openWallet(dbPath: dir.path);
+          _accountsHandler.add(accountHandler);
+          _accounts.add((await accountHandler.state()));
+          await accountHandler.sendUpdate();
         } catch (e) {
           kPrint("Error opening wallet: $e");
         }
       }
     }
-    accountsStream.add(accounts);
+    _syncManager.startSync();
+    _accountsOrder.sink.add(order);
     notifyListeners();
   }
 
   EnvoyAccount? getAccountById(String id) {
-    return accounts.firstWhereOrNull((element) => element.config().id == id);
+    return _accounts.firstWhereOrNull((element) => element.id == id);
   }
 
-  moveAccount(int oldIndex, int newIndex,
-      List<EnvoyAccount> accountFromListView) async {
-    //Make a copy of current account set to prevent concurrent modification
-    //sync might interfere with reordering so making a copy will prevent moving the same account
-    try {
-      final visibleAccountsIds =
-          accountFromListView.map((e) => e.config().id).toList();
-      final accountCopy = [
-        ...accounts.where(
-            (element) => visibleAccountsIds.contains(element.config().id))
-      ];
+  updateAccountOrder(List<String> accountsOrder) async {
+    _accountsOrder.sink.add(accountsOrder);
+    await _ls.prefs.setString(ACCOUNT_ORDER, jsonEncode(accountsOrder));
+    return;
+  }
 
-      //accounts that are not visible in the list (testnet). the move should not affect them,
-      //so they are added to the end of the list
-      final accountsThatNotVisible = [
-        ...accounts.where(
-            (element) => !visibleAccountsIds.contains(element.config().id))
-      ];
-      //moving down, the list is shifted so the index is off by one
-      if (oldIndex < newIndex) {
-        newIndex -= 1;
-      }
-      try {
-        //Check if the items are not the same to prevent unnecessary duplication
-        if (accountCopy[newIndex].config().id ==
-            accountCopy[oldIndex].config().id) {
-          return;
-        }
-      } catch (_) {}
-      var movedAccount = accountCopy.removeAt(oldIndex);
-      accountCopy.insert(newIndex, movedAccount);
+  @override
+  // ignore: must_call_super
+  void dispose({bool? force}) {
+    _syncManager.dispose();
+    if (force == true) {
+      super.dispose();
+    }
+  }
 
-      // updated accounts with new order, testnet accounts are added to the end of the list if they are not visible
-      accounts = [...accountCopy, ...accountsThatNotVisible];
-
-      final serializedAccountsPath =
-          jsonEncode(accounts.map((e) => e.config().walletPath ?? "").toList());
-      _ls.prefs.setString(ACCOUNT_ORDER, serializedAccountsPath);
-      notifyListeners();
-    } catch (e) {
-      kPrint(e);
-    } finally {}
+  EnvoyAccountHandler? getHandler(EnvoyAccount envoyAccount) {
+    return _accountsHandler
+        .firstWhereOrNull((element) => element.config().id == envoyAccount.id);
   }
 }

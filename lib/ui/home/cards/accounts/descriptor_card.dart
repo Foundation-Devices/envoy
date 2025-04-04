@@ -16,8 +16,8 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/services.dart';
-import 'package:ngwallet/ngwallet.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 //ignore: must_be_immutable
 class DescriptorCard extends ConsumerStatefulWidget {
@@ -41,7 +41,7 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
 
   @override
   Widget build(BuildContext context) {
-    String descriptor = widget.account.config().internalDescriptor;
+    String descriptor = widget.account.internalDescriptor;
 
     return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -51,7 +51,7 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
             child: Padding(
               padding: const EdgeInsets.all(EnvoySpacing.medium2),
               child: QrTab(
-                title: widget.account.config().name,
+                title: widget.account.name,
                 subtitle: S().manage_account_descriptor_subheading,
                 account: widget.account,
                 qr: EnvoyQR(

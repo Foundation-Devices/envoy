@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -202,7 +201,8 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
   }
 
   Future<void> validate(String value) async {
-    final check = await EnvoyAccount.validateAddress(address: value,network: widget.account.config().network);
+    final check = await EnvoyAccountHandler.validateAddress(
+        address: value, network: widget.account.network);
     setState(() => addressValid = check);
     widget.onAddressChanged?.call(value);
   }

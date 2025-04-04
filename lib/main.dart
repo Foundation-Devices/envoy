@@ -52,7 +52,6 @@ Future<void> main() async {
   final hasAccounts =
       LocalStorage().prefs.containsKey(MigrationManager.AccountsPrefKey);
   final migrationStatus = EnvoyStorage().getBool(migrationPrefs) ?? false;
-  kPrint("Migration status: $migrationStatus hasAccounts: $hasAccounts");
   if (migrationStatus == false && hasAccounts) {
     runApp(MigrationApp());
   } else if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
@@ -69,8 +68,6 @@ Future<void> initSingletons() async {
   } catch (e, stack) {
     kPrint("Error initializing BluetoothManager: $e", stackTrace: stack);
   }
-
-  //
   // // This is notoriously low on iOS, causing 'too many open files errors'
   // kPrint("Process nofile_limit: ${getNofileLimit()}");
   //
@@ -82,6 +79,16 @@ Future<void> initSingletons() async {
   await LocalStorage.init();
 
   await NgAccountManager.init();
+
+  NgAccountManager().addListener(
+    () {
+      print("Change Recieved ${NgAccountManager().accounts.map(
+        (e) {
+          return "${e.name} ${e.network} ";
+        },
+      )}");
+    },
+  );
   await NTPUtil.init();
   EnvoyScheduler.init();
   await KeysManager.init();

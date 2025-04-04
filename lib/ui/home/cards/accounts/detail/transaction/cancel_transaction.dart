@@ -128,23 +128,23 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
     // final feeRate = Fees().fastRate(selectedAccount.wallet.network);
     //
     try {
-    //   psbt = await selectedAccount.wallet
-    //       .cancelTx(widget.transaction.txId, doNotSpend, feeRate);
-    //
-    //   rawTx = await selectedAccount.wallet
-    //       .decodeWalletRawTx(psbt.rawTx, selectedAccount.wallet.network);
-    //
-    //   final originalTxRawHex = await selectedAccount.wallet
-    //       .getRawTxFromTxId(widget.transaction.txId);
-    //
-    //   originalTxRaw = await selectedAccount.wallet
-    //       .decodeWalletRawTx(originalTxRawHex, selectedAccount.wallet.network);
-    //
-    //   if (mounted) {
-    //     setState(() {
-    //       _canCancel = true;
-    //     });
-    //   }
+      //   psbt = await selectedAccount.wallet
+      //       .cancelTx(widget.transaction.txId, doNotSpend, feeRate);
+      //
+      //   rawTx = await selectedAccount.wallet
+      //       .decodeWalletRawTx(psbt.rawTx, selectedAccount.wallet.network);
+      //
+      //   final originalTxRawHex = await selectedAccount.wallet
+      //       .getRawTxFromTxId(widget.transaction.txId);
+      //
+      //   originalTxRaw = await selectedAccount.wallet
+      //       .decodeWalletRawTx(originalTxRawHex, selectedAccount.wallet.network);
+      //
+      //   if (mounted) {
+      //     setState(() {
+      //       _canCancel = true;
+      //     });
+      //   }
     } catch (e, s) {
       debugPrintStack(stackTrace: s);
       kPrint(e);
@@ -461,7 +461,7 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                       ).show(context);
                       return;
                     } else {
-                      if (account.isHot() == false) {
+                      if (account.isHot == false) {
                         await navigator.push(MaterialPageRoute(
                             builder: (context) => Builder(builder: (context) {
                                   return background(
@@ -548,7 +548,7 @@ class _CancelTransactionProgressState
     if (account == null) {
       return;
     }
-    int port = Settings().getPort(account.config().network);
+    int port = Settings().getPort(account.network);
     try {
       //TODO: broadcast tx using NgWallet
       // await account.wallet.broadcastTx(
@@ -561,7 +561,7 @@ class _CancelTransactionProgressState
               newTxId: widget.cancelTx.txid,
               oldFee: widget.originalTx.fee,
               newFee: widget.cancelTx.fee,
-              accountId: account.config().id,
+              accountId: account.id,
               rbfTimeStamp: DateTime.now().millisecondsSinceEpoch,
               previousTxTimeStamp:
                   widget.originalTx.date.millisecondsSinceEpoch)
@@ -593,7 +593,7 @@ class _CancelTransactionProgressState
 
       await EnvoyStorage().addPendingTx(
         psbt.txid,
-        account.config().id,
+        account.id,
         DateTime.now(),
         TransactionType.pending,
         psbt.fee,

@@ -23,7 +23,6 @@ import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/components/ramp_widget.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
-import 'package:envoy/ui/home/home_state.dart';
 import 'package:ngwallet/ngwallet.dart';
 
 GlobalKey<ChooseAccountState> chooseAccountKey =
@@ -76,17 +75,17 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
       selectedAccount = account;
       address = null;
     });
-    if (accountAddressCache.containsKey(selectedAccount?.config().id!) &&
-        accountAddressCache[selectedAccount?.config().id] != null) {
+    if (accountAddressCache.containsKey(selectedAccount?.id!) &&
+        accountAddressCache[selectedAccount?.id] != null) {
       setState(() {
-        address = accountAddressCache[selectedAccount?.config().id];
+        address = accountAddressCache[selectedAccount?.id];
       });
     } else {
-      String? address = await account.nextAddress();
+      String? address = account.nextAddress;
       // Separate setState call to avoid UI lag during the async operation
       setState(() {
         this.address = address;
-        accountAddressCache[selectedAccount!.config().id] = address;
+        accountAddressCache[selectedAccount!.id] = address;
       });
     }
   }
@@ -177,7 +176,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (!selectedAccount!.isHot())
+                  if (!selectedAccount!.isHot)
                     Padding(
                       padding:
                           const EdgeInsets.only(bottom: EnvoySpacing.small),
@@ -197,7 +196,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                                 width: MediaQuery.of(context).size.width * 0.9,
                                 child: VerifyAddressDialog(
                                   address: address!,
-                                  accountName: selectedAccount!.config().name,
+                                  accountName: selectedAccount!.name,
                                 ),
                               ),
                             );

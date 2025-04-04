@@ -39,11 +39,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart' as rive;
 import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/ui/shield_path.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 //ignore: must_be_immutable
 class TxReview extends ConsumerStatefulWidget {
@@ -172,7 +172,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                     await showTagDialog(
                         context, account, rootContext, transactionModel);
                   } else {
-                    if (account.isHot() ||
+                    if (account.isHot ||
                         ref.read(spendTransactionProvider).isPSBTFinalized) {
                       if (context.mounted) {
                         broadcastTx(context);
@@ -208,7 +208,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
         context: context,
         builder: Builder(
           builder: (context) => ChooseTagForStagingTx(
-            accountId: account.config().id,
+            accountId: account.id,
             onEditTransaction: () {
               Navigator.pop(context);
               editTransaction(context, ref);
@@ -216,7 +216,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
             hasMultipleTagsInput: true,
             onTagUpdate: () async {
               Navigator.pop(context);
-              if (account.isHot() ||
+              if (account.isHot ||
                   ref.read(spendTransactionProvider).isPSBTFinalized) {
                 broadcastTx(context);
               } else {
@@ -466,11 +466,11 @@ class _TransactionReviewScreenState
     Psbt psbt = transactionModel.psbt!;
     int amount = transactionModel.amount;
 
-    String header = (account.isHot() || transactionModel.isPSBTFinalized)
+    String header = (account.isHot || transactionModel.isPSBTFinalized)
         ? S().coincontrol_tx_detail_heading
         : S().coincontrol_txDetail_heading_passport;
 
-    String subHeading = (account.isHot() || transactionModel.isPSBTFinalized)
+    String subHeading = (account.isHot || transactionModel.isPSBTFinalized)
         ? S().coincontrol_tx_detail_subheading
         : S().coincontrol_txDetail_subheading_passport;
 
@@ -517,7 +517,7 @@ class _TransactionReviewScreenState
                 const Padding(padding: EdgeInsets.all(6)),
                 EnvoyButton(
                   enabled: !transactionModel.loading,
-                  (account.isHot() || transactionModel.isPSBTFinalized)
+                  (account.isHot || transactionModel.isPSBTFinalized)
                       ? S().coincontrol_tx_detail_cta1
                       : S().coincontrol_txDetail_cta1_passport,
                   onTap: () {

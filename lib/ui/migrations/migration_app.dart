@@ -110,9 +110,8 @@ class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
                 children: [
                   GestureDetector(
                     onLongPress: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(
-                              builder: (context) => const EnvoyLogsScreen()));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const EnvoyLogsScreen()));
                     },
                     child: Container(
                       height: 200,

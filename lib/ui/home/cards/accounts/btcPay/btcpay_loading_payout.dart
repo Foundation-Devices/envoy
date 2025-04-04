@@ -5,7 +5,6 @@
 import 'dart:async';
 import 'package:envoy/business/btcpay_voucher.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_dialog.dart';
 import 'package:ngwallet/ngwallet.dart';
 
@@ -32,7 +31,8 @@ class BtcPayLoadingPayoutState extends State<BtcPayLoadingPayout> {
   }
 
   Future<void> _createPayout() async {
-    String address = await widget.account.nextAddress();
+    //TODO: address for vouchers
+    String address = widget.account.nextAddress;
     BtcPayVoucherRedeemResult result =
         await widget.voucher.createPayout(address);
 

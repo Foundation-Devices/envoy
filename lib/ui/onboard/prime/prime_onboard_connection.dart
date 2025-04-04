@@ -64,7 +64,6 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
         kPrint("Error getting permissions: $e");
       }
     });
-
   }
 
   _connectBLE() async {

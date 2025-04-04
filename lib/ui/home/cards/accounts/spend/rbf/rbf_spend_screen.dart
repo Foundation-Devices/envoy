@@ -46,7 +46,6 @@ import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart' as rive;
 import 'package:ngwallet/src/exceptions.dart';
-import 'package:ngwallet/src/generated_bindings.dart' as rust;
 import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/ui/components/pop_up.dart';
@@ -103,10 +102,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     EnvoyAccount? account = ref.watch(selectedAccountProvider);
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
 
-    String subHeading =
-        (account!.isHot() || transactionModel.isPSBTFinalized)
-            ? S().coincontrol_tx_detail_subheading
-            : S().coincontrol_txDetail_subheading_passport;
+    String subHeading = (account!.isHot || transactionModel.isPSBTFinalized)
+        ? S().coincontrol_tx_detail_subheading
+        : S().coincontrol_txDetail_subheading_passport;
 
     bool canPop =
         !(_broadcastProgress == BroadcastProgress.inProgress) && !_rebuildingTx;
@@ -540,7 +538,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     }
     final psbt = rbfSpendState.psbt;
 
-    if (account.isHot()) {
+    if (account.isHot) {
       broadcastTx(account, psbt, context);
     } else {
       if (finalizedPsbt != null) {
@@ -571,12 +569,13 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     }
   }
 
-  Future broadcastTx(EnvoyAccount account, Psbt psbt, BuildContext context) async {
+  Future broadcastTx(
+      EnvoyAccount account, Psbt psbt, BuildContext context) async {
     final rbfState = ref.read(rbfSpendStateProvider);
     if (rbfState == null) {
       return;
     }
-    final accountId = account.config().id;
+    final accountId = account.id;
     Psbt psbt = finalizedPsbt ?? rbfState.psbt;
     try {
       setState(() {
@@ -626,7 +625,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
           RBFState(
             originalTxId: originalTx.txId,
             newTxId: psbt.txid,
-            accountId: account.config().id,
+            accountId: account.id,
             newFee: psbt.fee,
             oldFee: originalTx.fee,
             previousTxTimeStamp: originalTx.date.millisecondsSinceEpoch,
@@ -754,7 +753,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       }
       ref.read(spendFeeProcessing.notifier).state = true;
       ref.read(spendFeeRateProvider.notifier).state = fee;
-      final lockedUtXOs = ref.read(lockedUtxosProvider(account.config().id));
+      final lockedUtXOs = ref.read(lockedUtxosProvider(account.id));
       final rbfState = ref.read(rbfSpendStateProvider);
       if (rbfState == null) {
         return;
@@ -825,7 +824,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
   //if the user changed coin selection, recalculate the fee boundaries and rebuild the boosted tx
   _editCoins(BuildContext context) async {
     final selectedAccount = ref.read(selectedAccountProvider);
-    final accountId = selectedAccount?.config().id ?? "";
+    final accountId = selectedAccount?.id ?? "";
     if (selectedAccount == null) {
       return;
     }
@@ -998,7 +997,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
 
   String getButtonText(BuildContext context) {
     EnvoyAccount? account = ref.read(selectedAccountProvider);
-    if (account != null && !account.isHot()) {
+    if (account != null && !account.isHot) {
       if (finalizedPsbt == null) {
         return S().coincontrol_txDetail_cta1_passport;
       }

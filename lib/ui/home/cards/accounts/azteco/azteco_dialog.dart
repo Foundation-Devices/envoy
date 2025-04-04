@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/home/cards/accounts/azteco/azteco_redeem_modal.dart';
 import 'package:envoy/ui/home/cards/accounts/azteco/loading_modal.dart';
 import 'package:envoy/business/azteco_voucher.dart';
-import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:envoy/ui/home/cards/accounts/azteco/azteco_connection_modal_fail.dart';
 import 'package:envoy/ui/home/cards/accounts/azteco/azteco_redeem_modal_fail.dart';

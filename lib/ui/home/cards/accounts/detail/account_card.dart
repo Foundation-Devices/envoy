@@ -138,10 +138,11 @@ class _AccountCardState extends ConsumerState<AccountCard>
   @override
   Widget build(BuildContext context) {
     ref.watch(settingsProvider);
-    account = ref.read(selectedAccountProvider) ?? NgAccountManager().accounts[0];
+    account =
+        ref.read(selectedAccountProvider) ?? NgAccountManager().accounts[0];
 
     List<Transaction> transactions =
-        ref.watch(filteredTransactionsProvider(account.config().id));
+        ref.watch(filteredTransactionsProvider(account.id));
 
     bool txFiltersEnabled = ref.watch(isTransactionFiltersEnabled);
     bool isMenuOpen = ref.watch(homePageOptionsVisibilityProvider);
@@ -170,12 +171,12 @@ class _AccountCardState extends ConsumerState<AccountCard>
                   right: 20,
                 ),
                 //TODO: use EnvoyAccount
-                // child: AccountListTile(account, onTap: () {
-                //   Navigator.pop(context);
-                //   ref.read(homePageAccountsProvider.notifier).state =
-                //       HomePageAccountsState(
-                //           HomePageAccountsNavigationState.list);
-                // }),
+                child: AccountListTile(account, onTap: () {
+                  Navigator.pop(context);
+                  ref.read(homePageAccountsProvider.notifier).state =
+                      HomePageAccountsState(
+                          HomePageAccountsNavigationState.list);
+                }),
               ),
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 200),
@@ -196,7 +197,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                       left: 20,
                       right: 20,
                       top: EnvoySpacing.small),
-                  child: account.config().dateSynced == null
+                  child: account.dateSynced == null
                       ? ListView.builder(
                           padding: EdgeInsets.zero,
                           itemCount: 4,
@@ -252,7 +253,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                     child: EnvoyTextButton(
                         label: S().receive_tx_list_receive,
                         onTap: () {
-                          context.go(ROUTE_ACCOUNT_RECEIVE, extra: account.config().id);
+                          context.go(ROUTE_ACCOUNT_RECEIVE, extra: account.id);
                         }),
                   ),
                 ),
@@ -531,7 +532,7 @@ class TransactionListTile extends ConsumerWidget {
                       Consumer(
                         builder: (context, ref, child) {
                           bool hide = ref.watch(
-                              balanceHideStateStatusProvider(account.config().id));
+                              balanceHideStateStatusProvider(account.id));
                           if (hide) {
                             return const LoaderGhost(
                               width: 100,
@@ -734,7 +735,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
 
   @override
   Widget build(context) {
-    final account = ref.watch(accountStateProvider(widget.account.config().id));
+    final account = ref.watch(accountStateProvider(widget.account.id));
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -766,7 +767,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
             textEntry = TextEntry(
               focusNode: focusNode,
               maxLength: 20,
-              placeholder: account?.config().name ?? "",
+              placeholder: account?.name ?? "",
             );
             showEnvoyDialog(
               context: context,
@@ -808,7 +809,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
               style: const TextStyle(color: EnvoyColors.accentSecondary)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
-            if (!widget.account.isHot()) {
+            if (!widget.account.isHot) {
               showEnvoyDialog(
                   context: context,
                   dialog: EnvoyPopUp(
