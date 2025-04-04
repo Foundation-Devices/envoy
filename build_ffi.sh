@@ -31,12 +31,6 @@ rustup target add x86_64-unknown-linux-gnu
 # Compile for desktop
 cargo build
 
-# TODO: find a way to fix this:
-# For some reason cbindgen generates a full-blown C++ templated type for a raw pointer to a Rust Mutex
-# I reckon it should output an opaque pointer instead. Not sure why it's doing this. It's set to C
-# Using this workaround for now:
-sed -i 's/Mutex<Wallet<Tree>>/const char/g' packages/wallet/native/wallet-ffi/target/wallet-ffi.hpp
-
 frb_packages=("bluart" "foundation_api")
 
 # Generate Dart FFI for each package

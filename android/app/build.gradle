@@ -30,7 +30,7 @@ if (flutterVersionName == null) {
 
 
 android {
-    compileSdkVersion 34
+    compileSdkVersion 35
     ndkVersion "26.1.10909125"
 
     sourceSets {
@@ -82,8 +82,8 @@ android {
     compileOptions {
         // Flag to enable support for the new language APIs
         coreLibraryDesugaringEnabled true
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
 }
 

@@ -71,6 +71,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Passport"),
         "accounts_screen_walletType_defaultName":
             MessageLookupByLibrary.simpleMessage("Cartera Móvil"),
+        "accounts_switchDefault":
+            MessageLookupByLibrary.simpleMessage("Predeterminado"),
+        "accounts_switchPassphrase":
+            MessageLookupByLibrary.simpleMessage("Passphrase"),
         "activity_boosted": MessageLookupByLibrary.simpleMessage("Acelerado"),
         "activity_canceling":
             MessageLookupByLibrary.simpleMessage("Cancelando"),
@@ -136,9 +140,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "azteco_redeem_modal_success_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "En breve aparecerá una transacción entrante en tu cuenta."),
+        "backups_advancedBackups": MessageLookupByLibrary.simpleMessage(
+            "Copias de Seguridad Avanzadas"),
         "backups_downloadBIP329BackupFile":
             MessageLookupByLibrary.simpleMessage(
-                "Descargar copia de seguridad BIP-329"),
+                "Exportar Notas y Etiquetas (BIP-329)"),
+        "backups_downloadSettingsDataBackupFile":
+            MessageLookupByLibrary.simpleMessage(
+                "Descargar Copia de Seguridad de Configuración y Datos"),
+        "backups_downloadSettingsMetadataBackupFile":
+            MessageLookupByLibrary.simpleMessage(
+                "Descargar Copia de Seguridad de Ajustes y Metadatos"),
         "backups_erase_wallets_and_backups":
             MessageLookupByLibrary.simpleMessage(
                 "Eliminar Carteras y Copias de Seguridad"),
@@ -153,6 +165,32 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Las cuentas de Passport conectadas no se eliminarán como parte de este proceso.\n\nAntes de eliminar tu Cartera Envoy, vamos a asegurarnbos de que tu semilla y de copia de seguridad estén bien guardados.\n"),
         "backups_erase_wallets_and_backups_show_seed_CTA":
             MessageLookupByLibrary.simpleMessage("Mostrar semilla"),
+        "backups_magicToManualErrorModal_header":
+            MessageLookupByLibrary.simpleMessage("No Se Puede Continuar"),
+        "backups_magicToManualErrorModal_subheader":
+            MessageLookupByLibrary.simpleMessage(
+                "La Copia de Seguridad Mágica de Envoy no puede desactivarse mientras la Copia de Seguridad de Passport Prime esté activa.\n\nPara continuar, desactiva primero la Copia de Seguridad de Passport Prime en el dispositivo."),
+        "backups_manualToMagicrModal_header":
+            MessageLookupByLibrary.simpleMessage(
+                "Habilitar Copia de Seguridad Mágica"),
+        "backups_manualToMagicrModal_subheader":
+            MessageLookupByLibrary.simpleMessage(
+                "Esto habilitará la Copia de Seguridad Mágica de Envoy. Tu semilla de Envoy se encriptará y se hará una Copia de Seguridad en tu cuenta de Apple o Google. Los datos de Envoy se encriptarán y se enviarán a los servidores de Foundation."),
+        "backups_primeMagicBackups": MessageLookupByLibrary.simpleMessage(
+            "Copia de Seguridad Mágica de Passport Prime\n\"{0}\""),
+        "backups_primeMasterKeyBackup": MessageLookupByLibrary.simpleMessage(
+            "Copia de Seguridad de Clave Maestra (1 parte de 3)"),
+        "backups_settingsAndData":
+            MessageLookupByLibrary.simpleMessage("Configuración y Datos"),
+        "backups_settingsAndMetadata":
+            MessageLookupByLibrary.simpleMessage("Ajustes y Metadatos"),
+        "backups_toggle_envoy_magic_backups":
+            MessageLookupByLibrary.simpleMessage(
+                "Copias de Seguridad Mágica de Envoy"),
+        "backups_toggle_envoy_mobile_wallet_key":
+            MessageLookupByLibrary.simpleMessage("Clave de Cartera Móvil"),
+        "backups_viewMobileWalletSeed": MessageLookupByLibrary.simpleMessage(
+            "Ver Semilla de Cartera Móvil"),
         "bottomNav_accounts": MessageLookupByLibrary.simpleMessage("Cuentas"),
         "bottomNav_activity": MessageLookupByLibrary.simpleMessage("Actividad"),
         "bottomNav_devices":
@@ -490,8 +528,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Etiqueta"),
         "coindetails_overlay_transactionID":
             MessageLookupByLibrary.simpleMessage("ID de Transacción"),
+        "common_button_contactSupport":
+            MessageLookupByLibrary.simpleMessage("Contactar Servicio Técnico"),
         "component_Apply":
             MessageLookupByLibrary.simpleMessage("Aplicar Filtro"),
+        "component_advanced": MessageLookupByLibrary.simpleMessage("Avanzado"),
         "component_back": MessageLookupByLibrary.simpleMessage("Atrás"),
         "component_cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
         "component_confirm": MessageLookupByLibrary.simpleMessage("Confirmar"),
@@ -500,7 +541,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_delete": MessageLookupByLibrary.simpleMessage("Eliminar"),
         "component_device": MessageLookupByLibrary.simpleMessage("Dispositivo"),
         "component_dismiss": MessageLookupByLibrary.simpleMessage("Cerrar"),
-        "component_done": MessageLookupByLibrary.simpleMessage("Listo"),
+        "component_done": MessageLookupByLibrary.simpleMessage("Hecho"),
         "component_dontShowAgain":
             MessageLookupByLibrary.simpleMessage("No volver a mostrar"),
         "component_filter": MessageLookupByLibrary.simpleMessage("Filtrar"),
@@ -515,6 +556,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_next": MessageLookupByLibrary.simpleMessage("Siguiente"),
         "component_no": MessageLookupByLibrary.simpleMessage("No"),
         "component_ok": MessageLookupByLibrary.simpleMessage("OK"),
+        "component_recover": MessageLookupByLibrary.simpleMessage("Recuperar"),
         "component_redeem": MessageLookupByLibrary.simpleMessage("Canjear"),
         "component_reset":
             MessageLookupByLibrary.simpleMessage("Restablecer filtro"),
@@ -571,8 +613,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_account_tos_cta": MessageLookupByLibrary.simpleMessage("Acepto"),
         "envoy_account_tos_heading": MessageLookupByLibrary.simpleMessage(
             "Por favor, revise y acepte los Términos de Uso de Passport"),
-        "envoy_account_tos_subheading": MessageLookupByLibrary.simpleMessage(
-            "Last updated: May 16, 2021.\n\nBy purchasing, using or continuing to use a Passport hardware wallet (“Passport“), you, the purchaser of Passport, agree to be bound by these terms of and use (the “Passport Terms of Use” or “Terms”).\n\n1. Use of Passport\n\nPassport includes functionality to store and facilitate the transfer of bitcoin (“Bitcoin”) and which may be used to facilitate various types of transactions and other activities (“Transactions”). You understand and agree that Foundation Devices (“Foundation”, “We”, or “Us“) is not responsible for, and has no obligation or liability to you or others in respect of any Transactions. You agree to comply with all applicable laws in your use of Products (including all Transactions), including without limitation any anti-money laundering laws or regulations.\n\n2. Security\n\nYou understand and agree that control and access to Bitcoin stored on any Product is based upon physical possession and control of such Product and that any person given physical possession of the Product may remove or transfer any or all Bitcoin stored on such Product.\n\n3. BACKUPS\nYou are solely responsible for generating and making backups of your recovery phrase and for preserving and maintaining the security and confidentiality of your recovery phrase and your PIN. You acknowledge and agree that failure to do so may result in the complete loss of all Bitcoin stored on Passport and that we have no obligation to liability whatsoever for any such loss.\n\n4. MODIFICATIONS\nYou acknowledge and agree that any modifications to Passport, the installation of any additional software or firmware on a Passport or the use of Passport in connection with any other software or equipment are at your sole risk, and that we have no obligation or liability in respect thereof or in respect of any resulting loss of Bitcoin, damage to Passport, failure of the Passport or errors in storing Bitcoin or processing Transactions;\n\n5. OPEN SOURCE LICENSES\nPassport includes software licensed under the GNU General Public License v3 and other open source licenses, as identified in documentation provided with Passport. Your use of such software is subject to the applicable open source licenses and, to the extent such open source licenses conflicts with this Agreement, the terms of such licenses will prevail.\n\n6. ACKNOWLEDGEMENT AND ASSUMPTION OF RISK\nYou understand and agree that:\n\n(a) there are risks associated with the use and holding of Bitcoin and you represent and warrant that you are knowledgeable and/or experienced in matters relating to the use of Bitcoin and are capable of evaluating the benefits and risks of using and holding Bitcoin and fully understand the nature of Bitcoin, the limitations and restrictions on its liquidity and transferability and are capable of bearing the economic risk of holding and transacting using Bitcoin;\n\n(b) the continued ability to use Bitcoin is dependent on many elements beyond our control, including without limitation the publication of blocks, network connectivity, hacking or changes in the technical and other standards, policies and procedures applicable to Bitcoin;\n\n(c) no regulatory authority has reviewed or passed on the merits, legality or fungibility of Bitcoin;\n\n(d) there is no government or other insurance covering Bitcoin, the loss or theft of Bitcoin, or any loss in the value of Bitcoin;\n\n(e) the use of Bitcoin or the Products may become subject to regulatory controls that limit, restrict, prohibit or otherwise impose conditions on your use of same;\n\n(f) Bitcoin do not constitute a currency, asset, security, negotiable instrument, or other form of property and do not have any intrinsic or inherent value;\n\n(g) the value of and/or exchange rates for Bitcoin may fluctuate significantly and may result in you incurring significant losses;\n\n(h) Transactions may have tax consequences (including obligations to report, collect or remit taxes) and you are solely responsible for understanding and complying with all applicable tax laws and regulations; and\n\n(i) the use of Bitcoin or Products may be illegal or subject to regulation in certain jurisdictions, and it is your responsibility to ensure that you comply with the laws of any jurisdiction in which you use Bitcoin or Products.\n\n7. TRANSFER OF PASSPORT\nYou may transfer or sell Passport to others on the condition that you ensure that the transferee or purchaser agrees to be bound by the then-current form of these Terms available on our website at the time of transfer.\n\n8. RESTRICTIONS\nYou shall not:\n\n(a) use Passport in a manner or for a purpose that: (i) is illegal or otherwise contravenes applicable law (including the facilitation or furtherance of any criminal or fraudulent activity or the violation of any anti-money laundering legislation); or (ii) infringes upon the lawful rights of others;\n\n(b) interfere with the security or integrity of Passport;\n\n(c) remove, destroy, cover, obfuscate or alter in any manner any notices, legends, trademarks, branding or logos appearing on or contained in Passport; or\n\n(d) attempt, or cause, permit or encourage any other person, to do any of the foregoing.\n\nNotwithstanding the foregoing, you may investigate security and other vulnerabilities, provided you do so in a reasonable and responsible manner in compliance with applicable law and our responsible disclosure policy and otherwise use good faith efforts to minimize or avoid contravention of any of the foregoing.\n\n9. REPRESENTATIONS AND WARRANTIES\nYou represent, warrant and covenant that:\n\n(a) you have the capacity to, and are and will be free to, enter into and to fully perform your obligations under these Terms and that no agreement or understanding with any other person exists or will exist which would interfere with such obligations; and\n\n(b) these Terms constitute a legal, valid and binding obligation upon you.\n\n10. OWNERSHIP\nExcept for the limited rights of use expressly granted to you under these Terms, all right, title and interest (including all copyrights, trademarks, service marks, patents, inventions, trade secrets, intellectual property rights and other proprietary rights) in and to Passport are and shall remain exclusively owned by us and our licensors. All trade names, company names, trademarks, service marks and other names and logos are the proprietary marks of us or our licensors, and are protected by law and may not be copied, imitated or used, in whole or in part, without the consent of their respective owners. These Terms do not grant you any rights in respect of any such marks. You understand and agree that any feedback, input, suggestions, recommendations, improvements, changes, specifications, test results, or other data or information that you provide or make available to us arising from or related to your use of the Products or Software shall become our exclusive property and may be used by us to modify, enhance, maintain and improve Passport without any obligation or payment to you whatsoever.\n\n11. THIRD PARTY PRODUCTS\nYou acknowledge and agree that you will require certain third party equipment, products, software and services in order to use the Products and may also use optional third party equipment, products, software and services that enhance or complement such use (collectively, “Third Party Products”). You acknowledge and agree that failure to use or procure Third Party Products that meet the minimum requirements for Products, or failure to properly configure or setup Third Party Products may result in the inability to use the Products and/or processing failures or errors. Third Party Products include, without limitation, computers, mobile devices, networking equipment, operating system software, web browsers and internet connectivity. We may also identify, recommend, reference or link to optional Third Party Products on our website. You acknowledge and agree that: (a) Third Party Products are be governed by separate licenses, agreements or terms and conditions and we have no obligation or liability to you in respect thereof; and (b) you are solely responsible for procuring any Third Party Products at your cost and expense, and are solely responsible for compliance with any applicable licenses, agreements or terms and conditions governing same.\n\n12. INDEMNITY\nYou agree to indemnify and hold Foundation Devices (and our officers, employees, and agents) harmless, including costs and attorneys’ fees, from any claim or demand due to or arising out of (a) your use of Passport, (b) your violation of this Agreement or (c) your violation of applicable laws or regulations. We reserve the right, at your expense, to assume the exclusive defense and control of any matter for which you are required to indemnify us and you agree to cooperate with our defense of these claims. You agree not to settle any matter without our prior written consent. We will use reasonable efforts to notify you of any such claim, action or proceeding upon becoming aware of it.\n\n13. DISCLAIMERS\nPASSPORT IS PROVIDED “AS-IS” AND “AS AVAILABLE” AND WE (AND OUR SUPPLIERS) EXPRESSLY DISCLAIM ANY WARRANTIES AND CONDITIONS OF ANY KIND, WHETHER EXPRESS OR IMPLIED, INCLUDING THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, QUIET ENJOYMENT, ACCURACY, OR NON-INFRINGEMENT. WE (AND OUR SUPPLIERS) MAKE NO WARRANTY THAT PASSPORT: (A) WILL MEET YOUR REQUIREMENTS; (B) WILL BE AVAILABLE ON AN UNINTERRUPTED, TIMELY, SECURE, OR ERROR-FREE BASIS; OR (C) WILL BE ACCURATE, RELIABLE, FREE OF VIRUSES OR OTHER HARMFUL CODE, COMPLETE, LEGAL, OR SAFE.\n\nSOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF IMPLIED WARRANTIES, SO THE ABOVE EXCLUSION MAY NOT APPLY TO YOU.\n\n14. LIMITATION ON LIABILITY\nYOU AGREE THAT, TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, OUR AGGREGATE LIABILITY ARISING FROM OR RELATED TO THESE TERMS OR PASSPORT IN ANY MANNER WILL BE LIMITED TO DIRECT DAMAGES NOT TO EXCEED THE PURCHASE PRICE YOU HAVE PAID TO US FOR PASSPORT (EXCLUDING SHIPPING CHARGES AND TAXES). TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL WE (AND OUR SUPPLIERS) BE LIABLE FOR ANY CONSEQUENTIAL, INCIDENTAL, INDIRECT, SPECIAL, PUNITIVE, OR OTHER DAMAGES WHATSOEVER (INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF REVENUE, PROFITS, OR EXPECTED SAVINGS, BUSINESS INTERRUPTION, PERSONAL INJURY, LOSS OF PRIVACY, LOSS OF DATA OR INFORMATION OR OTHER PECUNIARY OR INTANGIBLE LOSS) ARISING OUT OF THESE TERMS OR THE USE OF OR INABILITY TO USE PASSPORT, EVEN IF WE FORESEE OR HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.\n\nSOME JURISDICTIONS DO NOT ALLOW THE LIMITATION OR EXCLUSION OF LIABILITY FOR INCIDENTAL OF CONSEQUENTIAL DAMAGES, SO THE ABOVE LIMITATION OR EXCLUSION MAY NOT APPLY TO YOU.\n\n15. RELEASE\nYou hereby release and forever discharge us (and our officers, employees, agents, successors, and assigns) from, and hereby waive and relinquish, each and every past, present and future dispute, claim, controversy, demand, right, obligation, liability, action and cause of action of every kind and nature (including personal injuries, death, and property damage), that has arisen or arises directly or indirectly out of, or relates directly or indirectly to, use of Passport. IF YOU ARE A CALIFORNIA RESIDENT, YOU HEREBY WAIVE CALIFORNIA CIVIL CODE SECTION 1542 IN CONNECTION WITH THE FOREGOING, WHICH STATES: “A GENERAL RELEASE DOES NOT EXTEND TO CLAIMS WHICH THE CREDITOR DOES NOT KNOW OR SUSPECT TO EXIST IN HIS OR HER FAVOR AT THE TIME OF EXECUTING THE RELEASE, WHICH IF KNOWN BY HIM OR HER MUST HAVE MATERIALLY AFFECTED HIS OR HER SETTLEMENT WITH THE DEBTOR.”\n\n16. SURVIVAL\nNeither the expiration nor the earlier termination of your account will release you from any obligation or liability that accrued prior to such expiration or termination. The provisions of these Terms requiring performance or fulfilment after the expiration or earlier termination of your account and any other provisions hereof, the nature and intent of which is to survive termination or expiration, will survive.\n\n17. PRIVACY POLICY\nPlease review our Privacy Policy, located at https://foundationdevices.com/privacy, which governs the use of personal information.\n\n18. DISPUTE RESOLUTION\nPlease read the following arbitration agreement in this section (“Arbitration Agreement”) carefully. It requires U.S. users to arbitrate disputes with Foundation Devices and limits the manner in which you can seek relief from us.\n\n(a) Applicability of Arbitration Agreement. You agree that any dispute, claim, or request for relief relating in any way to your use of Passport will be resolved by binding arbitration, rather than in court, except that (a) you may assert claims or seek relief in small claims court if your claims qualify; and (b) you or we may seek equitable relief in court for infringement or other misuse of intellectual property rights (such as trademarks, trade dress, domain names, trade secrets, copyrights, and patents). This Arbitration Agreement shall apply, without limitation, to all disputes or claims and requests for relief that arose or were asserted before the effective date of this Agreement or any prior version of this Agreement.\n\n(b) Arbitration Rules and Forum. The Federal Arbitration Act governs the interpretation and enforcement of this Arbitration Agreement. To begin an arbitration proceeding, you must send a letter requesting arbitration and describing your dispute or claim or request for relief to our registered agent. The arbitration will be conducted by JAMS, an established alternative dispute resolution provider. Disputes involving claims, counterclaims, or request for relief under \$250,000, not inclusive of attorneys’ fees and interest, shall be subject to JAMS’s most current version of the Streamlined Arbitration Rules and procedures available at https://jamsadr.com/rules-streamlined-arbitration/; all other disputes shall be subject to JAMS’s most current version of the Comprehensive Arbitration Rules and Procedures, available at https://jamsadr.com/rules-comprehensive-arbitration/. JAMS’s rules are also available at https://jamsadr.com or by calling JAMS at 800-352-5267. If JAMS is not available to arbitrate, the parties will select an alternative arbitral forum. If the arbitrator finds that you cannot afford to pay JAMS’s filing, administrative, hearing and/or other fees and cannot obtain a waiver from JAMS, Company will pay them for you. In addition, Company will reimburse all such JAMS’s filing, administrative, hearing and/or other fees for disputes, claims, or requests for relief totaling less than \$10,000 unless the arbitrator determines the claims are frivolous.\n\nYou may choose to have the arbitration conducted by telephone, based on written submissions, or in person in the country where you live or at another mutually agreed location. Any judgment on the award rendered by the arbitrator may be entered in any court of competent jurisdiction.\n\n(c) Authority of Arbitrator. The arbitrator shall have exclusive authority to (a) determine the scope and enforceability of this Arbitration Agreement and (b) resolve any dispute related to the interpretation, applicability, enforceability or formation of this Arbitration Agreement including, but not limited to, any assertion that all or any part of this Arbitration Agreement is void or voidable. The arbitration will decide the rights and liabilities, if any, of you and Company. The arbitration proceeding will not be consolidated with any other matters or joined with any other cases or parties. The arbitrator shall have the authority to grant motions dispositive of all or part of any claim. The arbitrator shall have the authority to award monetary damages and to grant any non-monetary remedy or relief available to an individual under applicable law, the arbitral forum’s rules, and the Agreement (including the Arbitration Agreement). The arbitrator shall issue a written award and statement of decision describing the essential findings and conclusions on which the award is based, including the calculation of any damages awarded. The arbitrator has the same authority to award relief on an individual basis that a judge in a court of law would have. The award of the arbitrator is final and binding upon you and us.\n\n(d) Waiver of Jury Trial. YOU AND COMPANY HEREBY WAIVE ANY CONSTITUTIONAL AND STATUTORY RIGHTS TO SUE IN COURT AND HAVE A TRIAL IN FRONT OF A JUDGE OR A JURY. You and Company are instead electing that all disputes, claims, or requests for relief shall be resolved by arbitration under this Arbitration Agreement, except as specified in Section 10(a) (Application of Arbitration Agreement) above. An arbitrator can award on an individual basis the same damages and relief as a court and must follow this Agreement as a court would. However, there is no judge or jury in arbitration, and court review of an arbitration award is subject to very limited review.\n\n(e) Waiver of Class or Other Non-Individualized Relief. ALL DISPUTES, CLAIMS, AND REQUESTS FOR RELIEF WITHIN THE SCOPE OF THIS ARBITRATION AGREEMENT MUST BE ARBITRATED ON AN INDIVIDUAL BASIS AND NOT ON A CLASS OR COLLECTIVE BASIS, ONLY INDIVIDUAL RELIEF IS AVAILABLE, AND CLAIMS OF MORE THAN ONE CUSTOMER OR USER CANNOT BE ARBITRATED OR CONSOLIDATED WITH THOSE OF ANY OTHER CUSTOMER OR USER. If a decision is issued stating that applicable law precludes enforcement of any of this section’s limitations as to a given dispute, claim, or request for relief, then such aspect must be severed from the arbitration and brought into the State or Federal Courts located in the Commonwealth of Massachusetts. All other disputes, claims, or requests for relief shall be arbitrated.\n\n(f) 30-Day Right to Opt Out. You have the right to opt out of the provisions of this Arbitration Agreement by sending written notice of your decision to opt out to: hello@foundationdevices.com, within thirty (30) days after first becoming subject to this Arbitration Agreement. Your notice must include your name and address, your Company username (if any), the email address you used to set up your Company account (if you have one), and an unequivocal statement that you want to opt out of this Arbitration Agreement. If you opt out of this Arbitration Agreement, all other parts of this Agreement will continue to apply to you. Opting out of this Arbitration Agreement has no effect on any other arbitration agreements that you may currently have, or may enter in the future, with us.\n\n(g) Severability. Except as provided in Section 10(e)(Waiver of Class or Other Non-Individualized Relief), if any part or parts of this Arbitration Agreement are found under the law to be invalid or unenforceable, then such specific part or parts shall be of no force and effect and shall be severed and the remainder of the Arbitration Agreement shall continue in full force and effect.\n\n(h) Survival of Agreement. This Arbitration Agreement will survive the termination of your relationship with Company.\n\nModification. Notwithstanding any provision in this Agreement to the contrary, we agree that if Company makes any future material change to this Arbitration Agreement, you may reject that change within thirty (30) days of such change becoming effective by writing Company at the following address: Foundation Devices, Inc., 6 Liberty Square #6018, Boston, MA 02109, Attn: CEO.\n\n19. GENERAL\n(a) Changes to Terms of Use. This Agreement is subject to occasional revision, and if we make any substantial changes, we may notify you by sending you an e-mail to the last e-mail address you provided to us (if any) and/or by prominently posting notice of the changes on our website. Any changes to this agreement will be effective upon the earlier of thirty (30) calendar days following our dispatch of an e-mail notice to you (if applicable) or thirty (30) calendar days following our posting of notice of the changes on our website. These changes will be effective immediately for new users of our website. You are responsible for providing us with your most current e-mail address. In the event that the last e-mail address that you have provided us is not valid, or for any reason is not capable of delivering to you the notice described above, our dispatch of the e-mail containing such notice will nonetheless constitute effective notice of the changes described in the notice. Continued use of Passport following notice of such changes will indicate your acknowledgement of such changes and agreement to be bound by the terms and conditions of such changes.\n\nChoice Of Law. The Agreement is made under and will be governed by and construed in accordance with the laws of the Commonwealth of Massachusetts, consistent with the Federal Arbitration Act, without giving effect to any principles that provide for the application of the law of another jurisdiction.\n\n(b) Entire Agreement. This Agreement constitutes the entire agreement between you and us regarding the use of Passport. Our failure to exercise or enforce any right or provision of this Agreement will not operate as a waiver of such right or provision. The section titles in this Agreement are for convenience only and have no legal or contractual effect. The word including means including without limitation. If any provision of this Agreement is, for any reason, held to be invalid or unenforceable, the other provisions of this Agreement will be unimpaired and the invalid or unenforceable provision will be deemed modified so that it is valid and enforceable to the maximum extent permitted by law. Your relationship to us is that of an independent contractor, and neither party is an agent or partner of the other. This Agreement, and your rights and obligations herein, may not be assigned, subcontracted, delegated, or otherwise transferred by you without our prior written consent, and any attempted assignment, subcontract, delegation, or transfer in violation of the foregoing will be null and void. The terms of this Agreement will be binding upon assignees.\n\n(c) Copyright/Trademark Information. Copyright © 2020, Foundation Devices, Inc. All rights reserved. All trademarks, logos and service marks displayed on the Site are our property or the property of other third parties. You are not permitted to use such trademarks, logos and service marks without our prior written consent or the consent of such third party which may own the Marks.\n\nContact Information:\n\nFoundation Devices, Inc.\n6 Liberty Square #6018\nBoston, MA 02109\nhello@foundationdevices.com"),
         "envoy_cameraPermissionRequest": MessageLookupByLibrary.simpleMessage(
             "Envoy requiere acceso a la cámara para escanear códigos QR. Vete a Ajustes y concede los permisos de la cámara."),
         "envoy_cameraPermissionRequest_Header":
@@ -596,7 +636,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "envoy_faq_answer_17": MessageLookupByLibrary.simpleMessage(
             "Cualquier persona que encuentre tu teléfono, primero tendría que superar el código PIN del sistema operativo de tu teléfono o la autenticación biométrica para acceder a Envoy. En el improbable caso de que logren esto, el atacante podría enviar fondos desde tu Cartera Móvil de Envoy y ver la cantidad de Bitcoin almacenada en cualquier cuenta de Passport conectada. Sin embargo, estos fondos de Passport no estrían en peligro ya que cualquier transacción debe ser autorizada por el dispositivo Passport emparejado."),
         "envoy_faq_answer_18": MessageLookupByLibrary.simpleMessage(
-            "Si se utiliza con un Passport, Envoy actúa como una cartera de \'solo lectura\' conectada a tu cartera hardware. Esto significa que Envoy puede preparar transacciones, pero son inútiles sin la autorización relevante, que solo Passport puede proporcionar. Passport es el \'almacenamiento en frío\', ¡y Envoy es simplemente la interfaz conectada a Internet! Si utilizas Envoy para crear una cartera móvil, donde la semilla se almacena de forma segura en tu teléfono, esa cartera móvil no se consideraría almacenamiento en frío. Esto no tiene ningún efecto en la seguridad de las cuentas conectadas a Passport."),
+            "Si se utiliza con un Passport, Envoy actúa como una cartera de \'solo lectura\' conectada a tu cartera hardware. Esto significa que Envoy puede preparar transacciones, pero son inútiles sin la autorización relevante, que solo Passport puede proporcionar. Passport es el \'almacenamiento en frío\', ¡y Envoy es simplemente la interfaz conectada a Internet! Si utilizas Envoy para crear una cartera móvil, donde la clave se almacena de forma segura en tu teléfono, esa cartera móvil no se consideraría almacenamiento en frío. Esto no tiene ningún efecto en la seguridad de las cuentas conectadas a Passport."),
         "envoy_faq_answer_19": MessageLookupByLibrary.simpleMessage(
             "Sí, Envoy se conecta utilizando los protocolos de servidor Electrum o Esplora. Para conectarte a tu propio servidor, escanea el código QR o escribe la URL proporcionada en la configuración de red en Envoy."),
         "envoy_faq_answer_2": MessageLookupByLibrary.simpleMessage(
@@ -844,6 +884,103 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_sortBy_oldest":
             MessageLookupByLibrary.simpleMessage("Más antiguos primero"),
         "filter_sortBy_zToA": MessageLookupByLibrary.simpleMessage("Z a A"),
+        "finalize_catchAll_backUpMasterKey":
+            MessageLookupByLibrary.simpleMessage(
+                "Realizar Copia de Seguridad de Clave Maestra"),
+        "finalize_catchAll_backingUpMasterKey":
+            MessageLookupByLibrary.simpleMessage(
+                "Realizando Copia de Seguridad de Clave Maestra"),
+        "finalize_catchAll_connectAccount":
+            MessageLookupByLibrary.simpleMessage("Conectar Cuenta"),
+        "finalize_catchAll_connectingAccount":
+            MessageLookupByLibrary.simpleMessage("Conectando Cuenta"),
+        "finalize_catchAll_creatingPin":
+            MessageLookupByLibrary.simpleMessage("Creando PIN"),
+        "finalize_catchAll_header":
+            MessageLookupByLibrary.simpleMessage("Continúa en Passport Prime"),
+        "finalize_catchAll_masterKeyBackedUp":
+            MessageLookupByLibrary.simpleMessage(
+                "Copia de Seguridad de Clave Maestra Realizada"),
+        "finalize_catchAll_masterKeySetUp":
+            MessageLookupByLibrary.simpleMessage("Clave Maestra Configurada"),
+        "finalize_catchAll_pinCreated":
+            MessageLookupByLibrary.simpleMessage("PIN creado"),
+        "finalize_catchAll_setUpMasterKey":
+            MessageLookupByLibrary.simpleMessage("Configurar Clave Maestra"),
+        "finalize_catchAll_settingUpMasterKey":
+            MessageLookupByLibrary.simpleMessage("Configurando Clave Maestra"),
+        "finish_connectedSuccess_content": MessageLookupByLibrary.simpleMessage(
+            "¡Envoy está configurado y listo para tus Bitcoin!"),
+        "finish_connectedSuccess_header":
+            MessageLookupByLibrary.simpleMessage("Cartera Conectada con Éxito"),
+        "firmware_downloadingUpdate_downloaded":
+            MessageLookupByLibrary.simpleMessage("Actualización Descargada"),
+        "firmware_downloadingUpdate_header":
+            MessageLookupByLibrary.simpleMessage("Descargando Actualización"),
+        "firmware_downloadingUpdate_timeRemaining":
+            MessageLookupByLibrary.simpleMessage("{0} restante(s)"),
+        "firmware_downloadingUpdate_transferring":
+            MessageLookupByLibrary.simpleMessage(
+                "Transfiriendo a Passport Prime"),
+        "firmware_updateAvailable_content2": MessageLookupByLibrary.simpleMessage(
+            "Tu Passport Prime actualmente utiliza {0}.\n\nActualiza ahora para obtener las últimas funcionalidades y correcciones de errores."),
+        "firmware_updateAvailable_estimatedUpdateTime":
+            MessageLookupByLibrary.simpleMessage(
+                "Tiempo Estimado de Actualización: {0}"),
+        "firmware_updateAvailable_header":
+            MessageLookupByLibrary.simpleMessage("Actualización Disponible"),
+        "firmware_updateAvailable_whatsNew":
+            MessageLookupByLibrary.simpleMessage("Novedades en {0}"),
+        "firmware_updateError_downloadFailed":
+            MessageLookupByLibrary.simpleMessage("Error al Descargar"),
+        "firmware_updateError_header":
+            MessageLookupByLibrary.simpleMessage("Actualización Fallida"),
+        "firmware_updateError_installFailed":
+            MessageLookupByLibrary.simpleMessage("Error al Instalar"),
+        "firmware_updateError_receivingFailed":
+            MessageLookupByLibrary.simpleMessage("Error en la Transferencia"),
+        "firmware_updateError_verifyFailed":
+            MessageLookupByLibrary.simpleMessage("Error en la Verificación"),
+        "firmware_updateModalConnectionLost_exit":
+            MessageLookupByLibrary.simpleMessage("Salir de Inicialización"),
+        "firmware_updateModalConnectionLost_header":
+            MessageLookupByLibrary.simpleMessage("Conexión Perdida"),
+        "firmware_updateModalConnectionLost_reconnecting":
+            MessageLookupByLibrary.simpleMessage("Reconectando..."),
+        "firmware_updateModalConnectionLost_tryToReconnect":
+            MessageLookupByLibrary.simpleMessage("Reintentar Conexión"),
+        "firmware_updateSuccess_content1": MessageLookupByLibrary.simpleMessage(
+            "Passport Prime se ha actualizado\ncorrectamente a {0}"),
+        "firmware_updateSuccess_content2": MessageLookupByLibrary.simpleMessage(
+            "Continúa con la inicialización en Passport Prime."),
+        "firmware_updateSuccess_header":
+            MessageLookupByLibrary.simpleMessage("Actualización Completada"),
+        "firmware_updatingDownload_content":
+            MessageLookupByLibrary.simpleMessage(
+                "Mantén ambos dispositivos cerca."),
+        "firmware_updatingDownload_downloading":
+            MessageLookupByLibrary.simpleMessage("Descargando Actualización"),
+        "firmware_updatingDownload_header":
+            MessageLookupByLibrary.simpleMessage("Actualizando"),
+        "firmware_updatingDownload_transfer":
+            MessageLookupByLibrary.simpleMessage("Transferir a Passport Prime"),
+        "firmware_updatingPrime_content2": MessageLookupByLibrary.simpleMessage(
+            "La inicialización se reanudará después de que Passport Prime se haya reiniciado."),
+        "firmware_updatingPrime_installUpdate":
+            MessageLookupByLibrary.simpleMessage("Instalar Actualización"),
+        "firmware_updatingPrime_installingUpdate":
+            MessageLookupByLibrary.simpleMessage("Instalando Actualización"),
+        "firmware_updatingPrime_primeRestarting":
+            MessageLookupByLibrary.simpleMessage(
+                "Passport Prime se está reiniciando"),
+        "firmware_updatingPrime_restartPrime":
+            MessageLookupByLibrary.simpleMessage("Reiniciar Passport Prime"),
+        "firmware_updatingPrime_updateInstalled":
+            MessageLookupByLibrary.simpleMessage("Actualización Instalada"),
+        "firmware_updatingPrime_verified":
+            MessageLookupByLibrary.simpleMessage("Actualización Verificada"),
+        "firmware_updatingPrime_verifying":
+            MessageLookupByLibrary.simpleMessage("Verificando Actualización"),
         "header_buyBitcoin":
             MessageLookupByLibrary.simpleMessage("COMPRAR BITCOIN"),
         "header_chooseAccount":
@@ -868,8 +1005,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "launch_screen_lockedout_wait_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Autenticación biométrica desactivada temporalmente. Cierra Envoy, espera 30 segundos e inténtalo de nuevo."),
-        "learning_center_device_defender":
-            MessageLookupByLibrary.simpleMessage("Defender"),
         "learning_center_device_envoy":
             MessageLookupByLibrary.simpleMessage("Envoy"),
         "learning_center_device_passport":
@@ -987,6 +1122,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_coin_preselection_dialog_description":
             MessageLookupByLibrary.simpleMessage(
                 "Esto descartará cualquier cambio en la selección de monedas. ¿Quieres continuar?"),
+        "manual_setup_change_from_magic_header":
+            MessageLookupByLibrary.simpleMessage(
+                "Copia de Seguridad Mágica desactivada"),
+        "manual_setup_change_from_magic_modal_subheader":
+            MessageLookupByLibrary.simpleMessage(
+                "Tu Copia de Seguridad de Mágica está a punto de eliminarse de forma permanente. Asegúrate de tener una copia de seguridad segura de tu semilla y de descargar tu Copia de Seguridad de Envoy.\n\nEsta acción eliminará permanentemente tu semilla de Envoy de tu cuenta de Apple o Google, y también eliminará tus datos cifrados de Envoy de los servidores de Foundation."),
+        "manual_setup_change_from_magic_subheaderApple":
+            MessageLookupByLibrary.simpleMessage(
+                "Los datos de tu Copia de Seguridad Mágica de Envoy se han eliminado correctamente de tu cuenta Apple y de los servidores de Foundation."),
+        "manual_setup_change_from_magic_subheaderGoogle":
+            MessageLookupByLibrary.simpleMessage(
+                "Los datos de tu Copia de Seguridad Mágica de Envoy se han eliminado correctamente de tu cuenta Google y de los servidores de Foundation."),
         "manual_setup_create_and_store_backup_CTA":
             MessageLookupByLibrary.simpleMessage("Elegir Destino"),
         "manual_setup_create_and_store_backup_heading":
@@ -1163,6 +1310,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_toggle_on_seed_backedup_iOS_toFoundationServers":
             MessageLookupByLibrary.simpleMessage(
                 "a los servidores de Foundation"),
+        "manual_toggle_on_seed_backingup": MessageLookupByLibrary.simpleMessage(
+            "Realizando copia de seguridad…"),
         "manual_toggle_on_seed_backup_in_progress_ios_backup_in_progress":
             MessageLookupByLibrary.simpleMessage("Copia de Seguridad en Curso"),
         "manual_toggle_on_seed_backup_in_progress_toast_heading":
@@ -1173,7 +1322,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Realizar Copia de Seguridad de Envoy"),
         "manual_toggle_on_seed_backup_now_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Esta copia de seguridad contiene información soibre los dispositivos y cuentas vinculadas, etiquetas, notas y configuración. No contiene información sobre la semilla.\n\nLas copias de seguridad de Envoy están encriptadas de extremo a extremo, Foundation no tiene acceso ni conocimiento de su contenido. \n\nEnvoy te notificará cuando se complete la carga."),
+                "Esta copia de seguridad contiene información soibre los dispositivos y cuentas vinculadas, etiquetas, notas y configuración. No contiene información sobre la clave privada.\n\nLas copias de seguridad de Envoy están encriptadas de extremo a extremo, Foundation no tiene acceso ni conocimiento de su contenido. \n\nEnvoy te notificará cuando se complete la carga."),
         "manual_toggle_on_seed_not_backedup_android_open_settings":
             MessageLookupByLibrary.simpleMessage("Configuración Android"),
         "manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup":
@@ -1182,12 +1331,147 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_toggle_on_seed_not_backedup_pending_iOS_seed_pending_backup":
             MessageLookupByLibrary.simpleMessage(
                 "Copia de seguridad pendiente en el llavero iCloud"),
+        "manual_toggle_on_seed_uploading_foundation_servers":
+            MessageLookupByLibrary.simpleMessage(
+                "Subiendo a los servidores de Foundation"),
         "menu_about": MessageLookupByLibrary.simpleMessage("Acerca de"),
         "menu_backups":
             MessageLookupByLibrary.simpleMessage("COPIAS DE SEGURIDAD"),
         "menu_heading": MessageLookupByLibrary.simpleMessage("ENVOY"),
+        "menu_privacy": MessageLookupByLibrary.simpleMessage("Privacidad"),
         "menu_settings": MessageLookupByLibrary.simpleMessage("AJUSTES"),
         "menu_support": MessageLookupByLibrary.simpleMessage("AYUDA"),
+        "onboarding_advancedModal_content": MessageLookupByLibrary.simpleMessage(
+            "Si continúas sin una Copia de Seguridad Mágica, serás responsable de almacenar tu propia semilla y datos de recuperación."),
+        "onboarding_advancedModal_header":
+            MessageLookupByLibrary.simpleMessage("¿Estás seguro?"),
+        "onboarding_advanced_magicBackupSwitchText":
+            MessageLookupByLibrary.simpleMessage(
+                "Copias de seguridad sencillas y seguras"),
+        "onboarding_advanced_magicBackups":
+            MessageLookupByLibrary.simpleMessage("Copia de Seguridad Mágica"),
+        "onboarding_advanced_magicBackupsContent":
+            MessageLookupByLibrary.simpleMessage(
+                "Copias de seguridad encriptadas y automáticas de tus datos, para una recuperación instantánea y sin estrés."),
+        "onboarding_bluetoothDisabled_content":
+            MessageLookupByLibrary.simpleMessage(
+                "Passport Prime necesita utilizar Bluetooth para la configuración inicial con QuantumLink. Esto permite sincronizar la fecha y la hora, las actualizaciones de firmware, las comprobaciones de seguridad, las copias de seguridad y más.\n\nPor favor, habilita los permisos de Bluetooth en la configuración del Envoy."),
+        "onboarding_bluetoothDisabled_enable":
+            MessageLookupByLibrary.simpleMessage("Habilitar en Ajustes"),
+        "onboarding_bluetoothDisabled_header":
+            MessageLookupByLibrary.simpleMessage(
+                "Activar Bluetooth para la conexión QuantumLink"),
+        "onboarding_bluetoothIntro_connect":
+            MessageLookupByLibrary.simpleMessage("Conectar con QuantumLink"),
+        "onboarding_bluetoothIntro_content": MessageLookupByLibrary.simpleMessage(
+            "Passport Prime utiliza un nuevo protocolo seguro basado en Bluetooth para la comunicación en tiempo real con Envoy.\n\nQuantumLink crea un túnel cifrado de extremo a extremo entre Passport y Envoy, garantizando una conexión segura."),
+        "onboarding_bluetoothIntro_header":
+            MessageLookupByLibrary.simpleMessage(
+                "Bluetooth Seguro con\nQuantumLink"),
+        "onboarding_connectionChecking_SecurityPassed":
+            MessageLookupByLibrary.simpleMessage(
+                "Comprobación de Seguridad Superada"),
+        "onboarding_connectionChecking_forUpdates":
+            MessageLookupByLibrary.simpleMessage("Checking for Updates"),
+        "onboarding_connectionIntroError_content":
+            MessageLookupByLibrary.simpleMessage(
+                "Es posible que este dispositivo no sea original o que haya sido manipulado durante el envío."),
+        "onboarding_connectionIntroError_exitSetup":
+            MessageLookupByLibrary.simpleMessage("Cerrar Incialización"),
+        "onboarding_connectionIntroError_securityCheckFailed":
+            MessageLookupByLibrary.simpleMessage(
+                "Comprobación de Seguridad Fallida"),
+        "onboarding_connectionIntroWarning_content":
+            MessageLookupByLibrary.simpleMessage(
+                "Asegúrate de que Passport Prime esté encendido y cerca de tu teléfono."),
+        "onboarding_connectionIntroWarning_header":
+            MessageLookupByLibrary.simpleMessage("Inicialización Pausada"),
+        "onboarding_connectionIntro_checkForUpdates":
+            MessageLookupByLibrary.simpleMessage("Buscar Actualizaciones"),
+        "onboarding_connectionIntro_checkingDeviceSecurity":
+            MessageLookupByLibrary.simpleMessage(
+                "Comprobando Seguridad del Dispositivo"),
+        "onboarding_connectionIntro_connectedToPrime":
+            MessageLookupByLibrary.simpleMessage("Conectado a Passport Prime"),
+        "onboarding_connectionIntro_header":
+            MessageLookupByLibrary.simpleMessage("Passport Prime Conectado"),
+        "onboarding_connectionNoUpdates_noUpdates":
+            MessageLookupByLibrary.simpleMessage(
+                "No Hay Actualizaciones Disponibles"),
+        "onboarding_connectionUpdatesAvailable_updatesAvailable":
+            MessageLookupByLibrary.simpleMessage(
+                "Nueva Actualización Disponible"),
+        "onboarding_magicUserMobileCreating_content":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy está creando una clave segura para utilizar con tu Cartera Móvil de Bitcoin, que se almacenará encriptada de extremo a extremo en tu cuenta de Apple o Google."),
+        "onboarding_magicUserMobileCreating_header":
+            MessageLookupByLibrary.simpleMessage(
+                "Creando Clave de Cartera Móvil"),
+        "onboarding_magicUserMobileEncrypting_content":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy está encriptando tu copia de seguridad.\n\nEsta copia de seguridad contiene datos útiles de la cartera como etiquetas, notas, cuentas y configuración."),
+        "onboarding_magicUserMobileEncrypting_header":
+            MessageLookupByLibrary.simpleMessage(
+                "Encriptando Copia de Seguridad de Cartera"),
+        "onboarding_magicUserMobileIntro_content1":
+            MessageLookupByLibrary.simpleMessage(
+                "También conocida como \"cartera caliente\". Para poder gastar de esta cartera, solo se requiere la autorización del teléfono."),
+        "onboarding_magicUserMobileIntro_content2":
+            MessageLookupByLibrary.simpleMessage(
+                "La Clave de tu Cartera Móvil se almacenará en el enclave seguro de tu teléfono, encriptada y con copia de seguridad en tu cuenta de Apple o Google."),
+        "onboarding_magicUserMobileIntro_header":
+            MessageLookupByLibrary.simpleMessage(
+                "Configura una Cartera Móvil con Copias de Seguridad Mágicas"),
+        "onboarding_magicUserMobileIntro_learnMoreMagicBackups":
+            MessageLookupByLibrary.simpleMessage(
+                "Más información sobre las Copias de Seguridad Mágicas"),
+        "onboarding_magicUserMobileSuccess_content":
+            MessageLookupByLibrary.simpleMessage(
+                "¡Envoy está configurado y listo para tus Bitcoin!"),
+        "onboarding_magicUserMobileSuccess_header":
+            MessageLookupByLibrary.simpleMessage("Tu Cartera Móvil Está Lista"),
+        "onboarding_magicUserMobileUploading_content":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy está subiendo la copia de seguridad encriptada de tu cartera a los servidores de Foundation.\n\nComo la copia de seguridad está encriptada de extremo a extremo, Foundation no tiene acceso a ella, ni tiene conocimiento sobre su contenido."),
+        "onboarding_magicUserMobileUploading_header":
+            MessageLookupByLibrary.simpleMessage("Cargando Copia de Seguridad"),
+        "onboarding_migrating_xOfYSynced": MessageLookupByLibrary.simpleMessage(
+            "Re-sincronizando tus cuentas.\nPor favor, no cierres Envoy.\n\n{0} de {1} sincronizado"),
+        "onboarding_passpportSelectCamera_sub235VersionAlert":
+            MessageLookupByLibrary.simpleMessage(
+                "¿Quieres inicializar una Passport Core en la versión 2.3.5 o anterior?"),
+        "onboarding_passpportSelectCamera_tapHere":
+            MessageLookupByLibrary.simpleMessage("Pulsa aquí"),
+        "onboarding_primeIntro_content": MessageLookupByLibrary.simpleMessage(
+            "Enhorabuena por dar el primer paso para asegurar toda tu vida digital.\n\nConfigurar tu Passport Prime sólo te llevará entre 5 y 10 minutos. ¡Coge tu dispositivo y empecemos!"),
+        "onboarding_primeIntro_header":
+            MessageLookupByLibrary.simpleMessage("Configura tu Passport Prime"),
+        "onboarding_sovereignUserMobileIntro_content1":
+            MessageLookupByLibrary.simpleMessage(
+                "También conocida como \"cartera caliente\". Para poder gastar de esta cartera, solo se requiere la autorización del teléfono."),
+        "onboarding_sovereignUserMobileIntro_content2":
+            MessageLookupByLibrary.simpleMessage(
+                "Tus claves de Bitcoin se almacenarán en el enclave seguro de tu teléfono. Solo tú eres responsable de mantener una copia de seguridad de tu semilla."),
+        "onboarding_sovereignUserMobileIntro_header":
+            MessageLookupByLibrary.simpleMessage("Configurar Cartera Móvil"),
+        "onboarding_tutorialColdWallet_content":
+            MessageLookupByLibrary.simpleMessage(
+                "También conocida como \"cartera fría\". Para autorizar gastos con esta cartera necesitas utilizar tu Passport. \n\nTu Clave Maestra de Passport siempre se guarda de forma segura sin conexión a Internet.\n\nUsa esta cartera para asegurar la mayoría de tus ahorros en Bitcoin."),
+        "onboarding_tutorialColdWallet_header":
+            MessageLookupByLibrary.simpleMessage("Cartera Passport"),
+        "onboarding_tutorialHotWallet_content":
+            MessageLookupByLibrary.simpleMessage(
+                "También conocida como \"cartera caliente\". Para autorizar gastos desde esta cartera, sólo necesitas tu teléfono.\n\nComo tu Cartera Móvil está conectada a Internet, utilízala para almacenar pequeñas cantidades de Bitcoin para transacciones frecuentes."),
+        "onboarding_tutorialHotWallet_header":
+            MessageLookupByLibrary.simpleMessage("Cartera Móvil"),
+        "onboarding_welcome_content": MessageLookupByLibrary.simpleMessage(
+            "Recupera tu soberanía con Envoy, una cartera de Bitcoin sencilla pero con funciones potentes de administración de cuentas y privacidad."),
+        "onboarding_welcome_createMobileWallet":
+            MessageLookupByLibrary.simpleMessage("Crea una \nCartera Móvil"),
+        "onboarding_welcome_header":
+            MessageLookupByLibrary.simpleMessage("Bienvenido a Envoy"),
+        "onboarding_welcome_setUpPassport":
+            MessageLookupByLibrary.simpleMessage("Configura una\nPassport"),
         "pair_existing_device_intro_heading":
             MessageLookupByLibrary.simpleMessage(
                 "Conectar Passport\ncon Envoy"),
@@ -1267,7 +1551,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_privacyMode_betterPerformance":
             MessageLookupByLibrary.simpleMessage("Mejor \nRendimiento"),
         "privacy_privacyMode_improvedPrivacy":
-            MessageLookupByLibrary.simpleMessage("Mejor Privacidad"),
+            MessageLookupByLibrary.simpleMessage("Mejor\nPrivacidad"),
         "privacy_privacyMode_title":
             MessageLookupByLibrary.simpleMessage("Modo de privacidad"),
         "privacy_privacyMode_torSuggestionOff":
@@ -1559,8 +1843,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "welcome_screen_cta2":
             MessageLookupByLibrary.simpleMessage("Configurar Passport"),
         "welcome_screen_heading":
-            MessageLookupByLibrary.simpleMessage("Bienvenidos a Envoy"),
-        "welcome_screen_subheading": MessageLookupByLibrary.simpleMessage(
-            "Recupera tu soberanía con Envoy, una cartera de Bitcoin sencilla pero con funciones potentes de administración de cuentas y privacidad.")
+            MessageLookupByLibrary.simpleMessage("Bienvenidos a Envoy")
       };
 }

@@ -22,7 +22,7 @@ import 'package:envoy/ui/pages/legal/passport_tou.dart';
 import 'package:envoy/ui/pages/wallet/single_wallet_pair_success.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:go_router/go_router.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 
 /*
 * named onboarding routes
