@@ -1645,11 +1645,15 @@ const _: fn() = || {
         let _: String = BitcoinTransaction.tx_id;
         let _: u32 = BitcoinTransaction.block_height;
         let _: u32 = BitcoinTransaction.confirmations;
+        let _: bool = BitcoinTransaction.is_confirmed;
         let _: u64 = BitcoinTransaction.fee;
-        let _: u64 = BitcoinTransaction.amount;
+        let _: i64 = BitcoinTransaction.amount;
         let _: Vec<ngwallet::transaction::Input> = BitcoinTransaction.inputs;
+        let _: String = BitcoinTransaction.address;
         let _: Vec<ngwallet::transaction::Output> = BitcoinTransaction.outputs;
         let _: Option<String> = BitcoinTransaction.note;
+        let _: Option<u64> = BitcoinTransaction.date;
+        let _: usize = BitcoinTransaction.vsize;
     }
     {
         let Input = None::<ngwallet::transaction::Input>.unwrap();
@@ -1871,20 +1875,28 @@ impl SseDecode for ngwallet::transaction::BitcoinTransaction {
         let mut var_txId = <String>::sse_decode(deserializer);
         let mut var_blockHeight = <u32>::sse_decode(deserializer);
         let mut var_confirmations = <u32>::sse_decode(deserializer);
+        let mut var_isConfirmed = <bool>::sse_decode(deserializer);
         let mut var_fee = <u64>::sse_decode(deserializer);
-        let mut var_amount = <u64>::sse_decode(deserializer);
+        let mut var_amount = <i64>::sse_decode(deserializer);
         let mut var_inputs = <Vec<ngwallet::transaction::Input>>::sse_decode(deserializer);
+        let mut var_address = <String>::sse_decode(deserializer);
         let mut var_outputs = <Vec<ngwallet::transaction::Output>>::sse_decode(deserializer);
         let mut var_note = <Option<String>>::sse_decode(deserializer);
+        let mut var_date = <Option<u64>>::sse_decode(deserializer);
+        let mut var_vsize = <usize>::sse_decode(deserializer);
         return ngwallet::transaction::BitcoinTransaction {
             tx_id: var_txId,
             block_height: var_blockHeight,
             confirmations: var_confirmations,
+            is_confirmed: var_isConfirmed,
             fee: var_fee,
             amount: var_amount,
             inputs: var_inputs,
+            address: var_address,
             outputs: var_outputs,
             note: var_note,
+            date: var_date,
+            vsize: var_vsize,
         };
     }
 }
@@ -1943,6 +1955,13 @@ impl SseDecode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         deserializer.cursor.read_i32::<NativeEndian>().unwrap()
+    }
+}
+
+impl SseDecode for i64 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_i64::<NativeEndian>().unwrap()
     }
 }
 
@@ -2116,6 +2135,17 @@ impl SseDecode for Option<u16> {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
             return Some(<u16>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<u64> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<u64>::sse_decode(deserializer));
         } else {
             return None;
         }
@@ -2513,11 +2543,15 @@ impl flutter_rust_bridge::IntoDart for FrbWrapper<ngwallet::transaction::Bitcoin
             self.0.tx_id.into_into_dart().into_dart(),
             self.0.block_height.into_into_dart().into_dart(),
             self.0.confirmations.into_into_dart().into_dart(),
+            self.0.is_confirmed.into_into_dart().into_dart(),
             self.0.fee.into_into_dart().into_dart(),
             self.0.amount.into_into_dart().into_dart(),
             self.0.inputs.into_into_dart().into_dart(),
+            self.0.address.into_into_dart().into_dart(),
             self.0.outputs.into_into_dart().into_dart(),
             self.0.note.into_into_dart().into_dart(),
+            self.0.date.into_into_dart().into_dart(),
+            self.0.vsize.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -2842,11 +2876,15 @@ impl SseEncode for ngwallet::transaction::BitcoinTransaction {
         <String>::sse_encode(self.tx_id, serializer);
         <u32>::sse_encode(self.block_height, serializer);
         <u32>::sse_encode(self.confirmations, serializer);
+        <bool>::sse_encode(self.is_confirmed, serializer);
         <u64>::sse_encode(self.fee, serializer);
-        <u64>::sse_encode(self.amount, serializer);
+        <i64>::sse_encode(self.amount, serializer);
         <Vec<ngwallet::transaction::Input>>::sse_encode(self.inputs, serializer);
+        <String>::sse_encode(self.address, serializer);
         <Vec<ngwallet::transaction::Output>>::sse_encode(self.outputs, serializer);
         <Option<String>>::sse_encode(self.note, serializer);
+        <Option<u64>>::sse_encode(self.date, serializer);
+        <usize>::sse_encode(self.vsize, serializer);
     }
 }
 
@@ -2884,6 +2922,13 @@ impl SseEncode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         serializer.cursor.write_i32::<NativeEndian>(self).unwrap();
+    }
+}
+
+impl SseEncode for i64 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_i64::<NativeEndian>(self).unwrap();
     }
 }
 
@@ -3028,6 +3073,16 @@ impl SseEncode for Option<u16> {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <u16>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<u64> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <u64>::sse_encode(value, serializer);
         }
     }
 }

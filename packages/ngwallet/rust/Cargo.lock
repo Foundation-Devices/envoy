@@ -980,6 +980,7 @@ dependencies = [
  "anyhow",
  "bdk_electrum",
  "bdk_wallet",
+ "chrono",
  "flutter_rust_bridge",
  "log",
  "redb",
