@@ -34,21 +34,21 @@ final homeRouter = StatefulShellRoute.indexedStack(
     },
     branches: <StatefulShellBranch>[
       devicesRouter,
-      StatefulShellBranch(restorationScopeId: "privacyScopeId", routes: [
-        GoRoute(
-            path: ROUTE_PRIVACY,
-            pageBuilder: (context, state) {
-              return const MaterialPage(child: PrivacyCard());
-            }),
-      ]),
+      // StatefulShellBranch(restorationScopeId: "privacyScopeId", routes: [
+      //   GoRoute(
+      //       path: ROUTE_PRIVACY,
+      //       pageBuilder: (context, state) {
+      //         return const MaterialPage(child: PrivacyCard());
+      //       }),
+      // ]),
       accountsRouter,
-      StatefulShellBranch(restorationScopeId: 'activityScopeId', routes: [
-        GoRoute(
-          path: ROUTE_ACTIVITY,
-          pageBuilder: (context, state) =>
-              const MaterialPage(child: ActivityCard()),
-        ),
-      ]),
+      // StatefulShellBranch(restorationScopeId: 'activityScopeId', routes: [
+      //   GoRoute(
+      //     path: ROUTE_ACTIVITY,
+      //     pageBuilder: (context, state) =>
+      //         const MaterialPage(child: ActivityCard()),
+      //   ),
+      // ]),
       StatefulShellBranch(restorationScopeId: 'learnScopeId', routes: [
         GoRoute(
             path: ROUTE_LEARN,
