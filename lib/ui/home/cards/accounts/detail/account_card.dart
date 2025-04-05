@@ -4,8 +4,7 @@
 
 import 'package:animations/animations.dart';
 import 'package:envoy/account/accounts_manager.dart';
-import 'package:envoy/business/account.dart';
-import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -53,9 +52,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ngwallet/ngwallet.dart';
 import 'package:ngwallet/ngwallet.dart' as ngwallet;
-import 'package:ngwallet/src/wallet.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget {
@@ -143,7 +141,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
     account =
         ref.read(selectedAccountProvider) ?? NgAccountManager().accounts[0];
 
-    List<Transaction> transactions =
+    List<EnvoyTransaction> transactions =
         ref.watch(filteredTransactionsProvider(account.id));
 
     bool txFiltersEnabled = ref.watch(isTransactionFiltersEnabled);
@@ -172,7 +170,6 @@ class _AccountCardState extends ConsumerState<AccountCard>
                   left: 20,
                   right: 20,
                 ),
-                //TODO: use EnvoyAccount
                 child: AccountListTile(account, onTap: () {
                   Navigator.pop(context);
                   ref.read(homePageAccountsProvider.notifier).state =
@@ -334,8 +331,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
     );
   }
 
-  Widget _getMainWidget(BuildContext context, List<Transaction> transactions,
-      bool txFiltersEnabled) {
+  Widget _getMainWidget(BuildContext context,
+      List<EnvoyTransaction> transactions, bool txFiltersEnabled) {
     AccountToggleState accountToggleState =
         ref.watch(accountToggleStateProvider);
     return PageTransitionSwitcher(
@@ -360,7 +357,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
   }
 
   Widget _buildTransactionListWidget(
-      List<Transaction> transactions, bool txFiltersEnabled) {
+      List<EnvoyTransaction> transactions, bool txFiltersEnabled) {
     if (transactions.isEmpty) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -478,7 +475,7 @@ class TransactionListTile extends ConsumerWidget {
     required this.account,
   });
 
-  final Transaction transaction;
+  final EnvoyTransaction transaction;
   final EnvoyAccount account;
 
   final TextStyle _transactionTextStyleInfo = EnvoyTypography.body.copyWith(
@@ -497,6 +494,12 @@ class TransactionListTile extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     final Locale activeLocale = Localizations.localeOf(context);
 
+    String? currencyAmount = null;
+    String? currency = null;
+    if (transaction is BtcPayTransaction) {
+      currencyAmount = (transaction as BtcPayTransaction).currencyAmount;
+      currency = (transaction as BtcPayTransaction).currency;
+    }
     return BlurContainerTransform(
       useRootNavigator: true,
       closedBuilder: (context, action) {
@@ -508,7 +511,7 @@ class TransactionListTile extends ConsumerWidget {
             }
           },
           onLongPress: () async {
-            await copyTxId(context, transaction.txId, transaction.type);
+            await copyTxId(context, transaction.txId, transaction);
           },
           onDoubleTap: () {},
           // Avoids unintended behavior, prevents list item disappearance
@@ -550,11 +553,11 @@ class TransactionListTile extends ConsumerWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            (transaction.amount == 0 &&
-                                    transaction.currency != null &&
-                                    transaction.currencyAmount != null)
+                            ((!transaction.isOnChain()) &&
+                                    currency != null &&
+                                    currencyAmount != null)
                                 ? Text(
-                                    "${transaction.currencyAmount!} ${transaction.currency!}",
+                                    "$currencyAmount $currency",
                                     style: EnvoyTypography.body.copyWith(
                                       color: EnvoyColors.textPrimary,
                                     ),
@@ -604,7 +607,7 @@ class TransactionListTile extends ConsumerWidget {
   }
 }
 
-Widget transactionTitle(BuildContext context, Transaction transaction,
+Widget transactionTitle(BuildContext context, EnvoyTransaction transaction,
     {TextStyle? txTitleStyle}) {
   final TextStyle? defaultStyle = Theme.of(context)
       .textTheme
@@ -630,7 +633,7 @@ Widget transactionTitle(BuildContext context, Transaction transaction,
 
 Widget transactionIcon(
   BuildContext context,
-  Transaction transaction, {
+  EnvoyTransaction transaction, {
   Color iconColor = EnvoyColors.textTertiary,
 }) {
   return FittedBox(
@@ -662,7 +665,7 @@ Widget transactionIcon(
 }
 
 Future<void> copyTxId(
-    BuildContext context, String txId, TransactionType txType) async {
+    BuildContext context, String txId, EnvoyTransaction tx) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
   bool dismissed =
       await EnvoyStorage().checkPromptDismissed(DismissiblePrompt.copyTxId);
@@ -671,15 +674,12 @@ Future<void> copyTxId(
   } else {
     Clipboard.setData(ClipboardData(text: txId));
     String message;
-    switch (txType) {
-      case TransactionType.ramp:
-        message = "Ramp ID copied to clipboard!";
-        break;
-      case TransactionType.btcPay:
-        message = "Payment ID copied to clipboard!";
-        break;
-      default:
-        message = "Transaction ID copied to clipboard!"; //TODO: FIGMA
+    if (tx is RampTransaction) {
+      message = "Ramp ID copied to clipboard!";
+    } else if (tx is BtcPayTransaction) {
+      message = "Payment ID copied to clipboard!";
+    } else {
+      message = "Transaction ID copied to clipboard!"; //TODO: FIGMA
     }
     scaffoldMessenger.showSnackBar(SnackBar(
       content: Text(message),

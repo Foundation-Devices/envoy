@@ -48,11 +48,7 @@ Future<void> main() async {
   } catch (e, stack) {
     EnvoyReport().log("Envoy init", stack.toString());
   }
-
-  final hasAccounts =
-      LocalStorage().prefs.containsKey(MigrationManager.AccountsPrefKey);
-  final migrationStatus = EnvoyStorage().getBool(migrationPrefs) ?? false;
-  if (migrationStatus == false && hasAccounts) {
+  if (isMigrationRequired()) {
     runApp(MigrationApp());
   } else if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
     runApp(const AuthenticateApp());
@@ -78,17 +74,11 @@ Future<void> initSingletons() async {
   await EnvoyStorage().init();
   await LocalStorage.init();
 
-  await NgAccountManager.init();
+  NgAccountManager.init();
 
-  NgAccountManager().addListener(
-    () {
-      print("Change Recieved ${NgAccountManager().accounts.map(
-        (e) {
-          return "${e.name} ${e.network} ";
-        },
-      )}");
-    },
-  );
+  if (!isMigrationRequired()) {
+    await NgAccountManager().restore();
+  }
   await NTPUtil.init();
   EnvoyScheduler.init();
   await KeysManager.init();
@@ -194,4 +184,11 @@ class GlobalScrollBehavior extends ScrollBehavior {
       child: child, // Turn off overscroll indicator
     );
   }
+}
+
+bool isMigrationRequired() {
+  final hasAccounts =
+      LocalStorage().prefs.containsKey(MigrationManager.AccountsPrefKey);
+  final migrationStatus = EnvoyStorage().getBool(migrationPrefs) ?? false;
+  return migrationStatus == false && hasAccounts;
 }

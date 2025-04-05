@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
@@ -63,7 +64,7 @@ class RBFSpendState {
 }
 
 class TxRBFButton extends ConsumerStatefulWidget {
-  final Transaction tx;
+  final EnvoyTransaction tx;
 
   const TxRBFButton({super.key, required this.tx});
 

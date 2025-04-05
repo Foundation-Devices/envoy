@@ -175,6 +175,7 @@ class _AccountsListState extends ConsumerState<AccountsList> {
   final ScrollController _scrollController = ScrollController();
   final double _accountHeight = 124;
   bool _onReOrderStart = false;
+  List<String> _accountsOrder = [];
 
   @override
   void initState() {
@@ -191,7 +192,9 @@ class _AccountsListState extends ConsumerState<AccountsList> {
   Widget build(BuildContext context) {
     final accounts = ref.watch(accountsProvider);
     final listContentHeight = accounts.length * _accountHeight;
-
+    if (_accountsOrder.isEmpty) {
+      _accountsOrder = ref.read(accountOrderStream).value ?? [];
+    }
     ref.listen(accountsProvider,
         (List<EnvoyAccount>? previous, List<EnvoyAccount> next) {
       if (previous!.length < next.length) {
@@ -214,7 +217,6 @@ class _AccountsListState extends ConsumerState<AccountsList> {
         }
       }
     });
-    var accountsOrder = ref.watch(accountOrderStream).value ?? [];
 
     final scrollView = ScrollGradientMask(
       child: ReorderableListView(
@@ -246,27 +248,29 @@ class _AccountsListState extends ConsumerState<AccountsList> {
           });
         },
         onReorder: (oldIndex, newIndex) async {
-          final order = List<String>.from(accountsOrder);
+          final order = List<String>.from(_accountsOrder);
           final currentVisibleAccountsId = accounts.map((e) => e.id).toList();
           final List<String> toReorder = order
               .where((element) => currentVisibleAccountsId.contains(element))
               .toList();
-
-          if (oldIndex < newIndex) {
-            newIndex -= 1;
-          }
-          final String item = toReorder.removeAt(oldIndex);
-          toReorder.insert(newIndex, item);
-          //After moving visible accounts, add the rest of the accounts to the end of the list
-          for (var element in order) {
-            if (!toReorder.contains(element)) {
-              toReorder.add(element);
+          setState(() {
+            if (oldIndex < newIndex) {
+              newIndex -= 1;
             }
-          }
+            final String item = toReorder.removeAt(oldIndex);
+            toReorder.insert(newIndex, item);
+            //After moving visible accounts, add the rest of the accounts to the end of the list
+            for (var element in order) {
+              if (!toReorder.contains(element)) {
+                toReorder.add(element);
+              }
+            }
+            _accountsOrder = toReorder;
+            NgAccountManager().updateAccountOrder(toReorder);
+          });
           await EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
-          await NgAccountManager().updateAccountOrder(toReorder);
         },
-        children: buildListItems(accountsOrder, accounts),
+        children: buildListItems(_accountsOrder, accounts),
       ),
     );
 

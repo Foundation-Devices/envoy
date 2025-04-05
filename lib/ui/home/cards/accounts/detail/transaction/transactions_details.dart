@@ -4,6 +4,7 @@
 
 import 'dart:ui';
 
+import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/locale.dart';
@@ -50,7 +51,7 @@ final transactionDetailsOpen = StateProvider<bool>((ref) => false);
 
 class TransactionsDetailsWidget extends ConsumerStatefulWidget {
   final EnvoyAccount account;
-  final OldWallet.Transaction tx;
+  final EnvoyTransaction tx;
   final Widget? iconTitleWidget;
   final Widget? titleWidget;
 
@@ -105,12 +106,10 @@ class _TransactionsDetailsWidgetState
     final idTextStyle =
         EnvoyTypography.body.copyWith(color: EnvoyColors.textSecondary);
 
-    bool addressNotAvailable = tx.address == null || tx.address!.isEmpty;
+    bool addressNotAvailable = tx.address.isEmpty;
     final address = tx.address ?? "";
 
-    bool rbfPossible = (!tx.isConfirmed &&
-        tx.type == OldWallet.TransactionType.normal &&
-        tx.amount < 0);
+    bool rbfPossible = (!tx.isConfirmed && tx.isOnChain() && tx.amount < 0);
 
     final cancelState = ref.watch(cancelTxStateProvider(tx.txId));
 
@@ -118,7 +117,7 @@ class _TransactionsDetailsWidgetState
       rbfPossible = false;
     }
 
-    bool showTxInfo = showTxId(tx.type);
+    bool showTxInfo = tx.isOnChain();
 
     return PopScope(
       onPopInvokedWithResult: (_, __) {
@@ -189,7 +188,7 @@ class _TransactionsDetailsWidgetState
                           ),
                         ],
                       )
-                    : (tx.amount == 0 &&
+                    : (tx is BtcPayTransaction &&
                             tx.currency != null &&
                             tx.currencyAmount != null)
                         ? Row(
@@ -258,7 +257,7 @@ class _TransactionsDetailsWidgetState
                       behavior: HitTestBehavior.opaque,
                       onLongPress: () {
                         if (showTxInfo) {
-                          copyTxId(context, tx.txId, tx.type);
+                          copyTxId(context, tx.txId, tx);
                         }
                       },
                       onTap: () {
@@ -330,7 +329,7 @@ class _TransactionsDetailsWidgetState
                     trailing: Text(getTransactionStatusString(tx),
                         style: trailingTextStyle),
                   ),
-                  if (tx.pullPaymentId != null)
+                  if (tx is BtcPayTransaction && tx.pullPaymentId != null)
                     EnvoyInfoCardListItem(
                         title: S().coindetails_overlay_paymentID,
                         icon: const EnvoyIcon(EnvoyIcons.btcPay,
@@ -370,7 +369,7 @@ class _TransactionsDetailsWidgetState
                             },
                           ),
                         )),
-                  if (tx.rampId != null)
+                  if (tx is RampTransaction && tx.rampId != null)
                     EnvoyInfoCardListItem(
                       title: S().coindetails_overlay_rampID,
                       centerSingleLineTitle: true,
@@ -382,7 +381,7 @@ class _TransactionsDetailsWidgetState
                       trailing: GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onLongPress: () {
-                          copyTxId(context, tx.rampId!, tx.type);
+                          copyTxId(context, tx.rampId!, tx);
                         },
                         child: Text(
                           tx.rampId!,
@@ -392,7 +391,7 @@ class _TransactionsDetailsWidgetState
                         ),
                       ),
                     ),
-                  if (tx.rampFee != null)
+                  if (tx is RampTransaction && tx.rampFee != null)
                     EnvoyInfoCardListItem(
                       title: S().coindetails_overlay_rampFee,
                       centerSingleLineTitle: true,
@@ -432,8 +431,7 @@ class _TransactionsDetailsWidgetState
                           ),
                         )
                       : Container(),
-                  if (tx.type != OldWallet.TransactionType.ramp)
-                    _renderFeeWidget(context, tx),
+                  if (tx is! RampTransaction) _renderFeeWidget(context, tx),
                   GestureDetector(
                     onTap: () {
                       showEnvoyDialog(
@@ -494,7 +492,7 @@ class _TransactionsDetailsWidgetState
                       : const SizedBox.shrink(),
                 ],
               ),
-              if (tx.type == OldWallet.TransactionType.ramp) ...[
+              if (tx is RampTransaction) ...[
                 const EnvoyIcon(
                   EnvoyIcons.info,
                   color: EnvoyColors.textPrimaryInverse,
@@ -519,7 +517,7 @@ class _TransactionsDetailsWidgetState
     );
   }
 
-  Widget _renderFeeWidget(BuildContext context, OldWallet.Transaction tx) {
+  Widget _renderFeeWidget(BuildContext context, EnvoyTransaction tx) {
     final isBoosted =
         (ref.watch(isTxBoostedProvider(tx.txId)) ?? false) && tx.amount < 0;
     final cancelState = ref.watch(cancelTxStateProvider(tx.txId));
@@ -558,7 +556,7 @@ class _TransactionsDetailsWidgetState
               children: [
                 EnvoyAmount(
                     account: widget.account,
-                    amountSats: tx.fee,
+                    amountSats: tx.fee.toInt(),
                     amountWidgetStyle: AmountWidgetStyle.normal),
               ],
             ),
@@ -566,17 +564,18 @@ class _TransactionsDetailsWidgetState
   }
 }
 
-String getTransactionDateAndTimeString(OldWallet.Transaction transaction) {
-  if (!transaction.isConfirmed) {
+String getTransactionDateAndTimeString(EnvoyTransaction transaction) {
+  if (!transaction.isConfirmed || transaction.date == null) {
     return S().activity_pending;
   }
+  final date = transaction.date!.toInt();
   final String transactionDateInfo =
-      "${DateFormat.yMd(currentLocale).format(transaction.date)} ${S().coindetails_overlay_at} ${DateFormat.Hm(currentLocale).format(transaction.date)}";
+      "${DateFormat.yMd(currentLocale).format(DateTime.fromMillisecondsSinceEpoch(date))} ${S().coindetails_overlay_at} ${DateFormat.Hm(currentLocale).format(DateTime.fromMillisecondsSinceEpoch(date))}";
   return transactionDateInfo;
 }
 
-String getTransactionStatusString(OldWallet.Transaction tx) {
-  return tx.type == OldWallet.TransactionType.normal && tx.isConfirmed
+String getTransactionStatusString(EnvoyTransaction tx) {
+  return tx.isOnChain() && tx.isConfirmed
       ? S().coindetails_overlay_status_confirmed
       : S().activity_pending;
 }
@@ -638,14 +637,5 @@ String? getBaseUrlForNetwork(Network network) {
       return Fees.testnetMempoolFoundationInstance;
     case Network.regtest:
       return null;
-  }
-}
-
-bool showTxId(OldWallet.TransactionType type) {
-  if (type == OldWallet.TransactionType.pending ||
-      type == OldWallet.TransactionType.normal) {
-    return true;
-  } else {
-    return false;
   }
 }

@@ -64,12 +64,10 @@ class NgAccountManager extends ChangeNotifier {
     return singleton;
   }
 
-  NgAccountManager._internal() {
-    _syncManager = SyncManager(accountsCallback: () => _accounts);
-    restore();
-  }
+  NgAccountManager._internal();
 
   restore() async {
+    _syncManager = SyncManager(accountsCallback: () => _accounts);
     _accounts = [];
     final accountOrder = _ls.prefs.getString(ACCOUNT_ORDER);
     List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));

@@ -57,6 +57,7 @@ pub enum _Network {
 
 // Envoy Wallet is a wrapper around NgWallet for Envoy app specific functionalities
 impl EnvoyAccountHandler {
+
     pub fn new_from_descriptor(
         name: String,
         device_serial: Option<String>,
@@ -157,7 +158,6 @@ impl EnvoyAccountHandler {
         self.streamSink = Some(stream_sink);
     }
 
-
     pub fn open_wallet(
         db_path: String,
     ) -> EnvoyAccountHandler {
@@ -210,7 +210,6 @@ impl EnvoyAccountHandler {
             .lock().unwrap()
             .wallet.next_address().unwrap().address.to_string()
     }
-
 
     pub fn request_full_scan(&mut self) -> Arc<Mutex<Option<FullScanRequest<KeychainKind>>>> {
         let scan_request = self.ng_account
@@ -276,13 +275,11 @@ impl EnvoyAccountHandler {
             .lock().unwrap()
             .wallet.balance().unwrap().total().to_sat()
     }
-
     pub fn utxo(&mut self) -> Vec<Output> {
         self.ng_account
             .lock().unwrap()
             .wallet.unspend_outputs().unwrap_or(vec![])
     }
-
     pub fn transactions(&mut self) -> Vec<BitcoinTransaction> {
         self.ng_account
             .lock().unwrap()
@@ -313,7 +310,6 @@ impl EnvoyAccountHandler {
     pub fn config(&self) -> NgAccountConfig {
         self.ng_account.lock().unwrap().config.clone()
     }
-
     pub fn send(&mut self, address: String, amount: u64) -> Result<String, Error> {
         let result = self.ng_account
             .lock().unwrap()
@@ -333,7 +329,6 @@ impl EnvoyAccountHandler {
                 anyhow!("Failed to broadcast: {}", e)
             })
     }
-
     pub fn validate_address(address: &str, network: Option<Network>) -> bool {
         return match Address::from_str(address) {
             Ok(address) => {

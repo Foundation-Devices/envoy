@@ -6,6 +6,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
@@ -26,18 +27,13 @@ final mempoolBlocksMedianFeeRateProvider =
     Provider.family<List<double>, Network>((ref, network) {
   return Fees().fees[network]?.mempoolBlocksMedianFeeRate ?? [];
 });
-//TODO: fix with actual NgWallet Tx
+
 final txEstimatedConfirmationTimeProvider =
-    Provider.family<int, Tuple<OldWallet.Transaction, Network>>(
-        (ref, txNetwork) {
+    Provider.family<int, Tuple<EnvoyTransaction, Network>>((ref, txNetwork) {
   final tx = txNetwork.item1;
   final network = txNetwork.item2;
 
-  if (tx.vsize == null) {
-    return 10;
-  }
-
-  final feeRate = tx.fee / tx.vsize!;
+  final feeRate = tx.fee / tx.vsize;
   final medianFeeRates = ref.watch(mempoolBlocksMedianFeeRateProvider(network));
 
   int minutesToConfirmation = 10;

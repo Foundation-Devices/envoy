@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -135,7 +136,8 @@ class HomePageState extends ConsumerState<HomePage>
     _resetServerDownWarningTimer();
     _resetBackupWarningTimer();
 
-    isNewExpiredBuyTxAvailable.stream.listen((List<Transaction> expiredBuyTx) {
+    isNewExpiredBuyTxAvailable.stream
+        .listen((List<EnvoyTransaction> expiredBuyTx) {
       if (mounted && expiredBuyTx.isNotEmpty) {
         _notifyAboutRemovedRampTx(expiredBuyTx, context);
       }
@@ -215,7 +217,7 @@ class HomePageState extends ConsumerState<HomePage>
   }
 
   void _notifyAboutRemovedRampTx(
-      List<Transaction> expiredTransactions, context) async {
+      List<EnvoyTransaction> expiredTransactions, context) async {
     bool dismissed = await EnvoyStorage()
         .checkPromptDismissed(DismissiblePrompt.buyTxWarning);
 
@@ -635,7 +637,7 @@ class ShieldFadeInAnimationCurve extends Curve {
 }
 
 class RemovedBuyTransactionsList extends StatefulWidget {
-  final List<Transaction> expiredTransactions;
+  final List<EnvoyTransaction> expiredTransactions;
   final Map<String, bool> transactionIdExpandedState;
 
   const RemovedBuyTransactionsList({
@@ -666,12 +668,12 @@ class _RemovedBuyTransactionsListState
             return GestureDetector(
               behavior: HitTestBehavior.opaque,
               onLongPress: () {
-                if (tx.type != TransactionType.ramp) {
-                  copyTxId(context, tx.txId, tx.type);
+                if (tx is RampTransaction) {
+                  copyTxId(context, tx.txId, tx);
                 }
               },
               onTap: () {
-                if (tx.type != TransactionType.ramp) {
+                if (tx is RampTransaction) {
                   setState(() {
                     widget.transactionIdExpandedState[tx.txId] =
                         !showTxIdExpanded;

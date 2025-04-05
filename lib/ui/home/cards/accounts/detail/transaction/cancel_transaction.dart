@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/settings.dart';
@@ -83,7 +84,7 @@ class RBFState {
 }
 
 class CancelTxButton extends ConsumerStatefulWidget {
-  final Transaction transaction;
+  final EnvoyTransaction transaction;
 
   const CancelTxButton({super.key, required this.transaction});
 
@@ -253,7 +254,7 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
 }
 
 class TxCancelDialog extends ConsumerStatefulWidget {
-  final Transaction originalTx;
+  final EnvoyTransaction originalTx;
   final Psbt cancelTx;
   final RawTransaction cancelRawTx;
   final RawTransaction originalRawTx;
@@ -287,7 +288,7 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
         originalSpendAmount += element.amount;
       }
     }
-    _totalFeeAmount = widget.originalTx.fee;
+    _totalFeeAmount = widget.originalTx.fee.toInt();
 
     /// if the amount is 0, check if the tx is a self transfer
     if (originalSpendAmount == 0) {
@@ -301,7 +302,8 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
     setState(() {
       _totalFeeAmount = widget.cancelTx.fee;
       if (originalSpendAmount != 0) {
-        _totalReturnAmount = originalSpendAmount - widget.originalTx.fee;
+        _totalReturnAmount =
+            originalSpendAmount - widget.originalTx.fee.toInt();
       }
     });
   }
@@ -510,7 +512,7 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
 
 class CancelTransactionProgress extends ConsumerStatefulWidget {
   final Psbt cancelTx;
-  final Transaction originalTx;
+  final EnvoyTransaction originalTx;
   final RawTransaction cancelRawTx;
 
   const CancelTransactionProgress(
@@ -559,12 +561,12 @@ class _CancelTransactionProgressState
       await EnvoyStorage().addCancelState(RBFState(
               originalTxId: widget.originalTx.txId,
               newTxId: widget.cancelTx.txid,
-              oldFee: widget.originalTx.fee,
+              oldFee: widget.originalTx.fee.toInt(),
               newFee: widget.cancelTx.fee,
               accountId: account.id,
               rbfTimeStamp: DateTime.now().millisecondsSinceEpoch,
-              previousTxTimeStamp:
-                  widget.originalTx.date.millisecondsSinceEpoch)
+              previousTxTimeStamp: widget.originalTx.date?.toInt() ??
+                  DateTime.now().millisecondsSinceEpoch)
           .toJson());
       await Future.delayed(const Duration(milliseconds: 500));
 

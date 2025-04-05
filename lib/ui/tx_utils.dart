@@ -4,6 +4,7 @@
 
 import 'dart:ui';
 
+import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/util/string_utils.dart';
 import 'package:ngwallet/src/wallet.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -13,7 +14,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 
 String getTransactionTitleText(
-    Transaction transaction, RBFState? cancelState, bool? isBoosted) {
+    EnvoyTransaction transaction, RBFState? cancelState, bool? isBoosted) {
   bool isSent = transaction.amount < 0;
 
   if (cancelState != null) {
@@ -41,17 +42,20 @@ String getTransactionTitleText(
   return isSent ? S().activity_sent : S().activity_received;
 }
 
-String getTransactionSubtitleText(Transaction transaction, Locale locale) {
-  if (transaction.type == TransactionType.azteco) {
+String getTransactionSubtitleText(EnvoyTransaction transaction, Locale locale) {
+  if (transaction is AztecoTransaction) {
     return S().azteco_account_tx_history_pending_voucher;
-  } else if (transaction.type == TransactionType.btcPay) {
+  } else if (transaction is BtcPayTransaction) {
     return S().btcpay_pendingVoucher;
-  } else if (transaction.type == TransactionType.ramp) {
+  } else if (transaction is RampTransaction) {
     return S().ramp_pendingVoucher;
-  } else if (transaction.type == TransactionType.normal &&
-      transaction.isConfirmed) {
+  } else if (transaction.isOnChain() && transaction.isConfirmed) {
+    if (transaction.date == null) {
+      return S().receive_tx_list_awaitingConfirmation;
+    }
     return timeago
-        .format(transaction.date, locale: locale.languageCode)
+        .format(DateTime.fromMillisecondsSinceEpoch(transaction.date!.toInt()),
+            locale: locale.languageCode)
         .capitalize();
   } else {
     return S().receive_tx_list_awaitingConfirmation;
@@ -59,7 +63,7 @@ String getTransactionSubtitleText(Transaction transaction, Locale locale) {
 }
 
 EnvoyIcons? getTransactionIcon(
-    Transaction transaction, RBFState? cancelState, bool? isBoosted) {
+    EnvoyTransaction transaction, RBFState? cancelState, bool? isBoosted) {
   if (cancelState == null) {
     return transaction.amount < 0 ? EnvoyIcons.spend : EnvoyIcons.receive;
   }

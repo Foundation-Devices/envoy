@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 final _migrationStreamProvider = StreamProvider<MigrationProgress>((ref) {
   return MigrationManager().migrationProgress;
@@ -33,9 +34,18 @@ class MigrationApp extends StatefulWidget {
 }
 
 class _MigrationAppState extends State<MigrationApp> {
+
   @override
   void initState() {
+    WakelockPlus.enable();
     super.initState();
+  }
+
+
+  @override
+  void dispose() {
+    WakelockPlus.disable();
+    super.dispose();
   }
 
   @override

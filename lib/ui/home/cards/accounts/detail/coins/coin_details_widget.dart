@@ -7,28 +7,28 @@ import 'dart:ui';
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/address_widget.dart';
+import 'package:envoy/ui/components/envoy_info_card.dart';
+import 'package:envoy/ui/components/envoy_tag_list_item.dart';
 import 'package:envoy/ui/envoy_colors.dart' as old_colors;
+import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_widget.dart';
 import 'package:envoy/ui/state/transactions_note_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/amount.dart';
+import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
-import 'package:envoy/ui/components/address_widget.dart';
-import 'package:envoy/ui/components/envoy_tag_list_item.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
-import 'package:envoy/ui/components/envoy_info_card.dart';
-import 'package:envoy/util/easing.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 
 class CoinDetailsWidget extends ConsumerStatefulWidget {
   final Coin coin;
@@ -56,7 +56,8 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
     if (tx == null) {
       return Container();
     }
-    final utxoAddress = tx.outputs?[widget.coin.utxo.vout] ?? "";
+    final String utxoAddress =
+        tx.outputs[widget.coin.utxo.vout].toString() ?? "";
     final coinTag = widget.tag;
     final coin = widget.coin;
     final note = ref.watch(txNoteProvider(tx.txId)) ?? "";
@@ -69,8 +70,9 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
     if (coinTag.untagged) {
       accountAccentColor = const Color(0xff808080);
     }
-
-    bool addressNotAvailable = utxoAddress.isEmpty;
+    //TODO: fix utxo ngwallet
+    bool addressNotAvailable = false;
+    // bool addressNotAvailable = utxoAddress.isEmpty;
 
     return EnvoyInfoCard(
         backgroundColor: accountAccentColor,
@@ -116,7 +118,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                 color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
             trailing: GestureDetector(
                 onLongPress: () {
-                  copyTxId(context, tx.txId, tx.type);
+                  copyTxId(context, tx.txId, tx);
                 },
                 onTap: () {
                   setState(() {

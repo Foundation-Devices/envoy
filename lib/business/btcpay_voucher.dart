@@ -13,7 +13,6 @@ import 'package:envoy/business/scheduler.dart';
 import 'package:ngwallet/src/wallet.dart';
 import 'dart:async';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:envoy/business/account.dart';
 
 enum BtcPayVoucherRedeemResult { success, timeout, voucherInvalid }
 

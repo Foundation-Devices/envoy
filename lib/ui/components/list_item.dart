@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/string_utils.dart';
 import 'package:flutter/foundation.dart';
@@ -286,7 +287,8 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
     });
   }
 
-  Widget openTransactionDetails(BuildContext context, Transaction transaction) {
+  Widget openTransactionDetails(
+      BuildContext context, EnvoyTransaction transaction) {
     if (widget.notification.accountId != null) {
       EnvoyAccount? account =
           NgAccountManager().getAccountById(widget.notification.accountId!);
