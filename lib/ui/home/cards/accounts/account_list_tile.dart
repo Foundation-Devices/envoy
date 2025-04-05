@@ -66,16 +66,16 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
     ref.watch(settingsProvider);
     ref.watch(accountsProvider);
 
-    final account = ref.watch(accountStateProvider(widget.account.id));
+    EnvoyAccount? account =  ref.watch(accountStateProvider(widget.account.id));
+    if(widget.account.walletPath == "ghost"){
+      account = widget.account;
+    }
     if (account == null) {
       return const SizedBox.shrink();
     }
-    //TODO: work on ghost wallet
-    int balance = ref.watch(accountBalanceProvider(account.id));
-    //
-    // int balance = widget.account is GhostWallet
-    //     ? 0
-    //     : ref.watch(accountBalanceProvider(account.config().id));
+    int balance = widget.account.walletPath == "ghost"
+        ? 0
+        : ref.watch(accountBalanceProvider(account.id));
 
     double cardRadius = EnvoySpacing.medium2;
     return CardSwipeWrapper(
@@ -178,7 +178,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                       child: Consumer(
                         builder: (context, ref, child) {
                           final hide = ref.watch(
-                              balanceHideStateStatusProvider(account.id));
+                              balanceHideStateStatusProvider(account!.id));
                           if (hide || account.deviceSerial == null) {
                             return Container(
                               decoration: ShapeDecoration(
