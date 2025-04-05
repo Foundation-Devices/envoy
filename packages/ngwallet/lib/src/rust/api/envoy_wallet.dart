@@ -101,6 +101,8 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
       RustLib.instance.api
           .crateApiEnvoyWalletEnvoyAccountHandlerOpenWallet(dbPath: dbPath);
 
+  Future<void> renameAccount({required String name});
+
   Future<FullScanRequest> requestFullScan();
 
   Future<SyncRequest> requestSync();

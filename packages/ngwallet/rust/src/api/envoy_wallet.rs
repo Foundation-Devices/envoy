@@ -57,7 +57,6 @@ pub enum _Network {
 
 // Envoy Wallet is a wrapper around NgWallet for Envoy app specific functionalities
 impl EnvoyAccountHandler {
-
     pub fn new_from_descriptor(
         name: String,
         device_serial: Option<String>,
@@ -175,6 +174,16 @@ impl EnvoyAccountHandler {
         };
         account.send_update();
         account
+    }
+
+    pub fn rename_account(&mut self, name: &str) -> Result<()> {
+        {
+            let mut account = self.ng_account
+                .lock().unwrap();
+            account.rename(name.clone()).unwrap();
+        }
+        self.send_update();
+        Ok(())
     }
 
     pub fn state(&mut self) -> EnvoyAccount {
@@ -298,7 +307,9 @@ impl EnvoyAccountHandler {
     pub fn set_note(&mut self, tx_id: &str, note: &str) -> Result<bool> {
         self.ng_account
             .lock().unwrap()
-            .wallet.set_note(tx_id, note)
+            .wallet.set_note(tx_id, note).unwrap();
+        self.send_update();
+        Ok(true)
     }
     #[frb(sync)]
     pub fn is_hot(&self) -> bool {

@@ -789,11 +789,11 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                     actions: [
                       EnvoyButton(
                         S().component_save,
-                        onTap: () {
-                          //TODO: add rename
-                          // AccountManager().renameAccount(
-                          //     widget.account, textEntry.enteredText);
-                          Navigator.pop(context);
+                        onTap: () async {
+                          final navigator = Navigator.of(context);
+                          await account?.handler
+                              ?.renameAccount(name: textEntry.enteredText);
+                          navigator.pop();
                         },
                       ),
                     ],
