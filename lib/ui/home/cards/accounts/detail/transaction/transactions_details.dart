@@ -4,8 +4,8 @@
 
 import 'dart:ui';
 
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
-import 'package:envoy/business/account.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/locale.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -23,7 +23,6 @@ import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
-import 'package:envoy/ui/state/transactions_note_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -44,7 +43,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:ngwallet/src/wallet.dart' as OldWallet;
 import 'package:url_launcher/url_launcher_string.dart';
 
 final transactionDetailsOpen = StateProvider<bool>((ref) => false);
@@ -93,7 +91,9 @@ class _TransactionsDetailsWidgetState
   Widget build(BuildContext context) {
     ///watch transaction changes to get real time updates
     final tx = ref.watch(getTransactionProvider(widget.tx.txId)) ?? widget.tx;
-    final note = ref.watch(txNoteProvider(tx.txId)) ?? "";
+    final note = ref.watch(getTransactionProvider(widget.tx.txId).select(
+      (value) => value?.note ?? "",
+    ));
 
     final hideBalance =
         ref.watch(balanceHideStateStatusProvider(widget.account.id));
@@ -438,12 +438,15 @@ class _TransactionsDetailsWidgetState
                           context: context,
                           dialog: TxNoteDialog(
                             txId: tx.txId,
+                            value: note,
                             noteTitle: S().add_note_modal_heading,
                             noteHintText: S().add_note_modal_ie_text_field,
                             noteSubTitle: S().add_note_modal_subheading,
                             onAdd: (note) {
-                              EnvoyStorage()
-                                  .addTxNote(note: note, key: tx.txId);
+                              widget.account.handler?.setNote(
+                                note: note,
+                                txId: tx.txId,
+                              );
                               Navigator.pop(context);
                             },
                           ),

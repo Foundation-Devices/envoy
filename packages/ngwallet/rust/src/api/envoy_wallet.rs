@@ -3,7 +3,7 @@ use std::fmt::format;
 use std::fs::File;
 use std::path::Path;
 use std::str::FromStr;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, LockResult, Mutex};
 use std::{fs, thread};
 use std::time::Duration;
 use anyhow::{anyhow, Error, Result};
@@ -26,6 +26,8 @@ use crate::api::envoy_account::EnvoyAccount;
 use crate::frb_generated::StreamSink;
 use chrono::{DateTime, Local};
 use std::env;
+use bdk_wallet::bip39::{Language, Mnemonic};
+use bdk_wallet::bitcoin::bip32::Error::Secp256k1;
 
 
 #[frb(init)]
@@ -35,7 +37,7 @@ pub fn init_app() {
 
 #[derive(Clone)]
 pub struct EnvoyAccountHandler {
-    pub streamSink: Option<StreamSink<EnvoyAccount>>,
+    pub stream_sink: Option<StreamSink<EnvoyAccount>>,
     pub ng_account: Arc<Mutex<NgAccount<Connection>>>,
 }
 
@@ -76,7 +78,7 @@ impl EnvoyAccountHandler {
         info!("Creating BDK database ");
 
         EnvoyAccountHandler {
-            streamSink: None,
+            stream_sink: None,
             ng_account: Arc::new(Mutex::new(
                 NgAccount::new_from_descriptor(
                     name,
@@ -117,7 +119,7 @@ impl EnvoyAccountHandler {
         let connection = Connection::open(bdk_db_path).unwrap();
         let indexes = get_last_used_index(&sled_db_path, name.clone());
         let account = EnvoyAccountHandler {
-            streamSink: None,
+            stream_sink: None,
             ng_account: Arc::new(Mutex::new(
                 NgAccount::new_from_descriptor(
                     name,
@@ -154,7 +156,7 @@ impl EnvoyAccountHandler {
         &mut self,
         stream_sink: StreamSink<EnvoyAccount>,
     ) {
-        self.streamSink = Some(stream_sink);
+        self.stream_sink = Some(stream_sink);
     }
 
     pub fn open_wallet(
@@ -164,7 +166,7 @@ impl EnvoyAccountHandler {
         let connection = Connection::open(bdk_db_path.clone()).unwrap();
         info!("Opening BDK database at: {}", bdk_db_path.display());
         let mut account = EnvoyAccountHandler {
-            streamSink: None,
+            stream_sink: None,
             ng_account: Arc::new(Mutex::new(
                 NgAccount::open_wallet(
                     db_path,
@@ -172,7 +174,6 @@ impl EnvoyAccountHandler {
                     None::<FileBackend>,
                 ))),
         };
-        account.send_update();
         account
     }
 
@@ -180,38 +181,44 @@ impl EnvoyAccountHandler {
         {
             let mut account = self.ng_account
                 .lock().unwrap();
-            account.rename(name.clone()).unwrap();
+            account.rename(name).unwrap();
         }
         self.send_update();
         Ok(())
     }
 
-    pub fn state(&mut self) -> EnvoyAccount {
-        let mut account = self.ng_account
-            .lock().unwrap();
-        let config = account.config.clone();
-        let balance = account.wallet.balance().unwrap().total().to_sat();
-        let transactions = account.wallet.transactions().unwrap_or(vec![]);
-        let utxo = account.wallet.unspend_outputs().unwrap_or(vec![]);
-        EnvoyAccount {
-            name: config.name.clone(),
-            color: config.color.clone(),
-            device_serial: config.device_serial.clone(),
-            date_added: config.date_added.clone(),
-            address_type: config.address_type,
-            index: config.index,
-            internal_descriptor: config.internal_descriptor.clone(),
-            external_descriptor: config.external_descriptor.clone(),
-            date_synced: config.date_synced.clone(),
-            wallet_path: config.wallet_path.clone(),
-            network: config.network,
-            id: config.id.clone(),
-            is_hot: config.is_hot(),
-            next_address: account.wallet.next_address().unwrap().address.to_string(),
-            balance,
-            transactions,
-            utxo,
-        }
+    pub fn state(&mut self) -> Result<EnvoyAccount, Error> {
+        return match self.ng_account.lock() {
+            Ok(mut account) => {
+                let config = account.config.clone();
+                let balance = account.wallet.balance().unwrap().total().to_sat();
+                let transactions = account.wallet.transactions().unwrap_or(vec![]);
+                let utxo = account.wallet.unspend_outputs().unwrap_or(vec![]);
+
+                Ok(EnvoyAccount {
+                    name: config.name.clone(),
+                    color: config.color.clone(),
+                    device_serial: config.device_serial.clone(),
+                    date_added: config.date_added.clone(),
+                    address_type: config.address_type,
+                    index: config.index,
+                    internal_descriptor: config.internal_descriptor.clone(),
+                    external_descriptor: config.external_descriptor.clone(),
+                    date_synced: config.date_synced.clone(),
+                    wallet_path: config.wallet_path.clone(),
+                    network: config.network,
+                    id: config.id.clone(),
+                    is_hot: config.is_hot(),
+                    next_address: account.wallet.next_address().unwrap().address.to_string(),
+                    balance,
+                    transactions,
+                    utxo,
+                })
+            }
+            Err(error) => {
+                Err(anyhow!("Failed to lock account: {}", error))
+            }
+        };
     }
 
     pub fn next_address(&mut self) -> String {
@@ -274,9 +281,9 @@ impl EnvoyAccountHandler {
     }
 
     pub fn send_update(&mut self) {
-        if let Some(sink) = self.streamSink.clone() {
-            sink.add(self.state()).unwrap();
-        }
+        if let Some(sink) = self.stream_sink.clone() {
+            sink.add(self.state().unwrap()).unwrap();
+        };
     }
     #[frb(sync)]
     pub fn balance(&mut self) -> u64 {
@@ -295,9 +302,11 @@ impl EnvoyAccountHandler {
             .wallet.transactions().unwrap()
     }
     pub fn set_tag(&mut self, utxo: &Output, tag: &str) -> Result<bool> {
-        self.ng_account
+        let status = self.ng_account
             .lock().unwrap()
-            .wallet.set_tag(utxo, tag)
+            .wallet.set_tag(utxo, tag);
+        self.send_update();
+        status
     }
     pub fn set_do_not_spend(&mut self, utxo: &Output, do_not_spend: bool) -> Result<bool> {
         self.ng_account
@@ -305,11 +314,11 @@ impl EnvoyAccountHandler {
             .wallet.set_do_not_spend(utxo, do_not_spend)
     }
     pub fn set_note(&mut self, tx_id: &str, note: &str) -> Result<bool> {
-        self.ng_account
+        let result = self.ng_account
             .lock().unwrap()
-            .wallet.set_note(tx_id, note).unwrap();
+            .wallet.set_note(tx_id, note);
         self.send_update();
-        Ok(true)
+        result
     }
     #[frb(sync)]
     pub fn is_hot(&self) -> bool {

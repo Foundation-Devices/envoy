@@ -407,6 +407,7 @@ class EnvoyStorage {
             confirmations: 0,
             vsize: BigInt.zero,
             isConfirmed: false,
+            note: null,
             date: BigInt.zero);
       },
     ).toList();

@@ -6,6 +6,7 @@
 // Static analysis wrongly picks the IO variant, thus ignore this
 // ignore_for_file: argument_type_not_assignable
 
+import 'api/bip39.dart';
 import 'api/envoy_account.dart';
 import 'api/envoy_wallet.dart';
 import 'dart:async';
@@ -142,7 +143,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt dco_decode_box_autoadd_u_64(dynamic raw);
 
   @protected
+  DescriptorFromSeed dco_decode_descriptor_from_seed(dynamic raw);
+
+  @protected
   EnvoyAccount dco_decode_envoy_account(dynamic raw);
+
+  @protected
+  EnvoyBip39 dco_decode_envoy_bip_39(dynamic raw);
 
   @protected
   int dco_decode_i_32(dynamic raw);
@@ -192,6 +199,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Output dco_decode_output(dynamic raw);
+
+  @protected
+  Seed dco_decode_seed(dynamic raw);
 
   @protected
   int dco_decode_u_16(dynamic raw);
@@ -311,7 +321,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
 
   @protected
+  DescriptorFromSeed sse_decode_descriptor_from_seed(
+      SseDeserializer deserializer);
+
+  @protected
   EnvoyAccount sse_decode_envoy_account(SseDeserializer deserializer);
+
+  @protected
+  EnvoyBip39 sse_decode_envoy_bip_39(SseDeserializer deserializer);
 
   @protected
   int sse_decode_i_32(SseDeserializer deserializer);
@@ -362,6 +379,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Output sse_decode_output(SseDeserializer deserializer);
+
+  @protected
+  Seed sse_decode_seed(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_16(SseDeserializer deserializer);
@@ -482,7 +502,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
 
   @protected
+  void sse_encode_descriptor_from_seed(
+      DescriptorFromSeed self, SseSerializer serializer);
+
+  @protected
   void sse_encode_envoy_account(EnvoyAccount self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_envoy_bip_39(EnvoyBip39 self, SseSerializer serializer);
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
@@ -536,6 +563,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_output(Output self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_seed(Seed self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_16(int self, SseSerializer serializer);

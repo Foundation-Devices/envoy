@@ -15,6 +15,7 @@ class EnvoyTransaction extends BitcoinTransaction
       required super.outputs,
       required super.date,
       required super.vsize,
+      required super.note,
       required super.isConfirmed});
 
   static EnvoyTransaction copyFrom(BitcoinTransaction tx) {
@@ -30,6 +31,7 @@ class EnvoyTransaction extends BitcoinTransaction
       outputs: tx.outputs,
       date: tx.date,
       vsize: tx.vsize,
+      note: tx.note,
     );
   }
 
@@ -66,6 +68,7 @@ class RampTransaction extends EnvoyTransaction {
       super.confirmations = 0,
       super.inputs = const [],
       super.date,
+      super.note = "",
       super.outputs = const []});
 }
 
@@ -95,6 +98,7 @@ class BtcPayTransaction extends EnvoyTransaction {
     super.confirmations = 0,
     super.inputs = const [],
     super.outputs = const [],
+    super.note,
     super.date,
     required super.vsize,
   });
@@ -121,6 +125,7 @@ class AztecoTransaction extends EnvoyTransaction {
     super.isConfirmed = false,
     super.outputs = const [],
     super.date,
+    super.note =null,
     required super.vsize,
   });
 }
@@ -153,6 +158,7 @@ class PendingTransaction extends BitcoinTransaction {
       outputs: tx.outputs,
       date: tx.date,
       vsize: tx.vsize,
+      note: tx.note,
     );
   }
 }

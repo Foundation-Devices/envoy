@@ -3,6 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'api/bip39.dart';
 import 'api/envoy_account.dart';
 import 'api/envoy_wallet.dart';
 import 'dart:async';
@@ -72,7 +73,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.9.0';
 
   @override
-  int get rustContentHash => -1560623436;
+  int get rustContentHash => 1512562214;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -207,6 +208,17 @@ abstract class RustLibApi extends BaseApi {
 
   Future<bool> crateApiEnvoyWalletEnvoyAccountHandlerValidateAddress(
       {required String address, Network? network});
+
+  Future<DescriptorFromSeed> crateApiBip39EnvoyBip39DeriveDescriptorFromSeed(
+      {required String seedWords,
+      required Network network,
+      required AddressType addressType,
+      required String derivationPath,
+      String? passphrase});
+
+  Future<Seed> crateApiBip39EnvoyBip39GenerateSeed({required Network network});
+
+  Future<bool> crateApiBip39EnvoyBip39ValidateSeed({required String seedWords});
 
   Future<void> crateApiEnvoyWalletInitApp();
 
@@ -370,7 +382,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiEnvoyWalletEnvoyAccountHandlerAutoAccessorGetStreamSinkConstMeta =>
           const TaskConstMeta(
-            debugName: "EnvoyAccountHandler_auto_accessor_get_streamSink",
+            debugName: "EnvoyAccountHandler_auto_accessor_get_stream_sink",
             argNames: ["that"],
           );
 
@@ -431,7 +443,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiEnvoyWalletEnvoyAccountHandlerAutoAccessorSetStreamSinkConstMeta =>
           const TaskConstMeta(
-            debugName: "EnvoyAccountHandler_auto_accessor_set_streamSink",
+            debugName: "EnvoyAccountHandler_auto_accessor_set_stream_sink",
             argNames: ["that", "streamSink"],
           );
 
@@ -1035,7 +1047,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_envoy_account,
-        decodeErrorData: null,
+        decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiEnvoyWalletEnvoyAccountHandlerStateConstMeta,
       argValues: [that],
@@ -1198,12 +1210,103 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
 
   @override
+  Future<DescriptorFromSeed> crateApiBip39EnvoyBip39DeriveDescriptorFromSeed(
+      {required String seedWords,
+      required Network network,
+      required AddressType addressType,
+      required String derivationPath,
+      String? passphrase}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(seedWords, serializer);
+        sse_encode_network(network, serializer);
+        sse_encode_address_type(addressType, serializer);
+        sse_encode_String(derivationPath, serializer);
+        sse_encode_opt_String(passphrase, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 29, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_descriptor_from_seed,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBip39EnvoyBip39DeriveDescriptorFromSeedConstMeta,
+      argValues: [seedWords, network, addressType, derivationPath, passphrase],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBip39EnvoyBip39DeriveDescriptorFromSeedConstMeta =>
+      const TaskConstMeta(
+        debugName: "envoy_bip_39_derive_descriptor_from_seed",
+        argNames: [
+          "seedWords",
+          "network",
+          "addressType",
+          "derivationPath",
+          "passphrase"
+        ],
+      );
+
+  @override
+  Future<Seed> crateApiBip39EnvoyBip39GenerateSeed({required Network network}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_network(network, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 30, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_seed,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiBip39EnvoyBip39GenerateSeedConstMeta,
+      argValues: [network],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBip39EnvoyBip39GenerateSeedConstMeta =>
+      const TaskConstMeta(
+        debugName: "envoy_bip_39_generate_seed",
+        argNames: ["network"],
+      );
+
+  @override
+  Future<bool> crateApiBip39EnvoyBip39ValidateSeed(
+      {required String seedWords}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(seedWords, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 31, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiBip39EnvoyBip39ValidateSeedConstMeta,
+      argValues: [seedWords],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBip39EnvoyBip39ValidateSeedConstMeta =>
+      const TaskConstMeta(
+        debugName: "envoy_bip_39_validate_seed",
+        argNames: ["seedWords"],
+      );
+
+  @override
   Future<void> crateApiEnvoyWalletInitApp() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 29, port: port_);
+            funcId: 32, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1228,7 +1331,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(data, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 30, port: port_);
+            funcId: 33, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_ng_account_config,
@@ -1254,7 +1357,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_ng_account_config(that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 31, port: port_);
+            funcId: 34, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_bool,
@@ -1302,7 +1405,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_opt_String(dateSynced, serializer);
         sse_encode_opt_String(walletPath, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 32, port: port_);
+            funcId: 35, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_ng_account_config,
@@ -1354,7 +1457,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_ng_account_config(that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 33, port: port_);
+            funcId: 36, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -1600,6 +1703,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  DescriptorFromSeed dco_decode_descriptor_from_seed(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return DescriptorFromSeed(
+      externalDescriptor: dco_decode_String(arr[0]),
+      internalDescriptor: dco_decode_String(arr[1]),
+      externalPubDescriptor: dco_decode_String(arr[2]),
+      internalPubDescriptor: dco_decode_String(arr[3]),
+    );
+  }
+
+  @protected
   EnvoyAccount dco_decode_envoy_account(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -1624,6 +1741,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       transactions: dco_decode_list_bitcoin_transaction(arr[15]),
       utxo: dco_decode_list_output(arr[16]),
     );
+  }
+
+  @protected
+  EnvoyBip39 dco_decode_envoy_bip_39(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.isNotEmpty)
+      throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
+    return EnvoyBip39();
   }
 
   @protected
@@ -1751,6 +1877,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       amount: dco_decode_u_64(arr[2]),
       tag: dco_decode_opt_String(arr[3]),
       doNotSpend: dco_decode_opt_box_autoadd_bool(arr[4]),
+    );
+  }
+
+  @protected
+  Seed dco_decode_seed(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return Seed(
+      mnemonic: dco_decode_String(arr[0]),
+      xprv: dco_decode_String(arr[1]),
+      fingerprint: dco_decode_String(arr[2]),
     );
   }
 
@@ -2001,6 +2140,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  DescriptorFromSeed sse_decode_descriptor_from_seed(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_externalDescriptor = sse_decode_String(deserializer);
+    var var_internalDescriptor = sse_decode_String(deserializer);
+    var var_externalPubDescriptor = sse_decode_String(deserializer);
+    var var_internalPubDescriptor = sse_decode_String(deserializer);
+    return DescriptorFromSeed(
+        externalDescriptor: var_externalDescriptor,
+        internalDescriptor: var_internalDescriptor,
+        externalPubDescriptor: var_externalPubDescriptor,
+        internalPubDescriptor: var_internalPubDescriptor);
+  }
+
+  @protected
   EnvoyAccount sse_decode_envoy_account(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_name = sse_decode_String(deserializer);
@@ -2038,6 +2192,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         isHot: var_isHot,
         transactions: var_transactions,
         utxo: var_utxo);
+  }
+
+  @protected
+  EnvoyBip39 sse_decode_envoy_bip_39(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return EnvoyBip39();
   }
 
   @protected
@@ -2222,6 +2382,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         amount: var_amount,
         tag: var_tag,
         doNotSpend: var_doNotSpend);
+  }
+
+  @protected
+  Seed sse_decode_seed(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_mnemonic = sse_decode_String(deserializer);
+    var var_xprv = sse_decode_String(deserializer);
+    var var_fingerprint = sse_decode_String(deserializer);
+    return Seed(
+        mnemonic: var_mnemonic, xprv: var_xprv, fingerprint: var_fingerprint);
   }
 
   @protected
@@ -2473,6 +2643,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_descriptor_from_seed(
+      DescriptorFromSeed self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.externalDescriptor, serializer);
+    sse_encode_String(self.internalDescriptor, serializer);
+    sse_encode_String(self.externalPubDescriptor, serializer);
+    sse_encode_String(self.internalPubDescriptor, serializer);
+  }
+
+  @protected
   void sse_encode_envoy_account(EnvoyAccount self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.name, serializer);
@@ -2492,6 +2672,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_bool(self.isHot, serializer);
     sse_encode_list_bitcoin_transaction(self.transactions, serializer);
     sse_encode_list_output(self.utxo, serializer);
+  }
+
+  @protected
+  void sse_encode_envoy_bip_39(EnvoyBip39 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
   }
 
   @protected
@@ -2643,6 +2828,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_u_64(self.amount, serializer);
     sse_encode_opt_String(self.tag, serializer);
     sse_encode_opt_box_autoadd_bool(self.doNotSpend, serializer);
+  }
+
+  @protected
+  void sse_encode_seed(Seed self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.mnemonic, serializer);
+    sse_encode_String(self.xprv, serializer);
+    sse_encode_String(self.fingerprint, serializer);
   }
 
   @protected
