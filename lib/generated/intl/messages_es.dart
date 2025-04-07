@@ -1371,6 +1371,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "onboarding_connectionChecking_SecurityPassed":
             MessageLookupByLibrary.simpleMessage(
                 "Comprobación de Seguridad Superada"),
+        "onboarding_connectionChecking_forUpdates":
+            MessageLookupByLibrary.simpleMessage("Checking for Updates"),
         "onboarding_connectionIntroError_content":
             MessageLookupByLibrary.simpleMessage(
                 "Es posible que este dispositivo no sea original o que haya sido manipulado durante el envío."),

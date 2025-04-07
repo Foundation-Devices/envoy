@@ -32,7 +32,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "_": MessageLookupByLibrary.simpleMessage(
-            "Note to devs: Right under Update Available in bold it says “KeyOS v2.4.0”. This has no textID cause it should always be replaced by the latest version found and should match the string in the what’s new button"),
+            "Optional place for a detailed message for our users so they understand the step."),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versió de l\'aplicació"),
         "about_openSourceLicences":
@@ -1372,6 +1372,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Secure Bluetooth with\nQuantumLink"),
         "onboarding_connectionChecking_SecurityPassed":
             MessageLookupByLibrary.simpleMessage("Security Check Passed"),
+        "onboarding_connectionChecking_forUpdates":
+            MessageLookupByLibrary.simpleMessage("Checking for Updates"),
         "onboarding_connectionIntroError_content":
             MessageLookupByLibrary.simpleMessage(
                 "This device may not be genuine or may have been tampered with during shipping."),
