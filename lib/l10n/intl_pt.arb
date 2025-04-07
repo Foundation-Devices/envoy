@@ -1,6 +1,6 @@
 {
   ":": ":",
-  "_": "Note to devs: Right under Update Available in bold it says “KeyOS v2.4.0”. This has no textID cause it should always be replaced by the latest version found and should match the string in the what’s new button",
+  "_": "Optional place for a detailed message for our users so they understand the step.",
   "about_appVersion": "Versão da Aplicação",
   "about_openSourceLicences": "Licenças de Código Aberto",
   "about_privacyPolicy": "Política de Privacidade",
@@ -606,6 +606,7 @@
   "menu_privacy": "Privacy",
   "menu_settings": "DEFINIÇÕES",
   "menu_support": "APOIO TÉCNICO",
+  "onboarding.connectionChecking.forUpdates": "Checking for Updates",
   "onboarding_advancedModal_content": "If you continue without Magic Backups, you will be responsible for storing your own seed words and backup data.",
   "onboarding_advancedModal_header": "Are you sure?",
   "onboarding_advanced_magicBackupSwitchText": "Simple, secure backup and recovery",
@@ -618,6 +619,7 @@
   "onboarding_bluetoothIntro_content": "Passport Prime uses a new, secure Bluetooth-based protocol for real time communication with Envoy.\n\nQuantumLink creates and end-to-end encrypted tunnel between Passport and Envoy, ensuring a secure connection.",
   "onboarding_bluetoothIntro_header": "Secure Bluetooth with\nQuantumLink",
   "onboarding_connectionChecking_SecurityPassed": "Security Check Passed",
+  "onboarding_connectionChecking_forUpdates": "Checking for Updates",
   "onboarding_connectionIntroError_content": "This device may not be genuine or may have been tampered with during shipping.",
   "onboarding_connectionIntroError_exitSetup": "Exit Setup",
   "onboarding_connectionIntroError_securityCheckFailed": "Security Check Failed",

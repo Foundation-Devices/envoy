@@ -52,10 +52,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `Note to devs: Right under Update Available in bold it says “KeyOS v2.4.0”. This has no textID cause it should always be replaced by the latest version found and should match the string in the what’s new button`
+  /// `Optional place for a detailed message for our users so they understand the step.`
   String get _ {
     return Intl.message(
-      'Note to devs: Right under Update Available in bold it says “KeyOS v2.4.0”. This has no textID cause it should always be replaced by the latest version found and should match the string in the what’s new button',
+      'Optional place for a detailed message for our users so they understand the step.',
       name: '_',
       desc: '',
       args: [],
@@ -6118,6 +6118,8 @@ class S {
     );
   }
 
+  // skipped getter for the 'onboarding.connectionChecking.forUpdates' key
+
   /// `If you continue without Magic Backups, you will be responsible for storing your own seed words and backup data.`
   String get onboarding_advancedModal_content {
     return Intl.message(
@@ -6233,6 +6235,16 @@ class S {
     return Intl.message(
       'Security Check Passed',
       name: 'onboarding_connectionChecking_SecurityPassed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Checking for Updates`
+  String get onboarding_connectionChecking_forUpdates {
+    return Intl.message(
+      'Checking for Updates',
+      name: 'onboarding_connectionChecking_forUpdates',
       desc: '',
       args: [],
     );
