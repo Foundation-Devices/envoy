@@ -125,8 +125,8 @@ final learnBlogsProvider =
 
   final Map<DeviceFilters, String> deviceTagMap = {
     DeviceFilters.envoy: "envoy",
-    DeviceFilters.passport: "passport",
-    DeviceFilters.passportPrime: "passportPrime",
+    DeviceFilters.passport: "passport core",
+    DeviceFilters.passportPrime: "passport prime",
   };
 
   if (!deviceFilterState.contains(DeviceFilters.all)) {
