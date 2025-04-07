@@ -2,7 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
+
 import 'package:animations/animations.dart';
+import 'package:bluart/bluart.dart';
 import 'package:envoy/business/AccountNg.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/settings.dart';
@@ -31,6 +34,7 @@ import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/NGWalletUi.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 
+import 'package:envoy/ui/onboard/prime/connection_lost_dialog.dart';
 import 'firmware_update/prime_fw_update_state.dart';
 
 class OnboardPrimeBluetooth extends ConsumerStatefulWidget {
@@ -52,6 +56,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   void initState() {
     super.initState();
     _listenForPassPortMessages();
+    _startBluetoothDisconnectionListener(context);
   }
 
   void _listenForPassPortMessages() {
@@ -80,6 +85,26 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             (message.message as QuantumLinkMessage_OnboardingState).field0;
 
         _handleOnboardingState(onboardingState);
+      }
+    });
+  }
+
+  StreamSubscription? _connectionMonitorSubscription;
+
+  void _startBluetoothDisconnectionListener(BuildContext context) {
+    _connectionMonitorSubscription
+        ?.cancel(); // Cancel any existing subscription to avoid duplicates
+
+    _connectionMonitorSubscription = BluetoothManager().events?.listen((event) {
+      if (event is Event_DeviceDisconnected) {
+        if (context.mounted) {
+          showEnvoyDialog(
+            context: context,
+            useRootNavigator: true,
+            dismissible: false,
+            dialog: const ConnectionLostDialog(),
+          );
+        }
       }
     });
   }

@@ -102,8 +102,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: TextButton(
-                //TODO: copy local
-                child: Text("Advanced Options",
+                child: Text(S().component_advanced,
                     style: EnvoyTypography.button
                         .copyWith(color: EnvoyColors.textPrimaryInverse)),
                 onPressed: () {

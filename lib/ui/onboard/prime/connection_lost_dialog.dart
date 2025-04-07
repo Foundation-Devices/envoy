@@ -4,6 +4,7 @@
 
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -12,6 +13,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:go_router/go_router.dart';
+import 'package:envoy/ui/widgets/scanner/decoders/generic_qr_decoder.dart';
+import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 
 class ConnectionLostDialog extends StatelessWidget {
   const ConnectionLostDialog({super.key});
@@ -47,18 +50,19 @@ class _ConnectionLostModal extends State<ConnectionLostModal> {
   bool _isReconnecting = false; // TODO: implement reconnect tracking
 
   void _attemptReconnect() {
-    setState(() {
-      _isReconnecting = true; // Start reconnecting
-    });
-
-    // Simulate a reconnecting delay
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) {
-        setState(() {
-          _isReconnecting = false; // Reset after delay
-        });
-      }
-    });
+    showScannerDialog(
+        context: context,
+        onBackPressed: (context) {
+          Navigator.pop(context);
+        },
+        decoder: GenericQrDecoder(onScan: (String payload) {
+          Navigator.pop(context);
+          final uri = Uri.parse(payload);
+          context.pushNamed(
+            ONBOARD_PRIME,
+            queryParameters: uri.queryParameters,
+          );
+        }));
   }
 
   @override
@@ -95,6 +99,7 @@ class _ConnectionLostModal extends State<ConnectionLostModal> {
                 borderRadius: BorderRadius.circular(EnvoySpacing.small),
                 type: EnvoyButtonTypes.secondary,
                 onTap: () {
+                  Navigator.of(context).pop();
                   context.go("/");
                 },
               ),
