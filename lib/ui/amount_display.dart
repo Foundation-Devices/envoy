@@ -12,7 +12,7 @@ import 'package:envoy/util/amount.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/business/account.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/business/locale.dart';
 
 //ignore: must_be_immutable
@@ -207,10 +207,4 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
       },
     );
   }
-}
-
-bool showBtcTrailingZeroes(int amountSats, bool numpadPressed) {
-  bool isBtcZero = amountSats == 0;
-  bool trailingZeros = isBtcZero || numpadPressed ? false : true;
-  return trailingZeros;
 }

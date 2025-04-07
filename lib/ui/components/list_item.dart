@@ -4,6 +4,7 @@
 
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/string_utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -23,7 +24,7 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/tx_utils.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/util/blur_container_transform.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
@@ -200,7 +201,12 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
           } else {
             return Padding(
               padding: EdgeInsets.only(
-                  bottom: s.displayFiat() == null ? EnvoySpacing.medium1 : 0),
+                  bottom: s.displayFiat() == null ||
+                          (kDebugMode &&
+                              transactionAccount?.wallet.network !=
+                                  Network.Mainnet)
+                      ? EnvoySpacing.medium1
+                      : 0),
               child: FittedBox(
                 child: EnvoyAmount(
                   account: transactionAccount!,

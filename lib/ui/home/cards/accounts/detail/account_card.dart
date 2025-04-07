@@ -5,6 +5,7 @@
 import 'package:animations/animations.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -15,6 +16,8 @@ import 'package:envoy/ui/envoy_icons.dart' as old_icons;
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/home/cards/accounts/azteco/azteco_dialog.dart';
+import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_dialog.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_list_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
@@ -26,7 +29,6 @@ import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/loader_ghost.dart';
-import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/shield.dart';
@@ -41,14 +43,16 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/tx_utils.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
+import 'package:envoy/ui/widgets/scanner/decoders/payment_qr_decoder.dart';
+import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/util/blur_container_transform.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:wallet/wallet.dart';
-import 'package:envoy/business/exchange_rate.dart';
+import 'package:ngwallet/src/wallet.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget {
@@ -261,19 +265,30 @@ class _AccountCardState extends ConsumerState<AccountCard>
                         color: EnvoyColors.accentPrimary,
                       ),
                       onPressed: () {
-                        Navigator.of(context, rootNavigator: true).push(
-                          MaterialPageRoute(builder: (context) {
-                            return MediaQuery.removePadding(
-                              context: context,
-                              child: ScannerPage(
-                                const [
-                                  ScannerType.address,
-                                  ScannerType.azteco,
-                                  ScannerType.btcPay
-                                ],
+                        final navigator = Navigator.of(context);
+                        final goRouter = GoRouter.of(context);
+                        showScannerDialog(
+                            context: context,
+                            onBackPressed: (context) {
+                              Navigator.of(context).pop();
+                            },
+                            decoder: PaymentQrDecoder(
                                 account: account,
+                                onAztecoScan: (aztecoVoucher) {
+                                  navigator.pop();
+                                  showEnvoyDialog(
+                                      context: context,
+                                      dialog:
+                                          AztecoDialog(aztecoVoucher, account));
+                                },
+                                btcPayVoucherScan: (voucher) {
+                                  navigator.pop();
+                                  showEnvoyDialog(
+                                      context: context,
+                                      dialog: BtcPayDialog(voucher, account));
+                                },
                                 onAddressValidated: (address, amount, message) {
-                                  // Navigator.pop(context);
+                                  navigator.pop();
                                   ref
                                       .read(spendAddressProvider.notifier)
                                       .state = address;
@@ -282,16 +297,12 @@ class _AccountCardState extends ConsumerState<AccountCard>
                                   ref
                                       .read(stagingTxNoteProvider.notifier)
                                       .state = message;
-                                  context.go(ROUTE_ACCOUNT_SEND, extra: {
+                                  goRouter.go(ROUTE_ACCOUNT_SEND, extra: {
                                     "account": account,
                                     "address": address,
                                     "amount": amount
                                   });
-                                },
-                              ),
-                            );
-                          }),
-                        );
+                                }));
                       },
                     ),
                   ),
@@ -507,7 +518,9 @@ class TransactionListTile extends ConsumerWidget {
                   subtitle: txSubtitle(activeLocale),
                   contentPadding: const EdgeInsets.all(0),
                   trailing: Column(
-                    mainAxisAlignment: s.displayFiat() == null
+                    mainAxisAlignment: s.displayFiat() == null ||
+                            (kDebugMode &&
+                                account.wallet.network != Network.Mainnet)
                         ? MainAxisAlignment.start
                         : MainAxisAlignment.center,
                     crossAxisAlignment: Settings().selectedFiat == null
@@ -542,10 +555,8 @@ class TransactionListTile extends ConsumerWidget {
                                     ),
                                   )
                                 : Padding(
-                                    padding: EdgeInsets.only(
-                                        top: s.displayFiat() == null
-                                            ? EnvoySpacing.small
-                                            : 0),
+                                    padding: const EdgeInsets.only(
+                                        top: EnvoySpacing.small),
                                     child: EnvoyAmount(
                                         account: account,
                                         amountSats: transaction.amount,

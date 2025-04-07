@@ -39,14 +39,16 @@ dependencies:
     path: packages/ur
   http_tor:
     path: packages/http_tor
-  wallet:
-    path: packages/wallet
+#  wallet:
+#    path: packages/wallet
   backup:
     path: packages/backup
   bluart:
     path: packages/bluart
   foundation_api:
     path: packages/foundation_api
+  ngwallet:
+    path: packages/ngwallet
 
 
   # qr_code_scanner fork
@@ -62,7 +64,10 @@ dependencies:
       ref: f4140425a5510c8059db6915bde8eab8031870fe
       path: flutter_vlc_player
 
-  tor: 0.0.8
+  tor:
+   git:
+     url: https://github.com/Foundation-Devices/tor.git
+     ref: 66c62b1f3b332b2e2fd506e07786a70fc53ab7f4
   qr_flutter: ^4.1.0
   dots_indicator: ^2.0.0
   flutter_secure_storage: ^9.2.2
@@ -123,7 +128,6 @@ dependencies:
   archive: ^3.6.1
 dependency_overrides:
   watcher: ^1.1.0
-  win32: ^5.5.4 # https://stackoverflow.com/questions/69553108/flutter-error-unmodifiableuint8listview-is-restricted-and-cant-be-extended-o
 
 dev_dependencies:
   test: any

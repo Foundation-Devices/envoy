@@ -16,6 +16,7 @@ import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/lock/authenticate_page.dart';
+import 'package:envoy/ui/migrations/migration_app.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -48,7 +49,10 @@ Future<void> main() async {
     EnvoyReport().log("Envoy init", stack.toString());
   }
 
-  if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
+  final migrationStatus = EnvoyStorage().getBool("migration_envoy_v2_status");
+  if (/*migrationStatus == null || migrationStatus == */false) {
+    runApp(MigrationApp());
+  } else if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
     runApp(const AuthenticateApp());
   } else {
     runApp(const EnvoyApp());
@@ -57,6 +61,15 @@ Future<void> main() async {
 }
 
 Future<void> initSingletons() async {
+  try {
+    await BluetoothManager.init();
+  } catch (e, stack) {
+    kPrint("Error initializing BluetoothManager: $e", stackTrace: stack);
+  }
+
+  await LocalStorage.init();
+  await EnvoyStorage().init();
+
   // This is notoriously low on iOS, causing 'too many open files errors'
   kPrint("Process nofile_limit: ${getNofileLimit()}");
 
@@ -64,9 +77,9 @@ Future<void> initSingletons() async {
   // ~10k on iPhone 11 which is much better than the default 256
   kPrint("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
 
+  // await AccountNg().init();
+
   await NTPUtil.init();
-  await EnvoyStorage().init();
-  await LocalStorage.init();
   EnvoyScheduler.init();
   await KeysManager.init();
   await ExchangeRate.init();
@@ -78,14 +91,11 @@ Future<void> initSingletons() async {
   await EnvoySeed.init();
   await FMTCObjectBoxBackend().initialise();
   await const FMTCStore('mapStore').manage.create();
-  await BluetoothManager.init();
 
   // Start Tor regardless of whether we are using it or not
   try {
     Tor.instance.start();
-  } on Exception catch (e) {
-    EnvoyReport().log("tor", e.toString());
-  }
+  } on Exception catch (e) {}
 
   Fees.restore();
   AccountManager.init();

@@ -5,7 +5,7 @@
 import 'dart:ui';
 
 import 'package:envoy/util/string_utils.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import 'package:envoy/generated/l10n.dart';

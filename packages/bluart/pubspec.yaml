@@ -14,11 +14,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_rust_bridge: 2.6.0
+  flutter_rust_bridge: 2.9.0
   plugin_platform_interface: ^2.0.2
   uuid: ^4.4.2
+  freezed_annotation: ^2.0.0
 
 dev_dependencies:
+  freezed: ^2.0.0
+  build_runner: ^2.4.15
+
   ffi: ^2.1.0
   ffigen: ^11.0.0
   flutter_test:

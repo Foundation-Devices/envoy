@@ -10,7 +10,6 @@ import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/components/button.dart';
-import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
@@ -18,9 +17,12 @@ import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
+import 'package:envoy/ui/widgets/scanner/decoders/generic_qr_decoder.dart';
+import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/cupertino.dart';
@@ -90,7 +92,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
       child: EnvoyPatternScaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
-          leading: isOnboardingComplete
+          leading: isOnboardingComplete && GoRouter.of(context).canPop()
               ? CupertinoNavigationBarBackButton(
                   color: EnvoyColors.textPrimaryInverse,
                   onPressed: () => context.go("/"),
@@ -124,48 +126,43 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
           ),
         ),
         shield: Padding(
-          padding: const EdgeInsets.symmetric(
-              vertical: EnvoySpacing.xs, horizontal: EnvoySpacing.medium1),
+          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.min,
             children: [
               Flexible(
                 child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.medium1,
-                        vertical: EnvoySpacing.xs),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const SizedBox(height: EnvoySpacing.small),
-                        Text(
-                          S().welcome_screen_heading,
-                          style: EnvoyTypography.heading,
-                          textAlign: TextAlign.center,
-                        ),
-                        const Padding(
-                            padding: EdgeInsets.all(EnvoySpacing.medium1)),
-                        GestureDetector(
-                          onTap: () {
-                            registerEscapeTap(EscapeHatchTap.text);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: EnvoySpacing.xs),
-                            child: Text(
-                              //TODO: sync latest copy and button links
-                              S().welcome_screen_subheading,
-                              style: Theme.of(context).textTheme.bodySmall,
-                              textAlign: TextAlign.center,
-                            ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(height: EnvoySpacing.medium1),
+                      Text(
+                        S().welcome_screen_heading,
+                        style: EnvoyTypography.heading,
+                        textAlign: TextAlign.center,
+                      ),
+                      const Padding(
+                          padding: EdgeInsets.all(EnvoySpacing.small)),
+                      GestureDetector(
+                        onTap: () {
+                          registerEscapeTap(EscapeHatchTap.text);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: EnvoySpacing.xs),
+                          child: Text(
+                            //TODO: sync latest copy and button links
+                            S().onboarding_welcome_content,
+                            style: EnvoyTypography.info
+                                .copyWith(color: EnvoyColors.textTertiary),
+                            textAlign: TextAlign.center,
                           ),
                         ),
-                        const SizedBox(height: EnvoySpacing.medium3),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: EnvoySpacing.medium3),
+                    ],
                   ),
                 ),
               ),
@@ -183,7 +180,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                         // Replace with your image URL or asset
                         fit: BoxFit.cover, // Adjust as per your layout
                       ),
-                      title: "Create a\nMobile Wallet",
+                      title: S().onboarding_welcome_createMobileWallet,
                       onTap: () {
                         context.pushNamed(ONBOARD_ENVOY_SETUP,
                             queryParameters: {"setupEnvoy": "1"});
@@ -198,9 +195,21 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                         // Replace with your image URL or asset
                         fit: BoxFit.cover, // Adjust as per your layout
                       ),
-                      title: "Set Up a\nPassport Device",
+                      title: S().onboarding_welcome_setUpPassport,
                       onTap: () {
-                        showScanDialog(context);
+                        showScannerDialog(
+                            context: context,
+                            onBackPressed: (context) {
+                              Navigator.pop(context);
+                            },
+                            decoder: GenericQrDecoder(onScan: (String payload) {
+                              Navigator.pop(context);
+                              final uri = Uri.parse(payload);
+                              context.pushNamed(
+                                ONBOARD_PRIME,
+                                queryParameters: uri.queryParameters,
+                              );
+                            }));
                       },
                     ),
                   ),
@@ -216,7 +225,6 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   void showScanDialog(BuildContext context) async {
     bool promptDismissed = await EnvoyStorage()
         .checkPromptDismissed(DismissiblePrompt.scanToConnect);
-    bool dismissed = false;
 
     if (!promptDismissed && context.mounted) {
       showEnvoyDialog(
@@ -249,64 +257,70 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                             fit: BoxFit.contain,
                           ),
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              dismissed = !dismissed;
-                            });
-                          },
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                child: EnvoyCheckbox(
-                                  value: dismissed,
-                                  onChanged: (value) {
-                                    if (value != null) {
-                                      setState(() {
-                                        dismissed = value;
-                                      });
-                                    }
-                                  },
-                                ),
-                              ),
-                              Text(
-                                S().component_dontShowAgain,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                      color: dismissed
-                                          ? Colors.black
-                                          : const Color(0xff808080),
-                                    ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        //TODO: add more context instead of dismissible
+                        // GestureDetector(
+                        //   onTap: () {
+                        //     setState(() {
+                        //       dismissed = !dismissed;
+                        //     });
+                        //   },
+                        //   child: Row(
+                        //     crossAxisAlignment: CrossAxisAlignment.center,
+                        //     mainAxisAlignment: MainAxisAlignment.center,
+                        //     children: [
+                        //       SizedBox(
+                        //         child: EnvoyCheckbox(
+                        //           value: dismissed,
+                        //           onChanged: (value) {
+                        //             if (value != null) {
+                        //               setState(() {
+                        //                 dismissed = value;
+                        //               });
+                        //             }
+                        //           },
+                        //         ),
+                        //       ),
+                        //       Text(
+                        //         S().component_dontShowAgain,
+                        //         style: Theme.of(context)
+                        //             .textTheme
+                        //             .bodyMedium
+                        //             ?.copyWith(
+                        //               color: dismissed
+                        //                   ? Colors.black
+                        //                   : const Color(0xff808080),
+                        //             ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
                         EnvoyButton(
-                          label: "Continue",
+                          label: S().component_continue,
                           type: ButtonType.primary,
                           state: ButtonState.defaultState,
                           onTap: () {
-                            if (dismissed) {
-                              EnvoyStorage().addPromptState(
-                                  DismissiblePrompt.scanToConnect);
-                            }
+                            // if (dismissed) {
+                            //   EnvoyStorage().addPromptState(
+                            //       DismissiblePrompt.scanToConnect);
+                            // }
+                            // Navigator.pop(context);
 
-                            context.goNamed(ONBOARD_PRIME);
-                            //TODO: use scanner
-                            return;
-                            // Navigator.push(context, MaterialPageRoute(
-                            //   builder: (context) {
-                            //     return ScannerPage.devicePair(
-                            //       (payload) {
-                            //         Navigator.pop(context);
-                            //       },
-                            //     );
-                            //   },
-                            // ));
+                            showScannerDialog(
+                                context: context,
+                                onBackPressed: (context) {
+                                  Navigator.pop(context);
+                                },
+                                decoder:
+                                    GenericQrDecoder(onScan: (String payload) {
+                                  Navigator.pop(context);
+                                  final uri = Uri.parse(payload);
+                                  kPrint(
+                                      "BLE UriParams ${uri.queryParameters}");
+                                  context.pushNamed(
+                                    ONBOARD_PRIME,
+                                    queryParameters: uri.queryParameters,
+                                  );
+                                }));
                           },
                         )
                       ],

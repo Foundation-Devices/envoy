@@ -7,7 +7,7 @@ import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 import 'package:collection/collection.dart';
 
 final accountManagerProvider =

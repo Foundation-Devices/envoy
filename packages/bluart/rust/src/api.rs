@@ -3,4 +3,3 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 pub mod ble;
-pub mod logger;

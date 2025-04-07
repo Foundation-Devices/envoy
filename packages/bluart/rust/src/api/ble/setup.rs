@@ -26,6 +26,8 @@ mod ios;
 use std::sync::OnceLock;
 
 use tokio::runtime::Runtime;
+use log::info;
+
 pub static RUNTIME: OnceLock<Runtime> = OnceLock::new();
 // use super::Error;
 
@@ -38,7 +40,7 @@ pub fn create_runtime() -> anyhow::Result<()> {
     {
         use std::sync::atomic::{AtomicUsize, Ordering};
 
-        tracing::info!("Create runtime");
+        info!("Create runtime");
 
         let runtime = tokio::runtime::Builder::new_multi_thread()
             .enable_all()
@@ -48,7 +50,7 @@ pub fn create_runtime() -> anyhow::Result<()> {
                 format!("bluart-thread-{}", id)
             })
             .on_thread_stop(move || {
-                tracing::info!("Stopping runtime thread");
+                info!("Stopping runtime thread");
             })
             .build()
             .unwrap();

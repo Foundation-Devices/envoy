@@ -3,28 +3,27 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/bluetooth_manager.dart';
-import 'package:envoy/ui/home/settings/bluetooth_diag.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/settings.dart';
+import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/home/home_page.dart';
+import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/home/settings/about_page.dart';
 import 'package:envoy/ui/home/settings/backup/backup_page.dart';
+import 'package:envoy/ui/home/settings/bluetooth_diag.dart';
 import 'package:envoy/ui/home/settings/settings_page.dart';
 import 'package:envoy/ui/home/settings/support_page.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/ui/home/home_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:envoy/ui/home/settings/about_page.dart';
-import 'package:envoy/business/settings.dart';
-import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/business/envoy_seed.dart';
-import 'package:envoy/ui/home/home_state.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/routes/accounts_router.dart';
 
 class SettingsMenu extends ConsumerStatefulWidget {
   const SettingsMenu({super.key});
@@ -165,14 +164,18 @@ class SettingsMenuWidget extends ConsumerWidget {
                           background.state = HomePageBackgroundState.backups;
                         },
                       ),
-                    const SizedBox(height: 0),
+                    MenuOption(
+                      label: "Privacy".toUpperCase(), // TODO: localazy
+                      onTap: () {
+                        // TODO: implement the flow to "Privacy"
+                      },
+                    ),
                     MenuOption(
                       label: S().menu_support.toUpperCase(),
                       onTap: () {
                         background.state = HomePageBackgroundState.support;
                       },
                     ),
-                    const SizedBox(height: 0),
                     MenuOption(
                       label: S().menu_about.toUpperCase(),
                       onTap: () {
@@ -221,16 +224,18 @@ class SettingsMenuWidget extends ConsumerWidget {
                           )),
                     ),
                     GestureDetector(
-                        onTap: () {
-                          launchUrl(Uri.parse(
-                              "https://github.com/Foundation-Devices"));
-                          BluetoothManager().getPermissions();
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const BluetoothDiagnosticsPage(),
-                              ));
+                        onTap: () async {
+                          // launchUrl(Uri.parse(
+                          //     "https://github.com/Foundation-Devices"));
+                          await BluetoothManager().getPermissions();
+                          if (context.mounted) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const BluetoothDiagnosticsPage(),
+                                ));
+                          }
                         },
                         child: SvgPicture.asset(
                           "assets/github.svg",
@@ -264,30 +269,16 @@ class MenuOption extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(
             horizontal: EnvoySpacing.large2, vertical: EnvoySpacing.medium1),
-        child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                constraints: const BoxConstraints(minWidth: 142),
-                child: Text(
-                  label.toUpperCase(),
-                  textAlign: TextAlign.start,
-                  style: EnvoyTypography.subheading
-                      .copyWith(
-                        color: EnvoyColors.textPrimaryInverse,
-                      )
-                      .setWeight(FontWeight.w500),
-                ),
-              ),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: const EnvoyIcon(
-                  EnvoyIcons.chevron_right,
-                  color: EnvoyColors.textPrimaryInverse,
-                ),
+        constraints: const BoxConstraints(minWidth: 142),
+        child: Text(
+          label.toUpperCase(),
+          textAlign: TextAlign.start,
+          style: EnvoyTypography.subheading
+              .copyWith(
+                color: EnvoyColors.textPrimaryInverse,
               )
-            ]),
+              .setWeight(FontWeight.w500),
+        ),
       ),
     );
   }

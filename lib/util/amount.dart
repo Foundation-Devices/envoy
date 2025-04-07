@@ -11,7 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/business/exchange_rate.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/business/locale.dart';
 
 String btcSatoshiSeparator = fiatDecimalSeparator;
@@ -21,10 +21,10 @@ NumberFormat satsFormatter =
     NumberFormat("###,###,###,###,###,###,###", currentLocale);
 
 String getDisplayAmount(int amountSats, AmountDisplayUnit unit,
-    {bool trailingZeroes = false, double? displayFiat}) {
+    {bool trailingZeros = false, double? displayFiat}) {
   switch (unit) {
     case AmountDisplayUnit.btc:
-      return convertSatsToBtcString(amountSats);
+      return convertSatsToBtcString(amountSats, trailingZeros: trailingZeros);
     case AmountDisplayUnit.sat:
       return satsFormatter.format(amountSats);
     case AmountDisplayUnit.fiat:
@@ -50,12 +50,12 @@ String removeFiatTrailingZeros(String fiatAmount) {
   return fiatAmount;
 }
 
-String convertSatsToBtcString(int amountSats) {
+String convertSatsToBtcString(int amountSats, {bool trailingZeros = false}) {
   final amountBtc = amountSats / 100000000;
 
   NumberFormat formatter = NumberFormat.decimalPattern(currentLocale);
-  formatter.minimumFractionDigits = 0;
-  formatter.maximumFractionDigits = 8;
+  formatter.minimumFractionDigits = trailingZeros ? 8 : 0;
+  formatter.maximumFractionDigits = 8; // Always allow up to 8 decimals
 
   return formatter.format(amountBtc);
 }
