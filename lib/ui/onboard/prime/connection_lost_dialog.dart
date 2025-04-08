@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:bluart/bluart.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -54,12 +55,14 @@ class _ConnectionLostModal extends State<ConnectionLostModal> {
     });
 
     final bleId = BluetoothManager().bleId;
+    BleDevice?
+        device; // TODO: how to get the "connected" from Prime, also if it reconnects how is Prime going to continue to do what he was already doing?
 
     try {
       await BluetoothManager().connect(id: bleId);
 
       // If connection was successful, dismiss the dialog
-      if (mounted) {
+      if (device!.connected && mounted) {
         Navigator.pop(context);
         // TODO: show a toast/snackbar if reconnected
       }
