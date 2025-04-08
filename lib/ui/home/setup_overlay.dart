@@ -355,11 +355,13 @@ class _EnvoyCardButtonState extends State<EnvoyCardButton> {
                                 left: EnvoySpacing.medium1),
                             child: Align(
                               alignment: Alignment.centerLeft,
-                              child: Text(
-                                widget.title,
-                                textAlign: TextAlign.start,
-                                style: EnvoyTypography.heading.copyWith(
-                                  color: EnvoyColors.textPrimaryInverse,
+                              child: SingleChildScrollView(
+                                child: Text(
+                                  widget.title,
+                                  textAlign: TextAlign.start,
+                                  style: EnvoyTypography.heading.copyWith(
+                                    color: EnvoyColors.textPrimaryInverse,
+                                  ),
                                 ),
                               ),
                             ),
