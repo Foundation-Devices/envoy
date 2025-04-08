@@ -125,7 +125,7 @@ class AztecoTransaction extends EnvoyTransaction {
     super.isConfirmed = false,
     super.outputs = const [],
     super.date,
-    super.note =null,
+    super.note = null,
     required super.vsize,
   });
 }
