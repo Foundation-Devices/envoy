@@ -39,8 +39,6 @@ dependencies:
     path: packages/ur
   http_tor:
     path: packages/http_tor
-#  wallet:
-#    path: packages/wallet
   backup:
     path: packages/backup
   bluart:

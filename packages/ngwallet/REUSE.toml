@@ -43,3 +43,15 @@ path = "rust_builder/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2024 Foundation Devices Inc."
 SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "lib/src/*.freezed.dart"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 Foundation Devices Inc."
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "lib/src/*.g.dart"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 Foundation Devices Inc."
+SPDX-License-Identifier = "GPL-3.0-or-later"
