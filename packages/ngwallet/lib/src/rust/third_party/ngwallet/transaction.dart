@@ -10,21 +10,29 @@ class BitcoinTransaction {
   final String txId;
   final int blockHeight;
   final int confirmations;
+  final bool isConfirmed;
   final BigInt fee;
-  final BigInt amount;
+  final PlatformInt64 amount;
   final List<Input> inputs;
+  final String address;
   final List<Output> outputs;
   final String? note;
+  final BigInt? date;
+  final BigInt vsize;
 
   const BitcoinTransaction({
     required this.txId,
     required this.blockHeight,
     required this.confirmations,
+    required this.isConfirmed,
     required this.fee,
     required this.amount,
     required this.inputs,
+    required this.address,
     required this.outputs,
     this.note,
+    this.date,
+    required this.vsize,
   });
 
   @override
@@ -32,11 +40,15 @@ class BitcoinTransaction {
       txId.hashCode ^
       blockHeight.hashCode ^
       confirmations.hashCode ^
+      isConfirmed.hashCode ^
       fee.hashCode ^
       amount.hashCode ^
       inputs.hashCode ^
+      address.hashCode ^
       outputs.hashCode ^
-      note.hashCode;
+      note.hashCode ^
+      date.hashCode ^
+      vsize.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -46,11 +58,15 @@ class BitcoinTransaction {
           txId == other.txId &&
           blockHeight == other.blockHeight &&
           confirmations == other.confirmations &&
+          isConfirmed == other.isConfirmed &&
           fee == other.fee &&
           amount == other.amount &&
           inputs == other.inputs &&
+          address == other.address &&
           outputs == other.outputs &&
-          note == other.note;
+          note == other.note &&
+          date == other.date &&
+          vsize == other.vsize;
 }
 
 class Input {

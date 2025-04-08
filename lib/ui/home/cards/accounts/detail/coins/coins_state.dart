@@ -90,7 +90,9 @@ final coinsProvider = Provider.family<List<Coin>, String>((ref, accountId) {
   // eg : {'hash1': true, 'hash2': false}
   final utxoBlockState = (ref.watch(coinBlockStateStreamProvider).value ?? {});
 
-  List<Utxo> utxos = account.wallet.utxos;
+  //                            //TODO: use EnvoyAccount
+  // List<Utxo> utxos = account.wallet.utxos;
+  List<Utxo> utxos = [];
   //Map utxos to coins with locked status
   List<Coin> coins = utxos
       .map((e) =>

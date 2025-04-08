@@ -64,7 +64,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         kPrint("Found it!");
         final response = message.message as QuantumLinkMessage_PairingResponse;
 
-        kPrint("GOT DESCRIPTOR: ${response.field0.descriptor}");
         // Create the thing that I'm gonna reveal later
         // await AccountNg().restore(response.field0.descriptor);
         //

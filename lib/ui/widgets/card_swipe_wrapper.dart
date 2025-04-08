@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/util/easing.dart';
@@ -10,11 +9,12 @@ import 'package:envoy/util/haptics.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class CardSwipeWrapper extends ConsumerStatefulWidget {
   final Widget child;
   final double height;
-  final Account account;
+  final EnvoyAccount account;
   final bool draggable;
 
   const CardSwipeWrapper(

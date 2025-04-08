@@ -24,8 +24,12 @@ mixin _$Utxo {
   int get vout => throw _privateConstructorUsedError;
   int get value => throw _privateConstructorUsedError;
 
+  /// Serializes this Utxo to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of Utxo
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $UtxoCopyWith<Utxo> get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -47,6 +51,8 @@ class _$UtxoCopyWithImpl<$Res, $Val extends Utxo>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of Utxo
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -88,6 +94,8 @@ class __$$UtxoImplCopyWithImpl<$Res>
   __$$UtxoImplCopyWithImpl(_$UtxoImpl _value, $Res Function(_$UtxoImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of Utxo
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -153,11 +161,13 @@ class _$UtxoImpl with DiagnosticableTreeMixin implements _Utxo {
             (identical(other.value, value) || other.value == value));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, txid, vout, value);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Utxo
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$UtxoImplCopyWith<_$UtxoImpl> get copyWith =>
@@ -185,8 +195,11 @@ abstract class _Utxo implements Utxo {
   int get vout;
   @override
   int get value;
+
+  /// Create a copy of Utxo
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$UtxoImplCopyWith<_$UtxoImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

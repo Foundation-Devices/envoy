@@ -16,7 +16,7 @@ import 'package:flutter/services.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:intl/intl.dart';
 import 'package:tor/tor.dart';
-import 'package:ngwallet/src/wallet.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/locale.dart';
 
@@ -293,9 +293,9 @@ class ExchangeRate extends ChangeNotifier {
 
   // SATS to FIAT
   String getFormattedAmount(int amountSats,
-      {bool includeSymbol = true, Wallet? wallet, double? displayFiat}) {
+      {bool includeSymbol = true, Network? network, double? displayFiat}) {
     // Hide test coins on production builds only
-    if (!kDebugMode && wallet != null && wallet.network != Network.Mainnet) {
+    if (!kDebugMode && network != null && network != Network.bitcoin) {
       return "";
     }
 

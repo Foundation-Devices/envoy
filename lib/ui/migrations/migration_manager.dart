@@ -2,9 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/legacy/legacy_account.dart';
+import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +23,12 @@ class MigrationProgress {
   double get progress => completed / total;
 }
 
+const String migrationPrefs = "migration_envoy_v2";
+
 class MigrationManager {
   // Singleton instance
   static final MigrationManager _instance = MigrationManager._internal();
+  static const String AccountsPrefKey = "accounts";
 
   // Private constructor
   MigrationManager._internal();
@@ -39,13 +46,12 @@ class MigrationManager {
 
   Function(MigrationProgress progress)? onProgressListener;
 
-  static const String ACCOUNTS_PREFS = "accounts";
   final LocalStorage _ls = LocalStorage();
   static String walletsDirectory =
       "${LocalStorage().appDocumentsDir.path}/wallets/";
   static String newWalletDirectory =
       "${LocalStorage().appDocumentsDir.path}/wallets_new/";
-  List<EnvoyAccount> accounts = [];
+  List<EnvoyAccountHandler> accounts = [];
 
   final StreamController<MigrationProgress> _streamController =
       StreamController<MigrationProgress>.broadcast();
@@ -64,104 +70,142 @@ class MigrationManager {
   }
 
   void migrate() async {
-    await RustLib.init();
     try {
       //clean directory for new wallets
-      if (Directory(newWalletDirectory).existsSync()) {
-        Directory(newWalletDirectory).deleteSync(recursive: true);
+      if (await Directory(newWalletDirectory).exists()) {
+        await Directory(newWalletDirectory).delete(recursive: true);
       }
-      if (_ls.prefs.containsKey(ACCOUNTS_PREFS)) {
-        var storedAccounts =
-            jsonDecode(_ls.prefs.getString(ACCOUNTS_PREFS)!).toList();
+      final walletOrder = List<String>.empty(growable: true);
+      if (_ls.prefs.containsKey(AccountsPrefKey)) {
+        List<dynamic> accountsJson =
+            jsonDecode(_ls.prefs.getString(AccountsPrefKey)!).toList();
+
+        List<LegacyAccount> legacyAccounts =
+            accountsJson.map((json) => LegacyAccount.fromJson(json)).toList();
 
         addMigrationEvent(
-            MigrationProgress(total: storedAccounts.length, completed: 0));
+            MigrationProgress(total: legacyAccounts.length, completed: 0));
 
-        for (Map<String, dynamic> account in storedAccounts.toList()) {
-          final accountModel = LegacyAccount.fromJson(account);
+        for (LegacyAccount legacyAccount in legacyAccounts) {
           //use externalDescriptor and internalDescriptor
           final newAccountDir =
-              Directory("$newWalletDirectory${accountModel.wallet.name}");
+              Directory("$newWalletDirectory${legacyAccount.wallet.name}");
+          final oldWalletDir =
+              Directory("$walletsDirectory${legacyAccount.wallet.name}");
           if (!newAccountDir.existsSync()) {
             await newAccountDir.create(recursive: true);
           }
           var network = Network.bitcoin;
-          if (accountModel.wallet.network.toLowerCase() == "testnet") {
+          if (legacyAccount.wallet.network.toLowerCase() == "testnet") {
             network = Network.testnet;
-          } else if (accountModel.wallet.network.toLowerCase() == "signet") {
+          } else if (legacyAccount.wallet.network.toLowerCase() == "signet") {
             network = Network.signet;
           }
           var addressType = AddressType.p2Wpkh;
-          if (accountModel.wallet.type == "taproot") {
+          if (legacyAccount.wallet.type == "taproot") {
             addressType = AddressType.p2Tr;
           }
-          final envoyAccount = await EnvoyAccount.newFromDescriptor(
-              name: accountModel.name,
-              color: "red",
-              deviceSerial: accountModel.deviceSerial,
-              dateAdded: accountModel.dateAdded,
+          walletOrder.add(legacyAccount.id);
+          final envoyAccount = await EnvoyAccountHandler.migrate(
+              name: legacyAccount.name,
+              color: colorToHex(getAccountColor(legacyAccount)),
+              deviceSerial: legacyAccount.deviceSerial,
+              dateAdded: legacyAccount.dateAdded,
               addressType: addressType,
-              externalDescriptor: accountModel.wallet.externalDescriptor,
-              internalDescriptor: accountModel.wallet.internalDescriptor,
-              index: accountModel.number,
+              externalDescriptor: legacyAccount.wallet.externalDescriptor,
+              internalDescriptor: legacyAccount.wallet.internalDescriptor,
+              index: legacyAccount.number,
               network: network,
+              sledDbPath: oldWalletDir.path,
+              id: legacyAccount.id,
               dbPath: newAccountDir.path);
+          envoyAccount.config().id;
+          //add dir names to
           accounts.add(envoyAccount);
         }
-        syncAccounts();
+        await _ls.prefs
+            .setString(NgAccountManager.ACCOUNT_ORDER, jsonEncode(walletOrder));
+        try {
+          await syncAccounts();
+          for (var account in accounts) {
+            migrateNotes(account);
+          }
+          for (var account in accounts) {
+            account.dispose();
+          }
+        } catch (e) {
+          kPrint("Migration: Error $e");
+          EnvoyReport().log("Migration", "Error $e");
+        } finally {
+          //open wallets
+          await NgAccountManager().restore();
+        }
+        //Load accounts to account manager
+      } else {
+        kPrint("Migration: No accounts found");
+        EnvoyReport().log("Migration", "No accounts found");
       }
     } catch (e, stack) {
+      EnvoyReport().log("Migration", "Error $e", stackTrace: stack);
       kPrint("Migration: Error $e", stackTrace: stack);
+    } finally {
+      await EnvoyStorage().setBool(migrationPrefs, true);
+      _onMigrationFinished?.call();
     }
   }
 
   Future syncAccounts() async {
-    kPrint("Migration: Scanning");
-    for (EnvoyAccount account in accounts) {
-      final accountConfig = await account.getConfig();
-      var network = Settings.getDefaultFulcrumServers()[0];
-      if (accountConfig.network == Network.testnet) {
-        network = Settings.TESTNET_ELECTRUM_SERVER;
-      } else if (accountConfig.network == Network.signet) {
-        network = Settings.MUTINYNET_ELECTRUM_SERVER;
+    for (EnvoyAccountHandler account in accounts) {
+      final accountConfig = account.config();
+      final server = SyncManager.getElectrumServer(accountConfig.network);
+      int? port = Settings().getPort(accountConfig.network);
+      if (port == -1) {
+        port = null;
       }
-      kPrint("Migration: Scanning Acc: ${accountConfig.name} ${network}");
-      kPrint(" --- ${accountConfig.externalDescriptor}");
 
-      final scan = await account.requestScan();
-      ArcMutexOptionFullScanResponseKeychainKind result =
-          await EnvoyAccount.scan(scanRequest: scan, electrumServer: network);
-      await account.applyUpdate(scanRequest: result);
-
-      kPrint("Migration: Scanning finished ${await account.balance()}");
-      kPrint(
-          "Migration: Scanning finished transactions size${(await account.transactions()).length}");
-      kPrint(
-          "Migration: Scanning finished Utxo size${(await account.utxo()).length}");
-      kPrint("\n");
+      final scan = await account.requestFullScan();
+      final result = await EnvoyAccountHandler.scan(
+          scanRequest: scan, electrumServer: server, torPort: port);
+      await account.applyUpdate(update: result);
       addMigrationEvent(MigrationProgress(
           total: accounts.length, completed: accounts.indexOf(account) + 1));
     }
-    _onMigrationFinished?.call();
   }
 
-  //TODO
-  Future migrateNotes(
-      LegacyAccount accountModel, EnvoyAccount envoyAccount) async {
+  //migrate notes to new db.
+  //this will get all notes that try to set it to account,\
+  //ngwallet will only take notes that are associated with its transactions
+  Future migrateNotes(EnvoyAccountHandler envoyAccount) async {
     final storage = EnvoyStorage();
     final notes = await storage.getAllNotes();
-    notes.forEach((key, value) async {
-      await envoyAccount.setNote(note: value, txId: key);
-    });
+    for (var entry in notes.entries) {
+      try {
+        await envoyAccount.setNote(note: entry.value, txId: entry.key);
+      } catch (_) {}
+    }
   }
 
-  //TODO
-  Future migrateTags(
-      LegacyAccount accountModel, EnvoyAccount envoyAccount) async {
-    final storage = EnvoyStorage();
-    final tags = await storage.getAllTags();
+  Color getAccountColor(
+    LegacyAccount account,
+  ) {
+    // Postmix accounts are pure red
+    if (account.number == 2147483646) {
+      return Colors.red;
+    }
+    final wallet = account.wallet;
+    int colorIndex = (wallet.hot ? account.number + 1 : account.number) %
+        (EnvoyColors.listAccountTileColors.length);
+    return EnvoyColors.listAccountTileColors[colorIndex];
   }
 
-  Future migrateRbf(
-      LegacyAccount accountModel, EnvoyAccount envoyAccount) async {}
+  String colorToHex(Color color) {
+    // Convert double values to int (0-255 range)
+    int r = (color.r * 255).round();
+    int g = (color.g * 255).round();
+    int b = (color.b * 255).round();
+
+    return '#${r.toRadixString(16).padLeft(2, '0')}'
+        '${g.toRadixString(16).padLeft(2, '0')}'
+        '${b.toRadixString(16).padLeft(2, '0')}';
+  }
 }

@@ -7,12 +7,12 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:http_tor/http_tor.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/scheduler.dart';
 import 'package:ngwallet/src/wallet.dart';
 import 'dart:async';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:envoy/business/account.dart';
 
 enum BtcPayVoucherRedeemResult { success, timeout, voucherInvalid }
 
@@ -188,7 +188,7 @@ class BtcPayVoucher {
 void addPendingTx(
   String pullPaymentId,
   String address,
-  Account account,
+  EnvoyAccount account,
   int? amountSats,
   String? currency,
   String? currencyAmount,

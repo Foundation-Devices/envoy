@@ -4,38 +4,72 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+import '../lib.dart';
 import '../third_party/ngwallet/config.dart';
 import '../third_party/ngwallet/transaction.dart';
+import 'envoy_account.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < NgAccount < Connection > > >>>
-abstract class ArcMutexNgAccountConnection implements RustOpaqueInterface {}
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < Option < FullScanRequest < KeychainKind > > > >>>
-abstract class ArcMutexOptionFullScanRequestKeychainKind
-    implements RustOpaqueInterface {}
+abstract class FullScanRequest implements RustOpaqueInterface {}
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < Option < FullScanResponse < KeychainKind > > > >>>
-abstract class ArcMutexOptionFullScanResponseKeychainKind
-    implements RustOpaqueInterface {}
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < Option < SyncRequest < (KeychainKind , u32) > > > >>>
+abstract class SyncRequest implements RustOpaqueInterface {}
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccount>>
-abstract class EnvoyAccount implements RustOpaqueInterface {
-  Future<bool> applyUpdate(
-      {required ArcMutexOptionFullScanResponseKeychainKind scanRequest});
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < Update > >>>
+abstract class WalletUpdate implements RustOpaqueInterface {}
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>>
+abstract class EnvoyAccountHandler implements RustOpaqueInterface {
+  Future<bool> applyUpdate({required WalletUpdate update});
 
   ArcMutexNgAccountConnection get ngAccount;
 
+  RustStreamSink<EnvoyAccount>? get streamSink;
+
   set ngAccount(ArcMutexNgAccountConnection ngAccount);
 
-  Future<BigInt> balance();
+  set streamSink(RustStreamSink<EnvoyAccount>? streamSink);
+
+  BigInt balance();
 
   Future<void> broadcast(
       {required String psbt, required String electrumServer});
 
-  Future<NgAccountConfig> getConfig();
+  NgAccountConfig config();
 
-  static Future<EnvoyAccount> newFromDescriptor(
+  bool isHot();
+
+  static Future<EnvoyAccountHandler> migrate(
+          {required String name,
+          required String id,
+          String? deviceSerial,
+          String? dateAdded,
+          required AddressType addressType,
+          required String color,
+          required int index,
+          required String internalDescriptor,
+          required String externalDescriptor,
+          required String dbPath,
+          required String sledDbPath,
+          required Network network}) =>
+      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerMigrate(
+          name: name,
+          id: id,
+          deviceSerial: deviceSerial,
+          dateAdded: dateAdded,
+          addressType: addressType,
+          color: color,
+          index: index,
+          internalDescriptor: internalDescriptor,
+          externalDescriptor: externalDescriptor,
+          dbPath: dbPath,
+          sledDbPath: sledDbPath,
+          network: network);
+
+  static Future<EnvoyAccountHandler> newFromDescriptor(
           {required String name,
           String? deviceSerial,
           String? dateAdded,
@@ -45,34 +79,46 @@ abstract class EnvoyAccount implements RustOpaqueInterface {
           required String internalDescriptor,
           required String externalDescriptor,
           required String dbPath,
-          required Network network}) =>
-      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountNewFromDescriptor(
-          name: name,
-          deviceSerial: deviceSerial,
-          dateAdded: dateAdded,
-          addressType: addressType,
-          color: color,
-          index: index,
-          internalDescriptor: internalDescriptor,
-          externalDescriptor: externalDescriptor,
-          dbPath: dbPath,
-          network: network);
+          required Network network,
+          required String id}) =>
+      RustLib.instance.api
+          .crateApiEnvoyWalletEnvoyAccountHandlerNewFromDescriptor(
+              name: name,
+              deviceSerial: deviceSerial,
+              dateAdded: dateAdded,
+              addressType: addressType,
+              color: color,
+              index: index,
+              internalDescriptor: internalDescriptor,
+              externalDescriptor: externalDescriptor,
+              dbPath: dbPath,
+              network: network,
+              id: id);
 
   Future<String> nextAddress();
 
-  static Future<EnvoyAccount> openWallet({required String dbPath}) =>
+  static Future<EnvoyAccountHandler> openWallet({required String dbPath}) =>
       RustLib.instance.api
-          .crateApiEnvoyWalletEnvoyAccountOpenWallet(dbPath: dbPath);
+          .crateApiEnvoyWalletEnvoyAccountHandlerOpenWallet(dbPath: dbPath);
 
-  Future<ArcMutexOptionFullScanRequestKeychainKind> requestScan();
+  Future<void> renameAccount({required String name});
 
-  static Future<ArcMutexOptionFullScanResponseKeychainKind> scan(
-          {required ArcMutexOptionFullScanRequestKeychainKind scanRequest,
-          required String electrumServer}) =>
-      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountScan(
-          scanRequest: scanRequest, electrumServer: electrumServer);
+  Future<FullScanRequest> requestFullScan();
+
+  Future<SyncRequest> requestSync();
+
+  static Future<WalletUpdate> scan(
+          {required FullScanRequest scanRequest,
+          required String electrumServer,
+          int? torPort}) =>
+      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerScan(
+          scanRequest: scanRequest,
+          electrumServer: electrumServer,
+          torPort: torPort);
 
   Future<String> send({required String address, required BigInt amount});
+
+  Future<void> sendUpdate();
 
   Future<bool> setDoNotSpend({required Output utxo, required bool doNotSpend});
 
@@ -80,9 +126,28 @@ abstract class EnvoyAccount implements RustOpaqueInterface {
 
   Future<bool> setTag({required Output utxo, required String tag});
 
+  Future<EnvoyAccount> state();
+
+  Stream<EnvoyAccount> stream();
+
+  static Future<WalletUpdate> syncWallet(
+          {required SyncRequest syncRequest,
+          required String electrumServer,
+          int? torPort}) =>
+      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerSyncWallet(
+          syncRequest: syncRequest,
+          electrumServer: electrumServer,
+          torPort: torPort);
+
   Future<List<BitcoinTransaction>> transactions();
 
   Future<List<Output>> utxo();
+
+  static Future<bool> validateAddress(
+          {required String address, Network? network}) =>
+      RustLib.instance.api
+          .crateApiEnvoyWalletEnvoyAccountHandlerValidateAddress(
+              address: address, network: network);
 }
 
 enum Network {

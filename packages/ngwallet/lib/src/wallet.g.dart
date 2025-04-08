@@ -10,10 +10,10 @@ Transaction _$TransactionFromJson(Map<String, dynamic> json) => Transaction(
       json['memo'] as String,
       json['txId'] as String,
       DateTime.parse(json['date'] as String),
-      json['fee'] as int,
-      json['received'] as int,
-      json['sent'] as int,
-      json['blockHeight'] as int,
+      (json['fee'] as num).toInt(),
+      (json['received'] as num).toInt(),
+      (json['sent'] as num).toInt(),
+      (json['blockHeight'] as num).toInt(),
       json['address'] as String?,
       type: $enumDecodeNullable(_$TransactionTypeEnumMap, json['type']) ??
           TransactionType.normal,
@@ -21,13 +21,15 @@ Transaction _$TransactionFromJson(Map<String, dynamic> json) => Transaction(
           (json['outputs'] as List<dynamic>?)?.map((e) => e as String).toList(),
       inputs:
           (json['inputs'] as List<dynamic>?)?.map((e) => e as String).toList(),
-      vsize: json['vsize'] as int?,
+      vsize: (json['vsize'] as num?)?.toInt(),
       pullPaymentId: json['pullPaymentId'] as String?,
       purchaseViewToken: json['purchaseViewToken'] as String?,
       currencyAmount: json['currencyAmount'] as String?,
       currency: json['currency'] as String?,
+      payoutId: json['payoutId'] as String?,
+      btcPayVoucherUri: json['btcPayVoucherUri'] as String?,
+      rampFee: (json['rampFee'] as num?)?.toInt(),
       rampId: json['rampId'] as String?,
-      rampFee: json['rampFee'] as int?,
     );
 
 Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
@@ -48,6 +50,8 @@ Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
       'purchaseViewToken': instance.purchaseViewToken,
       'currencyAmount': instance.currencyAmount,
       'currency': instance.currency,
+      'payoutId': instance.payoutId,
+      'btcPayVoucherUri': instance.btcPayVoucherUri,
       'rampId': instance.rampId,
       'rampFee': instance.rampFee,
     };
@@ -81,7 +85,7 @@ Wallet _$WalletFromJson(Map<String, dynamic> json) => Wallet(
               ?.map((e) => Utxo.fromJson(e as Map<String, dynamic>))
               .toList() ??
           []
-      ..balance = json['balance'] as int
+      ..balance = (json['balance'] as num).toInt()
       ..feeRateFast = (json['feeRateFast'] as num).toDouble()
       ..feeRateSlow = (json['feeRateSlow'] as num).toDouble();
 
@@ -117,8 +121,8 @@ const _$WalletTypeEnumMap = {
 
 _$UtxoImpl _$$UtxoImplFromJson(Map<String, dynamic> json) => _$UtxoImpl(
       txid: json['txid'] as String,
-      vout: json['vout'] as int,
-      value: json['value'] as int,
+      vout: (json['vout'] as num).toInt(),
+      value: (json['value'] as num).toInt(),
     );
 
 Map<String, dynamic> _$$UtxoImplToJson(_$UtxoImpl instance) =>
