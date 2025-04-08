@@ -364,17 +364,12 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
           rightAction: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-              if (EnvoySeed().walletDerived()) {
-                //TODO: replace with bottom sheet options menu, onboarding 2.0
-                Navigator.of(context).push(
-                  PageRouteBuilder(
-                    opaque: false,
-                    pageBuilder: (_, __, ___) => const AnimatedBottomOverlay(),
-                  ),
-                );
-              } else {
-                context.pushNamed(ROUTE_SPLASH);
-              }
+              Navigator.of(context).push(
+                PageRouteBuilder(
+                  opaque: false,
+                  pageBuilder: (_, __, ___) => const AnimatedBottomOverlay(),
+                ),
+              );
               return;
             },
             child: Container(

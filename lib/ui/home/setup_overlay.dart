@@ -5,6 +5,7 @@
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
+import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -12,6 +13,11 @@ import 'package:envoy/ui/components/stripe_painter.dart';
 import 'package:envoy/ui/glow.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:go_router/go_router.dart';
+import 'package:envoy/ui/onboard/prime/prime_routes.dart';
+import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
+import 'package:envoy/ui/widgets/scanner/decoders/generic_qr_decoder.dart';
+import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 
 double cardButtonHeight = 125;
 
@@ -27,7 +33,7 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
   late AnimationController _controller;
   late Animation<double> _animation;
   final double overlayHeight = (cardButtonHeight + EnvoySpacing.medium3) *
-          (AccountManager().hotAccountsExist() ? 2 : 1) +
+          (!AccountManager().hotAccountsExist() ? 2 : 1) +
       EnvoySpacing.large2 * 2; // + extra
 
   @override
@@ -134,7 +140,7 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    if (AccountManager().hotAccountsExist())
+                                    if (!AccountManager().hotAccountsExist())
                                       Column(
                                         children: [
                                           const SizedBox(
@@ -142,10 +148,15 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                                           EnvoyCardButton(
                                             image:
                                                 'assets/welcome_envoy_sm.png',
+                                            imagePaddingLeft: 22,
                                             title: S()
                                                 .onboarding_welcome_createMobileWallet,
                                             onTap: () {
-                                              // TODO
+                                              context.pushNamed(
+                                                  ONBOARD_ENVOY_SETUP,
+                                                  queryParameters: {
+                                                    "setupEnvoy": "1"
+                                                  });
                                             },
                                           ),
                                         ],
@@ -154,11 +165,25 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                                         height: EnvoySpacing.medium3),
                                     EnvoyCardButton(
                                       image: 'assets/passport_and_prime.png',
-                                      imagePaddingLeft: 12,
+                                      imagePaddingLeft: 15,
                                       title:
                                           S().onboarding_welcome_setUpPassport,
                                       onTap: () {
-                                        // TODO
+                                        showScannerDialog(
+                                            context: context,
+                                            onBackPressed: (context) {
+                                              Navigator.pop(context);
+                                            },
+                                            decoder: GenericQrDecoder(
+                                                onScan: (String payload) {
+                                              Navigator.pop(context);
+                                              final uri = Uri.parse(payload);
+                                              context.pushNamed(
+                                                ONBOARD_PRIME,
+                                                queryParameters:
+                                                    uri.queryParameters,
+                                              );
+                                            }));
                                       },
                                     ),
                                     const SizedBox(
@@ -182,7 +207,7 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
   }
 }
 
-class EnvoyCardButton extends StatelessWidget {
+class EnvoyCardButton extends StatefulWidget {
   final String image;
   final String title;
   final double imagePaddingLeft;
@@ -197,134 +222,164 @@ class EnvoyCardButton extends StatelessWidget {
   });
 
   @override
+  State<EnvoyCardButton> createState() => _EnvoyCardButtonState();
+}
+
+class _EnvoyCardButtonState extends State<EnvoyCardButton> {
+  bool pressed = false;
+
+  @override
   Widget build(BuildContext context) {
     double cardButtonWidth = MediaQuery.of(context).size.width * 0.9;
     const cardRadius = EnvoySpacing.medium2;
+    double imageSize = cardButtonWidth * 0.32;
 
     return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: cardButtonWidth,
-        height: cardButtonHeight,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(cardRadius),
-          boxShadow: const [
-            BoxShadow(
-              color: EnvoyColors.textInactive,
-              blurRadius: 6,
-              spreadRadius: 2,
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(cardRadius),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(cardRadius),
-                            bottomLeft: Radius.circular(cardRadius),
-                          ),
-                          child: Container(
-                            color: EnvoyColors.textPrimaryInverse,
-                          ),
-                        ),
-                        Glow(
-                          innerColor:
-                              EnvoyColors.accentSecondary.applyOpacity(0.1),
-                          middleColor:
-                              EnvoyColors.accentSecondary.applyOpacity(0.1),
-                          outerColor:
-                              EnvoyColors.textPrimaryInverse.applyOpacity(0.85),
-                          stops: const [0.0, 0.05, 1.0],
-                        ),
-                        Positioned.fill(
-                          child: ShaderMask(
-                            shaderCallback: (Rect bounds) {
-                              return const LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Colors.transparent,
-                                  Colors.transparent,
-                                  Colors.white,
-                                ],
-                                stops: [0.0, 0.3, 1.0],
-                              ).createShader(bounds);
-                            },
-                            blendMode: BlendMode.dstIn,
-                            child: CustomPaint(
-                              isComplex: true,
-                              willChange: false,
-                              painter: StripePainter(
-                                EnvoyColors.gray1000.applyOpacity(0.1),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: 1,
-                    color: EnvoyColors.accentSecondary,
-                    height: double.infinity,
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(cardRadius),
-                        bottomRight: Radius.circular(cardRadius),
-                      ),
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              EnvoyColors.textSecondary,
-                              EnvoyColors.textPrimary,
-                            ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                        ),
-                        child: Padding(
-                          padding:
-                              const EdgeInsets.only(left: EnvoySpacing.medium1),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              title,
-                              textAlign: TextAlign.start,
-                              style: EnvoyTypography.heading.copyWith(
-                                color: EnvoyColors.textPrimaryInverse,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Positioned(
-                left: imagePaddingLeft,
-                top: 12,
-                child: Image.asset(
-                  image,
-                  width: 110,
-                  height: 110,
-                ),
+      onTap: widget.onTap,
+      onTapDown: (details) => setState(() {
+        Haptics.buttonPress();
+        pressed = true;
+      }),
+      onTapCancel: () => setState(() {
+        pressed = false;
+      }),
+      onTapUp: (_) => setState(() {
+        pressed = false;
+      }),
+      child: TweenAnimationBuilder(
+        duration: const Duration(milliseconds: 300),
+        tween:
+            pressed ? Tween(begin: 0.0, end: 1.0) : Tween(begin: 1.0, end: 0.0),
+        curve: Curves.easeInOut,
+        builder: (context, value, child) {
+          return Transform.scale(
+            scale: Tween(begin: 1.0, end: .96).transform(value),
+            child: child,
+          );
+        },
+        child: Container(
+          width: cardButtonWidth,
+          height: cardButtonHeight,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(cardRadius),
+            boxShadow: const [
+              BoxShadow(
+                color: EnvoyColors.textInactive,
+                blurRadius: 6,
+                spreadRadius: 2,
               ),
             ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(cardRadius),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(cardRadius),
+                              bottomLeft: Radius.circular(cardRadius),
+                            ),
+                            child: Container(
+                              color: EnvoyColors.textPrimaryInverse,
+                            ),
+                          ),
+                          Glow(
+                            innerColor:
+                                EnvoyColors.accentSecondary.applyOpacity(0.1),
+                            middleColor:
+                                EnvoyColors.accentSecondary.applyOpacity(0.1),
+                            outerColor: EnvoyColors.textPrimaryInverse
+                                .applyOpacity(0.85),
+                            stops: const [0.0, 0.05, 1.0],
+                          ),
+                          Positioned.fill(
+                            child: ShaderMask(
+                              shaderCallback: (Rect bounds) {
+                                return const LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.transparent,
+                                    Colors.transparent,
+                                    Colors.white,
+                                  ],
+                                  stops: [0.0, 0.3, 1.0],
+                                ).createShader(bounds);
+                              },
+                              blendMode: BlendMode.dstIn,
+                              child: CustomPaint(
+                                isComplex: true,
+                                willChange: false,
+                                painter: StripePainter(
+                                  EnvoyColors.gray1000.applyOpacity(0.1),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: 1,
+                      color: EnvoyColors.accentSecondary,
+                      height: double.infinity,
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(cardRadius),
+                          bottomRight: Radius.circular(cardRadius),
+                        ),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                EnvoyColors.textSecondary,
+                                EnvoyColors.textPrimary,
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: EnvoySpacing.medium1),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                widget.title,
+                                textAlign: TextAlign.start,
+                                style: EnvoyTypography.heading.copyWith(
+                                  color: EnvoyColors.textPrimaryInverse,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Positioned(
+                  left: widget.imagePaddingLeft,
+                  top: 10,
+                  child: Image.asset(
+                    widget.image,
+                    // width: 110,
+                    height: imageSize,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

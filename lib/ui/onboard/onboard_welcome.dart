@@ -186,7 +186,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                         // Replace with your image URL or asset
                         fit: BoxFit.cover, // Adjust as per your layout
                       ),
-                      title: "Create a\nMobile Wallet",
+                      title: S().onboarding_welcome_createMobileWallet,
                       onTap: () {
                         context.pushNamed(ONBOARD_ENVOY_SETUP,
                             queryParameters: {"setupEnvoy": "1"});
@@ -201,7 +201,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                         // Replace with your image URL or asset
                         fit: BoxFit.cover, // Adjust as per your layout
                       ),
-                      title: "Set Up a\nPassport Device",
+                      title: S().onboarding_welcome_setUpPassport,
                       onTap: () {
                         showScannerDialog(
                             context: context,
