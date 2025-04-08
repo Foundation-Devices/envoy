@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:bluart/bluart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,11 +12,11 @@ class ScanNotifier extends StateNotifier<List<BleDevice>> {
   ScanNotifier() : super([]);
 
   void start() {
-    // addLogger(name: "DIAG", level: LogLevel.debug);
-    // enableLogging().listen((msg) => kPrint(msg));
-    final scannedDevices = scan(filter: []);
-    scannedDevices.listen((d) {
-      state = d;
+    BluetoothManager().scan();
+    BluetoothManager().events?.listen((Event event) {
+      if (event is Event_ScanResult) {
+        state = event.field0;
+      }
     });
   }
 }

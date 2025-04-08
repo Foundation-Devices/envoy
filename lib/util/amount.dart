@@ -2,16 +2,16 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/business/exchange_rate.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:envoy/business/locale.dart';
 
 String btcSatoshiSeparator = fiatDecimalSeparator;
@@ -21,10 +21,10 @@ NumberFormat satsFormatter =
     NumberFormat("###,###,###,###,###,###,###", currentLocale);
 
 String getDisplayAmount(int amountSats, AmountDisplayUnit unit,
-    {bool trailingZeroes = false, double? displayFiat}) {
+    {bool trailingZeros = false, double? displayFiat}) {
   switch (unit) {
     case AmountDisplayUnit.btc:
-      return convertSatsToBtcString(amountSats);
+      return convertSatsToBtcString(amountSats, trailingZeros: trailingZeros);
     case AmountDisplayUnit.sat:
       return satsFormatter.format(amountSats);
     case AmountDisplayUnit.fiat:
@@ -50,12 +50,12 @@ String removeFiatTrailingZeros(String fiatAmount) {
   return fiatAmount;
 }
 
-String convertSatsToBtcString(int amountSats) {
+String convertSatsToBtcString(int amountSats, {bool trailingZeros = false}) {
   final amountBtc = amountSats / 100000000;
 
   NumberFormat formatter = NumberFormat.decimalPattern(currentLocale);
-  formatter.minimumFractionDigits = 0;
-  formatter.maximumFractionDigits = 8;
+  formatter.minimumFractionDigits = trailingZeros ? 8 : 0;
+  formatter.maximumFractionDigits = 8; // Always allow up to 8 decimals
 
   return formatter.format(amountBtc);
 }
@@ -119,8 +119,10 @@ String getFormattedAmount(int amountSats,
   return text;
 }
 
-Widget getSatsIcon(Account account, {EnvoyIconSize? iconSize, Color? color}) {
-  if (account.wallet.network != Network.Testnet) {
+Widget getSatsIcon(EnvoyAccount account,
+    {EnvoyIconSize? iconSize, Color? color}) {
+  if (account.network != Network.testnet &&
+      account.network != Network.testnet4) {
     return EnvoyIcon(
       EnvoyIcons.sats,
       size: iconSize ?? EnvoyIconSize.normal,
@@ -129,23 +131,25 @@ Widget getSatsIcon(Account account, {EnvoyIconSize? iconSize, Color? color}) {
   } else {
     return NonMainnetIcon(
       EnvoyIcons.sats,
-      badgeColor: account.color,
+      badgeColor: fromHex(account.color),
       size: iconSize ?? EnvoyIconSize.normal,
-      network: account.wallet.network,
+      network: account.network,
     );
   }
 }
 
-Widget getBtcIcon(Account account, {EnvoyIconSize? iconSize, Color? color}) {
-  if (account.wallet.network != Network.Testnet) {
+Widget getBtcIcon(EnvoyAccount account,
+    {EnvoyIconSize? iconSize, Color? color}) {
+  if (account.network != Network.testnet4 &&
+      account.network != Network.testnet) {
     return EnvoyIcon(EnvoyIcons.btc,
         size: iconSize ?? EnvoyIconSize.normal, color: color);
   } else {
     return NonMainnetIcon(
       EnvoyIcons.btc,
-      badgeColor: account.color,
+      badgeColor: fromHex(account.color),
       size: iconSize ?? EnvoyIconSize.normal,
-      network: account.wallet.network,
+      network: account.network,
     );
   }
 }
@@ -165,7 +169,7 @@ String truncateWithEllipsisInCenter(String text, int maxLength) {
   return '$firstHalf$ellipsis$secondHalf';
 }
 
-Widget getUnitIcon(Account account, {EnvoyIconSize? iconSize}) {
+Widget getUnitIcon(EnvoyAccount account, {EnvoyIconSize? iconSize}) {
   Widget iconUint = Settings().displayUnit == DisplayUnit.btc
       ? getBtcIcon(account,
           iconSize: iconSize, color: EnvoyColors.accentPrimary)
@@ -175,7 +179,7 @@ Widget getUnitIcon(Account account, {EnvoyIconSize? iconSize}) {
   return iconUint;
 }
 
-Widget displayIcon(Account account, AmountDisplayUnit unit) {
+Widget displayIcon(EnvoyAccount account, AmountDisplayUnit unit) {
   if (unit == AmountDisplayUnit.fiat) {
     return Text(
       ExchangeRate().getSymbol(),

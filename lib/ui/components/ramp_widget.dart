@@ -7,13 +7,14 @@ import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/business/keys_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:http_tor/http_tor.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:ramp_flutter/configuration.dart';
 import 'package:ramp_flutter/offramp_sale.dart';
 import 'package:ramp_flutter/onramp_purchase.dart';
 import 'package:ramp_flutter/ramp_flutter.dart';
 import 'package:ramp_flutter/send_crypto_payload.dart';
 import 'package:tor/tor.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/home/cards/purchase_completed.dart';
@@ -22,7 +23,8 @@ import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class RampWidget {
-  static void showRamp(BuildContext context, Account account, String address) {
+  static void showRamp(
+      BuildContext context, EnvoyAccount account, String address) {
     if (KeysManager().keys == null) {
       return;
     }
@@ -57,7 +59,7 @@ class RampWidget {
       OnrampPurchase purchase,
       String purchaseViewToken,
       String apiUrl,
-      Account account,
+      EnvoyAccount account,
       BuildContext context) async {
     String address = purchase.receiverAddress ?? "";
     int amount;
@@ -71,7 +73,7 @@ class RampWidget {
     }
     String txID = purchase.id!;
 
-    await EnvoyStorage().addPendingTx(txID, account.id ?? "", DateTime.now(),
+    await EnvoyStorage().addPendingTx(txID, account.id, DateTime.now(),
         TransactionType.ramp, amount, 0, address,
         purchaseViewToken: purchaseViewToken,
         rampId: purchase.id,

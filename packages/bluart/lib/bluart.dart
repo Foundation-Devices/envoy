@@ -4,8 +4,6 @@
 
 library bluart;
 
-export 'src/rust/api/bluart.dart';
 export 'src/rust/api/ble.dart';
 export 'src/rust/api/ble/device.dart';
-export '/src/rust/api/logger.dart';
 export 'src/rust/frb_generated.dart' show RustLib;

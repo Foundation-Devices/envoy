@@ -3,14 +3,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:animations/animations.dart';
+import 'package:envoy/business/AccountNg.dart';
+import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
+import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -21,18 +23,25 @@ import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 
-class OnboardPrimeBluetooth extends StatefulWidget {
+import 'package:envoy/ui/NGWalletUi.dart';
+import 'package:envoy/ui/widgets/envoy_step_item.dart';
+
+import 'firmware_update/prime_fw_update_state.dart';
+
+class OnboardPrimeBluetooth extends ConsumerStatefulWidget {
   const OnboardPrimeBluetooth({super.key});
 
   @override
-  State<OnboardPrimeBluetooth> createState() => _OnboardPrimeBluetoothState();
+  ConsumerState<OnboardPrimeBluetooth> createState() =>
+      _OnboardPrimeBluetoothState();
 }
 
-class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
+class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     with SingleTickerProviderStateMixin {
   final s = Settings();
   bool scanForPayload = false;
@@ -42,6 +51,169 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
   @override
   void initState() {
     super.initState();
+    _listenForPassPortMessages();
+  }
+
+  void _listenForPassPortMessages() {
+    BluetoothManager()
+        .passportMessageStream
+        .listen((PassportMessage message) async {
+      kPrint("Got the Passport Message : ${message.message}");
+
+      if (message.message is QuantumLinkMessage_PairingResponse) {
+        kPrint("Found it!");
+        final response = message.message as QuantumLinkMessage_PairingResponse;
+
+        // Create the thing that I'm gonna reveal later
+        // await AccountNg().restore(response.field0.descriptor);
+        //
+        // Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+        //     builder: (context) => Theme(
+        //           data: Theme.of(context),
+        //           child: NGWalletUi(),
+        //         )));
+      }
+
+      if (message.message is QuantumLinkMessage_OnboardingState) {
+        final onboardingState =
+            (message.message as QuantumLinkMessage_OnboardingState).field0;
+
+        _handleOnboardingState(onboardingState);
+      }
+    });
+  }
+
+  Future<void> _handleOnboardingState(OnboardingState state) async {
+    switch (state) {
+      case OnboardingState.firmwareUpdateScreen:
+        if (mounted) {
+          context.goNamed(ONBOARD_PRIME_FIRMWARE_UPDATE);
+        }
+        break;
+      case OnboardingState.downloadingUpdate:
+        ref.read(primeUpdateStateProvider.notifier).state =
+            PrimeFwUpdateStep.downloading;
+        ref.read(fwDownloadStateProvider.notifier).updateStep(
+            S().firmware_updatingDownload_downloading, EnvoyStepState.LOADING);
+
+        await _fakeUpdateDownload();
+
+        BluetoothManager().sendOnboardingState(OnboardingState.receivingUpdate);
+
+        break;
+      case OnboardingState.receivingUpdate:
+        break;
+      case OnboardingState.veryfyingSignatures:
+        ref.read(fwTransferStateProvider.notifier).updateStep(
+            "Transferred to Passport Prime", EnvoyStepState.FINISHED);
+
+        ref.read(primeUpdateStateProvider.notifier).state =
+            PrimeFwUpdateStep.verifying;
+        ref.read(primeFwSigVerifyStateProvider.notifier).updateStep(
+            S().firmware_updatingPrime_verifying, EnvoyStepState.LOADING);
+        break;
+      case OnboardingState.installingUpdate:
+        ref.read(primeFwSigVerifyStateProvider.notifier).updateStep(
+            S().firmware_updatingPrime_verified, EnvoyStepState.FINISHED);
+        ref.read(primeFwInstallStateProvider.notifier).updateStep(
+            S().firmware_updatingPrime_installingUpdate,
+            EnvoyStepState.LOADING);
+
+        ref.read(primeUpdateStateProvider.notifier).state =
+            PrimeFwUpdateStep.installing;
+        break;
+      case OnboardingState.rebooting:
+        ref.read(primeFwInstallStateProvider.notifier).updateStep(
+            S().firmware_updatingPrime_updateInstalled,
+            EnvoyStepState.FINISHED);
+        ref.read(primeFwRebootStateProvider.notifier).updateStep(
+            S().firmware_updatingPrime_primeRestarting, EnvoyStepState.LOADING);
+
+        ref.read(primeUpdateStateProvider.notifier).state =
+            PrimeFwUpdateStep.rebooting;
+        break;
+      case OnboardingState.firmwareUpdated:
+        ref
+            .read(primeFwRebootStateProvider.notifier)
+            .updateStep("Rebooted", EnvoyStepState.FINISHED);
+        ref.read(primeUpdateStateProvider.notifier).state =
+            PrimeFwUpdateStep.finished;
+        break;
+      case OnboardingState.securingDevice:
+        if (mounted) {
+          context.goNamed(ONBOARD_PRIME_CONTINUING_SETUP);
+        }
+        break;
+      case OnboardingState.deviceSecured:
+        ref.read(creatingPinProvider.notifier).updateStep(
+            S().finalize_catchAll_pinCreated, EnvoyStepState.FINISHED);
+        break;
+      case OnboardingState.walletCreationScreen:
+        ref.read(setUpMasterKeyProvider.notifier).updateStep(
+            S().finalize_catchAll_settingUpMasterKey, EnvoyStepState.LOADING);
+        // context.goNamed(ONBOARD_PRIME_SEED_SETUP);
+        break;
+      case OnboardingState.creatingWallet:
+        // TODO: Handle creating wallet
+        break;
+      case OnboardingState.walletCreated:
+        ref.read(setUpMasterKeyProvider.notifier).updateStep(
+            S().finalize_catchAll_masterKeySetUp, EnvoyStepState.FINISHED);
+        break;
+      case OnboardingState.magicBackupScreen:
+        ref.read(backUpMasterKeyProvider.notifier).updateStep(
+            S().finalize_catchAll_backingUpMasterKey, EnvoyStepState.LOADING);
+        // context.goNamed(ONBOARD_PRIME_MAGIC_BACKUP);
+        // TODO: Handle magic backup screen
+        break;
+      case OnboardingState.creatingMagicBackup:
+        // TODO: Handle creating magic backup
+        break;
+      case OnboardingState.magicBackupCreated:
+        ref.read(backUpMasterKeyProvider.notifier).updateStep(
+            S().finalize_catchAll_masterKeyBackedUp, EnvoyStepState.FINISHED);
+        break;
+      case OnboardingState.creatingManualBackup:
+        // TODO: Handle creating manual backup
+        break;
+      case OnboardingState.creatingKeycardBackup:
+        // TODO: Handle creating keycard backup
+        break;
+      case OnboardingState.writingDownSeedWords:
+        // TODO: Handle writing down seed words
+        break;
+      case OnboardingState.connectingWallet:
+        ref.read(connectAccountProvider.notifier).updateStep(
+            S().finalize_catchAll_connectingAccount, EnvoyStepState.LOADING);
+        break;
+      case OnboardingState.walletConected:
+        if (mounted) {
+          context.goNamed(ONBOARD_PRIME_CONNECTED_SUCCESS);
+        }
+        break;
+      case OnboardingState.completed:
+        if (mounted) {
+          context.go("/");
+        }
+        break;
+      case OnboardingState.securityChecked:
+        break;
+      case OnboardingState.updateAvailable:
+        break;
+      case OnboardingState.updateNotAvailable:
+        break;
+    }
+  }
+
+  Future<void> _fakeUpdateDownload() async {
+    await Future.delayed(Duration(seconds: 5));
+    ref.read(fwDownloadStateProvider.notifier).updateStep(
+        S().firmware_downloadingUpdate_downloaded, EnvoyStepState.FINISHED);
+    ref.read(fwTransferStateProvider.notifier).updateStep(
+        S().firmware_downloadingUpdate_transferring, EnvoyStepState.LOADING);
+
+    ref.read(primeUpdateStateProvider.notifier).state =
+        PrimeFwUpdateStep.transferring;
   }
 
   @override
@@ -100,7 +272,7 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
     //   deniedBluetooth = true;
     // });
 
-    context.goNamed(ONBOARD_PRIME_PAIR);
+    // context.goNamed(ONBOARD_PRIME_PAIR);
   }
 
   Widget quantumLinkIntro(BuildContext context) {
@@ -131,8 +303,7 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Text(
-                                //TODO: copy update
-                                "Secure Bluetooth with\nQuantumLink",
+                                S().onboarding_bluetoothIntro_header,
                                 textAlign: TextAlign.center,
                                 style: EnvoyTypography.body.copyWith(
                                   fontSize: 20,
@@ -142,7 +313,7 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
                               ),
                               const SizedBox(height: EnvoySpacing.small),
                               Text(
-                                "QuantumLink creates an end-to-end encrypted Bluetooth tunnel using post-quantum encryption technology.\nPassport Prime’s Bluetooth chip only relays already encrypted data, ensuring private and secure communications.",
+                                S().onboarding_bluetoothIntro_content,
                                 style: EnvoyTypography.info.copyWith(
                                   color: EnvoyColors.inactiveDark,
                                   decoration: TextDecoration.none,
@@ -180,7 +351,7 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
               //   },
               // ),
               const SizedBox(height: EnvoySpacing.medium1),
-              EnvoyButton(S().component_continue, onTap: () {
+              EnvoyButton(S().onboarding_bluetoothIntro_connect, onTap: () {
                 showCommunicationModal(context);
               }),
               const SizedBox(height: EnvoySpacing.small),
@@ -219,8 +390,7 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Text(
-                                //TODO: copy update
-                                "Enable Bluetooth for\nencrypted communication",
+                                S().onboarding_bluetoothDisabled_header,
                                 textAlign: TextAlign.center,
                                 style: EnvoyTypography.body.copyWith(
                                   fontSize: 20,
@@ -283,15 +453,19 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
     );
   }
 
+  pairWithPrime(XidDocument payload) async {
+    await BluetoothManager().pair(payload);
+  }
+
   showCommunicationModal(BuildContext context) async {
-    final decoder = await getDecoder();
+    final decoder = await getQrDecoder();
     if (context.mounted) {
       showEnvoyDialog(
           context: context,
           dismissible: false,
           dialog: QuantumLinkCommunicationInfo(
-            onContinue: () {
-              showScannerDialog(
+            onContinue: () async {
+              await showScannerDialog(
                   context: context,
                   onBackPressed: (context) {
                     Navigator.pop(context);
@@ -300,22 +474,22 @@ class _OnboardPrimeBluetoothState extends State<OnboardPrimeBluetooth>
                       //parse UR payload
                       PrimeQlPayloadDecoder(
                           decoder: decoder,
-                          onScan: (XidDocument payload) {
+                          onScan: (XidDocument payload) async {
                             kPrint("payload $payload");
-                            Navigator.pop(context);
-                            showEnvoyDialog(
-                              context: context,
-                              dialog: EnvoyDialog(
-                                title: "Envoy",
-                                content: Column(
-                                  children: [
-                                    Text(
-                                        "Received prime public key\n $payload"),
-                                  ],
-                                ),
-                              ),
-                            );
+                            await pairWithPrime(payload);
+
                             //TODO: process XidDocument for connection
+
+                            if (context.mounted) {
+                              // Close the scanner properly before moving forward
+                              if (Navigator.canPop(context)) {
+                                Navigator.pop(context);
+                              }
+
+                              await Future.delayed(Duration(milliseconds: 200));
+
+                              context.goNamed(ONBOARD_PRIME_PAIR);
+                            }
                           }));
             },
           ));
@@ -395,8 +569,8 @@ class _QuantumLinkCommunicationInfoState
                           controller: _pageController,
                           children: [
                             Text(
-                              //TODO: copy update
-                              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis dolor nec orci aliquam volutpat. Fusce non enim a nibh mattis condimentum id et tortor. Proin aliquet augue felis, vel vestibulum felis tincidunt id.",
+                              //TODO: implement [[iCloud Keychain.]] button
+                              S().wallet_security_modal_1_4_ios_subheading,
                               textAlign: TextAlign.center,
                               style: EnvoyTypography.info,
                             ),

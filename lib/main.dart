@@ -3,7 +3,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -16,6 +16,8 @@ import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/ui/lock/authenticate_page.dart';
+import 'package:envoy/ui/migrations/migration_app.dart';
+import 'package:envoy/ui/migrations/migration_manager.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -31,9 +33,7 @@ import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:tor/tor.dart';
-import 'package:tor/util.dart';
 
 import 'business/feed_manager.dart';
 import 'business/fees.dart';
@@ -48,8 +48,9 @@ Future<void> main() async {
   } catch (e, stack) {
     EnvoyReport().log("Envoy init", stack.toString());
   }
-
-  if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
+  if (isMigrationRequired()) {
+    runApp(MigrationApp());
+  } else if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
     runApp(const AuthenticateApp());
   } else {
     runApp(const EnvoyApp());
@@ -59,24 +60,26 @@ Future<void> main() async {
 
 Future<void> initSingletons() async {
   try {
-    kPrint("Init RustLib");
-    await api.RustLib.init();
-    kPrint("Decoder init success");
-  } catch (e) {
-    kPrint("API init failed");
-    kPrint(e);
+    await BluetoothManager.init();
+  } catch (e, stack) {
+    kPrint("Error initializing BluetoothManager: $e", stackTrace: stack);
   }
-  await BluetoothManager.init();
-  // This is notoriously low on iOS, causing 'too many open files errors'
-  kPrint("Process nofile_limit: ${getNofileLimit()}");
-
-  // Requesting a high number. The API will return the best we can get
-  // ~10k on iPhone 11 which is much better than the default 256
-  kPrint("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
-
-  await NTPUtil.init();
+  // // This is notoriously low on iOS, causing 'too many open files errors'
+  // kPrint("Process nofile_limit: ${getNofileLimit()}");
+  //
+  // // Requesting a high number. The API will return the best we can get
+  // // ~10k on iPhone 11 which is much better than the default 256
+  // kPrint("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
+  //
   await EnvoyStorage().init();
   await LocalStorage.init();
+
+  NgAccountManager.init();
+
+  if (!isMigrationRequired()) {
+    await NgAccountManager().restore();
+  }
+  await NTPUtil.init();
   EnvoyScheduler.init();
   await KeysManager.init();
   await ExchangeRate.init();
@@ -92,12 +95,9 @@ Future<void> initSingletons() async {
   // Start Tor regardless of whether we are using it or not
   try {
     Tor.instance.start();
-  } on Exception catch (e) {
-    EnvoyReport().log("tor", e.toString());
-  }
+  } on Exception catch (e) {}
 
   Fees.restore();
-  AccountManager.init();
   Notifications.init();
   FeedManager.init();
   MapData.init();
@@ -184,4 +184,13 @@ class GlobalScrollBehavior extends ScrollBehavior {
       child: child, // Turn off overscroll indicator
     );
   }
+}
+
+bool isMigrationRequired() {
+  //check if the user already has accounts
+  final hasAccounts =
+      LocalStorage().prefs.containsKey(MigrationManager.AccountsPrefKey);
+  //check if the user has already migrated
+  final migrationStatus = EnvoyStorage().getBool(migrationPrefs) ?? false;
+  return migrationStatus == false && hasAccounts;
 }

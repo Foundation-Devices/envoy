@@ -40,9 +40,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/ui/shield_path.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 //ignore: must_be_immutable
 class TxReview extends ConsumerStatefulWidget {
@@ -58,7 +59,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
 
   @override
   Widget build(BuildContext context) {
-    Account? account = ref.watch(selectedAccountProvider);
+    EnvoyAccount? account = ref.watch(selectedAccountProvider);
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
 
     if (account == null || transactionModel.psbt == null) {
@@ -171,7 +172,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                     await showTagDialog(
                         context, account, rootContext, transactionModel);
                   } else {
-                    if (account.wallet.hot ||
+                    if (account.isHot ||
                         ref.read(spendTransactionProvider).isPSBTFinalized) {
                       if (context.mounted) {
                         broadcastTx(context);
@@ -200,14 +201,14 @@ class _TxReviewState extends ConsumerState<TxReview> {
     );
   }
 
-  Future<void> showTagDialog(BuildContext context, Account account,
+  Future<void> showTagDialog(BuildContext context, EnvoyAccount account,
       BuildContext rootContext, TransactionModel transactionModel) async {
     await showEnvoyDialog(
         useRootNavigator: true,
         context: context,
         builder: Builder(
           builder: (context) => ChooseTagForStagingTx(
-            accountId: account.id!,
+            accountId: account.id,
             onEditTransaction: () {
               Navigator.pop(context);
               editTransaction(context, ref);
@@ -215,7 +216,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
             hasMultipleTagsInput: true,
             onTagUpdate: () async {
               Navigator.pop(context);
-              if (account.wallet.hot ||
+              if (account.isHot ||
                   ref.read(spendTransactionProvider).isPSBTFinalized) {
                 broadcastTx(context);
               } else {
@@ -371,7 +372,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
   }
 
   void broadcastTx(BuildContext context) async {
-    Account? account = ref.read(selectedAccountProvider);
+    EnvoyAccount? account = ref.read(selectedAccountProvider);
     TransactionModel transactionModel = ref.read(spendTransactionProvider);
     final providerContainer = ProviderScope.containerOf(context);
     if (account == null || transactionModel.psbt == null) {
@@ -440,7 +441,7 @@ class _TransactionReviewScreenState
     extends ConsumerState<TransactionReviewScreen> {
   @override
   Widget build(BuildContext context) {
-    Account? account = ref.watch(selectedAccountProvider);
+    EnvoyAccount? account = ref.watch(selectedAccountProvider);
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
     String address = ref.watch(spendAddressProvider);
 
@@ -465,11 +466,11 @@ class _TransactionReviewScreenState
     Psbt psbt = transactionModel.psbt!;
     int amount = transactionModel.amount;
 
-    String header = (account.wallet.hot || transactionModel.isPSBTFinalized)
+    String header = (account.isHot || transactionModel.isPSBTFinalized)
         ? S().coincontrol_tx_detail_heading
         : S().coincontrol_txDetail_heading_passport;
 
-    String subHeading = (account.wallet.hot || transactionModel.isPSBTFinalized)
+    String subHeading = (account.isHot || transactionModel.isPSBTFinalized)
         ? S().coincontrol_tx_detail_subheading
         : S().coincontrol_txDetail_subheading_passport;
 
@@ -516,7 +517,7 @@ class _TransactionReviewScreenState
                 const Padding(padding: EdgeInsets.all(6)),
                 EnvoyButton(
                   enabled: !transactionModel.loading,
-                  (account.wallet.hot || transactionModel.isPSBTFinalized)
+                  (account.isHot || transactionModel.isPSBTFinalized)
                       ? S().coincontrol_tx_detail_cta1
                       : S().coincontrol_txDetail_cta1_passport,
                   onTap: () {
@@ -737,7 +738,7 @@ class _DiscardTransactionDialogState
     extends ConsumerState<DiscardTransactionDialog> {
   @override
   Widget build(BuildContext context) {
-    Account? account = ref.watch(selectedAccountProvider);
+    EnvoyAccount? account = ref.watch(selectedAccountProvider);
 
     return EnvoyPopUp(
       icon: EnvoyIcons.alert,

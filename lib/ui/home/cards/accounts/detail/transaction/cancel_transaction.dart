@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/settings.dart';
@@ -28,9 +29,10 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart' as rive;
 import 'package:url_launcher/url_launcher.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_spend_screen.dart';
@@ -82,7 +84,7 @@ class RBFState {
 }
 
 class CancelTxButton extends ConsumerStatefulWidget {
-  final Transaction transaction;
+  final EnvoyTransaction transaction;
 
   const CancelTxButton({super.key, required this.transaction});
 
@@ -122,27 +124,28 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
       return;
     }
 
-    final doNotSpend = ref.read(lockedUtxosProvider(selectedAccount.id!));
-    final feeRate = Fees().fastRate(selectedAccount.wallet.network);
-
+    //TODO: do cancel tx using NgWallet
+    // final doNotSpend = ref.read(lockedUtxosProvider(selectedAccount.id!));
+    // final feeRate = Fees().fastRate(selectedAccount.wallet.network);
+    //
     try {
-      psbt = await selectedAccount.wallet
-          .cancelTx(widget.transaction.txId, doNotSpend, feeRate);
-
-      rawTx = await selectedAccount.wallet
-          .decodeWalletRawTx(psbt.rawTx, selectedAccount.wallet.network);
-
-      final originalTxRawHex = await selectedAccount.wallet
-          .getRawTxFromTxId(widget.transaction.txId);
-
-      originalTxRaw = await selectedAccount.wallet
-          .decodeWalletRawTx(originalTxRawHex, selectedAccount.wallet.network);
-
-      if (mounted) {
-        setState(() {
-          _canCancel = true;
-        });
-      }
+      //   psbt = await selectedAccount.wallet
+      //       .cancelTx(widget.transaction.txId, doNotSpend, feeRate);
+      //
+      //   rawTx = await selectedAccount.wallet
+      //       .decodeWalletRawTx(psbt.rawTx, selectedAccount.wallet.network);
+      //
+      //   final originalTxRawHex = await selectedAccount.wallet
+      //       .getRawTxFromTxId(widget.transaction.txId);
+      //
+      //   originalTxRaw = await selectedAccount.wallet
+      //       .decodeWalletRawTx(originalTxRawHex, selectedAccount.wallet.network);
+      //
+      //   if (mounted) {
+      //     setState(() {
+      //       _canCancel = true;
+      //     });
+      //   }
     } catch (e, s) {
       debugPrintStack(stackTrace: s);
       kPrint(e);
@@ -251,7 +254,7 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
 }
 
 class TxCancelDialog extends ConsumerStatefulWidget {
-  final Transaction originalTx;
+  final EnvoyTransaction originalTx;
   final Psbt cancelTx;
   final RawTransaction cancelRawTx;
   final RawTransaction originalRawTx;
@@ -285,7 +288,7 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
         originalSpendAmount += element.amount;
       }
     }
-    _totalFeeAmount = widget.originalTx.fee;
+    _totalFeeAmount = widget.originalTx.fee.toInt();
 
     /// if the amount is 0, check if the tx is a self transfer
     if (originalSpendAmount == 0) {
@@ -299,14 +302,15 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
     setState(() {
       _totalFeeAmount = widget.cancelTx.fee;
       if (originalSpendAmount != 0) {
-        _totalReturnAmount = originalSpendAmount - widget.originalTx.fee;
+        _totalReturnAmount =
+            originalSpendAmount - widget.originalTx.fee.toInt();
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    Account? account = ref.read(selectedAccountProvider);
+    EnvoyAccount? account = ref.read(selectedAccountProvider);
     if (account == null) {
       return const Center(
         child: Text("No account selected"),
@@ -459,7 +463,7 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                       ).show(context);
                       return;
                     } else {
-                      if (account.wallet.hot == false) {
+                      if (account.isHot == false) {
                         await navigator.push(MaterialPageRoute(
                             builder: (context) => Builder(builder: (context) {
                                   return background(
@@ -508,7 +512,7 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
 
 class CancelTransactionProgress extends ConsumerStatefulWidget {
   final Psbt cancelTx;
-  final Transaction originalTx;
+  final EnvoyTransaction originalTx;
   final RawTransaction cancelRawTx;
 
   const CancelTransactionProgress(
@@ -546,22 +550,23 @@ class _CancelTransactionProgressState
     if (account == null) {
       return;
     }
-    int port = Settings().getPort(account.wallet.network);
+    int port = Settings().getPort(account.network);
     try {
-      await account.wallet.broadcastTx(
-          Settings().electrumAddress(account.wallet.network),
-          port,
-          widget.cancelTx.rawTx);
+      //TODO: broadcast tx using NgWallet
+      // await account.wallet.broadcastTx(
+      //     Settings().electrumAddress(account.wallet.network),
+      //     port,
+      //     widget.cancelTx.rawTx);
       await Future.delayed(const Duration(milliseconds: 500));
       await EnvoyStorage().addCancelState(RBFState(
               originalTxId: widget.originalTx.txId,
               newTxId: widget.cancelTx.txid,
-              oldFee: widget.originalTx.fee,
+              oldFee: widget.originalTx.fee.toInt(),
               newFee: widget.cancelTx.fee,
-              accountId: account.id!,
+              accountId: account.id,
               rbfTimeStamp: DateTime.now().millisecondsSinceEpoch,
-              previousTxTimeStamp:
-                  widget.originalTx.date.millisecondsSinceEpoch)
+              previousTxTimeStamp: widget.originalTx.date?.toInt() ??
+                  DateTime.now().millisecondsSinceEpoch)
           .toJson());
       await Future.delayed(const Duration(milliseconds: 500));
 
@@ -590,7 +595,7 @@ class _CancelTransactionProgressState
 
       await EnvoyStorage().addPendingTx(
         psbt.txid,
-        account.id!,
+        account.id,
         DateTime.now(),
         TransactionType.pending,
         psbt.fee,

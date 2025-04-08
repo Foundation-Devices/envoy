@@ -13,9 +13,8 @@ EnvoyNotification _$EnvoyNotificationFromJson(Map<String, dynamic> json) =>
       $enumDecode(_$EnvoyNotificationTypeEnumMap, json['type']),
       json['body'] as String,
       json['id'] as String,
-      json['transaction'] == null
-          ? null
-          : Transaction.fromJson(json['transaction'] as Map<String, dynamic>),
+      //TODO: nuke notification type for 2.0
+      json['transaction'] = null,
       amount: (json['amount'] as num?)?.toInt(),
       accountId: json['accountId'] as String?,
     );
