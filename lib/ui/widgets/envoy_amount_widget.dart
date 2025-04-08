@@ -4,13 +4,13 @@
 
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/business/locale.dart';
 import 'package:envoy/ui/amount_entry.dart';
-import 'package:wallet/wallet.dart';
-import 'package:envoy/business/account.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class EnvoyAmount extends StatelessWidget {
   const EnvoyAmount({
@@ -26,7 +26,7 @@ class EnvoyAmount extends StatelessWidget {
 
   final int amountSats;
   final AmountWidgetStyle amountWidgetStyle;
-  final Account account;
+  final EnvoyAccount account;
   final bool alignToEnd;
   final AmountDisplayUnit? unit;
   final bool millionaireMode;
@@ -35,10 +35,9 @@ class EnvoyAmount extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color? badgeColor;
-    if (account.wallet.network != Network.Mainnet) {
-      badgeColor = account.color;
+    if (account.network != Network.bitcoin) {
+      badgeColor = fromHex(account.color);
     }
-
     AmountDisplayUnit mainUnit = Settings().displayUnitSat()
         ? AmountDisplayUnit.sat
         : AmountDisplayUnit.btc;
@@ -50,7 +49,7 @@ class EnvoyAmount extends StatelessWidget {
 
     String? selectedFiat = Settings().selectedFiat;
     bool showFiat = selectedFiat != null &&
-        (kDebugMode || account.wallet.network == Network.Mainnet);
+        (kDebugMode || account.network == Network.bitcoin);
     AmountDisplayUnit primaryUnit = mainUnit;
     AmountDisplayUnit? secondaryUnit = showFiat ? AmountDisplayUnit.fiat : null;
     String symbolFiat = ExchangeRate().getSymbol();
@@ -65,7 +64,7 @@ class EnvoyAmount extends StatelessWidget {
       secondaryUnit: secondaryUnit,
       symbolFiat: symbolFiat,
       badgeColor: badgeColor,
-      network: account.wallet.network,
+      network: account.network,
       alignToEnd: alignToEnd,
       locale: currentLocale,
       millionaireMode: millionaireMode,

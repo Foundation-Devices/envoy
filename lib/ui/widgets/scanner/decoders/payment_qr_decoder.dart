@@ -2,12 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account.dart';
 import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/business/bip21.dart';
 import 'package:envoy/business/btcpay_voucher.dart';
 import 'package:envoy/ui/widgets/scanner/scanner_decoder.dart';
 import 'package:envoy/util/console.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class InvalidAddressException implements Exception {
@@ -29,7 +29,7 @@ class PaymentQrDecoder extends ScannerDecoder {
     this.btcPayVoucherScan,
   });
 
-  final Account account;
+  final EnvoyAccount account;
 
   @override
   Future<void> onDetectBarCode(Barcode barCode) async {
@@ -64,7 +64,7 @@ class PaymentQrDecoder extends ScannerDecoder {
     // Remove bitcoin: prefix in case BIP-21 parsing failed
     address = address.replaceFirst("bitcoin:", "").trim();
     kPrint("address scanned $address");
-    if (await account.wallet.validateAddress(address)) {
+    if (await EnvoyAccountHandler.validateAddress(address: address)) {
       // Convert the address to lowercase for consistent display in Envoy
       if (address.startsWith('bc') || address.startsWith("tb")) {
         address = address.toLowerCase();

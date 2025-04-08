@@ -125,14 +125,6 @@ class NativeLibrary {
               ffi.Int32)>>('backup_delete');
   late final _backup_delete = _backup_deletePtr.asFunction<
       int Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int)>();
-
-  void backup_hello() {
-    return _backup_hello();
-  }
-
-  late final _backup_helloPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function()>>('backup_hello');
-  late final _backup_hello = _backup_helloPtr.asFunction<void Function()>();
 }
 
 class BackupPayload extends ffi.Struct {

@@ -21,14 +21,14 @@ class EnvoyBottomNavigation extends ConsumerStatefulWidget {
   final int initialIndex;
 
   const EnvoyBottomNavigation(
-      {super.key, this.onIndexChanged, this.initialIndex = 2});
+      {super.key, this.onIndexChanged, this.initialIndex = 1});
 
   @override
   EnvoyBottomNavigationState createState() => EnvoyBottomNavigationState();
 }
 
 class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
-  int _selectedIndex = 2;
+  int _selectedIndex = 1;
   var activeColor = EnvoyColors.accentPrimary;
   var inActiveColor = EnvoyColors.textTertiary;
   var labelStyle = EnvoyTypography.label;
@@ -60,25 +60,25 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
         ),
         title: S().bottomNav_devices,
       ),
-      PersistentBottomNavBarItem(
-        activeColorPrimary: activeColor,
-        inactiveColorPrimary: inActiveColor,
-        icon: Padding(
-          padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
-          child: EnvoyIcon(
-            EnvoyIcons.shield,
-            color: activeColor,
-          ),
-        ),
-        inactiveIcon: Padding(
-          padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
-          child: EnvoyIcon(
-            EnvoyIcons.shield,
-            color: inActiveColor,
-          ),
-        ),
-        title: S().bottomNav_privacy,
-      ),
+      // PersistentBottomNavBarItem(
+      //   activeColorPrimary: activeColor,
+      //   inactiveColorPrimary: inActiveColor,
+      //   icon: Padding(
+      //     padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
+      //     child: EnvoyIcon(
+      //       EnvoyIcons.shield,
+      //       color: activeColor,
+      //     ),
+      //   ),
+      //   inactiveIcon: Padding(
+      //     padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
+      //     child: EnvoyIcon(
+      //       EnvoyIcons.shield,
+      //       color: inActiveColor,
+      //     ),
+      //   ),
+      //   title: S().bottomNav_privacy,
+      // ),
       PersistentBottomNavBarItem(
         activeColorPrimary: activeColor,
         inactiveColorPrimary: inActiveColor,
@@ -98,25 +98,25 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
         ),
         title: S().bottomNav_accounts,
       ),
-      PersistentBottomNavBarItem(
-        activeColorPrimary: activeColor,
-        inactiveColorPrimary: inActiveColor,
-        icon: Padding(
-          padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
-          child: EnvoyIcon(
-            EnvoyIcons.history,
-            color: activeColor,
-          ),
-        ),
-        inactiveIcon: Padding(
-          padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
-          child: EnvoyIcon(
-            EnvoyIcons.history,
-            color: inActiveColor,
-          ),
-        ),
-        title: S().bottomNav_activity,
-      ),
+      // PersistentBottomNavBarItem(
+      //   activeColorPrimary: activeColor,
+      //   inactiveColorPrimary: inActiveColor,
+      //   icon: Padding(
+      //     padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
+      //     child: EnvoyIcon(
+      //       EnvoyIcons.history,
+      //       color: activeColor,
+      //     ),
+      //   ),
+      //   inactiveIcon: Padding(
+      //     padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
+      //     child: EnvoyIcon(
+      //       EnvoyIcons.history,
+      //       color: inActiveColor,
+      //     ),
+      //   ),
+      //   title: S().bottomNav_activity,
+      // ),
       PersistentBottomNavBarItem(
         activeColorPrimary: activeColor,
         inactiveColorPrimary: inActiveColor,
@@ -175,13 +175,12 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
             setState(() {
               if (index == _selectedIndex) {
                 // if selected index is "Accounts"
-                if (index == 2 && GoRouter.of(context).canPop()) {
+                if (index == 1 && GoRouter.of(context).canPop()) {
                   GoRouter.of(context).pop();
                 } else {
                   return;
                 }
               }
-
               _selectedIndex = index;
               if (widget.onIndexChanged != null) {
                 widget.onIndexChanged!(_selectedIndex);

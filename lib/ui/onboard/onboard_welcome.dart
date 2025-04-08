@@ -142,14 +142,14 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const SizedBox(height: EnvoySpacing.small),
+                        const SizedBox(height: EnvoySpacing.medium1),
                         Text(
                           S().welcome_screen_heading,
                           style: EnvoyTypography.heading,
                           textAlign: TextAlign.center,
                         ),
                         const Padding(
-                            padding: EdgeInsets.all(EnvoySpacing.medium1)),
+                            padding: EdgeInsets.all(EnvoySpacing.small)),
                         GestureDetector(
                           onTap: () {
                             registerEscapeTap(EscapeHatchTap.text);
@@ -160,7 +160,8 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                             child: Text(
                               //TODO: sync latest copy and button links
                               S().onboarding_welcome_content,
-                              style: Theme.of(context).textTheme.bodySmall,
+                              style: EnvoyTypography.info
+                                  .copyWith(color: EnvoyColors.textTertiary),
                               textAlign: TextAlign.center,
                             ),
                           ),

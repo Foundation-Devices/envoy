@@ -5,7 +5,7 @@
 import 'package:envoy/business/seed_qr_extract.dart';
 import 'package:envoy/ui/widgets/scanner/scanner_decoder.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 
 class InvalidSeedQRException implements Exception {
   @override

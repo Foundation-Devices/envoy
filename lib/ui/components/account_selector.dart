@@ -13,12 +13,13 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class StackedAccountChooser extends StatefulWidget {
-  final Account account;
-  final Function(Account account) onAccountSelected;
+  final EnvoyAccount account;
+  final Function(EnvoyAccount account) onAccountSelected;
   final Function(bool overlayVisible) onOverlayChanges;
-  final List<Account> accounts;
+  final List<EnvoyAccount> accounts;
 
   const StackedAccountChooser({
     super.key,
@@ -38,7 +39,7 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
   //key for each card, this will passed to AccountChooserOverlay to calculate the position of the card
   final Map<String, GlobalKey> _cardStackKeys = {};
 
-  late Account _selectedAccount = widget.account;
+  late EnvoyAccount _selectedAccount = widget.account;
 
   final GlobalKey<AccountChooserOverlayState> accountChooserKey = GlobalKey();
 
@@ -60,7 +61,7 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       for (final element in widget.accounts) {
-        _cardStackKeys[element.id!] = GlobalKey();
+        _cardStackKeys[element.id] = GlobalKey();
       }
     });
   }
@@ -108,15 +109,16 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
                       0, _getBackStackOffset(_backStack.indexOf(account))),
                   child: Opacity(
                     opacity: _overlayVisible ? 0 : 1,
-                    child: AccountListTile(
-                      account,
-                      key: _cardStackKeys[account.id!],
-                      onTap: () {
-                        openChooserOverlay(context);
-                        return;
-                      },
-                      draggable: false,
-                    ),
+                    //TODO:fix with envoy account
+                    // child: AccountListTile(
+                    //   account,
+                    //   key: _cardStackKeys[account.id!],
+                    //   onTap: () {
+                    //     openChooserOverlay(context);
+                    //     return;
+                    //   },
+                    //   draggable: false,
+                    // ),
                   ),
                 ),
               for (var (account) in accounts)
@@ -216,10 +218,10 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
 // RectTween to create a hero-like transition.
 // The widget uses physics animation to make it feel more natural.
 class AccountChooserOverlay extends StatefulWidget {
-  final Account account;
-  final List<Account> accounts;
+  final EnvoyAccount account;
+  final List<EnvoyAccount> accounts;
   final Map<String, GlobalKey<State<StatefulWidget>>> cardStackKeys;
-  final Function(Account account) onAccountSelected;
+  final Function(EnvoyAccount account) onAccountSelected;
   final Function(AnimationStatus animStatus) onAnimChanges;
   final Function(bool onVisible) onOverlayChanges;
 
@@ -248,7 +250,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
   bool isReady = false;
 
   //local copy of the selected account,used to track local state change
-  late Account _selectedAccount;
+  late EnvoyAccount _selectedAccount;
 
   //unbounded controller since the animations are physics based
   late final animationController = AnimationController.unbounded(vsync: this);
@@ -278,7 +280,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
     _selectedAccount = widget.account;
 
     for (var account in widget.accounts) {
-      _shuttleCardKeys[account.id!] = GlobalKey();
+      _shuttleCardKeys[account.id] = GlobalKey();
     }
     animationController.addListener(() {
       setState(() {});
@@ -335,7 +337,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
     return offset & renderBox.size;
   }
 
-  _selectAccount(Account account) async {
+  _selectAccount(EnvoyAccount account) async {
     setState(() {
       _selectedAccount = account;
     });
@@ -444,14 +446,15 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
                               final account = widget.accounts[index];
                               return Padding(
                                 padding: const EdgeInsets.all(12),
-                                child: AccountListTile(
-                                  key: _shuttleCardKeys[account.id!],
-                                  account,
-                                  onTap: () async {
-                                    _selectAccount(account);
-                                  },
-                                  draggable: false,
-                                ),
+                                //TODO:fix with envoy account
+                                // child: AccountListTile(
+                                //   key: _shuttleCardKeys[account.id!],
+                                //   account,
+                                //   onTap: () async {
+                                //     _selectAccount(account);
+                                //   },
+                                //   draggable: false,
+                                // ),
                               );
                             },
                             itemCount: widget.accounts.length,
@@ -494,9 +497,9 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
   }
 
   // builds account tile for hero like animation,
-  _buildHeroOverlay(Account account) {
-    final startRect = _stackCardRect[account.id!];
-    final endRect = _listCardRect[account.id!];
+  _buildHeroOverlay(EnvoyAccount account) {
+    final startRect = _stackCardRect[account.id];
+    final endRect = _listCardRect[account.id];
     if (startRect == null || endRect == null) {
       return const SizedBox();
     }
@@ -516,13 +519,14 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
                   child: child),
             ));
       },
-      child: AccountListTile(
-        account,
-        onTap: () {
-          _selectAccount(account);
-        },
-        draggable: false,
-      ),
+      //TODO:fix with envoy account
+      // child: AccountListTile(
+      //   account,
+      //   onTap: () {
+      //     _selectAccount(account);
+      //   },
+      //   draggable: false,
+      // ),
     );
   }
 

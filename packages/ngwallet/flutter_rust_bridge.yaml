@@ -1,0 +1,15 @@
+rust_input: crate::api, ngwallet::NgWallet, ngwallet::NgTransaction,ngwallet::config
+rust_root: rust/
+dart_output: lib/src/rust
+enable_lifetime: true
+dart_type_rename :
+  Arc<Mutex<Option<FullScanRequest<KeychainKind>>>>: FullScanRequest
+  Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>: SyncRequest
+  Arc<Mutex<Update>>: WalletUpdate
+rust_preamble: |
+  use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse,SyncRequest};
+  use std::sync::{Mutex};
+  use bdk_wallet::KeychainKind;
+  use bdk_wallet::Update;
+  use ngwallet::account::NgAccount;
+  use bdk_wallet::rusqlite::Connection;

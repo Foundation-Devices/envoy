@@ -39,14 +39,16 @@ dependencies:
     path: packages/ur
   http_tor:
     path: packages/http_tor
-  wallet:
-    path: packages/wallet
+#  wallet:
+#    path: packages/wallet
   backup:
     path: packages/backup
   bluart:
     path: packages/bluart
   foundation_api:
     path: packages/foundation_api
+  ngwallet:
+    path: packages/ngwallet
 
 
   # qr_code_scanner fork
@@ -124,9 +126,9 @@ dependencies:
   flutter_map_tile_caching: ^9.1.3
   in_app_purchase: ^3.2.0
   archive: ^3.6.1
+  async: ^2.11.0
 dependency_overrides:
   watcher: ^1.1.0
-  win32: ^5.5.4 # https://stackoverflow.com/questions/69553108/flutter-error-unmodifiableuint8listview-is-restricted-and-cant-be-extended-o
 
 dev_dependencies:
   test: any

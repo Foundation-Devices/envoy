@@ -335,6 +335,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "btp"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "consts",
+ "minicbor 0.24.4",
+]
+
+[[package]]
 name = "build-target"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -446,6 +455,11 @@ name = "const-oid"
 version = "0.9.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2459377285ad874054d797f3ccebf984978aa39129f6eafde5cdc8315b612f8"
+
+[[package]]
+name = "consts"
+version = "0.1.0"
+source = "git+https://github.com/Foundation-Devices/prime-ble-firmware.git#e238c1000cf462db760129d0de7a79c2a3f09ee7"
 
 [[package]]
 name = "core-foundation-sys"
@@ -733,9 +747,9 @@ checksum = "28dea519a9695b9977216879a3ebfddf92f1c08c05d984f8996aecd6ecdc811d"
 
 [[package]]
 name = "flutter_rust_bridge"
-version = "2.8.0"
+version = "2.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fdc62f583dff79c7ea34b775b2cc4158adc17cb69ad4c1d276be7fe95c63d597"
+checksum = "2f8c0dee6249225e815dcff3f3a39b98d9f66fdb3c392a432715b646bfa4da02"
 dependencies = [
  "allo-isolate",
  "android_logger",
@@ -762,9 +776,9 @@ dependencies = [
 
 [[package]]
 name = "flutter_rust_bridge_macros"
-version = "2.8.0"
+version = "2.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ac75354933904c334c13a7c9e08c65be528f0820ab587e03f255203a28d5efec"
+checksum = "8e88d604908d9eccb4ca9c26640ce41033165cbef041460e704ae28bd5208bce"
 dependencies = [
  "hex",
  "md-5",
@@ -785,12 +799,14 @@ dependencies = [
 [[package]]
 name = "foundation-api"
 version = "0.3.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?rev=6b5a977b5875dd32d88631a85e9219884521e44e#6b5a977b5875dd32d88631a85e9219884521e44e"
 dependencies = [
  "anyhow",
+ "bc-components",
  "bc-envelope",
  "bc-xid",
  "flutter_rust_bridge",
+ "gstp",
+ "log",
  "minicbor 0.24.4",
  "minicbor-derive 0.15.3",
  "quantum-link-macros",
@@ -949,6 +965,20 @@ dependencies = [
  "ff",
  "rand_core",
  "subtle",
+]
+
+[[package]]
+name = "gstp"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "442348749432257264e75666b6d18f42cb3db36a9d0d2a06f5f5405e0bb5f89b"
+dependencies = [
+ "anyhow",
+ "bc-components",
+ "bc-envelope",
+ "bc-rand",
+ "bc-xid",
+ "dcbor",
 ]
 
 [[package]]
@@ -1620,8 +1650,7 @@ dependencies = [
 [[package]]
 name = "pqcrypto-internals"
 version = "0.2.10"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5f408e9e302fffe05f781c95777cb36bbfc51daccf518c28c5829d49a989df22"
+source = "git+https://github.com/icota/pqcrypto?branch=aarch64-feature-detection#4de06ece91c627465c999284638c177fab0c0d86"
 dependencies = [
  "cc",
  "dunce",
@@ -1632,8 +1661,7 @@ dependencies = [
 [[package]]
 name = "pqcrypto-mldsa"
 version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6bd3ecb90717f6bda0ad327703be9e899cdfa88f7ce05563bfd7016f8742bad6"
+source = "git+https://github.com/icota/pqcrypto?branch=aarch64-feature-detection#4de06ece91c627465c999284638c177fab0c0d86"
 dependencies = [
  "cc",
  "glob",
@@ -1646,8 +1674,7 @@ dependencies = [
 [[package]]
 name = "pqcrypto-mlkem"
 version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "219656f3ee9d9892e8ee475e7d8c35612fcec0ac2a18f847cca12b1affddb540"
+source = "git+https://github.com/icota/pqcrypto?branch=aarch64-feature-detection#4de06ece91c627465c999284638c177fab0c0d86"
 dependencies = [
  "cc",
  "glob",
@@ -1659,8 +1686,7 @@ dependencies = [
 [[package]]
 name = "pqcrypto-traits"
 version = "0.3.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "94e851c7654eed9e68d7d27164c454961a616cf8c203d500607ef22c737b51bb"
+source = "git+https://github.com/icota/pqcrypto?branch=aarch64-feature-detection#4de06ece91c627465c999284638c177fab0c0d86"
 
 [[package]]
 name = "primeorder"
@@ -1726,7 +1752,6 @@ dependencies = [
 [[package]]
 name = "quantum-link-macros"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?rev=6b5a977b5875dd32d88631a85e9219884521e44e#6b5a977b5875dd32d88631a85e9219884521e44e"
 dependencies = [
  "quote",
  "syn 2.0.99",
@@ -1875,12 +1900,17 @@ dependencies = [
 name = "rust_lib_foundation_api"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
+ "bc-components",
  "bc-envelope",
  "bc-ur",
  "bc-xid",
+ "btp",
  "flutter_rust_bridge",
  "foundation-api",
  "foundation-ur",
+ "gstp",
+ "log",
  "tokio",
 ]
 

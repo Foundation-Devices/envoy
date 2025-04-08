@@ -125,7 +125,7 @@ class _AdvancedSettingsOptionsState
                                             ListTile(
                                               //TODO: copy update
                                               leading: Text(
-                                                "This is infotext about magic backups",
+                                                S().onboarding_advanced_magicBackupSwitchText,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .titleSmall,
@@ -147,12 +147,15 @@ class _AdvancedSettingsOptionsState
                                                           EnvoySpacing.small),
                                             ),
                                             //TODO: copy update
-                                            const Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: EnvoySpacing.small,
-                                                  horizontal: EnvoySpacing.xs),
-                                              child: Text(
-                                                  "Here we can introduce the user to the special area here, what important stuff he can do."),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical:
+                                                          EnvoySpacing.small,
+                                                      horizontal:
+                                                          EnvoySpacing.xs),
+                                              child: Text(S()
+                                                  .onboarding_advanced_magicBackupsContent),
                                             )
                                           ],
                                         ),

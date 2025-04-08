@@ -23,7 +23,7 @@ import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/components/ramp_widget.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
-import 'package:envoy/ui/home/home_state.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 GlobalKey<ChooseAccountState> chooseAccountKey =
     GlobalKey<ChooseAccountState>();
@@ -36,7 +36,7 @@ class SelectAccount extends ConsumerStatefulWidget {
 }
 
 class _SelectAccountState extends ConsumerState<SelectAccount> {
-  Account? selectedAccount;
+  EnvoyAccount? selectedAccount;
   GestureTapCallback? onTap;
   String? address;
   bool _canPop = true;
@@ -48,18 +48,19 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero).then((_) {
-      setState(() {
-        selectedAccount = ref.read(mainnetAccountsProvider(null)).first;
-        ref.read(homeShellOptionsProvider.notifier).state = null;
-      });
-      selectedAccount?.wallet.getAddress().then((value) {
-        setState(() {
-          address = value;
-          if (selectedAccount != null && selectedAccount?.id != null) {
-            accountAddressCache[selectedAccount!.id!] = address;
-          }
-        });
-      }).catchError((error) {});
+      // TODO: use EnvoyAccount
+      // setState(() {
+      //   selectedAccount = ref.read(mainnetAccountsProvider(null)).first;
+      //   ref.read(homeShellOptionsProvider.notifier).state = null;
+      // });
+      // selectedAccount?.wallet.getAddress().then((value) {
+      //   setState(() {
+      //     address = value;
+      //     if (selectedAccount != null && selectedAccount?.id != null) {
+      //       accountAddressCache[selectedAccount!.id!] = address;
+      //     }
+      //   });
+      // }).catchError((error) {});
     });
   }
 
@@ -69,30 +70,31 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
     super.dispose();
   }
 
-  void updateSelectedAccount(Account account) async {
+  void updateSelectedAccount(EnvoyAccount account) async {
     setState(() {
       selectedAccount = account;
       address = null;
     });
     if (accountAddressCache.containsKey(selectedAccount?.id!) &&
-        accountAddressCache[selectedAccount?.id!] != null) {
+        accountAddressCache[selectedAccount?.id] != null) {
       setState(() {
-        address = accountAddressCache[selectedAccount?.id!];
+        address = accountAddressCache[selectedAccount?.id];
       });
     } else {
-      String? address = await account.wallet.getAddress();
+      String? address = account.nextAddress;
       // Separate setState call to avoid UI lag during the async operation
       setState(() {
         this.address = address;
-        accountAddressCache[selectedAccount!.id!] = address;
+        accountAddressCache[selectedAccount!.id] = address;
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Account> filteredAccounts = [];
+    List<EnvoyAccount> filteredAccounts = [];
     if (selectedAccount != null) {
+      // TODO: use EnvoyAccount
       filteredAccounts = ref.watch(mainnetAccountsProvider(selectedAccount));
     }
     if ((selectedAccount == null)) {
@@ -133,7 +135,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                             _canPop = !visible;
                           });
                         },
-                        onAccountSelected: (Account account) {
+                        onAccountSelected: (EnvoyAccount account) {
                           updateSelectedAccount(account);
                         },
                       ),
@@ -174,7 +176,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (!selectedAccount!.wallet.hot)
+                  if (!selectedAccount!.isHot)
                     Padding(
                       padding:
                           const EdgeInsets.only(bottom: EnvoySpacing.small),
@@ -421,23 +423,26 @@ class ChooseAccountState extends State<ChooseAccount> {
         transitionOnUserGestures: true,
         tag: account.id!,
         child: Consumer(builder: (context, ref, child) {
-          return AccountListTile(
-            account,
-            onTap: () async {
-              final navigator = Navigator.of(context);
-              setState(() {
-                _exiting = true;
-              });
-              await Future.delayed(const Duration(milliseconds: 100));
+          return Container();
 
-              _currentSelectedAccount = account;
-              widget.onSelectAccount(account);
-              // moveAccountToEnd(account);
-              await Future.delayed(const Duration(milliseconds: 100));
-              navigator.pop();
-            },
-            draggable: false,
-          );
+          //TODO: use EnvoyAccount
+          // return AccountListTile(
+          //   account,
+          //   onTap: () async {
+          //     final navigator = Navigator.of(context);
+          //     setState(() {
+          //       _exiting = true;
+          //     });
+          //     await Future.delayed(const Duration(milliseconds: 100));
+          //
+          //     _currentSelectedAccount = account;
+          //     widget.onSelectAccount(account);
+          //     // moveAccountToEnd(account);
+          //     await Future.delayed(const Duration(milliseconds: 100));
+          //     navigator.pop();
+          //   },
+          //   draggable: false,
+          // );
         }),
       ),
     );

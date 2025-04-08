@@ -10,7 +10,7 @@ import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 
 final coinBlockStateStreamProvider =
     StreamProvider((ref) => CoinRepository().getCoinBlockStateStream());
@@ -90,7 +90,9 @@ final coinsProvider = Provider.family<List<Coin>, String>((ref, accountId) {
   // eg : {'hash1': true, 'hash2': false}
   final utxoBlockState = (ref.watch(coinBlockStateStreamProvider).value ?? {});
 
-  List<Utxo> utxos = account.wallet.utxos;
+  //                            //TODO: use EnvoyAccount
+  // List<Utxo> utxos = account.wallet.utxos;
+  List<Utxo> utxos = [];
   //Map utxos to coins with locked status
   List<Coin> coins = utxos
       .map((e) =>

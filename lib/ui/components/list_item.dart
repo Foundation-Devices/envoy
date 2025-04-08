@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/string_utils.dart';
 import 'package:flutter/foundation.dart';
@@ -13,6 +15,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -24,7 +27,7 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/tx_utils.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/util/blur_container_transform.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
@@ -162,23 +165,24 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
         txIcon = getTransactionIcon(transaction, cancelState, isBoosted);
 
         unitIcon = () {
-          final accountManager = ref.watch(accountManagerProvider);
+          final accountManager = ref.watch(accountsProvider);
           bool isTransactionHidden = false;
           Account? transactionAccount;
 
           // Check if the account of the current transaction is hidden
-          for (var account in accountManager.accounts) {
-            final transactions = ref.watch(transactionsProvider(account.id));
-            for (var tx in transactions) {
-              if (tx.txId == transaction.txId) {
-                transactionAccount = account;
-                isTransactionHidden =
-                    ref.watch(balanceHideStateStatusProvider(account.id));
-                break;
-              }
-            }
-            if (isTransactionHidden) break;
-          }
+          // TODO: use EnvoyAccount
+          // for (var account in accountManager.accounts) {
+          //   final transactions = ref.watch(transactionsProvider(account.id));
+          //   for (var tx in transactions) {
+          //     if (tx.txId == transaction.txId) {
+          //       transactionAccount = account;
+          //       isTransactionHidden =
+          //           ref.watch(balanceHideStateStatusProvider(account.id));
+          //       break;
+          //     }
+          //   }
+          //   if (isTransactionHidden) break;
+          // }
 
           if (isTransactionHidden) {
             return const Column(
@@ -199,23 +203,24 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
               ],
             );
           } else {
-            return Padding(
-              padding: EdgeInsets.only(
-                  bottom: s.displayFiat() == null ||
-                          (kDebugMode &&
-                              transactionAccount?.wallet.network !=
-                                  Network.Mainnet)
-                      ? EnvoySpacing.medium1
-                      : 0),
-              child: FittedBox(
-                child: EnvoyAmount(
-                  account: transactionAccount!,
-                  amountSats: transaction.amount,
-                  amountWidgetStyle: AmountWidgetStyle.normal,
-                  alignToEnd: true,
-                ),
-              ),
-            );
+            //TODO: use EnvoyAccount
+            // return Padding(
+            //   padding: EdgeInsets.only(
+            //       bottom: s.displayFiat() == null ||
+            //               (kDebugMode &&
+            //                   transactionAccount?.wallet.network !=
+            //                       Network.Mainnet)
+            //           ? EnvoySpacing.medium1
+            //           : 0),
+            //   child: FittedBox(
+            //     child: EnvoyAmount(
+            //       account: transactionAccount!,
+            //       amountSats: transaction.amount,
+            //       amountWidgetStyle: AmountWidgetStyle.normal,
+            //       alignToEnd: true,
+            //     ),
+            //   ),
+            // );
           }
         }();
       }
@@ -282,10 +287,11 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
     });
   }
 
-  Widget openTransactionDetails(BuildContext context, Transaction transaction) {
+  Widget openTransactionDetails(
+      BuildContext context, EnvoyTransaction transaction) {
     if (widget.notification.accountId != null) {
-      Account? account =
-          AccountManager().getAccountById(widget.notification.accountId!);
+      EnvoyAccount? account =
+          NgAccountManager().getAccountById(widget.notification.accountId!);
       if (account != null) {
         return TransactionsDetailsWidget(
           account: account,

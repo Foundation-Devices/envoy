@@ -4,7 +4,7 @@
 
 import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'coins.g.dart';

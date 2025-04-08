@@ -55,7 +55,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.icota:jitpack-test:ad0bd3fd45'
+    implementation 'com.github.icota:jitpack-test:a5d0e617dd'
 }
 
 apply from: "../cargokit/gradle/plugin.gradle"

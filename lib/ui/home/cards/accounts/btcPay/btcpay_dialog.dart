@@ -9,14 +9,14 @@ import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_loading_payout.dart';
 import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_reedem_success.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_loading.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class BtcPayDialog extends StatelessWidget {
   final BtcPayVoucher voucher;
-  final Account account;
+  final EnvoyAccount account;
 
   const BtcPayDialog(this.voucher, this.account, {super.key});
 
