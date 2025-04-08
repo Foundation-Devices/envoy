@@ -2,12 +2,14 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
@@ -44,21 +46,34 @@ class ConnectionLostModal extends StatefulWidget {
 }
 
 class _ConnectionLostModal extends State<ConnectionLostModal> {
-  bool _isReconnecting = false; // TODO: implement reconnect tracking
+  bool _isReconnecting = false;
 
-  void _attemptReconnect() {
+  Future<void> _attemptReconnect() async {
     setState(() {
-      _isReconnecting = true; // Start reconnecting
+      _isReconnecting = true;
     });
 
-    // Simulate a reconnecting delay
-    Future.delayed(const Duration(seconds: 3), () {
+    final bleId = BluetoothManager().bleId;
+
+    try {
+      await BluetoothManager().connect(id: bleId);
+
+      // If connection was successful, dismiss the dialog
+      if (mounted) {
+        Navigator.pop(context);
+        // TODO: show a toast/snackbar if reconnected
+      }
+    } catch (e) {
+      // If connection fails, reset the reconnecting state
+      kPrint("Reconnect failed: $e");
       if (mounted) {
         setState(() {
-          _isReconnecting = false; // Reset after delay
+          _isReconnecting = false;
         });
       }
-    });
+
+      // TODO: show a toast/snackbar or log error
+    }
   }
 
   @override
@@ -95,6 +110,7 @@ class _ConnectionLostModal extends State<ConnectionLostModal> {
                 borderRadius: BorderRadius.circular(EnvoySpacing.small),
                 type: EnvoyButtonTypes.secondary,
                 onTap: () {
+                  Navigator.of(context).pop();
                   context.go("/");
                 },
               ),
