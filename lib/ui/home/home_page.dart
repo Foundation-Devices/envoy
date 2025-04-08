@@ -28,7 +28,6 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/tor_warning.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
-import 'package:envoy/ui/widgets/tutorial_page.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
@@ -143,9 +142,6 @@ class HomePageState extends ConsumerState<HomePage>
         _notifyAboutRemovedRampTx(expiredBuyTx, context);
       }
     });
-    if (mounted) {
-      _notifyAfterOnboardingTutorial(context);
-    }
 
     Future.delayed(const Duration(milliseconds: 10), () {
       ///register for back button press
@@ -253,20 +249,6 @@ class HomePageState extends ConsumerState<HomePage>
               EnvoyStorage().removePromptState(DismissiblePrompt.buyTxWarning);
             }
           });
-    }
-  }
-
-  void _notifyAfterOnboardingTutorial(context) async {
-    if (context.mounted) {
-      // TODO: add Prime signal check!!!
-
-      Navigator.of(context).push(
-        PageRouteBuilder(
-          opaque: false,
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              const AccountTutorialOverlay(),
-        ),
-      );
     }
   }
 

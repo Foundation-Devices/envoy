@@ -31,7 +31,7 @@ class _AccountTutorialOverlayState extends ConsumerState<AccountTutorialOverlay>
     with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    List<Account> accounts = ref.watch(accountsProvider);
+    final accounts = ref.watch(accountsProvider);
     final currentPageNumber = ref.watch(dialogPageProvider);
     const double accountCardHeight = 114;
 
