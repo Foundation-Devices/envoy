@@ -81,10 +81,10 @@ RUN flutter channel stable && cd flutter && git checkout 3.27.1 && flutter confi
 RUN curl https://sh.rustup.rs -sSf | \
     sh -s -- --default-toolchain stable -y
 
+ENV PATH=/root/.cargo/bin:$PATH
+
 # Install bindgen-cli (for aws-lc-sys build)
 RUN cargo install --force --locked bindgen-cli
-
-ENV PATH=/root/.cargo/bin:$PATH
 
 # Keep Dart cache directory outside of home
 ENV PUB_CACHE=/pub-cache
