@@ -32,7 +32,7 @@ docker-test: docker-build-linux
     docker run -t {{docker_image_linux}} flutter test
 
 docker-test-integration: docker-build-linux
-    docker run -t {{docker_image_linux}} bash integration_test_headless.sh
+    docker run -t {{docker_image_linux}} bash scripts/integration_test_headless.sh
 
 docker-run: docker-build-linux
     xhost +local:root
@@ -62,7 +62,7 @@ generate:
     git restore pubspec.lock
 
 bump:
-    bash bump_version.sh
+    bash scripts/bump_version.sh
 
 format:
     cargo fmt && \
@@ -74,7 +74,7 @@ lint: format
     cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
 
 build-ffi:
-    bash build_ffi.sh
+    bash scripts/build_ffi.sh
 
 copy:
     localazy download
@@ -100,5 +100,5 @@ docker-beef: docker-build-linux
     docker run --mount type=bind,source="$(pwd)"/release,target=/root/release {{docker_v4l2}} {{docker_image_beefbench}}
 
 qa:
-    ./run_integration_tests.sh
+    ./scripts/run_integration_tests.sh
 

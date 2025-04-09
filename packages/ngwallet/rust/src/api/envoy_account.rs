@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 use flutter_rust_bridge::frb;
 use ngwallet::config::AddressType;
 use ngwallet::transaction::{BitcoinTransaction, Output};

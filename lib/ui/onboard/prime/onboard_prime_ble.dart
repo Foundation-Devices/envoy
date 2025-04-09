@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:animations/animations.dart';
-import 'package:envoy/business/AccountNg.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -27,10 +26,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
-
-import 'package:envoy/ui/NGWalletUi.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
-
 import 'firmware_update/prime_fw_update_state.dart';
 
 class OnboardPrimeBluetooth extends ConsumerStatefulWidget {

@@ -31,7 +31,7 @@ class EmptyAccountsCard extends StatelessWidget {
                 BlendMode.saturation,
               ),
               child: AccountListTile(
-                   draggable: false,
+                  draggable: false,
                   EnvoyAccount(
                     name: S().accounts_screen_walletType_defaultName,
                     deviceSerial: 'envoy',
@@ -48,7 +48,7 @@ class EmptyAccountsCard extends StatelessWidget {
                     utxo: [],
                     externalDescriptor: "",
                     walletPath: "ghost",
-                    color:  Color(0xFFBF755F).toHex(),
+                    color: Color(0xFFBF755F).toHex(),
                     dateSynced: null,
                   ),
                   onTap: () {}),

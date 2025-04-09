@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 use core::str::FromStr;
 use bdk_wallet::bitcoin::Network;
 use bdk_wallet::bitcoin::secp256k1::Secp256k1;
