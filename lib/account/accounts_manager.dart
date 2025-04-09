@@ -27,6 +27,7 @@ extension AccountExtension on EnvoyAccount {
 
 class NgAccountManager extends ChangeNotifier {
   static const String ACCOUNT_ORDER = "accounts_order";
+
   static String walletsDirectory =
       "${LocalStorage().appDocumentsDir.path}/wallets_new/";
   final LocalStorage _ls = LocalStorage();
@@ -72,7 +73,14 @@ class NgAccountManager extends ChangeNotifier {
     final accountOrder = _ls.prefs.getString(ACCOUNT_ORDER);
     List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
     _accountsOrder.sink.add(order);
-    final dirs = await Directory(walletsDirectory).list().toList();
+
+    final walletDirectory = await Directory(walletsDirectory);
+
+    if (!walletDirectory.existsSync()) {
+      await walletDirectory.create(recursive: true);
+    }
+
+    final dirs = await walletDirectory.list().toList();
     for (var dir in dirs) {
       if (dir is Directory) {
         try {

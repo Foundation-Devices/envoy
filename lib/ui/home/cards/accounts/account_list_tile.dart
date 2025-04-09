@@ -66,8 +66,8 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
     ref.watch(settingsProvider);
     ref.watch(accountsProvider);
 
-    EnvoyAccount? account =  ref.watch(accountStateProvider(widget.account.id));
-    if(widget.account.walletPath == "ghost"){
+    EnvoyAccount? account = ref.watch(accountStateProvider(widget.account.id));
+    if (widget.account.walletPath == "ghost") {
       account = widget.account;
     }
     if (account == null) {

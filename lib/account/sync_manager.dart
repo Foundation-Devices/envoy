@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import 'dart:async';
 
 import 'package:envoy/account/accounts_manager.dart';

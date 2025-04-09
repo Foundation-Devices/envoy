@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'legacy_account.dart';
