@@ -25,7 +25,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     zip \
     libglu1-mesa \
     openjdk-8-jdk \
-    openjdk-17-jdk \
+    openjdk-21-jdk \
     wget \
     autoconf \
     clang \
@@ -70,7 +70,7 @@ RUN cd Android/sdk/tools/bin && yes | ./sdkmanager --licenses && ./sdkmanager "b
 ENV PATH "$PATH:/root/Android/sdk/platform-tools"
 
 # Install Flutter SDK
-RUN update-java-alternatives --set /usr/lib/jvm/java-1.17.0-openjdk-amd64
+RUN update-java-alternatives --set /usr/lib/jvm/java-1.21.0-openjdk-amd64
 RUN git clone https://github.com/flutter/flutter.git
 ENV PATH "$PATH:/root/flutter/bin"
 
