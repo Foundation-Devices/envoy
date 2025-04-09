@@ -4,51 +4,52 @@
 
 import 'dart:ui';
 
-import 'package:envoy/business/account.dart';
+import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/account/envoy_transaction.dart';
+import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/locale.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/button.dart';
+import 'package:envoy/ui/components/envoy_info_card.dart';
+import 'package:envoy/ui/components/envoy_tag_list_item.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_button.dart';
 import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
-import 'package:envoy/ui/state/transactions_note_state.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/tuple.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:ngwallet/src/wallet.dart';
-import 'package:envoy/business/fees.dart';
-import 'package:envoy/util/tuple.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/components/envoy_info_card.dart';
-import 'package:envoy/ui/components/envoy_tag_list_item.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
-import 'package:envoy/ui/state/home_page_state.dart';
 
 final transactionDetailsOpen = StateProvider<bool>((ref) => false);
 
 class TransactionsDetailsWidget extends ConsumerStatefulWidget {
-  final Account account;
-  final Transaction tx;
+  final EnvoyAccount account;
+  final EnvoyTransaction tx;
   final Widget? iconTitleWidget;
   final Widget? titleWidget;
 
@@ -90,11 +91,13 @@ class _TransactionsDetailsWidgetState
   Widget build(BuildContext context) {
     ///watch transaction changes to get real time updates
     final tx = ref.watch(getTransactionProvider(widget.tx.txId)) ?? widget.tx;
-    final note = ref.watch(txNoteProvider(tx.txId)) ?? "";
+    final note = ref.watch(getTransactionProvider(widget.tx.txId).select(
+      (value) => value?.note ?? "",
+    ));
 
     final hideBalance =
         ref.watch(balanceHideStateStatusProvider(widget.account.id));
-    final accountAccentColor = widget.account.color;
+    final accountAccentColor = fromHex(widget.account.color);
     final trailingTextStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
           color: EnvoyColors.textPrimary,
           fontWeight: FontWeight.w600,
@@ -103,11 +106,10 @@ class _TransactionsDetailsWidgetState
     final idTextStyle =
         EnvoyTypography.body.copyWith(color: EnvoyColors.textSecondary);
 
-    bool addressNotAvailable = tx.address == null || tx.address!.isEmpty;
+    bool addressNotAvailable = tx.address.isEmpty;
     final address = tx.address ?? "";
 
-    bool rbfPossible =
-        (!tx.isConfirmed && tx.type == TransactionType.normal && tx.amount < 0);
+    bool rbfPossible = (!tx.isConfirmed && tx.isOnChain() && tx.amount < 0);
 
     final cancelState = ref.watch(cancelTxStateProvider(tx.txId));
 
@@ -115,7 +117,7 @@ class _TransactionsDetailsWidgetState
       rbfPossible = false;
     }
 
-    bool showTxInfo = showTxId(tx.type);
+    bool showTxInfo = tx.isOnChain();
 
     return PopScope(
       onPopInvokedWithResult: (_, __) {
@@ -186,7 +188,7 @@ class _TransactionsDetailsWidgetState
                           ),
                         ],
                       )
-                    : (tx.amount == 0 &&
+                    : (tx is BtcPayTransaction &&
                             tx.currency != null &&
                             tx.currencyAmount != null)
                         ? Row(
@@ -255,7 +257,7 @@ class _TransactionsDetailsWidgetState
                       behavior: HitTestBehavior.opaque,
                       onLongPress: () {
                         if (showTxInfo) {
-                          copyTxId(context, tx.txId, tx.type);
+                          copyTxId(context, tx.txId, tx);
                         }
                       },
                       onTap: () {
@@ -303,8 +305,8 @@ class _TransactionsDetailsWidgetState
                             type: ButtonType.primary,
                             state: ButtonState.defaultState,
                             onTap: () {
-                              openTxDetailsInExplorer(context, tx.txId,
-                                  widget.account.wallet.network);
+                              openTxDetailsInExplorer(
+                                  context, tx.txId, widget.account.network);
                             },
                             edgeInsets: const EdgeInsets.symmetric(
                                 horizontal: EnvoySpacing.medium1),
@@ -327,7 +329,7 @@ class _TransactionsDetailsWidgetState
                     trailing: Text(getTransactionStatusString(tx),
                         style: trailingTextStyle),
                   ),
-                  if (tx.pullPaymentId != null)
+                  if (tx is BtcPayTransaction && tx.pullPaymentId != null)
                     EnvoyInfoCardListItem(
                         title: S().coindetails_overlay_paymentID,
                         icon: const EnvoyIcon(EnvoyIcons.btcPay,
@@ -367,7 +369,7 @@ class _TransactionsDetailsWidgetState
                             },
                           ),
                         )),
-                  if (tx.rampId != null)
+                  if (tx is RampTransaction && tx.rampId != null)
                     EnvoyInfoCardListItem(
                       title: S().coindetails_overlay_rampID,
                       centerSingleLineTitle: true,
@@ -379,7 +381,7 @@ class _TransactionsDetailsWidgetState
                       trailing: GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onLongPress: () {
-                          copyTxId(context, tx.rampId!, tx.type);
+                          copyTxId(context, tx.rampId!, tx);
                         },
                         child: Text(
                           tx.rampId!,
@@ -389,7 +391,7 @@ class _TransactionsDetailsWidgetState
                         ),
                       ),
                     ),
-                  if (tx.rampFee != null)
+                  if (tx is RampTransaction && tx.rampFee != null)
                     EnvoyInfoCardListItem(
                       title: S().coindetails_overlay_rampFee,
                       centerSingleLineTitle: true,
@@ -418,7 +420,7 @@ class _TransactionsDetailsWidgetState
                           spacingPriority: FlexPriority.trailing,
                           title: _getConfirmationTimeString(ref.watch(
                               txEstimatedConfirmationTimeProvider(
-                                  Tuple(tx, widget.account.wallet.network)))),
+                                  Tuple(tx, widget.account.network)))),
                           icon: const EnvoyIcon(
                             EnvoyIcons.clock,
                             size: EnvoyIconSize.extraSmall,
@@ -429,20 +431,22 @@ class _TransactionsDetailsWidgetState
                           ),
                         )
                       : Container(),
-                  if (tx.type != TransactionType.ramp)
-                    _renderFeeWidget(context, tx),
+                  if (tx is! RampTransaction) _renderFeeWidget(context, tx),
                   GestureDetector(
                     onTap: () {
                       showEnvoyDialog(
                           context: context,
                           dialog: TxNoteDialog(
                             txId: tx.txId,
+                            value: note,
                             noteTitle: S().add_note_modal_heading,
                             noteHintText: S().add_note_modal_ie_text_field,
                             noteSubTitle: S().add_note_modal_subheading,
                             onAdd: (note) {
-                              EnvoyStorage()
-                                  .addTxNote(note: note, key: tx.txId);
+                              widget.account.handler?.setNote(
+                                note: note,
+                                txId: tx.txId,
+                              );
                               Navigator.pop(context);
                             },
                           ),
@@ -491,7 +495,7 @@ class _TransactionsDetailsWidgetState
                       : const SizedBox.shrink(),
                 ],
               ),
-              if (tx.type == TransactionType.ramp) ...[
+              if (tx is RampTransaction) ...[
                 const EnvoyIcon(
                   EnvoyIcons.info,
                   color: EnvoyColors.textPrimaryInverse,
@@ -516,7 +520,7 @@ class _TransactionsDetailsWidgetState
     );
   }
 
-  Widget _renderFeeWidget(BuildContext context, Transaction tx) {
+  Widget _renderFeeWidget(BuildContext context, EnvoyTransaction tx) {
     final isBoosted =
         (ref.watch(isTxBoostedProvider(tx.txId)) ?? false) && tx.amount < 0;
     final cancelState = ref.watch(cancelTxStateProvider(tx.txId));
@@ -555,7 +559,7 @@ class _TransactionsDetailsWidgetState
               children: [
                 EnvoyAmount(
                     account: widget.account,
-                    amountSats: tx.fee,
+                    amountSats: tx.fee.toInt(),
                     amountWidgetStyle: AmountWidgetStyle.normal),
               ],
             ),
@@ -563,17 +567,18 @@ class _TransactionsDetailsWidgetState
   }
 }
 
-String getTransactionDateAndTimeString(Transaction transaction) {
-  if (!transaction.isConfirmed) {
+String getTransactionDateAndTimeString(EnvoyTransaction transaction) {
+  if (!transaction.isConfirmed || transaction.date == null) {
     return S().activity_pending;
   }
+  final date = transaction.date!.toInt();
   final String transactionDateInfo =
-      "${DateFormat.yMd(currentLocale).format(transaction.date)} ${S().coindetails_overlay_at} ${DateFormat.Hm(currentLocale).format(transaction.date)}";
+      "${DateFormat.yMd(currentLocale).format(DateTime.fromMillisecondsSinceEpoch(date))} ${S().coindetails_overlay_at} ${DateFormat.Hm(currentLocale).format(DateTime.fromMillisecondsSinceEpoch(date))}";
   return transactionDateInfo;
 }
 
-String getTransactionStatusString(Transaction tx) {
-  return tx.type == TransactionType.normal && tx.isConfirmed
+String getTransactionStatusString(EnvoyTransaction tx) {
+  return tx.isOnChain() && tx.isConfirmed
       ? S().coindetails_overlay_status_confirmed
       : S().activity_pending;
 }
@@ -625,21 +630,15 @@ void openTxDetailPage(Network network, String txId) {
 
 String? getBaseUrlForNetwork(Network network) {
   switch (network) {
-    case Network.Mainnet:
+    case Network.bitcoin:
       return Fees.mempoolFoundationInstance;
-    case Network.Signet:
+    case Network.signet:
       return Fees.mutinynetMempoolFoundationInstance;
-    case Network.Testnet:
+    case Network.testnet4:
       return Fees.testnetMempoolFoundationInstance;
-    case Network.Regtest:
+    case Network.testnet:
+      return Fees.testnetMempoolFoundationInstance;
+    case Network.regtest:
       return null;
-  }
-}
-
-bool showTxId(TransactionType type) {
-  if (type == TransactionType.pending || type == TransactionType.normal) {
-    return true;
-  } else {
-    return false;
   }
 }

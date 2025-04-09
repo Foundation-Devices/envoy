@@ -9,25 +9,26 @@ import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 final nextAddressProvider =
-    FutureProvider.family<String, EnvoyAccount>((ref, wallet) async {
+    FutureProvider.family<String, EnvoyAccountHandler>((ref, wallet) async {
   return await wallet.nextAddress();
 });
 
 final transactionsProvider =
-    FutureProvider.family<List<BitcoinTransaction>, EnvoyAccount>(
+    FutureProvider.family<List<BitcoinTransaction>, EnvoyAccountHandler>(
         (ref, wallet) async {
   return await wallet.transactions();
 });
 
-final utoxosProvider =
-    FutureProvider.family<List<Output>, EnvoyAccount>((ref, wallet) async {
+final utoxosProvider = FutureProvider.family<List<Output>, EnvoyAccountHandler>(
+    (ref, wallet) async {
   return await wallet.utxo();
 });
 
 final balanceProvider =
-    FutureProvider.family<String, EnvoyAccount>((ref, wallet) async {
+    FutureProvider.family<String, EnvoyAccountHandler>((ref, wallet) async {
   return (await wallet.balance()).toString();
 });
 
@@ -58,18 +59,16 @@ class _NGWalletUiState extends ConsumerState<NGWalletUi>
     });
   }
 
-  onInit()async {
-    setState(() {
-    });
+  onInit() async {
+    setState(() {});
     //TODO: listen for ql messages and call onReceiveSignedPSBT
   }
 
-  onReceiveSignedPSBT(String signed){
+  onReceiveSignedPSBT(String signed) {
     setState(() {
       signedPSBT = signed;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -365,7 +364,8 @@ class _NGWalletUiState extends ConsumerState<NGWalletUi>
                       state: ButtonState.defaultState,
                       type: ButtonType.primary,
                       onTap: () async {
-                        await BluetoothManager().sendPsbt(AccountNg().descriptor!, serializedPSBT);
+                        await BluetoothManager()
+                            .sendPsbt(AccountNg().descriptor!, serializedPSBT);
                       },
                     ),
                   ],
@@ -390,14 +390,19 @@ class _NGWalletUiState extends ConsumerState<NGWalletUi>
                           ? null
                           : () async {
                               try {
-                                final scaffoldMessenger = ScaffoldMessenger.of(context);
+                                final scaffoldMessenger =
+                                    ScaffoldMessenger.of(context);
                                 //await envoyAccount.broadcast(psbt: signedPSBT);
-                                const snackBar = SnackBar(content: Text('Broadcasting successful'));
+                                const snackBar = SnackBar(
+                                    content: Text('Broadcasting successful'));
                                 scaffoldMessenger.showSnackBar(snackBar);
-                              } catch (e,stack) {
-                                kPrint("Error broadcasting: $e",stackTrace: stack);
-                                final scaffoldMessenger = ScaffoldMessenger.of(context);
-                                const snackBar = SnackBar(content: Text('Error broadcasting...'));
+                              } catch (e, stack) {
+                                kPrint("Error broadcasting: $e",
+                                    stackTrace: stack);
+                                final scaffoldMessenger =
+                                    ScaffoldMessenger.of(context);
+                                const snackBar = SnackBar(
+                                    content: Text('Error broadcasting...'));
                                 scaffoldMessenger.showSnackBar(snackBar);
                               }
                             },

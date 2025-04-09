@@ -6,15 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/home/cards/accounts/azteco/azteco_redeem_modal.dart';
 import 'package:envoy/ui/home/cards/accounts/azteco/loading_modal.dart';
 import 'package:envoy/business/azteco_voucher.dart';
-import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:envoy/ui/home/cards/accounts/azteco/azteco_connection_modal_fail.dart';
 import 'package:envoy/ui/home/cards/accounts/azteco/azteco_redeem_modal_fail.dart';
 import 'package:envoy/ui/home/cards/accounts/azteco/azteco_redeem_modal_success.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class AztecoDialog extends StatelessWidget {
   final AztecoVoucher voucher;
-  final Account account;
+  final EnvoyAccount account;
 
   const AztecoDialog(this.voucher, this.account, {super.key});
 

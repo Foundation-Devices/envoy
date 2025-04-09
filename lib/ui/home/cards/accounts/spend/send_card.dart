@@ -24,6 +24,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 //ignore: must_be_immutable
 class SendCard extends ConsumerStatefulWidget {
@@ -35,7 +36,7 @@ class SendCard extends ConsumerStatefulWidget {
 
 class _SendCardState extends ConsumerState<SendCard>
     with AutomaticKeepAliveClientMixin {
-  Account? account;
+  EnvoyAccount? account;
   final TextEditingController _controller = TextEditingController();
 
   var _amountEntry = const AmountEntry();

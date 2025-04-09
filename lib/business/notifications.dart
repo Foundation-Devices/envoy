@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/updates_manager.dart';
@@ -32,7 +33,7 @@ StreamController<String> isNewAppVersionAvailable =
     StreamController.broadcast();
 
 final isNewExpiredBuyTxAvailable =
-    StreamController<List<Transaction>>.broadcast();
+    StreamController<List<EnvoyTransaction>>.broadcast();
 
 @JsonSerializable()
 class EnvoyNotification {
@@ -43,7 +44,7 @@ class EnvoyNotification {
   final String id;
   final int? amount;
   final String? accountId;
-  final Transaction? transaction;
+  final EnvoyTransaction? transaction;
 
   EnvoyNotification(
       this.title, this.date, this.type, this.body, this.id, this.transaction,
@@ -77,10 +78,10 @@ final nonTxNotificationStreamProvider =
       .toList();
 });
 
-EnvoyNotification transactionToEnvoyNotification(Transaction transaction) {
+EnvoyNotification transactionToEnvoyNotification(EnvoyTransaction transaction) {
   return EnvoyNotification(
     "Transaction Notification",
-    transaction.isConfirmed ? transaction.date : null,
+    transaction.isConfirmed ? DateTime(transaction.date!.toInt()) : null,
     EnvoyNotificationType.transaction,
     "Transaction details",
     transaction.txId,
@@ -92,7 +93,7 @@ EnvoyNotification transactionToEnvoyNotification(Transaction transaction) {
 
 List<EnvoyNotification> combineNotifications(
     List<EnvoyNotification> envoyNotifications,
-    List<Transaction> transactions) {
+    List<EnvoyTransaction> transactions) {
   List<EnvoyNotification> transactionNotifications =
       transactions.map((transaction) {
     return transactionToEnvoyNotification(transaction);

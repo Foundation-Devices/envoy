@@ -11,14 +11,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'accounts/accounts_state.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class PurchaseComplete extends ConsumerStatefulWidget {
   const PurchaseComplete(this.account, {super.key});
 
-  final Account account;
+  final EnvoyAccount account;
 
   @override
   ConsumerState<PurchaseComplete> createState() => _PurchaseCompleteState();

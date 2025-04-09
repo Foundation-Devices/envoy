@@ -12,7 +12,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/loader_ghost.dart';
-import 'package:ngwallet/src/wallet.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 enum AmountWidgetStyle { normal, large, singleLine, sendScreen }
 
@@ -40,7 +40,7 @@ class AmountWidget extends StatelessWidget {
     this.symbolFiat = "",
     this.fxRateFiat,
     this.badgeColor,
-    this.network = Network.Mainnet,
+    this.network = Network.bitcoin,
     this.alignToEnd = true,
     required this.locale,
     this.millionaireMode = true,
@@ -289,7 +289,7 @@ class PrimaryAmountWidget extends StatelessWidget {
                             .copyWith(color: EnvoyColors.textSecondary)
                         : textStyleFiatSymbol,
                   )
-                : (network == Network.Mainnet
+                : (network == Network.bitcoin
                     ? EnvoyIcon(
                         unit == AmountDisplayUnit.btc ? iconBtc : iconSat,
                         size: iconSize,
@@ -381,7 +381,7 @@ class SecondaryAmountWidget extends StatelessWidget {
         Padding(
             padding: const EdgeInsets.only(right: 2.0),
             child: unit == AmountDisplayUnit.btc
-                ? (network == Network.Mainnet
+                ? (network == Network.bitcoin
                     ? EnvoyIcon(
                         iconBtc,
                         size: EnvoyIconSize.extraSmall,
@@ -762,24 +762,28 @@ String convertSatsToFiatString(
 
 Widget getNonMainnetBtcIcon(Color badgeColor, Network network,
     {EnvoyIconSize? iconSize, Color? iconColor}) {
-  return NonMainnetIcon(
-    EnvoyIcons.btc,
-    badgeColor: badgeColor,
-    size: iconSize ?? EnvoyIconSize.normal,
-    iconColor: iconColor,
-    network: network,
-  );
+  //TODO: implement envoyAccount
+  // return NonMainnetIcon(
+  //   EnvoyIcons.btc,
+  //   badgeColor: badgeColor,
+  //   size: iconSize ?? EnvoyIconSize.normal,
+  //   iconColor: iconColor,
+  //   network: Netowrk.bitcoin,
+  // );
+  return Container();
 }
 
 Widget getNonMainnetSatsIcon(Color badgeColor, Network network,
     {EnvoyIconSize? iconSize, Color? iconColor}) {
-  return NonMainnetIcon(
-    EnvoyIcons.sats,
-    badgeColor: badgeColor,
-    size: iconSize ?? EnvoyIconSize.normal,
-    iconColor: iconColor,
-    network: network,
-  );
+  //TODO: implement envoyAccount
+  // return NonMainnetIcon(
+  //   EnvoyIcons.sats,
+  //   badgeColor: badgeColor,
+  //   size: iconSize ?? EnvoyIconSize.normal,
+  //   iconColor: iconColor,
+  //   network: network,
+  // );
+  return Container();
 }
 
 Widget getNonMainnetIcon(AmountDisplayUnit unit, Color color, Network network,

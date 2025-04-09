@@ -5,7 +5,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:animations/animations.dart';
-import 'package:envoy/business/account.dart';
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_card.dart';
 import 'package:envoy/ui/home/cards/accounts/address_card.dart';
 import 'package:envoy/ui/home/cards/accounts/descriptor_card.dart';
@@ -25,6 +25,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 /// Different routes for accounts.
 /// The nested routes cannot start with a slash,
@@ -230,29 +231,35 @@ final accountsRouter = StatefulShellBranch(
                 GoRoute(
                   path: _ACCOUNT_RECEIVE,
                   pageBuilder: (context, state) {
-                    Account? account;
-                    if (state.extra is Map) {
-                      account =
-                          Account.fromJson(state.extra as Map<String, dynamic>);
-                    } else {
-                      account = state.extra as Account;
+                    EnvoyAccount? account;
+                    try {
+                      account = NgAccountManager()
+                          .getAccountById(state.extra as String);
+                      if (account == null) {
+                        throw Exception("Account not found");
+                      }
+                      return wrapWithEnvoyPageAnimation(
+                          child: AddressCard(account));
+                    } catch (e) {
+                      return wrapWithEnvoyPageAnimation(child: Container());
                     }
-                    return wrapWithEnvoyPageAnimation(
-                        child: AddressCard(account));
                   },
                 ),
                 GoRoute(
                   path: _ACCOUNT_DESCRIPTOR,
                   pageBuilder: (context, state) {
-                    Account? account;
-                    if (state.extra is Map) {
-                      account =
-                          Account.fromJson(state.extra as Map<String, dynamic>);
-                    } else {
-                      account = state.extra as Account;
+                    EnvoyAccount? account;
+                    try {
+                      account = NgAccountManager()
+                          .getAccountById(state.extra as String);
+                      if (account == null) {
+                        throw Exception("Account not found");
+                      }
+                      return wrapWithEnvoyPageAnimation(
+                          child: DescriptorCard(account));
+                    } catch (e) {
+                      return wrapWithEnvoyPageAnimation(child: Container());
                     }
-                    return wrapWithEnvoyPageAnimation(
-                        child: DescriptorCard(account));
                   },
                 ),
               ],

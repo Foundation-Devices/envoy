@@ -4,7 +4,6 @@
 
 import 'dart:async';
 
-import 'package:envoy/business/account.dart';
 import 'package:envoy/business/bitcoin_parser.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
@@ -27,6 +26,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/locale.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:ngwallet/ngwallet.dart';
 
 final isNumpadPressed = StateProvider<bool>((ref) => false);
 
@@ -35,7 +35,7 @@ enum AmountDisplayUnit { btc, sat, fiat }
 final displayFiatSendAmountProvider = StateProvider<double?>((ref) => 0);
 
 class AmountEntry extends ConsumerStatefulWidget {
-  final Account? account;
+  final EnvoyAccount? account;
   final Function(int)? onAmountChanged;
   final int initalSatAmount;
   final Function(ParseResult)? onPaste;
@@ -105,26 +105,26 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 
     String? text = cdata?.text;
     if (text != null) {
-      var decodedInfo = await BitcoinParser.parse(
-        text,
-        fiatExchangeRate: ExchangeRate().selectedCurrencyRate,
-        wallet: widget.account?.wallet,
-        selectedFiat: Settings().selectedFiat,
-        currentUnit: unit,
-      );
-
-      ref.read(sendScreenUnitProvider.notifier).state =
-          decodedInfo.unit ?? unit;
-
-      setState(() {
-        unit = decodedInfo.unit ?? unit;
-        ref.read(displayFiatSendAmountProvider.notifier).state =
-            decodedInfo.displayFiat;
-      });
-
-      if (widget.onPaste != null) {
-        widget.onPaste!(decodedInfo);
-      }
+      //TODO: parsing with ngwallet
+      // var decodedInfo = await BitcoinParser.parse(
+      //   text,
+      //   fiatExchangeRate: ExchangeRate().selectedCurrencyRate,
+      //   wallet: widget.account?.wallet,
+      //   selectedFiat: Settings().selectedFiat,
+      //   currentUnit: unit,
+      // );
+      // ref.read(sendScreenUnitProvider.notifier).state =
+      //     decodedInfo.unit ?? unit;
+      //
+      // setState(() {
+      //   unit = decodedInfo.unit ?? unit;
+      //   ref.read(displayFiatSendAmountProvider.notifier).state =
+      //       decodedInfo.displayFiat;
+      // });
+      //
+      // if (widget.onPaste != null) {
+      //   widget.onPaste!(decodedInfo);
+      // }
     }
   }
 
@@ -354,7 +354,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 }
 
 class SpendableAmountWidget extends ConsumerWidget {
-  final Account account;
+  final EnvoyAccount account;
 
   const SpendableAmountWidget(this.account, {super.key});
 

@@ -17,10 +17,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 //ignore: must_be_immutable
 class DescriptorCard extends ConsumerStatefulWidget {
-  final Account account;
+  final EnvoyAccount account;
 
   DescriptorCard(this.account) : super(key: UniqueKey());
 
@@ -40,7 +41,7 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
 
   @override
   Widget build(BuildContext context) {
-    String descriptor = widget.account.descriptor;
+    String descriptor = widget.account.internalDescriptor;
 
     return Column(
         crossAxisAlignment: CrossAxisAlignment.center,

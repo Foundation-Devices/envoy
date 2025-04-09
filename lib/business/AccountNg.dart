@@ -5,7 +5,7 @@ import 'package:ngwallet/ngwallet.dart';
 class AccountNg {
   Account? account;
   String? descriptor;
-  EnvoyAccount? envoyAccount;
+  EnvoyAccountHandler? envoyAccount;
   static final AccountNg _instance = AccountNg._internal();
 
   factory AccountNg() {
@@ -42,13 +42,12 @@ class AccountNg {
     return await envoyAccount?.nextAddress() ?? "";
   }
 
-  Future<ArcMutexOptionFullScanRequestKeychainKind?> scanRequest() async {
-    return await envoyAccount?.requestScan();
+  Future<FullScanRequest?> scanRequest() async {
+    return await envoyAccount?.requestFullScan();
   }
 
-  Future<bool?>? apply_update(
-      ArcMutexOptionFullScanResponseKeychainKind scanResponse) async {
-    return await envoyAccount?.applyUpdate(scanRequest: scanResponse);
+  Future<bool?>? apply_update(WalletUpdate scanResponse) async {
+    return await envoyAccount?.applyUpdate(update: scanResponse);
   }
 
   init() async {

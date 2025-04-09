@@ -7,15 +7,16 @@ import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/main.dart';
 import 'package:envoy/ui/background.dart';
+import 'package:envoy/ui/home/settings/logs_report.dart';
 import 'package:envoy/ui/lock/authenticate_page.dart';
 import 'package:envoy/ui/migrations/migration_manager.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 final _migrationStreamProvider = StreamProvider<MigrationProgress>((ref) {
   return MigrationManager().migrationProgress;
@@ -33,9 +34,18 @@ class MigrationApp extends StatefulWidget {
 }
 
 class _MigrationAppState extends State<MigrationApp> {
+
   @override
   void initState() {
+    WakelockPlus.enable();
     super.initState();
+  }
+
+
+  @override
+  void dispose() {
+    WakelockPlus.disable();
+    super.dispose();
   }
 
   @override
@@ -78,17 +88,15 @@ class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
   @override
   void initState() {
     super.initState();
-    MigrationManager().onMigrationFinished((){
-      // EnvoyStorage().setBool("migration_envoy_v2_status",true);
+    MigrationManager().onMigrationFinished(() async {
       if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
         runApp(const AuthenticateApp());
       } else {
         runApp(const EnvoyApp());
       }
     });
-    Future.delayed(const Duration(seconds: 1)).then((value) {
+    Future.delayed(const Duration(milliseconds: 300)).then((value) {
       MigrationManager().migrate();
-
     });
   }
 
@@ -110,15 +118,21 @@ class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    height: 200,
-                    width: 200,
-                    decoration: const BoxDecoration(
-                      color: Colors.transparent,
-                      image: DecorationImage(
-                          image: ExactAssetImage('assets/logo_envoy.png'),
-                          fit: BoxFit.cover,
-                          filterQuality: FilterQuality.high),
+                  GestureDetector(
+                    onLongPress: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const EnvoyLogsScreen()));
+                    },
+                    child: Container(
+                      height: 200,
+                      width: 200,
+                      decoration: const BoxDecoration(
+                        color: Colors.transparent,
+                        image: DecorationImage(
+                            image: ExactAssetImage('assets/logo_envoy.png'),
+                            fit: BoxFit.cover,
+                            filterQuality: FilterQuality.high),
+                      ),
                     ),
                   ),
                 ],
@@ -134,7 +148,7 @@ class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
                     SizedBox(
                       height: 24,
                     ),
-                    Container(
+                    SizedBox(
                       width: 300,
                       child: LinearProgressIndicator(
                         value: progress.progress,

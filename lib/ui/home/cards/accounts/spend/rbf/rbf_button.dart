@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
@@ -63,7 +64,7 @@ class RBFSpendState {
 }
 
 class TxRBFButton extends ConsumerStatefulWidget {
-  final Transaction tx;
+  final EnvoyTransaction tx;
 
   const TxRBFButton({super.key, required this.tx});
 
@@ -82,121 +83,122 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
   }
 
   Future<void> _checkIfCanBoost() async {
-    try {
-      ref.watch(rbfSpendStateProvider.notifier).state = null;
-      final account = ref.read(selectedAccountProvider);
-      if (account == null) {
-        return;
-      }
-      setState(() {
-        _isLoading = true;
-      });
-      final lockedUtxos = ref.read(lockedUtxosProvider(account.id!));
-
-      final originalTx = widget.tx;
-      int originalAmount = originalTx.amount - originalTx.fee;
-
-      rust.RBFfeeRates? rates = await account.wallet
-          .getBumpedPSBTMaxFeeRate(originalTx.txId, lockedUtxos);
-      final originalRawTx =
-          await account.wallet.getRawTxFromTxId(originalTx.txId);
-      final originalRawTxDecoded = await account.wallet
-          .decodeWalletRawTx(originalRawTx, account.wallet.network);
-      for (var output in originalRawTxDecoded.outputs) {
-        //if the output is external, this will be the original amount
-        if (output.path == TxOutputPath.NotMine) {
-          originalAmount = output.amount;
-        }
-      }
-      //if the amount is the same as the fee, this is a self spend
-      if (originalTx.amount.abs() == originalTx.fee) {
-        //since the transaction object doesn't have the raw the tx we need to get it
-        for (var output in originalRawTxDecoded.outputs) {
-          //if the output is external, this will be the original amount
-          if (output.path == TxOutputPath.External) {
-            originalAmount = output.amount;
-          }
-        }
-      }
-
-      if (rates.min_fee_rate > 0) {
-        double minFeeRate = rates.min_fee_rate.ceil().toDouble();
-        Psbt? psbt = await account.wallet.getBumpedPSBT(
-            widget.tx.txId, convertToFeeRate(minFeeRate), lockedUtxos);
-        final rawTxx = await account.wallet
-            .decodeWalletRawTx(psbt.rawTx, account.wallet.network);
-
-        RawTransactionOutput receiveOutPut =
-            rawTxx.outputs.firstWhere((element) {
-          return (element.path == TxOutputPath.NotMine ||
-              element.path == TxOutputPath.External);
-        }, orElse: () => rawTxx.outputs.first);
-
-        RBFSpendState rbfSpendState = RBFSpendState(
-            psbt: psbt,
-            rbfFeeRates: rates,
-            receiveAddress: receiveOutPut.address,
-            receiveAmount: 0,
-            originalAmount: originalAmount,
-            feeRate: minFeeRate.toInt(),
-            originalTx: widget.tx);
-
-        int minRate = minFeeRate.toInt();
-        int maxRate = rates.max_fee_rate.toInt();
-        int fasterFeeRate = minRate + 1;
-
-        ///TODO: this is a hack to make sure the faster fee rate is always higher than the standard fee rate
-        if (minRate == maxRate) {
-          fasterFeeRate = maxRate;
-        } else {
-          if (minRate < maxRate) {
-            fasterFeeRate = (minRate + 1).clamp(minRate, maxRate);
-          }
-        }
-        if (mounted) {
-          ref.read(feeChooserStateProvider.notifier).state = FeeChooserState(
-            standardFeeRate: minFeeRate,
-            fasterFeeRate: fasterFeeRate,
-            minFeeRate: rates.min_fee_rate.ceil().toInt(),
-            maxFeeRate: rates.max_fee_rate.floor().toInt(),
-          );
-          ref.read(rbfSpendStateProvider.notifier).state = rbfSpendState;
-          setState(() {
-            _isLoading = false;
-          });
-        }
-        return;
-      }
-
-      if (rates.min_fee_rate > 0) {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-          });
-        }
-        return;
-      } else {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-          });
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-      EnvoyReport().log("RBF-button", "Error $e");
-      kPrint(e);
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
+    //TODO: implement RBF
+    // try {
+    //   ref.watch(rbfSpendStateProvider.notifier).state = null;
+    //   final account = ref.read(selectedAccountProvider);
+    //   if (account == null) {
+    //     return;
+    //   }
+    //   setState(() {
+    //     _isLoading = true;
+    //   });
+    //   final lockedUtxos = ref.read(lockedUtxosProvider(account.id!));
+    //
+    //   final originalTx = widget.tx;
+    //   int originalAmount = originalTx.amount - originalTx.fee;
+    //
+    //   rust.RBFfeeRates? rates = await account.wallet
+    //       .getBumpedPSBTMaxFeeRate(originalTx.txId, lockedUtxos);
+    //   final originalRawTx =
+    //       await account.wallet.getRawTxFromTxId(originalTx.txId);
+    //   final originalRawTxDecoded = await account.wallet
+    //       .decodeWalletRawTx(originalRawTx, account.wallet.network);
+    //   for (var output in originalRawTxDecoded.outputs) {
+    //     //if the output is external, this will be the original amount
+    //     if (output.path == TxOutputPath.NotMine) {
+    //       originalAmount = output.amount;
+    //     }
+    //   }
+    //   //if the amount is the same as the fee, this is a self spend
+    //   if (originalTx.amount.abs() == originalTx.fee) {
+    //     //since the transaction object doesn't have the raw the tx we need to get it
+    //     for (var output in originalRawTxDecoded.outputs) {
+    //       //if the output is external, this will be the original amount
+    //       if (output.path == TxOutputPath.External) {
+    //         originalAmount = output.amount;
+    //       }
+    //     }
+    //   }
+    //
+    //   if (rates.min_fee_rate > 0) {
+    //     double minFeeRate = rates.min_fee_rate.ceil().toDouble();
+    //     Psbt? psbt = await account.wallet.getBumpedPSBT(
+    //         widget.tx.txId, convertToFeeRate(minFeeRate), lockedUtxos);
+    //     final rawTxx = await account.wallet
+    //         .decodeWalletRawTx(psbt.rawTx, account.wallet.network);
+    //
+    //     RawTransactionOutput receiveOutPut =
+    //         rawTxx.outputs.firstWhere((element) {
+    //       return (element.path == TxOutputPath.NotMine ||
+    //           element.path == TxOutputPath.External);
+    //     }, orElse: () => rawTxx.outputs.first);
+    //
+    //     RBFSpendState rbfSpendState = RBFSpendState(
+    //         psbt: psbt,
+    //         rbfFeeRates: rates,
+    //         receiveAddress: receiveOutPut.address,
+    //         receiveAmount: 0,
+    //         originalAmount: originalAmount,
+    //         feeRate: minFeeRate.toInt(),
+    //         originalTx: widget.tx);
+    //
+    //     int minRate = minFeeRate.toInt();
+    //     int maxRate = rates.max_fee_rate.toInt();
+    //     int fasterFeeRate = minRate + 1;
+    //
+    //     ///TODO: this is a hack to make sure the faster fee rate is always higher than the standard fee rate
+    //     if (minRate == maxRate) {
+    //       fasterFeeRate = maxRate;
+    //     } else {
+    //       if (minRate < maxRate) {
+    //         fasterFeeRate = (minRate + 1).clamp(minRate, maxRate);
+    //       }
+    //     }
+    //     if (mounted) {
+    //       ref.read(feeChooserStateProvider.notifier).state = FeeChooserState(
+    //         standardFeeRate: minFeeRate,
+    //         fasterFeeRate: fasterFeeRate,
+    //         minFeeRate: rates.min_fee_rate.ceil().toInt(),
+    //         maxFeeRate: rates.max_fee_rate.floor().toInt(),
+    //       );
+    //       ref.read(rbfSpendStateProvider.notifier).state = rbfSpendState;
+    //       setState(() {
+    //         _isLoading = false;
+    //       });
+    //     }
+    //     return;
+    //   }
+    //
+    //   if (rates.min_fee_rate > 0) {
+    //     if (mounted) {
+    //       setState(() {
+    //         _isLoading = false;
+    //       });
+    //     }
+    //     return;
+    //   } else {
+    //     if (mounted) {
+    //       setState(() {
+    //         _isLoading = false;
+    //       });
+    //     }
+    //   }
+    // } catch (e) {
+    //   if (mounted) {
+    //     setState(() {
+    //       _isLoading = false;
+    //     });
+    //   }
+    //   EnvoyReport().log("RBF-button", "Error $e");
+    //   kPrint(e);
+    // } finally {
+    //   if (mounted) {
+    //     setState(() {
+    //       _isLoading = false;
+    //     });
+    //   }
+    // }
   }
 
   Future _checkRBF(BuildContext context) async {

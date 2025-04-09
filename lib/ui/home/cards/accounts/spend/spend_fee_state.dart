@@ -7,7 +7,7 @@ import 'package:envoy/business/fees.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ngwallet/src/wallet.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 /// Shared Fee rate state for both normal spend and RBF spend screens
 
@@ -37,15 +37,15 @@ final _defaultFeeChooserState = FeeChooserState(
 );
 
 final feeChooserStateProvider = StateProvider<FeeChooserState>((ref) {
-  Account? account = ref.watch(selectedAccountProvider);
+  EnvoyAccount? account = ref.watch(selectedAccountProvider);
   if (account == null) {
     return _defaultFeeChooserState;
   }
   return FeeChooserState(
-    standardFeeRate: Fees().slowRate(account.wallet.network) * 100000,
-    fasterFeeRate: Fees().fastRate(account.wallet.network) * 100000,
+    standardFeeRate: Fees().slowRate(account.network) * 100000,
+    fasterFeeRate: Fees().fastRate(account.network) * 100000,
     minFeeRate: 1,
-    maxFeeRate: (Fees().fastRate(account.wallet.network) * 100000).floor(),
+    maxFeeRate: (Fees().fastRate(account.network) * 100000).floor(),
   );
 });
 
@@ -54,11 +54,11 @@ final spendFeeProcessing = StateProvider((ref) => false);
 // final spendMinFeeRateProvider = StateProvider((ref) => 1);
 
 final spendFeeRateProvider = StateProvider<num>((ref) {
-  Account? account = ref.watch(selectedAccountProvider);
+  EnvoyAccount? account = ref.watch(selectedAccountProvider);
   if (account == null) {
     return 1;
   }
-  return Fees().slowRate(account.wallet.network) * 100000;
+  return Fees().slowRate(account.network) * 100000;
 });
 
 final spendFeeRateBlockEstimationProvider =
@@ -73,7 +73,7 @@ final spendEstimatedBlockTimeProvider = Provider<String>((ref) {
     return "~10";
   }
 
-  Network network = account.wallet.network;
+  Network network = account.network;
 
   //with in 10 minutes
   double feeRateFast = Fees().fees[network]!.mempoolFastestRate;

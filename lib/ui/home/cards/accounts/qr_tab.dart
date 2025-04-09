@@ -7,15 +7,15 @@ import 'package:envoy/ui/theme/envoy_colors.dart' as design_system;
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/business/account.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class QrTab extends StatelessWidget {
   final String title;
   final String subtitle;
-  final Account account;
+  final EnvoyAccount account;
   final Widget qr;
 
   const QrTab(
@@ -27,6 +27,7 @@ class QrTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color color = fromHex(account.color);
     return Container(
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(20)),
@@ -40,15 +41,15 @@ class QrTab extends StatelessWidget {
                 0.4
               ],
               colors: [
-                account.color,
+                color,
                 Colors.black,
               ]),
         ),
         child: Container(
           decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(18)),
-              border: Border.all(
-                  color: account.color, width: 2, style: BorderStyle.solid)),
+              border:
+                  Border.all(color: color, width: 2, style: BorderStyle.solid)),
           child: ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(16)),
               child: Stack(children: [
@@ -73,7 +74,7 @@ class QrTab extends StatelessWidget {
                             color: Colors.black.applyOpacity(0.6),
                             borderRadius: BorderRadius.circular(36),
                             border: Border.all(
-                                color: account.color,
+                                color: color,
                                 width: 3,
                                 style: BorderStyle.solid)),
                         child: Padding(
