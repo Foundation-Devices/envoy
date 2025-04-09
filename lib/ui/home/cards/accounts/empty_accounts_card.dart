@@ -4,7 +4,7 @@
 
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
-import 'package:envoy/ui/onboard/onboard_welcome.dart';
+import 'package:envoy/ui/home/setup_overlay.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
@@ -73,10 +73,13 @@ class EmptyAccountsCard extends StatelessWidget {
                         .copyWith(color: EnvoyColors.accentPrimary),
                   ),
                   onTap: () {
-                    Navigator.of(context, rootNavigator: true)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return const WelcomeScreen();
-                    }));
+                    Navigator.of(context, rootNavigator: true).push(
+                      PageRouteBuilder(
+                        opaque: false,
+                        pageBuilder: (_, __, ___) =>
+                            const AnimatedBottomOverlay(),
+                      ),
+                    );
                   },
                 ),
               ],

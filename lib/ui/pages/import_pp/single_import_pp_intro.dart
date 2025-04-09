@@ -59,44 +59,30 @@ class SingleImportPpIntroPage extends StatelessWidget {
           padding: const EdgeInsets.only(
               right: EnvoySpacing.medium1,
               left: EnvoySpacing.medium1,
-              top: EnvoySpacing.medium1),
+              top: EnvoySpacing.small),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(
                 child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SizedBox(height: EnvoySpacing.large2),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.medium1),
-                        child: OnboardingText(
-                          header: S().pair_existing_device_intro_heading,
-                          text: isExistingDevice
-                              ? S().pair_existing_device_intro_subheading
-                              : S()
-                                  .pair_new_device_intro_connect_envoy_subheading,
-                        ),
-                      ),
-                    ],
+                  child: OnboardingText(
+                    header: S().pair_existing_device_intro_heading,
+                    text: isExistingDevice
+                        ? S().pair_existing_device_intro_subheading
+                        : S().pair_new_device_intro_connect_envoy_subheading,
                   ),
                 ),
               ),
+              const SizedBox(height: EnvoySpacing.small),
               Padding(
-                padding: const EdgeInsets.only(
-                    left: EnvoySpacing.medium1,
-                    right: EnvoySpacing.medium1,
-                    bottom: EnvoySpacing.large3),
+                padding: const EdgeInsets.only(bottom: EnvoySpacing.small),
                 child: EnvoyButton(
                   S().accounts_empty_text_learn_more,
                   onTap: () {
                     context.goNamed(ONBOARD_PASSPORT_EXISTING_SCAN);
                   },
                 ),
-              )
+              ),
             ],
           )),
     );
