@@ -2,16 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:bluart/bluart.dart';
-import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/util/console.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:go_router/go_router.dart';
@@ -47,37 +43,37 @@ class ConnectionLostModal extends StatefulWidget {
 }
 
 class _ConnectionLostModal extends State<ConnectionLostModal> {
-  bool _isReconnecting = false;
+  // bool _isReconnecting = false;
 
-  Future<void> _attemptReconnect() async {
-    setState(() {
-      _isReconnecting = true;
-    });
-
-    final bleId = BluetoothManager().bleId;
-    BleDevice?
-        device; // TODO: how to get the "connected" from Prime, also if it reconnects how is Prime going to continue to do what he was already doing?
-
-    try {
-      await BluetoothManager().connect(id: bleId);
-
-      // If connection was successful, dismiss the dialog
-      if (device!.connected && mounted) {
-        Navigator.pop(context);
-        // TODO: show a toast/snackbar if reconnected
-      }
-    } catch (e) {
-      // If connection fails, reset the reconnecting state
-      kPrint("Reconnect failed: $e");
-      if (mounted) {
-        setState(() {
-          _isReconnecting = false;
-        });
-      }
-
-      // TODO: show a toast/snackbar or log error
-    }
-  }
+  // Future<void> _attemptReconnect() async {
+  //   setState(() {
+  //     _isReconnecting = true;
+  //   });
+  //
+  //   final bleId = BluetoothManager().bleId;
+  //   BleDevice?
+  //       device; // TODO: how to get the "connected" from Prime, also if it reconnects how is Prime going to continue to do what he was already doing?
+  //
+  //   try {
+  //     await BluetoothManager().connect(id: bleId);
+  //
+  //     // If connection was successful, dismiss the dialog
+  //     if (device!.connected && mounted) {
+  //       Navigator.pop(context);
+  //       // TODO: show a toast/snackbar if reconnected
+  //     }
+  //   } catch (e) {
+  //     // If connection fails, reset the reconnecting state
+  //     kPrint("Reconnect failed: $e");
+  //     if (mounted) {
+  //       setState(() {
+  //         _isReconnecting = false;
+  //       });
+  //     }
+  //
+  //     // TODO: show a toast/snackbar or log error
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -117,21 +113,22 @@ class _ConnectionLostModal extends State<ConnectionLostModal> {
                   context.go("/");
                 },
               ),
-              const SizedBox(height: EnvoySpacing.medium1),
-              EnvoyButton(
-                _isReconnecting
-                    ? S().firmware_updateModalConnectionLost_reconnecting
-                    : S().firmware_updateModalConnectionLost_tryToReconnect,
-                borderRadius: BorderRadius.circular(EnvoySpacing.small),
-                type: EnvoyButtonTypes.primaryModal,
-                leading: _isReconnecting
-                    ? const CupertinoActivityIndicator(
-                        color: EnvoyColors.textPrimaryInverse,
-                        radius: 12,
-                      )
-                    : null,
-                onTap: _isReconnecting ? null : _attemptReconnect,
-              ),
+              // TODO: reconnect button
+              // const SizedBox(height: EnvoySpacing.medium1),
+              // EnvoyButton(
+              //   _isReconnecting
+              //       ? S().firmware_updateModalConnectionLost_reconnecting
+              //       : S().firmware_updateModalConnectionLost_tryToReconnect,
+              //   borderRadius: BorderRadius.circular(EnvoySpacing.small),
+              //   type: EnvoyButtonTypes.primaryModal,
+              //   leading: _isReconnecting
+              //       ? const CupertinoActivityIndicator(
+              //           color: EnvoyColors.textPrimaryInverse,
+              //           radius: 12,
+              //         )
+              //       : null,
+              //   onTap: _isReconnecting ? null : _attemptReconnect,
+              // ),
             ],
           ),
         ],
