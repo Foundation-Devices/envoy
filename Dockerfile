@@ -105,6 +105,7 @@ COPY . .
 
 # Build
 ENV ANDROID_SDK_ROOT=/root/Android/sdk
+ENV ANDROID_NDK_ROOT=$ANDROID_SDK_ROOT/ndk/24.0.8215888
 ENV CARGO_BUILD_JOBS=4
 RUN chmod +x scripts/build_ffi_android.sh && ./scripts/build_ffi_android.sh
 
