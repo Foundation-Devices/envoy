@@ -105,95 +105,100 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                         ),
                       ],
                     ),
-                    child: Card(
-                      elevation: 100,
-                      shadowColor: Colors.black,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(EnvoySpacing.medium2),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.xs),
+                      child: Card(
+                        elevation: 100,
+                        margin: EdgeInsets.zero,
+                        shadowColor: Colors.black,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(EnvoySpacing.medium2),
+                          ),
                         ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Container(
-                              width: 40,
-                              height: 4,
-                              margin: const EdgeInsets.only(
-                                  top: EnvoySpacing.xs,
-                                  bottom: EnvoySpacing.small),
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius: BorderRadius.circular(2),
-                              )),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: EnvoySpacing.medium1),
-                              child: SingleChildScrollView(
-                                physics: const NeverScrollableScrollPhysics(),
-                                // this is to remove overflow warning while animating
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    if (!AccountManager().hotAccountsExist())
-                                      Column(
-                                        children: [
-                                          const SizedBox(
-                                              height: EnvoySpacing.medium3),
-                                          EnvoyCardButton(
-                                            image:
-                                                'assets/welcome_envoy_sm.png',
-                                            imagePaddingLeft: 22,
-                                            title: S()
-                                                .onboarding_welcome_createMobileWallet,
-                                            onTap: () {
-                                              context.pushNamed(
-                                                  ONBOARD_ENVOY_SETUP,
-                                                  queryParameters: {
-                                                    "setupEnvoy": "1"
-                                                  });
-                                            },
-                                          ),
-                                        ],
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Container(
+                                width: 40,
+                                height: 4,
+                                margin: const EdgeInsets.only(
+                                    top: EnvoySpacing.xs,
+                                    bottom: EnvoySpacing.small),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey,
+                                  borderRadius: BorderRadius.circular(2),
+                                )),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: EnvoySpacing.medium1),
+                                child: SingleChildScrollView(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  // this is to remove overflow warning while animating
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      if (!AccountManager().hotAccountsExist())
+                                        Column(
+                                          children: [
+                                            const SizedBox(
+                                                height: EnvoySpacing.medium3),
+                                            EnvoyCardButton(
+                                              image:
+                                                  'assets/welcome_envoy_sm.png',
+                                              imagePaddingLeft: 22,
+                                              title: S()
+                                                  .onboarding_welcome_createMobileWallet,
+                                              onTap: () {
+                                                context.pushNamed(
+                                                    ONBOARD_ENVOY_SETUP,
+                                                    queryParameters: {
+                                                      "setupEnvoy": "1"
+                                                    });
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      const SizedBox(
+                                          height: EnvoySpacing.medium3),
+                                      EnvoyCardButton(
+                                        image: 'assets/passport_and_prime.png',
+                                        imagePaddingLeft: 15,
+                                        title: S()
+                                            .onboarding_welcome_setUpPassport,
+                                        onTap: () {
+                                          showScannerDialog(
+                                              context: context,
+                                              onBackPressed: (context) {
+                                                Navigator.pop(context);
+                                              },
+                                              decoder: GenericQrDecoder(
+                                                  onScan: (String payload) {
+                                                Navigator.pop(context);
+                                                final uri = Uri.parse(payload);
+                                                context.pushNamed(
+                                                  ONBOARD_PRIME,
+                                                  queryParameters:
+                                                      uri.queryParameters,
+                                                );
+                                              }));
+                                        },
                                       ),
-                                    const SizedBox(
-                                        height: EnvoySpacing.medium3),
-                                    EnvoyCardButton(
-                                      image: 'assets/passport_and_prime.png',
-                                      imagePaddingLeft: 15,
-                                      title:
-                                          S().onboarding_welcome_setUpPassport,
-                                      onTap: () {
-                                        showScannerDialog(
-                                            context: context,
-                                            onBackPressed: (context) {
-                                              Navigator.pop(context);
-                                            },
-                                            decoder: GenericQrDecoder(
-                                                onScan: (String payload) {
-                                              Navigator.pop(context);
-                                              final uri = Uri.parse(payload);
-                                              context.pushNamed(
-                                                ONBOARD_PRIME,
-                                                queryParameters:
-                                                    uri.queryParameters,
-                                              );
-                                            }));
-                                      },
-                                    ),
-                                    const SizedBox(
-                                        height: EnvoySpacing.medium3),
-                                  ],
+                                      const SizedBox(
+                                          height: EnvoySpacing.medium3),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -376,7 +381,6 @@ class _EnvoyCardButtonState extends State<EnvoyCardButton> {
                   top: 10,
                   child: Image.asset(
                     widget.image,
-                    // width: 110,
                     height: imageSize,
                   ),
                 ),
