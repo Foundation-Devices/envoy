@@ -12,6 +12,7 @@ import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -19,6 +20,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/prime_ql_payload_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
+import 'package:envoy/ui/widgets/tutorial_page.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -190,6 +192,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
       case OnboardingState.completed:
         if (mounted) {
           context.go("/");
+          _notifyAfterOnboardingTutorial(context);
         }
         break;
       case OnboardingState.securityChecked:
@@ -198,6 +201,27 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         break;
       case OnboardingState.updateNotAvailable:
         break;
+    }
+  }
+
+  void _notifyAfterOnboardingTutorial(BuildContext context) async {
+    final accounts = ref.read(accountsProvider);
+
+    if (accounts.length == 2) {
+      // make sure there are two wallets hot and prime
+      final hasHotWallet = accounts.any((account) => account.isHot);
+
+      if (hasHotWallet) {
+        if (context.mounted) {
+          Navigator.of(context).push(
+            PageRouteBuilder(
+              opaque: false,
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  const AccountTutorialOverlay(),
+            ),
+          );
+        }
+      }
     }
   }
 

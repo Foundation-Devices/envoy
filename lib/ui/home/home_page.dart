@@ -142,6 +142,7 @@ class HomePageState extends ConsumerState<HomePage>
         _notifyAboutRemovedRampTx(expiredBuyTx, context);
       }
     });
+
     Future.delayed(const Duration(milliseconds: 10), () {
       ///register for back button press
       backButtonDispatcher.takePriority();
