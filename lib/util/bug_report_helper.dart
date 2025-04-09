@@ -96,16 +96,16 @@ class EnvoyReport {
   }
 
   Future<List<Map<String, Object?>>> getAllLogs() async {
-    await _ensureDbInitialized(); // Ensure the database is ready
+    await _ensureDbInitialized();
     if (_db == null) {
-      return []; // Return an empty list if the database is still null
+      return [];
     }
     var log = await _logsStore.find(_db!,
         finder: Finder(
           limit: _logCapacity,
           sortOrders: [SortOrder(Field.key, false)],
         ));
-    var logs = log.map((e) => e.value).toList().reversed.toList();
+    var logs = log.map((e) => e.value).toList().toList();
     return logs;
   }
 
