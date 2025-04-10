@@ -29,6 +29,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'firmware_update/prime_fw_update_state.dart';
 
 class OnboardPrimeBluetooth extends ConsumerStatefulWidget {
@@ -265,7 +266,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
               return Opacity(opacity: value, child: child);
             },
             child: Image.asset(
-              "assets/images/prime_bluetooth_shield.png",
+              "assets/images/prime_bluetooth_shield.png", // TODO: add "X shield" on deniedBluetooth
               alignment: Alignment.bottomCenter,
               width: MediaQuery.of(context).size.width * 0.8,
               height: 320,
@@ -307,7 +308,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             child: SingleChildScrollView(
               child: Container(
                 margin: const EdgeInsets.symmetric(
-                  vertical: EnvoySpacing.large1,
+                  vertical: EnvoySpacing.medium3,
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -317,7 +318,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                       children: [
                         Padding(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: EnvoySpacing.medium1),
+                              horizontal: EnvoySpacing.medium2),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -360,7 +361,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              const SizedBox(height: EnvoySpacing.medium1),
+              //const SizedBox(height: EnvoySpacing.medium1),
               // Consumer(
               //   builder: (context, ref, child) {
               //     final payload = GoRouter.of(context)
@@ -370,6 +371,19 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
               //     return Text("Debug Payload : $payload");
               //   },
               // ),
+              const SizedBox(height: EnvoySpacing.medium1),
+              LinkText(
+                text: S().component_learnMore,
+                textStyle: EnvoyTypography.button.copyWith(
+                  color: EnvoyColors.accentPrimary,
+                ),
+                linkStyle: EnvoyTypography.button
+                    .copyWith(color: EnvoyColors.accentPrimary),
+                onTap: () {
+                  launchUrl(Uri.parse(
+                      "https://foundation.xyz/2025/01/quantumlink-reinventing-secure-wireless-communication/"));
+                },
+              ),
               const SizedBox(height: EnvoySpacing.medium1),
               EnvoyButton(S().onboarding_bluetoothIntro_connect, onTap: () {
                 showCommunicationModal(context);
@@ -394,7 +408,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             child: SingleChildScrollView(
               child: Container(
                 margin: const EdgeInsets.symmetric(
-                  vertical: EnvoySpacing.large1,
+                  vertical: EnvoySpacing.medium3,
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -404,7 +418,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                       children: [
                         Padding(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: EnvoySpacing.medium1),
+                              horizontal: EnvoySpacing.medium2),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -418,19 +432,15 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                                   decoration: TextDecoration.none,
                                 ),
                               ),
-                              const SizedBox(height: EnvoySpacing.small),
+                              const SizedBox(height: EnvoySpacing.medium2),
                               Text(
-                                //TODO: copy update
-                                "Lorem Ipsum, we strongly suggest you to\nallow envoy bluetooth communication, so\nthat you enjoy easy and secure backups.",
+                                S().onboarding_bluetoothDisabled_content,
                                 style: EnvoyTypography.info.copyWith(
                                   color: EnvoyColors.inactiveDark,
                                   decoration: TextDecoration.none,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
-                              TextButton(
-                                  onPressed: () {},
-                                  child: Text(S().component_learnMore))
                             ],
                           ),
                         ),
@@ -451,7 +461,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              const SizedBox(height: EnvoySpacing.medium1),
+              // const SizedBox(height: EnvoySpacing.medium1),
               // Consumer(
               //   builder: (context, ref, child) {
               //     final payload = GoRouter.of(context)
@@ -461,8 +471,22 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
               //     return Text("Debug Payload : $payload");
               //   },
               // ),
+
               const SizedBox(height: EnvoySpacing.medium1),
-              EnvoyButton("Scan", onTap: () {
+              LinkText(
+                text: S().component_learnMore,
+                textStyle: EnvoyTypography.button.copyWith(
+                  color: EnvoyColors.accentPrimary,
+                ),
+                linkStyle: EnvoyTypography.button
+                    .copyWith(color: EnvoyColors.accentPrimary),
+                onTap: () {
+                  launchUrl(Uri.parse(
+                      "https://foundation.xyz/2025/01/quantumlink-reinventing-secure-wireless-communication/"));
+                },
+              ),
+              const SizedBox(height: EnvoySpacing.medium1),
+              EnvoyButton(S().onboarding_bluetoothDisabled_enable, onTap: () {
                 requestBluetooth(context);
               }),
               const SizedBox(height: EnvoySpacing.small),
@@ -537,7 +561,7 @@ class _QuantumLinkCommunicationInfoState
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
       //TODO: test for different sizes
-      height: 500,
+      height: 550,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
         child: Column(
