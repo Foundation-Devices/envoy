@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 rust_input: crate::api, ngwallet::NgWallet, ngwallet::NgTransaction,ngwallet::config
 rust_root: rust/
 dart_output: lib/src/rust

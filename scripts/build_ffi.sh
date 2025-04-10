@@ -31,7 +31,7 @@ rustup target add x86_64-unknown-linux-gnu
 # Compile for desktop
 cargo build
 
-frb_packages=("bluart" "foundation_api")
+frb_packages=("bluart" "foundation_api" "ngwallet")
 
 # Generate Dart FFI for each package
 cd packages

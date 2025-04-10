@@ -125,43 +125,49 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
           ),
         ),
         shield: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+          padding: const EdgeInsets.symmetric(
+              vertical: EnvoySpacing.xs, horizontal: EnvoySpacing.medium1),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.min,
             children: [
               Flexible(
                 child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const SizedBox(height: EnvoySpacing.medium1),
-                      Text(
-                        S().welcome_screen_heading,
-                        style: EnvoyTypography.heading,
-                        textAlign: TextAlign.center,
-                      ),
-                      const Padding(
-                          padding: EdgeInsets.all(EnvoySpacing.small)),
-                      GestureDetector(
-                        onTap: () {
-                          registerEscapeTap(EscapeHatchTap.text);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: EnvoySpacing.xs),
-                          child: Text(
-                            //TODO: sync latest copy and button links
-                            S().onboarding_welcome_content,
-                            style: EnvoyTypography.info
-                                .copyWith(color: EnvoyColors.textTertiary),
-                            textAlign: TextAlign.center,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.medium1,
+                        vertical: EnvoySpacing.xs),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const SizedBox(height: EnvoySpacing.medium1),
+                        Text(
+                          S().welcome_screen_heading,
+                          style: EnvoyTypography.heading,
+                          textAlign: TextAlign.center,
+                        ),
+                        const Padding(
+                            padding: EdgeInsets.all(EnvoySpacing.small)),
+                        GestureDetector(
+                          onTap: () {
+                            registerEscapeTap(EscapeHatchTap.text);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: EnvoySpacing.xs),
+                            child: Text(
+                              //TODO: sync latest copy and button links
+                              S().onboarding_welcome_content,
+                              style: EnvoyTypography.info
+                                  .copyWith(color: EnvoyColors.textTertiary),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: EnvoySpacing.medium3),
-                    ],
+                        const SizedBox(height: EnvoySpacing.medium3),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -179,7 +185,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                         // Replace with your image URL or asset
                         fit: BoxFit.cover, // Adjust as per your layout
                       ),
-                      title: S().onboarding_welcome_createMobileWallet,
+                      title: "Create a\nMobile Wallet",
                       onTap: () {
                         context.pushNamed(ONBOARD_ENVOY_SETUP,
                             queryParameters: {"setupEnvoy": "1"});
@@ -194,7 +200,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                         // Replace with your image URL or asset
                         fit: BoxFit.cover, // Adjust as per your layout
                       ),
-                      title: S().onboarding_welcome_setUpPassport,
+                      title: "Set Up a\nPassport Device",
                       onTap: () {
                         showScannerDialog(
                             context: context,
@@ -295,7 +301,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                         //   ),
                         // ),
                         EnvoyButton(
-                          label: S().component_continue,
+                          label: "Continue",
                           type: ButtonType.primary,
                           state: ButtonState.defaultState,
                           onTap: () {

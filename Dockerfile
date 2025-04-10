@@ -25,7 +25,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     zip \
     libglu1-mesa \
     openjdk-8-jdk \
-    openjdk-17-jdk \
+    openjdk-21-jdk \
     wget \
     autoconf \
     clang \
@@ -70,7 +70,7 @@ RUN cd Android/sdk/tools/bin && yes | ./sdkmanager --licenses && ./sdkmanager "b
 ENV PATH "$PATH:/root/Android/sdk/platform-tools"
 
 # Install Flutter SDK
-RUN update-java-alternatives --set /usr/lib/jvm/java-1.17.0-openjdk-amd64
+RUN update-java-alternatives --set /usr/lib/jvm/java-1.21.0-openjdk-amd64
 RUN git clone https://github.com/flutter/flutter.git
 ENV PATH "$PATH:/root/flutter/bin"
 
@@ -82,6 +82,9 @@ RUN curl https://sh.rustup.rs -sSf | \
     sh -s -- --default-toolchain stable -y
 
 ENV PATH=/root/.cargo/bin:$PATH
+
+# Install bindgen-cli (for aws-lc-sys build)
+RUN cargo install --force --locked bindgen-cli
 
 # Keep Dart cache directory outside of home
 ENV PUB_CACHE=/pub-cache
@@ -102,6 +105,9 @@ COPY . .
 
 # Build
 ENV ANDROID_SDK_ROOT=/root/Android/sdk
+ENV ANDROID_NDK_ROOT=$ANDROID_SDK_ROOT/ndk/24.0.8215888
+ENV BINDGEN_EXTRA_CLANG_ARGS="--sysroot=$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/sysroot"
+
 ENV CARGO_BUILD_JOBS=4
-RUN chmod +x build_ffi_android.sh && ./build_ffi_android.sh
+RUN chmod +x scripts/build_ffi_android.sh && ./scripts/build_ffi_android.sh
 

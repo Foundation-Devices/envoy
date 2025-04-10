@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import 'dart:core';
 
 import 'package:ngwallet/ngwallet.dart';
@@ -125,7 +129,7 @@ class AztecoTransaction extends EnvoyTransaction {
     super.isConfirmed = false,
     super.outputs = const [],
     super.date,
-    super.note =null,
+    super.note = null,
     required super.vsize,
   });
 }

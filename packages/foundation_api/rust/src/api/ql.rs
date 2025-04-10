@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 use anyhow::anyhow;
 use bc_components::{PrivateKeys, ARID};
 use bc_envelope::{Envelope, EventBehavior, Expression, ExpressionBehavior};

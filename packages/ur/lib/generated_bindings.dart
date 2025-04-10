@@ -65,15 +65,15 @@ class NativeLibrary {
   late final _ur_encoder_next_part = _ur_encoder_next_partPtr
       .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Int>)>();
 
-  // ffi.Pointer<ffi.Int> ur_decoder() {
-  //   return _ur_decoder();
-  // }
-  //
-  // late final _ur_decoderPtr =
-  //     _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Int> Function()>>(
-  //         'ur_decoder');
-  // late final _ur_decoder =
-  //     _ur_decoderPtr.asFunction<ffi.Pointer<ffi.Int> Function()>();
+  ffi.Pointer<ffi.Int> ur_decoder() {
+    return _ur_decoder();
+  }
+
+  late final _ur_decoderPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Int> Function()>>(
+          'ur_decoder');
+  late final _ur_decoder =
+      _ur_decoderPtr.asFunction<ffi.Pointer<ffi.Int> Function()>();
 
   ffi.Pointer<DecoderOutput> ur_decoder_receive(
     ffi.Pointer<ffi.Int> decoder,

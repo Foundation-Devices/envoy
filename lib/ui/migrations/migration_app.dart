@@ -34,13 +34,11 @@ class MigrationApp extends StatefulWidget {
 }
 
 class _MigrationAppState extends State<MigrationApp> {
-
   @override
   void initState() {
     WakelockPlus.enable();
     super.initState();
   }
-
 
   @override
   void dispose() {

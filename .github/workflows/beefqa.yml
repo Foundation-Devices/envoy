@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build ffi
-        run: ./build_ffi_ios.sh
+        run: ./scripts/build_ffi_ios.sh
 
       - name: Run BeefQA Tests
         run: just qa
