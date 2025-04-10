@@ -49,8 +49,8 @@ done
 cd ..
 
 # Compile for Android
-./build_ffi_android.sh
-./build_ffi_android_x86.sh
+./scripts/build_ffi_android.sh
+./scripts/build_ffi_android_x86.sh
 
 # Use gradle to build against the NDK for now, see how it works out
 # cargo build --target=aarch64-linux-android
