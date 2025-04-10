@@ -62,6 +62,9 @@ jobs:
       - name: Install automake
         run: brew install automake
 
+      - name: Install bindgen-cli (for aws-lc-sys)
+        run: cargo install --force --locked bindgen-cli
+
       - name: Build Rust libs
         run: ./scripts/build_ffi_ios.sh
 
