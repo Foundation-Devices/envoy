@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'dart:io' show Platform;
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -96,6 +97,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
     final globalState = ref.watch(globalStateProvider.notifier);
 
     final s = ref.watch(settingsProvider);
+    final primeDevices = Devices().getPrimeDevices;
 
     var lastEnvoyServerBackup = EnvoySeed().getLastBackupTime();
     var lastCloudBackup = EnvoySeed().getNonSecureLastBackupTimestamp();
@@ -125,7 +127,6 @@ class _BackupPageState extends ConsumerState<BackupPage>
                           height: !s.syncToCloud ? 0 : 16,
                           child: const Padding(padding: EdgeInsets.all(8)),
                         ),
-
                         BackupSectionTitle(
                           title: S().backups_toggle_envoy_magic_backups,
                           icon: EnvoyIcons.phone,
@@ -140,12 +141,6 @@ class _BackupPageState extends ConsumerState<BackupPage>
                             }
                           },
                         ),
-
-                        // if (!s.syncToCloud)
-                        //   SettingText(
-                        //     S().manual_toggle_off_disabled_for_manual_seed_configuration,
-                        //     color: EnvoyColors.textTertiary,
-                        //   ),
                         if (s.syncToCloud)
                           Padding(
                             padding: const EdgeInsets.only(
@@ -232,9 +227,16 @@ class _BackupPageState extends ConsumerState<BackupPage>
                           height: !s.syncToCloud ? 0 : 16,
                           child: const Padding(padding: EdgeInsets.all(8)),
                         ),
-
+                        if (s.syncToCloud && primeDevices.isNotEmpty)
+                          ...primeDevices.map((device) {
+                            return primeBackupSection(
+                              device,
+                              lastCloudBackup,
+                              lastEnvoyServerBackup,
+                              activeLocale,
+                            );
+                          }),
                         const Divider(),
-
                         ExpansionTile(
                           tilePadding: const EdgeInsets.all(0),
                           onExpansionChanged: (value) {
@@ -314,7 +316,6 @@ class _BackupPageState extends ConsumerState<BackupPage>
                           enabled: !_isBackupInProgress,
                           type: EnvoyButtonTypes.primary,
                           onTap: () {
-                            // todo: text
                             showBackupDialog(context);
                           },
                         ),
@@ -335,6 +336,92 @@ class _BackupPageState extends ConsumerState<BackupPage>
                 )
               ],
             )));
+  }
+
+  // TODO: implement logic
+  Widget primeBackupSection(Device device, Future<DateTime?> lastCloudBackup,
+      DateTime? lastEnvoyServerBackup, Locale activeLocale) {
+    return Column(
+      children: [
+        BackupSectionTitle(
+          title: S().backups_primeMagicBackups,
+          icon: EnvoyIcons.prime,
+          switchValue: false,
+          onSwitch: (value) {},
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: EnvoySpacing.medium1),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              constraints: const BoxConstraints(maxWidth: 100),
+                              child: SettingText(
+                                S().backups_primeMasterKeyBackup,
+                              ),
+                            ),
+                          ),
+                          if (Platform.isAndroid)
+                            Container(
+                              constraints: const BoxConstraints(maxWidth: 190),
+                              child: SettingText(
+                                S().manual_toggle_on_seed_not_backedup_android_open_settings,
+                                color: EnvoyColors.accentPrimary,
+                                onTap: () {
+                                  EnvoySeed().showSettingsMenu();
+                                },
+                              ),
+                            ),
+                        ],
+                      ),
+                      FutureBuilder<DateTime?>(
+                          future: lastCloudBackup,
+                          builder: (context, snapshot) {
+                            return SettingText(
+                              Platform.isIOS
+                                  ? S()
+                                      .manual_toggle_on_seed_backedup_iOS_stored_in_cloud
+                                  : snapshot.hasData
+                                      ? S()
+                                          .manual_toggle_on_seed_backedup_android_stored
+                                      : S()
+                                          .manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup,
+                              color: EnvoyColors.textTertiary,
+                              maxLines: 2,
+                            );
+                          }),
+                    ],
+                  ),
+                ),
+                SettingText(S().backups_settingsAndMetadata),
+                SettingText(
+                  _isBackupInProgress
+                      ? S()
+                          .manual_toggle_on_seed_backup_in_progress_ios_backup_in_progress
+                      : lastEnvoyServerBackup == null
+                          ? S()
+                              .manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup
+                          : "${timeago.format(lastEnvoyServerBackup, locale: activeLocale.languageCode).capitalize()} ${S().manual_toggle_on_seed_backedup_iOS_toFoundationServers}",
+                  color: EnvoyColors.textTertiary,
+                  maxLines: 2,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   void showEraseWalletsAndBackupsWarning(BuildContext context) {
@@ -456,7 +543,6 @@ class _BackupPageState extends ConsumerState<BackupPage>
       S().manual_setup_change_from_magic_modal_subheader,
       S().component_continue,
       (_) {
-        //Navigator.of(context).pop();
         onContinue();
         displaySeedBeforeNuke(context);
       },

@@ -47,8 +47,6 @@ import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart' as rive;
 import 'package:url_launcher/url_launcher.dart';
 
-
-
 import 'package:ngwallet/src/exceptions.dart';
 import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/util/bug_report_helper.dart';
