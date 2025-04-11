@@ -174,7 +174,7 @@ class FeedManager {
 
       List<String> filterTags = [
         "envoy",
-        "passport",
+        "passport core",
         "passport prime",
       ];
 

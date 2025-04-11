@@ -41,7 +41,6 @@ class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      /// if value is passed as param, use that
       if (widget.value != null) {
         _textEditingController.text = widget.value!;
       } else {

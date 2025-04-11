@@ -2,14 +2,14 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:flutter/material.dart';
-import 'package:wallet/wallet.dart';
-import 'package:envoy/business/account.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/home/setup_overlay.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/onboard/onboard_welcome.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
+import 'package:flutter/material.dart';
+import 'package:ngwallet/ngwallet.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 
 class EmptyAccountsCard extends StatelessWidget {
   EmptyAccountsCard() : super(key: UniqueKey());
@@ -31,14 +31,26 @@ class EmptyAccountsCard extends StatelessWidget {
                 BlendMode.saturation,
               ),
               child: AccountListTile(
-                  Account(
-                      wallet: GhostWallet(),
-                      name: S().accounts_screen_walletType_defaultName,
-                      deviceSerial: 'envoy',
-                      dateAdded: DateTime.now(),
-                      number: 5,
-                      id: '',
-                      dateSynced: DateTime.now()),
+                  draggable: false,
+                  EnvoyAccount(
+                    name: S().accounts_screen_walletType_defaultName,
+                    deviceSerial: 'envoy',
+                    dateAdded: DateTime.now().toString(),
+                    index: 5,
+                    id: '',
+                    addressType: AddressType.p2Wpkh,
+                    network: Network.bitcoin,
+                    balance: BigInt.zero,
+                    isHot: true,
+                    transactions: [],
+                    internalDescriptor: "",
+                    nextAddress: "",
+                    utxo: [],
+                    externalDescriptor: "",
+                    walletPath: "ghost",
+                    color: Color(0xFFBF755F).toHex(),
+                    dateSynced: null,
+                  ),
                   onTap: () {}),
             ),
           ),
@@ -61,10 +73,13 @@ class EmptyAccountsCard extends StatelessWidget {
                         .copyWith(color: EnvoyColors.accentPrimary),
                   ),
                   onTap: () {
-                    Navigator.of(context, rootNavigator: true)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return const WelcomeScreen();
-                    }));
+                    Navigator.of(context, rootNavigator: true).push(
+                      PageRouteBuilder(
+                        opaque: false,
+                        pageBuilder: (_, __, ___) =>
+                            const AnimatedBottomOverlay(),
+                      ),
+                    );
                   },
                 ),
               ],

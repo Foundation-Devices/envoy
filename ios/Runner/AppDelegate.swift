@@ -240,13 +240,12 @@ func getSdCardBookmark() -> URL {
         return nil
     }
 
-    public func dummyMethodToEnforceBundling() {
-        // This will never be called
-        ur_decoder()
-        tor_hello()
-        http_hello()
-        wallet_hello()
-        backup_hello()
-    }
+        public func dummyMethodToEnforceBundling() {
+            // This will never be called
+            ur_decoder()
+            tor_hello()
+            http_hello()
+            wallet_hello()
+            backup_hello()
+        }
 }
-

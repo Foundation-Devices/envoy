@@ -17,6 +17,7 @@ import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 //to track if the coin details screen is active,
 //so we can close it when the use exits coin selection screen
@@ -24,7 +25,7 @@ import 'package:envoy/ui/components/stripe_painter.dart';
 final coinDetailsActiveProvider = StateProvider<bool>((ref) => false);
 
 class CoinsList extends ConsumerStatefulWidget {
-  final Account account;
+  final EnvoyAccount account;
 
   const CoinsList({super.key, required this.account});
 

@@ -102,8 +102,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: TextButton(
-                //TODO: copy local
-                child: Text("Advanced Options",
+                child: Text(S().component_advanced,
                     style: EnvoyTypography.button
                         .copyWith(color: EnvoyColors.textPrimaryInverse)),
                 onPressed: () {
@@ -142,14 +141,14 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const SizedBox(height: EnvoySpacing.small),
+                        const SizedBox(height: EnvoySpacing.medium1),
                         Text(
                           S().welcome_screen_heading,
                           style: EnvoyTypography.heading,
                           textAlign: TextAlign.center,
                         ),
                         const Padding(
-                            padding: EdgeInsets.all(EnvoySpacing.medium1)),
+                            padding: EdgeInsets.all(EnvoySpacing.small)),
                         GestureDetector(
                           onTap: () {
                             registerEscapeTap(EscapeHatchTap.text);
@@ -159,8 +158,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                 horizontal: EnvoySpacing.xs),
                             child: Text(
                               //TODO: sync latest copy and button links
-                              S().welcome_screen_subheading,
-                              style: Theme.of(context).textTheme.bodySmall,
+                              S().onboarding_welcome_content,
+                              style: EnvoyTypography.info
+                                  .copyWith(color: EnvoyColors.textTertiary),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -227,6 +227,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
     );
   }
 
+// ignore: unused_element
   void showScanDialog(BuildContext context) async {
     bool promptDismissed = await EnvoyStorage()
         .checkPromptDismissed(DismissiblePrompt.scanToConnect);

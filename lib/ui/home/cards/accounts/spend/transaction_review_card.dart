@@ -20,7 +20,7 @@ import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/util/easing.dart';
@@ -28,6 +28,7 @@ import 'package:envoy/ui/components/stripe_painter.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class TransactionReviewCard extends ConsumerStatefulWidget {
   final Psbt psbt;
@@ -106,8 +107,8 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
       }
     }
 
-    Account account = ref.read(selectedAccountProvider)!;
-
+    EnvoyAccount account = ref.read(selectedAccountProvider)!;
+    final accountAccent = fromHex(account.color);
     final sendScreenUnit = ref.watch(sendScreenUnitProvider);
 
     /// if user selected unit from the form screen then use that, otherwise use the default
@@ -128,7 +129,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(cardRadius - 1)),
-        color: account.color,
+        color: accountAccent,
         border:
             Border.all(color: Colors.black, width: 2, style: BorderStyle.solid),
       ),
@@ -147,7 +148,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
               ],
             ),
             border: Border.all(
-                width: 2, color: account.color, style: BorderStyle.solid)),
+                width: 2, color: accountAccent, style: BorderStyle.solid)),
         child: ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(cardRadius - 4)),
           child: CustomPaint(
@@ -392,7 +393,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
   }
 
   void showNewTransactionDialog(
-      BuildContext context, Account account, int newFee, int oldFee) {
+      BuildContext context, EnvoyAccount account, int newFee, int oldFee) {
     showEnvoyDialog(
         context: context,
         dialog: SizedBox(

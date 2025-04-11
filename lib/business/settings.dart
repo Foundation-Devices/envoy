@@ -17,7 +17,7 @@ import 'package:envoy/business/local_storage.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:tor/tor.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 // Generated
 part 'settings.g.dart';
@@ -153,7 +153,7 @@ class Settings extends ChangeNotifier {
   bool usingDefaultElectrumServer = true;
 
   String electrumAddress(Network network) {
-    if (network == Network.Testnet) {
+    if (network == Network.testnet || network == Network.testnet4) {
       if (usingTor) {
         return TESTNET_ONION_ELECTRUM_SERVER;
       } else {
@@ -161,7 +161,7 @@ class Settings extends ChangeNotifier {
       }
     }
 
-    if (network == Network.Signet) {
+    if (network == Network.signet) {
       if (usingTor) {
         return MUTINYNET_ONION_ELECTRUM_SERVER;
       } else {
@@ -297,8 +297,8 @@ class Settings extends ChangeNotifier {
     if (showSignetAccounts &&
         AccountManager().hotAccountsExist() &&
         !AccountManager().hotSignetAccountExist()) {
-      await EnvoySeed()
-          .deriveAndAddWalletsFromCurrentSeed(network: Network.Signet);
+      // await EnvoySeed()
+      //     .deriveAndAddWalletsFromCurrentSeed(network: Network.signet);
     }
 
     notifyListeners();
@@ -316,12 +316,13 @@ class Settings extends ChangeNotifier {
     enableTaprootSetting = taprootEnabled;
 
     // If wpkh is derived but no taproot then do it
-    if (taprootEnabled &&
-        EnvoySeed().walletDerived(type: WalletType.witnessPublicKeyHash) &&
-        !EnvoySeed().walletDerived(type: WalletType.taproot)) {
-      await EnvoySeed()
-          .deriveAndAddWalletsFromCurrentSeed(type: WalletType.taproot);
-    }
+    //TODO: add taproot derive on ngwallet
+    // if (taprootEnabled &&
+    //     EnvoySeed().walletDerived(type: WalletType.witnessPublicKeyHash) &&
+    //     !EnvoySeed().walletDerived(type: WalletType.taproot)) {
+    //   await EnvoySeed()
+    //       .deriveAndAddWalletsFromCurrentSeed(type: WalletType.taproot);
+    // }
 
     notifyListeners();
     store();

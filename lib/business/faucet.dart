@@ -8,17 +8,18 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/business/scheduler.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:tor/tor.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/util/console.dart';
 
 Future<bool> getSatsForSignetAccount(int sats, Account account) async {
-  if (account.wallet.network == Network.Signet) {
-    String address = await account.wallet.getAddress();
-    return await getSatsFromSignetFaucet(sats, address);
-  } else {
-    kPrint("Not Signet network");
-    return false;
-  }
+  // if (account.wallet.network == Network.Signet) {
+  //   String address = await account.wallet.getAddress();
+  //   return await getSatsFromSignetFaucet(sats, address);
+  // } else {
+  //   kPrint("Not Signet network");
+  //   return false;
+  // }
+  return false;
 }
 
 Future<bool> getSatsFromSignetFaucet(int sats, String address) async {

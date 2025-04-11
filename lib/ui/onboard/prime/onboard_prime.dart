@@ -2,10 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:bluart/bluart.dart';
+import 'package:bluart/bluart.dart' as bluart;
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/home/settings/bluetooth_diag.dart';
@@ -51,17 +52,18 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
       if (regex.hasMatch(bleId ?? "")) {
         await BluetoothManager().getPermissions();
         kPrint("Connecting to Prime with ID: $bleId");
-        scan(filter: []).listen((event) {
-          kPrint("Scanned: $event");
-        });
-        kPrint("Scan finished...");
-        await Future.delayed(const Duration(milliseconds: 3000));
-        // connect(id: bleId);
-        await connect(id: bleId!);
-        //wait for connection to be established
+        await BluetoothManager().scan();
+        await BluetoothManager().events?.any((bluart.Event event) {
+          if (event is bluart.Event_ScanResult) {
+            return event.field0.isNotEmpty;
+          }
 
-        // No more nudging
-        //await write(id: bleId, data: "123".codeUnits);
+          return false;
+        });
+
+        kPrint("Scan finished...");
+        await BluetoothManager().connect(id: bleId!);
+        await LocalStorage().prefs.setString(primeSerialPref, bleId);
 
         if (mounted) {
           setState(() {
@@ -170,7 +172,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text(
-                                  "Setup a new Passport Prime",
+                                  S().onboarding_primeIntro_header,
                                   textAlign: TextAlign.center,
                                   style: EnvoyTypography.body.copyWith(
                                     fontSize: 20,
@@ -180,9 +182,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
                                 ),
                                 const SizedBox(height: EnvoySpacing.small),
                                 Text(
-                                  "Passport Prime protects your Bitcoin keys by securing them offline while offering apps as your one go to security device. \n"
-                                  "With this type of \"cold\" wallet, transactions must be authorized with your Passport.\n\n"
-                                  "The Backup Strategy involves automatically saving one part in the cloud. That guarantees the easiest recovery path.",
+                                  S().onboarding_primeIntro_content,
                                   style: EnvoyTypography.info.copyWith(
                                     color: EnvoyColors.inactiveDark,
                                     decoration: TextDecoration.none,
@@ -232,7 +232,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
                         opacity: bleConnectState == BleConnectState.connecting
                             ? 0.5
                             : 1,
-                        child: EnvoyButton("Connect", onTap: () {
+                        child: EnvoyButton(S().component_continue, onTap: () {
                           _connectToPrime();
                         }),
                       ),
