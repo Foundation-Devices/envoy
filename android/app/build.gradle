@@ -53,9 +53,9 @@ android {
     signingConfigs {
         release {
             storeFile file("../key.jks")
-            storePassword = "$System.env.KEY_PASSWORD"
+            storePassword = System.getenv("KEY_PASSWORD")
             keyAlias = "upload"
-            keyPassword = "$System.env.ALIAS_PASSWORD"
+            keyPassword = System.getenv("ALIAS_PASSWORD")
         }
     }
 
