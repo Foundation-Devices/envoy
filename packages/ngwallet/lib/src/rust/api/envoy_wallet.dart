@@ -103,6 +103,8 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
 
   Future<void> renameAccount({required String name});
 
+  Future<void> renameTag({required String existingTag, String? newTag});
+
   Future<FullScanRequest> requestFullScan();
 
   Future<SyncRequest> requestSync();
@@ -122,9 +124,17 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
 
   Future<bool> setDoNotSpend({required Output utxo, required bool doNotSpend});
 
+  Future<void> setDoNotSpendMultiple(
+      {required List<String> utxo, required bool doNotSpend});
+
   Future<bool> setNote({required String txId, required String note});
 
   Future<bool> setTag({required Output utxo, required String tag});
+
+  Future<void> setTagMultiple(
+      {required List<String> utxo, required String tag});
+
+  Future<bool> setTags({required List<Output> utxo, required String tag});
 
   Future<EnvoyAccount> state();
 

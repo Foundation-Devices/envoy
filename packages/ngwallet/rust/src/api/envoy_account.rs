@@ -8,7 +8,7 @@ use ngwallet::transaction::{BitcoinTransaction, Output};
 use crate::api::envoy_wallet::Network;
 
 #[derive(Clone)]
-#[frb(dart_metadata=("freezed"))]
+#[frb(dart_metadata = ("freezed"))]
 pub struct EnvoyAccount {
     pub name: String,
     pub color: String,
@@ -27,4 +27,10 @@ pub struct EnvoyAccount {
     pub is_hot: bool,
     pub transactions: Vec<BitcoinTransaction>,
     pub utxo: Vec<Output>,
+    pub tags: Vec<String>,
+}
+#[derive(Clone)]
+pub struct Tag {
+    pub utxo: Vec<Output>,
+    pub tag: String,
 }

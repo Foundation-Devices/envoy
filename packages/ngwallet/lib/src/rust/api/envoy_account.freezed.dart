@@ -34,6 +34,7 @@ mixin _$EnvoyAccount {
   List<BitcoinTransaction> get transactions =>
       throw _privateConstructorUsedError;
   List<Output> get utxo => throw _privateConstructorUsedError;
+  List<String> get tags => throw _privateConstructorUsedError;
 
   /// Create a copy of EnvoyAccount
   /// with the given fields replaced by the non-null parameter values.
@@ -65,7 +66,8 @@ abstract class $EnvoyAccountCopyWith<$Res> {
       BigInt balance,
       bool isHot,
       List<BitcoinTransaction> transactions,
-      List<Output> utxo});
+      List<Output> utxo,
+      List<String> tags});
 }
 
 /// @nodoc
@@ -100,6 +102,7 @@ class _$EnvoyAccountCopyWithImpl<$Res, $Val extends EnvoyAccount>
     Object? isHot = null,
     Object? transactions = null,
     Object? utxo = null,
+    Object? tags = null,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -170,6 +173,10 @@ class _$EnvoyAccountCopyWithImpl<$Res, $Val extends EnvoyAccount>
           ? _value.utxo
           : utxo // ignore: cast_nullable_to_non_nullable
               as List<Output>,
+      tags: null == tags
+          ? _value.tags
+          : tags // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ) as $Val);
   }
 }
@@ -199,7 +206,8 @@ abstract class _$$EnvoyAccountImplCopyWith<$Res>
       BigInt balance,
       bool isHot,
       List<BitcoinTransaction> transactions,
-      List<Output> utxo});
+      List<Output> utxo,
+      List<String> tags});
 }
 
 /// @nodoc
@@ -232,6 +240,7 @@ class __$$EnvoyAccountImplCopyWithImpl<$Res>
     Object? isHot = null,
     Object? transactions = null,
     Object? utxo = null,
+    Object? tags = null,
   }) {
     return _then(_$EnvoyAccountImpl(
       name: null == name
@@ -302,6 +311,10 @@ class __$$EnvoyAccountImplCopyWithImpl<$Res>
           ? _value._utxo
           : utxo // ignore: cast_nullable_to_non_nullable
               as List<Output>,
+      tags: null == tags
+          ? _value._tags
+          : tags // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ));
   }
 }
@@ -326,9 +339,11 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
       required this.balance,
       required this.isHot,
       required final List<BitcoinTransaction> transactions,
-      required final List<Output> utxo})
+      required final List<Output> utxo,
+      required final List<String> tags})
       : _transactions = transactions,
-        _utxo = utxo;
+        _utxo = utxo,
+        _tags = tags;
 
   @override
   final String name;
@@ -376,9 +391,17 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
     return EqualUnmodifiableListView(_utxo);
   }
 
+  final List<String> _tags;
+  @override
+  List<String> get tags {
+    if (_tags is EqualUnmodifiableListView) return _tags;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_tags);
+  }
+
   @override
   String toString() {
-    return 'EnvoyAccount(name: $name, color: $color, deviceSerial: $deviceSerial, dateAdded: $dateAdded, addressType: $addressType, index: $index, internalDescriptor: $internalDescriptor, externalDescriptor: $externalDescriptor, dateSynced: $dateSynced, walletPath: $walletPath, network: $network, id: $id, nextAddress: $nextAddress, balance: $balance, isHot: $isHot, transactions: $transactions, utxo: $utxo)';
+    return 'EnvoyAccount(name: $name, color: $color, deviceSerial: $deviceSerial, dateAdded: $dateAdded, addressType: $addressType, index: $index, internalDescriptor: $internalDescriptor, externalDescriptor: $externalDescriptor, dateSynced: $dateSynced, walletPath: $walletPath, network: $network, id: $id, nextAddress: $nextAddress, balance: $balance, isHot: $isHot, transactions: $transactions, utxo: $utxo, tags: $tags)';
   }
 
   @override
@@ -411,7 +434,8 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
             (identical(other.isHot, isHot) || other.isHot == isHot) &&
             const DeepCollectionEquality()
                 .equals(other._transactions, _transactions) &&
-            const DeepCollectionEquality().equals(other._utxo, _utxo));
+            const DeepCollectionEquality().equals(other._utxo, _utxo) &&
+            const DeepCollectionEquality().equals(other._tags, _tags));
   }
 
   @override
@@ -433,7 +457,8 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
       balance,
       isHot,
       const DeepCollectionEquality().hash(_transactions),
-      const DeepCollectionEquality().hash(_utxo));
+      const DeepCollectionEquality().hash(_utxo),
+      const DeepCollectionEquality().hash(_tags));
 
   /// Create a copy of EnvoyAccount
   /// with the given fields replaced by the non-null parameter values.
@@ -462,7 +487,8 @@ abstract class _EnvoyAccount implements EnvoyAccount {
       required final BigInt balance,
       required final bool isHot,
       required final List<BitcoinTransaction> transactions,
-      required final List<Output> utxo}) = _$EnvoyAccountImpl;
+      required final List<Output> utxo,
+      required final List<String> tags}) = _$EnvoyAccountImpl;
 
   @override
   String get name;
@@ -498,6 +524,8 @@ abstract class _EnvoyAccount implements EnvoyAccount {
   List<BitcoinTransaction> get transactions;
   @override
   List<Output> get utxo;
+  @override
+  List<String> get tags;
 
   /// Create a copy of EnvoyAccount
   /// with the given fields replaced by the non-null parameter values.

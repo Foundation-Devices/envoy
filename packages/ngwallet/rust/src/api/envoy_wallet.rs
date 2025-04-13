@@ -26,7 +26,7 @@ use bdk_wallet::bitcoin::address::{NetworkUnchecked, ParseError};
 use log::info;
 use ngwallet::redb::backends::FileBackend;
 use crate::api::migration::get_last_used_index;
-use crate::api::envoy_account::EnvoyAccount;
+use crate::api::envoy_account::{EnvoyAccount};
 use crate::frb_generated::StreamSink;
 use chrono::{DateTime, Local};
 use std::env;
@@ -36,13 +36,19 @@ use bdk_wallet::bitcoin::bip32::Error::Secp256k1;
 
 #[frb(init)]
 pub fn init_app() {
-    flutter_rust_bridge::setup_default_user_utils();
+    // flutter_rust_bridge::setup_default_user_utils();
 }
 
 #[derive(Clone)]
 pub struct EnvoyAccountHandler {
     pub stream_sink: Option<StreamSink<EnvoyAccount>>,
     pub ng_account: Arc<Mutex<NgAccount<Connection>>>,
+}
+
+#[frb(external)]
+impl Output {
+    #[frb(sync)]
+    pub fn get_id(&self) -> String {}
 }
 
 #[frb(mirror(Network))]
@@ -198,6 +204,7 @@ impl EnvoyAccountHandler {
                 let balance = account.wallet.balance().unwrap().total().to_sat();
                 let transactions = account.wallet.transactions().unwrap_or(vec![]);
                 let utxo = account.wallet.unspend_outputs().unwrap_or(vec![]);
+                let tags = account.wallet.list_tags().unwrap_or(vec![]);
 
                 Ok(EnvoyAccount {
                     name: config.name.clone(),
@@ -216,7 +223,8 @@ impl EnvoyAccountHandler {
                     next_address: account.wallet.next_address().unwrap().address.to_string(),
                     balance,
                     transactions,
-                    utxo,
+                    utxo: utxo.clone(),
+                    tags,
                 })
             }
             Err(error) => {
@@ -312,10 +320,60 @@ impl EnvoyAccountHandler {
         self.send_update();
         status
     }
+    pub fn set_tags(&mut self, utxo: Vec<Output>, tag: &str) -> Result<bool> {
+        utxo.iter().for_each(|utxo| {
+            self.ng_account
+                .lock().unwrap()
+                .wallet.set_tag(utxo, tag).unwrap();
+        });
+        self.send_update();
+        Ok(true)
+    }
     pub fn set_do_not_spend(&mut self, utxo: &Output, do_not_spend: bool) -> Result<bool> {
-        self.ng_account
+        let result = self.ng_account
             .lock().unwrap()
-            .wallet.set_do_not_spend(utxo, do_not_spend)
+            .wallet.set_do_not_spend(utxo, do_not_spend);
+        self.send_update();
+        result
+    }
+    pub fn set_do_not_spend_multiple(&mut self, utxo: Vec<String>, do_not_spend: bool) -> Result<()> {
+        let utxos = self.utxo();
+
+        utxos.iter().filter(|x| {
+            utxo.contains(&x.get_id().clone())
+        })
+            .for_each(|output| {
+                self.ng_account
+                    .lock().unwrap()
+                    .wallet.set_do_not_spend(output, do_not_spend).unwrap();
+            });
+        self.send_update();
+        Ok(())
+    }
+    pub fn set_tag_multiple(&mut self, utxo: Vec<String>, tag: &str) -> Result<()> {
+        let utxos = self.utxo();
+        utxos.iter().filter(|x| {
+            utxo.contains(&x.get_id().clone())
+        })
+            .for_each(|output| {
+                self.ng_account
+                    .lock().unwrap()
+                    .wallet.set_tag(output, tag).unwrap();
+            });
+        self.send_update();
+        Ok(())
+    }
+    pub fn rename_tag(&mut self, existing_tag: &str, new_tag: Option<String>) -> Result<()> {
+        //update tag listing table with new tag
+        let new_tag_ref = match &new_tag {
+            None => None,
+            Some(tag) => Some(tag.as_str()),
+        };
+        self.ng_account
+            .lock().unwrap().wallet
+            .remove_tag(existing_tag, new_tag_ref).unwrap();
+        self.send_update();
+        Ok(())
     }
     pub fn set_note(&mut self, tx_id: &str, note: &str) -> Result<bool> {
         let result = self.ng_account

@@ -95,15 +95,25 @@ class Output {
   final int vout;
   final BigInt amount;
   final String? tag;
-  final bool? doNotSpend;
+  final BigInt? date;
+  final bool isConfirmed;
+  final String address;
+  final bool doNotSpend;
 
   const Output({
     required this.txId,
     required this.vout,
     required this.amount,
     this.tag,
-    this.doNotSpend,
+    this.date,
+    required this.isConfirmed,
+    required this.address,
+    required this.doNotSpend,
   });
+
+  String getId() => RustLib.instance.api.ngwalletTransactionOutputGetId(
+        that: this,
+      );
 
   @override
   int get hashCode =>
@@ -111,6 +121,9 @@ class Output {
       vout.hashCode ^
       amount.hashCode ^
       tag.hashCode ^
+      date.hashCode ^
+      isConfirmed.hashCode ^
+      address.hashCode ^
       doNotSpend.hashCode;
 
   @override
@@ -122,5 +135,8 @@ class Output {
           vout == other.vout &&
           amount == other.amount &&
           tag == other.tag &&
+          date == other.date &&
+          isConfirmed == other.isConfirmed &&
+          address == other.address &&
           doNotSpend == other.doNotSpend;
 }
