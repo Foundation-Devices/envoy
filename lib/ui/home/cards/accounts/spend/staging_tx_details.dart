@@ -4,7 +4,6 @@
 
 import 'dart:ui';
 
-import 'package:envoy/business/account.dart';
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
 import 'package:envoy/business/exchange_rate.dart';
@@ -12,6 +11,8 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
+import 'package:envoy/ui/components/envoy_info_card.dart';
+import 'package:envoy/ui/components/envoy_tag_list_item.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
@@ -35,11 +36,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher_string.dart';
-import 'package:ngwallet/src/wallet.dart';
-import 'package:envoy/ui/components/envoy_info_card.dart';
-import 'package:envoy/ui/components/envoy_tag_list_item.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:ngwallet/src/wallet.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class StagingTxDetails extends ConsumerStatefulWidget {
   final Psbt psbt;
@@ -62,7 +61,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
   int totalChangeAmount = 0;
   List<Tuple<CoinTag, Coin>> inputs = [];
   List<Tuple<String, int>> inputTagData = [];
-  CoinTag? changeOutputTag;
+  Tag? changeOutputTag;
 
   @override
   void initState() {
@@ -104,7 +103,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
         return (element.path == TxOutputPath.Internal);
       });
 
-      List<CoinTag> tags = ref.read(coinsTagProvider(account.id));
+      List<Tag> tags = ref.read(tagsProvider(account.id));
 
       /// if the user is in RBF tx we need to load the tags from the previous transaction
       if (widget.previousTransaction != null) {
@@ -119,43 +118,45 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
         });
 
         /// if the RBF tx include any other inputs, then find tags belongs to that inputs
-        for (var input in rawTransaction.inputs) {
-          final id = input.id;
-          final tag = tags.firstWhereOrNull((tag) => tag.coinsId.contains(id));
-          if (tag != null) {
-            final coin = tag.coins.firstWhereOrNull((coin) => coin.id == id);
-            if (coin != null) inputTagData.add(Tuple(tag.name, coin.amount));
-          }
-        }
-      } else {
-        /// find inputs that belongs to the tags
-        for (var input in rawTransaction.inputs) {
-          final id = input.id;
-          final tag = tags.firstWhereOrNull((tag) => tag.coinsId.contains(id));
-          if (tag != null) {
-            final coin = tag.coins.firstWhereOrNull((coin) => coin.id == id);
-            inputTagData.add(Tuple(tag.name, coin?.amount ?? 0));
-          }
-        }
-      }
+        /// TODO: fix tagging using ngWallet
+        //   for (var input in rawTransaction.inputs) {
+        //     final id = input.id;
+        //     final tag = tags.firstWhereOrNull((tag) => tag.coinsId.contains(id));
+        //     if (tag != null) {
+        //       final coin = tag.coins.firstWhereOrNull((coin) => coin.id == id);
+        //       if (coin != null) inputTagData.add(Tuple(tag.name, coin.amount));
+        //     }
+        //   }
+        // } else {
+        //   /// find inputs that belongs to the tags
+        //   for (var input in rawTransaction.inputs) {
+        //     final id = input.id;
+        //     final tag = tags.firstWhereOrNull((tag) => tag.coinsId.contains(id));
+        //     if (tag != null) {
+        //       final coin = tag.coins.firstWhereOrNull((coin) => coin.id == id);
+        //       inputTagData.add(Tuple(tag.name, coin?.amount ?? 0));
+        //     }
+        //   }
+        // }
 
-      /// find change output tag
-      for (var tag in tags) {
-        String id = "";
-        if (widget.previousTransaction != null) {
-          id = widget.previousTransaction!.txId;
-          for (var element in tag.coinsId) {
-            if (element.contains(id)) {
-              changeOutputTag = tag;
-            }
-          }
-        } else {
-          id =
-              "${widget.psbt.txid}:${rawTransaction.outputs.indexOf(receiveOutPut)}";
-          if (tag.coinsId.contains(id)) {
-            changeOutputTag = tag;
-          }
-        }
+        /// find change output tag
+        /// TODO: fix tagging using ngWallet
+        // for (var tag in tags) {
+        //   String id = "";
+        //   if (widget.previousTransaction != null) {
+        //     id = widget.previousTransaction!.txId;
+        //     for (var element in tag.coinsId) {
+        //       if (element.contains(id)) {
+        //         changeOutputTag = tag;
+        //       }
+        //     }
+        //   } else {
+        //     id =
+        //         "${widget.psbt.txid}:${rawTransaction.outputs.indexOf(receiveOutPut)}";
+        //     if (tag.coinsId.contains(id)) {
+        //       changeOutputTag = tag;
+        //     }
+        //   }
       }
 
       final userSelectedCoins = ref.read(getSelectedCoinsProvider(account.id));
@@ -174,7 +175,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
     if (account == null) {
       return Container();
     }
-    final CoinTag? userChosenTag = ref.watch(stagingTxChangeOutPutTagProvider);
+    final Tag? userChosenTag = ref.watch(stagingTxChangeOutPutTagProvider);
 
     double? displayFiatSendAmount = ref.watch(displayFiatSendAmountProvider);
     double? displayFiatTotalChangeAmount =

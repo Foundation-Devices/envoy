@@ -2,25 +2,23 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/coin_tag.dart';
-import 'package:envoy/business/coins.dart';
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
-import 'package:envoy/ui/storage/coins_repository.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/haptics.dart';
-import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class CreateCoinTag extends ConsumerStatefulWidget {
   final String accountId;
@@ -102,8 +100,8 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
   _tagWidget(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final tags = ref.watch(coinsTagProvider(widget.accountId)).toList()
-          ..sort((a, b) => b.coins.length.compareTo(a.coins.length))
+        final tags = ref.watch(tagsProvider(widget.accountId)).toList()
+          ..sort((a, b) => b.utxo.length.compareTo(a.utxo.length))
           ..removeWhere((element) => element.untagged)
           ..take(6);
 
@@ -261,79 +259,32 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
   }
 
   Future tagSelected(BuildContext context, WidgetRef ref) async {
-    //get coins from the repository
     try {
-      List<Coin> coins = [];
+      final selectedAccount = ref.read(selectedAccountProvider);
+      if (selectedAccount == null) {
+        return;
+      }
+      List<Output> coins = [];
       ref
-          .read(coinsTagProvider(widget.accountId))
-          .map((e) => e.coins)
+          .read(tagsProvider(widget.accountId))
+          .map((e) => e.utxo)
           .forEach((element) {
         coins.addAll(element);
       });
       final selections = ref.read(coinSelectionStateProvider);
       //pick all the coins that are selected in current tag
-      final selectedCoins =
-          coins.where((element) => selections.contains(element.id)).toList();
-
-      //user selected from suggestions
-      CoinTag? targetTag = ref
-          .read(coinsTagProvider(widget.accountId))
-          .firstWhereOrNull((element) =>
-              element.name.toLowerCase() == _tagController.text.toLowerCase());
-
-      final tags = ref.read(coinsTagProvider(widget.accountId));
-
-      if (targetTag?.coinsId.containsAll(selections) == true) {
-        widget.onTagUpdate();
-        return;
-      }
-
-      //if the tag is not found, create a new tag
-      if (targetTag == null) {
-        targetTag = CoinTag(
-          id: CoinTag.generateNewId(),
-          name: _tagController.text,
-          account: widget.accountId,
-          untagged: false,
-        );
-        await CoinRepository().addCoinTag(targetTag);
-      }
-
-      targetTag.addCoins(selectedCoins);
-
-      await CoinRepository().updateCoinTag(targetTag);
-
-      Set<CoinTag> coinsRemovedTags = {};
-
-      for (var tag in tags) {
-        /// no need to remove coins to the tag that we just added
-        if (tag.id != targetTag.id) {
-          for (var element in selectedCoins) {
-            if (tag.coinsId.contains(element.id)) {
-              tag.removeCoin(element);
-              coinsRemovedTags.add(tag);
-            }
-          }
-        }
-      }
-
-      for (var coin in coinsRemovedTags) {
-        if (!coin.untagged) {
-          await Future.delayed(const Duration(milliseconds: 10));
-          await CoinRepository().updateCoinTag(coin);
-        }
-      }
-
-      final _ = ref.refresh(accountsProvider);
-      //Wait for the refresh to propagate
-      await Future.delayed(const Duration(milliseconds: 180));
-
+      final selectedCoins = coins
+          .where((element) => selections.contains(element.getId()))
+          .map((element) => element.getId())
+          .toList();
+      final tag = _tagController.text.toLowerCase();
+      await selectedAccount.handler
+          ?.setTagMultiple(utxo: selectedCoins, tag: tag);
       //Reset the selection
       Haptics.lightImpact();
     } catch (e) {
       kPrint(e);
     }
-
     widget.onTagUpdate();
   }
 }

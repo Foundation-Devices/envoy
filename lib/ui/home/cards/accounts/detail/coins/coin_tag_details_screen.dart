@@ -3,11 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:animations/animations.dart';
-import 'package:envoy/business/coin_tag.dart';
-import 'package:envoy/business/coins.dart';
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/components/stripe_painter.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
@@ -17,8 +18,9 @@ import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
-import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as new_colors;
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
@@ -28,14 +30,11 @@ import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:envoy/ui/envoy_dialog.dart';
-import 'package:envoy/ui/components/stripe_painter.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
-import 'package:envoy/ui/components/pop_up.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class CoinTagDetailsScreen extends ConsumerStatefulWidget {
   final bool showCoins;
-  final CoinTag coinTag;
+  final Tag coinTag;
 
   const CoinTagDetailsScreen(
       {super.key, this.showCoins = false, required this.coinTag});
@@ -47,7 +46,7 @@ class CoinTagDetailsScreen extends ConsumerStatefulWidget {
 class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
   bool _menuVisible = false;
   final double _menuHeight = 80;
-  Coin? _selectedCoin;
+  Output? _selectedCoin;
   final GlobalKey _detailWidgetKey = GlobalKey();
 
   @override
@@ -179,7 +178,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                   ? GestureDetector(
                       onTap: () {}, // if you tap inside the window do not exit
                       child: CoinDetailsWidget(
-                        coin: _selectedCoin!,
+                        output: _selectedCoin!,
                         tag: widget.coinTag,
                       ),
                     )
@@ -195,18 +194,14 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
 
   Widget coinTagDetails(BuildContext context) {
     final scrollController = ScrollController();
-    final tag = widget.coinTag;
-
-    Color border = tag.untagged
-        ? const Color(0xff808080)
-        : tag.getAccount()?.color ?? EnvoyColors.accentSecondary;
-    Color cardBackground = tag.untagged
-        ? const Color(0xff808080)
-        : tag.getAccount()?.color ?? EnvoyColors.accentSecondary;
-
-    //Listen to coin tag lock states
-    ref.watch(coinTagLockStateProvider(widget.coinTag));
-
+    final selectedAccount = ref.read(selectedAccountProvider);
+    final tag = ref.watch(tagProvider(widget.coinTag.name)) ?? widget.coinTag;
+    final accountAccent = selectedAccount?.color != null
+        ? fromHex(selectedAccount!.color)
+        : EnvoyColors.accentSecondary;
+    Color border = tag.untagged ? const Color(0xff808080) : accountAccent;
+    Color cardBackground =
+        tag.untagged ? const Color(0xff808080) : accountAccent;
     const cardRadius = EnvoySpacing.medium2;
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -270,13 +265,13 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                       painter: StripePainter(
                         EnvoyColors.gray1000.applyOpacity(0.4),
                       ),
-                      child: tag.coins.length == 1
-                          ? singleCoinWidget(context)
+                      child: tag.utxo.length == 1
+                          ? singleCoinWidget(context, tag)
                           : Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                _coinHeader(context),
-                                (tag.coins.isNotEmpty && tag.coins.length >= 2)
+                                _coinHeader(context, tag),
+                                (tag.utxo.isNotEmpty && tag.utxo.length >= 2)
                                     ? Flexible(
                                         child: Container(
                                           margin: const EdgeInsets.all(
@@ -298,7 +293,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                               child: ListView(
                                                   controller: scrollController,
                                                   padding: EdgeInsets.only(
-                                                    bottom: (tag.coins.length >
+                                                    bottom: (tag.utxo.length >
                                                                 12 &&
                                                             ref.read(
                                                                     spendEditModeProvider) !=
@@ -311,10 +306,10 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                   physics:
                                                       const BouncingScrollPhysics(),
                                                   children: List.generate(
-                                                    tag.coins.length,
+                                                    tag.utxo.length,
                                                     (index) {
-                                                      Coin coin =
-                                                          tag.coins[index];
+                                                      final coin =
+                                                          tag.utxo[index];
                                                       return InkWell(
                                                         splashColor:
                                                             Colors.transparent,
@@ -327,7 +322,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                                 .center,
                                                             child:
                                                                 CoinBalanceWidget(
-                                                                    coin: coin,
+                                                                    output:
+                                                                        coin,
                                                                     coinTag:
                                                                         tag)),
                                                       );
@@ -338,7 +334,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                         ),
                                       )
                                     : const SizedBox.shrink(),
-                                tag.coins.isEmpty
+                                tag.utxo.isEmpty
                                     ? Container(
                                         alignment: Alignment.center,
                                         margin: const EdgeInsets.all(
@@ -396,8 +392,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     );
   }
 
-  Widget singleCoinWidget(BuildContext context) {
-    CoinTag tag = widget.coinTag;
+  Widget singleCoinWidget(BuildContext context, Tag tag) {
     TextStyle textStyleWallet =
         Theme.of(context).textTheme.titleMedium!.copyWith(
               color: Colors.white,
@@ -406,8 +401,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
             );
     return GestureDetector(
       onTap: () {
-        if (tag.coins.length == 1) {
-          selectCoin(context, tag.coins.first);
+        if (tag.utxo.length == 1) {
+          selectCoin(context, tag.utxo.first);
         }
       },
       child: Consumer(
@@ -427,7 +422,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      widget.coinTag.name,
+                      tag.name,
                       style: textStyleWallet,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -452,7 +447,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     );
   }
 
-  List<Widget> _getMenuItems(BuildContext context, CoinTag tag) {
+  List<Widget> _getMenuItems(BuildContext context, Tag tag) {
     if (!widget.coinTag.untagged) {
       return [
         GestureDetector(
@@ -476,7 +471,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
             ),
           ),
           onTap: () {
-            if (tag.coins.isEmpty) {
+            if (tag.utxo.isEmpty) {
               _deleteEmptyTag(context);
             } else {
               _deleteTag(context);
@@ -501,8 +496,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     }
   }
 
-  Widget _coinHeader(BuildContext context) {
-    CoinTag tag = widget.coinTag;
+  Widget _coinHeader(BuildContext context, Tag tag) {
     TextStyle textStyleWallet =
         Theme.of(context).textTheme.titleMedium!.copyWith(
               color: Colors.white,
@@ -512,9 +506,9 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
 
     return GestureDetector(
       onTap: () {
-        if (tag.coins.length == 1) {
+        if (tag.utxo.length == 1) {
           setState(() {
-            _selectedCoin = tag.coins.first;
+            _selectedCoin = tag.utxo.first;
           });
         }
       },
@@ -534,7 +528,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            widget.coinTag.name,
+                            tag.name,
                             style: textStyleWallet,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -580,10 +574,18 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                 navigator.pop();
               },
               onSecondaryButtonTap: () async {
-                await CoinRepository().deleteTag(widget.coinTag);
+                //TODO: use ngwallet
+                // await CoinRepository().deleteTag(widget.coinTag);
                 //refresh coins list to update deleted tag item
                 // ignore: unused_result
-                ref.refresh(coinsProvider(widget.coinTag.account));
+                final selectedAccount = ref.read(selectedAccountProvider);
+                if (selectedAccount != null) {
+                  try {
+                    await selectedAccount.handler?.renameTag(
+                        existingTag: widget.coinTag.name, newTag: "");
+                  } catch (e) {}
+                }
+                print("widget.coinTag. worked");
                 navigator.pop();
                 _menuVisible = false;
                 navigator.pop();
@@ -609,10 +611,13 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                 navigator.pop();
               },
               onSecondaryButtonTap: () async {
-                await CoinRepository().deleteTag(widget.coinTag);
-                //refresh coins list to update deleted tag item
-                // ignore: unused_result
-                ref.refresh(coinsProvider(widget.coinTag.account));
+                final selectedAccount = ref.read(selectedAccountProvider);
+                if (selectedAccount != null) {
+                  try {
+                    await selectedAccount.handler?.renameTag(
+                        existingTag: widget.coinTag.name, newTag: "");
+                  } catch (e) {}
+                }
                 navigator.pop();
                 _menuVisible = false;
                 navigator.pop();
@@ -640,17 +645,22 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               S().component_save,
               type: EnvoyButtonTypes.primaryModal,
               onTap: () async {
-                widget.coinTag.name = textEntry.enteredText;
-                int updated =
-                    await CoinRepository().updateCoinTag(widget.coinTag);
-                if (updated != 0) {
-                  //Update local instance
+                final selectedAccount = ref.read(selectedAccountProvider);
+                if (selectedAccount != null) {
+                  await selectedAccount.handler?.renameTag(
+                      existingTag: widget.coinTag.name,
+                      newTag: textEntry.enteredText);
+                }
+                if (context.mounted) {
                   setState(() {
+                    //update local tag name so it will be used to update instance from provider
                     widget.coinTag.name = textEntry.enteredText;
+                    _menuVisible = false;
                   });
-                  if (context.mounted) {
-                    Navigator.of(context).pop();
-                  }
+                  Navigator.of(context).pop();
+                  setState(() {
+                    _menuVisible = false;
+                  });
                 }
               },
             ),
@@ -658,11 +668,11 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
         ));
   }
 
-  void selectCoin(BuildContext context, Coin coin) {
+  void selectCoin(BuildContext context, Output coin) {
     final selectedAccount = ref.read(selectedAccountProvider);
     final transactions = ref.read(transactionsProvider(selectedAccount!.id));
-    final tx = transactions
-        .firstWhereOrNull((element) => element.txId == coin.utxo.txid);
+    final tx =
+        transactions.firstWhereOrNull((element) => element.txId == coin.txId);
     if (tx != null) {
       setState(() {
         _selectedCoin = coin;
@@ -715,7 +725,8 @@ class DeleteTagDialog extends StatelessWidget {
       onPrimaryButtonTap: (context) async {
         await onPrimaryButtonTap();
       },
-      tertiaryButtonLabel: secondaryButtonText, // use tertiary button style
+      tertiaryButtonLabel: secondaryButtonText,
+      // use tertiary button style
       tertiaryButtonTextColor: EnvoyColors.accentSecondary,
       onTertiaryButtonTap: (context) async {
         await onSecondaryButtonTap();

@@ -110,8 +110,8 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
   _tagWidget(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final tags = ref.watch(coinsTagProvider(widget.accountId)).toList()
-          ..sort((a, b) => b.coins.length.compareTo(a.coins.length))
+        final tags = ref.watch(tagsProvider(widget.accountId)).toList()
+          ..sort((a, b) => b.utxo.length.compareTo(a.utxo.length))
           ..removeWhere((element) => element.untagged)
           ..take(6);
 
@@ -228,7 +228,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
                     ? EnvoyButtonTypes.primaryModal
                     : EnvoyButtonTypes.tertiary, onTap: () async {
               final existingTag = ref
-                  .read(coinsTagProvider(widget.accountId))
+                  .read(tagsProvider(widget.accountId))
                   .firstWhereOrNull((element) =>
                       element.name.toLowerCase() ==
                       _tagController.text.toLowerCase());
@@ -237,13 +237,14 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
                 ref.read(stagingTxChangeOutPutTagProvider.notifier).state =
                     existingTag;
               } else {
-                CoinTag tag = CoinTag(
-                  id: CoinTag.generateNewId(),
-                  name: _tagController.text,
-                  account: widget.accountId,
-                  untagged: false,
-                );
-                ref.read(stagingTxChangeOutPutTagProvider.notifier).state = tag;
+                //TODO: FIX: staging tx tags
+                // CoinTag tag = CoinTag(
+                //   id: CoinTag.generateNewId(),
+                //   name: _tagController.text,
+                //   account: widget.accountId,
+                //   untagged: false,
+                // );
+                // ref.read(stagingTxChangeOutPutTagProvider.notifier).state = tag;
               }
               widget.onTagUpdate();
             }),

@@ -2,21 +2,60 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ngwallet/src/wallet.dart';
+import 'package:ngwallet/ngwallet.dart';
+
+class Tag {
+  String name;
+  List<Output> utxo;
+  final bool untagged;
+
+  Tag({required this.name, required this.utxo, this.untagged = false});
+
+  bool contains(String id) {
+    return utxo.where((element) => element.getId() == id).isNotEmpty;
+  }
+
+  bool get isAllCoinsLocked {
+    for (var element in utxo) {
+      if (!element.doNotSpend) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  int get numOfLockedCoins {
+    int count = 0;
+    for (var element in utxo) {
+      if (element.doNotSpend) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  int get totalAmount {
+    int total = 0;
+    for (var element in utxo) {
+      total += element.amount.toInt();
+    }
+    return total;
+  }
+}
 
 final coinBlockStateStreamProvider =
     StreamProvider((ref) => CoinRepository().getCoinBlockStateStream());
-final coinTagsStreamProvider = StreamProvider.family<List<CoinTag>, String>(
-    (ref, accountId) =>
-        CoinRepository().getCoinTagStream(accountId: accountId));
+// final coinTagsStreamProvider = StreamProvider.family<List<NgCoinTag>, String>(
+//     (ref, accountId) =>
+//         CoinRepository().getCoinTagStream(accountId: accountId));
 
 class CoinStateNotifier extends StateNotifier<Set<String>> {
   CoinStateNotifier(super.state);
@@ -72,67 +111,60 @@ final coinSelectionFromWallet =
 final isCoinSelectedProvider = Provider.family<bool, String>(
     (ref, coinId) => ref.watch(coinSelectionStateProvider).contains(coinId));
 
-/// Provider for [Coin] list for specific account
-/// @param accountId [Account.id]
-/// @return list of coins
-/// any changes to account or utxo block state will re calculate the list
-final coinsProvider = Provider.family<List<Coin>, String>((ref, accountId) {
-  //Watch for any account changes
-  final accounts = ref.watch(accountsProvider);
-  final account =
-      accounts.firstWhereOrNull((element) => element.id == accountId);
-  //if account is null, return empty list
-  if (account == null) {
-    return [];
-  }
-
-  //Watch for any utxo block state changes, state is a map of utxo id to locked status
-  // eg : {'hash1': true, 'hash2': false}
-  final utxoBlockState = (ref.watch(coinBlockStateStreamProvider).value ?? {});
-
-  //                            //TODO: use EnvoyAccount
-  // List<Utxo> utxos = account.wallet.utxos;
-  List<Utxo> utxos = [];
-  //Map utxos to coins with locked status
-  List<Coin> coins = utxos
-      .map((e) =>
-          Coin(e, locked: utxoBlockState[e.id] ?? false, account: accountId))
-      .toList();
-  return coins;
+//Provider for watching a single [Output] object
+/// @param coinId [Output.getId]
+final outputProvider = Provider.family<Output?, String>((ref, coinId) {
+  final selectedAccount = ref.watch(selectedAccountProvider);
+  final outputs = ref.watch(outputsProvider(selectedAccount?.id ?? ""));
+  final output =
+      outputs.firstWhereOrNull((element) => element.getId() == coinId);
+  return output;
 });
 
-final coinsTagProvider =
-    Provider.family<List<CoinTag>, String>((ref, accountId) {
-  final existingTags = ref.watch(coinTagsStreamProvider(accountId)).value ?? [];
-  final sortType = ref.watch(coinTagSortStateProvider);
-  final existingCoins = ref.watch(coinsProvider(accountId));
-  //Make deep copies so it wont affect existing data sets, any array operations like
-  //removeWhere or Add needs to be done in deep copies.
-  List<Coin> coins = [...existingCoins];
-  List<CoinTag> tags = [...existingTags];
-  //Map coins to tags
-  for (var tag in tags) {
-    //filter coins that are associated with the tag
-    final coinsAssociated =
-        coins.where((coin) => tag.coinsId.contains(coin.id)).toList();
-    tag.coins = coinsAssociated;
-    coins.removeWhere((element) => tag.coinsId.contains(element.id));
-  }
-  //add coins that are not associated with any tag
-  if (coins.isNotEmpty) {
-    tags.add(CoinTag(
-        id: CoinTag.generateNewId(),
-        name: S().account_details_untagged_card,
-        account: accountId,
-        untagged: true)
-      ..addCoins(coins));
-  }
+/// Provider for watching a single [Tag] object
+/// @param coinId [Tag.name]
+final tagProvider = Provider.family<Tag?, String>((ref, name) {
+  final selectedAccount = ref.watch(selectedAccountProvider);
+  final tags = ref.watch(tagsProvider(selectedAccount?.id ?? ""));
+  return tags.firstWhereOrNull((element) => element.name.toLowerCase() == name);
+});
 
-  ///sort coins in each tag based on amount high to low
-  for (var tag in tags) {
-    tag.coins.sort(
-      (a, b) => b.amount.compareTo(a.amount),
-    );
+/// Provider for watching a list of [Tag] objects that belongs to a specific account
+/// @param accountId [EnvoyAccount.id]
+final tagsProvider = Provider.family<List<Tag>, String>((ref, accountId) {
+  final accounts = ref.watch(accountsProvider);
+  final sortType = ref.watch(coinTagSortStateProvider);
+  final account =
+      accounts.firstWhereOrNull((element) => element.id == accountId);
+  final List<Tag> tags = [];
+  final untagged =
+      Tag(name: S().account_details_untagged_card, utxo: [], untagged: true);
+  for (String tag in account?.tags ?? []) {
+    List<Output> utxo = [];
+    account?.utxo
+        .where(
+            (element) => element.tag == tag && element.tag?.isNotEmpty == true)
+        .forEach((element) {
+      utxo.add(element);
+    });
+    if (tag.isNotEmpty) {
+      tags.add(Tag(
+        name: tag,
+        utxo: utxo,
+      ));
+    }
+  }
+  for (Output utxo in account?.utxo ?? []) {
+    final exist = tags
+        .where((element) => element.contains(utxo.getId()))
+        .toList()
+        .isNotEmpty;
+    if (!exist || utxo.tag?.isEmpty == true || utxo.tag == null) {
+      untagged.utxo.add(utxo);
+    }
+  }
+  if (untagged.utxo.isNotEmpty) {
+    tags.add(untagged);
   }
 
   switch (sortType) {
@@ -145,8 +177,8 @@ final coinsTagProvider =
     case CoinTagSortTypes.amountLowToHigh:
       tags.sort((a, b) => a.totalAmount.compareTo(b.totalAmount));
       for (var tag in tags) {
-        tag.coins.sort(
-          (a, b) => a.amount.compareTo(b.amount),
+        tag.utxo.sort(
+          (Output a, Output b) => a.amount.toInt().compareTo(b.amount.toInt()),
         );
       }
       break;
@@ -154,34 +186,64 @@ final coinsTagProvider =
       tags.sort((a, b) => b.totalAmount.compareTo(a.totalAmount));
       break;
   }
-
   return tags;
 });
 
-//Provider for [CoinTag] list for specific account and txId
-final tagsFilteredByTxIdProvider =
-    Provider.family<List<CoinTag>, FilterTagPayload>((ref, filters) {
-  final accountId = filters.accountId;
-  final txId = filters.txId;
-  if (txId == null || accountId == null) {
-    return [];
+final outputsProvider = Provider.family<List<Output>, String>((ref, accountId) {
+  final accounts = ref.watch(accountsProvider);
+  final account =
+      accounts.firstWhereOrNull((element) => element.id == accountId);
+  return account?.utxo ?? [];
+});
+final filteredTagsProvider =
+    Provider.family<List<Tag>, String>((ref, accountId) {
+  final accounts = ref.watch(accountsProvider);
+  final account =
+      accounts.firstWhereOrNull((element) => element.id == accountId);
+  final List<Tag> tags = [];
+  final untagged = Tag(name: "untagged", utxo: [], untagged: true);
+  for (String tag in account?.tags ?? []) {
+    List<Output> utxo = [];
+    account?.utxo.where((element) => element.tag == tag).forEach((element) {
+      utxo.add(element);
+    });
+    tags.add(Tag(
+      name: tag,
+      utxo: utxo,
+    ));
   }
-
-  final List<CoinTag> tags = ref.watch(coinsTagProvider(accountId));
-  final List<CoinTag> associatedTags = [];
-  for (var element in tags) {
-    if (element.coins.any((coin) => coin.utxo.txid == txId)) {
-      associatedTags.add(element);
+  for (Output utxo in account?.utxo ?? []) {
+    final exist = tags
+        .where((element) => element.contains(utxo.getId()))
+        .toList()
+        .isNotEmpty;
+    if (!exist) {
+      untagged.utxo.add(utxo);
     }
   }
-
-  return associatedTags;
+  return tags;
 });
 
-final coinTagLockStateProvider = Provider.family<bool, CoinTag>((ref, tag) {
-  ref.watch(coinsTagProvider(tag.account));
-  return tag.isAllCoinsLocked;
+/// Provider for [Coin] list for specific account
+/// @param accountId [Account.id]
+/// @return list of coins
+/// any changes to account or utxo block state will re calculate the list
+final coinsProvider = Provider.family<List<Output>, String>((ref, accountId) {
+  //Watch for any account changes
+  final accounts = ref.watch(accountsProvider);
+  final account =
+      accounts.firstWhereOrNull((element) => element.id == accountId);
+  //if account is null, return empty list
+  if (account == null) {
+    return [];
+  }
+  return account.utxo;
 });
+
+// final coinTagLockStateProvider = Provider.family<bool, NgCoinTag>((ref, tag) {
+//   ref.watch(coinsTagProvider(tag.account));
+//   return tag.isAllCoinsLocked;
+// });
 
 //[tagsFilteredByTxIdProvider] require two parameters,
 //accountId and txId, this class is used to pass those parameters
@@ -190,6 +252,7 @@ final coinTagLockStateProvider = Provider.family<bool, CoinTag>((ref, tag) {
 class FilterTagPayload {
   final String? accountId;
   final String? txId;
+
   FilterTagPayload(this.accountId, this.txId);
 
   @override
@@ -204,7 +267,7 @@ class FilterTagPayload {
   int get hashCode => accountId.hashCode ^ txId.hashCode;
 }
 
-final lockedUtxosProvider = Provider.family<List<Utxo>, String>((ref, id) {
-  final utxos = ref.watch(coinsProvider(id));
-  return utxos.where((element) => element.locked).map((e) => e.utxo).toList();
-});
+// final lockedUtxosProvider = Provider.family<List<Utxo>, String>((ref, id) {
+//   final utxos = ref.watch(coinsProvider(id));
+//   return utxos.where((element) => element.doNotSpend).map((e) => e.).toList();
+// });

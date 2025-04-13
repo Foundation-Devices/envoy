@@ -11,6 +11,7 @@ import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/util/console.dart';
@@ -300,13 +301,13 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       }
       state = state.clone()..broadcastProgress = BroadcastProgress.inProgress;
 
-      final coins = ref.read(coinsProvider(accountId));
-      final coinTags = ref.read(coinsTagProvider(accountId));
+      // final coins = ref.read(coinsProvider(accountId));
+      // final coinTags = ref.read(coinsTagProvider(accountId));
       final rawTx = state.rawTransaction!;
-
-      final inputCoins = rawTx.inputs.map((input) {
-        return coins.firstWhere((element) => element.id == input.id);
-      }).toList();
+      //TODO: implement ngwallet
+      // final inputCoins = rawTx.inputs.map((input) {
+      //   return coins.firstWhere((element) => element.id == input.id);
+      // }).toList();
       //TODO: implement ngwallet
       // // Increment the change index before broadcasting
       // await account.wallet.getChangeAddress();
@@ -523,12 +524,13 @@ final spendInputTagsProvider = Provider<List<Tuple<CoinTag, Coin>>?>((ref) {
   if (account == null || rawTx == null) {
     return null;
   }
-  List<CoinTag> coinTags = ref.read(coinsTagProvider(account.id));
+  //TODO: implement ngwallet
+  // List<CoinTag> coinTags = ref.read(coinsTagProvider(account.id));
   List<String> inputs = rawTx.inputs
       .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}")
       .toList();
   List<Tuple<CoinTag, Coin>> items = [];
-  for (var coinTag in coinTags) {
+  for (var coinTag in []) {
     for (var coin in coinTag.coins) {
       if (inputs.contains(coin.id)) {
         items.add(Tuple(coinTag, coin));
@@ -547,26 +549,21 @@ final _totalSpendableAmountProvider = FutureProvider<int>((ref) async {
   if (account == null) {
     return 0;
   }
-  final selectedUtxos = ref
-      .watch(getSelectedCoinsProvider(account.id))
-      .map((e) => e.utxo)
-      .toList();
+  final selectedUtxos = ref.read(getSelectedCoinsProvider(account.id));
   if (selectedUtxos.isNotEmpty) {
     int amount = 0;
     for (var element in selectedUtxos) {
-      amount = amount + element.value;
+      amount = amount + element.amount.toInt();
     }
     return amount;
   }
-  final lockedCoinsIds = await CoinRepository().getBlockedCoins();
-  //TODO: implement ngwallet
-  // final lockedCoins = account.wallet.utxos
-  //     .where((element) => lockedCoinsIds.contains(element.id))
-  //     .toList();
-  // final blockedAmount = lockedCoins.fold(
-  //     0, (previousValue, element) => previousValue + element.value);
-  // return account.wallet.balance - blockedAmount;
-  return 0;
+  final lockedCoins = ref
+      .read(outputsProvider(account.id))
+      .where((element) => element.doNotSpend)
+      .toList();
+  final blockedAmount = lockedCoins.fold(
+      0, (previousValue, element) => previousValue + element.amount.toInt());
+  return account.balance.toInt() - blockedAmount;
 });
 
 ///listens to _totalSpendableAmountProvider provider and updates the value
@@ -576,14 +573,14 @@ final totalSpendableAmountProvider = Provider<int>((ref) {
 
 /// returns selected coins for a given account
 final getTotalSelectedAmount = Provider.family<int, String>((ref, accountId) {
-  List<Coin> coins = ref.watch(getSelectedCoinsProvider(accountId));
-  return coins.fold(
-      0, (previousValue, element) => previousValue + element.amount);
+  List<Output> outputs = ref.watch(getSelectedCoinsProvider(accountId));
+  return outputs.fold(
+      0, (previousValue, element) => previousValue + element.amount.toInt());
 });
 
 ///these providers are used to track notes and change output tag for staging transaction
 ///because the transaction needs to be broadcast tx firs and then we can store these values to the database
-final stagingTxChangeOutPutTagProvider = StateProvider<CoinTag?>((ref) => null);
+final stagingTxChangeOutPutTagProvider = StateProvider<Tag?>((ref) => null);
 final stagingTxNoteProvider = StateProvider<String?>((ref) => null);
 
 ///returns if the user has selected coins
@@ -592,10 +589,8 @@ final isCoinsSelectedProvider = Provider<bool>((ref) {
   if (account == null) {
     return false;
   }
-  final selectedUtxos = ref
-      .watch(getSelectedCoinsProvider(account.id))
-      .map((e) => e.utxo)
-      .toList();
+  final selectedUtxos =
+      ref.watch(getSelectedCoinsProvider(account.id)).toList();
   return selectedUtxos.isNotEmpty;
 });
 
@@ -638,11 +633,11 @@ final spendValidationProvider = Provider<bool>((ref) {
 
 /// returns selected coins for a given account
 final getSelectedCoinsProvider =
-    Provider.family<List<Coin>, String>((ref, accountId) {
-  List<Coin> coins = ref.watch(coinsProvider(accountId));
+    Provider.family<List<Output>, String>((ref, accountId) {
+  List<Output> outputs = ref.read(outputsProvider(accountId));
   Set<String> selectedCoinIds = ref.watch(coinSelectionStateProvider);
-  return coins
-      .where((element) => selectedCoinIds.contains(element.id))
+  return outputs
+      .where((element) => selectedCoinIds.contains(element.getId()))
       .toList();
 });
 

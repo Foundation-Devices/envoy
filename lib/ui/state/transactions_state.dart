@@ -60,11 +60,6 @@ final filteredTransactionsProvider =
           transactions.where((element) => element.amount > 0).toList();
     }
   }
-  transactions.forEach(
-    (element) {
-      print("object ${element.date} ${element.amount}");
-    },
-  );
 
   switch (txSortState) {
     case TransactionSortTypes.newestFirst:
@@ -157,6 +152,7 @@ final walletTransactionsProvider =
   //                 })))
   //         .value ??
   //     [];
+
 
   return transactions.map((tx) => EnvoyTransaction.copyFrom(tx)).toList();
 });

@@ -644,32 +644,35 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         }
 
         /// get all the tags for searching change output tag in the original transaction
-        final tags = ref.read(coinsTagProvider(accountId));
+        // final tags = ref.read(coinsTagProvider(accountId));
 
-        CoinTag? tag = ref.read(stagingTxChangeOutPutTagProvider);
+        // CoinTag? tag = ref.read(stagingTxChangeOutPutTagProvider);
 
-        if (tag != null) {
-          ///add change tag if its new and if it is not already added to the database
-          if (tags.map((e) => e.id).contains(tag.id) == false &&
-              tag.untagged == false) {
-            await CoinRepository().addCoinTag(tag);
-            await Future.delayed(const Duration(milliseconds: 100));
-          }
-        } else {
-          ///if user already selected a change output tag to original transaction then find it and add it to the new transaction
-          CoinTag? foundAnExistingChangeTag;
+        // if (tag != null) {
+        ///add change tag if its new and if it is not already added to the database
+        ///TODO: use ngwallet to set tags
+        // if (tags.map((e) => e.id).contains(tag.id) == false &&
+        //     tag.untagged == false) {
+        //   await CoinRepository().addCoinTag(tag);
+        //   await Future.delayed(const Duration(milliseconds: 100));
+        // }
+        // } else {
+        ///if user already selected a change output tag to original transaction then find it and add it to the new transaction
+        // CoinTag? foundAnExistingChangeTag;
 
-          /// Find any change tag present in the original transaction
-          for (var tag in tags) {
-            for (var existingId in tag.coinsId) {
-              /// check with original tx to see if any change output tag is present
-              if (existingId.contains(rbfState.originalTx.txId)) {
-                foundAnExistingChangeTag = tag;
-              }
-            }
-          }
-          tag = foundAnExistingChangeTag;
-        }
+        /// Find any change tag present in the original transaction
+        /// TODO: use ngwallet to set tags
+        // for (var tag in tags) {
+        //   for (var existingId in tag.coinsId) {
+        //     /// check with original tx to see if any change output tag is present
+        //     if (existingId.contains(rbfState.originalTx.txId)) {
+        //       foundAnExistingChangeTag = tag;
+        //     }
+        //   }
+        // }
+        // tag = foundAnExistingChangeTag;
+        // }
+        final tag = null;
 
         ///move new change output to tags based on user selection or from the original selection
         if (rawTx != null && tag != null) {
@@ -686,7 +689,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
               // ignore: unused_result
               ref.refresh(accountsProvider);
               await Future.delayed(const Duration(seconds: 1));
-              final _ = ref.refresh(coinsTagProvider(accountId));
+              final _ = ref.refresh(tagProvider(accountId));
             }
           }
         }
@@ -753,7 +756,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       }
       ref.read(spendFeeProcessing.notifier).state = true;
       ref.read(spendFeeRateProvider.notifier).state = fee;
-      final lockedUtXOs = ref.read(lockedUtxosProvider(account.id));
+      // final lockedUtXOs = ref.read(lockedUtxosProvider(account.id));
       final rbfState = ref.read(rbfSpendStateProvider);
       if (rbfState == null) {
         return;

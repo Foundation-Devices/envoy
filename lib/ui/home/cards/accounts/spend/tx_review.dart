@@ -113,11 +113,12 @@ class _TxReviewState extends ConsumerState<TxReview> {
                   ///if the user is spending from a single tag and the change output is needs to be tagged to the same tag
                   if (spendingTags.length == 1 &&
                       ref.read(stagingTxChangeOutPutTagProvider) == null) {
-                    ref.read(stagingTxChangeOutPutTagProvider.notifier).state =
-                        spendingTags[0];
+                    /// TODO: fix staging output tag using ngwallet
+                    // ref.read(stagingTxChangeOutPutTagProvider.notifier).state =
+                    //     spendingTags[0];
                   }
 
-                  CoinTag? coinTag = ref.read(stagingTxChangeOutPutTagProvider);
+                  Tag? coinTag = ref.read(stagingTxChangeOutPutTagProvider);
 
                   ///if the the change output is not tagged and there are more input from different tags
                   final tagInputs = ref.read(spendInputTagsProvider);
