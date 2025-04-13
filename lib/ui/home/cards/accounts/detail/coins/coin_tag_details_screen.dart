@@ -7,7 +7,7 @@ import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';
-import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
@@ -633,6 +633,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
       placeholder: widget.coinTag.name,
       textAlign: TextAlign.center,
     );
+    bool renameInProgress = false;
     showEnvoyDialog(
         context: context,
         linearGradient: true,
@@ -641,27 +642,47 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
           title: S().tagDetails_EditTagName,
           content: textEntry,
           actions: [
-            EnvoyButton(
-              S().component_save,
-              type: EnvoyButtonTypes.primaryModal,
-              onTap: () async {
-                final selectedAccount = ref.read(selectedAccountProvider);
-                if (selectedAccount != null) {
-                  await selectedAccount.handler?.renameTag(
-                      existingTag: widget.coinTag.name,
-                      newTag: textEntry.enteredText);
-                }
-                if (context.mounted) {
-                  setState(() {
-                    //update local tag name so it will be used to update instance from provider
-                    widget.coinTag.name = textEntry.enteredText;
-                    _menuVisible = false;
-                  });
-                  Navigator.of(context).pop();
-                  setState(() {
-                    _menuVisible = false;
-                  });
-                }
+            StatefulBuilder(
+              builder: (context, stateSetter) {
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    EnvoyButton(
+                      label: S().component_save,
+                      type: ButtonType.primary,
+                      state: renameInProgress
+                          ? ButtonState.loading
+                          : ButtonState.defaultState,
+                      onTap: () async {
+                        stateSetter(() {
+                          renameInProgress = true;
+                        });
+                        final selectedAccount =
+                            ref.read(selectedAccountProvider);
+                        if (selectedAccount != null) {
+                          await selectedAccount.handler?.renameTag(
+                              existingTag: widget.coinTag.name,
+                              newTag: textEntry.enteredText);
+                        }
+                        stateSetter(() {
+                          renameInProgress = false;
+                        });
+                        await Future.delayed(const Duration(milliseconds: 100));
+                        if (context.mounted) {
+                          setState(() {
+                            //update local tag name so it will be used to update instance from provider
+                            widget.coinTag.name = textEntry.enteredText;
+                            _menuVisible = false;
+                          });
+                          Navigator.of(context).pop();
+                          setState(() {
+                            _menuVisible = false;
+                          });
+                        }
+                      },
+                    ),
+                  ],
+                );
               },
             ),
           ],

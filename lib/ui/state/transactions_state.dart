@@ -153,7 +153,6 @@ final walletTransactionsProvider =
   //         .value ??
   //     [];
 
-
   return transactions.map((tx) => EnvoyTransaction.copyFrom(tx)).toList();
 });
 
