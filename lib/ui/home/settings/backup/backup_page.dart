@@ -16,6 +16,7 @@ import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/state/global_state.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -69,6 +70,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
       }
     } catch (e) {
       setState(() {
+        EnvoyReport().log("Backup", "error: $e");
         _isBackupInProgress = false;
       });
     }
