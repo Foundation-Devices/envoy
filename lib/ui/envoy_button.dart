@@ -116,8 +116,10 @@ class _EnvoyButtonState extends State<EnvoyButton> {
             if (!widget.enabled)
               Positioned.fill(
                 child: Container(
-                  color: EnvoyColors.textPrimaryInverse.applyOpacity(0.5),
-                ),
+                    decoration: BoxDecoration(
+                        color: EnvoyColors.textPrimaryInverse.applyOpacity(0.5),
+                        borderRadius: widget.borderRadius ??
+                            const BorderRadius.all(Radius.circular(13.0)))),
               ),
           ],
         ),

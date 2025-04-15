@@ -292,6 +292,12 @@ class EnvoySeed {
     return Backup.delete(seed!, Settings().envoyServerAddress, Tor.instance);
   }
 
+  Future<bool> deleteMagicBackup() async {
+    final seed = await get();
+    Settings().setSyncToCloud(false);
+    return Backup.delete(seed!, Settings().envoyServerAddress, Tor.instance);
+  }
+
   Future<bool> restoreData({String? seed, String? filePath}) async {
     // Try to get seed from device
     try {

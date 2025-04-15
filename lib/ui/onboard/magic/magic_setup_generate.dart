@@ -92,10 +92,16 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
       //delay
     }
     _updateProgress();
-    await Future.delayed(const Duration(seconds: 4));
+
+    if (!walletGenerated) {
+      await Future.delayed(const Duration(seconds: 4));
+    }
     setState(() {
       step = 2;
     });
+
+    Settings().setSyncToCloud(true);
+    await EnvoySeed().backupData();
     _updateProgress();
 
     await Future.delayed(const Duration(seconds: 2));

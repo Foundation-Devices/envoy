@@ -288,7 +288,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
       await EnvoySeed().create(seedList, passphrase: passphrase);
       bool success = await EnvoySeed().restoreData(seed: seed);
       //Enable magic backup by default for seed recovery
-      Settings().syncToCloud = true;
+      Settings().setSyncToCloud(true);
       setState(() {
         if (success) {
           Settings().updateAccountsViewSettings();

@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/checkbox.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart' as old_color;
 
@@ -37,7 +36,7 @@ void showEnvoyPopUp(
   Function(bool checked)? onCheckBoxChanged,
   bool? checkedValue,
   bool dismissible = true,
-  String? learnMoreLink,
+  Function? onLearnMore,
   String? learnMoreText,
   Widget? customWidget,
   bool? showCloseButton,
@@ -60,7 +59,7 @@ void showEnvoyPopUp(
           checkBoxText: checkBoxText,
           onCheckBoxChanged: onCheckBoxChanged,
           checkedValue: checkedValue ?? true,
-          linkUrl: learnMoreLink,
+          onLearnMore: onLearnMore,
           learnMoreText: learnMoreText ?? '',
           customWidget: customWidget,
           showCloseButton: showCloseButton ?? true,
@@ -85,7 +84,7 @@ class EnvoyPopUp extends StatefulWidget {
     this.checkBoxText,
     this.onCheckBoxChanged,
     this.checkedValue = true,
-    this.linkUrl,
+    this.onLearnMore,
     this.learnMoreText = '',
     this.customWidget,
     this.showCloseButton = true,
@@ -105,7 +104,7 @@ class EnvoyPopUp extends StatefulWidget {
   final String? checkBoxText;
   final Function(bool checked)? onCheckBoxChanged;
   bool? checkedValue;
-  final String? linkUrl;
+  final Function? onLearnMore;
   final String learnMoreText;
   final Widget? customWidget;
   final bool showCloseButton;
@@ -201,10 +200,10 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
               if (widget.content != null)
                 Padding(
                   padding: EdgeInsets.only(
-                      bottom:
-                          widget.linkUrl == null && widget.customWidget == null
-                              ? EnvoySpacing.medium3
-                              : EnvoySpacing.medium1),
+                      bottom: widget.onLearnMore == null &&
+                              widget.customWidget == null
+                          ? EnvoySpacing.medium3
+                          : EnvoySpacing.medium1),
                   child: Text(
                     widget.content!,
                     style: EnvoyTypography.info,
@@ -216,12 +215,12 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                   padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
                   child: widget.customWidget!,
                 ),
-              if (widget.linkUrl != null)
+              if (widget.onLearnMore != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
                   child: GestureDetector(
                     onTap: () {
-                      launchUrl(Uri.parse(widget.linkUrl!));
+                      widget.onLearnMore!();
                     },
                     child: Text(
                       widget.learnMoreText.isEmpty
