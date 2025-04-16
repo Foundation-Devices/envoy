@@ -75,6 +75,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Predeterminado"),
         "accounts_switchPassphrase":
             MessageLookupByLibrary.simpleMessage("Passphrase"),
+        "accounts_upgradeBdkSignetModal_content":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy now uses Global Signet instead of Mutinynet. Your previous Signet accounts have been removed. \n\nTo begin using Global Signet, go Settings and enable the Signet toggle."),
+        "accounts_upgradeBdkSignetModal_header":
+            MessageLookupByLibrary.simpleMessage("Global Signet"),
+        "accounts_upgradeBdkTestnetModal_content":
+            MessageLookupByLibrary.simpleMessage(
+                "‘testnet3’ has been deprecated and Envoy now uses ‘testnet4’. Your previous testnet3 accounts have been removed. \n\nTo begin using testnet4, go Settings and enable the Testnet toggle."),
+        "accounts_upgradeBdkTestnetModal_header":
+            MessageLookupByLibrary.simpleMessage("Introducing testnet4"),
         "activity_boosted": MessageLookupByLibrary.simpleMessage("Acelerado"),
         "activity_canceling":
             MessageLookupByLibrary.simpleMessage("Cancelando"),
@@ -1009,6 +1019,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Envoy"),
         "learning_center_device_passport":
             MessageLookupByLibrary.simpleMessage("Passport"),
+        "learning_center_device_passportCore":
+            MessageLookupByLibrary.simpleMessage("Passport Core"),
         "learning_center_device_passportPrime":
             MessageLookupByLibrary.simpleMessage("Passport Prime"),
         "learning_center_filterEmpty_subheading":
