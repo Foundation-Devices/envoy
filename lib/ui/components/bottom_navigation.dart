@@ -21,14 +21,14 @@ class EnvoyBottomNavigation extends ConsumerStatefulWidget {
   final int initialIndex;
 
   const EnvoyBottomNavigation(
-      {super.key, this.onIndexChanged, this.initialIndex = 1});
+      {super.key, this.onIndexChanged, this.initialIndex = 2});
 
   @override
   EnvoyBottomNavigationState createState() => EnvoyBottomNavigationState();
 }
 
 class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
-  int _selectedIndex = 1;
+  int _selectedIndex = 2;
   var activeColor = EnvoyColors.accentPrimary;
   var inActiveColor = EnvoyColors.textTertiary;
   var labelStyle = EnvoyTypography.label;
@@ -60,25 +60,25 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
         ),
         title: S().bottomNav_devices,
       ),
-      // PersistentBottomNavBarItem(
-      //   activeColorPrimary: activeColor,
-      //   inactiveColorPrimary: inActiveColor,
-      //   icon: Padding(
-      //     padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
-      //     child: EnvoyIcon(
-      //       EnvoyIcons.shield,
-      //       color: activeColor,
-      //     ),
-      //   ),
-      //   inactiveIcon: Padding(
-      //     padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
-      //     child: EnvoyIcon(
-      //       EnvoyIcons.shield,
-      //       color: inActiveColor,
-      //     ),
-      //   ),
-      //   title: S().bottomNav_privacy,
-      // ),
+      PersistentBottomNavBarItem(
+        activeColorPrimary: activeColor,
+        inactiveColorPrimary: inActiveColor,
+        icon: Padding(
+          padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
+          child: EnvoyIcon(
+            EnvoyIcons.shield,
+            color: activeColor,
+          ),
+        ),
+        inactiveIcon: Padding(
+          padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
+          child: EnvoyIcon(
+            EnvoyIcons.shield,
+            color: inActiveColor,
+          ),
+        ),
+        title: S().bottomNav_privacy,
+      ),
       PersistentBottomNavBarItem(
         activeColorPrimary: activeColor,
         inactiveColorPrimary: inActiveColor,
@@ -98,25 +98,25 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
         ),
         title: S().bottomNav_accounts,
       ),
-      // PersistentBottomNavBarItem(
-      //   activeColorPrimary: activeColor,
-      //   inactiveColorPrimary: inActiveColor,
-      //   icon: Padding(
-      //     padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
-      //     child: EnvoyIcon(
-      //       EnvoyIcons.history,
-      //       color: activeColor,
-      //     ),
-      //   ),
-      //   inactiveIcon: Padding(
-      //     padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
-      //     child: EnvoyIcon(
-      //       EnvoyIcons.history,
-      //       color: inActiveColor,
-      //     ),
-      //   ),
-      //   title: S().bottomNav_activity,
-      // ),
+      PersistentBottomNavBarItem(
+        activeColorPrimary: activeColor,
+        inactiveColorPrimary: inActiveColor,
+        icon: Padding(
+          padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
+          child: EnvoyIcon(
+            EnvoyIcons.history,
+            color: activeColor,
+          ),
+        ),
+        inactiveIcon: Padding(
+          padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
+          child: EnvoyIcon(
+            EnvoyIcons.history,
+            color: inActiveColor,
+          ),
+        ),
+        title: S().bottomNav_activity,
+      ),
       PersistentBottomNavBarItem(
         activeColorPrimary: activeColor,
         inactiveColorPrimary: inActiveColor,

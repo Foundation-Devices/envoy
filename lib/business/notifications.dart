@@ -81,7 +81,9 @@ final nonTxNotificationStreamProvider =
 EnvoyNotification transactionToEnvoyNotification(EnvoyTransaction transaction) {
   return EnvoyNotification(
     "Transaction Notification",
-    transaction.isConfirmed ? DateTime(transaction.date!.toInt()) : null,
+    transaction.isConfirmed
+        ? DateTime.fromMillisecondsSinceEpoch(transaction.date!.toInt())
+        : null,
     EnvoyNotificationType.transaction,
     "Transaction details",
     transaction.txId,
