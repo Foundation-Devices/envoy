@@ -245,7 +245,6 @@ func getSdCardBookmark() -> URL {
             ur_decoder()
             tor_hello()
             http_hello()
-            wallet_hello()
             backup_hello()
         }
 }
