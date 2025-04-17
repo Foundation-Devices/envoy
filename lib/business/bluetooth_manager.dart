@@ -47,6 +47,14 @@ class BluetoothManager {
     await api.RustLib.init();
     await bluart.RustLib.init();
     events = await bluart.init().asBroadcastStream();
+
+    events?.listen((bluart.Event event) {
+      kPrint("Got bluart event: $event");
+      if (event is bluart.Event_ScanResult) {
+        kPrint("Got scan result: ${event.field0}");
+      }
+    });
+
     _generateQlIdentity();
   }
 
