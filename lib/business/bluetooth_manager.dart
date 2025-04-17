@@ -176,7 +176,6 @@ class BluetoothManager {
 
     final payload = api.FirmwarePayload(payload: randomBytes);
 
-
     final encoded = await encodeMessage(
       message: api.QuantumLinkMessage.firmwarePayload(payload),
     );
