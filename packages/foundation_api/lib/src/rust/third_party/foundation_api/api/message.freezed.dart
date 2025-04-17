@@ -28,6 +28,7 @@ mixin _$QuantumLinkMessage {
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(SyncUpdate field0) syncUpdate,
+    required TResult Function(FirmwarePayload field0) firmwarePayload,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -41,6 +42,7 @@ mixin _$QuantumLinkMessage {
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(SyncUpdate field0)? syncUpdate,
+    TResult? Function(FirmwarePayload field0)? firmwarePayload,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -54,6 +56,7 @@ mixin _$QuantumLinkMessage {
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(SyncUpdate field0)? syncUpdate,
+    TResult Function(FirmwarePayload field0)? firmwarePayload,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -74,6 +77,8 @@ mixin _$QuantumLinkMessage {
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
     required TResult Function(QuantumLinkMessage_SyncUpdate value) syncUpdate,
+    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
+        firmwarePayload,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -89,6 +94,8 @@ mixin _$QuantumLinkMessage {
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
     TResult? Function(QuantumLinkMessage_SyncUpdate value)? syncUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
+        firmwarePayload,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -102,6 +109,7 @@ mixin _$QuantumLinkMessage {
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
     TResult Function(QuantumLinkMessage_SyncUpdate value)? syncUpdate,
+    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -211,6 +219,7 @@ class _$QuantumLinkMessage_ExchangeRateImpl
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(SyncUpdate field0) syncUpdate,
+    required TResult Function(FirmwarePayload field0) firmwarePayload,
   }) {
     return exchangeRate(field0);
   }
@@ -227,6 +236,7 @@ class _$QuantumLinkMessage_ExchangeRateImpl
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(SyncUpdate field0)? syncUpdate,
+    TResult? Function(FirmwarePayload field0)? firmwarePayload,
   }) {
     return exchangeRate?.call(field0);
   }
@@ -243,6 +253,7 @@ class _$QuantumLinkMessage_ExchangeRateImpl
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(SyncUpdate field0)? syncUpdate,
+    TResult Function(FirmwarePayload field0)? firmwarePayload,
     required TResult orElse(),
   }) {
     if (exchangeRate != null) {
@@ -269,6 +280,8 @@ class _$QuantumLinkMessage_ExchangeRateImpl
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
     required TResult Function(QuantumLinkMessage_SyncUpdate value) syncUpdate,
+    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
+        firmwarePayload,
   }) {
     return exchangeRate(this);
   }
@@ -287,6 +300,8 @@ class _$QuantumLinkMessage_ExchangeRateImpl
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
     TResult? Function(QuantumLinkMessage_SyncUpdate value)? syncUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
+        firmwarePayload,
   }) {
     return exchangeRate?.call(this);
   }
@@ -303,6 +318,7 @@ class _$QuantumLinkMessage_ExchangeRateImpl
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
     TResult Function(QuantumLinkMessage_SyncUpdate value)? syncUpdate,
+    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     required TResult orElse(),
   }) {
     if (exchangeRate != null) {
@@ -411,6 +427,7 @@ class _$QuantumLinkMessage_FirmwareUpdateImpl
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(SyncUpdate field0) syncUpdate,
+    required TResult Function(FirmwarePayload field0) firmwarePayload,
   }) {
     return firmwareUpdate(field0);
   }
@@ -427,6 +444,7 @@ class _$QuantumLinkMessage_FirmwareUpdateImpl
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(SyncUpdate field0)? syncUpdate,
+    TResult? Function(FirmwarePayload field0)? firmwarePayload,
   }) {
     return firmwareUpdate?.call(field0);
   }
@@ -443,6 +461,7 @@ class _$QuantumLinkMessage_FirmwareUpdateImpl
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(SyncUpdate field0)? syncUpdate,
+    TResult Function(FirmwarePayload field0)? firmwarePayload,
     required TResult orElse(),
   }) {
     if (firmwareUpdate != null) {
@@ -469,6 +488,8 @@ class _$QuantumLinkMessage_FirmwareUpdateImpl
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
     required TResult Function(QuantumLinkMessage_SyncUpdate value) syncUpdate,
+    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
+        firmwarePayload,
   }) {
     return firmwareUpdate(this);
   }
@@ -487,6 +508,8 @@ class _$QuantumLinkMessage_FirmwareUpdateImpl
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
     TResult? Function(QuantumLinkMessage_SyncUpdate value)? syncUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
+        firmwarePayload,
   }) {
     return firmwareUpdate?.call(this);
   }
@@ -503,6 +526,7 @@ class _$QuantumLinkMessage_FirmwareUpdateImpl
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
     TResult Function(QuantumLinkMessage_SyncUpdate value)? syncUpdate,
+    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     required TResult orElse(),
   }) {
     if (firmwareUpdate != null) {
@@ -611,6 +635,7 @@ class _$QuantumLinkMessage_DeviceStatusImpl
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(SyncUpdate field0) syncUpdate,
+    required TResult Function(FirmwarePayload field0) firmwarePayload,
   }) {
     return deviceStatus(field0);
   }
@@ -627,6 +652,7 @@ class _$QuantumLinkMessage_DeviceStatusImpl
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(SyncUpdate field0)? syncUpdate,
+    TResult? Function(FirmwarePayload field0)? firmwarePayload,
   }) {
     return deviceStatus?.call(field0);
   }
@@ -643,6 +669,7 @@ class _$QuantumLinkMessage_DeviceStatusImpl
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(SyncUpdate field0)? syncUpdate,
+    TResult Function(FirmwarePayload field0)? firmwarePayload,
     required TResult orElse(),
   }) {
     if (deviceStatus != null) {
@@ -669,6 +696,8 @@ class _$QuantumLinkMessage_DeviceStatusImpl
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
     required TResult Function(QuantumLinkMessage_SyncUpdate value) syncUpdate,
+    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
+        firmwarePayload,
   }) {
     return deviceStatus(this);
   }
@@ -687,6 +716,8 @@ class _$QuantumLinkMessage_DeviceStatusImpl
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
     TResult? Function(QuantumLinkMessage_SyncUpdate value)? syncUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
+        firmwarePayload,
   }) {
     return deviceStatus?.call(this);
   }
@@ -703,6 +734,7 @@ class _$QuantumLinkMessage_DeviceStatusImpl
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
     TResult Function(QuantumLinkMessage_SyncUpdate value)? syncUpdate,
+    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     required TResult orElse(),
   }) {
     if (deviceStatus != null) {
@@ -811,6 +843,7 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(SyncUpdate field0) syncUpdate,
+    required TResult Function(FirmwarePayload field0) firmwarePayload,
   }) {
     return envoyStatus(field0);
   }
@@ -827,6 +860,7 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(SyncUpdate field0)? syncUpdate,
+    TResult? Function(FirmwarePayload field0)? firmwarePayload,
   }) {
     return envoyStatus?.call(field0);
   }
@@ -843,6 +877,7 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(SyncUpdate field0)? syncUpdate,
+    TResult Function(FirmwarePayload field0)? firmwarePayload,
     required TResult orElse(),
   }) {
     if (envoyStatus != null) {
@@ -869,6 +904,8 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
     required TResult Function(QuantumLinkMessage_SyncUpdate value) syncUpdate,
+    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
+        firmwarePayload,
   }) {
     return envoyStatus(this);
   }
@@ -887,6 +924,8 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
     TResult? Function(QuantumLinkMessage_SyncUpdate value)? syncUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
+        firmwarePayload,
   }) {
     return envoyStatus?.call(this);
   }
@@ -903,6 +942,7 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
     TResult Function(QuantumLinkMessage_SyncUpdate value)? syncUpdate,
+    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     required TResult orElse(),
   }) {
     if (envoyStatus != null) {
@@ -1011,6 +1051,7 @@ class _$QuantumLinkMessage_PairingResponseImpl
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(SyncUpdate field0) syncUpdate,
+    required TResult Function(FirmwarePayload field0) firmwarePayload,
   }) {
     return pairingResponse(field0);
   }
@@ -1027,6 +1068,7 @@ class _$QuantumLinkMessage_PairingResponseImpl
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(SyncUpdate field0)? syncUpdate,
+    TResult? Function(FirmwarePayload field0)? firmwarePayload,
   }) {
     return pairingResponse?.call(field0);
   }
@@ -1043,6 +1085,7 @@ class _$QuantumLinkMessage_PairingResponseImpl
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(SyncUpdate field0)? syncUpdate,
+    TResult Function(FirmwarePayload field0)? firmwarePayload,
     required TResult orElse(),
   }) {
     if (pairingResponse != null) {
@@ -1069,6 +1112,8 @@ class _$QuantumLinkMessage_PairingResponseImpl
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
     required TResult Function(QuantumLinkMessage_SyncUpdate value) syncUpdate,
+    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
+        firmwarePayload,
   }) {
     return pairingResponse(this);
   }
@@ -1087,6 +1132,8 @@ class _$QuantumLinkMessage_PairingResponseImpl
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
     TResult? Function(QuantumLinkMessage_SyncUpdate value)? syncUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
+        firmwarePayload,
   }) {
     return pairingResponse?.call(this);
   }
@@ -1103,6 +1150,7 @@ class _$QuantumLinkMessage_PairingResponseImpl
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
     TResult Function(QuantumLinkMessage_SyncUpdate value)? syncUpdate,
+    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     required TResult orElse(),
   }) {
     if (pairingResponse != null) {
@@ -1211,6 +1259,7 @@ class _$QuantumLinkMessage_PairingRequestImpl
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(SyncUpdate field0) syncUpdate,
+    required TResult Function(FirmwarePayload field0) firmwarePayload,
   }) {
     return pairingRequest(field0);
   }
@@ -1227,6 +1276,7 @@ class _$QuantumLinkMessage_PairingRequestImpl
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(SyncUpdate field0)? syncUpdate,
+    TResult? Function(FirmwarePayload field0)? firmwarePayload,
   }) {
     return pairingRequest?.call(field0);
   }
@@ -1243,6 +1293,7 @@ class _$QuantumLinkMessage_PairingRequestImpl
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(SyncUpdate field0)? syncUpdate,
+    TResult Function(FirmwarePayload field0)? firmwarePayload,
     required TResult orElse(),
   }) {
     if (pairingRequest != null) {
@@ -1269,6 +1320,8 @@ class _$QuantumLinkMessage_PairingRequestImpl
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
     required TResult Function(QuantumLinkMessage_SyncUpdate value) syncUpdate,
+    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
+        firmwarePayload,
   }) {
     return pairingRequest(this);
   }
@@ -1287,6 +1340,8 @@ class _$QuantumLinkMessage_PairingRequestImpl
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
     TResult? Function(QuantumLinkMessage_SyncUpdate value)? syncUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
+        firmwarePayload,
   }) {
     return pairingRequest?.call(this);
   }
@@ -1303,6 +1358,7 @@ class _$QuantumLinkMessage_PairingRequestImpl
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
     TResult Function(QuantumLinkMessage_SyncUpdate value)? syncUpdate,
+    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     required TResult orElse(),
   }) {
     if (pairingRequest != null) {
@@ -1411,6 +1467,7 @@ class _$QuantumLinkMessage_OnboardingStateImpl
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(SyncUpdate field0) syncUpdate,
+    required TResult Function(FirmwarePayload field0) firmwarePayload,
   }) {
     return onboardingState(field0);
   }
@@ -1427,6 +1484,7 @@ class _$QuantumLinkMessage_OnboardingStateImpl
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(SyncUpdate field0)? syncUpdate,
+    TResult? Function(FirmwarePayload field0)? firmwarePayload,
   }) {
     return onboardingState?.call(field0);
   }
@@ -1443,6 +1501,7 @@ class _$QuantumLinkMessage_OnboardingStateImpl
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(SyncUpdate field0)? syncUpdate,
+    TResult Function(FirmwarePayload field0)? firmwarePayload,
     required TResult orElse(),
   }) {
     if (onboardingState != null) {
@@ -1469,6 +1528,8 @@ class _$QuantumLinkMessage_OnboardingStateImpl
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
     required TResult Function(QuantumLinkMessage_SyncUpdate value) syncUpdate,
+    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
+        firmwarePayload,
   }) {
     return onboardingState(this);
   }
@@ -1487,6 +1548,8 @@ class _$QuantumLinkMessage_OnboardingStateImpl
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
     TResult? Function(QuantumLinkMessage_SyncUpdate value)? syncUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
+        firmwarePayload,
   }) {
     return onboardingState?.call(this);
   }
@@ -1503,6 +1566,7 @@ class _$QuantumLinkMessage_OnboardingStateImpl
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
     TResult Function(QuantumLinkMessage_SyncUpdate value)? syncUpdate,
+    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     required TResult orElse(),
   }) {
     if (onboardingState != null) {
@@ -1609,6 +1673,7 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(SyncUpdate field0) syncUpdate,
+    required TResult Function(FirmwarePayload field0) firmwarePayload,
   }) {
     return signPsbt(field0);
   }
@@ -1625,6 +1690,7 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(SyncUpdate field0)? syncUpdate,
+    TResult? Function(FirmwarePayload field0)? firmwarePayload,
   }) {
     return signPsbt?.call(field0);
   }
@@ -1641,6 +1707,7 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(SyncUpdate field0)? syncUpdate,
+    TResult Function(FirmwarePayload field0)? firmwarePayload,
     required TResult orElse(),
   }) {
     if (signPsbt != null) {
@@ -1667,6 +1734,8 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
     required TResult Function(QuantumLinkMessage_SyncUpdate value) syncUpdate,
+    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
+        firmwarePayload,
   }) {
     return signPsbt(this);
   }
@@ -1685,6 +1754,8 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
     TResult? Function(QuantumLinkMessage_SyncUpdate value)? syncUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
+        firmwarePayload,
   }) {
     return signPsbt?.call(this);
   }
@@ -1701,6 +1772,7 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
     TResult Function(QuantumLinkMessage_SyncUpdate value)? syncUpdate,
+    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     required TResult orElse(),
   }) {
     if (signPsbt != null) {
@@ -1808,6 +1880,7 @@ class _$QuantumLinkMessage_SyncUpdateImpl
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(SyncUpdate field0) syncUpdate,
+    required TResult Function(FirmwarePayload field0) firmwarePayload,
   }) {
     return syncUpdate(field0);
   }
@@ -1824,6 +1897,7 @@ class _$QuantumLinkMessage_SyncUpdateImpl
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(SyncUpdate field0)? syncUpdate,
+    TResult? Function(FirmwarePayload field0)? firmwarePayload,
   }) {
     return syncUpdate?.call(field0);
   }
@@ -1840,6 +1914,7 @@ class _$QuantumLinkMessage_SyncUpdateImpl
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(SyncUpdate field0)? syncUpdate,
+    TResult Function(FirmwarePayload field0)? firmwarePayload,
     required TResult orElse(),
   }) {
     if (syncUpdate != null) {
@@ -1866,6 +1941,8 @@ class _$QuantumLinkMessage_SyncUpdateImpl
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
     required TResult Function(QuantumLinkMessage_SyncUpdate value) syncUpdate,
+    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
+        firmwarePayload,
   }) {
     return syncUpdate(this);
   }
@@ -1884,6 +1961,8 @@ class _$QuantumLinkMessage_SyncUpdateImpl
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
     TResult? Function(QuantumLinkMessage_SyncUpdate value)? syncUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
+        firmwarePayload,
   }) {
     return syncUpdate?.call(this);
   }
@@ -1900,6 +1979,7 @@ class _$QuantumLinkMessage_SyncUpdateImpl
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
     TResult Function(QuantumLinkMessage_SyncUpdate value)? syncUpdate,
+    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     required TResult orElse(),
   }) {
     if (syncUpdate != null) {
@@ -1922,5 +2002,213 @@ abstract class QuantumLinkMessage_SyncUpdate extends QuantumLinkMessage {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$QuantumLinkMessage_SyncUpdateImplCopyWith<
           _$QuantumLinkMessage_SyncUpdateImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$QuantumLinkMessage_FirmwarePayloadImplCopyWith<$Res> {
+  factory _$$QuantumLinkMessage_FirmwarePayloadImplCopyWith(
+          _$QuantumLinkMessage_FirmwarePayloadImpl value,
+          $Res Function(_$QuantumLinkMessage_FirmwarePayloadImpl) then) =
+      __$$QuantumLinkMessage_FirmwarePayloadImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({FirmwarePayload field0});
+}
+
+/// @nodoc
+class __$$QuantumLinkMessage_FirmwarePayloadImplCopyWithImpl<$Res>
+    extends _$QuantumLinkMessageCopyWithImpl<$Res,
+        _$QuantumLinkMessage_FirmwarePayloadImpl>
+    implements _$$QuantumLinkMessage_FirmwarePayloadImplCopyWith<$Res> {
+  __$$QuantumLinkMessage_FirmwarePayloadImplCopyWithImpl(
+      _$QuantumLinkMessage_FirmwarePayloadImpl _value,
+      $Res Function(_$QuantumLinkMessage_FirmwarePayloadImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$QuantumLinkMessage_FirmwarePayloadImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as FirmwarePayload,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$QuantumLinkMessage_FirmwarePayloadImpl
+    extends QuantumLinkMessage_FirmwarePayload {
+  const _$QuantumLinkMessage_FirmwarePayloadImpl(this.field0) : super._();
+
+  @override
+  final FirmwarePayload field0;
+
+  @override
+  String toString() {
+    return 'QuantumLinkMessage.firmwarePayload(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$QuantumLinkMessage_FirmwarePayloadImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$QuantumLinkMessage_FirmwarePayloadImplCopyWith<
+          _$QuantumLinkMessage_FirmwarePayloadImpl>
+      get copyWith => __$$QuantumLinkMessage_FirmwarePayloadImplCopyWithImpl<
+          _$QuantumLinkMessage_FirmwarePayloadImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(ExchangeRate field0) exchangeRate,
+    required TResult Function(FirmwareUpdate field0) firmwareUpdate,
+    required TResult Function(DeviceStatus field0) deviceStatus,
+    required TResult Function(EnvoyStatus field0) envoyStatus,
+    required TResult Function(PairingResponse field0) pairingResponse,
+    required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(OnboardingState field0) onboardingState,
+    required TResult Function(SignPsbt field0) signPsbt,
+    required TResult Function(SyncUpdate field0) syncUpdate,
+    required TResult Function(FirmwarePayload field0) firmwarePayload,
+  }) {
+    return firmwarePayload(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(ExchangeRate field0)? exchangeRate,
+    TResult? Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult? Function(DeviceStatus field0)? deviceStatus,
+    TResult? Function(EnvoyStatus field0)? envoyStatus,
+    TResult? Function(PairingResponse field0)? pairingResponse,
+    TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(OnboardingState field0)? onboardingState,
+    TResult? Function(SignPsbt field0)? signPsbt,
+    TResult? Function(SyncUpdate field0)? syncUpdate,
+    TResult? Function(FirmwarePayload field0)? firmwarePayload,
+  }) {
+    return firmwarePayload?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(ExchangeRate field0)? exchangeRate,
+    TResult Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult Function(DeviceStatus field0)? deviceStatus,
+    TResult Function(EnvoyStatus field0)? envoyStatus,
+    TResult Function(PairingResponse field0)? pairingResponse,
+    TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(OnboardingState field0)? onboardingState,
+    TResult Function(SignPsbt field0)? signPsbt,
+    TResult Function(SyncUpdate field0)? syncUpdate,
+    TResult Function(FirmwarePayload field0)? firmwarePayload,
+    required TResult orElse(),
+  }) {
+    if (firmwarePayload != null) {
+      return firmwarePayload(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(QuantumLinkMessage_ExchangeRate value)
+        exchangeRate,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdate value)
+        firmwareUpdate,
+    required TResult Function(QuantumLinkMessage_DeviceStatus value)
+        deviceStatus,
+    required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
+    required TResult Function(QuantumLinkMessage_PairingRequest value)
+        pairingRequest,
+    required TResult Function(QuantumLinkMessage_OnboardingState value)
+        onboardingState,
+    required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
+    required TResult Function(QuantumLinkMessage_SyncUpdate value) syncUpdate,
+    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
+        firmwarePayload,
+  }) {
+    return firmwarePayload(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingResponse value)?
+        pairingResponse,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult? Function(QuantumLinkMessage_OnboardingState value)?
+        onboardingState,
+    TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult? Function(QuantumLinkMessage_SyncUpdate value)? syncUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
+        firmwarePayload,
+  }) {
+    return firmwarePayload?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
+    TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
+    TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult Function(QuantumLinkMessage_SyncUpdate value)? syncUpdate,
+    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
+    required TResult orElse(),
+  }) {
+    if (firmwarePayload != null) {
+      return firmwarePayload(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class QuantumLinkMessage_FirmwarePayload extends QuantumLinkMessage {
+  const factory QuantumLinkMessage_FirmwarePayload(
+      final FirmwarePayload field0) = _$QuantumLinkMessage_FirmwarePayloadImpl;
+  const QuantumLinkMessage_FirmwarePayload._() : super._();
+
+  @override
+  FirmwarePayload get field0;
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$QuantumLinkMessage_FirmwarePayloadImplCopyWith<
+          _$QuantumLinkMessage_FirmwarePayloadImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

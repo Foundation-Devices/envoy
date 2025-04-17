@@ -6,6 +6,24 @@
 import '../../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+class FirmwarePayload {
+  final Uint8List payload;
+
+  const FirmwarePayload({
+    required this.payload,
+  });
+
+  @override
+  int get hashCode => payload.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is FirmwarePayload &&
+          runtimeType == other.runtimeType &&
+          payload == other.payload;
+}
+
 class FirmwareUpdate {
   final String version;
   final int timestamp;

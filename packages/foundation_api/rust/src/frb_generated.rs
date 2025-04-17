@@ -573,6 +573,10 @@ const _: fn() = || {
         let _: f32 = ExchangeRate.rate;
     }
     {
+        let FirmwarePayload = None::<foundation_api::api::firmware::FirmwarePayload>.unwrap();
+        let _: Vec<u8> = FirmwarePayload.payload;
+    }
+    {
         let FirmwareUpdate = None::<foundation_api::api::firmware::FirmwareUpdate>.unwrap();
         let _: String = FirmwareUpdate.version;
         let _: u32 = FirmwareUpdate.timestamp;
@@ -631,6 +635,9 @@ const _: fn() = || {
         }
         foundation_api::api::message::QuantumLinkMessage::SyncUpdate(field0) => {
             let _: foundation_api::api::bitcoin::SyncUpdate = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::FirmwarePayload(field0) => {
+            let _: foundation_api::api::firmware::FirmwarePayload = field0;
         }
     }
     {
@@ -860,6 +867,16 @@ impl SseDecode for f64 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         deserializer.cursor.read_f64::<NativeEndian>().unwrap()
+    }
+}
+
+impl SseDecode for foundation_api::api::firmware::FirmwarePayload {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_payload = <Vec<u8>>::sse_decode(deserializer);
+        return foundation_api::api::firmware::FirmwarePayload {
+            payload: var_payload,
+        };
     }
 }
 
@@ -1113,6 +1130,13 @@ impl SseDecode for foundation_api::api::message::QuantumLinkMessage {
                 let mut var_field0 =
                     <foundation_api::api::bitcoin::SyncUpdate>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::SyncUpdate(var_field0);
+            }
+            9 => {
+                let mut var_field0 =
+                    <foundation_api::api::firmware::FirmwarePayload>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::FirmwarePayload(
+                    var_field0,
+                );
             }
             _ => {
                 unimplemented!("");
@@ -1429,6 +1453,23 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::fx::Excha
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::firmware::FirmwarePayload> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.0.payload.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::firmware::FirmwarePayload>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::firmware::FirmwarePayload>>
+    for foundation_api::api::firmware::FirmwarePayload
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::firmware::FirmwarePayload> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::firmware::FirmwareUpdate> {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -1679,6 +1720,9 @@ impl flutter_rust_bridge::IntoDart
             foundation_api::api::message::QuantumLinkMessage::SyncUpdate(field0) => {
                 [8.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
+            foundation_api::api::message::QuantumLinkMessage::FirmwarePayload(field0) => {
+                [9.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
             _ => {
                 unimplemented!("");
             }
@@ -1917,6 +1961,13 @@ impl SseEncode for f64 {
     }
 }
 
+impl SseEncode for foundation_api::api::firmware::FirmwarePayload {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<u8>>::sse_encode(self.payload, serializer);
+    }
+}
+
 impl SseEncode for foundation_api::api::firmware::FirmwareUpdate {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2127,6 +2178,10 @@ impl SseEncode for foundation_api::api::message::QuantumLinkMessage {
             foundation_api::api::message::QuantumLinkMessage::SyncUpdate(field0) => {
                 <i32>::sse_encode(8, serializer);
                 <foundation_api::api::bitcoin::SyncUpdate>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::message::QuantumLinkMessage::FirmwarePayload(field0) => {
+                <i32>::sse_encode(9, serializer);
+                <foundation_api::api::firmware::FirmwarePayload>::sse_encode(field0, serializer);
             }
             _ => {
                 unimplemented!("");
