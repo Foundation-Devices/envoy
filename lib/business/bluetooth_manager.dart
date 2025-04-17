@@ -50,9 +50,9 @@ class BluetoothManager {
     events = await bluart.init().asBroadcastStream();
 
     events?.listen((bluart.Event event) {
-      kPrint("Got bluart event: $event");
+      //kPrint("Got bluart event: $event");
       if (event is bluart.Event_ScanResult) {
-        kPrint("Got scan result: ${event.field0}");
+        //kPrint("Got scan result: ${event.field0}");
       }
     });
 
@@ -131,11 +131,10 @@ class BluetoothManager {
   }
 
   Future<void> connect({required String id}) async {
-    kPrint("before connect: $hashCode");
+    kPrint("Connecting to: $id");
 
     bleId = id;
     await bluart.connect(id: id);
-    kPrint("after connect: $hashCode");
   }
 
   void listen({required String id}) async {
