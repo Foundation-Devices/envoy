@@ -46,7 +46,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
       bleConnectState = BleConnectState.connecting;
     });
     try {
-      final bleId = GoRouter.of(context).state.uri.queryParameters["p"];
+      String? bleId = GoRouter.of(context).state.uri.queryParameters["p"];
       final regex = RegExp(r'^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$');
       kPrint("bleId $bleId");
       if (regex.hasMatch(bleId ?? "")) {
@@ -55,7 +55,12 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
         await BluetoothManager().scan();
         await BluetoothManager().events?.any((bluart.Event event) {
           if (event is bluart.Event_ScanResult) {
-            return event.field0.isNotEmpty;
+            for (final device in event.field0) {
+              if (device.name.contains("Prime")) {
+                bleId = device.id;
+                return true;
+              }
+            }
           }
 
           return false;
@@ -63,7 +68,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
 
         kPrint("Scan finished...");
         await BluetoothManager().connect(id: bleId!);
-        await LocalStorage().prefs.setString(primeSerialPref, bleId);
+        await LocalStorage().prefs.setString(primeSerialPref, bleId!);
 
         if (mounted) {
           setState(() {
