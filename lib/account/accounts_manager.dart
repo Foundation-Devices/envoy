@@ -109,6 +109,25 @@ class NgAccountManager extends ChangeNotifier {
     return;
   }
 
+  BitcoinTransaction? getTransactionById(EnvoyAccount account, String txId) {
+    for (var transaction in account.transactions) {
+      if (transaction.txId == txId) {
+        return transaction;
+      }
+    }
+    return null;
+  }
+
+  String? getAccountIdByTransaction(String txId) {
+    for (var account in accounts) {
+      var transaction = getTransactionById(account, txId);
+      if (transaction != null) {
+        return account.id;
+      }
+    }
+    return null;
+  }
+
   @override
   // ignore: must_call_super
   void dispose({bool? force}) {
