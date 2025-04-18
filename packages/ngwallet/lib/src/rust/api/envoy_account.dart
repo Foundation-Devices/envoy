@@ -31,6 +31,7 @@ class EnvoyAccount with _$EnvoyAccount {
     required String id,
     required String nextAddress,
     required BigInt balance,
+    required BigInt unlockedBalance,
     required bool isHot,
     required List<BitcoinTransaction> transactions,
     required List<Output> utxo,

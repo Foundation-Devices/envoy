@@ -6,6 +6,7 @@
 import '../frb_generated.dart';
 import '../lib.dart';
 import '../third_party/ngwallet/config.dart';
+import '../third_party/ngwallet/send.dart';
 import '../third_party/ngwallet/transaction.dart';
 import 'envoy_account.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
@@ -21,8 +22,13 @@ abstract class SyncRequest implements RustOpaqueInterface {}
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < Update > >>>
 abstract class WalletUpdate implements RustOpaqueInterface {}
 
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CreateTxError>>
+abstract class CreateTxError implements RustOpaqueInterface {}
+
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>>
 abstract class EnvoyAccountHandler implements RustOpaqueInterface {
+  Future<void> addMempoolTx({required BitcoinTransaction tx});
+
   Future<bool> applyUpdate({required WalletUpdate update});
 
   ArcMutexNgAccountConnection get ngAccount;
@@ -35,10 +41,20 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
 
   BigInt balance();
 
-  Future<void> broadcast(
-      {required String psbt, required String electrumServer});
+  static Future<String> broadcast(
+          {required PreparedTransaction spend,
+          required String electrumServer,
+          int? torPort}) =>
+      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerBroadcast(
+          spend: spend, electrumServer: electrumServer, torPort: torPort);
+
+  Future<PreparedTransaction> composePsbt(
+      {required TransactionParams transactionParams});
 
   NgAccountConfig config();
+
+  Future<TransactionFeeResult> getMaxFee(
+      {required TransactionParams transactionParams});
 
   bool isHot();
 

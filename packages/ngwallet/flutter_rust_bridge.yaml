@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-rust_input: crate::api, ngwallet::NgWallet, ngwallet::NgTransaction,ngwallet::config
+rust_input: crate::api, ngwallet::NgWallet, ngwallet::NgTransaction,ngwallet::config,ngwallet::send::PreparedTransaction,ngwallet::send::TransactionParams,ngwallet::send::TransactionFeeResult
 rust_root: rust/
 dart_output: lib/src/rust
 enable_lifetime: true
@@ -15,5 +15,6 @@ rust_preamble: |
   use std::sync::{Mutex};
   use bdk_wallet::KeychainKind;
   use bdk_wallet::Update;
+  use bdk_wallet::error::CreateTxError;
   use ngwallet::account::NgAccount;
   use bdk_wallet::rusqlite::Connection;

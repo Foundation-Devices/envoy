@@ -32,17 +32,22 @@ use chrono::{DateTime, Local};
 use std::env;
 use bdk_wallet::bip39::{Language, Mnemonic};
 use bdk_wallet::bitcoin::bip32::Error::Secp256k1;
-
+use bdk_wallet::error::CreateTxError;
+use bdk_wallet::serde::{Deserialize, Serialize};
+use ngwallet::send::{TransactionFeeResult, TransactionParams};
+use ngwallet::send::PreparedTransaction;
 
 #[frb(init)]
 pub fn init_app() {
-    // flutter_rust_bridge::setup_default_user_utils();
+    flutter_rust_bridge::setup_default_user_utils();
 }
 
 #[derive(Clone)]
 pub struct EnvoyAccountHandler {
     pub stream_sink: Option<StreamSink<EnvoyAccount>>,
     pub ng_account: Arc<Mutex<NgAccount<Connection>>>,
+    //temporary list of transactions,which are not yet in the wallet yet
+    mempool_txs: Vec<BitcoinTransaction>,
 }
 
 #[frb(external)]
@@ -50,7 +55,6 @@ impl Output {
     #[frb(sync)]
     pub fn get_id(&self) -> String {}
 }
-
 #[frb(mirror(Network))]
 pub enum _Network {
     /// Mainnet Bitcoin.
@@ -89,6 +93,7 @@ impl EnvoyAccountHandler {
 
         EnvoyAccountHandler {
             stream_sink: None,
+            mempool_txs: vec![],
             ng_account: Arc::new(Mutex::new(
                 NgAccount::new_from_descriptor(
                     name,
@@ -130,6 +135,7 @@ impl EnvoyAccountHandler {
         let indexes = get_last_used_index(&sled_db_path, name.clone());
         let account = EnvoyAccountHandler {
             stream_sink: None,
+            mempool_txs: vec![],
             ng_account: Arc::new(Mutex::new(
                 NgAccount::new_from_descriptor(
                     name,
@@ -149,7 +155,6 @@ impl EnvoyAccountHandler {
                 )
             )),
         };
-
 
         account.ng_account.lock().unwrap().wallet
             .reveal_addresses_up_to(KeychainKind::Internal, *indexes.get(&KeychainKind::Internal).unwrap_or(&0))
@@ -177,6 +182,7 @@ impl EnvoyAccountHandler {
         info!("Opening BDK database at: {}", bdk_db_path.display());
         let mut account = EnvoyAccountHandler {
             stream_sink: None,
+            mempool_txs: vec![],
             ng_account: Arc::new(Mutex::new(
                 NgAccount::open_wallet(
                     db_path,
@@ -202,9 +208,31 @@ impl EnvoyAccountHandler {
             Ok(mut account) => {
                 let config = account.config.clone();
                 let balance = account.wallet.balance().unwrap().total().to_sat();
-                let transactions = account.wallet.transactions().unwrap_or(vec![]);
+                let wallet_transactions = account.wallet.transactions().unwrap_or(vec![]);
                 let utxo = account.wallet.unspend_outputs().unwrap_or(vec![]);
                 let tags = account.wallet.list_tags().unwrap_or(vec![]);
+
+                let mut transactions = vec![];
+
+                wallet_transactions.clone().iter().for_each(|tx| {
+                    transactions.push(tx.clone());
+                });
+
+                for (index, tx, ) in self.mempool_txs.clone().iter().enumerate() {
+                    let tx_id = tx.tx_id.to_string();
+                    let mut found = false;
+                    for wallet_tx in wallet_transactions.clone().iter() {
+                        if wallet_tx.tx_id == tx_id {
+                            found = true;
+                            self.mempool_txs.remove(index);
+                            break;
+                        }
+                    }
+                    if !found {
+                        transactions.push(tx.clone());
+                    }
+                }
+
 
                 Ok(EnvoyAccount {
                     name: config.name.clone(),
@@ -219,10 +247,11 @@ impl EnvoyAccountHandler {
                     wallet_path: config.wallet_path.clone(),
                     network: config.network,
                     id: config.id.clone(),
-                    is_hot: config.is_hot(),
+                    is_hot: account.wallet.is_hot(),
                     next_address: account.wallet.next_address().unwrap().address.to_string(),
                     balance,
                     transactions,
+                    unlocked_balance: 0,
                     utxo: utxo.clone(),
                     tags,
                 })
@@ -232,6 +261,7 @@ impl EnvoyAccountHandler {
             }
         };
     }
+
 
     pub fn next_address(&mut self) -> String {
         self.ng_account
@@ -244,6 +274,11 @@ impl EnvoyAccountHandler {
             .lock().unwrap()
             .wallet.full_scan_request();
         return Arc::new(Mutex::new(Some(scan_request)));
+    }
+
+    pub fn add_mempool_tx(&mut self, tx: BitcoinTransaction) {
+        self.mempool_txs.push(tx);
+        self.send_update();
     }
 
     pub fn request_sync(&mut self) -> Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>> {
@@ -385,8 +420,8 @@ impl EnvoyAccountHandler {
     #[frb(sync)]
     pub fn is_hot(&self) -> bool {
         self.ng_account
-            .lock().unwrap()
-            .config.is_hot()
+            .lock()
+            .unwrap().wallet.is_hot()
     }
     #[frb(sync)]
     pub fn config(&self) -> NgAccountConfig {
@@ -402,11 +437,31 @@ impl EnvoyAccountHandler {
             })?;
         Ok(result.serialize_hex())
     }
-    pub fn broadcast(&mut self, psbt: String, electrum_server: &str) -> Result<(), Error> {
+
+    pub fn get_max_fee(&mut self, transaction_params: TransactionParams,
+    ) ->  Result<TransactionFeeResult, CreateTxError>
+    {
         self.ng_account
             .lock().unwrap()
             .wallet.
-            broadcast(Psbt::from_str(&psbt).unwrap(), electrum_server)
+            get_max_fee(transaction_params)
+    }
+
+    pub fn compose_psbt(&mut self, transaction_params: TransactionParams,
+    ) -> Result<PreparedTransaction, CreateTxError> {
+        self.ng_account
+            .lock().unwrap()
+            .wallet.
+            compose_psbt(transaction_params)
+    }
+
+    pub fn broadcast(spend: PreparedTransaction,
+                     electrum_server: &str,
+                     tor_port: Option<u16>,
+    ) -> Result<String> {
+        let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
+        let socks_proxy = socks_proxy.as_ref().map(|s| s.as_str());
+        NgWallet::<Connection>::broadcast_psbt(spend, electrum_server, socks_proxy)
             .map_err(|e| {
                 anyhow!("Failed to broadcast: {}", e)
             })
@@ -419,14 +474,7 @@ impl EnvoyAccountHandler {
                         true
                     }
                     Some(network) => {
-                        match address.require_network(network) {
-                            Ok(_) => {
-                                true
-                            }
-                            Err(_) => {
-                                false
-                            }
-                        }
+                        address.require_network(network).is_ok()
                     }
                 }
             }

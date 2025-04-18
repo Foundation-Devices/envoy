@@ -24,6 +24,7 @@ pub struct EnvoyAccount {
     pub id: String,
     pub next_address: String,
     pub balance: u64,
+    pub unlocked_balance: u64,
     pub is_hot: bool,
     pub transactions: Vec<BitcoinTransaction>,
     pub utxo: Vec<Output>,
