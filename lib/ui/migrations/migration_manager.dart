@@ -27,7 +27,7 @@ class MigrationProgress {
   double get progress => completed / total;
 }
 
-const String migrationPrefs = "migration_envoy_v2";
+const String migrationPrefs = "envoy_migration_v2";
 
 class MigrationManager {
   // Singleton instance

@@ -19,6 +19,7 @@ class EnvoyTransaction extends BitcoinTransaction
       required super.outputs,
       required super.date,
       required super.vsize,
+      required super.feeRate,
       required super.note,
       required super.isConfirmed});
 
@@ -34,6 +35,7 @@ class EnvoyTransaction extends BitcoinTransaction
       inputs: tx.inputs,
       outputs: tx.outputs,
       date: tx.date,
+      feeRate: tx.feeRate,
       vsize: tx.vsize,
       note: tx.note,
     );
@@ -62,6 +64,7 @@ class RampTransaction extends EnvoyTransaction {
       required this.timestamp,
       required super.amount,
       required super.fee,
+      required super.feeRate,
       required super.address,
       required this.purchaseViewToken,
       required this.rampFee,
@@ -91,6 +94,7 @@ class BtcPayTransaction extends EnvoyTransaction {
     required this.timestamp,
     required super.amount,
     required super.fee,
+    required super.feeRate,
     required super.address,
     required this.pullPaymentId,
     required this.currency,
@@ -128,6 +132,7 @@ class AztecoTransaction extends EnvoyTransaction {
     super.inputs = const [],
     super.isConfirmed = false,
     super.outputs = const [],
+    required super.feeRate,
     super.date,
     super.note = null,
     required super.vsize,
@@ -145,6 +150,7 @@ class PendingTransaction extends BitcoinTransaction {
     required super.inputs,
     required super.outputs,
     required super.isConfirmed,
+    required super.feeRate,
     super.date,
     required super.vsize,
   });
@@ -162,6 +168,7 @@ class PendingTransaction extends BitcoinTransaction {
       outputs: tx.outputs,
       date: tx.date,
       vsize: tx.vsize,
+      feeRate: tx.feeRate,
       note: tx.note,
     );
   }

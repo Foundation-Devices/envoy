@@ -585,7 +585,6 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                         existingTag: widget.coinTag.name, newTag: "");
                   } catch (e) {}
                 }
-                print("widget.coinTag. worked");
                 navigator.pop();
                 _menuVisible = false;
                 navigator.pop();

@@ -31,7 +31,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:ngwallet/ngwallet.dart';
 
 class TransactionReviewCard extends ConsumerStatefulWidget {
-  final Psbt psbt;
+  final BitcoinTransaction transaction;
   final bool psbtFinalized;
   final String address;
   final bool loading;
@@ -44,7 +44,7 @@ class TransactionReviewCard extends ConsumerStatefulWidget {
 
   const TransactionReviewCard({
     super.key,
-    required this.psbt,
+    required this.transaction,
     required this.psbtFinalized,
     required this.loading,
     required this.address,
@@ -79,12 +79,12 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
     final uneconomicSpends = ref.watch(uneconomicSpendsProvider);
 
     // send amount is passed as a prop to the widget, use that if available
-    int amount = widget.amountToSend ??
-        ref.watch(spendTransactionProvider.select((value) => value.amount));
 
-    Psbt psbt = widget.psbt;
+    BitcoinTransaction transaction = widget.transaction;
+    int amount = transaction.amount;
     // total amount to spend including fee
-    int totalSpendAmount = amount + psbt.fee;
+    int totalSpendAmount =
+        transaction.amount.toInt() + transaction.feeRate.toInt();
 
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
 
@@ -99,7 +99,8 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
 
     if (s.displayFiat() != null) {
       if (transactionModel.mode == SpendMode.sendMax) {
-        displayFiatFeeAmount = ExchangeRate().convertSatsToFiat(psbt.fee);
+        displayFiatFeeAmount =
+            ExchangeRate().convertSatsToFiat(transaction.fee.toInt());
         displayFiatSendAmount = displayFiatTotalAmount - displayFiatFeeAmount;
       } else {
         displayFiatSendAmount = ref.watch(displayFiatSendAmountProvider)!;
@@ -265,8 +266,11 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                             widget.feeTitleIconButton != null
                                 ? GestureDetector(
                                     onTap: () {
-                                      showNewTransactionDialog(context, account,
-                                          psbt.fee, originalTx!.fee);
+                                      showNewTransactionDialog(
+                                          context,
+                                          account,
+                                          transaction.fee.toInt(),
+                                          originalTx!.fee);
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.only(
@@ -312,7 +316,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                       child: EnvoyAmount(
                           unit: formatUnit,
                           account: account,
-                          amountSats: psbt.fee,
+                          amountSats: transaction.fee.toInt(),
                           displayFiatAmount: displayFiatFeeAmount,
                           millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
@@ -357,7 +361,8 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                       child: EnvoyAmount(
                           account: account,
                           unit: formatUnit,
-                          amountSats: totalSpendAmount,
+                          amountSats: transaction.amount.toInt().abs() +
+                              transaction.fee.toInt(),
                           displayFiatAmount: displayFiatTotalAmount,
                           millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),

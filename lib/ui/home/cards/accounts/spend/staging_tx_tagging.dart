@@ -227,25 +227,9 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
                 type: _tagController.text.isNotEmpty
                     ? EnvoyButtonTypes.primaryModal
                     : EnvoyButtonTypes.tertiary, onTap: () async {
-              final existingTag = ref
-                  .read(tagsProvider(widget.accountId))
-                  .firstWhereOrNull((element) =>
-                      element.name.toLowerCase() ==
-                      _tagController.text.toLowerCase());
-
-              if (existingTag != null) {
-                ref.read(stagingTxChangeOutPutTagProvider.notifier).state =
-                    existingTag;
-              } else {
-                //TODO: FIX: staging tx tags
-                // CoinTag tag = CoinTag(
-                //   id: CoinTag.generateNewId(),
-                //   name: _tagController.text,
-                //   account: widget.accountId,
-                //   untagged: false,
-                // );
-                // ref.read(stagingTxChangeOutPutTagProvider.notifier).state = tag;
-              }
+              ref
+                  .read(spendTransactionProvider.notifier)
+                  .setTag(_tagController.text);
               widget.onTagUpdate();
             }),
           ],

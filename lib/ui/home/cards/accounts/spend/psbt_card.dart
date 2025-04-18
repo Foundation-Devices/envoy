@@ -24,11 +24,11 @@ import 'package:ngwallet/ngwallet.dart';
 
 //ignore: must_be_immutable
 class PsbtCard extends StatelessWidget {
-  final Psbt psbt;
+  final PreparedTransaction transaction;
   final EnvoyAccount account;
   final Function(Psbt)? onSignedPsbtScanned;
 
-  PsbtCard(this.psbt, this.account, {this.onSignedPsbtScanned})
+  PsbtCard(this.transaction, this.account, {this.onSignedPsbtScanned})
       : super(key: UniqueKey());
 
   @override
@@ -60,7 +60,7 @@ class PsbtCard extends StatelessWidget {
                     subtitle: S().send_qr_code_card_subheading,
                     account: account,
                     qr: AnimatedQrImage(
-                      base64Decode(psbt.base64),
+                      base64Decode(transaction.psbtBase64),
                       urType: "crypto-psbt",
                       binaryCborTag: true,
                     ),
@@ -86,7 +86,8 @@ class PsbtCard extends StatelessWidget {
                 children: [
                   IconButton(
                       onPressed: () {
-                        Clipboard.setData(ClipboardData(text: psbt.base64));
+                        Clipboard.setData(
+                            ClipboardData(text: transaction.psbtBase64));
                         ScaffoldMessenger.of(context)
                             .showSnackBar(const SnackBar(
                           content:
@@ -136,7 +137,7 @@ class PsbtCard extends StatelessWidget {
                           ))),
                   IconButton(
                       onPressed: () {
-                        Share.share(psbt.base64);
+                        Share.share(transaction.psbtBase64);
                       },
                       icon: const EnvoyIcon(
                         icon: "ic_envoy_share.svg",

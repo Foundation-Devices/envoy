@@ -17,8 +17,8 @@ import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/generic_qr_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
@@ -207,6 +207,52 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                             onBackPressed: (context) {
                               Navigator.pop(context);
                             },
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: EnvoySpacing.medium3,
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "Setting up a Passport Core on firmware\nv2.3.5 or earlier?",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                              color: EnvoyColors
+                                                  .textPrimaryInverse,
+                                            ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      TextButton(
+                                        child: Text(
+                                          "Tap here",
+                                          style: EnvoyTypography.button
+                                              .copyWith(
+                                                  color: EnvoyColors
+                                                      .textPrimaryInverse),
+                                        ),
+                                        onPressed: () async {
+                                          final goRouter = GoRouter.of(context);
+                                          Navigator.pop(context);
+                                          await Future.delayed(const Duration(
+                                              milliseconds: 200));
+                                          goRouter
+                                              .goNamed(ONBOARD_PASSPORT_SETUP);
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
                             decoder: GenericQrDecoder(onScan: (String payload) {
                               Navigator.pop(context);
                               final uri = Uri.parse(payload);

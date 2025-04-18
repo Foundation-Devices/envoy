@@ -103,6 +103,8 @@ class NgAccountManager extends ChangeNotifier {
     return _accounts.firstWhereOrNull((element) => element.id == id);
   }
 
+  SyncManager get syncManager => _syncManager;
+
   updateAccountOrder(List<String> accountsOrder) async {
     _accountsOrder.sink.add(accountsOrder);
     await _ls.prefs.setString(ACCOUNT_ORDER, jsonEncode(accountsOrder));

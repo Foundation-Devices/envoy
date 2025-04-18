@@ -575,7 +575,9 @@ String getTransactionDateAndTimeString(int? date, bool isConfirmed) {
     return S().activity_pending;
   }
   final String transactionDateInfo =
-      "${DateFormat.yMd(currentLocale).format(DateTime.fromMillisecondsSinceEpoch(date))} ${S().coindetails_overlay_at} ${DateFormat.Hm(currentLocale).format(DateTime.fromMillisecondsSinceEpoch(date))}";
+      "${DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(date, isUtc: true))} ${S().coindetails_overlay_at} ${DateFormat.Hm(currentLocale).format(
+    DateTime.fromMillisecondsSinceEpoch(date, isUtc: true),
+  )}";
   return transactionDateInfo;
 }
 

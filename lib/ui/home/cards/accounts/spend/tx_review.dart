@@ -5,6 +5,7 @@
 import 'dart:ui';
 
 import 'package:animations/animations.dart';
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
@@ -54,15 +55,12 @@ class TxReview extends ConsumerStatefulWidget {
 }
 
 class _TxReviewState extends ConsumerState<TxReview> {
-  //TODO: disable note
-  // String _txNote = "";
-
   @override
   Widget build(BuildContext context) {
     EnvoyAccount? account = ref.watch(selectedAccountProvider);
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
 
-    if (account == null || transactionModel.psbt == null) {
+    if (account == null) {
       return MediaQuery.removePadding(
         removeTop: true,
         context: context,
@@ -110,91 +108,77 @@ class _TxReviewState extends ConsumerState<TxReview> {
                           .toList() ??
                       [];
 
-                  ///if the user is spending from a single tag and the change output is needs to be tagged to the same tag
-                  if (spendingTags.length == 1 &&
-                      ref.read(stagingTxChangeOutPutTagProvider) == null) {
-                    /// TODO: fix staging output tag using ngwallet
-                    // ref.read(stagingTxChangeOutPutTagProvider.notifier).state =
-                    //     spendingTags[0];
+                  // Tag? coinTag = ref.read(stagingTxChangeOutPutTagProvider);
+                  //
+                  // ///if the the change output is not tagged and there are more input from different tags
+                  // final tagInputs = ref.read(spendInputTagsProvider);
+                  //
+                  // /// if the change output is null or untagged we need to show the tag selection dialog
+                  // final userChosenTag = coinTag?.untagged == false;
+                  //
+                  // final hasManyTagsAsInput = (tagInputs ?? [])
+                  //         .map((e) => e.item1)
+                  //         .map((e) => e.id)
+                  //         .toSet()
+                  //         .length >
+                  //     1;
+                  //
+                  // final userNote = ref.read(stagingTxNoteProvider);
+                  // final dismissedNoteDialog = await EnvoyStorage()
+                  //     .checkPromptDismissed(DismissiblePrompt.addTxNoteWarning);
+                  // if ((userNote == null || userNote.isEmpty) &&
+                  //     !dismissedNoteDialog &&
+                  //     !ref.read(spendTransactionProvider).isFinalized &&
+                  //     context.mounted) {
+                  //   await showEnvoyDialog(
+                  //       context: context,
+                  //       useRootNavigator: true,
+                  //       dialog: TxReviewNoteDialog(
+                  //         onAdd: (note) {
+                  //           Navigator.pop(context);
+                  //         },
+                  //         txId: "UpcomingTx",
+                  //         noteSubTitle: S()
+                  //             .stalls_before_sending_tx_add_note_modal_subheading,
+                  //         noteTitle: S().add_note_modal_heading,
+                  //         value: ref.read(stagingTxNoteProvider),
+                  //       ),
+                  //       alignment: const Alignment(0.0, -0.5));
+                  //
+                  //   ///wait for the dialog to pop
+                  //   await Future.delayed(const Duration(milliseconds: 200));
+                  // }
+                  // if (account.isHot ||
+                  //     ref.read(spendTransactionProvider).isFinalized) {
+                  if (context.mounted) {
+                    broadcastTx(context);
                   }
-
-                  Tag? coinTag = ref.read(stagingTxChangeOutPutTagProvider);
-
-                  ///if the the change output is not tagged and there are more input from different tags
-                  final tagInputs = ref.read(spendInputTagsProvider);
-
-                  /// if the change output is null or untagged we need to show the tag selection dialog
-                  final userChosenTag = coinTag?.untagged == false;
-
-                  final hasManyTagsAsInput = (tagInputs ?? [])
-                          .map((e) => e.item1)
-                          .map((e) => e.id)
-                          .toSet()
-                          .length >
-                      1;
-
-                  final userNote = ref.read(stagingTxNoteProvider);
-                  final dismissedNoteDialog = await EnvoyStorage()
-                      .checkPromptDismissed(DismissiblePrompt.addTxNoteWarning);
-                  if ((userNote == null || userNote.isEmpty) &&
-                      !dismissedNoteDialog &&
-                      !ref.read(spendTransactionProvider).isPSBTFinalized &&
-                      context.mounted) {
-                    await showEnvoyDialog(
-                        context: context,
-                        useRootNavigator: true,
-                        dialog: TxReviewNoteDialog(
-                          onAdd: (note) {
-                            Navigator.pop(context);
-                          },
-                          txId: "UpcomingTx",
-                          noteSubTitle: S()
-                              .stalls_before_sending_tx_add_note_modal_subheading,
-                          noteTitle: S().add_note_modal_heading,
-                          value: ref.read(stagingTxNoteProvider),
-                        ),
-                        alignment: const Alignment(0.0, -0.5));
-
-                    ///wait for the dialog to pop
-                    await Future.delayed(const Duration(milliseconds: 200));
-                  }
-
-                  Tuple<String, int>? changeOutPut =
-                      ref.read(changeOutputProvider);
-                  bool hasChangeOutPutPresent =
-                      changeOutPut != null && changeOutPut.item2 != 0;
+                  // } else {
+                  // if (rootContext.mounted) {
+                  //   final psbt = await Navigator.of(rootContext,
+                  //       rootNavigator: false)
+                  //       .push(MaterialPageRoute(
+                  //       builder: (context) => Padding(
+                  //         padding: const EdgeInsets.all(8.0),
+                  //         child: PsbtCard(
+                  //             transactionModel.preparedTransaction!, account),
+                  //       )));
+                  //   ref
+                  //       .read(spendTransactionProvider.notifier)
+                  //       .updateWithFinalPSBT(psbt);
+                  //   await Future.delayed(const Duration(milliseconds: 200));
+                  // }
+                  // }
+                  final tx = transactionModel.transaction;
 
                   ///then show the tag selection dialog
-                  if (!userChosenTag &&
-                      tagInputs != null &&
-                      hasManyTagsAsInput &&
-                      hasChangeOutPutPresent &&
-                      context.mounted) {
-                    await showTagDialog(
-                        context, account, rootContext, transactionModel);
-                  } else {
-                    if (account.isHot ||
-                        ref.read(spendTransactionProvider).isPSBTFinalized) {
-                      if (context.mounted) {
-                        broadcastTx(context);
-                      }
-                    } else {
-                      if (rootContext.mounted) {
-                        final psbt = await Navigator.of(rootContext,
-                                rootNavigator: false)
-                            .push(MaterialPageRoute(
-                                builder: (context) => Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: PsbtCard(
-                                          transactionModel.psbt!, account),
-                                    )));
-                        ref
-                            .read(spendTransactionProvider.notifier)
-                            .updateWithFinalPSBT(psbt);
-                        await Future.delayed(const Duration(milliseconds: 200));
-                      }
-                    }
-                  }
+                  // if (!userChosenTag &&
+                  //     tagInputs != null &&
+                  //     hasManyTagsAsInput &&
+                  if (context.mounted) {
+                    // await showTagDialog(
+                    //     context, account, rootContext, transactionModel);
+                  } else {}
                 },
               ),
             )
@@ -218,19 +202,20 @@ class _TxReviewState extends ConsumerState<TxReview> {
             onTagUpdate: () async {
               Navigator.pop(context);
               if (account.isHot ||
-                  ref.read(spendTransactionProvider).isPSBTFinalized) {
+                  ref.read(spendTransactionProvider).isFinalized) {
                 broadcastTx(context);
               } else {
-                final psbt = await Navigator.of(rootContext,
-                        rootNavigator: false)
-                    .push(MaterialPageRoute(
-                        builder: (context) => Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: PsbtCard(transactionModel.psbt!, account),
-                            )));
-                ref
-                    .read(spendTransactionProvider.notifier)
-                    .updateWithFinalPSBT(psbt);
+                final psbt =
+                    await Navigator.of(rootContext, rootNavigator: false)
+                        .push(MaterialPageRoute(
+                            builder: (context) => Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: PsbtCard(
+                                      transactionModel.preparedTransaction!!,
+                                      account),
+                                )));
+
+                //TODO: implment ngwallet psbt parse
                 await Future.delayed(const Duration(milliseconds: 200));
               }
             },
@@ -376,7 +361,9 @@ class _TxReviewState extends ConsumerState<TxReview> {
     EnvoyAccount? account = ref.read(selectedAccountProvider);
     TransactionModel transactionModel = ref.read(spendTransactionProvider);
     final providerContainer = ProviderScope.containerOf(context);
-    if (account == null || transactionModel.psbt == null) {
+    if (account == null ||
+        transactionModel.preparedTransaction == null ||
+        transactionModel.broadcastProgress == BroadcastProgress.inProgress) {
       return;
     }
 
@@ -392,7 +379,6 @@ class _TxReviewState extends ConsumerState<TxReview> {
       _stateMachineController?.findInput<bool>("happy")?.change(true);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
       addHapticFeedback();
-      await Future.delayed(const Duration(milliseconds: 500));
     } catch (e, s) {
       kPrint(e, stackTrace: s);
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
@@ -445,6 +431,9 @@ class _TransactionReviewScreenState
     EnvoyAccount? account = ref.watch(selectedAccountProvider);
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
     String address = ref.watch(spendAddressProvider);
+    PreparedTransaction? preparedTransaction =
+        ref.watch(preparedTransactionProvider);
+    BitcoinTransaction? transaction = preparedTransaction?.transaction;
 
     final coinSelectionChanged = ref.watch(coinSelectionChangedProvider);
     final userSelectedCoinsThisSession =
@@ -458,24 +447,25 @@ class _TransactionReviewScreenState
         transactionInputsChanged &&
         userHasChangedFees;
 
-    if (account == null || transactionModel.psbt == null) {
+    if (account == null || transaction == null) {
       return const Center(
         child: Text("Unable to build transaction"), //TODO: figma
       );
     }
 
-    Psbt psbt = transactionModel.psbt!;
-    int amount = transactionModel.amount;
+    int amount = transaction.amount;
 
-    String header = (account.isHot || transactionModel.isPSBTFinalized)
+    String header = (account.isHot || transactionModel.isFinalized)
         ? S().coincontrol_tx_detail_heading
         : S().coincontrol_txDetail_heading_passport;
 
-    String subHeading = (account.isHot || transactionModel.isPSBTFinalized)
+    String subHeading = (account.isHot || transactionModel.isFinalized)
         ? S().coincontrol_tx_detail_subheading
         : S().coincontrol_txDetail_subheading_passport;
 
-    int feePercentage = ((psbt.fee / (psbt.fee + amount)) * 100).round();
+    int feePercentage =
+        ((transaction.fee.toInt() / (transaction.fee.toInt() + amount)) * 100)
+            .round();
 
     return EnvoyScaffold(
       backgroundColor: Colors.transparent,
@@ -504,7 +494,7 @@ class _TransactionReviewScreenState
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                if (!transactionModel.isPSBTFinalized)
+                if (!transactionModel.isFinalized)
                   EnvoyButton(
                     enabled: !transactionModel.loading,
                     S().coincontrol_tx_detail_cta2,
@@ -518,7 +508,7 @@ class _TransactionReviewScreenState
                 const Padding(padding: EdgeInsets.all(6)),
                 EnvoyButton(
                   enabled: !transactionModel.loading,
-                  (account.isHot || transactionModel.isPSBTFinalized)
+                  (account.isHot || transactionModel.isFinalized)
                       ? S().coincontrol_tx_detail_cta1
                       : S().coincontrol_txDetail_cta1_passport,
                   onTap: () {
@@ -565,15 +555,14 @@ class _TransactionReviewScreenState
                         children: [
                           Consumer(builder: (context, ref, child) {
                             return TransactionReviewCard(
-                              psbt: psbt,
+                              transaction: transaction,
                               onTxDetailTap: () {
-                                if (transactionModel.psbt == null) return;
                                 Navigator.of(context, rootNavigator: true).push(
                                     PageRouteBuilder(
                                         pageBuilder: (context, animation,
                                             secondaryAnimation) {
                                           return StagingTxDetails(
-                                            psbt: transactionModel.psbt!,
+                                            transaction: transaction,
                                           );
                                         },
                                         transitionDuration:
@@ -588,7 +577,7 @@ class _TransactionReviewScreenState
                                         opaque: false,
                                         fullscreenDialog: true));
                               },
-                              psbtFinalized: transactionModel.isPSBTFinalized,
+                              psbtFinalized: transactionModel.isFinalized,
                               loading: transactionModel.loading,
                               address: address,
                               feeTitle: S().coincontrol_tx_detail_fee,
@@ -670,7 +659,7 @@ class _TransactionReviewScreenState
     ref.read(spendFeeRateProvider.notifier).state = selectedItem.toDouble();
     await ref
         .read(spendTransactionProvider.notifier)
-        .validate(ProviderScope.containerOf(context), settingFee: true);
+        .setFee(ProviderScope.containerOf(context));
     ref.read(spendFeeProcessing.notifier).state = false;
     //hide fee slider bottom-sheet
     if (customFee && context.mounted) {
@@ -705,20 +694,19 @@ void navigateWithTransition(BuildContext context, Widget page) {
 void editTransaction(BuildContext context, WidgetRef ref) async {
   /// The user has is in edit mode and if the psbt
   /// has inputs then use them to populate the coin selection state
-  if (ref.read(rawTransactionProvider) != null) {
-    List<String> inputs = ref
-        .read(rawTransactionProvider)!
-        .inputs
-        .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}")
-        .toList();
+  List<String> inputs = ref
+      .read(spendTransactionProvider.select(
+        (value) => value.transaction?.inputs ?? [],
+      ))
+      .map((e) => "${e.txId}:${e.vout}")
+      .toList();
 
-    ref.read(coinSelectionStateProvider.notifier).reset();
-    ref.read(coinSelectionStateProvider.notifier).addAll(inputs);
+  ref.read(coinSelectionStateProvider.notifier).reset();
+  ref.read(coinSelectionStateProvider.notifier).addAll(inputs);
 
-    ///make a copy of wallet selected coins so that we can backtrack to it
-    ref.read(coinSelectionFromWallet.notifier).reset();
-    ref.read(coinSelectionFromWallet.notifier).addAll(inputs);
-  }
+  ///make a copy of wallet selected coins so that we can backtrack to it
+  ref.read(coinSelectionFromWallet.notifier).reset();
+  ref.read(coinSelectionFromWallet.notifier).addAll(inputs);
 
   if (ref.read(selectedAccountProvider) != null) {
     coinSelectionOverlayKey.currentState?.show(SpendOverlayContext.editCoins);

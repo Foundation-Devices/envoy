@@ -4,11 +4,11 @@
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
-import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/btcpay_voucher.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/ramp_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
@@ -20,8 +20,6 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ngwallet/src/wallet.dart';
-import 'package:envoy/generated/l10n.dart';
 
 final pendingTransactionsProvider =
     Provider.family<List<EnvoyTransaction>, String?>((ref, String? accountId) {
@@ -51,22 +49,51 @@ final filteredTransactionsProvider =
       txFilterState.contains(TransactionFilters.received)) {
     //do nothing
   } else {
-    if (txFilterState.contains(TransactionFilters.sent)) {
-      transactions =
-          transactions.where((element) => element.amount < 0).toList();
-    }
-    if (txFilterState.contains(TransactionFilters.received)) {
-      transactions =
-          transactions.where((element) => element.amount > 0).toList();
-    }
+    // if (txFilterState.contains(TransactionFilters.sent)) {
+    //   transactions =
+    //       transactions.where((element) => element.amount < 0).toList();
+    // }else
+    // if (txFilterState.contains(TransactionFilters.received)) {
+    //   transactions =
+    //       transactions.where((element) => element.amount > 0).toList();
+    // }else{
+    //   transactions.sort((a, b) => a.date!.toInt().compareTo(b.date!.toInt()),);
+    // }
+  }
+
+  int compareTimestamps(BigInt? a, BigInt? b) {
+    a ??= BigInt.from(DateTime.now().millisecondsSinceEpoch);
+    b ??= BigInt.from(DateTime.now().millisecondsSinceEpoch);
+    return a.toInt().compareTo(b.toInt());
   }
 
   switch (txSortState) {
     case TransactionSortTypes.newestFirst:
-      transactions.sort();
+      transactions.sort(
+        (a, b) {
+          if (!a.isConfirmed) {
+            return 1;
+          }
+          if (!b.isConfirmed) {
+            return -1;
+          }
+          return compareTimestamps(a.date, b.date);
+        },
+      );
+      transactions = transactions.reversed.toList();
       break;
     case TransactionSortTypes.oldestFirst:
-      transactions.sort();
+      transactions.sort(
+        (a, b) {
+          if (!a.isConfirmed) {
+            return -1;
+          }
+          if (!b.isConfirmed) {
+            return 1;
+          }
+          return compareTimestamps(b.date, a.date);
+        },
+      );
       transactions = transactions.reversed.toList();
       break;
     case TransactionSortTypes.amountLowToHigh:

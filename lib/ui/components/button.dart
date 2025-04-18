@@ -40,7 +40,7 @@ class EnvoyButton extends StatefulWidget {
     super.key,
     required this.label,
     required this.type,
-    required this.state,
+    this.state = ButtonState.defaultState,
     this.textColor,
     this.icon,
     this.onTap,

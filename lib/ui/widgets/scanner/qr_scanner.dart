@@ -6,15 +6,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/components/button.dart';
-import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/state/home_page_state.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/scanner/scanner_decoder.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
-import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/rive_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,13 +21,18 @@ bool _isScanDialogOpen = false;
 
 showScannerDialog(
     {required BuildContext context,
+    Widget? child,
     required Function(BuildContext context) onBackPressed,
     required ScannerDecoder decoder}) {
   return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (context) {
-        return QrScanner(onBackPressed: onBackPressed, decoder: decoder);
+        return QrScanner(
+          onBackPressed: onBackPressed,
+          decoder: decoder,
+          child: child,
+        );
       },
       useRootNavigator: true);
 }
@@ -40,9 +40,13 @@ showScannerDialog(
 class QrScanner extends StatefulWidget {
   final Function(BuildContext context) onBackPressed;
   final ScannerDecoder decoder;
+  final Widget? child;
 
   const QrScanner(
-      {super.key, required this.onBackPressed, required this.decoder});
+      {super.key,
+      required this.onBackPressed,
+      required this.decoder,
+      this.child});
 
   @override
   State<QrScanner> createState() => _QrScannerState();
@@ -63,7 +67,7 @@ class _QrScannerState extends State<QrScanner> {
   @override
   void initState() {
     _userInteractionTimer = Timer(const Duration(seconds: 8), () {
-      if (context.mounted) {
+      if (mounted) {
         showScanDialog(context);
         _userInteractionTimer.cancel();
       }
@@ -160,7 +164,14 @@ class _QrScannerState extends State<QrScanner> {
               ref.read(animatedQrScannerRiveProvider);
               return Container();
             },
-          )
+          ),
+          if (_viewReady)
+            if (widget.child != null)
+              Expanded(
+                child: widget.child!,
+              )
+            else
+              const SizedBox(),
         ],
       ),
     );
@@ -396,7 +407,7 @@ class _ScanInfoAnimDialogState extends State<ScanInfoAnimDialog> {
         child: Consumer(builder: (context, ref, child) {
           final riveFile = ref.watch(animatedQrScannerRiveProvider);
           return SizedBox(
-            height: 200,
+            height: 340,
             child: rive.RiveAnimation.direct(
               riveFile!,
               //animations: [Platform.isIOS ? "ios_scan" : "android_scan"], // TODO make separate animations

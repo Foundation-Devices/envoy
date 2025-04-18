@@ -102,7 +102,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     EnvoyAccount? account = ref.watch(selectedAccountProvider);
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
 
-    String subHeading = (account!.isHot || transactionModel.isPSBTFinalized)
+    String subHeading = (account!.isHot || transactionModel.isFinalized)
         ? S().coincontrol_tx_detail_subheading
         : S().coincontrol_txDetail_subheading_passport;
 
@@ -268,56 +268,58 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                       children: [
                                         Consumer(
                                             builder: (context, ref, child) {
-                                          return TransactionReviewCard(
-                                            psbt: psbt,
-                                            amountToSend:
-                                                rbfState.originalAmount.abs(),
-                                            onTxDetailTap: () {
-                                              Navigator.of(context,
-                                                      rootNavigator: true)
-                                                  .push(PageRouteBuilder(
-                                                      pageBuilder: (context,
-                                                          animation,
-                                                          secondaryAnimation) {
-                                                        return StagingTxDetails(
-                                                          psbt: psbt,
-                                                          previousTransaction:
-                                                              rbfState
-                                                                  .originalTx,
-                                                        );
-                                                      },
-                                                      transitionDuration: const Duration(
-                                                          milliseconds: 100),
-                                                      transitionsBuilder:
-                                                          (context,
-                                                              animation,
-                                                              secondaryAnimation,
-                                                              child) {
-                                                        return FadeTransition(
-                                                          opacity: animation,
-                                                          child: child,
-                                                        );
-                                                      },
-                                                      opaque: false,
-                                                      fullscreenDialog: true));
-                                            },
-                                            psbtFinalized:
-                                                finalizedPsbt != null,
-                                            hideTxDetailsDialog: true,
-                                            loading: _rebuildingTx,
-                                            feeTitleIconButton: EnvoyIcons.info,
-                                            feeTitle: S()
-                                                .coincontrol_tx_detail_newFee,
-                                            address: rbfState.receiveAddress,
-                                            feeChooserWidget: FeeChooser(
-                                              onFeeSelect: (int fee,
-                                                  BuildContext context,
-                                                  bool customFee) {
-                                                _setFee(
-                                                    fee, context, customFee);
-                                              },
-                                            ),
-                                          );
+                                          return Center();
+                                          //TODO: use ngwallet to get the transaction
+                                          // return TransactionReviewCard(
+                                          //   transaction: tr,
+                                          //   amountToSend:
+                                          //       rbfState.originalAmount.abs(),
+                                          //   onTxDetailTap: () {
+                                          //     Navigator.of(context,
+                                          //             rootNavigator: true)
+                                          //         .push(PageRouteBuilder(
+                                          //             pageBuilder: (context,
+                                          //                 animation,
+                                          //                 secondaryAnimation) {
+                                          //               return StagingTxDetails(
+                                          //                 psbt: psbt,
+                                          //                 previousTransaction:
+                                          //                     rbfState
+                                          //                         .originalTx,
+                                          //               );
+                                          //             },
+                                          //             transitionDuration: const Duration(
+                                          //                 milliseconds: 100),
+                                          //             transitionsBuilder:
+                                          //                 (context,
+                                          //                     animation,
+                                          //                     secondaryAnimation,
+                                          //                     child) {
+                                          //               return FadeTransition(
+                                          //                 opacity: animation,
+                                          //                 child: child,
+                                          //               );
+                                          //             },
+                                          //             opaque: false,
+                                          //             fullscreenDialog: true));
+                                          //   },
+                                          //   psbtFinalized:
+                                          //       finalizedPsbt != null,
+                                          //   hideTxDetailsDialog: true,
+                                          //   loading: _rebuildingTx,
+                                          //   feeTitleIconButton: EnvoyIcons.info,
+                                          //   feeTitle: S()
+                                          //       .coincontrol_tx_detail_newFee,
+                                          //   address: rbfState.receiveAddress,
+                                          //   feeChooserWidget: FeeChooser(
+                                          //     onFeeSelect: (int fee,
+                                          //         BuildContext context,
+                                          //         bool customFee) {
+                                          //       _setFee(
+                                          //           fee, context, customFee);
+                                          //     },
+                                          //   ),
+                                          // );
                                         }),
                                       ],
                                     ),
@@ -545,27 +547,29 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         broadcastTx(account, psbt, context);
         return;
       }
-      await Navigator.of(context, rootNavigator: false).push(MaterialPageRoute(
-          builder: (context) => background(
-              child: PsbtCard(
-                psbt,
-                account,
-                onSignedPsbtScanned: (psbt) {
-                  Navigator.pop(context);
-                  finalizedPsbt = psbt;
-                  ref.read(rbfSpendStateProvider.notifier).state =
-                      rbfSpendState.copyWith(
-                          psbt: psbt,
-                          feeRate: rbfSpendState.feeRate,
-                          receiveAmount: rbfSpendState.receiveAmount);
-                  if (mounted) {
-                    setState(() {
-                      finalizedPsbt = psbt;
-                    });
-                  }
-                },
-              ),
-              context: context)));
+
+      //TODO: ngwallet
+      // await Navigator.of(context, rootNavigator: false).push(MaterialPageRoute(
+      //     builder: (context) => background(
+      //         child: PsbtCard(
+      //           psbt,
+      //           account,
+      //           onSignedPsbtScanned: (psbt) {
+      //             Navigator.pop(context);
+      //             finalizedPsbt = psbt;
+      //             ref.read(rbfSpendStateProvider.notifier).state =
+      //                 rbfSpendState.copyWith(
+      //                     psbt: psbt,
+      //                     feeRate: rbfSpendState.feeRate,
+      //                     receiveAmount: rbfSpendState.receiveAmount);
+      //             if (mounted) {
+      //               setState(() {
+      //                 finalizedPsbt = psbt;
+      //               });
+      //             }
+      //           },
+      //         ),
+      //         context: context)));
     }
   }
 
