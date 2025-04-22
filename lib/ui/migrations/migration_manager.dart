@@ -9,9 +9,11 @@ import 'dart:io';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/legacy/legacy_account.dart';
 import 'package:envoy/account/sync_manager.dart';
+import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -132,7 +134,8 @@ class MigrationManager {
         try {
           await syncAccounts();
           for (var account in accounts) {
-            migrateNotes(account);
+            await migrateNotes(account);
+            await migrateTags(account);
           }
           for (var account in accounts) {
             account.dispose();
@@ -180,11 +183,12 @@ class MigrationManager {
   //this will get all notes that try to set it to account,\
   //ngwallet will only take notes that are associated with its transactions
   Future migrateNotes(EnvoyAccountHandler envoyAccount) async {
+    kPrint("Migration: Migrating notes");
     final storage = EnvoyStorage();
     final notes = await storage.getAllNotes();
     for (var entry in notes.entries) {
       try {
-        await envoyAccount.setNote(note: entry.value, txId: entry.key);
+        var i = await envoyAccount.setNote(note: entry.value, txId: entry.key);
       } catch (_) {}
     }
   }
@@ -211,5 +215,28 @@ class MigrationManager {
     return '#${r.toRadixString(16).padLeft(2, '0')}'
         '${g.toRadixString(16).padLeft(2, '0')}'
         '${b.toRadixString(16).padLeft(2, '0')}';
+  }
+
+  Future migrateTags(EnvoyAccountHandler account) async {
+    kPrint("Migration: Migrating tags");
+    List<CoinTag> tags =
+        await CoinRepository().getCoinTags(accountId: account.config().id);
+    for (var tag in tags) {
+      kPrint(
+          "Migration: Migrating tag ${tag.name}  with ${tag.coins.length} coins");
+      for (var id in tag.coinsId) {
+        final txId = id.split(":")[0];
+        final vout = int.parse(id.split(":")[1]);
+        await account.setTag(
+            utxo: Output(
+                txId: txId,
+                vout: vout,
+                amount: BigInt.zero,
+                isConfirmed: true,
+                address: "",
+                doNotSpend: false),
+            tag: tag.name);
+      }
+    }
   }
 }

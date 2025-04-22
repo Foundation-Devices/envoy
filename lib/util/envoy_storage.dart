@@ -541,14 +541,6 @@ class EnvoyStorage {
     return notes;
   }
 
-  Future<Map<String, String>> getAllTags() async {
-    Map<String, String> notes = {};
-    await tagStore.find(_db).then((records) {
-      for (var record in records) {}
-    });
-    return notes;
-  }
-
   void clearDismissedStatesStore() async {
     dismissedPromptsStore.delete(_db);
   }
