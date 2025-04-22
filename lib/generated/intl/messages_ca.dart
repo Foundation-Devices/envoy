@@ -29,9 +29,12 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m2(tagName) =>
       "La teva etiqueta ${tagName} està buida. Vols eliminar-la?";
 
+  static String m3(amount, total_amount) =>
+      "Re-syncing your accounts.\nPlease do not close Envoy.\n\n${amount} of ${total_amount} synced";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("Secondary action"),
+        "_": MessageLookupByLibrary.simpleMessage("12:34"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versió de l\'aplicació"),
         "about_openSourceLicences":
@@ -1441,8 +1444,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents."),
         "onboarding_magicUserMobileUploading_header":
             MessageLookupByLibrary.simpleMessage("Uploading Your Backup"),
-        "onboarding_migrating_xOfYSynced": MessageLookupByLibrary.simpleMessage(
-            "Re-syncing your accounts.\nPlease do not close Envoy.\n\n{0} of {1} synced"),
+        "onboarding_migrating_xOfYSynced": m3,
         "onboarding_passpportSelectCamera_sub235VersionAlert":
             MessageLookupByLibrary.simpleMessage(
                 "Setting up a Passport Core on firmware v2.3.5 or earlier?"),

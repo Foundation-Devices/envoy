@@ -1,6 +1,6 @@
 {
   ":": ":",
-  "_": "Secondary action",
+  "_": "12:34",
   "about_appVersion": "Versió de l'aplicació",
   "about_openSourceLicences": "Llicències de Codi Obert",
   "about_privacyPolicy": "Política de Privacitat",
@@ -648,7 +648,7 @@
   "onboarding_magicUserMobileSuccess_header": "Your Mobile Wallet Is Ready",
   "onboarding_magicUserMobileUploading_content": "Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.",
   "onboarding_magicUserMobileUploading_header": "Uploading Your Backup",
-  "onboarding_migrating_xOfYSynced": "Re-syncing your accounts.\nPlease do not close Envoy.\n\n{0} of {1} synced",
+  "onboarding_migrating_xOfYSynced": "Re-syncing your accounts.\nPlease do not close Envoy.\n\n{amount} of {total_amount} synced",
   "onboarding_passpportSelectCamera_sub235VersionAlert": "Setting up a Passport Core on firmware v2.3.5 or earlier?",
   "onboarding_passpportSelectCamera_tapHere": "Tap here",
   "onboarding_primeIntro_content": "Congratulations on taking the first step to secure your entire digital life.\n\nSetting up your Passport Prime will take only 5-10 minutes. Pick up your device and let’s get started!",

@@ -29,6 +29,9 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m2(tagName) =>
       "Tu etiqueta ${tagName} ahora está vacía. ¿Quieres eliminarla?";
 
+  static String m3(amount, total_amount) =>
+      "Re-sincronizando tus cuentas.\nPor favor, no cierres Envoy.\n\n{0} de {1} sincronizado";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "_": MessageLookupByLibrary.simpleMessage("USD"),
@@ -1447,8 +1450,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Envoy está subiendo la copia de seguridad encriptada de tu cartera a los servidores de Foundation.\n\nComo la copia de seguridad está encriptada de extremo a extremo, Foundation no tiene acceso a ella, ni tiene conocimiento sobre su contenido."),
         "onboarding_magicUserMobileUploading_header":
             MessageLookupByLibrary.simpleMessage("Cargando Copia de Seguridad"),
-        "onboarding_migrating_xOfYSynced": MessageLookupByLibrary.simpleMessage(
-            "Re-sincronizando tus cuentas.\nPor favor, no cierres Envoy.\n\n{0} de {1} sincronizado"),
+        "onboarding_migrating_xOfYSynced": m3,
         "onboarding_passpportSelectCamera_sub235VersionAlert":
             MessageLookupByLibrary.simpleMessage(
                 "¿Quieres inicializar una Passport Core en la versión 2.3.5 o anterior?"),

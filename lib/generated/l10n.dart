@@ -52,10 +52,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `Secondary action`
+  /// `12:34`
   String get _ {
     return Intl.message(
-      'Secondary action',
+      '12:34',
       name: '_',
       desc: '',
       args: [],
@@ -6530,13 +6530,13 @@ class S {
     );
   }
 
-  /// `Re-syncing your accounts.\nPlease do not close Envoy.\n\n{0} of {1} synced`
-  String get onboarding_migrating_xOfYSynced {
+  /// `Re-syncing your accounts.\nPlease do not close Envoy.\n\n{amount} of {total_amount} synced`
+  String onboarding_migrating_xOfYSynced(Object amount, Object total_amount) {
     return Intl.message(
-      'Re-syncing your accounts.\nPlease do not close Envoy.\n\n{0} of {1} synced',
+      'Re-syncing your accounts.\nPlease do not close Envoy.\n\n$amount of $total_amount synced',
       name: 'onboarding_migrating_xOfYSynced',
       desc: '',
-      args: [],
+      args: [amount, total_amount],
     );
   }
 
