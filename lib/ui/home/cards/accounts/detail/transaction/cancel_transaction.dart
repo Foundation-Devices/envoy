@@ -242,8 +242,10 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
       title: S().coindetails_overlay_noCancelNoFunds_heading,
       S().coindetails_overlay_noCanceltNoFunds_subheading,
       S().component_continue,
-      learnMoreLink:
-          "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions",
+      onLearnMore: () {
+        launchUrl(Uri.parse(
+            "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions"));
+      },
       (BuildContext context) {
         Navigator.pop(context);
       },

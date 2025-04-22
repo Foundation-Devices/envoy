@@ -51,7 +51,6 @@ class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -79,7 +78,7 @@ class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
               )
             ],
           ),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          const SizedBox(height: EnvoySpacing.medium1),
           Wrap(
             runSpacing: EnvoySpacing.small,
             children: [
@@ -170,11 +169,11 @@ class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
               const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
             ],
           ),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const SizedBox(height: EnvoySpacing.medium3),
           Text(S().component_device,
               style: EnvoyTypography.subheading
                   .copyWith(color: EnvoyColors.textPrimary)),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const SizedBox(height: EnvoySpacing.medium1),
           Wrap(runSpacing: EnvoySpacing.small, children: [
             EnvoyFilterChip(
               text: S().component_filter_button_all,
@@ -227,7 +226,7 @@ class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                           ?.contains(DeviceFilters.passport) ??
                       false) &&
                   !(_deviceFilterState?.contains(DeviceFilters.all) ?? true)),
-              text: S().learning_center_device_passport,
+              text: S().learning_center_device_passportCore,
               onTap: () {
                 final Set<DeviceFilters> newState = {}
                   ..addAll(_deviceFilterState!);
@@ -268,7 +267,7 @@ class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
               },
             )
           ]),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const SizedBox(height: EnvoySpacing.medium3),
           Text(S().account_details_filter_tags_sortBy,
               style: EnvoyTypography.subheading
                   .copyWith(color: EnvoyColors.textPrimary)),
@@ -291,7 +290,7 @@ class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
               });
             },
           ),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const SizedBox(height: EnvoySpacing.medium1),
           EnvoyButton(
             S().component_Apply,
             type: EnvoyButtonTypes.primaryModal,
@@ -311,7 +310,7 @@ class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
               }
             },
           ),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
+          const SizedBox(height: EnvoySpacing.medium1),
         ],
       ),
     );

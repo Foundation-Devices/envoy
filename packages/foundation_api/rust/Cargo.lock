@@ -337,7 +337,7 @@ dependencies = [
 [[package]]
 name = "btp"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?rev=e65587c626b87af422944694cdc433697d103ff3#e65587c626b87af422944694cdc433697d103ff3"
+source = "git+https://github.com/Foundation-Devices/foundation-api?rev=b8226bfc880a417f69d8ab767fcf733494d0b76d#b8226bfc880a417f69d8ab767fcf733494d0b76d"
 dependencies = [
  "anyhow",
  "consts",
@@ -799,8 +799,8 @@ dependencies = [
 
 [[package]]
 name = "foundation-api"
-version = "0.3.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?rev=e65587c626b87af422944694cdc433697d103ff3#e65587c626b87af422944694cdc433697d103ff3"
+version = "1.0.0"
+source = "git+https://github.com/Foundation-Devices/foundation-api?rev=b8226bfc880a417f69d8ab767fcf733494d0b76d#b8226bfc880a417f69d8ab767fcf733494d0b76d"
 dependencies = [
  "anyhow",
  "bc-components",
@@ -808,7 +808,6 @@ dependencies = [
  "bc-xid",
  "flutter_rust_bridge",
  "gstp",
- "log",
  "minicbor 0.24.4",
  "minicbor-derive 0.15.3",
  "quantum-link-macros",
@@ -1754,7 +1753,7 @@ dependencies = [
 [[package]]
 name = "quantum-link-macros"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?rev=e65587c626b87af422944694cdc433697d103ff3#e65587c626b87af422944694cdc433697d103ff3"
+source = "git+https://github.com/Foundation-Devices/foundation-api?rev=b8226bfc880a417f69d8ab767fcf733494d0b76d#b8226bfc880a417f69d8ab767fcf733494d0b76d"
 dependencies = [
  "quote",
  "syn 2.0.99",

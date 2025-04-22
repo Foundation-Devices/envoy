@@ -105,9 +105,9 @@ final GoRouter mainRouter = GoRouter(
 ///routes order is important, this will be used to determine the index of the bottom navigation bar
 final homeTabRoutes = [
   ROUTE_DEVICES,
-  // ROUTE_PRIVACY,
+  ROUTE_PRIVACY,
   ROUTE_ACCOUNTS_HOME,
-  // ROUTE_ACTIVITY,
+  ROUTE_ACTIVITY,
   ROUTE_LEARN,
   "/",
 ];

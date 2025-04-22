@@ -39,7 +39,7 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
               tooltip: "Copy logs",
               onPressed: () async {
                 try {
-                  String logs = await EnvoyReport().getLogAsString();
+                  String logs = await EnvoyReport().getLogAsString(15);
                   await Clipboard.setData(ClipboardData(text: logs));
                   if (context.mounted) {
                     EnvoyToast(

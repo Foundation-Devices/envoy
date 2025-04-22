@@ -22,7 +22,7 @@ class EnvoyReport {
   }
 
   // The maximum number of logs to keep in the database
-  final int _logCapacity = 25;
+  static const int _logCapacity = 25;
   Database? _db;
   final StoreRef<int, Map<String, Object?>> _logsStore =
       intMapStoreFactory.store("logs");
@@ -105,7 +105,7 @@ class EnvoyReport {
           limit: _logCapacity,
           sortOrders: [SortOrder(Field.key, false)],
         ));
-    var logs = log.map((e) => e.value).toList().toList();
+    var logs = log.map((e) => e.value).toList();
     return logs;
   }
 
@@ -148,8 +148,8 @@ class EnvoyReport {
     return null;
   }
 
-  Future<String> getLogAsString() async {
-    final allLogs = await getAllLogs();
+  Future<String> getLogAsString([int limit = _logCapacity]) async {
+    final allLogs = (await getAllLogs()).take(limit).toList();
     String logs = "";
     for (var logMap in allLogs) {
       String log = "";

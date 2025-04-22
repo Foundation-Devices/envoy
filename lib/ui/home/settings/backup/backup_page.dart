@@ -4,9 +4,12 @@
 
 import 'dart:async';
 import 'dart:io' show Platform;
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/backup_section_title.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/home/settings/backup/erase_warning.dart';
@@ -15,16 +18,21 @@ import 'package:envoy/ui/home/settings/backup/export_seed_modal.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/state/global_state.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as new_colors;
 import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/ui/onboard/magic/wallet_security/wallet_security_modal.dart';
+import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 
 class BackupPage extends ConsumerStatefulWidget {
   const BackupPage({super.key});
@@ -69,6 +77,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
       }
     } catch (e) {
       setState(() {
+        EnvoyReport().log("Backup", "error: $e");
         _isBackupInProgress = false;
       });
     }
@@ -88,7 +97,9 @@ class _BackupPageState extends ConsumerState<BackupPage>
   @override
   Widget build(BuildContext context) {
     final globalState = ref.watch(globalStateProvider.notifier);
-    var s = Settings();
+
+    final s = ref.watch(settingsProvider);
+    final primeDevices = Devices().getPrimeDevices;
 
     var lastEnvoyServerBackup = EnvoySeed().getLastBackupTime();
     var lastCloudBackup = EnvoySeed().getNonSecureLastBackupTimestamp();
@@ -99,206 +110,218 @@ class _BackupPageState extends ConsumerState<BackupPage>
     return EnvoyScaffold(
         hasScrollBody: false,
         child: Padding(
-            padding: const EdgeInsets.only(top: 14, left: 40, right: 40),
+            padding: const EdgeInsets.only(
+                top: 14,
+                left: EnvoySpacing.medium2,
+                right: EnvoySpacing.medium2),
             child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  height: !s.syncToCloud ? 0 : 16,
-                  child: const Padding(padding: EdgeInsets.all(8)),
-                ),
-                SettingText(S().magic_setup_tutorial_heading),
-                if (!s.syncToCloud)
-                  SettingText(
-                    S().manual_toggle_off_disabled_for_manual_seed_configuration,
-                    color: EnvoyColors.textTertiary,
-                  ),
-                if (s.syncToCloud)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 12.0),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  constraints:
-                                      const BoxConstraints(maxWidth: 150),
-                                  child: SettingText(
-                                    S().manual_toggle_on_seed_backedup_android_wallet_data,
-                                  ),
-                                ),
-                              ),
-                              Builder(
-                                builder: (_) {
-                                  if (_isBackupInProgress) {
-                                    return const SizedBox.square(
-                                      dimension: 18,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: EnvoyColors.accentPrimary,
-                                        backgroundColor: Color(0xffD9D9D9),
-                                      ),
-                                    );
-                                  } else {
-                                    return Container(
-                                      constraints:
-                                          const BoxConstraints(maxWidth: 150),
-                                      child: SettingText(
-                                        S().manual_toggle_on_seed_backedup_iOS_backup_now,
-                                        color: EnvoyColors.accentPrimary,
-                                        onTap: () {
-                                          showBackupDialog(context);
-                                        },
-                                      ),
-                                    );
-                                  }
-                                },
-                              ),
-                            ],
-                          ),
-                          SettingText(
-                            _isBackupInProgress
-                                ? S()
-                                    .manual_toggle_on_seed_backup_in_progress_ios_backup_in_progress
-                                : lastEnvoyServerBackup == null
-                                    ? S()
-                                        .manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup
-                                    : "${timeago.format(lastEnvoyServerBackup, locale: activeLocale.languageCode).capitalize()} ${S().manual_toggle_on_seed_backedup_iOS_toFoundationServers}",
-                            color: EnvoyColors.textTertiary,
-                            maxLines: 2,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  height: !s.syncToCloud ? 0 : 16,
-                  child: const Padding(padding: EdgeInsets.all(8)),
-                ),
-                if (s.syncToCloud)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 12.0),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  constraints:
-                                      const BoxConstraints(maxWidth: 100),
-                                  child: SettingText(
-                                    S().manual_toggle_on_seed_backedup_android_wallet_seed,
-                                  ),
-                                ),
-                              ),
-                              if (Platform.isAndroid)
-                                Container(
-                                  constraints:
-                                      const BoxConstraints(maxWidth: 190),
-                                  child: SettingText(
-                                    S().manual_toggle_on_seed_not_backedup_android_open_settings,
-                                    color: EnvoyColors.accentPrimary,
-                                    onTap: () {
-                                      EnvoySeed().showSettingsMenu();
-                                    },
-                                  ),
-                                ),
-                            ],
-                          ),
-                          FutureBuilder<DateTime?>(
-                              future: lastCloudBackup,
-                              builder: (context, snapshot) {
-                                return SettingText(
-                                  Platform.isIOS
-                                      ? S()
-                                          .manual_toggle_on_seed_backedup_iOS_stored_in_cloud
-                                      : snapshot.hasData
-                                          ? S()
-                                              .manual_toggle_on_seed_backedup_android_stored
-                                          : S()
-                                              .manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup,
-                                  color: EnvoyColors.textTertiary,
-                                  maxLines: 2,
-                                );
-                              }),
-                        ],
-                      ),
-                    ),
-                  ),
-                const Divider(),
-                SettingText(
-                  S().manual_toggle_off_download_wallet_data,
-                  onTap: () {
-                    showEnvoyDialog(
-                        context: context, dialog: const ExportBackupModal());
-                  },
-                  maxLines: 2,
-                ),
-                const Divider(),
-                SettingText(
-                  S().manual_toggle_off_view_wallet_seed,
-                  onTap: () {
-                    showEnvoyDialog(
-                        context: context, dialog: const ExportSeedModal());
-                  },
-                ),
-                ExpansionTile(
-                  tilePadding: const EdgeInsets.all(0),
-                  onExpansionChanged: (value) {
-                    setState(() {
-                      _advancedVisible = value;
-                    });
-                  },
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(S().settings_advanced,
-                          style: EnvoyTypography.body
-                              .copyWith(color: Colors.white)),
-                      AnimatedRotation(
-                        duration: const Duration(milliseconds: 200),
-                        turns: _advancedVisible ? 0.0 : 0.5,
-                        child: const Icon(
-                          Icons.keyboard_arrow_up_sharp,
-                          color: Colors.white,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          height: !s.syncToCloud ? 0 : 16,
+                          child: const Padding(padding: EdgeInsets.all(8)),
                         ),
-                      )
-                    ],
-                  ),
-                  trailing: const SizedBox(),
-                  controlAffinity: ListTileControlAffinity.platform,
-                  childrenPadding: const EdgeInsets.only(left: 8),
-                  children: <Widget>[
-                    ListTile(
-                      dense: true,
-                      onTap: () {},
-                      contentPadding: const EdgeInsets.all(0),
-                      title: SettingText(S().backups_downloadBIP329BackupFile,
-                          onTap: () {
-                        AccountManager().exportBIP329();
-                      }),
+                        BackupSectionTitle(
+                          title: S().backups_toggle_envoy_magic_backups,
+                          icon: EnvoyIcons.phone,
+                          switchValue: s.syncToCloud,
+                          onSwitch: (value) {
+                            if (value) {
+                              showEnablingBackupDialog(context);
+                            } else {
+                              showDisableBackupDialog(context, () {
+                                globalState.state = GlobalState.backupDelete;
+                              });
+                            }
+                          },
+                        ),
+                        if (s.syncToCloud)
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: EnvoySpacing.medium1),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  AnimatedContainer(
+                                    duration: const Duration(milliseconds: 200),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Expanded(
+                                              child: Container(
+                                                constraints:
+                                                    const BoxConstraints(
+                                                        maxWidth: 100),
+                                                child: SettingText(
+                                                  S().backups_toggle_envoy_mobile_wallet_key,
+                                                ),
+                                              ),
+                                            ),
+                                            if (Platform.isAndroid)
+                                              Container(
+                                                constraints:
+                                                    const BoxConstraints(
+                                                        maxWidth: 190),
+                                                child: SettingText(
+                                                  S().manual_toggle_on_seed_not_backedup_android_open_settings,
+                                                  color:
+                                                      EnvoyColors.accentPrimary,
+                                                  onTap: () {
+                                                    EnvoySeed()
+                                                        .showSettingsMenu();
+                                                  },
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                        FutureBuilder<DateTime?>(
+                                            future: lastCloudBackup,
+                                            builder: (context, snapshot) {
+                                              return SettingText(
+                                                Platform.isIOS
+                                                    ? S()
+                                                        .manual_toggle_on_seed_backedup_iOS_stored_in_cloud
+                                                    : snapshot.hasData
+                                                        ? S()
+                                                            .manual_toggle_on_seed_backedup_android_stored
+                                                        : S()
+                                                            .manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup,
+                                                color: EnvoyColors.textTertiary,
+                                                maxLines: 2,
+                                              );
+                                            }),
+                                      ],
+                                    ),
+                                  ),
+                                  SettingText(S().backups_settingsAndMetadata),
+                                  SettingText(
+                                    _isBackupInProgress
+                                        ? S()
+                                            .manual_toggle_on_seed_backup_in_progress_ios_backup_in_progress
+                                        : lastEnvoyServerBackup == null
+                                            ? S()
+                                                .manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup
+                                            : "${timeago.format(lastEnvoyServerBackup, locale: activeLocale.languageCode).capitalize()} ${S().manual_toggle_on_seed_backedup_iOS_toFoundationServers}",
+                                    color: EnvoyColors.textTertiary,
+                                    maxLines: 2,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          height: !s.syncToCloud ? 0 : 16,
+                          child: const Padding(padding: EdgeInsets.all(8)),
+                        ),
+                        if (s.syncToCloud && primeDevices.isNotEmpty)
+                          ...primeDevices.map((device) {
+                            return primeBackupSection(
+                              device,
+                              lastCloudBackup,
+                              lastEnvoyServerBackup,
+                              activeLocale,
+                            );
+                          }),
+                        const Divider(),
+                        ExpansionTile(
+                          tilePadding: const EdgeInsets.all(0),
+                          onExpansionChanged: (value) {
+                            setState(() {
+                              _advancedVisible = value;
+                            });
+                          },
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(S().backups_advancedBackups,
+                                  style: EnvoyTypography.body
+                                      .copyWith(color: Colors.white)),
+                              AnimatedRotation(
+                                duration: const Duration(milliseconds: 200),
+                                turns: _advancedVisible ? 0.0 : 0.5,
+                                child: const Icon(
+                                  Icons.keyboard_arrow_up_sharp,
+                                  color: Colors.white,
+                                ),
+                              )
+                            ],
+                          ),
+                          trailing: const SizedBox(),
+                          controlAffinity: ListTileControlAffinity.platform,
+                          childrenPadding: const EdgeInsets.only(left: 8),
+                          children: <Widget>[
+                            ListTile(
+                              dense: true,
+                              onTap: () {},
+                              contentPadding: const EdgeInsets.all(0),
+                              title: SettingText(
+                                  S().backups_viewMobileWalletSeed, onTap: () {
+                                showEnvoyDialog(
+                                    context: context,
+                                    dialog: const ExportSeedModal());
+                              }),
+                            ),
+                            ListTile(
+                              dense: true,
+                              onTap: () {},
+                              contentPadding: const EdgeInsets.all(0),
+                              title: SettingText(
+                                  S().backups_downloadSettingsMetadataBackupFile,
+                                  onTap: () {
+                                showEnvoyDialog(
+                                    context: context,
+                                    dialog: const ExportBackupModal());
+                              }),
+                            ),
+                            ListTile(
+                              dense: true,
+                              onTap: () {},
+                              contentPadding: const EdgeInsets.all(0),
+                              title: SettingText(
+                                  S().backups_downloadBIP329BackupFile,
+                                  onTap: () {
+                                AccountManager().exportBIP329();
+                              }),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: EdgeInsets.only(bottom: bottomOffset + 30.0),
-                      child: EnvoyButton(
+                Padding(
+                  padding: EdgeInsets.only(bottom: bottomOffset + 30.0),
+                  child: Column(
+                    children: [
+                      if (s.syncToCloud)
+                        EnvoyButton(
+                          _isBackupInProgress
+                              ? S().manual_toggle_on_seed_backingup
+                              : S()
+                                  .manual_toggle_on_seed_backedup_iOS_backup_now,
+                          enabled: !_isBackupInProgress,
+                          type: EnvoyButtonTypes.primary,
+                          onTap: () {
+                            showBackupDialog(context);
+                          },
+                        ),
+                      EnvoyButton(
                         S().backups_erase_wallets_and_backups,
                         textStyle: const TextStyle(
                           color: EnvoyColors.danger,
@@ -310,11 +333,97 @@ class _BackupPageState extends ConsumerState<BackupPage>
                           showEraseWalletsAndBackupsWarning(context);
                         },
                       ),
-                    ),
+                    ],
                   ),
                 )
               ],
             )));
+  }
+
+  // TODO: implement logic
+  Widget primeBackupSection(Device device, Future<DateTime?> lastCloudBackup,
+      DateTime? lastEnvoyServerBackup, Locale activeLocale) {
+    return Column(
+      children: [
+        BackupSectionTitle(
+          title: S().backups_primeMagicBackups,
+          icon: EnvoyIcons.prime,
+          switchValue: false,
+          onSwitch: (value) {},
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: EnvoySpacing.medium1),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              constraints: const BoxConstraints(maxWidth: 100),
+                              child: SettingText(
+                                S().backups_primeMasterKeyBackup,
+                              ),
+                            ),
+                          ),
+                          if (Platform.isAndroid)
+                            Container(
+                              constraints: const BoxConstraints(maxWidth: 190),
+                              child: SettingText(
+                                S().manual_toggle_on_seed_not_backedup_android_open_settings,
+                                color: EnvoyColors.accentPrimary,
+                                onTap: () {
+                                  EnvoySeed().showSettingsMenu();
+                                },
+                              ),
+                            ),
+                        ],
+                      ),
+                      FutureBuilder<DateTime?>(
+                          future: lastCloudBackup,
+                          builder: (context, snapshot) {
+                            return SettingText(
+                              Platform.isIOS
+                                  ? S()
+                                      .manual_toggle_on_seed_backedup_iOS_stored_in_cloud
+                                  : snapshot.hasData
+                                      ? S()
+                                          .manual_toggle_on_seed_backedup_android_stored
+                                      : S()
+                                          .manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup,
+                              color: EnvoyColors.textTertiary,
+                              maxLines: 2,
+                            );
+                          }),
+                    ],
+                  ),
+                ),
+                SettingText(S().backups_settingsAndMetadata),
+                SettingText(
+                  _isBackupInProgress
+                      ? S()
+                          .manual_toggle_on_seed_backup_in_progress_ios_backup_in_progress
+                      : lastEnvoyServerBackup == null
+                          ? S()
+                              .manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup
+                          : "${timeago.format(lastEnvoyServerBackup, locale: activeLocale.languageCode).capitalize()} ${S().manual_toggle_on_seed_backedup_iOS_toFoundationServers}",
+                  color: EnvoyColors.textTertiary,
+                  maxLines: 2,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   void showEraseWalletsAndBackupsWarning(BuildContext context) {
@@ -400,5 +509,53 @@ class _BackupPageState extends ConsumerState<BackupPage>
             ),
           ),
         ));
+  }
+
+  showEnablingBackupDialog(BuildContext context) {
+    showEnvoyPopUp(
+        context,
+        S().backups_manualToMagicrModal_subheader,
+        S().component_continue,
+        (_) {
+          Navigator.of(context).pop();
+          context.pushNamed(ONBOARD_ENVOY_MAGIC_GENERATE_SETUP);
+        },
+        title: S().backups_manualToMagicrModal_header,
+        secondaryButtonLabel: S().component_back,
+        onSecondaryButtonTap: (_) {
+          Navigator.of(context).pop();
+        },
+        showCloseButton: false,
+        icon: EnvoyIcons.info,
+        learnMoreText: S().component_learnMore,
+        onLearnMore: () {
+          showEnvoyDialog(
+              context: context,
+              dialog: WalletSecurityModal(
+                onLastStep: () {
+                  Navigator.pop(context);
+                },
+              ));
+        });
+  }
+
+  showDisableBackupDialog(BuildContext context, Function onContinue) {
+    showEnvoyPopUp(
+      context,
+      S().manual_setup_change_from_magic_modal_subheader,
+      S().component_continue,
+      (_) {
+        onContinue();
+        displaySeedBeforeNuke(context);
+      },
+      title: S().component_warning,
+      secondaryButtonLabel: S().component_back,
+      onSecondaryButtonTap: (_) {
+        Navigator.of(context).pop();
+      },
+      showCloseButton: false,
+      icon: EnvoyIcons.alert,
+      typeOfMessage: PopUpState.warning,
+    );
   }
 }

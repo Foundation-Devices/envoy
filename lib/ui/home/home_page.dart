@@ -34,6 +34,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/business/notifications.dart';
@@ -237,8 +238,10 @@ class HomePageState extends ConsumerState<HomePage>
             isNewExpiredBuyTxAvailable.add([]); // reset stream after pop
           },
           learnMoreText: S().contactRampForSupport,
-          learnMoreLink:
-              "https://support.ramp.network/en/collections/6690-customer-support-help-center",
+          onLearnMore: () {
+            launchUrl(Uri.parse(
+                "https://support.ramp.network/en/collections/6690-customer-support-help-center"));
+          },
           icon: EnvoyIcons.info,
           checkBoxText: S().component_dontShowAgain,
           checkedValue: dismissed,

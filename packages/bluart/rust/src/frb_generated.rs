@@ -529,6 +529,9 @@ impl SseDecode for crate::api::ble::Event {
             1 => {
                 return crate::api::ble::Event::DeviceDisconnected;
             }
+            2 => {
+                return crate::api::ble::Event::DeviceConnected;
+            }
             _ => {
                 unimplemented!("");
             }
@@ -691,6 +694,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::ble::Event {
                 [0.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
             crate::api::ble::Event::DeviceDisconnected => [1.into_dart()].into_dart(),
+            crate::api::ble::Event::DeviceConnected => [2.into_dart()].into_dart(),
             _ => {
                 unimplemented!("");
             }
@@ -776,6 +780,9 @@ impl SseEncode for crate::api::ble::Event {
             }
             crate::api::ble::Event::DeviceDisconnected => {
                 <i32>::sse_encode(1, serializer);
+            }
+            crate::api::ble::Event::DeviceConnected => {
+                <i32>::sse_encode(2, serializer);
             }
             _ => {
                 unimplemented!("");

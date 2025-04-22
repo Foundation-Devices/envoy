@@ -23,12 +23,9 @@ import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
-import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/tx_utils.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:ngwallet/src/wallet.dart';
-import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/util/blur_container_transform.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
@@ -165,24 +162,23 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
         txIcon = getTransactionIcon(transaction, cancelState, isBoosted);
 
         unitIcon = () {
-          final accountManager = ref.watch(accountsProvider);
+          final accounts = ref.watch(accountsProvider);
           bool isTransactionHidden = false;
-          Account? transactionAccount;
+          EnvoyAccount? transactionAccount;
 
           // Check if the account of the current transaction is hidden
-          // TODO: use EnvoyAccount
-          // for (var account in accountManager.accounts) {
-          //   final transactions = ref.watch(transactionsProvider(account.id));
-          //   for (var tx in transactions) {
-          //     if (tx.txId == transaction.txId) {
-          //       transactionAccount = account;
-          //       isTransactionHidden =
-          //           ref.watch(balanceHideStateStatusProvider(account.id));
-          //       break;
-          //     }
-          //   }
-          //   if (isTransactionHidden) break;
-          // }
+          for (var account in accounts) {
+            final transactions = ref.watch(transactionsProvider(account.id));
+            for (var tx in transactions) {
+              if (tx.txId == transaction.txId) {
+                transactionAccount = account;
+                isTransactionHidden =
+                    ref.watch(balanceHideStateStatusProvider(account.id));
+                break;
+              }
+            }
+            if (isTransactionHidden) break;
+          }
 
           if (isTransactionHidden) {
             return const Column(
@@ -203,24 +199,21 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
               ],
             );
           } else {
-            //TODO: use EnvoyAccount
-            // return Padding(
-            //   padding: EdgeInsets.only(
-            //       bottom: s.displayFiat() == null ||
-            //               (kDebugMode &&
-            //                   transactionAccount?.wallet.network !=
-            //                       Network.Mainnet)
-            //           ? EnvoySpacing.medium1
-            //           : 0),
-            //   child: FittedBox(
-            //     child: EnvoyAmount(
-            //       account: transactionAccount!,
-            //       amountSats: transaction.amount,
-            //       amountWidgetStyle: AmountWidgetStyle.normal,
-            //       alignToEnd: true,
-            //     ),
-            //   ),
-            // );
+            return Padding(
+                padding: EdgeInsets.only(
+                    bottom: s.displayFiat() == null ||
+                            (kDebugMode &&
+                                transactionAccount?.network != Network.bitcoin)
+                        ? EnvoySpacing.medium1
+                        : 0),
+                child: FittedBox(
+                  child: EnvoyAmount(
+                    account: transactionAccount!,
+                    amountSats: transaction.amount,
+                    amountWidgetStyle: AmountWidgetStyle.normal,
+                    alignToEnd: true,
+                  ),
+                ));
           }
         }();
       }

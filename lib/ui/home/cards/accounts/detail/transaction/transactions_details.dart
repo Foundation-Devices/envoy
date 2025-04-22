@@ -42,6 +42,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -601,7 +602,10 @@ Future<void> openTxDetailsInExplorer(
           openTxDetailPage(network, txId);
         },
         title: S().coindetails_overlay_modal_explorer_heading,
-        learnMoreLink: "https://docs.foundation.xyz/faq/home/#envoy-privacy",
+        onLearnMore: () {
+          launchUrl(
+              Uri.parse("https://docs.foundation.xyz/faq/home/#envoy-privacy"));
+        },
         icon: EnvoyIcons.info,
         secondaryButtonLabel: S().component_cancel,
         onSecondaryButtonTap: (BuildContext context) {

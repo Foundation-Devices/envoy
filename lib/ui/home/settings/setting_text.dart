@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 
 class SettingText extends StatelessWidget {
@@ -32,11 +33,7 @@ class SettingText extends StatelessWidget {
           label,
           overflow: TextOverflow.ellipsis,
           maxLines: maxLines,
-          style: TextStyle(
-            color: color,
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
+          style: EnvoyTypography.body.copyWith(color: color),
         ),
       ),
     );

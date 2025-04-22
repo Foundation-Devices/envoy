@@ -252,6 +252,12 @@ class Settings extends ChangeNotifier {
     syncToCloudSetting = syncToCloud;
   }
 
+  setSyncToCloud(bool syncToCloud) {
+    syncToCloudSetting = syncToCloud;
+    store();
+    notifyListeners();
+  }
+
   @JsonKey(defaultValue: false)
   bool allowScreenshotsSetting = false;
 
