@@ -654,7 +654,7 @@ Future<void> onboardingAndEnterSeed(
 }
 
 Future<void> disableTorOnboarding(WidgetTester tester) async {
-  await findAndPressTextButton(tester, "Advanced Options");
+  await findAndPressTextButton(tester, "Advanced");
   await enablePerformance(tester);
   Finder backButtonFinder = find.byType(CupertinoNavigationBarBackButton);
   expect(backButtonFinder, findsOne);
@@ -705,7 +705,11 @@ Future<void> checkBuyOptionAndTitle(WidgetTester tester) async {
 Future<void> setUpFromStartNoAccounts(WidgetTester tester) async {
   await tester.pump();
 
-  final setUpButtonFinder = find.text('Create a\nMobile Wallet');
+  final setUpButtonFinder = find.byWidgetPredicate((widget) =>
+      widget is Text &&
+      widget.data != null &&
+      widget.data!.contains('Create a\nMobile Wallet'));
+
   expect(setUpButtonFinder, findsOneWidget);
   await tester.tap(setUpButtonFinder);
   await tester.pump(Durations.long2);

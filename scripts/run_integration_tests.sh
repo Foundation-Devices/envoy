@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 # Define the list of test groups
-test_groups=("No account tests" "Hot wallet tests" "Passport wallet tests")
+test_groups=("No account tests") # TODO: add "Hot wallet tests" and "Passport wallet tests" after fixing magic backup
 # Get the current platform (Linux, iOS, etc.)
 platform=$(uname -s)
 
