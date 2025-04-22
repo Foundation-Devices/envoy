@@ -88,4 +88,7 @@ sealed class QuantumLinkMessage with _$QuantumLinkMessage {
   const factory QuantumLinkMessage.syncUpdate(
     SyncUpdate field0,
   ) = QuantumLinkMessage_SyncUpdate;
+  const factory QuantumLinkMessage.firmwarePayload(
+    FirmwarePayload field0,
+  ) = QuantumLinkMessage_FirmwarePayload;
 }

@@ -14,14 +14,11 @@
 		7861873B299FF9AD00CDC6F4 /* libbackup_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7861873A299FF9AC00CDC6F4 /* libbackup_ffi.a */; };
 		7861873D299FF9EF00CDC6F4 /* libbackup_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7861873C299FF9EF00CDC6F4 /* libbackup_ffi.a */; };
 		7861873F299FFA0F00CDC6F4 /* libbackup_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7861873E299FFA0F00CDC6F4 /* libbackup_ffi.a */; };
-		787400BE2955C8010097D2C3 /* libwallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 787400BA2955C8010097D2C3 /* libwallet_ffi.a */; };
 		787400BF2955C8010097D2C3 /* libhttp_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 787400BB2955C8010097D2C3 /* libhttp_ffi.a */; };
 		787400C02955C8010097D2C3 /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 787400BC2955C8010097D2C3 /* libur_ffi.a */; };
-		78CFC741291BC27300A3AFDC /* libwallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760E27F831B4005559E4 /* libwallet_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		78CFC742291BC27600A3AFDC /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760C27F831AC005559E4 /* libur_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		78CFC744291BC28300A3AFDC /* libhttp_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760827F83192005559E4 /* libhttp_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		78CFC76A292E5CE000A3AFDC /* libhttp_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78CFC766292E5CDF00A3AFDC /* libhttp_ffi.a */; };
-		78CFC76B292E5CE000A3AFDC /* libwallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78CFC767292E5CDF00A3AFDC /* libwallet_ffi.a */; };
 		78CFC76D292E5CE000A3AFDC /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78CFC769292E5CDF00A3AFDC /* libur_ffi.a */; };
 		965D58E1492E907466A1E817 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 249C298E72959156B69C7964 /* Pods_Runner.framework */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
@@ -69,17 +66,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				78CFC741291BC27300A3AFDC /* libwallet_ffi.a in Frameworks */,
 				78CFC76A292E5CE000A3AFDC /* libhttp_ffi.a in Frameworks */,
 				78CFC76D292E5CE000A3AFDC /* libur_ffi.a in Frameworks */,
 				78CFC744291BC28300A3AFDC /* libhttp_ffi.a in Frameworks */,
 				4BAFFFE02D0994DD00DAA96C /* CoreBluetooth.framework in Frameworks */,
 				787400BF2955C8010097D2C3 /* libhttp_ffi.a in Frameworks */,
-				787400BE2955C8010097D2C3 /* libwallet_ffi.a in Frameworks */,
 				787400C02955C8010097D2C3 /* libur_ffi.a in Frameworks */,
 				7861873D299FF9EF00CDC6F4 /* libbackup_ffi.a in Frameworks */,
 				7861873B299FF9AD00CDC6F4 /* libbackup_ffi.a in Frameworks */,
-				78CFC76B292E5CE000A3AFDC /* libwallet_ffi.a in Frameworks */,
 				78CFC742291BC27600A3AFDC /* libur_ffi.a in Frameworks */,
 				7861873F299FFA0F00CDC6F4 /* libbackup_ffi.a in Frameworks */,
 				965D58E1492E907466A1E817 /* Pods_Runner.framework in Frameworks */,

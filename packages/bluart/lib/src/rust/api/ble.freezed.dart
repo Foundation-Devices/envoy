@@ -20,18 +20,21 @@ mixin _$Event {
   TResult when<TResult extends Object?>({
     required TResult Function(List<BleDevice> field0) scanResult,
     required TResult Function() deviceDisconnected,
+    required TResult Function() deviceConnected,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(List<BleDevice> field0)? scanResult,
     TResult? Function()? deviceDisconnected,
+    TResult? Function()? deviceConnected,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(List<BleDevice> field0)? scanResult,
     TResult Function()? deviceDisconnected,
+    TResult Function()? deviceConnected,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -40,18 +43,21 @@ mixin _$Event {
     required TResult Function(Event_ScanResult value) scanResult,
     required TResult Function(Event_DeviceDisconnected value)
         deviceDisconnected,
+    required TResult Function(Event_DeviceConnected value) deviceConnected,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(Event_ScanResult value)? scanResult,
     TResult? Function(Event_DeviceDisconnected value)? deviceDisconnected,
+    TResult? Function(Event_DeviceConnected value)? deviceConnected,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(Event_ScanResult value)? scanResult,
     TResult Function(Event_DeviceDisconnected value)? deviceDisconnected,
+    TResult Function(Event_DeviceConnected value)? deviceConnected,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -156,6 +162,7 @@ class _$Event_ScanResultImpl extends Event_ScanResult {
   TResult when<TResult extends Object?>({
     required TResult Function(List<BleDevice> field0) scanResult,
     required TResult Function() deviceDisconnected,
+    required TResult Function() deviceConnected,
   }) {
     return scanResult(field0);
   }
@@ -165,6 +172,7 @@ class _$Event_ScanResultImpl extends Event_ScanResult {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(List<BleDevice> field0)? scanResult,
     TResult? Function()? deviceDisconnected,
+    TResult? Function()? deviceConnected,
   }) {
     return scanResult?.call(field0);
   }
@@ -174,6 +182,7 @@ class _$Event_ScanResultImpl extends Event_ScanResult {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(List<BleDevice> field0)? scanResult,
     TResult Function()? deviceDisconnected,
+    TResult Function()? deviceConnected,
     required TResult orElse(),
   }) {
     if (scanResult != null) {
@@ -188,6 +197,7 @@ class _$Event_ScanResultImpl extends Event_ScanResult {
     required TResult Function(Event_ScanResult value) scanResult,
     required TResult Function(Event_DeviceDisconnected value)
         deviceDisconnected,
+    required TResult Function(Event_DeviceConnected value) deviceConnected,
   }) {
     return scanResult(this);
   }
@@ -197,6 +207,7 @@ class _$Event_ScanResultImpl extends Event_ScanResult {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(Event_ScanResult value)? scanResult,
     TResult? Function(Event_DeviceDisconnected value)? deviceDisconnected,
+    TResult? Function(Event_DeviceConnected value)? deviceConnected,
   }) {
     return scanResult?.call(this);
   }
@@ -206,6 +217,7 @@ class _$Event_ScanResultImpl extends Event_ScanResult {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(Event_ScanResult value)? scanResult,
     TResult Function(Event_DeviceDisconnected value)? deviceDisconnected,
+    TResult Function(Event_DeviceConnected value)? deviceConnected,
     required TResult orElse(),
   }) {
     if (scanResult != null) {
@@ -275,6 +287,7 @@ class _$Event_DeviceDisconnectedImpl extends Event_DeviceDisconnected {
   TResult when<TResult extends Object?>({
     required TResult Function(List<BleDevice> field0) scanResult,
     required TResult Function() deviceDisconnected,
+    required TResult Function() deviceConnected,
   }) {
     return deviceDisconnected();
   }
@@ -284,6 +297,7 @@ class _$Event_DeviceDisconnectedImpl extends Event_DeviceDisconnected {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(List<BleDevice> field0)? scanResult,
     TResult? Function()? deviceDisconnected,
+    TResult? Function()? deviceConnected,
   }) {
     return deviceDisconnected?.call();
   }
@@ -293,6 +307,7 @@ class _$Event_DeviceDisconnectedImpl extends Event_DeviceDisconnected {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(List<BleDevice> field0)? scanResult,
     TResult Function()? deviceDisconnected,
+    TResult Function()? deviceConnected,
     required TResult orElse(),
   }) {
     if (deviceDisconnected != null) {
@@ -307,6 +322,7 @@ class _$Event_DeviceDisconnectedImpl extends Event_DeviceDisconnected {
     required TResult Function(Event_ScanResult value) scanResult,
     required TResult Function(Event_DeviceDisconnected value)
         deviceDisconnected,
+    required TResult Function(Event_DeviceConnected value) deviceConnected,
   }) {
     return deviceDisconnected(this);
   }
@@ -316,6 +332,7 @@ class _$Event_DeviceDisconnectedImpl extends Event_DeviceDisconnected {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(Event_ScanResult value)? scanResult,
     TResult? Function(Event_DeviceDisconnected value)? deviceDisconnected,
+    TResult? Function(Event_DeviceConnected value)? deviceConnected,
   }) {
     return deviceDisconnected?.call(this);
   }
@@ -325,6 +342,7 @@ class _$Event_DeviceDisconnectedImpl extends Event_DeviceDisconnected {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(Event_ScanResult value)? scanResult,
     TResult Function(Event_DeviceDisconnected value)? deviceDisconnected,
+    TResult Function(Event_DeviceConnected value)? deviceConnected,
     required TResult orElse(),
   }) {
     if (deviceDisconnected != null) {
@@ -337,4 +355,119 @@ class _$Event_DeviceDisconnectedImpl extends Event_DeviceDisconnected {
 abstract class Event_DeviceDisconnected extends Event {
   const factory Event_DeviceDisconnected() = _$Event_DeviceDisconnectedImpl;
   const Event_DeviceDisconnected._() : super._();
+}
+
+/// @nodoc
+abstract class _$$Event_DeviceConnectedImplCopyWith<$Res> {
+  factory _$$Event_DeviceConnectedImplCopyWith(
+          _$Event_DeviceConnectedImpl value,
+          $Res Function(_$Event_DeviceConnectedImpl) then) =
+      __$$Event_DeviceConnectedImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$Event_DeviceConnectedImplCopyWithImpl<$Res>
+    extends _$EventCopyWithImpl<$Res, _$Event_DeviceConnectedImpl>
+    implements _$$Event_DeviceConnectedImplCopyWith<$Res> {
+  __$$Event_DeviceConnectedImplCopyWithImpl(_$Event_DeviceConnectedImpl _value,
+      $Res Function(_$Event_DeviceConnectedImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of Event
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$Event_DeviceConnectedImpl extends Event_DeviceConnected {
+  const _$Event_DeviceConnectedImpl() : super._();
+
+  @override
+  String toString() {
+    return 'Event.deviceConnected()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$Event_DeviceConnectedImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(List<BleDevice> field0) scanResult,
+    required TResult Function() deviceDisconnected,
+    required TResult Function() deviceConnected,
+  }) {
+    return deviceConnected();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(List<BleDevice> field0)? scanResult,
+    TResult? Function()? deviceDisconnected,
+    TResult? Function()? deviceConnected,
+  }) {
+    return deviceConnected?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(List<BleDevice> field0)? scanResult,
+    TResult Function()? deviceDisconnected,
+    TResult Function()? deviceConnected,
+    required TResult orElse(),
+  }) {
+    if (deviceConnected != null) {
+      return deviceConnected();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(Event_ScanResult value) scanResult,
+    required TResult Function(Event_DeviceDisconnected value)
+        deviceDisconnected,
+    required TResult Function(Event_DeviceConnected value) deviceConnected,
+  }) {
+    return deviceConnected(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(Event_ScanResult value)? scanResult,
+    TResult? Function(Event_DeviceDisconnected value)? deviceDisconnected,
+    TResult? Function(Event_DeviceConnected value)? deviceConnected,
+  }) {
+    return deviceConnected?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(Event_ScanResult value)? scanResult,
+    TResult Function(Event_DeviceDisconnected value)? deviceDisconnected,
+    TResult Function(Event_DeviceConnected value)? deviceConnected,
+    required TResult orElse(),
+  }) {
+    if (deviceConnected != null) {
+      return deviceConnected(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class Event_DeviceConnected extends Event {
+  const factory Event_DeviceConnected() = _$Event_DeviceConnectedImpl;
+  const Event_DeviceConnected._() : super._();
 }

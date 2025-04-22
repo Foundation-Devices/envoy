@@ -455,6 +455,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         );
       case 1:
         return const Event_DeviceDisconnected();
+      case 2:
+        return const Event_DeviceConnected();
       default:
         throw Exception("unreachable");
     }
@@ -593,6 +595,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return Event_ScanResult(var_field0);
       case 1:
         return const Event_DeviceDisconnected();
+      case 2:
+        return const Event_DeviceConnected();
       default:
         throw UnimplementedError('');
     }
@@ -771,6 +775,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_list_ble_device(field0, serializer);
       case Event_DeviceDisconnected():
         sse_encode_i_32(1, serializer);
+      case Event_DeviceConnected():
+        sse_encode_i_32(2, serializer);
     }
   }
 

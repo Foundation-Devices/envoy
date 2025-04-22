@@ -123,7 +123,12 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
         await _fakeUpdateDownload();
 
-        BluetoothManager().sendOnboardingState(OnboardingState.receivingUpdate);
+        await BluetoothManager()
+            .sendOnboardingState(OnboardingState.receivingUpdate);
+        await Future.delayed(Duration(seconds: 2));
+
+        // fake firmware payload data
+        await BluetoothManager().sendFirmwarePayload();
 
         break;
       case OnboardingState.receivingUpdate:

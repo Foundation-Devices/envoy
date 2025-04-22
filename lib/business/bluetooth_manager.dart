@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:bluart/bluart.dart' as bluart;
@@ -47,6 +48,14 @@ class BluetoothManager {
     await api.RustLib.init();
     await bluart.RustLib.init();
     events = await bluart.init().asBroadcastStream();
+
+    events?.listen((bluart.Event event) {
+      //kPrint("Got bluart event: $event");
+      if (event is bluart.Event_ScanResult) {
+        //kPrint("Got scan result: ${event.field0}");
+      }
+    });
+
     _generateQlIdentity();
   }
 
@@ -122,11 +131,10 @@ class BluetoothManager {
   }
 
   Future<void> connect({required String id}) async {
-    kPrint("before connect: $hashCode");
+    kPrint("Connecting to: $id");
 
     bleId = id;
     await bluart.connect(id: id);
-    kPrint("after connect: $hashCode");
   }
 
   void listen({required String id}) async {
@@ -160,6 +168,23 @@ class BluetoothManager {
   Future<void> sendOnboardingState(api.OnboardingState state) async {
     final encoded = await encodeMessage(
       message: api.QuantumLinkMessage.onboardingState(state),
+    );
+
+    await bluart.writeAll(id: bleId, data: encoded);
+  }
+
+  Future<void> sendFirmwarePayload() async {
+    // Create 100 KB of random data
+    final random = Random();
+    final payloadSize = 100 * 1024; // 100 KB
+    final randomBytes = Uint8List.fromList(
+      List.generate(payloadSize, (_) => random.nextInt(256)),
+    );
+
+    final payload = api.FirmwarePayload(payload: randomBytes);
+
+    final encoded = await encodeMessage(
+      message: api.QuantumLinkMessage.firmwarePayload(payload),
     );
 
     await bluart.writeAll(id: bleId, data: encoded);

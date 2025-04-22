@@ -11,7 +11,7 @@ part 'ble.freezed.dart';
 
 // These functions are ignored because they are not marked as `pub`: `inner_benchmark`, `inner_connect`, `inner_disconnect`, `inner_read`, `inner_scan`, `inner_write_all`, `inner_write`, `remove_stale_devices`, `send_devices`, `send`
 // These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `Command`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `fmt`
 
 /// The init() function must be called before anything else.
 /// At the moment the developer has to make sure it is only called once.
@@ -53,4 +53,5 @@ sealed class Event with _$Event {
     List<BleDevice> field0,
   ) = Event_ScanResult;
   const factory Event.deviceDisconnected() = Event_DeviceDisconnected;
+  const factory Event.deviceConnected() = Event_DeviceConnected;
 }

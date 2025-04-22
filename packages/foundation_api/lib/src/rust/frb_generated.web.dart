@@ -130,6 +130,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ExchangeRate dco_decode_box_autoadd_exchange_rate(dynamic raw);
 
   @protected
+  FirmwarePayload dco_decode_box_autoadd_firmware_payload(dynamic raw);
+
+  @protected
   FirmwareUpdate dco_decode_box_autoadd_firmware_update(dynamic raw);
 
   @protected
@@ -173,6 +176,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   double dco_decode_f_64(dynamic raw);
+
+  @protected
+  FirmwarePayload dco_decode_firmware_payload(dynamic raw);
 
   @protected
   FirmwareUpdate dco_decode_firmware_update(dynamic raw);
@@ -332,6 +338,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  FirmwarePayload sse_decode_box_autoadd_firmware_payload(
+      SseDeserializer deserializer);
+
+  @protected
   FirmwareUpdate sse_decode_box_autoadd_firmware_update(
       SseDeserializer deserializer);
 
@@ -379,6 +389,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   double sse_decode_f_64(SseDeserializer deserializer);
+
+  @protected
+  FirmwarePayload sse_decode_firmware_payload(SseDeserializer deserializer);
 
   @protected
   FirmwareUpdate sse_decode_firmware_update(SseDeserializer deserializer);
@@ -547,6 +560,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       ExchangeRate self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_firmware_payload(
+      FirmwarePayload self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_firmware_update(
       FirmwareUpdate self, SseSerializer serializer);
 
@@ -596,6 +613,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_f_64(double self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_firmware_payload(
+      FirmwarePayload self, SseSerializer serializer);
 
   @protected
   void sse_encode_firmware_update(
