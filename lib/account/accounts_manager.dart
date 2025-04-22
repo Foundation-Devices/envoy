@@ -36,7 +36,7 @@ class NgAccountManager extends ChangeNotifier {
   late SyncManager _syncManager;
   List<EnvoyAccount> _accounts = [];
   final StreamController<List<String>> _accountsOrder =
-      StreamController(sync: true);
+      StreamController<List<String>>.broadcast(sync: true);
 
   final List<EnvoyAccountHandler> _accountsHandler = [];
   var s = Settings();
