@@ -542,18 +542,20 @@ class HomePageState extends ConsumerState<HomePage>
                     )),
               ),
               // Tab bar
-              Container(
-                alignment: Alignment.bottomCenter,
-                child: IgnorePointer(
-                  ignoring: _backgroundShown || modalShown || fullScreen,
-                  child: EnvoyBottomNavigation(
-                    onIndexChanged: (selectedIndex) {
-                      widget.mainNavigationShell
-                          .goBranch(selectedIndex, initialLocation: true);
-                    },
-                  ),
-                ),
-              ),
+              _backgroundShown || (modalShown || optionsShown || fullScreen)
+                  ? SizedBox.shrink()
+                  : Container(
+                      alignment: Alignment.bottomCenter,
+                      child: IgnorePointer(
+                        ignoring: _backgroundShown || modalShown || fullScreen,
+                        child: EnvoyBottomNavigation(
+                          onIndexChanged: (selectedIndex) {
+                            widget.mainNavigationShell
+                                .goBranch(selectedIndex, initialLocation: true);
+                          },
+                        ),
+                      ),
+                    ),
               Positioned(
                   top: shieldTop - 20,
                   left: 0,
