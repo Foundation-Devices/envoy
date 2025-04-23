@@ -119,13 +119,12 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              //TODO: fix with envoyAccount
-              // Padding(
-              //   padding: EdgeInsets.only(
-              //       right: unit == AmountDisplayUnit.fiat ? 10 : 6.0,
-              //       left: unit == AmountDisplayUnit.fiat ? 6 : 0),
-              //   child: displayIcon(widget.account!, unit),
-              // ),
+              Padding(
+                padding: EdgeInsets.only(
+                    right: unit == AmountDisplayUnit.fiat ? 10 : 6.0,
+                    left: unit == AmountDisplayUnit.fiat ? 6 : 0),
+                child: displayIcon(widget.account!, unit),
+              ),
               Text(
                   widget.displayedAmount.isEmpty ? "0" : widget.displayedAmount,
                   style: EnvoyTypography.digitsLarge
