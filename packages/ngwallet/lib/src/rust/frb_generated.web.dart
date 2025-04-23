@@ -9,6 +9,7 @@
 import 'api/bip39.dart';
 import 'api/envoy_account.dart';
 import 'api/envoy_wallet.dart';
+import 'api/errors.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -140,9 +141,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool dco_decode_bool(dynamic raw);
 
   @protected
-  BitcoinTransaction dco_decode_box_autoadd_bitcoin_transaction(dynamic raw);
-
-  @protected
   KeyChain dco_decode_box_autoadd_key_chain(dynamic raw);
 
   @protected
@@ -165,6 +163,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   BigInt dco_decode_box_autoadd_u_64(dynamic raw);
+
+  @protected
+  ComposeTxError dco_decode_compose_tx_error(dynamic raw);
 
   @protected
   DescriptorFromSeed dco_decode_descriptor_from_seed(dynamic raw);
@@ -351,10 +352,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
-  BitcoinTransaction sse_decode_box_autoadd_bitcoin_transaction(
-      SseDeserializer deserializer);
-
-  @protected
   KeyChain sse_decode_box_autoadd_key_chain(SseDeserializer deserializer);
 
   @protected
@@ -380,6 +377,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
+
+  @protected
+  ComposeTxError sse_decode_compose_tx_error(SseDeserializer deserializer);
 
   @protected
   DescriptorFromSeed sse_decode_descriptor_from_seed(
@@ -571,10 +571,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_bool(bool self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_bitcoin_transaction(
-      BitcoinTransaction self, SseSerializer serializer);
-
-  @protected
   void sse_encode_box_autoadd_key_chain(
       KeyChain self, SseSerializer serializer);
 
@@ -601,6 +597,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_compose_tx_error(
+      ComposeTxError self, SseSerializer serializer);
 
   @protected
   void sse_encode_descriptor_from_seed(

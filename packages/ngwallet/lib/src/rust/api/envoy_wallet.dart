@@ -9,6 +9,7 @@ import '../third_party/ngwallet/config.dart';
 import '../third_party/ngwallet/send.dart';
 import '../third_party/ngwallet/transaction.dart';
 import 'envoy_account.dart';
+import 'errors.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`
@@ -22,13 +23,8 @@ abstract class SyncRequest implements RustOpaqueInterface {}
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < Update > >>>
 abstract class WalletUpdate implements RustOpaqueInterface {}
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CreateTxError>>
-abstract class CreateTxError implements RustOpaqueInterface {}
-
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>>
 abstract class EnvoyAccountHandler implements RustOpaqueInterface {
-  Future<void> addMempoolTx({required BitcoinTransaction tx});
-
   Future<bool> applyUpdate({required WalletUpdate update});
 
   ArcMutexNgAccountConnection get ngAccount;
@@ -53,8 +49,16 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
 
   NgAccountConfig config();
 
+  static Future<PreparedTransaction> decodePsbt(
+          {required PreparedTransaction preparedTransaction,
+          required String psbtBase64}) =>
+      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerDecodePsbt(
+          preparedTransaction: preparedTransaction, psbtBase64: psbtBase64);
+
   Future<TransactionFeeResult> getMaxFee(
       {required TransactionParams transactionParams});
+
+  String id();
 
   bool isHot();
 
@@ -166,6 +170,9 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
           torPort: torPort);
 
   Future<List<BitcoinTransaction>> transactions();
+
+  Future<void> updateBroadcastState(
+      {required PreparedTransaction preparedTransaction});
 
   Future<List<Output>> utxo();
 

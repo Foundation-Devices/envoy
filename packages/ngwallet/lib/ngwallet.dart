@@ -11,6 +11,7 @@ export 'src/rust/api/bip39.dart' show EnvoyBip39;
 export 'src/rust/api/bip39.dart' show Seed;
 export 'src/rust/api/bip39.dart' show DescriptorFromSeed;
 export 'src/rust/api/envoy_wallet.dart' show Network;
+export 'src/rust/api/errors.dart' show ComposeTxError;
 export 'src/rust/api/envoy_wallet.dart' show SyncRequest;
 export 'src/rust/api/envoy_wallet.dart' show WalletUpdate;
 export 'src/rust/frb_generated.dart' show RustLib;
