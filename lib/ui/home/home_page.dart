@@ -542,28 +542,18 @@ class HomePageState extends ConsumerState<HomePage>
                     )),
               ),
               // Tab bar
-              AnimatedSlide(
-                  duration: Duration(
-                      milliseconds: _animationsDuration.inMilliseconds),
-                  offset: Offset(
-                      0,
-                      _backgroundShown ||
-                              (modalShown || optionsShown || fullScreen)
-                          ? 0.5
-                          : 0.0),
-                  curve: EnvoyEasing.easeOut,
-                  child: Container(
-                    alignment: Alignment.bottomCenter,
-                    child: IgnorePointer(
-                      ignoring: _backgroundShown || modalShown || fullScreen,
-                      child: EnvoyBottomNavigation(
-                        onIndexChanged: (selectedIndex) {
-                          widget.mainNavigationShell
-                              .goBranch(selectedIndex, initialLocation: true);
-                        },
-                      ),
-                    ),
-                  )),
+              Container(
+                alignment: Alignment.bottomCenter,
+                child: IgnorePointer(
+                  ignoring: _backgroundShown || modalShown || fullScreen,
+                  child: EnvoyBottomNavigation(
+                    onIndexChanged: (selectedIndex) {
+                      widget.mainNavigationShell
+                          .goBranch(selectedIndex, initialLocation: true);
+                    },
+                  ),
+                ),
+              ),
               Positioned(
                   top: shieldTop - 20,
                   left: 0,
