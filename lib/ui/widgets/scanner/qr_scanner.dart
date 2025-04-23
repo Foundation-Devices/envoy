@@ -181,7 +181,7 @@ class _QrScannerState extends State<QrScanner> {
     setState(() {
       _controller = controller;
     });
-
+    final navigator = Navigator.of(context);
     widget.decoder.onProgressUpdates(
       (progress) {
         if (mounted) {
@@ -195,6 +195,10 @@ class _QrScannerState extends State<QrScanner> {
     _qrStreamSubscription =
         controller.scannedDataStream.listen((barcode) async {
       _userInteractionTimer.cancel();
+      if (_isScanDialogOpen) {
+        navigator.pop();
+        _isScanDialogOpen = false;
+      }
       if ((barcode.code != null && barcode.code != _lastCodeDetected) ||
           (barcode.rawBytes != null &&
               barcode.rawBytes != _lastRawBytesDetected)) {
