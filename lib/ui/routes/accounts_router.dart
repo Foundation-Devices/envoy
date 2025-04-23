@@ -12,6 +12,7 @@ import 'package:envoy/ui/home/cards/accounts/descriptor_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/send_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
@@ -67,6 +68,8 @@ const ROUTE_ACCOUNT_SEND_CONFIRM = '$ROUTE_ACCOUNT_SEND/$_ACCOUNT_SEND_CONFIRM';
 const _ACCOUNT_SEND_REVIEW = 'review';
 const ROUTE_ACCOUNT_SEND_REVIEW =
     '$ROUTE_ACCOUNT_SEND_CONFIRM/$_ACCOUNT_SEND_REVIEW';
+
+const ACCOUNT_SEND_SCAN_PSBT = "spend_scan_psbt";
 
 /// simple wrapper to add page animation
 Page wrapWithEnvoyPageAnimation(
@@ -205,6 +208,17 @@ final accountsRouter = StatefulShellBranch(
                         routes: [
                           GoRoute(
                             name: "spend_review",
+                            routes: [
+                              GoRoute(
+                                name: ACCOUNT_SEND_SCAN_PSBT,
+                                path: "scan",
+                                pageBuilder: (context, state) {
+                                  return wrapWithEnvoyPageAnimation(
+                                      child: PsbtCard(
+                                          state.extra as PreparedTransaction));
+                                },
+                              ),
+                            ],
                             onExit: (context, GoRouterState state) {
                               /// if we are exiting the send screen, we need to clear the spend state
                               /// but only if we are not in edit mode

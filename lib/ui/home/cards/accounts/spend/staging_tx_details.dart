@@ -65,9 +65,6 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
   /// find tags and change tags belongs to the provided transaction
   Future loadStagingTx() async {
     if (widget.previousTransaction != null) {
-      final note =
-          await EnvoyStorage().getTxNote(widget.previousTransaction!.txId);
-      ref.read(stagingTxNoteProvider.notifier).state = note;
       // final userSelectedCoins = ref.read(getSelectedCoinsProvider(account.id));
       // if (userSelectedCoins.isNotEmpty) {}
       // setState(() {
@@ -439,7 +436,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                       noteSubTitle: S()
                                           .coincontrol_tx_add_note_subheading,
                                       noteTitle: S().add_note_modal_heading,
-                                      value: ref.read(stagingTxNoteProvider),
+                                      value: note,
                                     ),
                                     alignment: const Alignment(0.0, -0.5),
                                   );

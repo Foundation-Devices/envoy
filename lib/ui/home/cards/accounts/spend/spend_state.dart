@@ -3,11 +3,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
@@ -57,14 +59,13 @@ class TransactionModel {
   //composed transaction state
   PreparedTransaction? preparedTransaction;
   BitcoinTransaction? transaction;
-  String? psbtBase64;
   String? changeOutPutTag;
   List<String> inputTags;
 
   //spend state flags
   bool uneconomicSpends = false;
+  bool _broadcastInProgress = false;
   bool canProceed = false;
-  bool isFinalized;
   bool belowDustLimit = false;
   bool valid = false;
   bool loading = false;
@@ -77,12 +78,10 @@ class TransactionModel {
     this.transactionParams,
     this.preparedTransaction,
     this.transaction,
-    this.psbtBase64,
     this.changeOutPutTag,
     this.inputTags = const [],
     this.uneconomicSpends = false,
     this.canProceed = false,
-    this.isFinalized = false,
     this.belowDustLimit = false,
     this.valid = false,
     this.loading = false,
@@ -101,10 +100,8 @@ class TransactionModel {
         belowDustLimit: model.belowDustLimit,
         broadcastProgress: model.broadcastProgress,
         transaction: model.transaction,
-        psbtBase64: model.psbtBase64,
         changeOutPutTag: model.changeOutPutTag,
         inputTags: model.inputTags,
-        isFinalized: model.isFinalized,
         mode: model.mode,
         note: model.note,
         uneconomicSpends: model.uneconomicSpends);
@@ -112,6 +109,10 @@ class TransactionModel {
 
   TransactionModel clone() {
     return copy(this);
+  }
+
+  bool get isFinalized {
+    return preparedTransaction?.isFinalized ?? false;
   }
 }
 
@@ -158,7 +159,10 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     }
 
     try {
-      state = state.clone()..loading = true;
+      state = state.clone()
+        ..error = null
+        ..broadcastProgress = BroadcastProgress.staging
+        ..loading = true;
       //remove if there is any duplicates
 
       bool sendMax = spendableBalance == amount;
@@ -209,12 +213,12 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
   void setNote(String note) async {
     final handler = account?.handler;
-    final params = state.transactionParams;
+    TransactionParams? params = state.transactionParams;
 
     if (handler == null || params == null) {
       return;
     }
-    final prams = TransactionParams(
+    params = TransactionParams(
       address: state.transactionParams!.address,
       amount: state.transactionParams!.amount,
       feeRate: state.transactionParams!.feeRate,
@@ -223,10 +227,13 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       note: note,
       tag: state.transactionParams!.tag,
     );
-    await handler.composePsbt(transactionParams: prams);
-    state = state.clone()
-      ..note = prams.note ?? ""
-      ..transactionParams = prams;
+    PreparedTransaction tx = state.preparedTransaction!;
+    PreparedTransaction updatedTx = PreparedTransaction(
+        transaction: tx.transaction.copyWith(note: note),
+        psbtBase64: tx.psbtBase64,
+        inputTags: tx.inputTags,
+        isFinalized: tx.isFinalized);
+    updateWithPreparedTransaction(updatedTx, params);
   }
 
   void setTag(String? tag) async {
@@ -245,10 +252,30 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       note: state.transactionParams!.note,
       tag: tag,
     );
-    await handler.composePsbt(transactionParams: prams);
-    state = state.clone()
-      ..changeOutPutTag = tag
-      ..transactionParams = prams;
+    PreparedTransaction tx = state.preparedTransaction!;
+    PreparedTransaction updatedTx = PreparedTransaction(
+        transaction: tx.transaction.copyWith(
+          outputs: tx.transaction.outputs.map((output) {
+            if (output.keychain == KeyChain.internal) {
+              return Output(
+                  txId: output.txId,
+                  vout: output.vout,
+                  amount: output.amount,
+                  isConfirmed: output.isConfirmed,
+                  address: output.address,
+                  tag: tag,
+                  date: output.date,
+                  keychain: output.keychain,
+                  doNotSpend: output.doNotSpend);
+            }
+            return output;
+          }).toList(),
+        ),
+        psbtBase64: tx.psbtBase64,
+        changeOutPutTag: tag,
+        inputTags: tx.inputTags,
+        isFinalized: tx.isFinalized);
+    updateWithPreparedTransaction(updatedTx, prams);
   }
 
   updateWithPreparedTransaction(
@@ -257,7 +284,6 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       ..loading = false
       ..preparedTransaction = preparedTransaction
       ..transaction = preparedTransaction.transaction
-      ..psbtBase64 = preparedTransaction.psbtBase64
       ..changeOutPutTag = preparedTransaction.changeOutPutTag
       ..inputTags = preparedTransaction.inputTags
       ..valid = true
@@ -288,7 +314,11 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         container.read(getSelectedCoinsProvider(account!.id)).toList();
 
     try {
-      state = state.clone()..loading = true;
+      final notes = container.read(stagingTxNoteProvider);
+      state = state.clone()
+        ..error = null
+        ..broadcastProgress = BroadcastProgress.staging
+        ..loading = true;
       //remove if there is any duplicates
       bool sendMax = spendableBalance == amount;
       final params = TransactionParams(
@@ -296,11 +326,11 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           amount: BigInt.from(amount),
           feeRate: BigInt.from(Fees().slowRate(network) * 100000),
           selectedOutputs: utxos,
+          note: notes,
           doNotSpendChange: false);
 
       //calculate max fee only if we are not setting fee
-      TransactionFeeResult feeCalcResult =
-          await handler!.getMaxFee(transactionParams: params);
+      final feeCalcResult = await handler!.getMaxFee(transactionParams: params);
 
       final preparedTransaction = feeCalcResult.preparedTransaction;
 
@@ -311,6 +341,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           minFeeRate: feeCalcResult.minFeeRate.toInt(),
           maxFeeRate: feeCalcResult.maxFeeRate.toInt().clamp(2, 5000));
 
+      print("FEE RATE ${preparedTransaction.transaction.feeRate.toInt()}");
+      print("FEE RATE ${preparedTransaction.transaction.fee.toInt()}");
       updateWithPreparedTransaction(preparedTransaction, params);
 
       if (sendMax) {
@@ -323,46 +355,70 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       }
 
       return true;
-    } catch (e, stackTrace) {
+    } catch (error, stackTrace) {
       //TODO : implentent ngwallet exceptions
-      // state = state.clone()
-      // ..loading = false
-      // ..belowDustLimit = true
-      // ..canProceed = false;
+      state = state.clone()
+        ..loading = false
+        ..belowDustLimit = true
+        ..canProceed = false;
       // container.read(spendValidationErrorProvider.notifier).state =
       // S().send_keyboard_amount_too_low_info;
       if (kDebugMode) {
-        kPrint("Error $e");
-        debugPrintStack(stackTrace: stackTrace);
+        // debugPrintStack(stackTrace: stackTrace);
       }
 
+      String errorMessage = error.toString();
+      if (error is ComposeTxError) {
+        ComposeTxError composeTxError = error;
+        composeTxError.when(
+          coinSelectionError: (field0) {
+            // Handle coin selection error
+            errorMessage = S().send_keyboard_amount_insufficient_funds_info;
+          },
+          error: (err) {
+            // Handle generic error
+            debugPrint("Error: $err");
+            errorMessage = S().send_keyboard_amount_enter_valid_address;
+          },
+          insufficientFunds: (field0) {
+            // Handle insufficient funds
+            debugPrint("Insufficient funds: $field0");
+            errorMessage = S().send_keyboard_amount_insufficient_funds_info;
+          },
+          insufficientFees: (field0) {
+            // Handle insufficient fees
+            debugPrint("Insufficient fees: $field0");
+            errorMessage = S().send_keyboard_amount_too_low_info;
+          },
+          insufficientFeeRate: (field0) {
+            // Handle insufficient fee rate
+            debugPrint("Insufficient fee rate: $field0");
+            errorMessage = S().send_keyboard_amount_too_low_info;
+          },
+        );
+      } else {
+        container.read(spendValidationErrorProvider.notifier).state =
+            S().send_keyboard_amount_insufficient_funds_info;
+      }
       state = state.clone()
         ..loading = false
-        ..error = e.toString();
+        ..error = errorMessage;
     }
     return false;
   }
 
   void reset() {
-    // state = emptyTransactionModel.clone();
+    state = emptyTransactionModel.clone();
   }
 
   Future broadcast(ProviderContainer ref) async {
     try {
       EnvoyAccount? account = ref.read(selectedAccountProvider);
       EnvoyAccountHandler? handler = account?.handler;
-      if (account == null ||
-          handler == null ||
-          state.broadcastProgress == BroadcastProgress.inProgress) {
+      if (account == null || handler == null || state._broadcastInProgress) {
         return;
       }
-      //
-      if (!((state.broadcastProgress != BroadcastProgress.success ||
-          state.broadcastProgress != BroadcastProgress.inProgress))) {
-        return;
-      }
-      state = state.clone()..broadcastProgress = BroadcastProgress.inProgress;
-
+      state = state.clone().._broadcastInProgress = true;
       final server = SyncManager.getElectrumServer(account.network);
       final syncManager = NgAccountManager().syncManager;
       int? port = Settings().getPort(account.network);
@@ -374,7 +430,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         electrumServer: server,
         torPort: port,
       );
-      await handler.addMempoolTx(tx: state.preparedTransaction!.transaction);
+      await handler.updateBroadcastState(
+          preparedTransaction: state.preparedTransaction!);
       syncManager.syncAccount(account);
       Future.delayed(const Duration(seconds: 100));
       state = state.clone()..broadcastProgress = BroadcastProgress.success;
@@ -382,16 +439,46 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     } catch (e) {
       state = state.clone()..broadcastProgress = BroadcastProgress.failed;
       rethrow;
+    } finally {
+      state = state.clone().._broadcastInProgress = false;
     }
   }
 
   resetBroadcastState() {
-    // state = state.clone()..broadcastProgress = BroadcastProgress.staging;
+    state = state.clone()..broadcastProgress = BroadcastProgress.staging;
   }
 
 //for RBF review screen
   void setAmount(int amount) {
     // state = state.clone()..amount = amount;
+  }
+
+  void setProgressState(BroadcastProgress progress) {
+    state = state.clone()..broadcastProgress = progress;
+  }
+
+  Future decodePsbt(ProviderContainer ref, CryptoPsbt decoded) async {
+    EnvoyAccount? account = ref.read(selectedAccountProvider);
+    EnvoyAccountHandler? handler = account?.handler;
+    if (account == null ||
+        handler == null ||
+        state.preparedTransaction == null ||
+        state.broadcastProgress == BroadcastProgress.inProgress) {
+      return;
+    }
+    try {
+      final preparedTx = await EnvoyAccountHandler.decodePsbt(
+          preparedTransaction: state.preparedTransaction!,
+          psbtBase64: decoded.decoded);
+
+      updateWithPreparedTransaction(preparedTx, state.transactionParams);
+      await Future.delayed(const Duration(milliseconds: 100));
+    } catch (e) {
+      state = state.clone()
+        ..loading = false
+        ..error = e.toString();
+      rethrow;
+    }
   }
 }
 
@@ -590,16 +677,3 @@ void clearSpendState(ProviderContainer ref) {
           : AmountDisplayUnit.sat;
   ref.read(displayFiatSendAmountProvider.notifier).state = 0;
 }
-
-///Will return the raw transaction for a given txId
-///this can be used as a cache mechanism to avoid decoding the same transaction multiple times
-final rawWalletTransactionProvider =
-    FutureProvider.family((ref, String rawTx) async {
-  EnvoyAccount? account = ref.watch(selectedAccountProvider);
-  if (account == null) {
-    return null;
-  }
-  //TODO: implement ngwallet
-  // return await account.wallet.decodeWalletRawTx(rawTx, account.wallet.network);
-  return null;
-});

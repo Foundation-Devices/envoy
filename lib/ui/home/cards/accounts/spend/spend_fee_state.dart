@@ -58,7 +58,7 @@ final spendFeeRateProvider = StateProvider<num>((ref) {
   if (account == null) {
     return 1;
   }
-  return Fees().slowRate(account.network);
+  return Fees().slowRate(account.network) * 100000;
 });
 
 final spendFeeRateBlockEstimationProvider =

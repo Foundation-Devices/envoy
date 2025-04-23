@@ -173,3 +173,31 @@ class PendingTransaction extends BitcoinTransaction {
     );
   }
 }
+
+extension copyWithExtenstion on BitcoinTransaction {
+  BitcoinTransaction copyWith({
+    String? txId,
+    String? note,
+    String? address,
+    List<Input>? inputs,
+    List<Output>? outputs,
+    bool? isConfirmed,
+    DateTime? date,
+  }) {
+    return BitcoinTransaction(
+      txId: txId ?? this.txId,
+      blockHeight: blockHeight,
+      confirmations: confirmations,
+      fee: fee,
+      amount: amount,
+      note: note ?? this.note,
+      address: address ?? this.address,
+      inputs: inputs ?? this.inputs,
+      outputs: outputs ?? this.outputs,
+      isConfirmed: isConfirmed ?? this.isConfirmed,
+      vsize: vsize,
+      feeRate: feeRate,
+      date: this.date,
+    );
+  }
+}
