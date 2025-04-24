@@ -365,6 +365,7 @@ class EnvoyStorage {
               purchaseViewToken: e['purchaseViewToken'] as String,
               rampId: e['rampId'] as String?,
               vsize: BigInt.zero,
+              feeRate: BigInt.zero,
               rampFee: e['rampFee'] as int?);
         }
         if (type == wallet.TransactionType.btcPay) {
@@ -372,6 +373,7 @@ class EnvoyStorage {
             txId: e.key as String,
             accountId: e["account"] as String,
             vsize: BigInt.zero,
+            feeRate: BigInt.zero,
             timestamp:
                 DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
             fee: BigInt.from((e["fee"] as int? ?? 0)),
@@ -394,6 +396,7 @@ class EnvoyStorage {
             fee: BigInt.from((e["fee"] as int? ?? 0)),
             address: e["address"] as String,
             vsize: BigInt.zero,
+            feeRate: BigInt.zero,
           );
         }
         return EnvoyTransaction(
@@ -406,6 +409,7 @@ class EnvoyStorage {
             blockHeight: 0,
             confirmations: 0,
             vsize: BigInt.zero,
+            feeRate: BigInt.zero,
             isConfirmed: false,
             note: null,
             date: BigInt.zero);
@@ -533,14 +537,6 @@ class EnvoyStorage {
       for (var record in records) {
         notes[record.key] = record.value;
       }
-    });
-    return notes;
-  }
-
-  Future<Map<String, String>> getAllTags() async {
-    Map<String, String> notes = {};
-    await tagStore.find(_db).then((records) {
-      for (var record in records) {}
     });
     return notes;
   }

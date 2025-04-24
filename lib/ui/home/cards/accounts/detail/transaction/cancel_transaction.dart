@@ -468,27 +468,29 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                       if (account.isHot == false) {
                         await navigator.push(MaterialPageRoute(
                             builder: (context) => Builder(builder: (context) {
-                                  return background(
-                                      child: PsbtCard(
-                                        widget.cancelTx,
-                                        account,
-                                        onSignedPsbtScanned: (psbt) async {
-                                          navigator.pop();
-                                          navigator.pop();
-                                          //wait for route to pop
-                                          await Future.delayed(const Duration(
-                                              milliseconds: 100));
-                                          navigator.push(MaterialPageRoute(
-                                            builder: (context) =>
-                                                CancelTransactionProgress(
-                                              cancelTx: psbt,
-                                              cancelRawTx: widget.cancelRawTx,
-                                              originalTx: widget.originalTx,
-                                            ),
-                                          ));
-                                        },
-                                      ),
-                                      context: context);
+                                  return Container();
+                                  //TODO: fix with NgWallet transaction
+                                  // return background(
+                                  //     child: PsbtCard(
+                                  //       widget.cancelTx,
+                                  //       account,
+                                  //       onSignedPsbtScanned: (psbt) async {
+                                  //         navigator.pop();
+                                  //         navigator.pop();
+                                  //         //wait for route to pop
+                                  //         await Future.delayed(const Duration(
+                                  //             milliseconds: 100));
+                                  //         navigator.push(MaterialPageRoute(
+                                  //           builder: (context) =>
+                                  //               CancelTransactionProgress(
+                                  //             cancelTx: psbt,
+                                  //             cancelRawTx: widget.cancelRawTx,
+                                  //             originalTx: widget.originalTx,
+                                  //           ),
+                                  //         ));
+                                  //       },
+                                  //     ),
+                                  //     context: context);
                                 })));
                       } else {
                         Navigator.pop(context);

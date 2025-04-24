@@ -4,7 +4,6 @@
 
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
-import 'package:envoy/business/ghost_wallet.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -65,7 +64,6 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
   Widget build(BuildContext context) {
     ref.watch(settingsProvider);
     ref.watch(accountsProvider);
-
     EnvoyAccount? account = ref.watch(accountStateProvider(widget.account.id));
     if (widget.account.walletPath == "ghost") {
       account = widget.account;

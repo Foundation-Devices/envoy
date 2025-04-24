@@ -419,14 +419,13 @@ class SpendRequirementOverlayState
                                                   Text(S()
                                                       .coincontrol_edit_transaction_requiredAmount),
                                                   const Spacer(),
-                                                  //TODO: use EnvoyAccount
-                                                  // EnvoyAmount(
-                                                  //     amountSats:
-                                                  //         requiredAmount,
-                                                  //     amountWidgetStyle:
-                                                  //         AmountWidgetStyle
-                                                  //             .sendScreen,
-                                                  //     account: widget.account)
+                                                  EnvoyAmount(
+                                                      amountSats:
+                                                          requiredAmount,
+                                                      amountWidgetStyle:
+                                                          AmountWidgetStyle
+                                                              .sendScreen,
+                                                      account: widget.account)
                                                 ],
                                               ),
                                             )
@@ -474,13 +473,12 @@ class SpendRequirementOverlayState
                                                   .titleSmall,
                                             ),
                                             const Spacer(),
-                                            //TODO: use EnvoyAccount
-                                            // EnvoyAmount(
-                                            //     amountSats: totalSelectedAmount,
-                                            //     amountWidgetStyle:
-                                            //         AmountWidgetStyle
-                                            //             .sendScreen,
-                                            //     account: widget.account)
+                                            EnvoyAmount(
+                                                amountSats: totalSelectedAmount,
+                                                amountWidgetStyle:
+                                                    AmountWidgetStyle
+                                                        .sendScreen,
+                                                account: widget.account)
                                           ]);
                                           return Row(
                                             mainAxisSize: MainAxisSize.max,
@@ -715,11 +713,10 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
 
         String buttonText = S().component_cancel;
         if (widget.inTagSelectionMode) {
-          List<CoinTag> tags =
-              ref.read(coinsTagProvider(selectedAccount?.id ?? "")) ?? [];
+          List<Tag> tags =
+              ref.read(tagsProvider(selectedAccount?.id ?? "")) ?? [];
           bool isCoinsOnlyPartOfUntagged = false;
-          CoinTag? untagged =
-              tags.firstWhereOrNull((element) => element.untagged);
+          Tag? untagged = tags.firstWhereOrNull((element) => element.untagged);
           if (untagged == null) {
             isCoinsOnlyPartOfUntagged = false;
           } else {
@@ -727,7 +724,7 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
 
             /// check if selected coins are only part of untagged coins
             selection.toList().forEach((selectionId) {
-              if (!untagged.coinsId.contains(selectionId)) {
+              if (!untagged.utxo.map((e) => e.getId()).contains(selectionId)) {
                 isCoinsOnlyPartOfUntagged = false;
               }
             });

@@ -4,12 +4,14 @@
 
 import 'dart:async';
 
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/bitcoin_parser.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_display.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -100,31 +102,34 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
   }
 
   Future<void> pasteAmount() async {
+    final selectedAccount = ref.read(selectedAccountProvider);
+    if (selectedAccount == null) {
+      return;
+    }
     var unit = ref.read(sendScreenUnitProvider);
     ClipboardData? cdata = await Clipboard.getData(Clipboard.kTextPlain);
 
     String? text = cdata?.text;
     if (text != null) {
-      //TODO: parsing with ngwallet
-      // var decodedInfo = await BitcoinParser.parse(
-      //   text,
-      //   fiatExchangeRate: ExchangeRate().selectedCurrencyRate,
-      //   wallet: widget.account?.wallet,
-      //   selectedFiat: Settings().selectedFiat,
-      //   currentUnit: unit,
-      // );
-      // ref.read(sendScreenUnitProvider.notifier).state =
-      //     decodedInfo.unit ?? unit;
-      //
-      // setState(() {
-      //   unit = decodedInfo.unit ?? unit;
-      //   ref.read(displayFiatSendAmountProvider.notifier).state =
-      //       decodedInfo.displayFiat;
-      // });
-      //
-      // if (widget.onPaste != null) {
-      //   widget.onPaste!(decodedInfo);
-      // }
+      var decodedInfo = await BitcoinParser.parse(
+        text,
+        fiatExchangeRate: ExchangeRate().selectedCurrencyRate,
+        account: selectedAccount,
+        selectedFiat: Settings().selectedFiat,
+        currentUnit: unit,
+      );
+      ref.read(sendScreenUnitProvider.notifier).state =
+          decodedInfo.unit ?? unit;
+
+      setState(() {
+        unit = decodedInfo.unit ?? unit;
+        ref.read(displayFiatSendAmountProvider.notifier).state =
+            decodedInfo.displayFiat;
+      });
+
+      if (widget.onPaste != null) {
+        widget.onPaste!(decodedInfo);
+      }
     }
   }
 

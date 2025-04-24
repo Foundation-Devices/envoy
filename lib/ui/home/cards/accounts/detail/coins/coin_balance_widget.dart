@@ -3,9 +3,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/account/accounts_manager.dart';
-import 'package:envoy/business/coin_tag.dart';
-import 'package:envoy/business/coins.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/amount_widget.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/warning_dialogs.dart';
@@ -15,16 +15,15 @@ import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/rive_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart' as rive;
 import 'package:rive/rive.dart';
-import 'package:envoy/ui/components/amount_widget.dart';
-import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
-import 'package:envoy/business/account_manager.dart';
 
 //Widget that displays the balance,lock icon etc of a coin
 
@@ -111,13 +110,13 @@ class BalanceWidget extends ConsumerWidget {
 }
 
 class CoinBalanceWidget extends ConsumerStatefulWidget {
-  final Coin coin;
+  final Output output;
   final bool showLock;
-  final CoinTag coinTag;
+  final Tag coinTag;
 
   const CoinBalanceWidget(
       {super.key,
-      required this.coin,
+      required this.output,
       this.showLock = true,
       required this.coinTag});
 
@@ -128,17 +127,17 @@ class CoinBalanceWidget extends ConsumerStatefulWidget {
 class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
   @override
   Widget build(BuildContext context) {
-    final coin = widget.coin;
-
-    bool allCoinsLocked = widget.coinTag.isAllCoinsLocked;
+    final output =
+        ref.watch(outputProvider(widget.output.getId())) ?? widget.output;
+    final accountId = ref.read(selectedAccountProvider)?.id ?? "";
 
     return BalanceWidget(
-      locked: widget.coin.locked,
-      amount: widget.coin.amount,
-      accountId: widget.coin.account,
+      locked: output.doNotSpend,
+      amount: output.amount.toInt(),
+      accountId: accountId,
       showLock: widget.showLock,
       onLockTap: () async {
-        if (!coin.locked) {
+        if (!output.doNotSpend!) {
           bool dismissed = await EnvoyStorage()
               .checkPromptDismissed(DismissiblePrompt.coinLockWarning);
           if (!dismissed && context.mounted) {
@@ -157,13 +156,13 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
                         Navigator.pop(context);
                         //wait for dialog to close so that the lock icon animation is not interrupted
                         await Future.delayed(const Duration(milliseconds: 250));
-                        _lockUnLockCoin(coin);
+                        _lockUnLockCoin(output);
                       },
                     );
                   },
                 ));
           } else {
-            _lockUnLockCoin(coin);
+            _lockUnLockCoin(output);
           }
         } else {
           bool dismissed = await EnvoyStorage()
@@ -183,21 +182,22 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
                         Navigator.pop(context);
                         //wait for dialog to close so that the lock icon animation is not interrupted
                         await Future.delayed(const Duration(milliseconds: 250));
-                        _lockUnLockCoin(coin);
+                        _lockUnLockCoin(output);
                       },
                     );
                   },
                 ));
           } else {
-            _lockUnLockCoin(coin);
+            _lockUnLockCoin(output);
           }
         }
       },
       switchWidget: Consumer(
         builder: (context, ref, child) {
-          final isSelected = ref.watch(isCoinSelectedProvider(coin.id));
-
-          return allCoinsLocked
+          final isSelected = ref.watch(isCoinSelectedProvider(output.getId()));
+          final tag =
+              ref.watch(tagProvider(widget.coinTag.name)) ?? widget.coinTag;
+          return tag.isAllCoinsLocked
               ? const SizedBox.shrink()
               : CoinTagSwitch(
                   value: isSelected
@@ -207,9 +207,9 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
                     final selectionState =
                         ref.read(coinSelectionStateProvider.notifier);
                     if (value == CoinTagSwitchState.on) {
-                      selectionState.add(coin.id);
+                      selectionState.add(output.getId());
                     } else {
-                      selectionState.remove(coin.id);
+                      selectionState.remove(output.getId());
                     }
                   },
                 );
@@ -218,12 +218,15 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
     );
   }
 
-  Future _lockUnLockCoin(Coin coin) async {
+  Future _lockUnLockCoin(Output coin) async {
+    final account = ref.read(selectedAccountProvider);
+    await account?.handler?.setDoNotSpend(
+      utxo: coin,
+      doNotSpend: !(coin.doNotSpend ?? true),
+    );
     setState(() {
-      coin.setLock(!coin.locked);
-      //if coin is locked, remove it from selection
-      if (coin.locked) {
-        ref.read(coinSelectionStateProvider.notifier).remove(coin.id);
+      if (coin.doNotSpend == false) {
+        ref.read(coinSelectionStateProvider.notifier).remove(coin.getId());
       }
     });
     Future.delayed(const Duration(milliseconds: 100))
@@ -232,29 +235,32 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
 }
 
 class CoinTagBalanceWidget extends ConsumerWidget {
-  final CoinTag coinTag;
+  final Tag coinTag;
 
   const CoinTagBalanceWidget({super.key, required this.coinTag});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    bool locked = ref.watch(coinTagLockStateProvider(coinTag));
+    final tag = ref.watch(tagProvider(coinTag.name)) ?? coinTag;
 
     /// hide switch if the tag is empty or all coins are locked
-    bool hideSwitch = coinTag.isAllCoinsLocked || (coinTag.totalAmount == 0);
+    bool hideSwitch = tag.utxo.isEmpty || tag.isAllCoinsLocked;
 
+    final isAllCoinsLocked = tag.isAllCoinsLocked;
+    final accountId = ref.read(selectedAccountProvider)?.id ?? "";
     const cardRadius = 26.0;
+
     return Container(
       decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(cardRadius))),
       child: BalanceWidget(
-        locked: locked,
-        amount: coinTag.totalAmount,
-        accountId: coinTag.account,
-        showLock: coinTag.totalAmount != 0,
+        locked: isAllCoinsLocked,
+        amount: tag.totalAmount,
+        accountId: accountId,
+        showLock: tag.totalAmount != 0,
         onLockTap: () async {
-          if (!coinTag.isAllCoinsLocked) {
+          if (!isAllCoinsLocked) {
             bool dismissed = await EnvoyStorage()
                 .checkPromptDismissed(DismissiblePrompt.coinLockWarning);
             if (!dismissed && context.mounted) {
@@ -306,13 +312,13 @@ class CoinTagBalanceWidget extends ConsumerWidget {
                           //wait for dialog to close so that the lock icon animation is not interrupted
                           await Future.delayed(
                               const Duration(milliseconds: 250));
-                          coinTag.updateLockState(false);
+                          unLockAllCoins(coinTag, ref);
                         },
                       );
                     },
                   ));
             } else {
-              coinTag.updateLockState(false);
+              unLockAllCoins(coinTag, ref);
             }
           }
         },
@@ -320,69 +326,87 @@ class CoinTagBalanceWidget extends ConsumerWidget {
             ? const SizedBox.shrink()
             : Consumer(
                 builder: (context, ref, child) {
-                  final coins = coinTag.coinsId;
+                  final coins = coinTag.utxo;
                   final selectedItems = ref
                       .watch(coinSelectionStateProvider)
                       .where(
-                        (element) => coins.contains(element),
+                        (element) =>
+                            coins.map((e) => e.getId()).contains(element),
                       )
                       .toList();
                   CoinTagSwitchState coinTagSwitchState = selectedItems.isEmpty
                       ? CoinTagSwitchState.off
                       : CoinTagSwitchState.partial;
-                  if (selectedItems.length == coinTag.numOfCoins) {
+                  if (selectedItems.length == coinTag.utxo.length) {
                     coinTagSwitchState = CoinTagSwitchState.on;
                   }
-                  if (coinTag.coins.isEmpty) {
+                  if (coinTag.utxo.isEmpty) {
                     coinTagSwitchState = CoinTagSwitchState.off;
                   }
                   return CoinTagSwitch(
-                    triState: true,
-                    value: coinTagSwitchState,
-                    onChanged: (value) {
-                      final selectionState =
-                          ref.read(coinSelectionStateProvider.notifier);
-
-                      bool hasLockedItems = coinTag.numOfLockedCoins != 0;
-                      if (hasLockedItems && value == CoinTagSwitchState.on) {
-                        final ids = coinTag.coins
-                            .where((element) => !element.locked)
-                            .map((e) => e.id)
-                            .toList();
-                        selectionState.removeAll(ids);
-                      } else {
-                        if (value == CoinTagSwitchState.on ||
-                            value == CoinTagSwitchState.partial) {
-                          final ids = coinTag.coins
-                              .where((element) => !element.locked)
-                              .map((e) => e.id)
-                              .toList();
-                          selectionState.addAll(ids);
-                        } else {
-                          final ids = coinTag.coins
-                              .where((element) => !element.locked)
-                              .map((e) => e.id)
+                      triState: true,
+                      value: coinTagSwitchState,
+                      onChanged: (value) {
+                        final selectionState =
+                            ref.read(coinSelectionStateProvider.notifier);
+                        bool hasLockedItems = coinTag.numOfLockedCoins != 0;
+                        if (hasLockedItems && value == CoinTagSwitchState.on) {
+                          final ids = coinTag.utxo
+                              .where((element) => !element.doNotSpend)
+                              .map((e) => e.getId())
                               .toList();
                           selectionState.removeAll(ids);
+                        } else {
+                          if (value == CoinTagSwitchState.on ||
+                              value == CoinTagSwitchState.partial) {
+                            final ids = coinTag.utxo
+                                .where((element) => !element.doNotSpend)
+                                .map((e) => e.getId())
+                                .toList();
+                            selectionState.addAll(ids);
+                          } else {
+                            final ids = coinTag.utxo
+                                .where((element) => !element.doNotSpend)
+                                .map((e) => e.getId())
+                                .toList();
+                            selectionState.removeAll(ids);
+                          }
                         }
-                      }
-                    },
-                  );
+                      });
                 },
               ),
       ),
     );
   }
 
-  void lockAllCoins(
-      BuildContext context, CoinTag coinTag, WidgetRef ref) async {
+  void lockAllCoins(BuildContext context, Tag coinTag, WidgetRef ref) async {
+    final account = ref.read(selectedAccountProvider);
     //Check if the user tried to lock coins that are already in a staging transaction.
     ref.read(coinSelectionStateProvider).forEach((element) {
-      if (coinTag.coinsId.contains(element)) {
+      if (coinTag.utxo.where((e) => e.getId() == element).isNotEmpty) {
         ref.read(coinSelectionStateProvider.notifier).remove(element);
       }
     });
-    coinTag.updateLockState(true);
+    try {
+      await account?.handler?.setDoNotSpendMultiple(
+        utxo: coinTag.utxo.map((e) => e.getId()).toList(),
+        doNotSpend: true,
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void unLockAllCoins(Tag coinTag, WidgetRef ref) async {
+    final account = ref.read(selectedAccountProvider);
+    try {
+      await account?.handler?.setDoNotSpendMultiple(
+        utxo: coinTag.utxo.map((e) => e.getId()).toList(),
+        doNotSpend: false,
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 }
 
@@ -442,7 +466,7 @@ class _CoinLockButtonState extends State<CoinLockButton> {
 
 //Widget to show coin tag selections and lock states
 class CoinSubTitleText extends ConsumerWidget {
-  final CoinTag tag;
+  final Tag tag;
 
   const CoinSubTitleText(this.tag, {super.key});
 
@@ -456,12 +480,13 @@ class CoinSubTitleText extends ConsumerWidget {
   }
 }
 
-String getMessage(CoinTag tag, WidgetRef ref) {
+String getMessage(Tag tag, WidgetRef ref) {
   final selections = ref.watch(coinSelectionStateProvider);
+  //TODO: use the actual utxo objects in selection since new api will allow us to send objects to rust
   final selectedCoins =
-      selections.where((element) => tag.coinsId.contains(element));
-  final lockedCoins = tag.coins.where((element) => element.locked);
-  final availableCoins = tag.numOfCoins - lockedCoins.length;
+      selections.where((element) => tag.utxo.contains(element));
+  final lockedCoins = tag.utxo.where((element) => element.doNotSpend ?? false);
+  final availableCoins = tag.utxo.length - lockedCoins.length;
   String selectionMessage =
       "${selectedCoins.length} ${S().card_label_of} $availableCoins ${S().card_coins_selected}";
 
@@ -470,10 +495,10 @@ String getMessage(CoinTag tag, WidgetRef ref) {
         "${selectedCoins.length} ${selectedCoins.length == 1 ? S().card_coin_selected : S().card_coins_selected}";
   }
 
-  String message = "${tag.numOfCoins} ${S().card_coins_unselected}";
+  String message = "${tag.utxo.length} ${S().card_coins_unselected}";
   if (selectedCoins.isEmpty) {
     message =
-        "${tag.numOfCoins} ${tag.numOfCoins == 1 ? S().card_coin_unselected : S().card_coins_unselected}";
+        "${tag.utxo.length} ${tag.utxo.length == 1 ? S().card_coin_unselected : S().card_coins_unselected}";
     if (lockedCoins.isNotEmpty) {
       message =
           "$message | ${lockedCoins.length} ${lockedCoins.length == 1 ? S().card_coin_locked : S().card_coins_locked} ";
@@ -485,11 +510,11 @@ String getMessage(CoinTag tag, WidgetRef ref) {
           "$message | ${lockedCoins.length} ${lockedCoins.length == 1 ? S().card_coin_locked : S().card_coins_locked} ";
     }
   }
-  if (tag.numOfCoins == lockedCoins.length) {
+  if (tag.utxo.length == lockedCoins.length) {
     message =
-        "${tag.numOfCoins} ${tag.numOfCoins == 1 ? S().card_coin_locked : S().card_coins_locked} ";
+        "${tag.utxo.length} ${tag.utxo.length == 1 ? S().card_coin_locked : S().card_coins_locked} ";
   }
-  if (tag.numOfCoins == 0) {
+  if (tag.utxo.isEmpty) {
     message = "0 ${S().card_coins_unselected}";
   }
   return message;

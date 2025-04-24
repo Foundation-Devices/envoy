@@ -59,39 +59,6 @@ class NgAccountConfig {
   static Future<NgAccountConfig> deserialize({required String data}) =>
       RustLib.instance.api.ngwalletConfigNgAccountConfigDeserialize(data: data);
 
-  Future<bool> isHot() =>
-      RustLib.instance.api.ngwalletConfigNgAccountConfigIsHot(
-        that: this,
-      );
-
-  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
-  static Future<NgAccountConfig> newInstance(
-          {required String name,
-          required String color,
-          String? deviceSerial,
-          String? dateAdded,
-          required int index,
-          required String internalDescriptor,
-          String? externalDescriptor,
-          required AddressType addressType,
-          required Network network,
-          required String id,
-          String? dateSynced,
-          String? walletPath}) =>
-      RustLib.instance.api.ngwalletConfigNgAccountConfigNew(
-          name: name,
-          color: color,
-          deviceSerial: deviceSerial,
-          dateAdded: dateAdded,
-          index: index,
-          internalDescriptor: internalDescriptor,
-          externalDescriptor: externalDescriptor,
-          addressType: addressType,
-          network: network,
-          id: id,
-          dateSynced: dateSynced,
-          walletPath: walletPath);
-
   Future<String> serialize() =>
       RustLib.instance.api.ngwalletConfigNgAccountConfigSerialize(
         that: this,

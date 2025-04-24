@@ -4,14 +4,13 @@
 
 import 'dart:ui';
 
-import 'package:envoy/business/account.dart';
-import 'package:envoy/business/coin_tag.dart';
-import 'package:envoy/business/coins.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
+import 'package:envoy/ui/components/envoy_info_card.dart';
+import 'package:envoy/ui/components/envoy_tag_list_item.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
@@ -30,25 +29,22 @@ import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
-import 'package:envoy/util/tuple.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher_string.dart';
-import 'package:ngwallet/src/wallet.dart';
-import 'package:envoy/ui/components/envoy_info_card.dart';
-import 'package:envoy/ui/components/envoy_tag_list_item.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:ngwallet/src/wallet.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class StagingTxDetails extends ConsumerStatefulWidget {
-  final Psbt psbt;
+  final BitcoinTransaction transaction;
 
   ///for rbf staging transaction details
   final Transaction? previousTransaction;
 
   const StagingTxDetails(
-      {super.key, required this.psbt, this.previousTransaction});
+      {super.key, required this.transaction, this.previousTransaction});
 
   @override
   ConsumerState createState() => _SpendTxDetailsState();
@@ -57,12 +53,7 @@ class StagingTxDetails extends ConsumerStatefulWidget {
 class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
   final GlobalKey _key = GlobalKey();
 
-  bool loading = true;
-  int totalReceiveAmount = 0;
-  int totalChangeAmount = 0;
-  List<Tuple<CoinTag, Coin>> inputs = [];
-  List<Tuple<String, int>> inputTagData = [];
-  CoinTag? changeOutputTag;
+  bool loading = false;
 
   @override
   void initState() {
@@ -73,98 +64,14 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
 
   /// find tags and change tags belongs to the provided transaction
   Future loadStagingTx() async {
-    final account = ref.read(selectedAccountProvider);
-    if (account == null) {
-      return;
-    }
-    setState(() {
-      loading = true;
-    });
-
-    /// if the user is in RBF tx we need to load note from the previous transaction
     if (widget.previousTransaction != null) {
-      final note =
-          await EnvoyStorage().getTxNote(widget.previousTransaction!.txId);
-      ref.read(stagingTxNoteProvider.notifier).state = note;
-    }
-
-    final RawTransaction? rawTransaction =
-        await ref.read(rawWalletTransactionProvider(widget.psbt.rawTx).future);
-
-    if (rawTransaction != null) {
-      RawTransactionOutput receiveOutPut =
-          rawTransaction.outputs.firstWhere((element) {
-        return (element.path == TxOutputPath.NotMine ||
-            element.path == TxOutputPath.External);
-      }, orElse: () => rawTransaction.outputs.first);
-
-      /// find change output
-      RawTransactionOutput? changeOutPut =
-          rawTransaction.outputs.firstWhereOrNull((element) {
-        return (element.path == TxOutputPath.Internal);
-      });
-
-      List<CoinTag> tags = ref.read(coinsTagProvider(account.id));
-
-      /// if the user is in RBF tx we need to load the tags from the previous transaction
-      if (widget.previousTransaction != null) {
-        final coinHistory = await EnvoyStorage()
-            .getCoinHistoryByTransactionId(widget.previousTransaction!.txId);
-        coinHistory?.forEach((element) {
-          for (var input in rawTransaction.inputs) {
-            if (input.id == element.coin.id) {
-              inputTagData.add(Tuple(element.tagName, element.coin.amount));
-            }
-          }
-        });
-
-        /// if the RBF tx include any other inputs, then find tags belongs to that inputs
-        for (var input in rawTransaction.inputs) {
-          final id = input.id;
-          final tag = tags.firstWhereOrNull((tag) => tag.coinsId.contains(id));
-          if (tag != null) {
-            final coin = tag.coins.firstWhereOrNull((coin) => coin.id == id);
-            if (coin != null) inputTagData.add(Tuple(tag.name, coin.amount));
-          }
-        }
-      } else {
-        /// find inputs that belongs to the tags
-        for (var input in rawTransaction.inputs) {
-          final id = input.id;
-          final tag = tags.firstWhereOrNull((tag) => tag.coinsId.contains(id));
-          if (tag != null) {
-            final coin = tag.coins.firstWhereOrNull((coin) => coin.id == id);
-            inputTagData.add(Tuple(tag.name, coin?.amount ?? 0));
-          }
-        }
-      }
-
-      /// find change output tag
-      for (var tag in tags) {
-        String id = "";
-        if (widget.previousTransaction != null) {
-          id = widget.previousTransaction!.txId;
-          for (var element in tag.coinsId) {
-            if (element.contains(id)) {
-              changeOutputTag = tag;
-            }
-          }
-        } else {
-          id =
-              "${widget.psbt.txid}:${rawTransaction.outputs.indexOf(receiveOutPut)}";
-          if (tag.coinsId.contains(id)) {
-            changeOutputTag = tag;
-          }
-        }
-      }
-
-      final userSelectedCoins = ref.read(getSelectedCoinsProvider(account.id));
-      if (userSelectedCoins.isNotEmpty) {}
-      setState(() {
-        totalReceiveAmount = receiveOutPut.amount;
-        totalChangeAmount = changeOutPut?.amount ?? 0;
-        loading = false;
-      });
+      // final userSelectedCoins = ref.read(getSelectedCoinsProvider(account.id));
+      // if (userSelectedCoins.isNotEmpty) {}
+      // setState(() {
+      //   totalReceiveAmount = receiveOutPut.amount;
+      //   totalChangeAmount = changeOutPut?.amount ?? 0;
+      //   loading = false;
+      // });
     }
   }
 
@@ -174,17 +81,36 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
     if (account == null) {
       return Container();
     }
-    final CoinTag? userChosenTag = ref.watch(stagingTxChangeOutPutTagProvider);
+    final accountAccentColor = fromHex(account.color);
+    final changeOutputTag = ref.watch(spendTransactionProvider.select(
+      (value) => value.changeOutPutTag,
+    ));
+    final totalInputAmount = ref.watch(spendTransactionProvider.select(
+        (value) => (value.transaction?.inputs ?? [])
+            .map((e) => e.amount.toInt())
+            .fold(0, (int sum, element) => sum + element)));
+
+    final totalReceiveAmount = ref.watch(spendTransactionProvider
+        .select((value) => (value.transaction?.amount.toInt() ?? 0)));
+
+    final inputs = ref.watch(spendTransactionProvider
+            .select((value) => value.transaction?.inputs)) ??
+        [];
+
+    final totalChangeAmount =
+        ref.watch(spendTransactionProvider.select((value) =>
+            (value.transaction?.outputs.firstWhereOrNull(
+              (outPut) => outPut.keychain == KeyChain.internal,
+            ))?.amount.toInt() ??
+            0));
+
+    // final String? userChosenTag = ref.watch(stagingTxChangeOutPutTagProvider);
 
     double? displayFiatSendAmount = ref.watch(displayFiatSendAmountProvider);
     double? displayFiatTotalChangeAmount =
         ExchangeRate().convertSatsToFiat(totalChangeAmount);
     double? displayFiatTotalInputAmount =
         displayFiatSendAmount! + displayFiatTotalChangeAmount;
-
-    if (userChosenTag != null) {
-      changeOutputTag = userChosenTag;
-    }
 
     final sendScreenUnit = ref.watch(sendScreenUnitProvider);
     final uneconomicSpends = ref.watch(uneconomicSpendsProvider);
@@ -200,16 +126,8 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
     if (sendScreenUnit == AmountDisplayUnit.fiat) {
       unit = Settings().displayUnit;
     }
-
-    int totalInputAmount = inputTagData
-        .map((e) => e.item2)
-        .fold(0, (previousValue, element) => previousValue + element);
-
-    final accountAccentColor = fromHex(account.color);
-
-    Set<String> spendTags = inputTagData.map((e) => e.item1).toSet();
-
-    final note = ref.watch(stagingTxNoteProvider) ?? "";
+    final note =
+        ref.watch(spendTransactionProvider.select((element) => element.note));
 
     return Stack(
       children: [
@@ -292,7 +210,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                         EnvoyInfoCardListItem(
                           spacingPriority: FlexPriority.trailing,
                           title:
-                              "${S().coincontrol_tx_detail_expand_spentFrom} ${inputTagData.length} ${inputTagData.length == 1 ? S().coincontrol_tx_detail_expand_coin : S().coincontrol_tx_detail_expand_coins}",
+                              "${S().coincontrol_tx_detail_expand_spentFrom} ${inputs.length} ${inputs.length == 1 ? S().coincontrol_tx_detail_expand_coin : S().coincontrol_tx_detail_expand_coins}",
                           icon: const EnvoyIcon(EnvoyIcons.utxo,
                               color: EnvoyColors.textPrimary,
                               size: EnvoyIconSize.small),
@@ -316,7 +234,13 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                               child: Wrap(
                                 spacing: EnvoySpacing.small,
                                 runSpacing: EnvoySpacing.small,
-                                children: spendTags.map((e) {
+                                children: inputs
+                                    .map((e) => e.tag ?? "")
+                                    .map((e) => (e.isEmpty)
+                                        ? S().account_details_untagged_card
+                                        : e)
+                                    .toSet()
+                                    .map((e) {
                                   return _coinTag(e);
                                 }).toList(),
                               ),
@@ -378,81 +302,87 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                             child: ListView(
                               scrollDirection: Axis.horizontal,
                               children: [
-                                GestureDetector(
-                                    onTap: () {
-                                      showEnvoyDialog(
-                                          context: context,
-                                          builder: Builder(
-                                            builder: (context) =>
-                                                ChooseTagForStagingTx(
-                                              accountId: account.id,
-                                              onEditTransaction: () async {
-                                                Navigator.pop(context);
+                                if (totalChangeAmount != 0)
+                                  GestureDetector(
+                                      onTap: () {
+                                        showEnvoyDialog(
+                                            context: context,
+                                            builder: Builder(
+                                              builder: (context) =>
+                                                  ChooseTagForStagingTx(
+                                                accountId: account.id,
+                                                onEditTransaction: () async {
+                                                  Navigator.pop(context);
 
-                                                final router =
-                                                    GoRouter.of(context);
+                                                  final router =
+                                                      GoRouter.of(context);
 
-                                                ///indicating that we are in edit mode
-                                                ref
+                                                  ///indicating that we are in edit mode
+                                                  ref
+                                                          .read(
+                                                              spendEditModeProvider
+                                                                  .notifier)
+                                                          .state =
+                                                      SpendOverlayContext
+                                                          .editCoins;
+
+                                                  /// The user has is in edit mode and if the psbt
+                                                  /// has inputs then use them to populate the coin selection state
+                                                  if (ref.read(
+                                                          preparedTransactionProvider) !=
+                                                      null) {
+                                                    List<String> inputs = ref
                                                         .read(
-                                                            spendEditModeProvider
-                                                                .notifier)
-                                                        .state =
-                                                    SpendOverlayContext
-                                                        .editCoins;
+                                                            preparedTransactionProvider
+                                                                .select(
+                                                          (value) =>
+                                                              value?.transaction
+                                                                  .inputs ??
+                                                              [],
+                                                        ))
+                                                        .map((e) =>
+                                                            "${e.txId}:${e.vout}")
+                                                        .toList();
 
-                                                /// The user has is in edit mode and if the psbt
-                                                /// has inputs then use them to populate the coin selection state
-                                                if (ref.read(
-                                                        rawTransactionProvider) !=
-                                                    null) {
-                                                  List<String> inputs = ref
-                                                      .read(
-                                                          rawTransactionProvider)!
-                                                      .inputs
-                                                      .map((e) =>
-                                                          "${e.previousOutputHash}:${e.previousOutputIndex}")
-                                                      .toList();
-
-                                                  if (ref
-                                                      .read(
-                                                          coinSelectionStateProvider)
-                                                      .isEmpty) {
-                                                    ref
+                                                    if (ref
                                                         .read(
-                                                            coinSelectionStateProvider
-                                                                .notifier)
-                                                        .addAll(inputs);
+                                                            coinSelectionStateProvider)
+                                                        .isEmpty) {
+                                                      ref
+                                                          .read(
+                                                              coinSelectionStateProvider
+                                                                  .notifier)
+                                                          .addAll(inputs);
+                                                    }
                                                   }
-                                                }
 
-                                                ///toggle to coins view for coin control
-                                                ref
-                                                        .read(
-                                                            accountToggleStateProvider
-                                                                .notifier)
-                                                        .state =
-                                                    AccountToggleState.coins;
+                                                  ///toggle to coins view for coin control
+                                                  ref
+                                                          .read(
+                                                              accountToggleStateProvider
+                                                                  .notifier)
+                                                          .state =
+                                                      AccountToggleState.coins;
 
-                                                ///pop review
-                                                router.pop();
-                                                await Future.delayed(
-                                                    const Duration(
-                                                        milliseconds: 100));
+                                                  ///pop review
+                                                  router.pop();
+                                                  await Future.delayed(
+                                                      const Duration(
+                                                          milliseconds: 100));
 
-                                                ///pop spend form
-                                                router.pop();
-                                              },
-                                              onTagUpdate: () {
-                                                Navigator.pop(context);
-                                              },
+                                                  ///pop spend form
+                                                  router.pop();
+                                                },
+                                                onTagUpdate: () {
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
                                             ),
-                                          ),
-                                          alignment: const Alignment(0.0, -.6));
-                                    },
-                                    child: _coinTag(changeOutputTag == null
-                                        ? S().account_details_untagged_card
-                                        : changeOutputTag!.name)),
+                                            alignment:
+                                                const Alignment(0.0, -.6));
+                                      },
+                                      child: _coinTag(changeOutputTag ??
+                                          S().account_details_untagged_card)),
                               ],
                             ),
                           ),
@@ -496,9 +426,9 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                                   .previousTransaction!.txId);
                                         }
                                         ref
-                                            .read(
-                                                stagingTxNoteProvider.notifier)
-                                            .state = note;
+                                            .read(spendTransactionProvider
+                                                .notifier)
+                                            .setNote(note);
                                         Navigator.pop(context);
                                       },
                                       txId: "UpcomingTx",
@@ -506,7 +436,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                                       noteSubTitle: S()
                                           .coincontrol_tx_add_note_subheading,
                                       noteTitle: S().add_note_modal_heading,
-                                      value: ref.read(stagingTxNoteProvider),
+                                      value: note,
                                     ),
                                     alignment: const Alignment(0.0, -0.5),
                                   );

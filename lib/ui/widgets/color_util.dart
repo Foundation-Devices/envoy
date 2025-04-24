@@ -14,6 +14,12 @@ extension ColorExtension on Color {
   }
 }
 
+extension ColorExtensionOnString on String {
+  Color toColor() {
+    return fromHex(this);
+  }
+}
+
 Color fromHex(String hexColor) {
   final buffer = StringBuffer();
   if (hexColor.length == 6 || hexColor.length == 7) {

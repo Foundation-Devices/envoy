@@ -30,10 +30,12 @@ mixin _$EnvoyAccount {
   String get id => throw _privateConstructorUsedError;
   String get nextAddress => throw _privateConstructorUsedError;
   BigInt get balance => throw _privateConstructorUsedError;
+  BigInt get unlockedBalance => throw _privateConstructorUsedError;
   bool get isHot => throw _privateConstructorUsedError;
   List<BitcoinTransaction> get transactions =>
       throw _privateConstructorUsedError;
   List<Output> get utxo => throw _privateConstructorUsedError;
+  List<String> get tags => throw _privateConstructorUsedError;
 
   /// Create a copy of EnvoyAccount
   /// with the given fields replaced by the non-null parameter values.
@@ -63,9 +65,11 @@ abstract class $EnvoyAccountCopyWith<$Res> {
       String id,
       String nextAddress,
       BigInt balance,
+      BigInt unlockedBalance,
       bool isHot,
       List<BitcoinTransaction> transactions,
-      List<Output> utxo});
+      List<Output> utxo,
+      List<String> tags});
 }
 
 /// @nodoc
@@ -97,9 +101,11 @@ class _$EnvoyAccountCopyWithImpl<$Res, $Val extends EnvoyAccount>
     Object? id = null,
     Object? nextAddress = null,
     Object? balance = null,
+    Object? unlockedBalance = null,
     Object? isHot = null,
     Object? transactions = null,
     Object? utxo = null,
+    Object? tags = null,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -158,6 +164,10 @@ class _$EnvoyAccountCopyWithImpl<$Res, $Val extends EnvoyAccount>
           ? _value.balance
           : balance // ignore: cast_nullable_to_non_nullable
               as BigInt,
+      unlockedBalance: null == unlockedBalance
+          ? _value.unlockedBalance
+          : unlockedBalance // ignore: cast_nullable_to_non_nullable
+              as BigInt,
       isHot: null == isHot
           ? _value.isHot
           : isHot // ignore: cast_nullable_to_non_nullable
@@ -170,6 +180,10 @@ class _$EnvoyAccountCopyWithImpl<$Res, $Val extends EnvoyAccount>
           ? _value.utxo
           : utxo // ignore: cast_nullable_to_non_nullable
               as List<Output>,
+      tags: null == tags
+          ? _value.tags
+          : tags // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ) as $Val);
   }
 }
@@ -197,9 +211,11 @@ abstract class _$$EnvoyAccountImplCopyWith<$Res>
       String id,
       String nextAddress,
       BigInt balance,
+      BigInt unlockedBalance,
       bool isHot,
       List<BitcoinTransaction> transactions,
-      List<Output> utxo});
+      List<Output> utxo,
+      List<String> tags});
 }
 
 /// @nodoc
@@ -229,9 +245,11 @@ class __$$EnvoyAccountImplCopyWithImpl<$Res>
     Object? id = null,
     Object? nextAddress = null,
     Object? balance = null,
+    Object? unlockedBalance = null,
     Object? isHot = null,
     Object? transactions = null,
     Object? utxo = null,
+    Object? tags = null,
   }) {
     return _then(_$EnvoyAccountImpl(
       name: null == name
@@ -290,6 +308,10 @@ class __$$EnvoyAccountImplCopyWithImpl<$Res>
           ? _value.balance
           : balance // ignore: cast_nullable_to_non_nullable
               as BigInt,
+      unlockedBalance: null == unlockedBalance
+          ? _value.unlockedBalance
+          : unlockedBalance // ignore: cast_nullable_to_non_nullable
+              as BigInt,
       isHot: null == isHot
           ? _value.isHot
           : isHot // ignore: cast_nullable_to_non_nullable
@@ -302,6 +324,10 @@ class __$$EnvoyAccountImplCopyWithImpl<$Res>
           ? _value._utxo
           : utxo // ignore: cast_nullable_to_non_nullable
               as List<Output>,
+      tags: null == tags
+          ? _value._tags
+          : tags // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ));
   }
 }
@@ -324,11 +350,14 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
       required this.id,
       required this.nextAddress,
       required this.balance,
+      required this.unlockedBalance,
       required this.isHot,
       required final List<BitcoinTransaction> transactions,
-      required final List<Output> utxo})
+      required final List<Output> utxo,
+      required final List<String> tags})
       : _transactions = transactions,
-        _utxo = utxo;
+        _utxo = utxo,
+        _tags = tags;
 
   @override
   final String name;
@@ -359,6 +388,8 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
   @override
   final BigInt balance;
   @override
+  final BigInt unlockedBalance;
+  @override
   final bool isHot;
   final List<BitcoinTransaction> _transactions;
   @override
@@ -376,9 +407,17 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
     return EqualUnmodifiableListView(_utxo);
   }
 
+  final List<String> _tags;
+  @override
+  List<String> get tags {
+    if (_tags is EqualUnmodifiableListView) return _tags;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_tags);
+  }
+
   @override
   String toString() {
-    return 'EnvoyAccount(name: $name, color: $color, deviceSerial: $deviceSerial, dateAdded: $dateAdded, addressType: $addressType, index: $index, internalDescriptor: $internalDescriptor, externalDescriptor: $externalDescriptor, dateSynced: $dateSynced, walletPath: $walletPath, network: $network, id: $id, nextAddress: $nextAddress, balance: $balance, isHot: $isHot, transactions: $transactions, utxo: $utxo)';
+    return 'EnvoyAccount(name: $name, color: $color, deviceSerial: $deviceSerial, dateAdded: $dateAdded, addressType: $addressType, index: $index, internalDescriptor: $internalDescriptor, externalDescriptor: $externalDescriptor, dateSynced: $dateSynced, walletPath: $walletPath, network: $network, id: $id, nextAddress: $nextAddress, balance: $balance, unlockedBalance: $unlockedBalance, isHot: $isHot, transactions: $transactions, utxo: $utxo, tags: $tags)';
   }
 
   @override
@@ -408,32 +447,38 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
             (identical(other.nextAddress, nextAddress) ||
                 other.nextAddress == nextAddress) &&
             (identical(other.balance, balance) || other.balance == balance) &&
+            (identical(other.unlockedBalance, unlockedBalance) ||
+                other.unlockedBalance == unlockedBalance) &&
             (identical(other.isHot, isHot) || other.isHot == isHot) &&
             const DeepCollectionEquality()
                 .equals(other._transactions, _transactions) &&
-            const DeepCollectionEquality().equals(other._utxo, _utxo));
+            const DeepCollectionEquality().equals(other._utxo, _utxo) &&
+            const DeepCollectionEquality().equals(other._tags, _tags));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      name,
-      color,
-      deviceSerial,
-      dateAdded,
-      addressType,
-      index,
-      internalDescriptor,
-      externalDescriptor,
-      dateSynced,
-      walletPath,
-      network,
-      id,
-      nextAddress,
-      balance,
-      isHot,
-      const DeepCollectionEquality().hash(_transactions),
-      const DeepCollectionEquality().hash(_utxo));
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        name,
+        color,
+        deviceSerial,
+        dateAdded,
+        addressType,
+        index,
+        internalDescriptor,
+        externalDescriptor,
+        dateSynced,
+        walletPath,
+        network,
+        id,
+        nextAddress,
+        balance,
+        unlockedBalance,
+        isHot,
+        const DeepCollectionEquality().hash(_transactions),
+        const DeepCollectionEquality().hash(_utxo),
+        const DeepCollectionEquality().hash(_tags)
+      ]);
 
   /// Create a copy of EnvoyAccount
   /// with the given fields replaced by the non-null parameter values.
@@ -460,9 +505,11 @@ abstract class _EnvoyAccount implements EnvoyAccount {
       required final String id,
       required final String nextAddress,
       required final BigInt balance,
+      required final BigInt unlockedBalance,
       required final bool isHot,
       required final List<BitcoinTransaction> transactions,
-      required final List<Output> utxo}) = _$EnvoyAccountImpl;
+      required final List<Output> utxo,
+      required final List<String> tags}) = _$EnvoyAccountImpl;
 
   @override
   String get name;
@@ -493,11 +540,15 @@ abstract class _EnvoyAccount implements EnvoyAccount {
   @override
   BigInt get balance;
   @override
+  BigInt get unlockedBalance;
+  @override
   bool get isHot;
   @override
   List<BitcoinTransaction> get transactions;
   @override
   List<Output> get utxo;
+  @override
+  List<String> get tags;
 
   /// Create a copy of EnvoyAccount
   /// with the given fields replaced by the non-null parameter values.

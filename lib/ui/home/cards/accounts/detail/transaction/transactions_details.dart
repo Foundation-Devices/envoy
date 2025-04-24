@@ -319,8 +319,11 @@ class _TransactionsDetailsWidgetState
                     icon: const EnvoyIcon(EnvoyIcons.calendar,
                         color: EnvoyColors.textPrimary,
                         size: EnvoyIconSize.small),
-                    trailing: Text(getTransactionDateAndTimeString(tx),
-                        textAlign: TextAlign.end, style: trailingTextStyle),
+                    trailing: Text(
+                        getTransactionDateAndTimeString(
+                            tx.date?.toInt(), tx.isConfirmed),
+                        textAlign: TextAlign.end,
+                        style: trailingTextStyle),
                   ),
                   EnvoyInfoCardListItem(
                     title: S().coindetails_overlay_status,
@@ -568,13 +571,14 @@ class _TransactionsDetailsWidgetState
   }
 }
 
-String getTransactionDateAndTimeString(EnvoyTransaction transaction) {
-  if (!transaction.isConfirmed || transaction.date == null) {
+String getTransactionDateAndTimeString(int? date, bool isConfirmed) {
+  if (!isConfirmed || date == null) {
     return S().activity_pending;
   }
-  final date = transaction.date!.toInt();
   final String transactionDateInfo =
-      "${DateFormat.yMd(currentLocale).format(DateTime.fromMillisecondsSinceEpoch(date))} ${S().coindetails_overlay_at} ${DateFormat.Hm(currentLocale).format(DateTime.fromMillisecondsSinceEpoch(date))}";
+      "${DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(date, isUtc: true))} ${S().coindetails_overlay_at} ${DateFormat.Hm(currentLocale).format(
+    DateTime.fromMillisecondsSinceEpoch(date, isUtc: true),
+  )}";
   return transactionDateInfo;
 }
 
