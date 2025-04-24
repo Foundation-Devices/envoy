@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/util/haptics.dart';
@@ -32,13 +34,24 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
-  final double overlayHeight = (cardButtonHeight + EnvoySpacing.medium3) *
-          (!AccountManager().hotAccountsExist() ? 2 : 1) +
-      EnvoySpacing.large2 * 2; // + extra
+  late double overlayHeight;
+  late String path;
+  late int numOfButtons;
 
   @override
   void initState() {
     super.initState();
+
+    path = ref.read(routePathProvider);
+
+    numOfButtons =
+        path == ROUTE_ACCOUNTS_HOME && !AccountManager().hotAccountsExist()
+            ? 2
+            : 1;
+
+    overlayHeight = (cardButtonHeight + EnvoySpacing.medium3) * numOfButtons +
+        EnvoySpacing.large2 * 2; // + extra
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
@@ -144,7 +157,7 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      if (!AccountManager().hotAccountsExist())
+                                      if (numOfButtons == 2)
                                         Column(
                                           children: [
                                             const SizedBox(
