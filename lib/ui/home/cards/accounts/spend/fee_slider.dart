@@ -39,7 +39,6 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setFees(ref.read(feeChooserStateProvider));
-      selectFeeTab(ref.read(spendFeeRateProvider));
     });
     Future.delayed(const Duration(milliseconds: 10))
         .then((value) => calculateFeeBoundary());
@@ -82,8 +81,11 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
       calculateFeeBoundary();
     });
 
-    ref.listen(spendTransactionProvider.select((value) => value.transaction?.fee.toInt() ?? 1 ,), (previous, next) {
-      selectFeeTab(next * 100000);
+    ref.listen(
+        spendTransactionProvider.select(
+          (value) => value.transaction?.feeRate.toInt() ?? 1,
+        ), (previous, next) {
+      selectFeeTab(next);
     });
 
     TextScaler feeTextScaler = MediaQuery.textScalerOf(context)

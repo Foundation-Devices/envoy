@@ -32,7 +32,7 @@ import 'package:ngwallet/ngwallet.dart';
 
 class TransactionReviewCard extends ConsumerStatefulWidget {
   final BitcoinTransaction transaction;
-  final bool psbtFinalized;
+  final bool canModifyPsbt;
   final String address;
   final bool loading;
   final int? amountToSend;
@@ -45,7 +45,7 @@ class TransactionReviewCard extends ConsumerStatefulWidget {
   const TransactionReviewCard({
     super.key,
     required this.transaction,
-    required this.psbtFinalized,
+    required this.canModifyPsbt,
     required this.loading,
     required this.address,
     //for RBF spend screen
@@ -300,9 +300,9 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                               ),
                               const Padding(padding: EdgeInsets.all(4)),
                               Opacity(
-                                opacity: widget.psbtFinalized ? 0.0 : 1,
+                                opacity: widget.canModifyPsbt ? 1.0 : 0,
                                 child: IgnorePointer(
-                                  ignoring: widget.psbtFinalized,
+                                  ignoring: !widget.canModifyPsbt,
                                   child: widget.feeChooserWidget,
                                 ),
                               ),
