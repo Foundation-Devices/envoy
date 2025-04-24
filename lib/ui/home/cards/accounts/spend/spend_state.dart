@@ -65,6 +65,7 @@ class TransactionModel {
   //spend state flags
   bool uneconomicSpends = false;
   bool _broadcastInProgress = false;
+  bool hotWallet = false;
   bool canProceed = false;
   bool belowDustLimit = false;
   bool valid = false;
@@ -82,6 +83,7 @@ class TransactionModel {
     this.inputTags = const [],
     this.uneconomicSpends = false,
     this.canProceed = false,
+    this.hotWallet = false,
     this.belowDustLimit = false,
     this.valid = false,
     this.loading = false,
@@ -104,11 +106,19 @@ class TransactionModel {
         inputTags: model.inputTags,
         mode: model.mode,
         note: model.note,
+        hotWallet: model.hotWallet,
         uneconomicSpends: model.uneconomicSpends);
   }
 
   TransactionModel clone() {
     return copy(this);
+  }
+
+  bool get canModify {
+    if (hotWallet) {
+      return true;
+    }
+    return isFinalized;
   }
 
   bool get isFinalized {
@@ -303,6 +313,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       return false;
     }
     final network = account!.network;
+    state = state.clone()..hotWallet = account!.isHot;
 
     if (sendTo.isEmpty ||
         amount == 0 ||
@@ -341,8 +352,6 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           minFeeRate: feeCalcResult.minFeeRate.toInt(),
           maxFeeRate: feeCalcResult.maxFeeRate.toInt().clamp(2, 5000));
 
-      print("FEE RATE ${preparedTransaction.transaction.feeRate.toInt()}");
-      print("FEE RATE ${preparedTransaction.transaction.fee.toInt()}");
       updateWithPreparedTransaction(preparedTransaction, params);
 
       if (sendMax) {

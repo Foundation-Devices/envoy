@@ -155,7 +155,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
               .read(spendTransactionProvider.notifier)
               .setProgressState(BroadcastProgress.inProgress);
         } else {
-          if (transactionModel.isFinalized) {
+          if (transactionModel.canModify) {
             if (context.mounted) {
               await _showNotesDialog(context);
             }
@@ -495,7 +495,7 @@ class _TransactionReviewScreenState
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                if (!transactionModel.isFinalized)
+                if (transactionModel.canModify)
                   EnvoyButton(
                     enabled: !transactionModel.loading,
                     S().coincontrol_tx_detail_cta2,
@@ -578,7 +578,7 @@ class _TransactionReviewScreenState
                                         opaque: false,
                                         fullscreenDialog: true));
                               },
-                              psbtFinalized: transactionModel.isFinalized,
+                              canModifyPsbt: transactionModel.canModify,
                               loading: transactionModel.loading,
                               address: address,
                               feeTitle: S().coincontrol_tx_detail_fee,
@@ -685,10 +685,10 @@ class _TransactionReviewScreenState
   }
 }
 
-void navigateWithTransition(BuildContext context, Widget page) {
+Future navigateWithTransition(BuildContext context, Widget page) async {
   final router = Navigator.of(context, rootNavigator: true);
 
-  router.push(
+  await router.push(
     PageRouteBuilder(
       transitionDuration: const Duration(milliseconds: 360),
       reverseTransitionDuration: const Duration(milliseconds: 360),
@@ -729,7 +729,9 @@ void editTransaction(BuildContext context, WidgetRef ref) async {
     coinSelectionOverlayKey.currentState?.show(SpendOverlayContext.editCoins);
   }
 
-  navigateWithTransition(context, const ChooseCoinsWidget());
+  final scope = ProviderScope.containerOf(context);
+  await navigateWithTransition(context, const ChooseCoinsWidget());
+  await ref.read(spendTransactionProvider.notifier).validate(scope);
 }
 
 class DiscardTransactionDialog extends ConsumerStatefulWidget {
