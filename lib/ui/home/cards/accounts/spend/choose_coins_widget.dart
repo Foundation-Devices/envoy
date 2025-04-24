@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
@@ -77,11 +76,9 @@ class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
                             left: 20,
                             right: 20,
                           ),
-                          //TODO: use EnvoyAccount
-                          // child: AccountListTile(account, onTap: () {
-                          //   // ref.read(fullscreenHomePageProvider.notifier).state = true;
-                          //   Navigator.pop(context);
-                          // }),
+                          child: AccountListTile(account, onTap: () {
+                            Navigator.pop(context);
+                          }),
                         ),
                         const SizedBox(height: EnvoySpacing.small),
                         Expanded(

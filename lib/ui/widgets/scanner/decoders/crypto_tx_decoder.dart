@@ -8,7 +8,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class CryptoTxDecoder extends ScannerDecoder {
   final Function(CryptoPsbt cryptoPsbt) onScan;
-
+  bool _invoked = false;
   CryptoTxDecoder({required this.onScan});
 
   @override
@@ -16,7 +16,8 @@ class CryptoTxDecoder extends ScannerDecoder {
     if (barCode.code != null &&
         barCode.code?.toLowerCase().startsWith("ur:") == true) {
       final payload = processUr(barCode);
-      if (payload != null) {
+      if (payload != null && !_invoked) {
+        _invoked = true;
         onScan(payload as CryptoPsbt);
       }
     }

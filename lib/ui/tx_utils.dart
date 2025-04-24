@@ -5,13 +5,11 @@
 import 'dart:ui';
 
 import 'package:envoy/account/envoy_transaction.dart';
-import 'package:envoy/util/string_utils.dart';
-import 'package:ngwallet/src/wallet.dart';
-import 'package:timeago/timeago.dart' as timeago;
-
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/util/string_utils.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 String getTransactionTitleText(
     EnvoyTransaction transaction, RBFState? cancelState, bool? isBoosted) {
@@ -54,7 +52,9 @@ String getTransactionSubtitleText(EnvoyTransaction transaction, Locale locale) {
       return S().receive_tx_list_awaitingConfirmation;
     }
     return timeago
-        .format(DateTime.fromMillisecondsSinceEpoch(transaction.date!.toInt()),
+        .format(
+            DateTime.fromMillisecondsSinceEpoch(transaction.date!.toInt(),
+                isUtc: true),
             locale: locale.languageCode)
         .capitalize();
   } else {

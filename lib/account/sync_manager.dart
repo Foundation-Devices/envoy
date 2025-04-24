@@ -18,7 +18,9 @@ class SyncManager {
   late Timer _syncTimer;
   bool _pauseSync = false;
 
-  SyncManager({required this.accountsCallback}) {}
+  SyncManager({required this.accountsCallback}) {
+    _syncAll();
+  }
 
   startSync() {
     _syncTimer = Timer.periodic(const Duration(seconds: 15), (timer) {
@@ -43,6 +45,20 @@ class SyncManager {
     _startSync();
   }
 
+  void syncAccount(EnvoyAccount account) async {
+    final server = SyncManager.getElectrumServer(account.network);
+    int? port = Settings().getPort(account.network);
+    if (port == -1) {
+      port = null;
+    }
+    if (account.handler != null) {
+      pauseSync();
+      _synRequests[account] = await account.handler!.requestSync();
+      await _performWalletSync(account, server, port);
+      resumeSync();
+    }
+  }
+
   void _startSync() async {
     for (final account in _synRequests.keys) {
       final server = SyncManager.getElectrumServer(account.network);
@@ -55,15 +71,11 @@ class SyncManager {
           try {
             kPrint(
                 "Syncing account ${account.name} | ${account.network} | ${server}  |Tor : ${port}");
-            WalletUpdate update = await EnvoyAccountHandler.syncWallet(
-              syncRequest: _synRequests[account]!,
-              electrumServer: server,
-              torPort: port,
-            );
+
             while (_pauseSync) {
-              await Future.delayed(const Duration(milliseconds: 50));
+              await Future.delayed(const Duration(milliseconds: 100));
             }
-            await account.handler!.applyUpdate(update: update);
+            await _performWalletSync(account, server, port);
             kPrint(
                 "Finished account ${(await account.handler!.state()).balance} ");
           } catch (e) {
@@ -75,6 +87,16 @@ class SyncManager {
         },
       );
     }
+  }
+
+  Future<void> _performWalletSync(
+      EnvoyAccount account, String server, int? port) async {
+    WalletUpdate update = await EnvoyAccountHandler.syncWallet(
+      syncRequest: _synRequests[account]!,
+      electrumServer: server,
+      torPort: port,
+    );
+    await account.handler!.applyUpdate(update: update);
   }
 
   static String getElectrumServer(Network network) {

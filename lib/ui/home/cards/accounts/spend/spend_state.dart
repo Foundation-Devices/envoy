@@ -2,23 +2,25 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account.dart';
+import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/account/envoy_transaction.dart';
+import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
+import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
-import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ngwallet/src/exceptions.dart';
-import 'package:ngwallet/src/wallet.dart';
 import 'package:ngwallet/ngwallet.dart';
 
 enum BroadcastProgress {
@@ -28,7 +30,8 @@ enum BroadcastProgress {
   staging,
 }
 
-//user can spend coins in 3 contexts, preselectCoins,edit from transaction review screen and edit from RBF screen
+//user can spend coins in 3 contexts, preselectCoins,edit from transaction
+//review screen and edit from RBF screen
 enum SpendOverlayContext {
   preselectCoins,
   rbfSelection,
@@ -42,60 +45,74 @@ enum SpendMode {
   sweep, // this is all coins but (possibly) less money sent
 }
 
+final preparedTransactionProvider = Provider<PreparedTransaction?>((ref) {
+  return ref.watch(spendTransactionProvider).preparedTransaction;
+});
+
 /// This model is used to track the state of the transaction composition
 class TransactionModel {
-  String sendTo;
-  int amount;
-  double feeRate;
-  Psbt? psbt;
-  RawTransaction? rawTransaction;
-  List<Utxo>? utxos;
-  bool valid = false;
+  //inputs for the transaction
+  String note = "";
+  SpendMode mode = SpendMode.normal;
+  TransactionParams? transactionParams;
+
+  //composed transaction state
+  PreparedTransaction? preparedTransaction;
+  BitcoinTransaction? transaction;
+  String? changeOutPutTag;
+  List<String> inputTags;
+
+  //spend state flags
+  bool uneconomicSpends = false;
+  bool _broadcastInProgress = false;
   bool canProceed = false;
   bool belowDustLimit = false;
+  bool valid = false;
   bool loading = false;
   BroadcastProgress broadcastProgress = BroadcastProgress.staging;
-  bool isPSBTFinalized = false;
   String? error;
-  SpendMode mode = SpendMode.normal;
-  bool uneconomicSpends = false;
 
-  TransactionModel(
-      {required this.sendTo,
-      required this.amount,
-      required this.feeRate,
-      this.utxos,
-      this.psbt,
-      this.rawTransaction,
-      this.valid = false,
-      this.loading = false,
-      this.belowDustLimit = false,
-      this.canProceed = false,
-      this.broadcastProgress = BroadcastProgress.staging,
-      this.error,
-      this.mode = SpendMode.normal,
-      this.uneconomicSpends = false});
+  TransactionModel({
+    this.note = "",
+    this.mode = SpendMode.normal,
+    this.transactionParams,
+    this.preparedTransaction,
+    this.transaction,
+    this.changeOutPutTag,
+    this.inputTags = const [],
+    this.uneconomicSpends = false,
+    this.canProceed = false,
+    this.belowDustLimit = false,
+    this.valid = false,
+    this.loading = false,
+    this.broadcastProgress = BroadcastProgress.staging,
+    this.error,
+  });
 
   static TransactionModel copy(TransactionModel model) {
     return TransactionModel(
-        sendTo: model.sendTo,
-        amount: model.amount,
-        feeRate: model.feeRate,
         error: model.error,
-        utxos: model.utxos,
-        psbt: model.psbt,
-        rawTransaction: model.rawTransaction,
+        preparedTransaction: model.preparedTransaction,
+        transactionParams: model.transactionParams,
         valid: model.valid,
         loading: model.loading,
         canProceed: model.canProceed,
         belowDustLimit: model.belowDustLimit,
         broadcastProgress: model.broadcastProgress,
+        transaction: model.transaction,
+        changeOutPutTag: model.changeOutPutTag,
+        inputTags: model.inputTags,
         mode: model.mode,
+        note: model.note,
         uneconomicSpends: model.uneconomicSpends);
   }
 
   TransactionModel clone() {
     return copy(this);
+  }
+
+  bool get isFinalized {
+    return preparedTransaction?.isFinalized ?? false;
   }
 }
 
@@ -104,171 +121,289 @@ double convertToFeeRate(num feeRate) {
 }
 
 class TransactionModeNotifier extends StateNotifier<TransactionModel> {
+  EnvoyAccount? account;
+
   TransactionModeNotifier(super.state);
 
-  Future<bool> validate(ProviderContainer container,
-      {bool settingFee = false}) async {
+  Future<bool> setFee(ProviderContainer container) async {
     final String sendTo = container.read(spendAddressProvider);
     final int spendableBalance = container.read(totalSpendableAmountProvider);
     final num feeRate = container.read(spendFeeRateProvider);
     final EnvoyAccount? account = container.read(selectedAccountProvider);
     int amount = container.read(spendAmountProvider);
-    //
-    //TODO: implement ngwallet
-    // if (sendTo.isEmpty ||
-    //     amount == 0 ||
-    //     account == null ||
-    //     state.broadcastProgress == BroadcastProgress.inProgress) {
-    //   return false;
-    // }
-    // List<Utxo> utxos = container
-    //     .read(getSelectedCoinsProvider(account.id!))
-    //     .map((e) => e.utxo)
-    //     .toList();
-    //
-    // ///If the user selected to spend max.
-    // ///subsequent validation calls will stick to the original amount user entered
-    // if (state.mode == SpendMode.sendMax) {
-    //   //if user choose new coins, we reset the mode to normal since the tx is no longer sendMax
-    //   if ((state.utxos ?? []).length != utxos.length) {
-    //     state = state.clone()..mode = SpendMode.normal;
-    //   } else {
-    //     amount = spendableBalance;
-    //   }
-    // }
-    //
-    // try {
-    //   state = state.clone()
-    //     ..sendTo = sendTo
-    //     ..utxos = utxos
-    //     ..feeRate = feeRate.toDouble()
-    //     ..loading = true;
-    //
-    //   List<Utxo>? dontSpend = utxos.isEmpty
-    //       ? null
-    //       : account.wallet.utxos
-    //           .where((element) => !utxos.map((e) => e.id).contains(element.id))
-    //           .toList();
-    //
-    //   List locked = await CoinRepository().getBlockedCoins();
-    //
-    //   for (var utxo in account.wallet.utxos) {
-    //     if (locked.contains(utxo.id)) {
-    //       dontSpend ??= [];
-    //       dontSpend.add(utxo);
-    //     }
-    //   }
-    //
-    //   //remove if there is any duplicates
-    //   dontSpend = dontSpend?.unique((e) => e.id).toList();
-    //   container.read(dontSpendCoinsProvider.notifier).state = dontSpend ?? [];
-    //
-    //   bool sendMax = spendableBalance == amount;
-    //
-    //   Psbt psbt = await getPsbt(
-    //       convertToFeeRate(feeRate.toInt()), account, sendTo, amount,
-    //       dontSpend: dontSpend, mustSpend: null);
-    //
-    //   //calculate max fee only if we are not setting fee
-    //   if (!settingFee) {
-    //     int maxFeeRate = await account.wallet
-    //         .getMaxFeeRate(state.sendTo, amount, dontSpendUtxos: dontSpend);
-    //     container.read(feeChooserStateProvider.notifier).state =
-    //         FeeChooserState(
-    //             standardFeeRate:
-    //                 Fees().slowRate(account.wallet.network) * 100000,
-    //             fasterFeeRate: Fees().fastRate(account.wallet.network) * 100000,
-    //             minFeeRate: 1,
-    //             maxFeeRate: maxFeeRate.clamp(2, 5000));
-    //     kPrint("Max fee Rate $maxFeeRate");
-    //   }
-    //
-    //   ///get max fee rate that we can use on this transaction
-    //   ///when we are sending max, this is basically infinite
-    //
-    //   ///Create RawTransaction from PSBT. RawTransaction will include inputs and outputs.
-    //   /// this is used to show staging transaction details
-    //   RawTransaction rawTransaction = await account.wallet
-    //       .decodeWalletRawTx(psbt.rawTx, account.wallet.network);
-    //
-    //   state = state.clone()
-    //     ..psbt = psbt
-    //     ..loading = false
-    //     ..rawTransaction = rawTransaction
-    //     ..valid = true;
-    //
-    //   ///get all input that selected for the current PSBT
-    //   final utxoSet = rawTransaction.inputs
-    //       .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}");
-    //
-    //   /// in the case of sendMax we need, receive amount might be different from the amount we are sending
-    //   /// Make sure psbt is the source of truth for the amount
-    //   bool foundOutput = false;
-    //   for (var output in rawTransaction.outputs) {
-    //     if (output.path == TxOutputPath.NotMine) {
-    //       foundOutput = true;
-    //       state = state.clone()..amount = output.amount;
-    //     }
-    //   }
-    //
-    //   ///if user is trying to send it themself
-    //   if (!foundOutput) {
-    //     for (var output in rawTransaction.outputs) {
-    //       if (output.path == TxOutputPath.External) {
-    //         state = state.clone()..amount = output.amount;
-    //       }
-    //     }
-    //   }
-    //
-    //   if (sendMax) {
-    //     state = state.clone()
-    //       ..mode = SpendMode.sendMax
-    //       ..uneconomicSpends = (state.amount + psbt.fee) != spendableBalance;
-    //   }
-    //
-    //   ///If the UTXO selection is exclusively from one tag, the change needs to go to that tag.
-    //   container.read(coinsTagProvider(account.id ?? "")).forEach((element) {
-    //     ///if current inputs are part of a single tag, use that tag as change output tag
-    //     if (element.coinsId.containsAll(utxoSet)) {
-    //       container.read(stagingTxChangeOutPutTagProvider.notifier).state =
-    //           element;
-    //     }
-    //   });
-    //   return true;
-    // } on InsufficientFunds catch (e) {
-    //   // FIXME: This is to avoid redraws while we search for a valid PSBT
-    //   // FIXME: See setFee in fee_slider
-    //   if (!settingFee) {
-    //     state = state.clone()
-    //       ..loading = false
-    //       ..rawTransaction = null
-    //       ..psbt = null
-    //       ..canProceed = false;
-    //   }
-    //   kPrint(e);
-    //   container.read(spendValidationErrorProvider.notifier).state =
-    //       S().send_keyboard_amount_insufficient_funds_info;
-    // } on BelowDustLimit {
-    //   state = state.clone()
-    //     ..loading = false
-    //     ..psbt = null
-    //     ..rawTransaction = null
-    //     ..belowDustLimit = true
-    //     ..canProceed = false;
-    //   container.read(spendValidationErrorProvider.notifier).state =
-    //       S().send_keyboard_amount_too_low_info;
-    // } catch (e, stackTrace) {
-    //   if (kDebugMode) {
-    //     kPrint("Error $e");
-    //     debugPrintStack(stackTrace: stackTrace);
-    //   }
-    //
-    //   state = state.clone()
-    //     ..loading = false
-    //     ..psbt = null
-    //     ..rawTransaction = null
-    //     ..error = e.toString();
-    // }
+    final handler = account?.handler;
+    if (handler == null) {
+      return false;
+    }
+
+    if (sendTo.isEmpty ||
+        amount == 0 ||
+        account == null ||
+        state.broadcastProgress == BroadcastProgress.inProgress) {
+      return false;
+    }
+    List<Output> utxos =
+        container.read(getSelectedCoinsProvider(account.id)).toList();
+
+    ///If the user selected to spend max.
+    ///subsequent validation calls will stick to the original amount user entered
+    if (state.mode == SpendMode.sendMax) {
+      //if user choose new coins,
+      //we reset the mode to normal since the tx is no longer sendMax
+      if ((state.transactionParams?.selectedOutputs ?? []).length !=
+          utxos.length) {
+        state = state.clone()..mode = SpendMode.normal;
+      } else {
+        amount = spendableBalance;
+      }
+    }
+
+    try {
+      state = state.clone()
+        ..error = null
+        ..broadcastProgress = BroadcastProgress.staging
+        ..loading = true;
+      //remove if there is any duplicates
+
+      bool sendMax = spendableBalance == amount;
+
+      final params = TransactionParams(
+        address: sendTo,
+        amount: BigInt.from(amount),
+        feeRate: BigInt.from(feeRate.toInt()),
+        selectedOutputs: [],
+        doNotSpendChange: false,
+        note: state.note,
+        tag: state.transactionParams?.tag,
+      );
+      //calculate max fee only if we are not setting fee
+      final preparedTransaction = await handler.composePsbt(
+        transactionParams: params,
+      );
+      updateWithPreparedTransaction(preparedTransaction, params);
+
+      if (sendMax) {
+        int fee = state.preparedTransaction?.transaction.fee.toInt() ?? 0;
+        state = state.clone()
+          ..mode = SpendMode.sendMax
+          ..uneconomicSpends =
+              (state.transactionParams?.amount.toInt() ?? 0 + fee) !=
+                  spendableBalance;
+      } else {}
+
+      return true;
+    } catch (e, stackTrace) {
+      //TODO: implentent ngwallet exceptions
+      // state = state.clone()
+      //   ..loading = false
+      //   ..belowDustLimit = true
+      //   ..canProceed = false;
+      // container.read(spendValidationErrorProvider.notifier).state =
+      //     S().send_keyboard_amount_too_low_info;
+      kPrint(e);
+      // container.read(spendValidationErrorProvider.notifier).state =
+      //     S().send_keyboard_amount_insufficient_funds_info;
+      //
+      state = state.clone()
+        ..loading = false
+        ..error = e.toString();
+    }
+    return false;
+  }
+
+  void setNote(String note) async {
+    final handler = account?.handler;
+    TransactionParams? params = state.transactionParams;
+
+    if (handler == null || params == null) {
+      return;
+    }
+    params = TransactionParams(
+      address: state.transactionParams!.address,
+      amount: state.transactionParams!.amount,
+      feeRate: state.transactionParams!.feeRate,
+      selectedOutputs: state.transactionParams!.selectedOutputs,
+      doNotSpendChange: state.transactionParams!.doNotSpendChange,
+      note: note,
+      tag: state.transactionParams!.tag,
+    );
+    PreparedTransaction tx = state.preparedTransaction!;
+    PreparedTransaction updatedTx = PreparedTransaction(
+        transaction: tx.transaction.copyWith(note: note),
+        psbtBase64: tx.psbtBase64,
+        inputTags: tx.inputTags,
+        isFinalized: tx.isFinalized);
+    updateWithPreparedTransaction(updatedTx, params);
+  }
+
+  void setTag(String? tag) async {
+    final handler = account?.handler;
+    final params = state.transactionParams;
+
+    if (handler == null || params == null) {
+      return;
+    }
+    final prams = TransactionParams(
+      address: state.transactionParams!.address,
+      amount: state.transactionParams!.amount,
+      feeRate: state.transactionParams!.feeRate,
+      selectedOutputs: state.transactionParams!.selectedOutputs,
+      doNotSpendChange: state.transactionParams!.doNotSpendChange,
+      note: state.transactionParams!.note,
+      tag: tag,
+    );
+    PreparedTransaction tx = state.preparedTransaction!;
+    PreparedTransaction updatedTx = PreparedTransaction(
+        transaction: tx.transaction.copyWith(
+          outputs: tx.transaction.outputs.map((output) {
+            if (output.keychain == KeyChain.internal) {
+              return Output(
+                  txId: output.txId,
+                  vout: output.vout,
+                  amount: output.amount,
+                  isConfirmed: output.isConfirmed,
+                  address: output.address,
+                  tag: tag,
+                  date: output.date,
+                  keychain: output.keychain,
+                  doNotSpend: output.doNotSpend);
+            }
+            return output;
+          }).toList(),
+        ),
+        psbtBase64: tx.psbtBase64,
+        changeOutPutTag: tag,
+        inputTags: tx.inputTags,
+        isFinalized: tx.isFinalized);
+    updateWithPreparedTransaction(updatedTx, prams);
+  }
+
+  updateWithPreparedTransaction(
+      PreparedTransaction preparedTransaction, TransactionParams? params) {
+    state = state.clone()
+      ..loading = false
+      ..preparedTransaction = preparedTransaction
+      ..transaction = preparedTransaction.transaction
+      ..changeOutPutTag = preparedTransaction.changeOutPutTag
+      ..inputTags = preparedTransaction.inputTags
+      ..valid = true
+      ..transactionParams = params
+      ..note = preparedTransaction.transaction.note ?? ""
+      ..canProceed = true;
+  }
+
+  Future<bool> validate(ProviderContainer container,
+      {bool settingFee = false}) async {
+    final String sendTo = container.read(spendAddressProvider);
+    final int spendableBalance = container.read(totalSpendableAmountProvider);
+    account = container.read(selectedAccountProvider);
+    int amount = container.read(spendAmountProvider);
+    final handler = account?.handler;
+    if (handler == null && account == null) {
+      return false;
+    }
+    final network = account!.network;
+
+    if (sendTo.isEmpty ||
+        amount == 0 ||
+        account == null ||
+        state.broadcastProgress == BroadcastProgress.inProgress) {
+      return false;
+    }
+    List<Output> utxos =
+        container.read(getSelectedCoinsProvider(account!.id)).toList();
+
+    try {
+      final notes = container.read(stagingTxNoteProvider);
+      state = state.clone()
+        ..error = null
+        ..broadcastProgress = BroadcastProgress.staging
+        ..loading = true;
+      //remove if there is any duplicates
+      bool sendMax = spendableBalance == amount;
+      final params = TransactionParams(
+          address: sendTo,
+          amount: BigInt.from(amount),
+          feeRate: BigInt.from(Fees().slowRate(network) * 100000),
+          selectedOutputs: utxos,
+          note: notes,
+          doNotSpendChange: false);
+
+      //calculate max fee only if we are not setting fee
+      final feeCalcResult = await handler!.getMaxFee(transactionParams: params);
+
+      final preparedTransaction = feeCalcResult.preparedTransaction;
+
+      //update the fee rate
+      container.read(feeChooserStateProvider.notifier).state = FeeChooserState(
+          standardFeeRate: Fees().slowRate(network) * 100000,
+          fasterFeeRate: Fees().fastRate(network) * 100000,
+          minFeeRate: feeCalcResult.minFeeRate.toInt(),
+          maxFeeRate: feeCalcResult.maxFeeRate.toInt().clamp(2, 5000));
+
+      print("FEE RATE ${preparedTransaction.transaction.feeRate.toInt()}");
+      print("FEE RATE ${preparedTransaction.transaction.fee.toInt()}");
+      updateWithPreparedTransaction(preparedTransaction, params);
+
+      if (sendMax) {
+        int fee = state.preparedTransaction?.transaction.fee.toInt() ?? 0;
+        state = state.clone()
+          ..mode = SpendMode.sendMax
+          ..uneconomicSpends =
+              (state.transactionParams?.amount.toInt() ?? 0 + fee) !=
+                  spendableBalance;
+      }
+
+      return true;
+    } catch (error, stackTrace) {
+      //TODO : implentent ngwallet exceptions
+      state = state.clone()
+        ..loading = false
+        ..belowDustLimit = true
+        ..canProceed = false;
+      // container.read(spendValidationErrorProvider.notifier).state =
+      // S().send_keyboard_amount_too_low_info;
+      if (kDebugMode) {
+        // debugPrintStack(stackTrace: stackTrace);
+      }
+
+      String errorMessage = error.toString();
+      if (error is ComposeTxError) {
+        ComposeTxError composeTxError = error;
+        composeTxError.when(
+          coinSelectionError: (field0) {
+            // Handle coin selection error
+            errorMessage = S().send_keyboard_amount_insufficient_funds_info;
+          },
+          error: (err) {
+            // Handle generic error
+            debugPrint("Error: $err");
+            errorMessage = S().send_keyboard_amount_enter_valid_address;
+          },
+          insufficientFunds: (field0) {
+            // Handle insufficient funds
+            debugPrint("Insufficient funds: $field0");
+            errorMessage = S().send_keyboard_amount_insufficient_funds_info;
+          },
+          insufficientFees: (field0) {
+            // Handle insufficient fees
+            debugPrint("Insufficient fees: $field0");
+            errorMessage = S().send_keyboard_amount_too_low_info;
+          },
+          insufficientFeeRate: (field0) {
+            // Handle insufficient fee rate
+            debugPrint("Insufficient fee rate: $field0");
+            errorMessage = S().send_keyboard_amount_too_low_info;
+          },
+        );
+      } else {
+        container.read(spendValidationErrorProvider.notifier).state =
+            S().send_keyboard_amount_insufficient_funds_info;
+      }
+      state = state.clone()
+        ..loading = false
+        ..error = errorMessage;
+    }
     return false;
   }
 
@@ -276,127 +411,36 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     state = emptyTransactionModel.clone();
   }
 
-  /// used to update finalized PSBT ( for hardware wallet signing)
-  void updateWithFinalPSBT(Psbt psbt) {
-    state = state.clone()
-      ..psbt = psbt
-      ..loading = false
-      ..broadcastProgress = BroadcastProgress.staging
-
-      /// to prevent the user from editing the transaction, this is used when user scans signed PSBT
-      ..isPSBTFinalized = true
-      ..valid = true;
-  }
-
   Future broadcast(ProviderContainer ref) async {
     try {
       EnvoyAccount? account = ref.read(selectedAccountProvider);
-      final accountId = account?.id ?? "";
-      if (!(account != null &&
-          state.psbt != null &&
-          (state.broadcastProgress != BroadcastProgress.success ||
-              state.broadcastProgress != BroadcastProgress.inProgress))) {
+      EnvoyAccountHandler? handler = account?.handler;
+      if (account == null || handler == null || state._broadcastInProgress) {
         return;
       }
-      state = state.clone()..broadcastProgress = BroadcastProgress.inProgress;
-
-      final coins = ref.read(coinsProvider(accountId));
-      final coinTags = ref.read(coinsTagProvider(accountId));
-      final rawTx = state.rawTransaction!;
-
-      final inputCoins = rawTx.inputs.map((input) {
-        return coins.firstWhere((element) => element.id == input.id);
-      }).toList();
-      //TODO: implement ngwallet
-      // // Increment the change index before broadcasting
-      // await account.wallet.getChangeAddress();
-      //
-      // Psbt psbt = state.psbt!;
-      // //Broadcast transaction
-      // int port = Settings().getPort(account.wallet.network);
-      // await account.wallet.broadcastTx(
-      //     Settings().electrumAddress(account.wallet.network), port, psbt.rawTx);
-      //
-      // await EnvoyStorage().addPendingTx(
-      //     psbt.txid,
-      //     account.id!,
-      //     DateTime.now(),
-      //     TransactionType.pending,
-      //     psbt.sent + psbt.fee,
-      //     psbt.fee,
-      //     state.sendTo);
-      //
-      // String? note = ref.read(stagingTxNoteProvider);
-      // CoinTag? changeOutPutTag = ref.read(stagingTxChangeOutPutTagProvider);
-      // Tuple<String, int>? changeOutPut = ref.read(changeOutputProvider);
-      // RawTransaction? transaction = ref.read(rawTransactionProvider);
-      //
-      // if (note != null) {
-      //   await EnvoyStorage().addTxNote(key: psbt.txid, note: note);
-      // }
-      //
-      // try {
-      //   /// add change output to selected/default tag
-      //   if (transaction != null &&
-      //       changeOutPutTag != null &&
-      //       changeOutPut != null) {
-      //     ///store change tag if it is not already stored
-      //     CoinTag tag = ref.read(stagingTxChangeOutPutTagProvider)!;
-      //     final tags = ref
-      //         .read(coinsTagProvider(ref.read(selectedAccountProvider)!.id!));
-      //
-      //     for (var coin in inputCoins) {
-      //       final coinTag = coinTags.firstWhereOrNull((element) =>
-      //           element.coinsId.contains(coin.id) &&
-      //           element.account == account.id);
-      //       await EnvoyStorage().addCoinHistory(
-      //           coin.id,
-      //           InputCoinHistory(
-      //               account.id!,
-      //               coinTag?.name ?? S().account_details_untagged_card,
-      //               psbt.txid,
-      //               coin));
-      //     }
-      //
-      //     ///add change tag if its new and if it is not already added to the database
-      //     if (tags.map((e) => e.id).contains(tag.id) == false &&
-      //         tag.untagged == false) {
-      //       await CoinRepository().addCoinTag(tag);
-      //       await Future.delayed(const Duration(milliseconds: 100));
-      //     }
-      //
-      //     int index = transaction.outputs.indexWhere((element) =>
-      //         element.address == changeOutPut.item1 &&
-      //         element.amount == changeOutPut.item2);
-      //
-      //     ///add change tag to the database
-      //     if (index != -1) {
-      //       changeOutPutTag.addCoin(Coin(
-      //           Utxo(txid: psbt.txid, vout: index, value: changeOutPut.item2),
-      //           account: account.id!));
-      //       await CoinRepository().updateCoinTag(changeOutPutTag);
-      //       final _ = ref.refresh(accountsProvider);
-      //       await Future.delayed(const Duration(seconds: 1));
-      //       ref.refresh(coinsTagProvider(account.id!));
-      //     }
-      //   }
-      // } catch (e, s) {
-      //   kPrint(e, stackTrace: s);
-      // }
-      // ref.read(stagingTxChangeOutPutTagProvider.notifier).state = null;
-      // ref.read(stagingTxNoteProvider.notifier).state = null;
-      // ref.read(spendEditModeProvider.notifier).state =
-      //     SpendOverlayContext.hidden;
-      //
-      // /// wait for bdk to update the transaction list and utxos list
-      // await Future.delayed(const Duration(seconds: 2));
-      //
-      // /// clear staging transaction states
+      state = state.clone().._broadcastInProgress = true;
+      final server = SyncManager.getElectrumServer(account.network);
+      final syncManager = NgAccountManager().syncManager;
+      int? port = Settings().getPort(account.network);
+      if (port == -1) {
+        port = null;
+      }
+      final _ = await EnvoyAccountHandler.broadcast(
+        spend: state.preparedTransaction!,
+        electrumServer: server,
+        torPort: port,
+      );
+      await handler.updateBroadcastState(
+          preparedTransaction: state.preparedTransaction!);
+      syncManager.syncAccount(account);
+      Future.delayed(const Duration(seconds: 100));
       state = state.clone()..broadcastProgress = BroadcastProgress.success;
       return true;
     } catch (e) {
       state = state.clone()..broadcastProgress = BroadcastProgress.failed;
       rethrow;
+    } finally {
+      state = state.clone().._broadcastInProgress = false;
     }
   }
 
@@ -404,32 +448,55 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     state = state.clone()..broadcastProgress = BroadcastProgress.staging;
   }
 
-  //for RBF review screen
+//for RBF review screen
   void setAmount(int amount) {
-    state = state.clone()..amount = amount;
+    // state = state.clone()..amount = amount;
+  }
+
+  void setProgressState(BroadcastProgress progress) {
+    state = state.clone()..broadcastProgress = progress;
+  }
+
+  Future decodePsbt(ProviderContainer ref, CryptoPsbt decoded) async {
+    EnvoyAccount? account = ref.read(selectedAccountProvider);
+    EnvoyAccountHandler? handler = account?.handler;
+    if (account == null ||
+        handler == null ||
+        state.preparedTransaction == null ||
+        state.broadcastProgress == BroadcastProgress.inProgress) {
+      return;
+    }
+    try {
+      final preparedTx = await EnvoyAccountHandler.decodePsbt(
+          preparedTransaction: state.preparedTransaction!,
+          psbtBase64: decoded.decoded);
+
+      updateWithPreparedTransaction(preparedTx, state.transactionParams);
+      await Future.delayed(const Duration(milliseconds: 100));
+    } catch (e) {
+      state = state.clone()
+        ..loading = false
+        ..error = e.toString();
+      rethrow;
+    }
   }
 }
 
-final emptyTransactionModel =
-    TransactionModel(sendTo: "", amount: 0, feeRate: 1);
+final emptyTransactionModel = TransactionModel(
+  transaction: null,
+  preparedTransaction: null,
+  valid: false,
+  loading: false,
+);
+
 final spendTransactionProvider =
-    StateNotifierProvider<TransactionModeNotifier, TransactionModel>(
-        (ref) => TransactionModeNotifier(emptyTransactionModel));
-
-final dontSpendCoinsProvider = StateProvider<List<Utxo>>((ref) {
-  ref.listenSelf((previous, next) {
-    if (previous == null) {
-      return;
-    }
-
-    final previousIds = previous.map((e) => e.id).toList();
-    final nextIds = next.map((e) => e.id).toList();
-
-    if (!listEquals(previousIds, nextIds)) {
-      ref.read(coinSelectionChangedProvider.notifier).state = true;
-    }
-  });
-  return [];
+    StateNotifierProvider<TransactionModeNotifier, TransactionModel>((ref) {
+  return TransactionModeNotifier(TransactionModel(
+    transaction: null,
+    preparedTransaction: null,
+    valid: false,
+    loading: false,
+  ));
 });
 
 // Providers needed to show the fee/inputs warning
@@ -447,94 +514,37 @@ final spendAddressProvider = StateProvider((ref) => "");
 final spendValidationErrorProvider = StateProvider<String?>((ref) => null);
 final spendAmountProvider = StateProvider((ref) => 0);
 
-final rawTransactionProvider = Provider<RawTransaction?>((ref) {
-  ref.listenSelf((previous, next) {
-    if (previous == null || next == null) {
-      return;
-    }
-
-    final previousIds = previous.inputs
-        .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}")
-        .toList();
-    final nextIds = next.inputs
-        .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}")
-        .toList();
-
-    if (!listEquals(previousIds, nextIds)) {
-      ref.read(transactionInputsChangedProvider.notifier).state = true;
-    }
-  });
-  return ref.watch(spendTransactionProvider).rawTransaction;
-});
-
 final uneconomicSpendsProvider = Provider<bool>(
     (ref) => ref.watch(spendTransactionProvider).uneconomicSpends);
 
-/// these providers will extract change-output Address and Amount from the staging transaction
-final changeOutputProvider = Provider<Tuple<String, int>?>((ref) {
-  RawTransaction? rawTx = ref.watch(rawTransactionProvider);
-  String spendAddress = ref.watch(spendAddressProvider);
-  if (rawTx == null) {
-    return null;
-  }
-
-  ///outputs that are not the destination output
-  List<RawTransactionOutput> outs = rawTx.outputs
-      .where((element) => element.address != spendAddress)
-      .toList();
-
-  if (outs.isEmpty) {
-    return null;
-  }
-
-  ///take the output that is not the destination output
-  return Tuple(outs.first.address, outs.first.amount);
-});
-
 /// these providers will extract receive Address and Amount from the staging transaction
 final receiveOutputProvider = Provider<Tuple<String, int>?>((ref) {
-  RawTransaction? rawTx = ref.watch(rawTransactionProvider);
-  String spendAddress = ref.watch(spendAddressProvider);
-  if (rawTx == null) {
+  BitcoinTransaction? preparedTransaction = ref.watch(spendTransactionProvider
+      .select((value) => value.preparedTransaction?.transaction));
+  if (preparedTransaction == null) {
     return null;
   }
 
   ///output that is destination output
-  List<RawTransactionOutput> outs = rawTx.outputs
-      .where((element) =>
-          element.address.toLowerCase() == spendAddress.toLowerCase())
-      .toList();
+  Output? out = preparedTransaction.outputs.firstWhereOrNull(
+      (element) => element.address == preparedTransaction.address);
 
-  if (outs.isEmpty) {
+  if (out == null) {
     return null;
   }
-  return Tuple(outs.first.address, outs.first.amount);
+  return Tuple(preparedTransaction.address, out.amount.toInt());
 });
 
-/// these providers will extract receive and change Amount from the staging transaction
-final receiveAmountProvider =
-    Provider<int>((ref) => ref.watch(receiveOutputProvider)?.item2 ?? 0);
-final changeAmountProvider =
-    Provider<int>((ref) => ref.watch(changeOutputProvider)?.item2 ?? 0);
-
 final spendInputTagsProvider = Provider<List<Tuple<CoinTag, Coin>>?>((ref) {
-  RawTransaction? rawTx = ref.watch(rawTransactionProvider);
   EnvoyAccount? account = ref.watch(selectedAccountProvider);
-  if (account == null || rawTx == null) {
+  BitcoinTransaction? preparedTransaction = ref.watch(spendTransactionProvider
+      .select((value) => value.preparedTransaction?.transaction));
+
+  if (account == null || preparedTransaction == null) {
     return null;
   }
-  List<CoinTag> coinTags = ref.read(coinsTagProvider(account.id));
-  List<String> inputs = rawTx.inputs
-      .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}")
-      .toList();
+  //TODO: implement ngwallet
   List<Tuple<CoinTag, Coin>> items = [];
-  for (var coinTag in coinTags) {
-    for (var coin in coinTag.coins) {
-      if (inputs.contains(coin.id)) {
-        items.add(Tuple(coinTag, coin));
-      }
-    }
-  }
   return items;
 });
 
@@ -547,26 +557,21 @@ final _totalSpendableAmountProvider = FutureProvider<int>((ref) async {
   if (account == null) {
     return 0;
   }
-  final selectedUtxos = ref
-      .watch(getSelectedCoinsProvider(account.id))
-      .map((e) => e.utxo)
-      .toList();
+  final selectedUtxos = ref.watch(getSelectedCoinsProvider(account.id));
   if (selectedUtxos.isNotEmpty) {
     int amount = 0;
     for (var element in selectedUtxos) {
-      amount = amount + element.value;
+      amount = amount + element.amount.toInt();
     }
     return amount;
   }
-  final lockedCoinsIds = await CoinRepository().getBlockedCoins();
-  //TODO: implement ngwallet
-  // final lockedCoins = account.wallet.utxos
-  //     .where((element) => lockedCoinsIds.contains(element.id))
-  //     .toList();
-  // final blockedAmount = lockedCoins.fold(
-  //     0, (previousValue, element) => previousValue + element.value);
-  // return account.wallet.balance - blockedAmount;
-  return 0;
+  final lockedCoins = ref
+      .read(outputsProvider(account.id))
+      .where((element) => element.doNotSpend)
+      .toList();
+  final blockedAmount = lockedCoins.fold(
+      0, (previousValue, element) => previousValue + element.amount.toInt());
+  return account.balance.toInt() - blockedAmount;
 });
 
 ///listens to _totalSpendableAmountProvider provider and updates the value
@@ -576,14 +581,14 @@ final totalSpendableAmountProvider = Provider<int>((ref) {
 
 /// returns selected coins for a given account
 final getTotalSelectedAmount = Provider.family<int, String>((ref, accountId) {
-  List<Coin> coins = ref.watch(getSelectedCoinsProvider(accountId));
-  return coins.fold(
-      0, (previousValue, element) => previousValue + element.amount);
+  List<Output> outputs = ref.watch(getSelectedCoinsProvider(accountId));
+  return outputs.fold(
+      0, (previousValue, element) => previousValue + element.amount.toInt());
 });
 
 ///these providers are used to track notes and change output tag for staging transaction
 ///because the transaction needs to be broadcast tx firs and then we can store these values to the database
-final stagingTxChangeOutPutTagProvider = StateProvider<CoinTag?>((ref) => null);
+final stagingTxChangeOutPutTagProvider = StateProvider<Tag?>((ref) => null);
 final stagingTxNoteProvider = StateProvider<String?>((ref) => null);
 
 ///returns if the user has selected coins
@@ -592,10 +597,8 @@ final isCoinsSelectedProvider = Provider<bool>((ref) {
   if (account == null) {
     return false;
   }
-  final selectedUtxos = ref
-      .watch(getSelectedCoinsProvider(account.id))
-      .map((e) => e.utxo)
-      .toList();
+  final selectedUtxos =
+      ref.watch(getSelectedCoinsProvider(account.id)).toList();
   return selectedUtxos.isNotEmpty;
 });
 
@@ -638,11 +641,11 @@ final spendValidationProvider = Provider<bool>((ref) {
 
 /// returns selected coins for a given account
 final getSelectedCoinsProvider =
-    Provider.family<List<Coin>, String>((ref, accountId) {
-  List<Coin> coins = ref.watch(coinsProvider(accountId));
+    Provider.family<List<Output>, String>((ref, accountId) {
+  List<Output> outputs = ref.watch(outputsProvider(accountId));
   Set<String> selectedCoinIds = ref.watch(coinSelectionStateProvider);
-  return coins
-      .where((element) => selectedCoinIds.contains(element.id))
+  return outputs
+      .where((element) => selectedCoinIds.contains(element.getId()))
       .toList();
 });
 
@@ -662,10 +665,9 @@ void clearSpendState(ProviderContainer ref) {
   ref.read(spendAddressProvider.notifier).state = "";
   ref.read(spendAmountProvider.notifier).state = 0;
   //reset fee to default
-  //account.wallet.validateAddress(address)
-  // ref.read(spendFeeRateProvider.notifier).state =
-  // ((ref.read(selectedAccountProvider)?.wallet.feeRateSlow) ?? 0.00001) *
-  //     100000;
+  ref.read(spendFeeRateProvider.notifier).state = Fees().slowRate(
+    ref.read(selectedAccountProvider)!.network,
+  );
   ref.read(stagingTxChangeOutPutTagProvider.notifier).state = null;
   ref.read(stagingTxNoteProvider.notifier).state = null;
   ref.read(spendFeeProcessing.notifier).state = false;
@@ -675,45 +677,3 @@ void clearSpendState(ProviderContainer ref) {
           : AmountDisplayUnit.sat;
   ref.read(displayFiatSendAmountProvider.notifier).state = 0;
 }
-
-Future<Psbt> getPsbt(
-    double feeRate, Account account, String initialAddress, int amount,
-    {List<Utxo>? dontSpend, List<Utxo>? mustSpend}) async {
-  Psbt returnPsbt = Psbt(0, 0, 0, "", "", "");
-  try {
-    returnPsbt = await account.wallet.createPsbt(
-        initialAddress, amount, feeRate,
-        dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
-  } on InsufficientFunds catch (e) {
-    // TODO: figure out why this can happen
-    if (e.available <= 0) rethrow;
-
-    // Get another one with correct amount
-    var fee = e.needed - e.available;
-    try {
-      returnPsbt = await account.wallet.createPsbt(
-          initialAddress, amount - fee, feeRate,
-          dontSpendUtxos: dontSpend, mustSpendUtxos: mustSpend);
-    } on InsufficientFunds catch (e) {
-      kPrint(
-          "Insufficient funds! Available: ${e.available} Needed: ${e.needed}");
-
-      rethrow;
-    }
-  }
-
-  return returnPsbt;
-}
-
-///Will return the raw transaction for a given txId
-///this can be used as a cache mechanism to avoid decoding the same transaction multiple times
-final rawWalletTransactionProvider =
-    FutureProvider.family((ref, String rawTx) async {
-  EnvoyAccount? account = ref.watch(selectedAccountProvider);
-  if (account == null) {
-    return null;
-  }
-  //TODO: implement ngwallet
-  // return await account.wallet.decodeWalletRawTx(rawTx, account.wallet.network);
-  return null;
-});

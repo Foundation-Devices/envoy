@@ -285,7 +285,12 @@ class _AccountsListState extends ConsumerState<AccountsList> {
   List<Widget> buildListItems(
       List<String> accountsOrder, List<EnvoyAccount> accounts) {
     final List<Widget> items = [];
-    for (final id in accountsOrder) {
+
+    final orderToUse = accountsOrder.isEmpty
+        ? accounts.map((e) => e.id).toList()
+        : accountsOrder;
+
+    for (final id in orderToUse) {
       final account = accounts.firstWhereOrNull((element) => element.id == id);
       if (account != null) {
         items.add(

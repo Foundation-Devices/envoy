@@ -28,10 +28,11 @@ abstract class ScannerDecoder {
   Future<void> onDetectBarCode(Barcode barCode);
 
   Object? processUr(Barcode barCode) {
-    if (_urDecoder.decoded != null && !_processing) {
+    if (_urDecoder.decoded == null && !_processing) {
       _processing = true;
       try {
         _urDecoder.receive(barCode.code?.toLowerCase() ?? "");
+        progressCallBack?.call(_urDecoder.urDecoder.progress);
       } catch (e) {
         throw UnableToDecodeException();
       } finally {

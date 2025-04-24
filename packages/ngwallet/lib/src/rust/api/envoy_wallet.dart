@@ -6,8 +6,10 @@
 import '../frb_generated.dart';
 import '../lib.dart';
 import '../third_party/ngwallet/config.dart';
+import '../third_party/ngwallet/send.dart';
 import '../third_party/ngwallet/transaction.dart';
 import 'envoy_account.dart';
+import 'errors.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`
@@ -35,10 +37,28 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
 
   BigInt balance();
 
-  Future<void> broadcast(
-      {required String psbt, required String electrumServer});
+  static Future<String> broadcast(
+          {required PreparedTransaction spend,
+          required String electrumServer,
+          int? torPort}) =>
+      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerBroadcast(
+          spend: spend, electrumServer: electrumServer, torPort: torPort);
+
+  Future<PreparedTransaction> composePsbt(
+      {required TransactionParams transactionParams});
 
   NgAccountConfig config();
+
+  static Future<PreparedTransaction> decodePsbt(
+          {required PreparedTransaction preparedTransaction,
+          required String psbtBase64}) =>
+      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerDecodePsbt(
+          preparedTransaction: preparedTransaction, psbtBase64: psbtBase64);
+
+  Future<TransactionFeeResult> getMaxFee(
+      {required TransactionParams transactionParams});
+
+  String id();
 
   bool isHot();
 
@@ -103,6 +123,8 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
 
   Future<void> renameAccount({required String name});
 
+  Future<void> renameTag({required String existingTag, String? newTag});
+
   Future<FullScanRequest> requestFullScan();
 
   Future<SyncRequest> requestSync();
@@ -122,9 +144,17 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
 
   Future<bool> setDoNotSpend({required Output utxo, required bool doNotSpend});
 
+  Future<void> setDoNotSpendMultiple(
+      {required List<String> utxo, required bool doNotSpend});
+
   Future<bool> setNote({required String txId, required String note});
 
   Future<bool> setTag({required Output utxo, required String tag});
+
+  Future<void> setTagMultiple(
+      {required List<String> utxo, required String tag});
+
+  Future<bool> setTags({required List<Output> utxo, required String tag});
 
   Future<EnvoyAccount> state();
 
@@ -140,6 +170,9 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
           torPort: torPort);
 
   Future<List<BitcoinTransaction>> transactions();
+
+  Future<void> updateBroadcastState(
+      {required PreparedTransaction preparedTransaction});
 
   Future<List<Output>> utxo();
 

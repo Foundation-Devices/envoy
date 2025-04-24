@@ -8,3 +8,4 @@ pub mod envoy_wallet;
 mod migration;
 pub mod envoy_account;
 pub mod bip39;
+pub mod errors;

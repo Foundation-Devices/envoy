@@ -594,6 +594,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  FirmwarePayload dco_decode_box_autoadd_firmware_payload(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_firmware_payload(raw);
+  }
+
+  @protected
   FirmwareUpdate dco_decode_box_autoadd_firmware_update(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_firmware_update(raw);
@@ -713,6 +719,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   double dco_decode_f_64(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as double;
+  }
+
+  @protected
+  FirmwarePayload dco_decode_firmware_payload(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return FirmwarePayload(
+      payload: dco_decode_list_prim_u_8_strict(arr[0]),
+    );
   }
 
   @protected
@@ -899,6 +916,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 8:
         return QuantumLinkMessage_SyncUpdate(
           dco_decode_box_autoadd_sync_update(raw[1]),
+        );
+      case 9:
+        return QuantumLinkMessage_FirmwarePayload(
+          dco_decode_box_autoadd_firmware_payload(raw[1]),
         );
       default:
         throw Exception("unreachable");
@@ -1113,6 +1134,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  FirmwarePayload sse_decode_box_autoadd_firmware_payload(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_firmware_payload(deserializer));
+  }
+
+  @protected
   FirmwareUpdate sse_decode_box_autoadd_firmware_update(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1222,6 +1250,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   double sse_decode_f_64(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getFloat64();
+  }
+
+  @protected
+  FirmwarePayload sse_decode_firmware_payload(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_payload = sse_decode_list_prim_u_8_strict(deserializer);
+    return FirmwarePayload(payload: var_payload);
   }
 
   @protected
@@ -1404,6 +1439,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 8:
         var var_field0 = sse_decode_box_autoadd_sync_update(deserializer);
         return QuantumLinkMessage_SyncUpdate(var_field0);
+      case 9:
+        var var_field0 = sse_decode_box_autoadd_firmware_payload(deserializer);
+        return QuantumLinkMessage_FirmwarePayload(var_field0);
       default:
         throw UnimplementedError('');
     }
@@ -1620,6 +1658,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_firmware_payload(
+      FirmwarePayload self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_firmware_payload(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_firmware_update(
       FirmwareUpdate self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1720,6 +1765,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_f_64(double self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putFloat64(self);
+  }
+
+  @protected
+  void sse_encode_firmware_payload(
+      FirmwarePayload self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_8_strict(self.payload, serializer);
   }
 
   @protected
@@ -1888,6 +1940,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case QuantumLinkMessage_SyncUpdate(field0: final field0):
         sse_encode_i_32(8, serializer);
         sse_encode_box_autoadd_sync_update(field0, serializer);
+      case QuantumLinkMessage_FirmwarePayload(field0: final field0):
+        sse_encode_i_32(9, serializer);
+        sse_encode_box_autoadd_firmware_payload(field0, serializer);
     }
   }
 

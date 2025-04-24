@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account.dart';
-import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/ui/widgets/scanner/scanner_decoder.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class InvalidPairPayloadException implements Exception {
@@ -33,6 +33,8 @@ class PairPayloadDecoder extends ScannerDecoder {
     final String code = barCode.code?.toLowerCase() ?? "";
     if (code.startsWith("ur:") == true) {
       final payload = processUr(barCode);
+      //show progress if the code is UR
+      progressCallBack?.call(urDecoder.urDecoder.progress);
       if (payload is Binary) {
         if (_validatePairData(payload) && await _binaryValidated(payload)) {
           onScan(payload);
@@ -60,16 +62,18 @@ class PairPayloadDecoder extends ScannerDecoder {
   }
 
   Future<bool> _binaryValidated(Binary object) async {
-    try {
-      Account? pairedAccount =
-          await AccountManager().processPassportAccounts(object);
-      if (pairedAccount == null) {
-        return true;
-      } else {
-        throw AccountAlreadyPairedException();
-      }
-    } on AccountAlreadyPaired catch (_) {
-      throw AccountAlreadyPairedException();
-    }
+    // TODO: reenable
+    return true;
+    // try {
+    //   EnvoyAccountHandler? pairedAccount =
+    //       await NgAccountManager().processPassportAccounts(object);
+    //   if (pairedAccount == null) {
+    //     return true;
+    //   } else {
+    //     throw AccountAlreadyPairedException();
+    //   }
+    // } on AccountAlreadyPaired catch (_) {
+    //   throw AccountAlreadyPairedException();
+    // }
   }
 }

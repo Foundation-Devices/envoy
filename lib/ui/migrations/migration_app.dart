@@ -12,6 +12,7 @@ import 'package:envoy/ui/lock/authenticate_page.dart';
 import 'package:envoy/ui/migrations/migration_manager.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -81,12 +82,11 @@ class MigrationAppPage extends ConsumerStatefulWidget {
 }
 
 class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
-  MigrationProgress? _progress;
-
   @override
   void initState() {
     super.initState();
     MigrationManager().onMigrationFinished(() async {
+      await EnvoyStorage().setBool(migrationPrefs, true);
       if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
         runApp(const AuthenticateApp());
       } else {
@@ -159,11 +159,8 @@ class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
                       height: 8,
                     ),
                     Text(
-                      "Re-syncing your accounts.\nPlease do not close Envoy.\n",
-                      style: EnvoyTypography.body.copyWith(color: Colors.white),
-                    ),
-                    Text(
-                      "${progress!.completed} of ${progress!.total} synced",
+                      S().onboarding_migrating_xOfYSynced(
+                          progress.completed, progress.total),
                       style: EnvoyTypography.body.copyWith(color: Colors.white),
                     ),
                   ],

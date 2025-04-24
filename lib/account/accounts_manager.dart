@@ -36,7 +36,7 @@ class NgAccountManager extends ChangeNotifier {
   late SyncManager _syncManager;
   List<EnvoyAccount> _accounts = [];
   final StreamController<List<String>> _accountsOrder =
-      StreamController(sync: true);
+      StreamController<List<String>>.broadcast(sync: true);
 
   final List<EnvoyAccountHandler> _accountsHandler = [];
   var s = Settings();
@@ -103,6 +103,8 @@ class NgAccountManager extends ChangeNotifier {
     return _accounts.firstWhereOrNull((element) => element.id == id);
   }
 
+  SyncManager get syncManager => _syncManager;
+
   updateAccountOrder(List<String> accountsOrder) async {
     _accountsOrder.sink.add(accountsOrder);
     await _ls.prefs.setString(ACCOUNT_ORDER, jsonEncode(accountsOrder));
@@ -139,6 +141,6 @@ class NgAccountManager extends ChangeNotifier {
 
   EnvoyAccountHandler? getHandler(EnvoyAccount envoyAccount) {
     return _accountsHandler
-        .firstWhereOrNull((element) => element.config().id == envoyAccount.id);
+        .firstWhereOrNull((element) => element.id() == envoyAccount.id);
   }
 }

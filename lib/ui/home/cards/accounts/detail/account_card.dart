@@ -665,7 +665,7 @@ Widget transactionIcon(
 }
 
 Future<void> copyTxId(
-    BuildContext context, String txId, EnvoyTransaction tx) async {
+    BuildContext context, String txId, EnvoyTransaction? tx) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
   bool dismissed =
       await EnvoyStorage().checkPromptDismissed(DismissiblePrompt.copyTxId);

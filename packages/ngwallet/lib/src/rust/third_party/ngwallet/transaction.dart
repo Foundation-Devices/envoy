@@ -12,6 +12,7 @@ class BitcoinTransaction {
   final int confirmations;
   final bool isConfirmed;
   final BigInt fee;
+  final BigInt feeRate;
   final PlatformInt64 amount;
   final List<Input> inputs;
   final String address;
@@ -26,6 +27,7 @@ class BitcoinTransaction {
     required this.confirmations,
     required this.isConfirmed,
     required this.fee,
+    required this.feeRate,
     required this.amount,
     required this.inputs,
     required this.address,
@@ -42,6 +44,7 @@ class BitcoinTransaction {
       confirmations.hashCode ^
       isConfirmed.hashCode ^
       fee.hashCode ^
+      feeRate.hashCode ^
       amount.hashCode ^
       inputs.hashCode ^
       address.hashCode ^
@@ -60,6 +63,7 @@ class BitcoinTransaction {
           confirmations == other.confirmations &&
           isConfirmed == other.isConfirmed &&
           fee == other.fee &&
+          feeRate == other.feeRate &&
           amount == other.amount &&
           inputs == other.inputs &&
           address == other.address &&
@@ -72,14 +76,19 @@ class BitcoinTransaction {
 class Input {
   final String txId;
   final int vout;
+  final BigInt amount;
+  final String? tag;
 
   const Input({
     required this.txId,
     required this.vout,
+    required this.amount,
+    this.tag,
   });
 
   @override
-  int get hashCode => txId.hashCode ^ vout.hashCode;
+  int get hashCode =>
+      txId.hashCode ^ vout.hashCode ^ amount.hashCode ^ tag.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -87,7 +96,15 @@ class Input {
       other is Input &&
           runtimeType == other.runtimeType &&
           txId == other.txId &&
-          vout == other.vout;
+          vout == other.vout &&
+          amount == other.amount &&
+          tag == other.tag;
+}
+
+enum KeyChain {
+  external_,
+  internal,
+  ;
 }
 
 class Output {
@@ -95,15 +112,27 @@ class Output {
   final int vout;
   final BigInt amount;
   final String? tag;
-  final bool? doNotSpend;
+  final BigInt? date;
+  final bool isConfirmed;
+  final String address;
+  final bool doNotSpend;
+  final KeyChain? keychain;
 
   const Output({
     required this.txId,
     required this.vout,
     required this.amount,
     this.tag,
-    this.doNotSpend,
+    this.date,
+    required this.isConfirmed,
+    required this.address,
+    required this.doNotSpend,
+    this.keychain,
   });
+
+  String getId() => RustLib.instance.api.ngwalletTransactionOutputGetId(
+        that: this,
+      );
 
   @override
   int get hashCode =>
@@ -111,7 +140,11 @@ class Output {
       vout.hashCode ^
       amount.hashCode ^
       tag.hashCode ^
-      doNotSpend.hashCode;
+      date.hashCode ^
+      isConfirmed.hashCode ^
+      address.hashCode ^
+      doNotSpend.hashCode ^
+      keychain.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -122,5 +155,9 @@ class Output {
           vout == other.vout &&
           amount == other.amount &&
           tag == other.tag &&
-          doNotSpend == other.doNotSpend;
+          date == other.date &&
+          isConfirmed == other.isConfirmed &&
+          address == other.address &&
+          doNotSpend == other.doNotSpend &&
+          keychain == other.keychain;
 }

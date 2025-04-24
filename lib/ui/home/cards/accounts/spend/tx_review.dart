@@ -2,30 +2,29 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:animations/animations.dart';
-import 'package:envoy/business/account.dart';
-import 'package:envoy/business/coin_tag.dart';
-import 'package:envoy/business/coins.dart';
+import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/choose_coins_widget.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_details.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/transaction_review_card.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/shield_path.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
-import 'package:envoy/ui/state/transactions_note_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -34,16 +33,12 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
-import 'package:envoy/util/tuple.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rive/rive.dart' as rive;
-import 'package:ngwallet/src/wallet.dart';
-import 'package:envoy/ui/shield_path.dart';
-import 'package:envoy/ui/components/pop_up.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:rive/rive.dart' as rive;
 
 //ignore: must_be_immutable
 class TxReview extends ConsumerStatefulWidget {
@@ -54,15 +49,12 @@ class TxReview extends ConsumerStatefulWidget {
 }
 
 class _TxReviewState extends ConsumerState<TxReview> {
-  //TODO: disable note
-  // String _txNote = "";
-
   @override
   Widget build(BuildContext context) {
     EnvoyAccount? account = ref.watch(selectedAccountProvider);
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
 
-    if (account == null || transactionModel.psbt == null) {
+    if (account == null) {
       return MediaQuery.removePadding(
         removeTop: true,
         context: context,
@@ -99,143 +91,86 @@ class _TxReviewState extends ConsumerState<TxReview> {
               key: const Key("review"),
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
               child: TransactionReviewScreen(
-                onBroadcast: () async {
-                  BuildContext rootContext = context;
-                  List<Tuple<CoinTag, Coin>>? spendingTagSet =
-                      ref.read(spendInputTagsProvider);
-                  List<CoinTag> spendingTags = spendingTagSet
-                          ?.map((e) => e.item1)
-                          .toList()
-                          .unique((element) => element.id)
-                          .toList() ??
-                      [];
-
-                  ///if the user is spending from a single tag and the change output is needs to be tagged to the same tag
-                  if (spendingTags.length == 1 &&
-                      ref.read(stagingTxChangeOutPutTagProvider) == null) {
-                    ref.read(stagingTxChangeOutPutTagProvider.notifier).state =
-                        spendingTags[0];
-                  }
-
-                  CoinTag? coinTag = ref.read(stagingTxChangeOutPutTagProvider);
-
-                  ///if the the change output is not tagged and there are more input from different tags
-                  final tagInputs = ref.read(spendInputTagsProvider);
-
-                  /// if the change output is null or untagged we need to show the tag selection dialog
-                  final userChosenTag = coinTag?.untagged == false;
-
-                  final hasManyTagsAsInput = (tagInputs ?? [])
-                          .map((e) => e.item1)
-                          .map((e) => e.id)
-                          .toSet()
-                          .length >
-                      1;
-
-                  final userNote = ref.read(stagingTxNoteProvider);
-                  final dismissedNoteDialog = await EnvoyStorage()
-                      .checkPromptDismissed(DismissiblePrompt.addTxNoteWarning);
-                  if ((userNote == null || userNote.isEmpty) &&
-                      !dismissedNoteDialog &&
-                      !ref.read(spendTransactionProvider).isPSBTFinalized &&
-                      context.mounted) {
-                    await showEnvoyDialog(
-                        context: context,
-                        useRootNavigator: true,
-                        dialog: TxReviewNoteDialog(
-                          onAdd: (note) {
-                            Navigator.pop(context);
-                          },
-                          txId: "UpcomingTx",
-                          noteSubTitle: S()
-                              .stalls_before_sending_tx_add_note_modal_subheading,
-                          noteTitle: S().add_note_modal_heading,
-                          value: ref.read(stagingTxNoteProvider),
-                        ),
-                        alignment: const Alignment(0.0, -0.5));
-
-                    ///wait for the dialog to pop
-                    await Future.delayed(const Duration(milliseconds: 200));
-                  }
-
-                  Tuple<String, int>? changeOutPut =
-                      ref.read(changeOutputProvider);
-                  bool hasChangeOutPutPresent =
-                      changeOutPut != null && changeOutPut.item2 != 0;
-
-                  ///then show the tag selection dialog
-                  if (!userChosenTag &&
-                      tagInputs != null &&
-                      hasManyTagsAsInput &&
-                      hasChangeOutPutPresent &&
-                      context.mounted) {
-                    await showTagDialog(
-                        context, account, rootContext, transactionModel);
-                  } else {
-                    if (account.isHot ||
-                        ref.read(spendTransactionProvider).isPSBTFinalized) {
-                      if (context.mounted) {
-                        broadcastTx(context);
-                      }
-                    } else {
-                      if (rootContext.mounted) {
-                        final psbt = await Navigator.of(rootContext,
-                                rootNavigator: false)
-                            .push(MaterialPageRoute(
-                                builder: (context) => Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: PsbtCard(
-                                          transactionModel.psbt!, account),
-                                    )));
-                        ref
-                            .read(spendTransactionProvider.notifier)
-                            .updateWithFinalPSBT(psbt);
-                        await Future.delayed(const Duration(milliseconds: 200));
-                      }
-                    }
-                  }
-                },
+                onBroadcast: () => _onBroadCast(context),
               ),
             )
           : _buildBroadcastProgress(),
     );
   }
 
-  Future<void> showTagDialog(BuildContext context, EnvoyAccount account,
-      BuildContext rootContext, TransactionModel transactionModel) async {
-    await showEnvoyDialog(
-        useRootNavigator: true,
-        context: context,
-        builder: Builder(
-          builder: (context) => ChooseTagForStagingTx(
-            accountId: account.id,
-            onEditTransaction: () {
-              Navigator.pop(context);
-              editTransaction(context, ref);
-            },
-            hasMultipleTagsInput: true,
-            onTagUpdate: () async {
-              Navigator.pop(context);
-              if (account.isHot ||
-                  ref.read(spendTransactionProvider).isPSBTFinalized) {
-                broadcastTx(context);
-              } else {
-                final psbt = await Navigator.of(rootContext,
-                        rootNavigator: false)
-                    .push(MaterialPageRoute(
-                        builder: (context) => Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: PsbtCard(transactionModel.psbt!, account),
-                            )));
-                ref
-                    .read(spendTransactionProvider.notifier)
-                    .updateWithFinalPSBT(psbt);
-                await Future.delayed(const Duration(milliseconds: 200));
-              }
-            },
-          ),
-        ),
-        alignment: const Alignment(0.0, -.6));
+  _handleQRExchange(EnvoyAccount account, BuildContext rootContext,
+      ProviderContainer providerScope) async {
+    TransactionModel transactionModel = ref.read(spendTransactionProvider);
+    TransactionModeNotifier transactionModeNotifier =
+        ref.read(spendTransactionProvider.notifier);
+    bool received = false;
+    final cryptoPsbt = await GoRouter.of(rootContext).pushNamed(
+        ACCOUNT_SEND_SCAN_PSBT,
+        extra: transactionModel.preparedTransaction);
+    if (cryptoPsbt is CryptoPsbt && received == false) {
+      transactionModeNotifier.decodePsbt(providerScope, cryptoPsbt);
+      received = true;
+    }
+    return;
+  }
+
+  Future _onBroadCast(BuildContext context) async {
+    EnvoyAccount? account = ref.read(selectedAccountProvider);
+    TransactionModel transactionModel = ref.read(spendTransactionProvider);
+    BuildContext rootContext = context;
+    if (account == null ||
+        transactionModel.preparedTransaction == null ||
+        transactionModel.broadcastProgress == BroadcastProgress.inProgress) {
+      return;
+    }
+    final providerScope = ProviderScope.containerOf(context);
+    final transaction = transactionModel.transaction!;
+    final userChosenTag = transactionModel.changeOutPutTag ?? "";
+    final inputTags = transaction.inputs
+        .map((e) => e.tag ?? "Untagged")
+        .map((e) => e.isEmpty ? "Untagged" : e)
+        .toSet();
+
+    final hasChange = transaction.outputs
+            .firstWhereOrNull((e) => e.keychain == KeyChain.internal) !=
+        null;
+    //then show the tag selection dialog
+    //spending from multiple tags and no tag is selected for change
+    if (userChosenTag.isEmpty && inputTags.length > 1 && hasChange) {
+      if (context.mounted) {
+        final continueBroadcast = await _showTagDialog(
+            context, account, rootContext, transactionModel);
+        if (!continueBroadcast) {
+          return;
+        }
+      }
+    } else {
+      if (context.mounted) {
+        if (account.isHot) {
+          if (context.mounted) {
+            await _showNotesDialog(context);
+          }
+          await Future.delayed(const Duration(milliseconds: 100));
+          ref
+              .read(spendTransactionProvider.notifier)
+              .setProgressState(BroadcastProgress.inProgress);
+        } else {
+          if (transactionModel.isFinalized) {
+            if (context.mounted) {
+              await _showNotesDialog(context);
+            }
+            await Future.delayed(const Duration(milliseconds: 100));
+            ref
+                .read(spendTransactionProvider.notifier)
+                .setProgressState(BroadcastProgress.inProgress);
+          } else {
+            if (context.mounted) {
+              _handleQRExchange(account, rootContext, providerScope);
+            }
+          }
+        }
+      }
+    }
   }
 
   rive.StateMachineController? _stateMachineController;
@@ -264,7 +199,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
                         ?.findInput<bool>("indeterminate")
                         ?.change(true);
                     //start broadcast immediately after the animation is loaded
-                    broadcastTx(context);
+                    _broadcastToNetwork(context);
                   },
                 ),
               ),
@@ -356,7 +291,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
           S().component_tryAgain,
           type: EnvoyButtonTypes.secondary,
           onTap: () {
-            broadcastTx(context);
+            _broadcastToNetwork(context);
           },
         ),
         const Padding(padding: EdgeInsets.all(6)),
@@ -371,14 +306,67 @@ class _TxReviewState extends ConsumerState<TxReview> {
     );
   }
 
-  void broadcastTx(BuildContext context) async {
+  Future<bool> _showTagDialog(BuildContext context, EnvoyAccount account,
+      BuildContext rootContext, TransactionModel transactionModel) async {
+    final completer = Completer<bool>();
+    await showEnvoyDialog(
+        useRootNavigator: true,
+        context: context,
+        builder: Builder(
+          builder: (context) => ChooseTagForStagingTx(
+            accountId: account.id,
+            onEditTransaction: () {
+              Navigator.pop(context);
+              completer.complete(true);
+              editTransaction(context, ref);
+            },
+            hasMultipleTagsInput: true,
+            onTagUpdate: () async {
+              Navigator.pop(context);
+              completer.complete(true);
+            },
+          ),
+        ),
+        alignment: const Alignment(0.0, -.6));
+    if (!completer.isCompleted) {
+      completer.complete(true);
+    }
+    return completer.future;
+  }
+
+  Future _showNotesDialog(BuildContext context) async {
+    final completer = Completer();
+    TransactionModel transactionModel = ref.read(spendTransactionProvider);
+    final notes = ref.read(stagingTxNoteProvider) ?? "";
+    final notesParam = transactionModel.transactionParams?.note ?? "";
+    if (notesParam.isEmpty && notes.isEmpty) {
+      await showEnvoyDialog(
+          context: context,
+          useRootNavigator: true,
+          dialog: TxReviewNoteDialog(
+            onAdd: (note) {
+              ref.read(spendTransactionProvider.notifier).setNote(note);
+              completer.complete();
+            },
+            noteSubTitle:
+                S().stalls_before_sending_tx_add_note_modal_subheading,
+            noteTitle: S().add_note_modal_heading,
+            value: transactionModel.note,
+          ));
+    }
+    if (!completer.isCompleted) completer.complete();
+
+    return completer.future;
+  }
+
+  void _broadcastToNetwork(BuildContext context) async {
+    final providerContainer = ProviderScope.containerOf(context);
     EnvoyAccount? account = ref.read(selectedAccountProvider);
     TransactionModel transactionModel = ref.read(spendTransactionProvider);
-    final providerContainer = ProviderScope.containerOf(context);
-    if (account == null || transactionModel.psbt == null) {
+    if (account == null || transactionModel.preparedTransaction == null) {
       return;
     }
-
+    await Future.delayed(const Duration(milliseconds: 300));
     try {
       _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
       _stateMachineController?.findInput<bool>("happy")?.change(false);
@@ -391,7 +379,6 @@ class _TxReviewState extends ConsumerState<TxReview> {
       _stateMachineController?.findInput<bool>("happy")?.change(true);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
       addHapticFeedback();
-      await Future.delayed(const Duration(milliseconds: 500));
     } catch (e, s) {
       kPrint(e, stackTrace: s);
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
@@ -444,6 +431,10 @@ class _TransactionReviewScreenState
     EnvoyAccount? account = ref.watch(selectedAccountProvider);
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
     String address = ref.watch(spendAddressProvider);
+    String? error = transactionModel.error;
+    PreparedTransaction? preparedTransaction =
+        ref.watch(preparedTransactionProvider);
+    BitcoinTransaction? transaction = preparedTransaction?.transaction;
 
     final coinSelectionChanged = ref.watch(coinSelectionChangedProvider);
     final userSelectedCoinsThisSession =
@@ -457,24 +448,25 @@ class _TransactionReviewScreenState
         transactionInputsChanged &&
         userHasChangedFees;
 
-    if (account == null || transactionModel.psbt == null) {
+    if (account == null || transaction == null) {
       return const Center(
         child: Text("Unable to build transaction"), //TODO: figma
       );
     }
 
-    Psbt psbt = transactionModel.psbt!;
-    int amount = transactionModel.amount;
+    int amount = transaction.amount;
 
-    String header = (account.isHot || transactionModel.isPSBTFinalized)
+    String header = (account.isHot || transactionModel.isFinalized)
         ? S().coincontrol_tx_detail_heading
         : S().coincontrol_txDetail_heading_passport;
 
-    String subHeading = (account.isHot || transactionModel.isPSBTFinalized)
+    String subHeading = (account.isHot || transactionModel.isFinalized)
         ? S().coincontrol_tx_detail_subheading
         : S().coincontrol_txDetail_subheading_passport;
 
-    int feePercentage = ((psbt.fee / (psbt.fee + amount)) * 100).round();
+    int feePercentage =
+        ((transaction.fee.toInt() / (transaction.fee.toInt() + amount)) * 100)
+            .round();
 
     return EnvoyScaffold(
       backgroundColor: Colors.transparent,
@@ -503,7 +495,7 @@ class _TransactionReviewScreenState
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                if (!transactionModel.isPSBTFinalized)
+                if (!transactionModel.isFinalized)
                   EnvoyButton(
                     enabled: !transactionModel.loading,
                     S().coincontrol_tx_detail_cta2,
@@ -517,7 +509,7 @@ class _TransactionReviewScreenState
                 const Padding(padding: EdgeInsets.all(6)),
                 EnvoyButton(
                   enabled: !transactionModel.loading,
-                  (account.isHot || transactionModel.isPSBTFinalized)
+                  (account.isHot || transactionModel.isFinalized)
                       ? S().coincontrol_tx_detail_cta1
                       : S().coincontrol_txDetail_cta1_passport,
                   onTap: () {
@@ -564,15 +556,14 @@ class _TransactionReviewScreenState
                         children: [
                           Consumer(builder: (context, ref, child) {
                             return TransactionReviewCard(
-                              psbt: psbt,
+                              transaction: transaction,
                               onTxDetailTap: () {
-                                if (transactionModel.psbt == null) return;
                                 Navigator.of(context, rootNavigator: true).push(
                                     PageRouteBuilder(
                                         pageBuilder: (context, animation,
                                             secondaryAnimation) {
                                           return StagingTxDetails(
-                                            psbt: transactionModel.psbt!,
+                                            transaction: transaction,
                                           );
                                         },
                                         transitionDuration:
@@ -587,7 +578,7 @@ class _TransactionReviewScreenState
                                         opaque: false,
                                         fullscreenDialog: true));
                               },
-                              psbtFinalized: transactionModel.isPSBTFinalized,
+                              psbtFinalized: transactionModel.isFinalized,
                               loading: transactionModel.loading,
                               address: address,
                               feeTitle: S().coincontrol_tx_detail_fee,
@@ -608,6 +599,22 @@ class _TransactionReviewScreenState
                               child: feeOverSpendWarning(feePercentage),
                             ),
                         ]),
+
+                    if (error != null)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(right: EnvoySpacing.small),
+                            child: EnvoyIcon(EnvoyIcons.alert,
+                                size: EnvoyIconSize.extraSmall,
+                                color: EnvoyColors.copper500),
+                          ),
+                          Text(error,
+                              style: EnvoyTypography.button
+                                  .copyWith(color: EnvoyColors.copper500)),
+                        ],
+                      ),
 
                     // Special warning if we are sending max or the fee changed the TX
                     if (transactionModel.mode == SpendMode.sendMax ||
@@ -669,7 +676,7 @@ class _TransactionReviewScreenState
     ref.read(spendFeeRateProvider.notifier).state = selectedItem.toDouble();
     await ref
         .read(spendTransactionProvider.notifier)
-        .validate(ProviderScope.containerOf(context), settingFee: true);
+        .setFee(ProviderScope.containerOf(context));
     ref.read(spendFeeProcessing.notifier).state = false;
     //hide fee slider bottom-sheet
     if (customFee && context.mounted) {
@@ -704,20 +711,19 @@ void navigateWithTransition(BuildContext context, Widget page) {
 void editTransaction(BuildContext context, WidgetRef ref) async {
   /// The user has is in edit mode and if the psbt
   /// has inputs then use them to populate the coin selection state
-  if (ref.read(rawTransactionProvider) != null) {
-    List<String> inputs = ref
-        .read(rawTransactionProvider)!
-        .inputs
-        .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}")
-        .toList();
+  List<String> inputs = ref
+      .read(spendTransactionProvider.select(
+        (value) => value.transaction?.inputs ?? [],
+      ))
+      .map((e) => "${e.txId}:${e.vout}")
+      .toList();
 
-    ref.read(coinSelectionStateProvider.notifier).reset();
-    ref.read(coinSelectionStateProvider.notifier).addAll(inputs);
+  ref.read(coinSelectionStateProvider.notifier).reset();
+  ref.read(coinSelectionStateProvider.notifier).addAll(inputs);
 
-    ///make a copy of wallet selected coins so that we can backtrack to it
-    ref.read(coinSelectionFromWallet.notifier).reset();
-    ref.read(coinSelectionFromWallet.notifier).addAll(inputs);
-  }
+  ///make a copy of wallet selected coins so that we can backtrack to it
+  ref.read(coinSelectionFromWallet.notifier).reset();
+  ref.read(coinSelectionFromWallet.notifier).addAll(inputs);
 
   if (ref.read(selectedAccountProvider) != null) {
     coinSelectionOverlayKey.currentState?.show(SpendOverlayContext.editCoins);
@@ -773,19 +779,18 @@ void resetFeeChangeNoticeUserInteractionProviders(WidgetRef ref) {
 }
 
 class TxReviewNoteDialog extends ConsumerStatefulWidget {
-  final String txId;
   final Function(String) onAdd;
   final String noteTitle;
   final String? value;
   final String noteSubTitle;
 
-  const TxReviewNoteDialog(
-      {super.key,
-      required this.noteTitle,
-      this.value,
-      required this.onAdd,
-      required this.noteSubTitle,
-      required this.txId});
+  const TxReviewNoteDialog({
+    super.key,
+    required this.noteTitle,
+    this.value,
+    required this.onAdd,
+    required this.noteSubTitle,
+  });
 
   @override
   ConsumerState<TxReviewNoteDialog> createState() => _TxNoteDialogState();
@@ -803,9 +808,6 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
       /// if value is passed as param, use that
       if (widget.value != null) {
         _textEditingController.text = widget.value!;
-      } else {
-        _textEditingController.text =
-            ref.read(txNoteProvider(widget.txId)) ?? "";
       }
       EnvoyStorage()
           .checkPromptDismissed(DismissiblePrompt.addTxNoteWarning)
@@ -940,9 +942,8 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
               EnvoyButton(
                 S().component_save,
                 onTap: () {
-                  ref.read(stagingTxNoteProvider.notifier).state =
-                      _textEditingController.text;
-                  Navigator.of(context).pop(true);
+                  Navigator.of(context).pop(_textEditingController.text);
+                  widget.onAdd(_textEditingController.text);
                   if (dismissed) {
                     EnvoyStorage()
                         .addPromptState(DismissiblePrompt.addTxNoteWarning);

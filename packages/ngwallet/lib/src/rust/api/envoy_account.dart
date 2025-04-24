@@ -11,7 +11,8 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'envoy_account.freezed.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`
+// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `Tag`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`
 
 @freezed
 class EnvoyAccount with _$EnvoyAccount {
@@ -30,8 +31,10 @@ class EnvoyAccount with _$EnvoyAccount {
     required String id,
     required String nextAddress,
     required BigInt balance,
+    required BigInt unlockedBalance,
     required bool isHot,
     required List<BitcoinTransaction> transactions,
     required List<Output> utxo,
+    required List<String> tags,
   }) = _EnvoyAccount;
 }

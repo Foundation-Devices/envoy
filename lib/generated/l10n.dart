@@ -52,10 +52,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `Optional place for a detailed message for our users so they understand the step.`
+  /// `12:34`
   String get _ {
     return Intl.message(
-      'Optional place for a detailed message for our users so they understand the step.',
+      '12:34',
       name: '_',
       desc: '',
       args: [],
@@ -267,6 +267,46 @@ class S {
     return Intl.message(
       'Passphrase',
       name: 'accounts_switchPassphrase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy now uses Global Signet instead of Mutinynet. Your previous Signet accounts have been removed. \n\nTo begin using Global Signet, go Settings and enable the Signet toggle.`
+  String get accounts_upgradeBdkSignetModal_content {
+    return Intl.message(
+      'Envoy now uses Global Signet instead of Mutinynet. Your previous Signet accounts have been removed. \n\nTo begin using Global Signet, go Settings and enable the Signet toggle.',
+      name: 'accounts_upgradeBdkSignetModal_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Global Signet`
+  String get accounts_upgradeBdkSignetModal_header {
+    return Intl.message(
+      'Global Signet',
+      name: 'accounts_upgradeBdkSignetModal_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `‘testnet3’ has been deprecated and Envoy now uses ‘testnet4’. Your previous testnet3 accounts have been removed. \n\nTo begin using testnet4, go Settings and enable the Testnet toggle.`
+  String get accounts_upgradeBdkTestnetModal_content {
+    return Intl.message(
+      '‘testnet3’ has been deprecated and Envoy now uses ‘testnet4’. Your previous testnet3 accounts have been removed. \n\nTo begin using testnet4, go Settings and enable the Testnet toggle.',
+      name: 'accounts_upgradeBdkTestnetModal_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Introducing testnet4`
+  String get accounts_upgradeBdkTestnetModal_header {
+    return Intl.message(
+      'Introducing testnet4',
+      name: 'accounts_upgradeBdkTestnetModal_header',
       desc: '',
       args: [],
     );
@@ -4740,6 +4780,16 @@ class S {
     );
   }
 
+  /// `Passport Core`
+  String get learning_center_device_passportCore {
+    return Intl.message(
+      'Passport Core',
+      name: 'learning_center_device_passportCore',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Passport Prime`
   String get learning_center_device_passportPrime {
     return Intl.message(
@@ -6480,13 +6530,13 @@ class S {
     );
   }
 
-  /// `Re-syncing your accounts.\nPlease do not close Envoy.\n\n{0} of {1} synced`
-  String get onboarding_migrating_xOfYSynced {
+  /// `Re-syncing your accounts.\nPlease do not close Envoy.\n\n{amount} of {total_amount} synced`
+  String onboarding_migrating_xOfYSynced(Object amount, Object total_amount) {
     return Intl.message(
-      'Re-syncing your accounts.\nPlease do not close Envoy.\n\n{0} of {1} synced',
+      'Re-syncing your accounts.\nPlease do not close Envoy.\n\n$amount of $total_amount synced',
       name: 'onboarding_migrating_xOfYSynced',
       desc: '',
-      args: [],
+      args: [amount, total_amount],
     );
   }
 
