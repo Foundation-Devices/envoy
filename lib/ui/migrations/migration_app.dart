@@ -162,6 +162,7 @@ class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
                       S().onboarding_migrating_xOfYSynced(
                           progress.completed, progress.total),
                       style: EnvoyTypography.body.copyWith(color: Colors.white),
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
