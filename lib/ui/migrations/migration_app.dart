@@ -159,11 +159,8 @@ class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
                       height: 8,
                     ),
                     Text(
-                      "Re-syncing your accounts.\nPlease do not close Envoy.\n",
-                      style: EnvoyTypography.body.copyWith(color: Colors.white),
-                    ),
-                    Text(
-                      "${progress.completed} of ${progress.total} synced",
+                      S().onboarding_migrating_xOfYSynced(
+                          progress.completed, progress.total),
                       style: EnvoyTypography.body.copyWith(color: Colors.white),
                     ),
                   ],
