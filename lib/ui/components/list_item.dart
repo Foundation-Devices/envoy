@@ -267,6 +267,9 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
                         action();
                       }
                     },
+                    onLongPress: () async {
+                      await copyTxId(context, transaction!.txId, transaction);
+                    },
                     child: EnvoyListTile(
                       titleText: titleText,
                       subtitleText: subtitleText,
