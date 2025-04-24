@@ -62,16 +62,18 @@ class PairPayloadDecoder extends ScannerDecoder {
   }
 
   Future<bool> _binaryValidated(Binary object) async {
-    try {
-      EnvoyAccountHandler? pairedAccount =
-          await NgAccountManager().processPassportAccounts(object);
-      if (pairedAccount == null) {
-        return true;
-      } else {
-        throw AccountAlreadyPairedException();
-      }
-    } on AccountAlreadyPaired catch (_) {
-      throw AccountAlreadyPairedException();
-    }
+    // TODO: reenable
+    return true;
+    // try {
+    //   EnvoyAccountHandler? pairedAccount =
+    //       await NgAccountManager().processPassportAccounts(object);
+    //   if (pairedAccount == null) {
+    //     return true;
+    //   } else {
+    //     throw AccountAlreadyPairedException();
+    //   }
+    // } on AccountAlreadyPaired catch (_) {
+    //   throw AccountAlreadyPairedException();
+    // }
   }
 }
