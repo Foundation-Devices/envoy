@@ -52,7 +52,7 @@ class _MagicBackupDeactivatedState
   }
 
   Widget mainWidget(BuildContext context) {
-    if (_loading) {
+    if (false) {
       return const Center(
         child: SizedBox(
           height: 180,
@@ -76,30 +76,26 @@ class _MagicBackupDeactivatedState
                 const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
             child: Image.asset("assets/exclamation_icon.png"),
           ),
-          const SizedBox(height: EnvoySpacing.medium1),
           Flexible(
             child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.medium3),
-                child: Column(
-                  children: [
-                    Text(S().manual_setup_change_from_magic_header,
-                        textAlign: TextAlign.center,
-                        style: EnvoyTypography.heading),
-                    const SizedBox(height: EnvoySpacing.medium1),
-                    Text(
-                      Platform.isAndroid
-                          ? S().manual_setup_change_from_magic_subheaderGoogle
-                          : S().manual_setup_change_from_magic_subheaderApple,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(S().manual_setup_change_from_magic_header,
                       textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall!
-                          .copyWith(fontSize: 13),
-                    ),
-                  ],
-                ),
+                      style: EnvoyTypography.heading),
+                  const SizedBox(height: EnvoySpacing.large2),
+                  Text(
+                    Platform.isAndroid
+                        ? S().manual_setup_change_from_magic_subheaderGoogle
+                        : S().manual_setup_change_from_magic_subheaderApple,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall!
+                        .copyWith(fontSize: 13),
+                  ),
+                ],
               ),
             ),
           ),
