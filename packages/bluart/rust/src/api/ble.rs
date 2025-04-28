@@ -277,8 +277,8 @@ pub fn connect(id: String) -> Result<()> {
 async fn inner_connect(id: String) -> Result<()> {
     debug!("{}", format!("Try to connect to: {id}"));
 
-    let devices = DEVICES.get().unwrap().lock().await;
-    let device = match devices.get(&id) {
+    let mut devices = DEVICES.get().unwrap().lock().await;
+    let device = match devices.get_mut(&id) {
         Some(device) => device,
         None => {
             return Err(anyhow::anyhow!("UnknownPeripheral(id)"));
