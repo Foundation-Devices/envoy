@@ -552,7 +552,7 @@ class _EnvoyWelcomeButtonState extends State<EnvoyWelcomeButton> {
                           ),
                           Container(
                             height: 2,
-                            color: EnvoyColors.danger,
+                            color: EnvoyColors.accentSecondary,
                           ),
                           Flexible(
                             flex: 4,
