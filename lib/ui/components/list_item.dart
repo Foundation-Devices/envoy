@@ -248,10 +248,27 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
               closedBuilder: (context, action) {
                 return GestureDetector(
                     onTap: () {
-                      if (!ref.read(transactionDetailsOpen.notifier).state) {
+                      final tx = notification.transaction;
+                      if (tx == null) return;
+
+                      final accountId =
+                          NgAccountManager().getAccountIdByTransaction(tx.txId);
+                      if (accountId == null) return;
+
+                      final isHidden =
+                          ref.read(balanceHideStateStatusProvider(accountId));
+                      final account =
+                          NgAccountManager().getAccountById(accountId);
+
+                      if (!isHidden &&
+                          account != null &&
+                          !ref.read(transactionDetailsOpen.notifier).state) {
                         ref.read(transactionDetailsOpen.notifier).state = true;
                         action();
                       }
+                    },
+                    onLongPress: () async {
+                      await copyTxId(context, transaction!.txId, transaction);
                     },
                     child: EnvoyListTile(
                       titleText: titleText,
@@ -282,25 +299,26 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
 
   Widget openTransactionDetails(
       BuildContext context, EnvoyTransaction transaction) {
-    if (widget.notification.accountId != null) {
-      EnvoyAccount? account =
-          NgAccountManager().getAccountById(widget.notification.accountId!);
-      if (account != null) {
-        return TransactionsDetailsWidget(
-          account: account,
-          tx: transaction,
-          iconTitleWidget: transactionIcon(context, transaction,
-              iconColor: EnvoyColors.textPrimaryInverse),
-          titleWidget: transactionTitle(
-            context,
-            transaction,
-            txTitleStyle: EnvoyTypography.subheading
-                .copyWith(color: EnvoyColors.textPrimaryInverse),
-          ),
-        );
-      }
-    }
-    return const SizedBox.shrink();
+    final accountId =
+        NgAccountManager().getAccountIdByTransaction(transaction.txId);
+    final account = NgAccountManager().getAccountById(accountId!);
+
+    return TransactionsDetailsWidget(
+      account: account!,
+      tx: transaction,
+      iconTitleWidget: transactionIcon(
+        context,
+        transaction,
+        iconColor: EnvoyColors.textPrimaryInverse,
+      ),
+      titleWidget: transactionTitle(
+        context,
+        transaction,
+        txTitleStyle: EnvoyTypography.subheading.copyWith(
+          color: EnvoyColors.textPrimaryInverse,
+        ),
+      ),
+    );
   }
 
   void openNotificationEvent(BuildContext context) {

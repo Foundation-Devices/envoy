@@ -64,7 +64,7 @@ class EnvoyAmount extends StatelessWidget {
       secondaryUnit: secondaryUnit,
       symbolFiat: symbolFiat,
       badgeColor: badgeColor,
-      network: account.network,
+      envoyAccount: account,
       alignToEnd: alignToEnd,
       locale: currentLocale,
       millionaireMode: millionaireMode,
