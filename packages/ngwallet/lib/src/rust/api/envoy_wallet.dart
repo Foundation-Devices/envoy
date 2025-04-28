@@ -47,6 +47,11 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
   Future<PreparedTransaction> composePsbt(
       {required TransactionParams transactionParams});
 
+  Future<PreparedTransaction> composeRbfPsbt(
+      {required List<Output> selectedOutputs,
+      required BigInt feeRate,
+      required BitcoinTransaction bitcoinTransaction});
+
   NgAccountConfig config();
 
   static Future<PreparedTransaction> decodePsbt(
@@ -54,6 +59,10 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
           required String psbtBase64}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerDecodePsbt(
           preparedTransaction: preparedTransaction, psbtBase64: psbtBase64);
+
+  Future<TransactionFeeResult> getMaxBumpFeeRates(
+      {required List<Output> selectedOutputs,
+      required BitcoinTransaction bitcoinTransaction});
 
   Future<TransactionFeeResult> getMaxFee(
       {required TransactionParams transactionParams});

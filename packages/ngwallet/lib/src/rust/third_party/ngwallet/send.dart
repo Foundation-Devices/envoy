@@ -7,6 +7,9 @@ import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'transaction.dart';
 
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BumpFeeError>>
+abstract class BumpFeeError implements RustOpaqueInterface {}
+
 class PreparedTransaction {
   final BitcoinTransaction transaction;
   final String psbtBase64;

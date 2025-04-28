@@ -9,7 +9,7 @@ use std::path::Path;
 use std::str::FromStr;
 use std::sync::{Arc, LockResult, Mutex};
 use std::{fs, thread};
-use std::time::Duration;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use anyhow::{anyhow, Error, Result};
 use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse, SyncRequest};
 use bdk_wallet::rusqlite::{Connection, OpenFlags};
@@ -28,7 +28,7 @@ use ngwallet::redb::backends::FileBackend;
 use crate::api::migration::get_last_used_index;
 use crate::api::envoy_account::{EnvoyAccount};
 use crate::frb_generated::StreamSink;
-use chrono::{DateTime, Local};
+use chrono::{DateTime, Local, Utc};
 use std::env;
 use bdk_wallet::bip39::{Language, Mnemonic};
 use bdk_wallet::bitcoin::bip32::Error::Secp256k1;
@@ -36,7 +36,7 @@ use bdk_wallet::descriptor::DescriptorError;
 use bdk_wallet::descriptor::policy::PolicyError;
 use bdk_wallet::error::{CreateTxError, MiniscriptPsbtError};
 use bdk_wallet::serde::{Deserialize, Serialize};
-use ngwallet::send::{TransactionFeeResult, TransactionParams};
+use ngwallet::send::{BumpFeeError, TransactionFeeResult, TransactionParams};
 use ngwallet::send::PreparedTransaction;
 use crate::api::errors::ComposeTxError;
 
@@ -242,7 +242,6 @@ impl EnvoyAccountHandler {
                     }
                 }
 
-
                 Ok(EnvoyAccount {
                     name: config.name.clone(),
                     color: config.color.clone(),
@@ -286,7 +285,12 @@ impl EnvoyAccountHandler {
     }
 
     pub fn update_broadcast_state(&mut self, prepared_transaction: PreparedTransaction) {
-        let tx = prepared_transaction.transaction;
+        let mut tx = prepared_transaction.transaction;
+        let now = Utc::now();
+        //transaction list will show fee+amount
+        tx.amount = -(((tx.amount.abs() as u64) + tx.fee) as i64);
+        //use current timestamp. this will be used for sorting
+        tx.date = Some((now.timestamp() + 1000) as u64);
         self.mempool_txs.push(tx.clone());
         {
             let mut account = self.ng_account
@@ -486,6 +490,27 @@ impl EnvoyAccountHandler {
                 ComposeTxError::map_err(e)
             })
     }
+
+    pub fn get_max_bump_fee_rates(&mut self, selected_outputs: Vec<Output>, bitcoin_transaction: BitcoinTransaction,
+    ) -> Result<TransactionFeeResult, BumpFeeError>
+    {
+        self.ng_account
+            .lock().unwrap()
+            .wallet.
+            get_max_bump_fee(selected_outputs, bitcoin_transaction)
+
+    }
+
+    pub fn compose_rbf_psbt(&mut self, selected_outputs: Vec<Output>,
+                            fee_rate:u64,
+                            bitcoin_transaction: BitcoinTransaction,
+    ) -> Result<PreparedTransaction, BumpFeeError> {
+        self.ng_account
+            .lock().unwrap()
+            .wallet.
+            get_rbf_bump_psbt(selected_outputs, bitcoin_transaction,fee_rate)
+    }
+
 
     pub fn decode_psbt(prepared_transaction: PreparedTransaction,
                        psbt_base64: &str,
