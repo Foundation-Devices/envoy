@@ -165,12 +165,6 @@ class SettingsMenuWidget extends ConsumerWidget {
                         },
                       ),
                     MenuOption(
-                      label: "Privacy".toUpperCase(), // TODO: localazy
-                      onTap: () {
-                        // TODO: implement the flow to "Privacy"
-                      },
-                    ),
-                    MenuOption(
                       label: S().menu_support.toUpperCase(),
                       onTap: () {
                         background.state = HomePageBackgroundState.support;
