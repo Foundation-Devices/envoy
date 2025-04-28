@@ -52,8 +52,9 @@ impl Device {
         }
     }
 
-    pub async fn connect(&self) -> Result<()> {
+    pub async fn connect(&mut self) -> Result<()> {
         self.peripheral.connect().await?;
+        self.is_connected = true;
         self.peripheral.discover_services().await?;
         Ok(())
     }
