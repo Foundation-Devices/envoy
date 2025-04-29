@@ -162,6 +162,8 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {},
       child: OnboardingPage(
+        rightFunction: null,
+        leftFunction: null,
         clipArt: Container(
           alignment: Alignment.topCenter,
           height: 280,
