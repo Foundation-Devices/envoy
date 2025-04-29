@@ -118,7 +118,7 @@ class _QrScannerState extends State<QrScanner> {
             color: Colors.black,
           ),
           if (_viewReady)
-            Expanded(
+            Positioned.fill(
               child: AnimatedOpacity(
                 duration: const Duration(milliseconds: 600),
                 opacity: _controller != null ? 1 : 0,
@@ -167,7 +167,7 @@ class _QrScannerState extends State<QrScanner> {
           ),
           if (_viewReady)
             if (widget.child != null)
-              Expanded(
+              Positioned.fill(
                 child: widget.child!,
               )
             else
