@@ -35,53 +35,81 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
   final PageController _pageController = PageController();
   late int step;
 
-  List<String> stepsHeadings = [
-    S().magic_setup_generate_envoy_key_heading,
-    S().magic_setup_generate_backup_heading,
-    S().magic_setup_send_backup_to_envoy_server_heading,
-  ];
+  late final List<String> stepsHeadings = walletGenerated
+      ? [
+          S().magic_setup_generate_backup_heading,
+          S().magic_setup_send_backup_to_envoy_server_heading,
+        ]
+      : [
+          S().magic_setup_generate_envoy_key_heading,
+          S().magic_setup_generate_backup_heading,
+          S().magic_setup_send_backup_to_envoy_server_heading,
+        ];
 
-  List<String> stepSubHeadings = [
-    Platform.isAndroid
-        ? S().magic_setup_generate_envoy_key_android_subheading
-        : S().magic_setup_generate_envoy_key_ios_subheading,
-    S().magic_setup_generate_backup_subheading,
-    S().magic_setup_send_backup_to_envoy_server_subheading,
-  ];
+  late final List<String> stepSubHeadings = walletGenerated
+      ? [
+          S().magic_setup_generate_backup_subheading,
+          S().magic_setup_send_backup_to_envoy_server_subheading,
+        ]
+      : [
+          Platform.isAndroid
+              ? S().magic_setup_generate_envoy_key_android_subheading
+              : S().magic_setup_generate_envoy_key_ios_subheading,
+          S().magic_setup_generate_backup_subheading,
+          S().magic_setup_send_backup_to_envoy_server_subheading,
+        ];
 
   bool isRiveInitialized = false;
 
-  _onRiveInit(Artboard artboard) {
-    stateMachineController =
-        StateMachineController.fromArtboard(artboard, 'STM');
-    artboard.addController(stateMachineController!);
-    if (walletGenerated) {
-      stateMachineController?.findInput<bool>('ShowKey')?.change(false);
-      stateMachineController?.findInput<bool>('showLock')?.change(true);
-      stateMachineController?.findInput<bool>('showShield')?.change(false);
+  @override
+  void initState() {
+    super.initState();
+    step = 0;
+  }
+
+  Future<void> _onRiveInit(Artboard artboard) async {
+    final controller = StateMachineController.fromArtboard(artboard, 'STM');
+    if (controller == null) {
+      return;
     }
+
+    // Find inputs first
+    final showKeyInput = controller.findInput<bool>('ShowKey');
+    final showLockInput = controller.findInput<bool>('showLock');
+    final showShieldInput = controller.findInput<bool>('showShield');
+
+    // Set inputs to correct initial values BEFORE adding controller
+    if (walletGenerated) {
+      showKeyInput?.change(false);
+      showLockInput?.change(true);
+      showShieldInput?.change(false);
+    } else {
+      showKeyInput?.change(true);
+      showLockInput?.change(false);
+      showShieldInput?.change(false);
+    }
+
+    // Now add controller
+    artboard.addController(controller);
+    stateMachineController = controller;
+
+    // Delay showing Rive to avoid flashing wrong frame
+    await Future.delayed(const Duration(milliseconds: 200));
+
     if (!isRiveInitialized) {
       _initiateWalletCreate();
       isRiveInitialized = true;
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    step = walletGenerated ? 1 : 0;
-  }
-
   void _initiateWalletCreate() async {
     final goRouter = GoRouter.of(context);
+
     if (!walletGenerated) {
       Settings().syncToCloud = true;
       Settings().store();
 
       await EnvoySeed().generate();
-    }
-
-    if (!walletGenerated) {
       await Future.delayed(const Duration(seconds: 2));
       if (mounted) {
         setState(() {
@@ -89,15 +117,11 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
         });
       }
       _updateProgress();
-      //delay
-    }
-    _updateProgress();
-
-    if (!walletGenerated) {
       await Future.delayed(const Duration(seconds: 4));
     }
+
     setState(() {
-      step = 2;
+      step = walletGenerated ? 1 : 2;
     });
 
     Settings().setSyncToCloud(true);
@@ -107,8 +131,29 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
     await Future.delayed(const Duration(seconds: 2));
 
     Map<String, String> params = walletGenerated ? {"skip": "1"} : {};
-    goRouter.pushNamed(ONBOARD_ENVOY_MAGIC_RECOVER_INFO,
-        queryParameters: params);
+    goRouter.pushNamed(
+      ONBOARD_ENVOY_MAGIC_RECOVER_INFO,
+      queryParameters: params,
+    );
+  }
+
+  void _updateProgress() async {
+    if (walletGenerated) {
+      // Only 2 steps: Lock (0), Shield (1)
+      stateMachineController?.findInput<bool>('showLock')?.change(step == 0);
+      stateMachineController?.findInput<bool>('showShield')?.change(step == 1);
+    } else {
+      // All 3 steps: Key (0), Lock (1), Shield (2)
+      stateMachineController?.findInput<bool>('ShowKey')?.change(step == 0);
+      stateMachineController?.findInput<bool>('showLock')?.change(step == 1);
+      stateMachineController?.findInput<bool>('showShield')?.change(step == 2);
+    }
+
+    _pageController.animateToPage(
+      step,
+      duration: const Duration(milliseconds: 580),
+      curve: Curves.easeInOut,
+    );
   }
 
   @override
@@ -117,65 +162,48 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {},
       child: OnboardingPage(
-          clipArt: Container(
-            alignment: Alignment.topCenter,
-            height: 280,
-            width: 280,
-            child: RiveAnimation.asset(
-              'assets/envoy_magic_setup.riv',
-              stateMachines: const ["STM"],
-              onInit: _onRiveInit,
-              fit: BoxFit.contain,
-              alignment: Alignment.center,
-            ),
+        clipArt: Container(
+          alignment: Alignment.topCenter,
+          height: 280,
+          width: 280,
+          child: RiveAnimation.asset(
+            'assets/envoy_magic_setup.riv',
+            stateMachines: const ["STM"],
+            onInit: _onRiveInit,
+            fit: BoxFit.contain,
+            alignment: Alignment.center,
           ),
-          text: [
-            ExpandablePageView(
-              physics: const NeverScrollableScrollPhysics(),
-              controller: _pageController,
-              children: [
-                ...stepsHeadings.map((heading) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.xs,
-                        horizontal: EnvoySpacing.small),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Flexible(
-                          child: SingleChildScrollView(
-                            child: OnboardingText(
-                              header: heading,
-                              text: stepSubHeadings[
-                                  stepsHeadings.indexOf(heading)],
-                              key: ValueKey<String>(
-                                stepSubHeadings[stepsHeadings.indexOf(heading)],
-                              ),
-                            ),
-                          ),
+        ),
+        text: [
+          ExpandablePageView(
+            physics: const NeverScrollableScrollPhysics(),
+            controller: _pageController,
+            children: List.generate(stepsHeadings.length, (index) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: EnvoySpacing.xs,
+                  horizontal: EnvoySpacing.small,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                      child: SingleChildScrollView(
+                        child: OnboardingText(
+                          header: stepsHeadings[index],
+                          text: stepSubHeadings[index],
+                          key: ValueKey<String>(stepSubHeadings[index]),
                         ),
-                      ],
+                      ),
                     ),
-                  );
-                })
-              ],
-            )
-          ]),
+                  ],
+                ),
+              );
+            }),
+          ),
+        ],
+      ),
     );
-  }
-
-  //Update page view and state machine
-  _updateProgress() async {
-    if (walletGenerated) {
-      stateMachineController?.findInput<bool>('ShowKey')?.change(step == 0);
-      stateMachineController?.findInput<bool>('showLock')?.change(step == 1);
-      stateMachineController?.findInput<bool>('showShield')?.change(step == 2);
-    } else {
-      stateMachineController?.findInput<bool>('showLock')?.change(step != 2);
-      stateMachineController?.findInput<bool>('showShield')?.change(step == 2);
-    }
-    _pageController.animateToPage(step,
-        duration: const Duration(milliseconds: 580), curve: Curves.easeInOut);
   }
 
   @override
