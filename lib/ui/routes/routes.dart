@@ -63,7 +63,7 @@ final GoRouter mainRouter = GoRouter(
         }
 
         if (params.containsKey("t")) {
-          return state.namedLocation(ONBOARD_PASSPORT_SETUP,
+          return state.namedLocation(ONBOARD_PASSPORT_TOU,
               queryParameters: params);
         }
 
