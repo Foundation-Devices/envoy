@@ -158,6 +158,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BitcoinTransaction dco_decode_box_autoadd_bitcoin_transaction(dynamic raw);
 
   @protected
+  DraftTransaction dco_decode_box_autoadd_draft_transaction(dynamic raw);
+
+  @protected
   KeyChain dco_decode_box_autoadd_key_chain(dynamic raw);
 
   @protected
@@ -168,9 +171,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Output dco_decode_box_autoadd_output(dynamic raw);
-
-  @protected
-  PreparedTransaction dco_decode_box_autoadd_prepared_transaction(dynamic raw);
 
   @protected
   TransactionParams dco_decode_box_autoadd_transaction_params(dynamic raw);
@@ -186,6 +186,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   DescriptorFromSeed dco_decode_descriptor_from_seed(dynamic raw);
+
+  @protected
+  DraftTransaction dco_decode_draft_transaction(dynamic raw);
 
   @protected
   EnvoyAccount dco_decode_envoy_account(dynamic raw);
@@ -247,9 +250,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Output dco_decode_output(dynamic raw);
-
-  @protected
-  PreparedTransaction dco_decode_prepared_transaction(dynamic raw);
 
   @protected
   Seed dco_decode_seed(dynamic raw);
@@ -383,6 +383,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  DraftTransaction sse_decode_box_autoadd_draft_transaction(
+      SseDeserializer deserializer);
+
+  @protected
   KeyChain sse_decode_box_autoadd_key_chain(SseDeserializer deserializer);
 
   @protected
@@ -394,10 +398,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Output sse_decode_box_autoadd_output(SseDeserializer deserializer);
-
-  @protected
-  PreparedTransaction sse_decode_box_autoadd_prepared_transaction(
-      SseDeserializer deserializer);
 
   @protected
   TransactionParams sse_decode_box_autoadd_transaction_params(
@@ -415,6 +415,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   DescriptorFromSeed sse_decode_descriptor_from_seed(
       SseDeserializer deserializer);
+
+  @protected
+  DraftTransaction sse_decode_draft_transaction(SseDeserializer deserializer);
 
   @protected
   EnvoyAccount sse_decode_envoy_account(SseDeserializer deserializer);
@@ -477,10 +480,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Output sse_decode_output(SseDeserializer deserializer);
-
-  @protected
-  PreparedTransaction sse_decode_prepared_transaction(
-      SseDeserializer deserializer);
 
   @protected
   Seed sse_decode_seed(SseDeserializer deserializer);
@@ -616,6 +615,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       BitcoinTransaction self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_draft_transaction(
+      DraftTransaction self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_key_chain(
       KeyChain self, SseSerializer serializer);
 
@@ -628,10 +631,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_box_autoadd_output(Output self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_box_autoadd_prepared_transaction(
-      PreparedTransaction self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_transaction_params(
@@ -650,6 +649,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_descriptor_from_seed(
       DescriptorFromSeed self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_draft_transaction(
+      DraftTransaction self, SseSerializer serializer);
 
   @protected
   void sse_encode_envoy_account(EnvoyAccount self, SseSerializer serializer);
@@ -716,10 +719,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_output(Output self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_prepared_transaction(
-      PreparedTransaction self, SseSerializer serializer);
 
   @protected
   void sse_encode_seed(Seed self, SseSerializer serializer);

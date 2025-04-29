@@ -36,8 +36,7 @@ use bdk_wallet::descriptor::DescriptorError;
 use bdk_wallet::descriptor::policy::PolicyError;
 use bdk_wallet::error::{CreateTxError, MiniscriptPsbtError};
 use bdk_wallet::serde::{Deserialize, Serialize};
-use ngwallet::send::{BumpFeeError, TransactionFeeResult, TransactionParams};
-use ngwallet::send::PreparedTransaction;
+use ngwallet::send::{BumpFeeError, DraftTransaction, TransactionFeeResult, TransactionParams};
 use crate::api::errors::ComposeTxError;
 
 #[frb(init)]
@@ -284,13 +283,13 @@ impl EnvoyAccountHandler {
         return Arc::new(Mutex::new(Some(scan_request)));
     }
 
-    pub fn update_broadcast_state(&mut self, prepared_transaction: PreparedTransaction) {
-        let mut tx = prepared_transaction.transaction;
+    pub fn update_broadcast_state(&mut self, draft_transaction: DraftTransaction) {
+        let mut tx = draft_transaction.transaction;
         let now = Utc::now();
         //transaction list will show fee+amount
         tx.amount = -(((tx.amount.abs() as u64) + tx.fee) as i64);
         //use current timestamp. this will be used for sorting
-        tx.date = Some((now.timestamp() + 1000) as u64);
+        tx.date = Some(now.timestamp() as u64);
         self.mempool_txs.push(tx.clone());
         {
             let mut account = self.ng_account
@@ -481,7 +480,7 @@ impl EnvoyAccountHandler {
     }
 
     pub fn compose_psbt(&mut self, transaction_params: TransactionParams,
-    ) -> Result<PreparedTransaction, ComposeTxError> {
+    ) -> Result<DraftTransaction, ComposeTxError> {
         self.ng_account
             .lock().unwrap()
             .wallet.
@@ -504,28 +503,28 @@ impl EnvoyAccountHandler {
     pub fn compose_rbf_psbt(&mut self, selected_outputs: Vec<Output>,
                             fee_rate:u64,
                             bitcoin_transaction: BitcoinTransaction,
-    ) -> Result<PreparedTransaction, BumpFeeError> {
+    ) -> Result<DraftTransaction, BumpFeeError> {
         self.ng_account
             .lock().unwrap()
             .wallet.
-            get_rbf_bump_psbt(selected_outputs, bitcoin_transaction,fee_rate)
+            get_rbf_draft_tx(selected_outputs, bitcoin_transaction,fee_rate)
     }
 
 
-    pub fn decode_psbt(prepared_transaction: PreparedTransaction,
+    pub fn decode_psbt(draft_transaction: DraftTransaction,
                        psbt_base64: &str,
-    ) -> Result<PreparedTransaction> {
-        NgWallet::<Connection>::decode_psbt(prepared_transaction,
+    ) -> Result<DraftTransaction> {
+        NgWallet::<Connection>::decode_psbt(draft_transaction,
                                             psbt_base64)
     }
 
-    pub fn broadcast(spend: PreparedTransaction,
+    pub fn broadcast(draft_transaction: DraftTransaction,
                      electrum_server: &str,
                      tor_port: Option<u16>,
     ) -> Result<String> {
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
         let socks_proxy = socks_proxy.as_ref().map(|s| s.as_str());
-        NgWallet::<Connection>::broadcast_psbt(spend, electrum_server, socks_proxy)
+        NgWallet::<Connection>::broadcast_psbt(draft_transaction, electrum_server, socks_proxy)
             .map_err(|e| {
                 anyhow!("Failed to broadcast: {}", e)
             })

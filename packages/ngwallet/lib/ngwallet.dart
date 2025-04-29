@@ -22,5 +22,5 @@ export 'src/rust/third_party/ngwallet/transaction.dart' show Input;
 export 'src/rust/third_party/ngwallet/transaction.dart' show Output;
 export 'src/rust/third_party/ngwallet/transaction.dart' show KeyChain;
 export 'src/rust/third_party/ngwallet/send.dart' show TransactionParams;
-export 'src/rust/third_party/ngwallet/send.dart' show PreparedTransaction;
+export 'src/rust/third_party/ngwallet/send.dart' show DraftTransaction;
 export 'src/rust/third_party/ngwallet/send.dart' show TransactionFeeResult;

@@ -380,7 +380,8 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_broadcast_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_spend = <ngwallet::send::PreparedTransaction>::sse_decode(&mut deserializer);
+            let api_draft_transaction =
+                <ngwallet::send::DraftTransaction>::sse_decode(&mut deserializer);
             let api_electrum_server = <String>::sse_decode(&mut deserializer);
             let api_tor_port = <Option<u16>>::sse_decode(&mut deserializer);
             deserializer.end();
@@ -388,7 +389,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_broadcast_impl(
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || {
                         let output_ok = crate::api::envoy_wallet::EnvoyAccountHandler::broadcast(
-                            api_spend,
+                            api_draft_transaction,
                             &api_electrum_server,
                             api_tor_port,
                         )?;
@@ -583,15 +584,15 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_decode_psbt_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_prepared_transaction =
-                <ngwallet::send::PreparedTransaction>::sse_decode(&mut deserializer);
+            let api_draft_transaction =
+                <ngwallet::send::DraftTransaction>::sse_decode(&mut deserializer);
             let api_psbt_base64 = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || {
                         let output_ok = crate::api::envoy_wallet::EnvoyAccountHandler::decode_psbt(
-                            api_prepared_transaction,
+                            api_draft_transaction,
                             &api_psbt_base64,
                         )?;
                         Ok(output_ok)
@@ -1930,8 +1931,8 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_update_broadcast_state_im
             let api_that = <RustOpaqueMoi<
                 flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
             >>::sse_decode(&mut deserializer);
-            let api_prepared_transaction =
-                <ngwallet::send::PreparedTransaction>::sse_decode(&mut deserializer);
+            let api_draft_transaction =
+                <ngwallet::send::DraftTransaction>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, ()>((move || {
@@ -1952,7 +1953,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_update_broadcast_state_im
                     let output_ok = Result::<_, ()>::Ok({
                         crate::api::envoy_wallet::EnvoyAccountHandler::update_broadcast_state(
                             &mut *api_that_guard,
-                            api_prepared_transaction,
+                            api_draft_transaction,
                         );
                     })?;
                     Ok(output_ok)
@@ -2359,6 +2360,14 @@ const _: fn() = || {
         let _: usize = BitcoinTransaction.vsize;
     }
     {
+        let DraftTransaction = None::<ngwallet::send::DraftTransaction>.unwrap();
+        let _: ngwallet::transaction::BitcoinTransaction = DraftTransaction.transaction;
+        let _: String = DraftTransaction.psbt_base64;
+        let _: Option<String> = DraftTransaction.change_out_put_tag;
+        let _: Vec<String> = DraftTransaction.input_tags;
+        let _: bool = DraftTransaction.is_finalized;
+    }
+    {
         let Input = None::<ngwallet::transaction::Input>.unwrap();
         let _: String = Input.tx_id;
         let _: u32 = Input.vout;
@@ -2393,18 +2402,10 @@ const _: fn() = || {
         let _: Option<ngwallet::transaction::KeyChain> = Output.keychain;
     }
     {
-        let PreparedTransaction = None::<ngwallet::send::PreparedTransaction>.unwrap();
-        let _: ngwallet::transaction::BitcoinTransaction = PreparedTransaction.transaction;
-        let _: String = PreparedTransaction.psbt_base64;
-        let _: Option<String> = PreparedTransaction.change_out_put_tag;
-        let _: Vec<String> = PreparedTransaction.input_tags;
-        let _: bool = PreparedTransaction.is_finalized;
-    }
-    {
         let TransactionFeeResult = None::<ngwallet::send::TransactionFeeResult>.unwrap();
         let _: u64 = TransactionFeeResult.max_fee_rate;
         let _: u64 = TransactionFeeResult.min_fee_rate;
-        let _: ngwallet::send::PreparedTransaction = TransactionFeeResult.prepared_transaction;
+        let _: ngwallet::send::DraftTransaction = TransactionFeeResult.draft_transaction;
     }
     {
         let TransactionParams = None::<ngwallet::send::TransactionParams>.unwrap();
@@ -2737,6 +2738,25 @@ impl SseDecode for crate::api::bip39::DescriptorFromSeed {
     }
 }
 
+impl SseDecode for ngwallet::send::DraftTransaction {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_transaction =
+            <ngwallet::transaction::BitcoinTransaction>::sse_decode(deserializer);
+        let mut var_psbtBase64 = <String>::sse_decode(deserializer);
+        let mut var_changeOutPutTag = <Option<String>>::sse_decode(deserializer);
+        let mut var_inputTags = <Vec<String>>::sse_decode(deserializer);
+        let mut var_isFinalized = <bool>::sse_decode(deserializer);
+        return ngwallet::send::DraftTransaction {
+            transaction: var_transaction,
+            psbt_base64: var_psbtBase64,
+            change_out_put_tag: var_changeOutPutTag,
+            input_tags: var_inputTags,
+            is_finalized: var_isFinalized,
+        };
+    }
+}
+
 impl SseDecode for crate::api::envoy_account::EnvoyAccount {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -3046,25 +3066,6 @@ impl SseDecode for ngwallet::transaction::Output {
     }
 }
 
-impl SseDecode for ngwallet::send::PreparedTransaction {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_transaction =
-            <ngwallet::transaction::BitcoinTransaction>::sse_decode(deserializer);
-        let mut var_psbtBase64 = <String>::sse_decode(deserializer);
-        let mut var_changeOutPutTag = <Option<String>>::sse_decode(deserializer);
-        let mut var_inputTags = <Vec<String>>::sse_decode(deserializer);
-        let mut var_isFinalized = <bool>::sse_decode(deserializer);
-        return ngwallet::send::PreparedTransaction {
-            transaction: var_transaction,
-            psbt_base64: var_psbtBase64,
-            change_out_put_tag: var_changeOutPutTag,
-            input_tags: var_inputTags,
-            is_finalized: var_isFinalized,
-        };
-    }
-}
-
 impl SseDecode for crate::api::bip39::Seed {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -3084,12 +3085,11 @@ impl SseDecode for ngwallet::send::TransactionFeeResult {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_maxFeeRate = <u64>::sse_decode(deserializer);
         let mut var_minFeeRate = <u64>::sse_decode(deserializer);
-        let mut var_preparedTransaction =
-            <ngwallet::send::PreparedTransaction>::sse_decode(deserializer);
+        let mut var_draftTransaction = <ngwallet::send::DraftTransaction>::sse_decode(deserializer);
         return ngwallet::send::TransactionFeeResult {
             max_fee_rate: var_maxFeeRate,
             min_fee_rate: var_minFeeRate,
-            prepared_transaction: var_preparedTransaction,
+            draft_transaction: var_draftTransaction,
         };
     }
 }
@@ -3699,6 +3699,30 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::bip39::DescriptorFromSeed>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<ngwallet::send::DraftTransaction> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.transaction.into_into_dart().into_dart(),
+            self.0.psbt_base64.into_into_dart().into_dart(),
+            self.0.change_out_put_tag.into_into_dart().into_dart(),
+            self.0.input_tags.into_into_dart().into_dart(),
+            self.0.is_finalized.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<ngwallet::send::DraftTransaction>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<ngwallet::send::DraftTransaction>>
+    for ngwallet::send::DraftTransaction
+{
+    fn into_into_dart(self) -> FrbWrapper<ngwallet::send::DraftTransaction> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::envoy_account::EnvoyAccount {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -3878,30 +3902,6 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<ngwallet::transaction::Output>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for FrbWrapper<ngwallet::send::PreparedTransaction> {
-    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        [
-            self.0.transaction.into_into_dart().into_dart(),
-            self.0.psbt_base64.into_into_dart().into_dart(),
-            self.0.change_out_put_tag.into_into_dart().into_dart(),
-            self.0.input_tags.into_into_dart().into_dart(),
-            self.0.is_finalized.into_into_dart().into_dart(),
-        ]
-        .into_dart()
-    }
-}
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for FrbWrapper<ngwallet::send::PreparedTransaction>
-{
-}
-impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<ngwallet::send::PreparedTransaction>>
-    for ngwallet::send::PreparedTransaction
-{
-    fn into_into_dart(self) -> FrbWrapper<ngwallet::send::PreparedTransaction> {
-        self.into()
-    }
-}
-// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::bip39::Seed {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -3924,7 +3924,7 @@ impl flutter_rust_bridge::IntoDart for FrbWrapper<ngwallet::send::TransactionFee
         [
             self.0.max_fee_rate.into_into_dart().into_dart(),
             self.0.min_fee_rate.into_into_dart().into_dart(),
-            self.0.prepared_transaction.into_into_dart().into_dart(),
+            self.0.draft_transaction.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -4236,6 +4236,17 @@ impl SseEncode for crate::api::bip39::DescriptorFromSeed {
     }
 }
 
+impl SseEncode for ngwallet::send::DraftTransaction {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <ngwallet::transaction::BitcoinTransaction>::sse_encode(self.transaction, serializer);
+        <String>::sse_encode(self.psbt_base64, serializer);
+        <Option<String>>::sse_encode(self.change_out_put_tag, serializer);
+        <Vec<String>>::sse_encode(self.input_tags, serializer);
+        <bool>::sse_encode(self.is_finalized, serializer);
+    }
+}
+
 impl SseEncode for crate::api::envoy_account::EnvoyAccount {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -4478,17 +4489,6 @@ impl SseEncode for ngwallet::transaction::Output {
     }
 }
 
-impl SseEncode for ngwallet::send::PreparedTransaction {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <ngwallet::transaction::BitcoinTransaction>::sse_encode(self.transaction, serializer);
-        <String>::sse_encode(self.psbt_base64, serializer);
-        <Option<String>>::sse_encode(self.change_out_put_tag, serializer);
-        <Vec<String>>::sse_encode(self.input_tags, serializer);
-        <bool>::sse_encode(self.is_finalized, serializer);
-    }
-}
-
 impl SseEncode for crate::api::bip39::Seed {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -4503,7 +4503,7 @@ impl SseEncode for ngwallet::send::TransactionFeeResult {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <u64>::sse_encode(self.max_fee_rate, serializer);
         <u64>::sse_encode(self.min_fee_rate, serializer);
-        <ngwallet::send::PreparedTransaction>::sse_encode(self.prepared_transaction, serializer);
+        <ngwallet::send::DraftTransaction>::sse_encode(self.draft_transaction, serializer);
     }
 }
 

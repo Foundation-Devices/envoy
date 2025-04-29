@@ -38,27 +38,29 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
   BigInt balance();
 
   static Future<String> broadcast(
-          {required PreparedTransaction spend,
+          {required DraftTransaction draftTransaction,
           required String electrumServer,
           int? torPort}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerBroadcast(
-          spend: spend, electrumServer: electrumServer, torPort: torPort);
+          draftTransaction: draftTransaction,
+          electrumServer: electrumServer,
+          torPort: torPort);
 
-  Future<PreparedTransaction> composePsbt(
+  Future<DraftTransaction> composePsbt(
       {required TransactionParams transactionParams});
 
-  Future<PreparedTransaction> composeRbfPsbt(
+  Future<DraftTransaction> composeRbfPsbt(
       {required List<Output> selectedOutputs,
       required BigInt feeRate,
       required BitcoinTransaction bitcoinTransaction});
 
   NgAccountConfig config();
 
-  static Future<PreparedTransaction> decodePsbt(
-          {required PreparedTransaction preparedTransaction,
+  static Future<DraftTransaction> decodePsbt(
+          {required DraftTransaction draftTransaction,
           required String psbtBase64}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerDecodePsbt(
-          preparedTransaction: preparedTransaction, psbtBase64: psbtBase64);
+          draftTransaction: draftTransaction, psbtBase64: psbtBase64);
 
   Future<TransactionFeeResult> getMaxBumpFeeRates(
       {required List<Output> selectedOutputs,
@@ -181,7 +183,7 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
   Future<List<BitcoinTransaction>> transactions();
 
   Future<void> updateBroadcastState(
-      {required PreparedTransaction preparedTransaction});
+      {required DraftTransaction draftTransaction});
 
   Future<List<Output>> utxo();
 
