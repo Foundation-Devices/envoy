@@ -221,7 +221,7 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
       children: [
         Text(
           //TODO: Note to devs: {0} in firmware.updateSuccess.content1 should be programmatically replaced by the new keyOS version installed
-          S().firmware_updateSuccess_content1,
+          S().firmware_updateSuccess_content1(0),
           textAlign: TextAlign.center,
           style: EnvoyTypography.explainer.copyWith(fontSize: 14),
         ),
@@ -246,7 +246,7 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
           children: [
             Text(
               //TODO: Note: {0} in firmware.updateAvailable.estimatedUpdateTime should be programmatically replaced by the estimated update time rounded to minutes
-              S().firmware_updateAvailable_estimatedUpdateTime,
+              S().firmware_updateAvailable_estimatedUpdateTime(0),
               textAlign: TextAlign.center,
               style: EnvoyTypography.explainer.copyWith(fontSize: 14),
             ),
@@ -255,7 +255,7 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
               padding: const EdgeInsets.all(EnvoySpacing.small),
               child: Text(
                 // TODO: Note to devs: {0} in firmware.updateAvailable.whatsNew should be programmatically replaced by the new keyOS version found
-                S().firmware_updateAvailable_content2,
+                S().firmware_updateAvailable_content2(0),
                 textAlign: TextAlign.center,
                 style: EnvoyTypography.explainer.copyWith(fontSize: 14),
               ),
@@ -282,7 +282,7 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
 // TODO: Note to devs: {0} in firmware.updateAvailable.whatsNew should be programmatically replaced by the new keyOS version found
         Padding(
           padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
-          child: EnvoyButton(S().firmware_updateAvailable_whatsNew,
+          child: EnvoyButton(S().firmware_updateAvailable_whatsNew(0),
               type: EnvoyButtonTypes.secondary, onTap: () {}),
         ),
       ],
@@ -365,7 +365,7 @@ class _PrimeFwDownloadProgressState
                           padding: EdgeInsets.all(EnvoySpacing.small)),
                       //TODO: update with time remaining
                       Text(
-                        S().firmware_downloadingUpdate_timeRemaining,
+                        S().firmware_downloadingUpdate_timeRemaining(0),
                         style: EnvoyTypography.explainer.copyWith(fontSize: 14),
                       ),
                     ],

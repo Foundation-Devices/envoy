@@ -10,7 +10,6 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_button.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/util/console.dart';
@@ -27,7 +26,6 @@ class TransactionModel {
   //composed transaction state
   DraftTransaction? draftTransaction;
   BitcoinTransaction? transaction;
-  BitcoinTransaction? rbfOriginalTransaction;
   String? changeOutPutTag;
   List<String> inputTags;
 
@@ -114,7 +112,9 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     EnvoyAccountHandler? handler,
     String sendTo,
     int spendableBalance,
-    List<Output> utxos
+    List<Output> utxos,
+    String changeOutput,
+    String note,
   }) _getCommonDeps() {
     final account = ref.read(selectedAccountProvider);
     final handler = account?.handler;
@@ -129,18 +129,12 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       utxos: accountId != null
           ? ref.read(getSelectedCoinsProvider(accountId)).toList()
           : <Output>[],
+      changeOutput: ref.read(stagingTxChangeOutPutTagProvider) ?? "",
+      note: ref.read(stagingTxNoteProvider) ?? "",
     );
   }
 
-  Future<bool> setFee(ProviderContainer container) async {
-    if (state.mode == SpendMode.rbf) {
-      return _setRBFFee();
-    } else {
-      return _setFee();
-    }
-  }
-
-  Future<bool> _setFee() async {
+  Future<bool> setFee() async {
     var (
       account: account,
       amount: amount,
@@ -148,7 +142,9 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       handler: handler,
       sendTo: sendTo,
       spendableBalance: spendableBalance,
-      utxos: utxos
+      utxos: utxos,
+      changeOutput: changeOutput,
+      note: note
     ) = _getCommonDeps();
 
     if (handler == null) {
@@ -214,81 +210,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     return false;
   }
 
-  Future<bool> _setRBFFee()  async {
-    var (
-    account: account,
-    amount: amount,
-    feeRate: feeRate,
-    handler: handler,
-    sendTo: sendTo,
-    spendableBalance: spendableBalance,
-    utxos: utxos
-    ) = _getCommonDeps();
-
-    if (handler == null) {
-      return false;
-    }
-
-    if (state.mode == SpendMode.rbf) {}
-
-    if (sendTo.isEmpty ||
-        amount == 0 ||
-        account == null ||
-        state.broadcastProgress == BroadcastProgress.inProgress) {
-      return false;
-    }
-
-    ///If the user selected to spend max.
-    ///subsequent validation calls will stick to the original amount user entered
-    if (state.mode == SpendMode.sendMax) {
-      //if user choose new coins,
-      //we reset the mode to normal since the tx is no longer sendMax
-      if ((state.transactionParams?.selectedOutputs ?? []).length !=
-          utxos.length) {
-        state = state.clone()..mode = SpendMode.normal;
-      } else {
-        amount = spendableBalance;
-      }
-    }
-    try {
-      final notes = ref.read(stagingTxNoteProvider);
-      state = state.clone()
-        ..error = null
-        ..broadcastProgress = BroadcastProgress.staging
-        ..loading = true;
-
-      bool sendMax = spendableBalance == amount;
-      final params = TransactionParams(
-        address: sendTo,
-        amount: BigInt.from(amount),
-        feeRate: BigInt.from(feeRate.toInt()),
-        selectedOutputs: utxos,
-        note: notes,
-        doNotSpendChange: false,
-      );
-
-      final draftTx = await handler.composePsbt(transactionParams: params);
-      kPrint(
-          "composePsbt : ${draftTx.transaction.txId} | isFinalized : ${draftTx.isFinalized}");
-
-      _updateWithPreparedTransaction(draftTx, params);
-
-      if (sendMax) {
-        int fee = state.draftTransaction?.transaction.fee.toInt() ?? 0;
-        state = state.clone()
-          ..mode = SpendMode.sendMax
-          ..uneconomicSpends =
-              (state.transactionParams?.amount.toInt() ?? 0 + fee) !=
-                  spendableBalance;
-      }
-      return true;
-    } catch (e, stackTrace) {
-      _setErrorState(e.toString());
-    }
-    return false;
-  }
-
-  void setNote(String note) async {
+  void setNote(String? stagingNote) async {
     var (
       account: account,
       amount: amount,
@@ -296,8 +218,11 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       handler: handler,
       sendTo: sendTo,
       spendableBalance: spendableBalance,
-      utxos: utxos
+      utxos: utxos,
+      changeOutput: changeOutput,
+      note: note
     ) = _getCommonDeps();
+
     TransactionParams? params = state.transactionParams;
 
     if (handler == null || params == null) {
@@ -309,8 +234,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       feeRate: state.transactionParams!.feeRate,
       selectedOutputs: state.transactionParams!.selectedOutputs,
       doNotSpendChange: state.transactionParams!.doNotSpendChange,
-      note: note,
-      tag: state.transactionParams!.tag,
+      note: stagingNote,
+      tag: changeOutput,
     );
     DraftTransaction tx = state.draftTransaction!;
     DraftTransaction updatedTx = DraftTransaction(
@@ -331,7 +256,9 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       handler: handler,
       sendTo: sendTo,
       spendableBalance: spendableBalance,
-      utxos: utxos
+      utxos: utxos,
+      changeOutput: changeOutput,
+      note: note
     ) = _getCommonDeps();
     final params = state.transactionParams;
 
@@ -344,7 +271,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       feeRate: state.transactionParams!.feeRate,
       selectedOutputs: state.transactionParams!.selectedOutputs,
       doNotSpendChange: state.transactionParams!.doNotSpendChange,
-      note: state.transactionParams!.note,
+      note: note,
       tag: tag,
     );
     DraftTransaction tx = state.draftTransaction!;
@@ -382,7 +309,9 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       handler: handler,
       sendTo: sendTo,
       spendableBalance: spendableBalance,
-      utxos: utxos
+      utxos: utxos,
+      changeOutput: changeOutput,
+      note: note
     ) = _getCommonDeps();
 
     if (handler == null && account == null) {
@@ -398,7 +327,6 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     }
 
     try {
-      final notes = container.read(stagingTxNoteProvider);
       state = state.clone()
         ..error = null
         ..broadcastProgress = BroadcastProgress.staging
@@ -410,7 +338,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           amount: BigInt.from(amount),
           feeRate: BigInt.from(Fees().slowRate(network) * 100000),
           selectedOutputs: utxos,
-          note: notes,
+          note: note,
+          tag: changeOutput,
           doNotSpendChange: false);
 
       //calculate max fee only if we are not setting fee
@@ -565,27 +494,10 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       ..transactionParams = params
       ..note = draftTransaction.transaction.note ?? ""
       ..canProceed = true;
-  }
 
-  void initRBF(RBFSpendState rbfSpendState) {
-    BitcoinTransaction originalTx = rbfSpendState.originalTx;
-    BitcoinTransaction draftTx = rbfSpendState.draftTx.transaction;
-    TransactionParams params = TransactionParams(
-      address: originalTx.address,
-      amount: BigInt.from(originalTx.amount),
-      feeRate: draftTx.feeRate,
-      selectedOutputs: [],
-      note: originalTx.note,
-      tag: rbfSpendState.draftTx.changeOutPutTag,
-      doNotSpendChange: false,
-    );
-    _updateWithPreparedTransaction(
-      rbfSpendState.draftTx,
-      params,
-    );
-    state = state
-      ..rbfOriginalTransaction = originalTx
-      ..
-      ..mode = SpendMode.rbf;
+    ref.read(stagingTxChangeOutPutTagProvider.notifier).state =
+        draftTransaction.changeOutPutTag;
+    ref.read(stagingTxNoteProvider.notifier).state =
+        draftTransaction.transaction.note;
   }
 }

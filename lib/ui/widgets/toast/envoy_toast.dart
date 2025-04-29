@@ -59,7 +59,7 @@ class EnvoyToast<T> extends StatefulWidget {
     this.backgroundColor,
   });
 
-  Future<T?> show(BuildContext context) async {
+  Future<T?> show(BuildContext context, {bool rootNavigator = false}) async {
     envoyToastRoute = showToast<T>(
       context: context,
       toast: this,
@@ -72,15 +72,16 @@ class EnvoyToast<T> extends StatefulWidget {
       }
     }
     _toast = this;
-    T? result = await Navigator.of(context, rootNavigator: false)
+    T? result = await Navigator.of(context, rootNavigator: rootNavigator)
         .push(envoyToastRoute as Route<T>);
     _toast = null;
     return result;
   }
 
   // clear all previous toasts overlays
-  static dismissPreviousToasts(BuildContext context) {
-    Navigator.of(context, rootNavigator: false)
+  static dismissPreviousToasts(BuildContext context,
+      {bool rootNavigator = false}) {
+    Navigator.of(context, rootNavigator: rootNavigator)
         .popUntil((route) => route.settings.name != ENVY_TOAST_ROUTE);
   }
 

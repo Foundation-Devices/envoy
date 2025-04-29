@@ -37,6 +37,12 @@ final pendingTransactionsProvider =
   return pendingTransactions;
 });
 
+int compareTimestamps(BigInt? a, BigInt? b) {
+  a ??= BigInt.from(DateTime.now().millisecondsSinceEpoch);
+  b ??= BigInt.from(DateTime.now().millisecondsSinceEpoch);
+  return a.toInt().compareTo(b.toInt());
+}
+
 final filteredTransactionsProvider =
     Provider.family<List<EnvoyTransaction>, String?>((ref, String? accountId) {
   final txFilterState = ref.watch(txFilterStateProvider);
@@ -49,22 +55,17 @@ final filteredTransactionsProvider =
       txFilterState.contains(TransactionFilters.received)) {
     //do nothing
   } else {
-    // if (txFilterState.contains(TransactionFilters.sent)) {
-    //   transactions =
-    //       transactions.where((element) => element.amount < 0).toList();
-    // }else
-    // if (txFilterState.contains(TransactionFilters.received)) {
-    //   transactions =
-    //       transactions.where((element) => element.amount > 0).toList();
-    // }else{
-    //   transactions.sort((a, b) => a.date!.toInt().compareTo(b.date!.toInt()),);
-    // }
-  }
-
-  int compareTimestamps(BigInt? a, BigInt? b) {
-    a ??= BigInt.from(DateTime.now().millisecondsSinceEpoch);
-    b ??= BigInt.from(DateTime.now().millisecondsSinceEpoch);
-    return a.toInt().compareTo(b.toInt());
+    if (txFilterState.contains(TransactionFilters.sent)) {
+      transactions =
+          transactions.where((element) => element.amount < 0).toList();
+    } else if (txFilterState.contains(TransactionFilters.received)) {
+      transactions =
+          transactions.where((element) => element.amount > 0).toList();
+    } else {
+      transactions.sort(
+        (a, b) => a.date!.toInt().compareTo(b.date!.toInt()),
+      );
+    }
   }
 
   switch (txSortState) {

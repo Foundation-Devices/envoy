@@ -110,7 +110,8 @@ class _TransactionsDetailsWidgetState
     bool addressNotAvailable = tx.address.isEmpty;
     final address = tx.address ?? "";
 
-    bool rbfPossible = (!tx.isConfirmed && tx.isOnChain() && tx.amount < 0);
+    bool rbfPossible =
+        (tx.confirmations == 0 && tx.isOnChain() && tx.amount < 0);
 
     final cancelState = ref.watch(cancelTxStateProvider(tx.txId));
 

@@ -18,7 +18,8 @@ import 'package:envoy/ui/home/cards/accounts/spend/choose_coins_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_details.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/transaction_review_card.dart';
@@ -106,9 +107,9 @@ class _TxReviewState extends ConsumerState<TxReview> {
     bool received = false;
     final cryptoPsbt = await GoRouter.of(rootContext).pushNamed(
         ACCOUNT_SEND_SCAN_PSBT,
-        extra: transactionModel.preparedTransaction);
+        extra: transactionModel.draftTransaction);
     if (cryptoPsbt is CryptoPsbt && received == false) {
-      transactionModeNotifier.decodePsbt(providerScope, cryptoPsbt);
+      transactionModeNotifier.decodePSBT(providerScope, cryptoPsbt);
       received = true;
     }
     return;
@@ -119,7 +120,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
     TransactionModel transactionModel = ref.read(spendTransactionProvider);
     BuildContext rootContext = context;
     if (account == null ||
-        transactionModel.preparedTransaction == null ||
+        transactionModel.draftTransaction == null ||
         transactionModel.broadcastProgress == BroadcastProgress.inProgress) {
       return;
     }
@@ -291,6 +292,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
           S().component_tryAgain,
           type: EnvoyButtonTypes.secondary,
           onTap: () {
+            ref.read(spendTransactionProvider.notifier).resetBroadcastState();
             _broadcastToNetwork(context);
           },
         ),
@@ -363,7 +365,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
     final providerContainer = ProviderScope.containerOf(context);
     EnvoyAccount? account = ref.read(selectedAccountProvider);
     TransactionModel transactionModel = ref.read(spendTransactionProvider);
-    if (account == null || transactionModel.preparedTransaction == null) {
+    if (account == null || transactionModel.draftTransaction == null) {
       return;
     }
     await Future.delayed(const Duration(milliseconds: 300));
@@ -432,8 +434,7 @@ class _TransactionReviewScreenState
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
     String address = ref.watch(spendAddressProvider);
     String? error = transactionModel.error;
-    PreparedTransaction? preparedTransaction =
-        ref.watch(preparedTransactionProvider);
+    DraftTransaction? preparedTransaction = ref.watch(draftTransactionProvider);
     BitcoinTransaction? transaction = preparedTransaction?.transaction;
 
     final coinSelectionChanged = ref.watch(coinSelectionChangedProvider);
@@ -464,9 +465,10 @@ class _TransactionReviewScreenState
         ? S().coincontrol_tx_detail_subheading
         : S().coincontrol_txDetail_subheading_passport;
 
-    int feePercentage =
-        ((transaction.fee.toInt() / (transaction.fee.toInt() + amount)) * 100)
-            .round();
+    // int feePercentage =
+    // ((transaction.fee.toInt() / (transaction.fee.toInt() + amount)) * 100)
+    //     .round();
+    int feePercentage = 10;
 
     return EnvoyScaffold(
       backgroundColor: Colors.transparent,
@@ -558,25 +560,8 @@ class _TransactionReviewScreenState
                             return TransactionReviewCard(
                               transaction: transaction,
                               onTxDetailTap: () {
-                                Navigator.of(context, rootNavigator: true).push(
-                                    PageRouteBuilder(
-                                        pageBuilder: (context, animation,
-                                            secondaryAnimation) {
-                                          return StagingTxDetails(
-                                            transaction: transaction,
-                                          );
-                                        },
-                                        transitionDuration:
-                                            const Duration(milliseconds: 100),
-                                        transitionsBuilder: (context, animation,
-                                            secondaryAnimation, child) {
-                                          return FadeTransition(
-                                            opacity: animation,
-                                            child: child,
-                                          );
-                                        },
-                                        opaque: false,
-                                        fullscreenDialog: true));
+                                _showTxDetailsPage(
+                                    context, ref, preparedTransaction);
                               },
                               canModifyPsbt: transactionModel.canModify,
                               loading: transactionModel.loading,
@@ -674,14 +659,45 @@ class _TransactionReviewScreenState
     ref.read(spendFeeProcessing.notifier).state = true;
     int selectedItem = fee;
     ref.read(spendFeeRateProvider.notifier).state = selectedItem.toDouble();
-    await ref
-        .read(spendTransactionProvider.notifier)
-        .setFee(ProviderScope.containerOf(context));
+    await ref.read(spendTransactionProvider.notifier).setFee();
     ref.read(spendFeeProcessing.notifier).state = false;
     //hide fee slider bottom-sheet
     if (customFee && context.mounted) {
       Navigator.pop(context);
     }
+  }
+
+  void _showTxDetailsPage(BuildContext context, WidgetRef ref,
+      DraftTransaction? preparedTransaction) {
+    Navigator.of(context, rootNavigator: true).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) {
+          if (preparedTransaction == null) {
+            return const Center(
+                child: Text("Unable to fetch Staged transaction"));
+          }
+          return StagingTxDetails(
+            draftTransaction: preparedTransaction,
+            onTagUpdate: () {
+              ref
+                  .read(spendTransactionProvider.notifier)
+                  .setTag(ref.read(stagingTxChangeOutPutTagProvider));
+            },
+            onTxNoteUpdated: () {
+              ref
+                  .read(spendTransactionProvider.notifier)
+                  .setNote(ref.read(stagingTxNoteProvider));
+            },
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 100),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
+        opaque: false,
+        fullscreenDialog: true));
   }
 }
 

@@ -13,7 +13,7 @@ import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -124,8 +124,6 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
       return;
     }
 
-    //TODO: do cancel tx using NgWallet
-    // final doNotSpend = ref.read(lockedUtxosProvider(selectedAccount.id!));
     // final feeRate = Fees().fastRate(selectedAccount.wallet.network);
     //
     try {

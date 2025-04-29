@@ -53,7 +53,8 @@ String getTransactionSubtitleText(EnvoyTransaction transaction, Locale locale) {
     }
     return timeago
         .format(
-            DateTime.fromMillisecondsSinceEpoch(transaction.date!.toInt(),
+            DateTime.fromMillisecondsSinceEpoch(
+                transaction.date!.toInt() * 1000,
                 isUtc: true),
             locale: locale.languageCode)
         .capitalize();
