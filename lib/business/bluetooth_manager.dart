@@ -7,11 +7,13 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:bluart/bluart.dart' as bluart;
+import 'package:envoy/business/prime_device.dart';
 import 'package:envoy/util/console.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/uuid_value.dart';
+import 'package:envoy/util/envoy_storage.dart';
 
 class BluetoothManager {
   StreamSubscription? _subscription;
@@ -108,6 +110,9 @@ class BluetoothManager {
     Future.delayed(Duration(seconds: 1));
     //kPrint("writing after listen...");
     //await bluart.write(id: bleId, data: "123".codeUnits);
+
+    PrimeDevice prime = PrimeDevice(bleId, xid);
+    await EnvoyStorage().savePrime(prime);
   }
 
   Future<void> sendPsbt(String descriptor, String psbt) async {
