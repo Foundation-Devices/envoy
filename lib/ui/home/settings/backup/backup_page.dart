@@ -346,7 +346,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
     return Column(
       children: [
         BackupSectionTitle(
-          title: S().backups_primeMagicBackups,
+          title: S().backups_primeMagicBackups("MB_name"), // TODO
           icon: EnvoyIcons.prime,
           switchValue: false,
           onSwitch: (value) {},

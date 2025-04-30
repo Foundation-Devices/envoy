@@ -20,21 +20,39 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'es';
 
-  static String m0(period) =>
+  static String m0(MB_name) => "USD";
+
+  static String m1(MB_name) =>
+      "Copia de Seguridad Mágica de Passport Prime\n\"${MB_name}\"";
+
+  static String m2(period) =>
       "Este cupón caducó el ${period}. \n\n\nPonte en contacto con el emisor si tienes alguna pregunta relacionada con el cupón.";
 
-  static String m1(AccountName) =>
+  static String m3(AccountName) =>
       "Navega a ${AccountName} en Passport, selecciona \'Account Tools\'>\'Verify Address\' y, a continuación, escanea el código QR.";
 
-  static String m2(tagName) =>
+  static String m4(tagName) =>
       "Tu etiqueta ${tagName} ahora está vacía. ¿Quieres eliminarla?";
 
-  static String m3(amount, total_amount) =>
-      "Re-sincronizando tus cuentas.\nPor favor, no cierres Envoy.\n\n{0} de {1} sincronizado";
+  static String m5(time_remaining) => "${time_remaining} restante(s)";
+
+  static String m6(current_keyOS_version) =>
+      "Tu Passport Prime actualmente utiliza ${current_keyOS_version}.\n\nActualiza ahora para obtener las últimas funcionalidades y correcciones de errores.";
+
+  static String m7(est_upd_time) =>
+      "Tiempo Estimado de Actualización: ${est_upd_time}";
+
+  static String m8(new_keyOS_version) => "Novedades en ${new_keyOS_version}";
+
+  static String m9(new_keyOS_version) =>
+      "Passport Prime se ha actualizado\ncorrectamente a ${new_keyOS_version}";
+
+  static String m10(amount, total_amount) =>
+      "Re-sincronizando tus cuentas.\nPor favor, no cierres Envoy.\n\n${amount} de ${total_amount} sincronizado";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("USD"),
+        "_": m0,
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versión de Aplicación"),
         "about_openSourceLicences":
@@ -80,14 +98,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Passphrase"),
         "accounts_upgradeBdkSignetModal_content":
             MessageLookupByLibrary.simpleMessage(
-                "Envoy now uses Global Signet instead of Mutinynet. Your previous Signet accounts have been removed. \n\nTo begin using Global Signet, go Settings and enable the Signet toggle."),
+                "Envoy ahora usa Signet Global en lugar de Mutinynet. Se han eliminado tus cuentas de Signet anteriores. \n\nPara empezar a usar Signet Global, ve a Ajustes y activa el botón Signet."),
         "accounts_upgradeBdkSignetModal_header":
-            MessageLookupByLibrary.simpleMessage("Global Signet"),
+            MessageLookupByLibrary.simpleMessage("Signet Global"),
         "accounts_upgradeBdkTestnetModal_content":
             MessageLookupByLibrary.simpleMessage(
-                "‘testnet3’ has been deprecated and Envoy now uses ‘testnet4’. Your previous testnet3 accounts have been removed. \n\nTo begin using testnet4, go Settings and enable the Testnet toggle."),
+                "\'testnet3\' ha quedado obsoleto y Envoy ahora usa \'testnet4\'. Tus cuentas anteriores de testnet3 han sido eliminadas. \n\nPara empezar a usar testnet4, ve a Ajustes y activa el botón Testnet."),
         "accounts_upgradeBdkTestnetModal_header":
-            MessageLookupByLibrary.simpleMessage("Introducing testnet4"),
+            MessageLookupByLibrary.simpleMessage("Presentamos​•​testnet4"),
         "activity_boosted": MessageLookupByLibrary.simpleMessage("Acelerado"),
         "activity_canceling":
             MessageLookupByLibrary.simpleMessage("Cancelando"),
@@ -189,8 +207,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "backups_manualToMagicrModal_subheader":
             MessageLookupByLibrary.simpleMessage(
                 "Esto habilitará la Copia de Seguridad Mágica de Envoy. Tu semilla de Envoy se encriptará y se hará una Copia de Seguridad en tu cuenta de Apple o Google. Los datos de Envoy se encriptarán y se enviarán a los servidores de Foundation."),
-        "backups_primeMagicBackups": MessageLookupByLibrary.simpleMessage(
-            "Copia de Seguridad Mágica de Passport Prime\n\"{0}\""),
+        "backups_primeMagicBackups": m1,
         "backups_primeMasterKeyBackup": MessageLookupByLibrary.simpleMessage(
             "Copia de Seguridad de Clave Maestra (1 parte de 3)"),
         "backups_settingsAndData":
@@ -199,7 +216,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Ajustes y Metadatos"),
         "backups_toggle_envoy_magic_backups":
             MessageLookupByLibrary.simpleMessage(
-                "Copias de Seguridad Mágica de Envoy"),
+                "Copias de Seguridad Mágicas de Envoy"),
         "backups_toggle_envoy_mobile_wallet_key":
             MessageLookupByLibrary.simpleMessage("Clave de Cartera Móvil"),
         "backups_viewMobileWalletSeed": MessageLookupByLibrary.simpleMessage(
@@ -210,7 +227,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Dispositivos"),
         "bottomNav_learn": MessageLookupByLibrary.simpleMessage("Aprender"),
         "bottomNav_privacy": MessageLookupByLibrary.simpleMessage("Privacidad"),
-        "btcpay_connection_modal_expired_subheading": m0,
+        "btcpay_connection_modal_expired_subheading": m2,
         "btcpay_connection_modal_fail_heading":
             MessageLookupByLibrary.simpleMessage("Cupón Caducado"),
         "btcpay_connection_modal_fail_subheading":
@@ -247,7 +264,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "buy_bitcoin_accountSelection_verify":
             MessageLookupByLibrary.simpleMessage(
                 "Verificar Dirección con Passport"),
-        "buy_bitcoin_accountSelection_verify_modal_heading": m1,
+        "buy_bitcoin_accountSelection_verify_modal_heading": m3,
         "buy_bitcoin_buyOptions_atms_heading":
             MessageLookupByLibrary.simpleMessage("¿Cómo te gustaría comprar?"),
         "buy_bitcoin_buyOptions_atms_map_modal_openingHours":
@@ -622,7 +639,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Ver Más Tarde"),
         "devices_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
             "Asegura tus Bitcoin con Passport."),
-        "empty_tag_modal_subheading": m2,
+        "empty_tag_modal_subheading": m4,
         "envoy_account_tos_cta": MessageLookupByLibrary.simpleMessage("Acepto"),
         "envoy_account_tos_heading": MessageLookupByLibrary.simpleMessage(
             "Por favor, revise y acepte los Términos de Uso de Passport"),
@@ -930,20 +947,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Actualización Descargada"),
         "firmware_downloadingUpdate_header":
             MessageLookupByLibrary.simpleMessage("Descargando Actualización"),
-        "firmware_downloadingUpdate_timeRemaining":
-            MessageLookupByLibrary.simpleMessage("{0} restante(s)"),
+        "firmware_downloadingUpdate_timeRemaining": m5,
         "firmware_downloadingUpdate_transferring":
             MessageLookupByLibrary.simpleMessage(
                 "Transfiriendo a Passport Prime"),
-        "firmware_updateAvailable_content2": MessageLookupByLibrary.simpleMessage(
-            "Tu Passport Prime actualmente utiliza {0}.\n\nActualiza ahora para obtener las últimas funcionalidades y correcciones de errores."),
-        "firmware_updateAvailable_estimatedUpdateTime":
-            MessageLookupByLibrary.simpleMessage(
-                "Tiempo Estimado de Actualización: {0}"),
+        "firmware_updateAvailable_content2": m6,
+        "firmware_updateAvailable_estimatedUpdateTime": m7,
         "firmware_updateAvailable_header":
             MessageLookupByLibrary.simpleMessage("Actualización Disponible"),
-        "firmware_updateAvailable_whatsNew":
-            MessageLookupByLibrary.simpleMessage("Novedades en {0}"),
+        "firmware_updateAvailable_whatsNew": m8,
         "firmware_updateError_downloadFailed":
             MessageLookupByLibrary.simpleMessage("Error al Descargar"),
         "firmware_updateError_header":
@@ -962,8 +974,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Reconectando..."),
         "firmware_updateModalConnectionLost_tryToReconnect":
             MessageLookupByLibrary.simpleMessage("Reintentar Conexión"),
-        "firmware_updateSuccess_content1": MessageLookupByLibrary.simpleMessage(
-            "Passport Prime se ha actualizado\ncorrectamente a {0}"),
+        "firmware_updateSuccess_content1": m9,
         "firmware_updateSuccess_content2": MessageLookupByLibrary.simpleMessage(
             "Continúa con la inicialización en Passport Prime."),
         "firmware_updateSuccess_header":
@@ -1387,7 +1398,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Comprobación de Seguridad Superada"),
         "onboarding_connectionChecking_forUpdates":
-            MessageLookupByLibrary.simpleMessage("Checking for Updates"),
+            MessageLookupByLibrary.simpleMessage(
+                "Comprobando​•​Actualizaciones"),
         "onboarding_connectionIntroError_content":
             MessageLookupByLibrary.simpleMessage(
                 "Es posible que este dispositivo no sea original o que haya sido manipulado durante el envío."),
@@ -1450,7 +1462,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Envoy está subiendo la copia de seguridad encriptada de tu cartera a los servidores de Foundation.\n\nComo la copia de seguridad está encriptada de extremo a extremo, Foundation no tiene acceso a ella, ni tiene conocimiento sobre su contenido."),
         "onboarding_magicUserMobileUploading_header":
             MessageLookupByLibrary.simpleMessage("Cargando Copia de Seguridad"),
-        "onboarding_migrating_xOfYSynced": m3,
+        "onboarding_migrating_xOfYSynced": m10,
         "onboarding_passpportSelectCamera_sub235VersionAlert":
             MessageLookupByLibrary.simpleMessage(
                 "¿Quieres inicializar una Passport Core en la versión 2.3.5 o anterior?"),

@@ -52,13 +52,13 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `12:34`
-  String get _ {
+  /// `Note to devs: {MB_name} should be replaced by the name the user gave to each of their Prime devices. If there’s more than one Prime connected, each backup should have the corresponding name of the  Prime it represents`
+  String _(Object MB_name) {
     return Intl.message(
-      '12:34',
+      'Note to devs: $MB_name should be replaced by the name the user gave to each of their Prime devices. If there’s more than one Prime connected, each backup should have the corresponding name of the  Prime it represents',
       name: '_',
       desc: '',
-      args: [],
+      args: [MB_name],
     );
   }
 
@@ -782,13 +782,13 @@ class S {
     );
   }
 
-  /// `Passport Prime Magic Backup\n”{0}”`
-  String get backups_primeMagicBackups {
+  /// `Passport Prime Magic Backup\n”{MB_name}”`
+  String backups_primeMagicBackups(Object MB_name) {
     return Intl.message(
-      'Passport Prime Magic Backup\n”{0}”',
+      'Passport Prime Magic Backup\n”$MB_name”',
       name: 'backups_primeMagicBackups',
       desc: '',
-      args: [],
+      args: [MB_name],
     );
   }
 
@@ -4358,13 +4358,13 @@ class S {
     );
   }
 
-  /// `{0} remaining`
-  String get firmware_downloadingUpdate_timeRemaining {
+  /// `{time_remaining} remaining`
+  String firmware_downloadingUpdate_timeRemaining(Object time_remaining) {
     return Intl.message(
-      '{0} remaining',
+      '$time_remaining remaining',
       name: 'firmware_downloadingUpdate_timeRemaining',
       desc: '',
-      args: [],
+      args: [time_remaining],
     );
   }
 
@@ -4378,23 +4378,23 @@ class S {
     );
   }
 
-  /// `Your Passport Prime is currently running {0}.\n\nUpdate now for the latest bug fixes and features.`
-  String get firmware_updateAvailable_content2 {
+  /// `Your Passport Prime is currently running {current_keyOS_version}.\n\nUpdate now for the latest bug fixes and features.`
+  String firmware_updateAvailable_content2(Object current_keyOS_version) {
     return Intl.message(
-      'Your Passport Prime is currently running {0}.\n\nUpdate now for the latest bug fixes and features.',
+      'Your Passport Prime is currently running $current_keyOS_version.\n\nUpdate now for the latest bug fixes and features.',
       name: 'firmware_updateAvailable_content2',
       desc: '',
-      args: [],
+      args: [current_keyOS_version],
     );
   }
 
-  /// `Estimated Update Time: {0}`
-  String get firmware_updateAvailable_estimatedUpdateTime {
+  /// `Estimated Update Time: {est_upd_time}`
+  String firmware_updateAvailable_estimatedUpdateTime(Object est_upd_time) {
     return Intl.message(
-      'Estimated Update Time: {0}',
+      'Estimated Update Time: $est_upd_time',
       name: 'firmware_updateAvailable_estimatedUpdateTime',
       desc: '',
-      args: [],
+      args: [est_upd_time],
     );
   }
 
@@ -4408,13 +4408,13 @@ class S {
     );
   }
 
-  /// `What’s New in {0}`
-  String get firmware_updateAvailable_whatsNew {
+  /// `What’s New in {new_keyOS_version}`
+  String firmware_updateAvailable_whatsNew(Object new_keyOS_version) {
     return Intl.message(
-      'What’s New in {0}',
+      'What’s New in $new_keyOS_version',
       name: 'firmware_updateAvailable_whatsNew',
       desc: '',
-      args: [],
+      args: [new_keyOS_version],
     );
   }
 
@@ -4508,13 +4508,13 @@ class S {
     );
   }
 
-  /// `Passport Prime was successfully \nupdated to {0}`
-  String get firmware_updateSuccess_content1 {
+  /// `Passport Prime was successfully \nupdated to {new_keyOS_version}`
+  String firmware_updateSuccess_content1(Object new_keyOS_version) {
     return Intl.message(
-      'Passport Prime was successfully \nupdated to {0}',
+      'Passport Prime was successfully \nupdated to $new_keyOS_version',
       name: 'firmware_updateSuccess_content1',
       desc: '',
-      args: [],
+      args: [new_keyOS_version],
     );
   }
 
