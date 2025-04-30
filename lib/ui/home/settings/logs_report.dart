@@ -20,8 +20,7 @@ class EnvoyLogsScreen extends ConsumerStatefulWidget {
   ConsumerState<EnvoyLogsScreen> createState() => _EnvoyLogsScreenState();
 }
 
-final _envoyLogs =
-    FutureProvider.autoDispose((ref) => EnvoyReport().getAllLogs());
+final envoyReportProvider = ChangeNotifierProvider((ref) => EnvoyReport());
 
 class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
   @override
@@ -105,9 +104,21 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
         padding: const EdgeInsets.all(8.0),
         child: Consumer(
           builder: (context, ref, child) {
-            final data = ref.watch(_envoyLogs);
-            return data.when(
-              data: (logs) {
+            final envoyReport = ref.watch(envoyReportProvider);
+
+            return FutureBuilder<List<Map<String, Object?>>>(
+              future: envoyReport.getAllLogs(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (snapshot.hasError) {
+                  return Center(child: Text("Error: ${snapshot.error}"));
+                }
+
+                final logs = snapshot.data ?? [];
+
                 if (logs.isEmpty) {
                   return const Center(
                       child: Text("No logs found")); // TODO: FIGMA
@@ -249,16 +260,6 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                       itemCount: logs.length,
                     )
                   ],
-                );
-              },
-              error: (error, stackTrace) {
-                return Center(
-                  child: Text("Error: $error"),
-                );
-              },
-              loading: () {
-                return const Center(
-                  child: CircularProgressIndicator(),
                 );
               },
             );
