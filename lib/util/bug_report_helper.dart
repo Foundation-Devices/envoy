@@ -8,11 +8,10 @@ import 'package:envoy/util/console.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:stack_trace/stack_trace.dart';
 
-class EnvoyReport {
+class EnvoyReport extends ChangeNotifier {
   static final EnvoyReport _instance = EnvoyReport._();
 
   EnvoyReport._();
@@ -68,6 +67,7 @@ class EnvoyReport {
     }
     if (_db != null) {
       _logsStore.add(_db!, report);
+      notifyListeners();
     }
   }
 
@@ -86,6 +86,7 @@ class EnvoyReport {
             getStackTraceElements(stackTrace, limitTrace).join("\n");
       }
       _logsStore.add(_db!, report);
+      notifyListeners();
     }
   }
 
@@ -95,16 +96,17 @@ class EnvoyReport {
     }
   }
 
-  Future<List<Map<String, Object?>>> getAllLogs() async {
+  Future<List<Map<String, Object?>>> getAllLogs({int? limit}) async {
     await _ensureDbInitialized();
     if (_db == null) {
       return [];
     }
     var log = await _logsStore.find(_db!,
         finder: Finder(
-          limit: _logCapacity,
+          limit: limit ?? _logCapacity,
           sortOrders: [SortOrder(Field.key, false)],
         ));
+
     var logs = log.map((e) => e.value).toList();
     return logs;
   }
@@ -149,7 +151,7 @@ class EnvoyReport {
   }
 
   Future<String> getLogAsString([int limit = _logCapacity]) async {
-    final allLogs = (await getAllLogs()).take(limit).toList();
+    final allLogs = await getAllLogs(limit: limit);
     String logs = "";
     for (var logMap in allLogs) {
       String log = "";
