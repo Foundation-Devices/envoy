@@ -20,7 +20,8 @@ class EnvoyLogsScreen extends ConsumerStatefulWidget {
   ConsumerState<EnvoyLogsScreen> createState() => _EnvoyLogsScreenState();
 }
 
-final _envoyLogs = FutureProvider((ref) => EnvoyReport().getAllLogs());
+final _envoyLogs =
+    FutureProvider.autoDispose((ref) => EnvoyReport().getAllLogs());
 
 class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
   @override
