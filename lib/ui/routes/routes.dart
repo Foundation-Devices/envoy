@@ -58,19 +58,27 @@ final GoRouter mainRouter = GoRouter(
     onboardRoutes,
     homeRouter,
     GoRoute(
-        path: "/",
-        name: "/",
-        redirect: (context, state) {
-          if (state.uri.queryParameters.containsKey("p")) {
-            return state.namedLocation(ONBOARD_PRIME,
-                queryParameters: state.uri.queryParameters);
-          }
-          if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) != true) {
-            return ROUTE_SPLASH;
-          } else {
-            return ROUTE_ACCOUNTS_HOME;
-          }
-        }),
+      path: "/",
+      name: "/",
+      redirect: (context, state) {
+        final params = state.uri.queryParameters;
+
+        if (params.containsKey("p")) {
+          return state.namedLocation(ONBOARD_PRIME, queryParameters: params);
+        }
+
+        if (params.containsKey("t")) {
+          return state.namedLocation(ONBOARD_PASSPORT_TOU,
+              queryParameters: params);
+        }
+
+        if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) != true) {
+          return ROUTE_SPLASH;
+        } else {
+          return ROUTE_ACCOUNTS_HOME;
+        }
+      },
+    ),
     fwRoutes,
     GoRoute(
       path: "/passport_intro",

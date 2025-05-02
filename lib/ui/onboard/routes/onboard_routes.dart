@@ -155,7 +155,17 @@ final onboardRoutes = GoRoute(
             GoRoute(
               path: "generate",
               name: ONBOARD_ENVOY_MAGIC_GENERATE_SETUP,
-              builder: (context, state) => const MagicSetupGenerate(),
+              pageBuilder: (context, state) {
+                return CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const MagicSetupGenerate(),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    return child; // No transition
+                  },
+                  transitionDuration: Duration.zero,
+                );
+              },
             ),
             GoRoute(
               path: "recover",

@@ -131,8 +131,8 @@ impl From<Error> for BroadcastError {
             Error::CouldNotCreateConnection(e) => {
                 BroadcastError::Message(format!("{}", e))
             }
-            err => {
-                BroadcastError::Message(format!("Unknown error: {:?}", err))
+            _ => {
+                BroadcastError::Message("Unknown error".to_string())
             }
         }
     }

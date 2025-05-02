@@ -35,15 +35,20 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
 
   List<Widget> stepIllustration = [
     Image.asset(
-      "assets/data_secured_1.png",
+      Platform.isAndroid
+          ? "assets/data_secured_1_android.png"
+          : "assets/data_secured_1_ios.png",
       height: 180,
     ),
     Image.asset(
       "assets/data_secured_2.png",
-      height: 180,
+      height: 82,
+      width: 230,
     ),
     Image.asset(
-      "assets/data_secured_3.png",
+      Platform.isAndroid
+          ? "assets/data_secured_3_android.png"
+          : "assets/data_secured_3_ios.png",
       height: 180,
     ),
     Column(
@@ -87,12 +92,12 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
   Widget build(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.85,
-      height: MediaQuery.of(context).size.height * 0.75,
+      height: MediaQuery.of(context).size.height * 0.7,
       child: Scrollbar(
         child: SingleChildScrollView(
           child: SizedBox(
             width: MediaQuery.of(context).size.width * 0.85,
-            height: MediaQuery.of(context).size.height * 0.75,
+            height: MediaQuery.of(context).size.height * 0.7,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -100,8 +105,8 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
+                    padding: const EdgeInsets.only(
+                        right: EnvoySpacing.medium3, top: EnvoySpacing.medium3),
                     child: IconButton(
                       icon: const Icon(Icons.close),
                       onPressed: () {

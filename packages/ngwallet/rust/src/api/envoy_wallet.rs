@@ -546,7 +546,7 @@ impl EnvoyAccountHandler {
             .unwrap()
             .wallet
             .compose_psbt(transaction_params)
-            .map_err(|e| ComposeTxError::map_err(e))
+            .map_err(ComposeTxError::map_err)
     }
 
     pub fn compose_cancellation_tx(

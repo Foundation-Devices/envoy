@@ -43,9 +43,9 @@ class SingleImportPpScanPage extends OnboardingPage {
                         EnvoyAccountHandler? pairedAccount;
                         EnvoyAccount? account;
                         try {
-                          pairedAccount = await NgAccountManager()
-                              .processPassportAccounts(binary);
-                          account = await pairedAccount!.state();
+                          // pairedAccount = await NgAccountManager()
+                          //     .processPassportAccounts(binary);
+                          // account = await pairedAccount!.state();
                         } on AccountAlreadyPaired catch (_) {
                           scaffold.showSnackBar(const SnackBar(
                             content: Text(

@@ -1,15 +1,13 @@
 // SPDX-FileCopyrightText: 2023 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
-import 'package:envoy/business/envoy_seed.dart';
+
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
-import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/home/setup_overlay.dart';
 import 'package:envoy/ui/indicator_shield.dart';
-import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/routes/home_router.dart';
@@ -332,17 +330,22 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
   }
 
   void _setOptionWidgetsForTabWidgets(String nextPath) {
-    final StateController<bool> optionsVisibility =
-        ref.read(homePageOptionsVisibilityProvider.notifier);
     StateController<HomeShellOptions?> optionsState =
         ref.read(homeShellOptionsProvider.notifier);
+
     switch (nextPath) {
       case ROUTE_DEVICES:
         optionsState.state = HomeShellOptions(
           rightAction: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-              optionsVisibility.state = !optionsVisibility.state;
+              Navigator.of(context).push(
+                PageRouteBuilder(
+                  opaque: false,
+                  pageBuilder: (_, __, ___) => const AnimatedBottomOverlay(),
+                ),
+              );
+              return;
             },
             child: Container(
               height: 55,
@@ -353,14 +356,14 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
               ),
             ),
           ),
-          optionsWidget: const DevicesOptions(),
+          optionsWidget: Container(),
         );
         break;
       case ROUTE_PRIVACY:
         optionsState.state = null;
         break;
       case ROUTE_ACCOUNTS_HOME:
-        ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
+        optionsState.state = HomeShellOptions(
           rightAction: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {

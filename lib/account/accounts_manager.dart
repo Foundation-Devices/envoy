@@ -36,7 +36,7 @@ class NgAccountManager extends ChangeNotifier {
   late SyncManager _syncManager;
   List<EnvoyAccount> _accounts = [];
   final StreamController<List<String>> _accountsOrder =
-      StreamController(sync: true);
+      StreamController<List<String>>.broadcast(sync: true);
 
   final List<EnvoyAccountHandler> _accountsHandler = [];
   var s = Settings();
@@ -109,6 +109,25 @@ class NgAccountManager extends ChangeNotifier {
     _accountsOrder.sink.add(accountsOrder);
     await _ls.prefs.setString(ACCOUNT_ORDER, jsonEncode(accountsOrder));
     return;
+  }
+
+  BitcoinTransaction? getTransactionById(EnvoyAccount account, String txId) {
+    for (var transaction in account.transactions) {
+      if (transaction.txId == txId) {
+        return transaction;
+      }
+    }
+    return null;
+  }
+
+  String? getAccountIdByTransaction(String txId) {
+    for (var account in accounts) {
+      var transaction = getTransactionById(account, txId);
+      if (transaction != null) {
+        return account.id;
+      }
+    }
+    return null;
   }
 
   @override
