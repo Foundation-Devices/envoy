@@ -87,7 +87,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
-  Future<bool> crateApiEnvoyWalletEnvoyAccountHandlerApplyUpdate(
+  Future<void> crateApiEnvoyWalletEnvoyAccountHandlerApplyUpdate(
       {required EnvoyAccountHandler that, required WalletUpdate update});
 
   ArcMutexNgAccountConnection
@@ -361,7 +361,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  Future<bool> crateApiEnvoyWalletEnvoyAccountHandlerApplyUpdate(
+  Future<void> crateApiEnvoyWalletEnvoyAccountHandlerApplyUpdate(
       {required EnvoyAccountHandler that, required WalletUpdate update}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
@@ -374,7 +374,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             funcId: 1, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_bool,
+        decodeSuccessData: sse_decode_unit,
         decodeErrorData: null,
       ),
       constMeta: kCrateApiEnvoyWalletEnvoyAccountHandlerApplyUpdateConstMeta,
@@ -552,7 +552,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
-        decodeErrorData: sse_decode_AnyhowException,
+        decodeErrorData: sse_decode_broadcast_error,
       ),
       constMeta: kCrateApiEnvoyWalletEnvoyAccountHandlerBroadcastConstMeta,
       argValues: [draftTransaction, electrumServer, torPort],
@@ -2168,6 +2168,27 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  BroadcastError dco_decode_broadcast_error(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return BroadcastError_NetworkError(
+          dco_decode_String(raw[1]),
+        );
+      case 1:
+        return BroadcastError_ConsensusError(
+          dco_decode_String(raw[1]),
+        );
+      case 2:
+        return BroadcastError_Message(
+          dco_decode_String(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
   ComposeTxError dco_decode_compose_tx_error(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     switch (raw[0]) {
@@ -2755,6 +2776,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_u_64(deserializer));
+  }
+
+  @protected
+  BroadcastError sse_decode_broadcast_error(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_field0 = sse_decode_String(deserializer);
+        return BroadcastError_NetworkError(var_field0);
+      case 1:
+        var var_field0 = sse_decode_String(deserializer);
+        return BroadcastError_ConsensusError(var_field0);
+      case 2:
+        var var_field0 = sse_decode_String(deserializer);
+        return BroadcastError_Message(var_field0);
+      default:
+        throw UnimplementedError('');
+    }
   }
 
   @protected
@@ -3434,6 +3475,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_broadcast_error(
+      BroadcastError self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case BroadcastError_NetworkError(field0: final field0):
+        sse_encode_i_32(0, serializer);
+        sse_encode_String(field0, serializer);
+      case BroadcastError_ConsensusError(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_String(field0, serializer);
+      case BroadcastError_Message(field0: final field0):
+        sse_encode_i_32(2, serializer);
+        sse_encode_String(field0, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_compose_tx_error(
       ComposeTxError self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3828,7 +3886,7 @@ class EnvoyAccountHandlerImpl extends RustOpaque
         .instance.api.rust_arc_decrement_strong_count_EnvoyAccountHandlerPtr,
   );
 
-  Future<bool> applyUpdate({required WalletUpdate update}) =>
+  Future<void> applyUpdate({required WalletUpdate update}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerApplyUpdate(
           that: this, update: update);
 

@@ -103,10 +103,6 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
   }
 
   Future<void> checkCancel() async {
-    widget.transaction.outputs.forEach((element) {
-      print("CA::: ${element.keychain} ${element.amount}");
-      print("CA::: tagtagtag ${element.tag}");
-    });
     if (mounted) {
       setState(() {
         _loading = true;
@@ -491,7 +487,7 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
       final preparedTx = await EnvoyAccountHandler.decodePsbt(
           draftTransaction: draftTransaction, psbtBase64: cryptoPsbt.decoded);
       draftTransaction = preparedTx;
-      await Future.delayed(const Duration(milliseconds:50));
+      await Future.delayed(const Duration(milliseconds: 50));
       //pop dialog
       navigator.pop();
       navigator.push(MaterialPageRoute(

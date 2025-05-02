@@ -9,6 +9,23 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'errors.freezed.dart';
 
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `from`
+
+@freezed
+sealed class BroadcastError with _$BroadcastError implements FrbException {
+  const BroadcastError._();
+
+  const factory BroadcastError.networkError(
+    String field0,
+  ) = BroadcastError_NetworkError;
+  const factory BroadcastError.consensusError(
+    String field0,
+  ) = BroadcastError_ConsensusError;
+  const factory BroadcastError.message(
+    String field0,
+  ) = BroadcastError_Message;
+}
+
 @freezed
 sealed class ComposeTxError with _$ComposeTxError implements FrbException {
   const ComposeTxError._();

@@ -136,6 +136,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 
   void onNumPadEvents(dynamic event) {
     final s = Settings();
+
     TransactionModel tx = ref.read(spendTransactionProvider);
     // Lock numpad while loading after tapping confirm
     if (tx.loading) {

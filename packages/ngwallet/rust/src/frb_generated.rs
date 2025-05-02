@@ -99,12 +99,12 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_apply_update_impl(
                         }
                     }
                     let mut api_that_guard = api_that_guard.unwrap();
-                    let output_ok = Result::<_, ()>::Ok(
+                    let output_ok = Result::<_, ()>::Ok({
                         crate::api::envoy_wallet::EnvoyAccountHandler::apply_update(
                             &mut *api_that_guard,
                             api_update,
-                        ),
-                    )?;
+                        );
+                    })?;
                     Ok(output_ok)
                 })())
             }
@@ -386,16 +386,14 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_broadcast_impl(
             let api_tor_port = <Option<u16>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
-                    (move || {
-                        let output_ok = crate::api::envoy_wallet::EnvoyAccountHandler::broadcast(
-                            api_draft_transaction,
-                            &api_electrum_server,
-                            api_tor_port,
-                        )?;
-                        Ok(output_ok)
-                    })(),
-                )
+                transform_result_sse::<_, crate::api::errors::BroadcastError>((move || {
+                    let output_ok = crate::api::envoy_wallet::EnvoyAccountHandler::broadcast(
+                        api_draft_transaction,
+                        &api_electrum_server,
+                        api_tor_port,
+                    )?;
+                    Ok(output_ok)
+                })())
             }
         },
     )
@@ -2745,6 +2743,30 @@ impl SseDecode for bool {
     }
 }
 
+impl SseDecode for crate::api::errors::BroadcastError {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return crate::api::errors::BroadcastError::NetworkError(var_field0);
+            }
+            1 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return crate::api::errors::BroadcastError::ConsensusError(var_field0);
+            }
+            2 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return crate::api::errors::BroadcastError::Message(var_field0);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
 impl SseDecode for crate::api::errors::ComposeTxError {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -3701,6 +3723,36 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<ngwallet::transaction::Bitcoin
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::errors::BroadcastError {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            crate::api::errors::BroadcastError::NetworkError(field0) => {
+                [0.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::errors::BroadcastError::ConsensusError(field0) => {
+                [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::errors::BroadcastError::Message(field0) => {
+                [2.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::errors::BroadcastError
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::errors::BroadcastError>
+    for crate::api::errors::BroadcastError
+{
+    fn into_into_dart(self) -> crate::api::errors::BroadcastError {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::errors::ComposeTxError {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         match self {
@@ -4253,6 +4305,29 @@ impl SseEncode for bool {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         serializer.cursor.write_u8(self as _).unwrap();
+    }
+}
+
+impl SseEncode for crate::api::errors::BroadcastError {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            crate::api::errors::BroadcastError::NetworkError(field0) => {
+                <i32>::sse_encode(0, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            crate::api::errors::BroadcastError::ConsensusError(field0) => {
+                <i32>::sse_encode(1, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            crate::api::errors::BroadcastError::Message(field0) => {
+                <i32>::sse_encode(2, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 

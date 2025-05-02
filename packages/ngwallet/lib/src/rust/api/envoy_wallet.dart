@@ -26,7 +26,7 @@ abstract class WalletUpdate implements RustOpaqueInterface {}
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>>
 abstract class EnvoyAccountHandler implements RustOpaqueInterface {
-  Future<bool> applyUpdate({required WalletUpdate update});
+  Future<void> applyUpdate({required WalletUpdate update});
 
   ArcMutexNgAccountConnection get ngAccount;
 

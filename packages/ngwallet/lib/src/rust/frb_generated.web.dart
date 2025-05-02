@@ -183,6 +183,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt dco_decode_box_autoadd_u_64(dynamic raw);
 
   @protected
+  BroadcastError dco_decode_broadcast_error(dynamic raw);
+
+  @protected
   ComposeTxError dco_decode_compose_tx_error(dynamic raw);
 
   @protected
@@ -409,6 +412,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
+
+  @protected
+  BroadcastError sse_decode_broadcast_error(SseDeserializer deserializer);
 
   @protected
   ComposeTxError sse_decode_compose_tx_error(SseDeserializer deserializer);
@@ -642,6 +648,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_broadcast_error(
+      BroadcastError self, SseSerializer serializer);
 
   @protected
   void sse_encode_compose_tx_error(

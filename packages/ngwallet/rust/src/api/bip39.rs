@@ -2,20 +2,20 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use core::str::FromStr;
-use bdk_wallet::bitcoin::Network;
-use bdk_wallet::bitcoin::secp256k1::Secp256k1;
-use bdk_wallet::keys::{DerivableKey, DescriptorKey, ExtendedKey, GeneratableKey};
-use bdk_wallet::miniscript;
-use bip39::{Language, Mnemonic};
-use ngwallet::config::AddressType;
 use crate::api::envoy_account::EnvoyAccount;
+use crate::api::envoy_wallet::EnvoyAccountHandler;
 use anyhow::Result;
 use bdk_wallet::bitcoin::bip32::{DerivationPath, KeySource};
+use bdk_wallet::bitcoin::secp256k1::Secp256k1;
+use bdk_wallet::bitcoin::Network;
 use bdk_wallet::descriptor::Segwitv0;
 use bdk_wallet::keys::bip39::MnemonicWithPassphrase;
 use bdk_wallet::keys::DescriptorKey::Secret;
-use crate::api::envoy_wallet::EnvoyAccountHandler;
+use bdk_wallet::keys::{DerivableKey, DescriptorKey, ExtendedKey, GeneratableKey};
+use bdk_wallet::miniscript;
+use bip39::{Language, Mnemonic};
+use core::str::FromStr;
+use ngwallet::config::AddressType;
 
 pub struct Seed {
     pub mnemonic: String,
@@ -28,8 +28,6 @@ pub struct DescriptorFromSeed {
     pub external_pub_descriptor: String,
     pub internal_pub_descriptor: String,
 }
-
-
 
 pub struct EnvoyBip39 {}
 
@@ -65,14 +63,16 @@ impl EnvoyBip39 {
         (mnemonic, mnemonic_string)
     }
     // String seed, Network network, WalletType type, String? passphrase
-    pub  fn derive_descriptor_from_seed(
+    pub fn derive_descriptor_from_seed(
         seed_words: &str,
         network: Network,
         address_type: AddressType,
         derivation_path: &str,
         passphrase: Option<String>,
     ) -> Result<DescriptorFromSeed> {
-        let mnemonic_words = Mnemonic::parse(seed_words).map_err(|_| anyhow::anyhow!("Invalid seed")).unwrap();
+        let mnemonic_words = Mnemonic::parse(seed_words)
+            .map_err(|_| anyhow::anyhow!("Invalid seed"))
+            .unwrap();
 
         let mnemonic: MnemonicWithPassphrase = {
             if passphrase.is_some() {
@@ -113,14 +113,15 @@ impl EnvoyBip39 {
             _ => "wpkh",
         };
 
-
-        let external_pub_descriptor = format!("{wallet_type}({descriptor_pub})").replace("/*", "/0/*");
+        let external_pub_descriptor =
+            format!("{wallet_type}({descriptor_pub})").replace("/*", "/0/*");
         let internal_pub_descriptor = external_pub_descriptor.replace("/0/*", "/1/*");
 
-        let external_prv_descriptor = format!("{wallet_type}({descriptor_prv})").replace("/*", "/0/*");
+        let external_prv_descriptor =
+            format!("{wallet_type}({descriptor_prv})").replace("/*", "/0/*");
         let internal_prv_descriptor = external_prv_descriptor.replace("/0/*", "/1/*");
 
-        Ok( DescriptorFromSeed {
+        Ok(DescriptorFromSeed {
             external_descriptor: external_prv_descriptor,
             internal_descriptor: internal_prv_descriptor,
             external_pub_descriptor,
