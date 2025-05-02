@@ -31,12 +31,15 @@ use crate::frb_generated::StreamSink;
 use chrono::{DateTime, Local, Utc};
 use std::env;
 use bdk_wallet::bip39::{Language, Mnemonic};
+use bdk_wallet::bitcoin::base64::Engine;
+use bdk_wallet::bitcoin::base64::prelude::BASE64_STANDARD;
 use bdk_wallet::bitcoin::bip32::Error::Secp256k1;
 use bdk_wallet::descriptor::DescriptorError;
 use bdk_wallet::descriptor::policy::PolicyError;
 use bdk_wallet::error::{CreateTxError, MiniscriptPsbtError};
 use bdk_wallet::serde::{Deserialize, Serialize};
-use ngwallet::send::{BumpFeeError, DraftTransaction, TransactionFeeResult, TransactionParams};
+use ngwallet::rbf::BumpFeeError;
+use ngwallet::send::{ DraftTransaction, TransactionFeeResult, TransactionParams};
 use crate::api::errors::ComposeTxError;
 
 #[frb(init)]
@@ -192,7 +195,7 @@ impl EnvoyAccountHandler {
             Arc::new(Mutex::new(connection)),
             None::<FileBackend>,
         );
-        let mut account = EnvoyAccountHandler {
+        let account = EnvoyAccountHandler {
             stream_sink: None,
             mempool_txs: vec![],
             id: ng_account.config.clone().id,
@@ -294,7 +297,7 @@ impl EnvoyAccountHandler {
         {
             let mut account = self.ng_account
                 .lock().unwrap();
-            if (tx.note.is_some()) {
+            if tx.note.is_some() {
                 account.wallet.set_note_unchecked(&tx.tx_id.to_string(), &tx.note.unwrap()).unwrap();
             }
             for output in tx.outputs.iter() {
@@ -302,6 +305,17 @@ impl EnvoyAccountHandler {
                     account.wallet.set_tag(output, &output.tag.clone().unwrap()).unwrap();
                 }
             }
+        }
+
+        let tx = BASE64_STANDARD
+            .decode(draft_transaction.psbt_base64)
+            .map_err(|e| anyhow::anyhow!("Failed to decode PSBT: {}", e)).unwrap();
+        let psbt = Psbt::deserialize(tx.as_slice())
+            .map_err(|er| anyhow::anyhow!("Failed to deserialize PSBT: {}", er)).unwrap();
+        {
+            let account = self.ng_account
+                .lock().unwrap();
+            account.wallet.mark_utxo_as_used(psbt.unsigned_tx.clone());
         }
         self.send_update();
     }
@@ -490,6 +504,16 @@ impl EnvoyAccountHandler {
             })
     }
 
+
+    pub fn compose_cancellation_tx(&mut self,
+                                   bitcoin_transaction: BitcoinTransaction,
+    ) -> Result<DraftTransaction, BumpFeeError> {
+        self.ng_account
+            .lock().unwrap()
+            .wallet.
+            compose_cancellation_tx(bitcoin_transaction)
+    }
+
     pub fn get_max_bump_fee_rates(&mut self, selected_outputs: Vec<Output>, bitcoin_transaction: BitcoinTransaction,
     ) -> Result<TransactionFeeResult, BumpFeeError>
     {
@@ -497,17 +521,16 @@ impl EnvoyAccountHandler {
             .lock().unwrap()
             .wallet.
             get_max_bump_fee(selected_outputs, bitcoin_transaction)
-
     }
 
     pub fn compose_rbf_psbt(&mut self, selected_outputs: Vec<Output>,
-                            fee_rate:u64,
+                            fee_rate: u64,
                             bitcoin_transaction: BitcoinTransaction,
     ) -> Result<DraftTransaction, BumpFeeError> {
         self.ng_account
             .lock().unwrap()
             .wallet.
-            get_rbf_draft_tx(selected_outputs, bitcoin_transaction,fee_rate)
+            get_rbf_draft_tx(selected_outputs, bitcoin_transaction, fee_rate)
     }
 
 

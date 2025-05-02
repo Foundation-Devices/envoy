@@ -382,8 +382,6 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
   }
 
   Widget _ctaButtons(BuildContext context) {
-    BroadcastProgress _broadcastProgress =
-        ref.read(spendTransactionProvider).broadcastProgress;
     if (_broadcastProgress == BroadcastProgress.inProgress ||
         _broadcastProgress == BroadcastProgress.staging) {
       return const SizedBox();

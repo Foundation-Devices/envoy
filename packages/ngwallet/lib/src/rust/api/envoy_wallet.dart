@@ -6,6 +6,7 @@
 import '../frb_generated.dart';
 import '../lib.dart';
 import '../third_party/ngwallet/config.dart';
+import '../third_party/ngwallet/rbf.dart';
 import '../third_party/ngwallet/send.dart';
 import '../third_party/ngwallet/transaction.dart';
 import 'envoy_account.dart';
@@ -45,6 +46,9 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
           draftTransaction: draftTransaction,
           electrumServer: electrumServer,
           torPort: torPort);
+
+  Future<DraftTransaction> composeCancellationTx(
+      {required BitcoinTransaction bitcoinTransaction});
 
   Future<DraftTransaction> composePsbt(
       {required TransactionParams transactionParams});

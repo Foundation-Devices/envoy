@@ -85,7 +85,7 @@ class TransactionModel {
     if (hotWallet) {
       return true;
     }
-    return isFinalized;
+    return !isFinalized;
   }
 
   bool get isFinalized {

@@ -156,11 +156,13 @@ class _TxReviewState extends ConsumerState<TxReview> {
               .read(spendTransactionProvider.notifier)
               .setProgressState(BroadcastProgress.inProgress);
         } else {
-          if (transactionModel.canModify) {
+          if (transactionModel.isFinalized) {
             if (context.mounted) {
               await _showNotesDialog(context);
             }
             await Future.delayed(const Duration(milliseconds: 100));
+            //start the broadcast,by setting the progress state to in progress
+            //rive onInit will start the broadcast
             ref
                 .read(spendTransactionProvider.notifier)
                 .setProgressState(BroadcastProgress.inProgress);
