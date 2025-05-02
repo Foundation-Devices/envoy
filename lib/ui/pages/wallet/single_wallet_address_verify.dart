@@ -6,10 +6,11 @@ import 'package:envoy/ui/pages/wallet/single_wallet_address_verify_confirm.dart'
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:ngwallet/src/wallet.dart';
 
 class SingleWalletAddressVerifyPage extends StatelessWidget {
-  final Wallet pairedWallet;
+  final EnvoyAccount pairedWallet;
 
   const SingleWalletAddressVerifyPage(this.pairedWallet, {super.key});
 
@@ -17,7 +18,7 @@ class SingleWalletAddressVerifyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return OnboardingPage(
       key: const Key("single_wallet_address_verify"),
-      qrCode: pairedWallet.getAddress(),
+      qrCode: Future.value(pairedWallet.nextAddress),
       text: [
         Align(
           alignment: Alignment.center,

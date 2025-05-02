@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/account.dart';
-import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
@@ -11,6 +11,7 @@ import 'package:envoy/ui/widgets/scanner/decoders/pair_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class SingleImportPpScanPage extends OnboardingPage {
   const SingleImportPpScanPage({super.key});
@@ -39,10 +40,12 @@ class SingleImportPpScanPage extends OnboardingPage {
                       onScan: (binary) async {
                         final scaffold = ScaffoldMessenger.of(context);
                         final goRouter = GoRouter.of(context);
-                        Account? pairedAccount;
+                        EnvoyAccountHandler? pairedAccount;
+                        EnvoyAccount? account;
                         try {
-                          pairedAccount = await AccountManager()
-                              .processPassportAccounts(binary);
+                          // pairedAccount = await NgAccountManager()
+                          //     .processPassportAccounts(binary);
+                          // account = await pairedAccount!.state();
                         } on AccountAlreadyPaired catch (_) {
                           scaffold.showSnackBar(const SnackBar(
                             content: Text(
@@ -52,11 +55,11 @@ class SingleImportPpScanPage extends OnboardingPage {
                           goRouter.go("/");
                           return;
                         }
-                        if (pairedAccount == null) {
+                        if (account == null) {
                           goRouter.go("/");
                         } else {
                           goRouter.goNamed(ONBOARD_PASSPORT_SCV_SUCCESS,
-                              extra: pairedAccount.wallet);
+                              extra: account!);
                         }
                       },
                     ));

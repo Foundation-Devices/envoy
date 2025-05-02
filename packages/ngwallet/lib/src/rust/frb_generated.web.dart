@@ -16,6 +16,7 @@ import 'frb_generated.dart';
 import 'lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_web.dart';
 import 'third_party/ngwallet/config.dart';
+import 'third_party/ngwallet/rbf.dart';
 import 'third_party/ngwallet/send.dart';
 import 'third_party/ngwallet/transaction.dart';
 
@@ -42,6 +43,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CrossPlatformFinalizerArg
       get rust_arc_decrement_strong_count_WalletUpdatePtr => wire
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_BumpFeeErrorPtr => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError;
 
   CrossPlatformFinalizerArg
       get rust_arc_decrement_strong_count_CreateTxErrorPtr => wire
@@ -72,6 +77,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   WalletUpdate
       dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
+          dynamic raw);
+
+  @protected
+  BumpFeeError
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
           dynamic raw);
 
   @protected
@@ -115,6 +125,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
+  BumpFeeError
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
+          dynamic raw);
+
+  @protected
   CreateTxError
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
           dynamic raw);
@@ -141,6 +156,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool dco_decode_bool(dynamic raw);
 
   @protected
+  BitcoinTransaction dco_decode_box_autoadd_bitcoin_transaction(dynamic raw);
+
+  @protected
+  DraftTransaction dco_decode_box_autoadd_draft_transaction(dynamic raw);
+
+  @protected
   KeyChain dco_decode_box_autoadd_key_chain(dynamic raw);
 
   @protected
@@ -153,9 +174,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Output dco_decode_box_autoadd_output(dynamic raw);
 
   @protected
-  PreparedTransaction dco_decode_box_autoadd_prepared_transaction(dynamic raw);
-
-  @protected
   TransactionParams dco_decode_box_autoadd_transaction_params(dynamic raw);
 
   @protected
@@ -165,10 +183,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt dco_decode_box_autoadd_u_64(dynamic raw);
 
   @protected
+  BroadcastError dco_decode_broadcast_error(dynamic raw);
+
+  @protected
   ComposeTxError dco_decode_compose_tx_error(dynamic raw);
 
   @protected
   DescriptorFromSeed dco_decode_descriptor_from_seed(dynamic raw);
+
+  @protected
+  DraftTransaction dco_decode_draft_transaction(dynamic raw);
 
   @protected
   EnvoyAccount dco_decode_envoy_account(dynamic raw);
@@ -232,9 +256,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Output dco_decode_output(dynamic raw);
 
   @protected
-  PreparedTransaction dco_decode_prepared_transaction(dynamic raw);
-
-  @protected
   Seed dco_decode_seed(dynamic raw);
 
   @protected
@@ -285,6 +306,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  BumpFeeError
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
+          SseDeserializer deserializer);
+
+  @protected
   CreateTxError
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
           SseDeserializer deserializer);
@@ -325,6 +351,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  BumpFeeError
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
+          SseDeserializer deserializer);
+
+  @protected
   CreateTxError
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
           SseDeserializer deserializer);
@@ -352,6 +383,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
+  BitcoinTransaction sse_decode_box_autoadd_bitcoin_transaction(
+      SseDeserializer deserializer);
+
+  @protected
+  DraftTransaction sse_decode_box_autoadd_draft_transaction(
+      SseDeserializer deserializer);
+
+  @protected
   KeyChain sse_decode_box_autoadd_key_chain(SseDeserializer deserializer);
 
   @protected
@@ -365,10 +404,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Output sse_decode_box_autoadd_output(SseDeserializer deserializer);
 
   @protected
-  PreparedTransaction sse_decode_box_autoadd_prepared_transaction(
-      SseDeserializer deserializer);
-
-  @protected
   TransactionParams sse_decode_box_autoadd_transaction_params(
       SseDeserializer deserializer);
 
@@ -379,11 +414,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
 
   @protected
+  BroadcastError sse_decode_broadcast_error(SseDeserializer deserializer);
+
+  @protected
   ComposeTxError sse_decode_compose_tx_error(SseDeserializer deserializer);
 
   @protected
   DescriptorFromSeed sse_decode_descriptor_from_seed(
       SseDeserializer deserializer);
+
+  @protected
+  DraftTransaction sse_decode_draft_transaction(SseDeserializer deserializer);
 
   @protected
   EnvoyAccount sse_decode_envoy_account(SseDeserializer deserializer);
@@ -448,10 +489,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Output sse_decode_output(SseDeserializer deserializer);
 
   @protected
-  PreparedTransaction sse_decode_prepared_transaction(
-      SseDeserializer deserializer);
-
-  @protected
   Seed sse_decode_seed(SseDeserializer deserializer);
 
   @protected
@@ -505,6 +542,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
+          BumpFeeError self, SseSerializer serializer);
+
+  @protected
+  void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
           CreateTxError self, SseSerializer serializer);
 
@@ -545,6 +587,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
+          BumpFeeError self, SseSerializer serializer);
+
+  @protected
+  void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
           CreateTxError self, SseSerializer serializer);
 
@@ -571,6 +618,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_bool(bool self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_bitcoin_transaction(
+      BitcoinTransaction self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_draft_transaction(
+      DraftTransaction self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_key_chain(
       KeyChain self, SseSerializer serializer);
 
@@ -585,10 +640,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_box_autoadd_output(Output self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_prepared_transaction(
-      PreparedTransaction self, SseSerializer serializer);
-
-  @protected
   void sse_encode_box_autoadd_transaction_params(
       TransactionParams self, SseSerializer serializer);
 
@@ -599,12 +650,20 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
 
   @protected
+  void sse_encode_broadcast_error(
+      BroadcastError self, SseSerializer serializer);
+
+  @protected
   void sse_encode_compose_tx_error(
       ComposeTxError self, SseSerializer serializer);
 
   @protected
   void sse_encode_descriptor_from_seed(
       DescriptorFromSeed self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_draft_transaction(
+      DraftTransaction self, SseSerializer serializer);
 
   @protected
   void sse_encode_envoy_account(EnvoyAccount self, SseSerializer serializer);
@@ -671,10 +730,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_output(Output self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_prepared_transaction(
-      PreparedTransaction self, SseSerializer serializer);
 
   @protected
   void sse_encode_seed(Seed self, SseSerializer serializer);
@@ -759,6 +814,18 @@ class RustLibWire implements BaseWire {
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
               ptr);
 
+  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
+          int ptr) =>
+      wasmModule
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
+              ptr);
+
+  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
+          int ptr) =>
+      wasmModule
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
+              ptr);
+
   void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
           int ptr) =>
       wasmModule
@@ -820,6 +887,14 @@ extension type RustLibWasmModule._(JSObject _) implements JSObject {
 
   external void
       rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
+          int ptr);
+
+  external void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
+          int ptr);
+
+  external void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
           int ptr);
 
   external void

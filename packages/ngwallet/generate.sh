@@ -13,4 +13,4 @@ set -e
 flutter_rust_bridge_codegen generate
 cargo build --manifest-path=rust/Cargo.toml
 
-
+flutter pub run build_runner build --delete-conflicting-outputs

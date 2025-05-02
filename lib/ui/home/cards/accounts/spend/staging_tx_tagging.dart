@@ -7,7 +7,7 @@ import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -229,9 +229,8 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
                   type: _tagController.text.isNotEmpty
                       ? EnvoyButtonTypes.primaryModal
                       : EnvoyButtonTypes.tertiary, onTap: () async {
-                ref
-                    .read(spendTransactionProvider.notifier)
-                    .setTag(_tagController.text);
+                ref.read(stagingTxChangeOutPutTagProvider.notifier).state =
+                    _tagController.text.isNotEmpty ? _tagController.text : null;
                 widget.onTagUpdate();
               }),
             ],

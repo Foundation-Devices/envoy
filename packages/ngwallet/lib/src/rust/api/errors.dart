@@ -4,12 +4,27 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+import '../lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'errors.freezed.dart';
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CreateTxError>>
-abstract class CreateTxError implements RustOpaqueInterface {}
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `from`
+
+@freezed
+sealed class BroadcastError with _$BroadcastError implements FrbException {
+  const BroadcastError._();
+
+  const factory BroadcastError.networkError(
+    String field0,
+  ) = BroadcastError_NetworkError;
+  const factory BroadcastError.consensusError(
+    String field0,
+  ) = BroadcastError_ConsensusError;
+  const factory BroadcastError.message(
+    String field0,
+  ) = BroadcastError_Message;
+}
 
 @freezed
 sealed class ComposeTxError with _$ComposeTxError implements FrbException {

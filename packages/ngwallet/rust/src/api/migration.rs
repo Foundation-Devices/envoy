@@ -2,14 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use bdk_wallet::KeychainKind;
 use std::collections::HashMap;
 use std::error::Error;
 use std::ops::Index;
 use std::path::{Path, PathBuf};
-use bdk_wallet::KeychainKind;
 
 use sled::{IVec, Tree};
-
 
 pub(crate) enum MapKey {
     LastIndex(KeychainKind),
@@ -37,10 +36,7 @@ impl MapKey {
 }
 
 fn ivec_to_u32(b: IVec) -> Result<u32, Box<dyn Error>> {
-    let array: [u8; 4] = b
-        .as_ref()
-        .try_into()
-        .map_err(|_| "Invalid U32 Bytes")?;
+    let array: [u8; 4] = b.as_ref().try_into().map_err(|_| "Invalid U32 Bytes")?;
     let val = u32::from_be_bytes(array);
     Ok(val)
 }
@@ -50,21 +46,22 @@ fn get_last_index(db: &Tree, keychain: KeychainKind) -> Result<Option<u32>, Box<
     db.get(key)?.map(ivec_to_u32).transpose()
 }
 
-
 pub fn get_last_used_index(path: &PathBuf, tree_name: String) -> HashMap<KeychainKind, u32> {
     let db = sled::open(path).unwrap();
     let tree = db.open_tree(tree_name.clone()).unwrap();
 
-    let external = get_last_index(&tree, KeychainKind::External).unwrap()
+    let external = get_last_index(&tree, KeychainKind::External)
+        .unwrap()
         .unwrap_or(0);
-    let internal = get_last_index(&tree, KeychainKind::External).unwrap().unwrap_or(0);
+    let internal = get_last_index(&tree, KeychainKind::External)
+        .unwrap()
+        .unwrap_or(0);
     let mut key_index_map = HashMap::new();
 
     key_index_map.insert(KeychainKind::External, external);
     key_index_map.insert(KeychainKind::Internal, internal);
     key_index_map
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -100,8 +97,7 @@ mod tests {
                     let db = sled::open(path.clone()).unwrap();
 
                     for (tn, tree_name) in db.tree_names().into_iter().enumerate() {
-                        let tree = db.open_tree(&tree_name)
-                            .unwrap();
+                        let tree = db.open_tree(&tree_name).unwrap();
                         // println!("Tree name: {},is tree empty ? : {}\n", std::str::from_utf8(&tree_name).unwrap(), tree.is_empty());
                         // tree.iter().for_each(|item| {
                         //     let (key, value) = item.unwrap();
@@ -110,7 +106,8 @@ mod tests {
 
                         // println!("\n");
                     }
-                    let tree = db.open_tree(format!("{}", path.file_name().unwrap().to_str().unwrap()))
+                    let tree = db
+                        .open_tree(format!("{}", path.file_name().unwrap().to_str().unwrap()))
                         .unwrap();
 
                     tree.iter().keys().for_each(|key| {

@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use crate::api::envoy_wallet::Network;
 use flutter_rust_bridge::frb;
 use ngwallet::config::AddressType;
 use ngwallet::transaction::{BitcoinTransaction, Output};
-use crate::api::envoy_wallet::Network;
 
 #[derive(Clone)]
 #[frb(dart_metadata = ("freezed"))]

@@ -12,7 +12,8 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_display.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -135,6 +136,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 
   void onNumPadEvents(dynamic event) {
     final s = Settings();
+
     TransactionModel tx = ref.read(spendTransactionProvider);
     // Lock numpad while loading after tapping confirm
     if (tx.loading) {

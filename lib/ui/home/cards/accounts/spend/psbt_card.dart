@@ -26,7 +26,7 @@ import 'package:share_plus/share_plus.dart';
 
 //ignore: must_be_immutable
 class PsbtCard extends ConsumerWidget {
-  final PreparedTransaction transaction;
+  final DraftTransaction transaction;
 
   PsbtCard(this.transaction) : super(key: UniqueKey());
 

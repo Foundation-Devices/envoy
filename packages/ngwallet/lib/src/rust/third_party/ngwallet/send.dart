@@ -7,14 +7,14 @@ import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'transaction.dart';
 
-class PreparedTransaction {
+class DraftTransaction {
   final BitcoinTransaction transaction;
   final String psbtBase64;
   final String? changeOutPutTag;
   final List<String> inputTags;
   final bool isFinalized;
 
-  const PreparedTransaction({
+  const DraftTransaction({
     required this.transaction,
     required this.psbtBase64,
     this.changeOutPutTag,
@@ -33,7 +33,7 @@ class PreparedTransaction {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is PreparedTransaction &&
+      other is DraftTransaction &&
           runtimeType == other.runtimeType &&
           transaction == other.transaction &&
           psbtBase64 == other.psbtBase64 &&
@@ -45,17 +45,17 @@ class PreparedTransaction {
 class TransactionFeeResult {
   final BigInt maxFeeRate;
   final BigInt minFeeRate;
-  final PreparedTransaction preparedTransaction;
+  final DraftTransaction draftTransaction;
 
   const TransactionFeeResult({
     required this.maxFeeRate,
     required this.minFeeRate,
-    required this.preparedTransaction,
+    required this.draftTransaction,
   });
 
   @override
   int get hashCode =>
-      maxFeeRate.hashCode ^ minFeeRate.hashCode ^ preparedTransaction.hashCode;
+      maxFeeRate.hashCode ^ minFeeRate.hashCode ^ draftTransaction.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -64,7 +64,7 @@ class TransactionFeeResult {
           runtimeType == other.runtimeType &&
           maxFeeRate == other.maxFeeRate &&
           minFeeRate == other.minFeeRate &&
-          preparedTransaction == other.preparedTransaction;
+          draftTransaction == other.draftTransaction;
 }
 
 class TransactionParams {

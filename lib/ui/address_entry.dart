@@ -16,7 +16,7 @@ import 'package:envoy/business/bitcoin_parser.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:ngwallet/ngwallet.dart';
 
 class AddressEntry extends ConsumerStatefulWidget {

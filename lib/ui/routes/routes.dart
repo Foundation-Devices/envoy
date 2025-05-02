@@ -4,6 +4,8 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/ui/background.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
 import 'package:envoy/ui/home/settings/backup/erase_warning.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
@@ -14,9 +16,11 @@ import 'package:envoy/ui/pages/pp/pp_setup_intro.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/routes/home_router.dart';
+import 'package:envoy/ui/shield.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 const ROUTE_SPLASH = 'onboard';
 const WALLET_SUCCESS = "wallet_ready";
@@ -24,6 +28,7 @@ const SEED_INTRO = "seed_intro";
 const WALLET_BACKUP_WARNING = "backup_warning";
 const PASSPORT_INTRO = "passport_intro";
 const PREFS_ONBOARDED = 'onboarded';
+const PSBT_QR_EXCHANGE_STANDALONE = '"psbt_qr_exchange';
 
 /// this key can be used in nested GoRoute to leverage main router
 /// for example:
@@ -105,7 +110,36 @@ final GoRouter mainRouter = GoRouter(
           return SeedIntroScreen(
             mode: type,
           );
-        })
+        }),
+    GoRoute(
+      path: "/psbt_qr_exchange",
+      name: PSBT_QR_EXCHANGE_STANDALONE,
+      builder: (context, state) {
+        return Stack(
+          children: [
+            const Positioned.fill(
+                child: AppBackground(
+              showRadialGradient: true,
+            )),
+            Positioned(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                body: SafeArea(
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 8),
+                      child: Shield(
+                        child: PsbtCard(state.extra as DraftTransaction),
+                      )),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    ),
   ],
 );
 

@@ -42,8 +42,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 final transactionDetailsOpen = StateProvider<bool>((ref) => false);
@@ -110,7 +110,8 @@ class _TransactionsDetailsWidgetState
     bool addressNotAvailable = tx.address.isEmpty;
     final address = tx.address ?? "";
 
-    bool rbfPossible = (!tx.isConfirmed && tx.isOnChain() && tx.amount < 0);
+    bool rbfPossible =
+        (tx.confirmations == 0 && tx.isOnChain() && tx.amount < 0);
 
     final cancelState = ref.watch(cancelTxStateProvider(tx.txId));
 

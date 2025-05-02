@@ -11,7 +11,8 @@ import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_button.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_spend_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -125,7 +126,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
         unit == DisplayUnit.btc ? AmountDisplayUnit.btc : AmountDisplayUnit.sat;
 
     RBFSpendState? rbfSpendState = ref.read(rbfSpendStateProvider);
-    Transaction? originalTx = rbfSpendState?.originalTx;
+    BitcoinTransaction? originalTx = rbfSpendState?.originalTx;
 
     return Container(
       decoration: BoxDecoration(
@@ -270,7 +271,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                                           context,
                                           account,
                                           transaction.fee.toInt(),
-                                          originalTx!.fee);
+                                          originalTx!.fee.toInt());
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.only(

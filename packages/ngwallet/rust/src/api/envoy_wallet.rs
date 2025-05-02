@@ -2,43 +2,47 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use crate::api::envoy_account::EnvoyAccount;
+use crate::api::errors::{BroadcastError, ComposeTxError};
+use crate::api::migration::get_last_used_index;
+use crate::frb_generated::StreamSink;
+use anyhow::{anyhow, Error, Result};
+use bdk_wallet::bip39::{Language, Mnemonic};
+use bdk_wallet::bitcoin::address::{NetworkUnchecked, ParseError};
+use bdk_wallet::bitcoin::base64::prelude::BASE64_STANDARD;
+use bdk_wallet::bitcoin::base64::Engine;
+use bdk_wallet::bitcoin::bip32::Error::Secp256k1;
+use bdk_wallet::bitcoin::{absolute, psbt, Address, Amount, OutPoint, Sequence, Txid};
+pub use bdk_wallet::bitcoin::{Network, Psbt, ScriptBuf};
+use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse, SyncRequest};
+use bdk_wallet::chain::{CheckPoint, Indexed};
+use bdk_wallet::descriptor::policy::PolicyError;
+use bdk_wallet::descriptor::DescriptorError;
+use bdk_wallet::error::{CreateTxError, MiniscriptPsbtError};
+use bdk_wallet::rusqlite::{Connection, OpenFlags};
+use bdk_wallet::serde::{Deserialize, Serialize};
+use bdk_wallet::{
+    bitcoin, coin_selection, AddressInfo, KeychainKind, PersistedWallet, Update, Wallet, WalletTx,
+};
+use chrono::{DateTime, Local, Utc};
+use flutter_rust_bridge::frb;
+use log::info;
+use ngwallet::account::NgAccount;
+use ngwallet::config::{AddressType, NgAccountConfig};
+use ngwallet::ngwallet::NgWallet;
+use ngwallet::rbf::BumpFeeError;
+use ngwallet::redb::backends::FileBackend;
+use ngwallet::send::{DraftTransaction, TransactionFeeResult, TransactionParams};
+use ngwallet::transaction::{BitcoinTransaction, Output};
 use std::collections::BTreeMap;
+use std::env;
 use std::fmt::format;
 use std::fs::File;
 use std::path::Path;
 use std::str::FromStr;
 use std::sync::{Arc, LockResult, Mutex};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use std::{fs, thread};
-use std::time::Duration;
-use anyhow::{anyhow, Error, Result};
-use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse, SyncRequest};
-use bdk_wallet::rusqlite::{Connection, OpenFlags};
-use bdk_wallet::{AddressInfo, bitcoin, coin_selection, KeychainKind, PersistedWallet, Update, Wallet, WalletTx};
-use bdk_wallet::chain::{CheckPoint, Indexed};
-use flutter_rust_bridge::frb;
-use ngwallet::account::NgAccount;
-use ngwallet::config::{AddressType, NgAccountConfig};
-use ngwallet::ngwallet::NgWallet;
-use ngwallet::transaction::{BitcoinTransaction, Output};
-pub use bdk_wallet::bitcoin::{Network, Psbt, ScriptBuf};
-use bdk_wallet::bitcoin::{absolute, Address, Amount, OutPoint, psbt, Sequence};
-use bdk_wallet::bitcoin::address::{NetworkUnchecked, ParseError};
-use log::info;
-use ngwallet::redb::backends::FileBackend;
-use crate::api::migration::get_last_used_index;
-use crate::api::envoy_account::{EnvoyAccount};
-use crate::frb_generated::StreamSink;
-use chrono::{DateTime, Local};
-use std::env;
-use bdk_wallet::bip39::{Language, Mnemonic};
-use bdk_wallet::bitcoin::bip32::Error::Secp256k1;
-use bdk_wallet::descriptor::DescriptorError;
-use bdk_wallet::descriptor::policy::PolicyError;
-use bdk_wallet::error::{CreateTxError, MiniscriptPsbtError};
-use bdk_wallet::serde::{Deserialize, Serialize};
-use ngwallet::send::{TransactionFeeResult, TransactionParams};
-use ngwallet::send::PreparedTransaction;
-use crate::api::errors::ComposeTxError;
 
 #[frb(init)]
 pub fn init_app() {
@@ -101,24 +105,22 @@ impl EnvoyAccountHandler {
             stream_sink: None,
             mempool_txs: vec![],
             id: id.clone(),
-            ng_account: Arc::new(Mutex::new(
-                NgAccount::new_from_descriptor(
-                    name,
-                    color,
-                    device_serial,
-                    date_added,
-                    network,
-                    address_type,
-                    internal_descriptor,
-                    Some(external_descriptor),
-                    index,
-                    Some(db_path),
-                    Arc::new(Mutex::new(connection)),
-                    None::<FileBackend>,
-                    id.clone(),
-                    None,
-                )
-            )),
+            ng_account: Arc::new(Mutex::new(NgAccount::new_from_descriptor(
+                name,
+                color,
+                device_serial,
+                date_added,
+                network,
+                address_type,
+                internal_descriptor,
+                Some(external_descriptor),
+                index,
+                Some(db_path),
+                Arc::new(Mutex::new(connection)),
+                None::<FileBackend>,
+                id.clone(),
+                None,
+            ))),
         }
     }
 
@@ -144,47 +146,54 @@ impl EnvoyAccountHandler {
             stream_sink: None,
             mempool_txs: vec![],
             id: id.clone(),
-            ng_account: Arc::new(Mutex::new(
-                NgAccount::new_from_descriptor(
-                    name,
-                    color,
-                    device_serial,
-                    date_added,
-                    network,
-                    address_type,
-                    internal_descriptor,
-                    Some(external_descriptor),
-                    index,
-                    Some(db_path.clone()),
-                    Arc::new(Mutex::new(connection)),
-                    None::<FileBackend>,
-                    id.clone(),
-                    None,
-                )
-            )),
+            ng_account: Arc::new(Mutex::new(NgAccount::new_from_descriptor(
+                name,
+                color,
+                device_serial,
+                date_added,
+                network,
+                address_type,
+                internal_descriptor,
+                Some(external_descriptor),
+                index,
+                Some(db_path.clone()),
+                Arc::new(Mutex::new(connection)),
+                None::<FileBackend>,
+                id.clone(),
+                None,
+            ))),
         };
 
-        account.ng_account.lock().unwrap().wallet
-            .reveal_addresses_up_to(KeychainKind::Internal, *indexes.get(&KeychainKind::Internal).unwrap_or(&0))
+        account
+            .ng_account
+            .lock()
+            .unwrap()
+            .wallet
+            .reveal_addresses_up_to(
+                KeychainKind::Internal,
+                *indexes.get(&KeychainKind::Internal).unwrap_or(&0),
+            )
             .unwrap();
 
-        account.ng_account.lock().unwrap().wallet
-            .reveal_addresses_up_to(KeychainKind::External, *indexes.get(&KeychainKind::External).unwrap_or(&0))
+        account
+            .ng_account
+            .lock()
+            .unwrap()
+            .wallet
+            .reveal_addresses_up_to(
+                KeychainKind::External,
+                *indexes.get(&KeychainKind::External).unwrap_or(&0),
+            )
             .unwrap();
 
         account
     }
 
-    pub fn stream(
-        &mut self,
-        stream_sink: StreamSink<EnvoyAccount>,
-    ) {
+    pub fn stream(&mut self, stream_sink: StreamSink<EnvoyAccount>) {
         self.stream_sink = Some(stream_sink);
     }
 
-    pub fn open_wallet(
-        db_path: String,
-    ) -> EnvoyAccountHandler {
+    pub fn open_wallet(db_path: String) -> EnvoyAccountHandler {
         let bdk_db_path = Path::new(&db_path).join("wallet.sqlite");
         let connection = Connection::open(bdk_db_path.clone()).unwrap();
         info!("Opening BDK database at: {}", bdk_db_path.display());
@@ -193,7 +202,7 @@ impl EnvoyAccountHandler {
             Arc::new(Mutex::new(connection)),
             None::<FileBackend>,
         );
-        let mut account = EnvoyAccountHandler {
+        let account = EnvoyAccountHandler {
             stream_sink: None,
             mempool_txs: vec![],
             id: ng_account.config.clone().id,
@@ -204,8 +213,7 @@ impl EnvoyAccountHandler {
 
     pub fn rename_account(&mut self, name: &str) -> Result<()> {
         {
-            let mut account = self.ng_account
-                .lock().unwrap();
+            let mut account = self.ng_account.lock().unwrap();
             account.rename(name).unwrap();
         }
         self.send_update();
@@ -227,7 +235,7 @@ impl EnvoyAccountHandler {
                     transactions.push(tx.clone());
                 });
 
-                for (index, tx, ) in self.mempool_txs.clone().iter().enumerate() {
+                for (index, tx) in self.mempool_txs.clone().iter().enumerate() {
                     let tx_id = tx.tx_id.to_string();
                     let mut found = false;
                     for wallet_tx in wallet_transactions.clone().iter() {
@@ -241,7 +249,6 @@ impl EnvoyAccountHandler {
                         transactions.push(tx.clone());
                     }
                 }
-
 
                 Ok(EnvoyAccount {
                     name: config.name.clone(),
@@ -265,88 +272,118 @@ impl EnvoyAccountHandler {
                     tags,
                 })
             }
-            Err(error) => {
-                Err(anyhow!("Failed to lock account: {}", error))
-            }
+            Err(error) => Err(anyhow!("Failed to lock account: {}", error)),
         };
     }
 
-
     pub fn next_address(&mut self) -> String {
         self.ng_account
-            .lock().unwrap()
-            .wallet.next_address().unwrap().address.to_string()
+            .lock()
+            .unwrap()
+            .wallet
+            .next_address()
+            .unwrap()
+            .address
+            .to_string()
     }
 
     pub fn request_full_scan(&mut self) -> Arc<Mutex<Option<FullScanRequest<KeychainKind>>>> {
-        let scan_request = self.ng_account
-            .lock().unwrap()
-            .wallet.full_scan_request();
+        let scan_request = self.ng_account.lock().unwrap().wallet.full_scan_request();
         return Arc::new(Mutex::new(Some(scan_request)));
     }
 
-    pub fn update_broadcast_state(&mut self, prepared_transaction: PreparedTransaction) {
-        let tx = prepared_transaction.transaction;
+    pub fn update_broadcast_state(&mut self, draft_transaction: DraftTransaction) {
+        let mut tx = draft_transaction.transaction;
+        let now = Utc::now();
+        //transaction list will show fee+amount
+        tx.amount = -(((tx.amount.abs() as u64) + tx.fee) as i64);
+        //use current timestamp. this will be used for sorting
+        tx.date = Some(now.timestamp() as u64);
         self.mempool_txs.push(tx.clone());
         {
-            let mut account = self.ng_account
-                .lock().unwrap();
-            if (tx.note.is_some()) {
-                account.wallet.set_note_unchecked(&tx.tx_id.to_string(), &tx.note.unwrap()).unwrap();
+            let mut account = self.ng_account.lock().unwrap();
+            if tx.note.is_some() {
+                account
+                    .wallet
+                    .set_note_unchecked(&tx.tx_id.to_string(), &tx.note.unwrap())
+                    .unwrap();
             }
             for output in tx.outputs.iter() {
                 if output.tag.is_some() {
-                    account.wallet.set_tag(output, &output.tag.clone().unwrap()).unwrap();
+                    account
+                        .wallet
+                        .set_tag(output, &output.tag.clone().unwrap())
+                        .unwrap();
                 }
             }
+        }
+
+        let tx = BASE64_STANDARD
+            .decode(draft_transaction.psbt_base64)
+            .map_err(|e| anyhow::anyhow!("Failed to decode PSBT: {}", e))
+            .unwrap();
+        let psbt = Psbt::deserialize(tx.as_slice())
+            .map_err(|er| anyhow::anyhow!("Failed to deserialize PSBT: {}", er))
+            .unwrap();
+        {
+            let account = self.ng_account.lock().unwrap();
+            account.wallet.mark_utxo_as_used(psbt.unsigned_tx.clone());
         }
         self.send_update();
     }
 
     pub fn request_sync(&mut self) -> Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>> {
-        let scan_request = self.ng_account
-            .lock().unwrap()
-            .wallet.sync_request();
+        let scan_request = self.ng_account.lock().unwrap().wallet.sync_request();
         return Arc::new(Mutex::new(Some(scan_request)));
     }
 
     //cannot use sync since it is used by flutter_rust_bridge
-    pub fn sync_wallet(sync_request: Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>, electrum_server: &str, tor_port: Option<u16>) -> Result<Arc<Mutex<Update>>, Error> {
+    pub fn sync_wallet(
+        sync_request: Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>,
+        electrum_server: &str,
+        tor_port: Option<u16>,
+    ) -> Result<Arc<Mutex<Update>>, Error> {
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
         let socks_proxy = socks_proxy.as_ref().map(|s| s.as_str());
         let mut scan_request_guard = sync_request.lock().unwrap();
-        return if let Some(sync_request) = scan_request_guard.take() {  // Use take() to move
-            let update = NgWallet::<Connection>::sync(sync_request, electrum_server, socks_proxy).unwrap();
+        return if let Some(sync_request) = scan_request_guard.take() {
+            // Use take() to move
+            let update =
+                NgWallet::<Connection>::sync(sync_request, electrum_server, socks_proxy).unwrap();
             Ok(Arc::new(Mutex::new(Update::from(update))))
         } else {
             Err(anyhow!("No sync request found"))
         };
     }
 
-    pub fn scan(scan_request: Arc<Mutex<Option<FullScanRequest<KeychainKind>>>>, electrum_server: &str, tor_port: Option<u16>) -> Result<Arc<Mutex<Update>>, Error> {
+    pub fn scan(
+        scan_request: Arc<Mutex<Option<FullScanRequest<KeychainKind>>>>,
+        electrum_server: &str,
+        tor_port: Option<u16>,
+    ) -> Result<Arc<Mutex<Update>>, Error> {
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
         let socks_proxy = socks_proxy.as_ref().map(|s| s.as_str());
         let mut scan_request_guard = scan_request.lock().unwrap();
-        return if let Some(scan_request) = scan_request_guard.take() {  // Use take() to move the value out
+        return if let Some(scan_request) = scan_request_guard.take() {
+            // Use take() to move the value out
             // Simulate a delay for the scan operation
-            let update = NgWallet::<Connection>::scan(scan_request, electrum_server, socks_proxy).unwrap();
+            let update =
+                NgWallet::<Connection>::scan(scan_request, electrum_server, socks_proxy).unwrap();
             Ok(Arc::new(Mutex::new(Update::from(update))))
         } else {
             Err(anyhow!("No Scan request found"))
         };
     }
 
-    pub fn apply_update(&mut self, update: Arc<Mutex<Update>>) -> bool {
+    pub fn apply_update(&mut self, update: Arc<Mutex<Update>>)  {
         let scan_request_guard = update.lock().unwrap();
         {
-            let mut account = self.ng_account
-                .lock().unwrap();
+            let mut account = self.ng_account.lock().unwrap();
             account.wallet.apply(scan_request_guard.to_owned()).unwrap();
             account.config.date_synced = Some(format!("{:?}", chrono::Utc::now()));
             account.persist().unwrap();
         }
         self.send_update();
-        return true;
     }
 
     pub fn send_update(&mut self) {
@@ -357,65 +394,90 @@ impl EnvoyAccountHandler {
     #[frb(sync)]
     pub fn balance(&mut self) -> u64 {
         self.ng_account
-            .lock().unwrap()
-            .wallet.balance().unwrap().total().to_sat()
+            .lock()
+            .unwrap()
+            .wallet
+            .balance()
+            .unwrap()
+            .total()
+            .to_sat()
     }
     pub fn utxo(&mut self) -> Vec<Output> {
         self.ng_account
-            .lock().unwrap()
-            .wallet.unspend_outputs().unwrap_or(vec![])
+            .lock()
+            .unwrap()
+            .wallet
+            .unspend_outputs()
+            .unwrap_or_default()
     }
     pub fn transactions(&mut self) -> Vec<BitcoinTransaction> {
         self.ng_account
-            .lock().unwrap()
-            .wallet.transactions().unwrap()
+            .lock()
+            .unwrap()
+            .wallet
+            .transactions()
+            .unwrap()
     }
     pub fn set_tag(&mut self, utxo: &Output, tag: &str) -> Result<bool> {
-        let status = self.ng_account
-            .lock().unwrap()
-            .wallet.set_tag(utxo, tag);
+        let status = self.ng_account.lock().unwrap().wallet.set_tag(utxo, tag);
         self.send_update();
         status
     }
     pub fn set_tags(&mut self, utxo: Vec<Output>, tag: &str) -> Result<bool> {
         utxo.iter().for_each(|utxo| {
             self.ng_account
-                .lock().unwrap()
-                .wallet.set_tag(utxo, tag).unwrap();
+                .lock()
+                .unwrap()
+                .wallet
+                .set_tag(utxo, tag)
+                .unwrap();
         });
         self.send_update();
         Ok(true)
     }
     pub fn set_do_not_spend(&mut self, utxo: &Output, do_not_spend: bool) -> Result<bool> {
-        let result = self.ng_account
-            .lock().unwrap()
-            .wallet.set_do_not_spend(utxo, do_not_spend);
+        let result = self
+            .ng_account
+            .lock()
+            .unwrap()
+            .wallet
+            .set_do_not_spend(utxo, do_not_spend);
         self.send_update();
         result
     }
-    pub fn set_do_not_spend_multiple(&mut self, utxo: Vec<String>, do_not_spend: bool) -> Result<()> {
+    pub fn set_do_not_spend_multiple(
+        &mut self,
+        utxo: Vec<String>,
+        do_not_spend: bool,
+    ) -> Result<()> {
         let utxos = self.utxo();
 
-        utxos.iter().filter(|x| {
-            utxo.contains(&x.get_id().clone())
-        })
+        utxos
+            .iter()
+            .filter(|x| utxo.contains(&x.get_id().clone()))
             .for_each(|output| {
                 self.ng_account
-                    .lock().unwrap()
-                    .wallet.set_do_not_spend(output, do_not_spend).unwrap();
+                    .lock()
+                    .unwrap()
+                    .wallet
+                    .set_do_not_spend(output, do_not_spend)
+                    .unwrap();
             });
         self.send_update();
         Ok(())
     }
     pub fn set_tag_multiple(&mut self, utxo: Vec<String>, tag: &str) -> Result<()> {
         let utxos = self.utxo();
-        utxos.iter().filter(|x| {
-            utxo.contains(&x.get_id().clone())
-        })
+        utxos
+            .iter()
+            .filter(|x| utxo.contains(&x.get_id().clone()))
             .for_each(|output| {
                 self.ng_account
-                    .lock().unwrap()
-                    .wallet.set_tag(output, tag).unwrap();
+                    .lock()
+                    .unwrap()
+                    .wallet
+                    .set_tag(output, tag)
+                    .unwrap();
             });
         self.send_update();
         Ok(())
@@ -427,23 +489,22 @@ impl EnvoyAccountHandler {
             Some(tag) => Some(tag.as_str()),
         };
         self.ng_account
-            .lock().unwrap().wallet
-            .remove_tag(existing_tag, new_tag_ref).unwrap();
+            .lock()
+            .unwrap()
+            .wallet
+            .remove_tag(existing_tag, new_tag_ref)
+            .unwrap();
         self.send_update();
         Ok(())
     }
     pub fn set_note(&mut self, tx_id: &str, note: &str) -> Result<bool> {
-        let result = self.ng_account
-            .lock().unwrap()
-            .wallet.set_note(tx_id, note);
+        let result = self.ng_account.lock().unwrap().wallet.set_note(tx_id, note);
         self.send_update();
         result
     }
     #[frb(sync)]
     pub fn is_hot(&self) -> bool {
-        self.ng_account
-            .lock()
-            .unwrap().wallet.is_hot()
+        self.ng_account.lock().unwrap().wallet.is_hot()
     }
     #[frb(sync)]
     pub fn config(&self) -> NgAccountConfig {
@@ -454,72 +515,101 @@ impl EnvoyAccountHandler {
         self.id.clone()
     }
     pub fn send(&mut self, address: String, amount: u64) -> Result<String, Error> {
-        let result = self.ng_account
-            .lock().unwrap()
-            .wallet.
-            create_send(address, amount)
-            .map_err(|e| {
-                anyhow!("Failed to create send transaction: {}", e)
-            })?;
+        let result = self
+            .ng_account
+            .lock()
+            .unwrap()
+            .wallet
+            .create_send(address, amount)
+            .map_err(|e| anyhow!("Failed to create send transaction: {}", e))?;
         Ok(result.serialize_hex())
     }
 
-    pub fn get_max_fee(&mut self, transaction_params: TransactionParams,
-    ) -> Result<TransactionFeeResult, ComposeTxError>
-    {
+    pub fn get_max_fee(
+        &mut self,
+        transaction_params: TransactionParams,
+    ) -> Result<TransactionFeeResult, ComposeTxError> {
         self.ng_account
-            .lock().unwrap()
-            .wallet.
-            get_max_fee(transaction_params)
-            .map_err(|e| {
-                ComposeTxError::map_err(e)
-            })
+            .lock()
+            .unwrap()
+            .wallet
+            .get_max_fee(transaction_params)
+            .map_err(ComposeTxError::map_err)
     }
 
-    pub fn compose_psbt(&mut self, transaction_params: TransactionParams,
-    ) -> Result<PreparedTransaction, ComposeTxError> {
+    pub fn compose_psbt(
+        &mut self,
+        transaction_params: TransactionParams,
+    ) -> Result<DraftTransaction, ComposeTxError> {
         self.ng_account
-            .lock().unwrap()
-            .wallet.
-            compose_psbt(transaction_params)
-            .map_err(|e| {
-                ComposeTxError::map_err(e)
-            })
+            .lock()
+            .unwrap()
+            .wallet
+            .compose_psbt(transaction_params)
+            .map_err(ComposeTxError::map_err)
     }
 
-    pub fn decode_psbt(prepared_transaction: PreparedTransaction,
-                       psbt_base64: &str,
-    ) -> Result<PreparedTransaction> {
-        NgWallet::<Connection>::decode_psbt(prepared_transaction,
-                                            psbt_base64)
+    pub fn compose_cancellation_tx(
+        &mut self,
+        bitcoin_transaction: BitcoinTransaction,
+    ) -> Result<DraftTransaction, BumpFeeError> {
+        self.ng_account
+            .lock()
+            .unwrap()
+            .wallet
+            .compose_cancellation_tx(bitcoin_transaction)
     }
 
-    pub fn broadcast(spend: PreparedTransaction,
-                     electrum_server: &str,
-                     tor_port: Option<u16>,
-    ) -> Result<String> {
+    pub fn get_max_bump_fee_rates(
+        &mut self,
+        selected_outputs: Vec<Output>,
+        bitcoin_transaction: BitcoinTransaction,
+    ) -> Result<TransactionFeeResult, BumpFeeError> {
+        self.ng_account
+            .lock()
+            .unwrap()
+            .wallet
+            .get_max_bump_fee(selected_outputs, bitcoin_transaction)
+    }
+
+    pub fn compose_rbf_psbt(
+        &mut self,
+        selected_outputs: Vec<Output>,
+        fee_rate: u64,
+        bitcoin_transaction: BitcoinTransaction,
+    ) -> Result<DraftTransaction, BumpFeeError> {
+        self.ng_account.lock().unwrap().wallet.get_rbf_draft_tx(
+            selected_outputs,
+            bitcoin_transaction,
+            fee_rate,
+        )
+    }
+
+    pub fn decode_psbt(
+        draft_transaction: DraftTransaction,
+        psbt_base64: &str,
+    ) -> Result<DraftTransaction> {
+        NgWallet::<Connection>::decode_psbt(draft_transaction, psbt_base64)
+    }
+
+    pub fn broadcast(
+        draft_transaction: DraftTransaction,
+        electrum_server: &str,
+        tor_port: Option<u16>,
+    ) -> std::result::Result<String, BroadcastError> {
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
         let socks_proxy = socks_proxy.as_ref().map(|s| s.as_str());
-        NgWallet::<Connection>::broadcast_psbt(spend, electrum_server, socks_proxy)
-            .map_err(|e| {
-                anyhow!("Failed to broadcast: {}", e)
-            })
+        NgWallet::<Connection>::broadcast_psbt(draft_transaction, electrum_server, socks_proxy)
+            .map_err(BroadcastError::from)
+            .map(|tx_id| tx_id.to_string())
     }
     pub fn validate_address(address: &str, network: Option<Network>) -> bool {
         return match Address::from_str(address) {
-            Ok(address) => {
-                match network {
-                    None => {
-                        true
-                    }
-                    Some(network) => {
-                        address.require_network(network).is_ok()
-                    }
-                }
-            }
-            Err(_) => {
-                false
-            }
+            Ok(address) => match network {
+                None => true,
+                Some(network) => address.require_network(network).is_ok(),
+            },
+            Err(_) => false,
         };
     }
 }
