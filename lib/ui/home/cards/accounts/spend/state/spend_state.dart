@@ -42,7 +42,6 @@ enum SpendOverlayContext {
 
 enum SpendMode {
   normal,
-  rbf,
   sendMax, // this is the maximum amount we can send (possibly excluding some coins)
   sweep, // this is all coins but (possibly) less money sent
 }

@@ -151,8 +151,6 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       return false;
     }
 
-    if (state.mode == SpendMode.rbf) {}
-
     if (sendTo.isEmpty ||
         amount == 0 ||
         account == null ||
@@ -191,7 +189,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
       final draftTx = await handler.composePsbt(transactionParams: params);
       kPrint(
-          "composePsbt : ${draftTx.transaction.txId} | isFinalized : ${draftTx.isFinalized}");
+          "composePSBT : ${draftTx.transaction.txId} | isFinalized : ${draftTx.isFinalized}");
 
       _updateWithPreparedTransaction(draftTx, params);
 
@@ -245,6 +243,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         inputTags: tx.inputTags,
         isFinalized: tx.isFinalized);
 
+    kPrint("NoteUpdated : ${updatedTx.transaction.note}");
     _updateWithPreparedTransaction(updatedTx, params);
   }
 
@@ -297,6 +296,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         changeOutPutTag: tag,
         inputTags: tx.inputTags,
         isFinalized: tx.isFinalized);
+    kPrint("Tag Updated : ${updatedTx.changeOutPutTag}");
     _updateWithPreparedTransaction(updatedTx, prams);
   }
 
