@@ -191,6 +191,64 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                                               onBackPressed: (context) {
                                                 Navigator.pop(context);
                                               },
+                                              child: Container(
+                                                color:
+                                                    Colors.red.withOpacity(0.3),
+                                                child: Column(
+                                                  children: [
+                                                    Text("I'm here",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white)),
+                                                  ],
+                                                ),
+                                              ),
+                                              // Column(
+                                              //   mainAxisSize: MainAxisSize.max,
+                                              //   mainAxisAlignment: MainAxisAlignment.end,
+                                              //   crossAxisAlignment: CrossAxisAlignment.center,
+                                              //   children: [
+                                              //     Container(
+                                              //       padding: const EdgeInsets.symmetric(
+                                              //         vertical: EnvoySpacing.medium3,
+                                              //       ),
+                                              //       alignment: Alignment.center,
+                                              //       child: Column(
+                                              //         children: [
+                                              //           Text(
+                                              //             S().onboarding_passpportSelectCamera_sub235VersionAlert,
+                                              //             style: Theme.of(context)
+                                              //                 .textTheme
+                                              //                 .bodySmall
+                                              //                 ?.copyWith(
+                                              //               fontWeight: FontWeight.w700,
+                                              //               color: EnvoyColors
+                                              //                   .textPrimaryInverse,
+                                              //             ),
+                                              //             textAlign: TextAlign.center,
+                                              //           ),
+                                              //           TextButton(
+                                              //             child: Text(
+                                              //               "Tap here",
+                                              //               style: EnvoyTypography.button
+                                              //                   .copyWith(
+                                              //                   color: EnvoyColors
+                                              //                       .textPrimaryInverse),
+                                              //             ),
+                                              //             onPressed: () async {
+                                              //               final goRouter = GoRouter.of(context);
+                                              //               Navigator.pop(context);
+                                              //               await Future.delayed(const Duration(
+                                              //                   milliseconds: 200));
+                                              //               goRouter
+                                              //                   .goNamed(ONBOARD_PASSPORT_SETUP);
+                                              //             },
+                                              //           )
+                                              //         ],
+                                              //       ),
+                                              //     )
+                                              //   ],
+                                              // ),
                                               decoder: GenericQrDecoder(
                                                   onScan: (String payload) {
                                                 Navigator.pop(context);

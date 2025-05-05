@@ -182,10 +182,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                     child: EnvoyWelcomeButton(
                       asset: Image.asset(
                         'assets/welcome_envoy_sm.png',
-                        // Replace with your image URL or asset
-                        fit: BoxFit.cover, // Adjust as per your layout
+                        fit: BoxFit.cover,
                       ),
-                      title: "Create a\nMobile Wallet",
+                      title: S().onboarding_welcome_createMobileWallet,
                       onTap: () {
                         context.pushNamed(ONBOARD_ENVOY_SETUP,
                             queryParameters: {"setupEnvoy": "1"});
@@ -197,10 +196,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                     child: EnvoyWelcomeButton(
                       asset: Image.asset(
                         'assets/passport_and_prime.png',
-                        // Replace with your image URL or asset
-                        fit: BoxFit.cover, // Adjust as per your layout
+                        fit: BoxFit.cover,
                       ),
-                      title: "Set Up a\nPassport Device",
+                      title: S().onboarding_welcome_setUpPassport,
                       onTap: () {
                         showScannerDialog(
                             context: context,
@@ -220,7 +218,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        "Setting up a Passport Core on firmware\nv2.3.5 or earlier?",
+                                        S().onboarding_passpportSelectCamera_sub235VersionAlert,
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall

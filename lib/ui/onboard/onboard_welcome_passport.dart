@@ -37,6 +37,8 @@ class _OnboardPassportWelcomeScreenState
 
   @override
   Widget build(BuildContext context) {
+    final bool onboardingComplete =
+        LocalStorage().prefs.getBool(PREFS_ONBOARDED) ?? false;
     return EnvoyPatternScaffold(
       // shield: Container(
       //   margin: const EdgeInsets.all(EnvoySpacing.medium1),
@@ -125,7 +127,7 @@ class _OnboardPassportWelcomeScreenState
         leading: CupertinoNavigationBarBackButton(
           color: Colors.white,
           onPressed: () {
-            if (AccountManager().getHotWalletAccount() != null) {
+            if (AccountManager().getHotWalletAccount() != null || onboardingComplete) {
               context.go("/");
             } else {
               Navigator.pop(context);
