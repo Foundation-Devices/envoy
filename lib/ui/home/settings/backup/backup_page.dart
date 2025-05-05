@@ -307,7 +307,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                 ),
                 Padding(
                   padding:
-                      EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+                      EdgeInsets.symmetric(horizontal: EnvoySpacing.large1),
                   child: Column(
                     children: [
                       if (s.syncToCloud)

@@ -52,7 +52,7 @@ class _MagicBackupDeactivatedState
   }
 
   Widget mainWidget(BuildContext context) {
-    if (false) {
+    if (_loading) {
       return const Center(
         child: SizedBox(
           height: 180,
@@ -78,24 +78,28 @@ class _MagicBackupDeactivatedState
           ),
           Flexible(
             child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(S().manual_setup_change_from_magic_header,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: EnvoySpacing.medium1),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(S().manual_setup_change_from_magic_header,
+                        textAlign: TextAlign.center,
+                        style: EnvoyTypography.heading),
+                    const SizedBox(height: EnvoySpacing.large2),
+                    Text(
+                      Platform.isAndroid
+                          ? S().manual_setup_change_from_magic_subheaderGoogle
+                          : S().manual_setup_change_from_magic_subheaderApple,
                       textAlign: TextAlign.center,
-                      style: EnvoyTypography.heading),
-                  const SizedBox(height: EnvoySpacing.large2),
-                  Text(
-                    Platform.isAndroid
-                        ? S().manual_setup_change_from_magic_subheaderGoogle
-                        : S().manual_setup_change_from_magic_subheaderApple,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall!
-                        .copyWith(fontSize: 13),
-                  ),
-                ],
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(fontSize: 13),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

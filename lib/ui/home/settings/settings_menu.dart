@@ -25,8 +25,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../onboard/manual/manual_setup_change_from_magic.dart';
-
 class SettingsMenu extends ConsumerStatefulWidget {
   const SettingsMenu({super.key});
 
@@ -181,10 +179,7 @@ class SettingsMenuWidget extends ConsumerWidget {
                     MenuOption(
                       label: S().menu_about.toUpperCase(),
                       onTap: () {
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return const MagicBackupDeactivated();
-                        }));
+                        background.state = HomePageBackgroundState.about;
                       },
                     ),
                   ]),
