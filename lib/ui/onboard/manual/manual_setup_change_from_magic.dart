@@ -76,18 +76,18 @@ class _MagicBackupDeactivatedState
                 const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
             child: Image.asset("assets/exclamation_icon.png"),
           ),
-          const SizedBox(height: EnvoySpacing.medium1),
           Flexible(
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.medium3),
+                    horizontal: EnvoySpacing.medium1),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(S().manual_setup_change_from_magic_header,
                         textAlign: TextAlign.center,
                         style: EnvoyTypography.heading),
-                    const SizedBox(height: EnvoySpacing.medium1),
+                    const SizedBox(height: EnvoySpacing.large2),
                     Text(
                       Platform.isAndroid
                           ? S().manual_setup_change_from_magic_subheaderGoogle

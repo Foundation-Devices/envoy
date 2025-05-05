@@ -306,7 +306,8 @@ class _BackupPageState extends ConsumerState<BackupPage>
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(bottom: bottomOffset + 30.0),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: EnvoySpacing.large1),
                   child: Column(
                     children: [
                       if (s.syncToCloud)
@@ -321,6 +322,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                             showBackupDialog(context);
                           },
                         ),
+                      const SizedBox(height: EnvoySpacing.medium1),
                       EnvoyButton(
                         S().backups_erase_wallets_and_backups,
                         textStyle: const TextStyle(
@@ -333,6 +335,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                           showEraseWalletsAndBackupsWarning(context);
                         },
                       ),
+                      SizedBox(height: bottomOffset + 30.0),
                     ],
                   ),
                 )
