@@ -191,16 +191,18 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                                               onBackPressed: (context) {
                                                 Navigator.pop(context);
                                               },
-                                              child: Container(
-                                                color:
-                                                    Colors.red.withOpacity(0.3),
-                                                child: Column(
-                                                  children: [
-                                                    Text("I'm here",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.white)),
-                                                  ],
+                                              child: SafeArea(
+                                                child: Container(
+                                                  color:
+                                                      Colors.red.withOpacity(0.3),
+                                                  child: Column(
+                                                    children: [
+                                                      Text("I'm here",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white)),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                               // Column(
