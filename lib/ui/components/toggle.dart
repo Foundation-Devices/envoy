@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 
 class EnvoyToggle extends StatelessWidget {
   final bool value;
-  final ValueChanged<bool>? onChanged;
+  final ValueChanged<bool> onChanged;
 
   const EnvoyToggle({
     super.key,
@@ -17,17 +17,26 @@ class EnvoyToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-        height: 31.0,
-        width: 51.0,
-        child: FittedBox(
-            fit: BoxFit.contain,
-            child: CupertinoSwitch(
-              activeTrackColor: EnvoyColors.accentPrimary,
-              thumbColor: EnvoyColors.surface1,
-              inactiveTrackColor: EnvoyColors.surface2,
-              value: value,
-              onChanged: onChanged,
-            )));
+    return GestureDetector(
+      onTap: () => onChanged(!value),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: 48,
+        height: 24,
+        padding: const EdgeInsets.fromLTRB(3, 3, 3, 3),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: value ? EnvoyColors.accentPrimary : Color(0xffC8C8C8)),
+        alignment: value ? Alignment.centerRight : Alignment.centerLeft,
+        child: Container(
+          width: 18,
+          height: 18,
+          decoration: BoxDecoration(
+            color: EnvoyColors.surface1,
+            shape: BoxShape.circle,
+          ),
+        ),
+      ),
+    );
   }
 }

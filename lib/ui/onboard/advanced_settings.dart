@@ -67,8 +67,7 @@ class _AdvancedSettingsOptionsState
                       child: IndicatorShield(),
                     ),
                     Text(
-                      //TODO: copy update
-                      "ADVANCED OPTIONS",
+                      S().onboarding_advanced_title.toUpperCase(),
                       style:
                           Theme.of(context).textTheme.displayMedium?.copyWith(
                                 color: Colors.white,
@@ -123,40 +122,42 @@ class _AdvancedSettingsOptionsState
                                         Column(
                                           children: [
                                             ListTile(
-                                              //TODO: copy update
                                               leading: Text(
                                                 S().onboarding_advanced_magicBackupSwitchText,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleSmall,
+                                                style: EnvoyTypography.info
+                                                    .copyWith(
+                                                  color:
+                                                      EnvoyColors.textPrimary,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
                                               ),
-                                              trailing: EnvoyToggle(
-                                                value: enableMagicBackup,
-                                                onChanged: (bool value) async {
-                                                  setState(() {
-                                                    enableMagicBackup =
-                                                        !enableMagicBackup;
-                                                  });
-                                                },
+                                              trailing: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 2),
+                                                child: EnvoyToggle(
+                                                  value: enableMagicBackup,
+                                                  onChanged:
+                                                      (bool value) async {
+                                                    setState(() {
+                                                      enableMagicBackup =
+                                                          !enableMagicBackup;
+                                                    });
+                                                  },
+                                                ),
                                               ),
                                               contentPadding:
                                                   const EdgeInsets.symmetric(
-                                                      vertical:
-                                                          EnvoySpacing.small,
-                                                      horizontal:
-                                                          EnvoySpacing.small),
+                                                vertical: EnvoySpacing.medium1,
+                                              ),
                                             ),
-                                            //TODO: copy update
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical:
-                                                          EnvoySpacing.small,
-                                                      horizontal:
-                                                          EnvoySpacing.xs),
-                                              child: Text(S()
-                                                  .onboarding_advanced_magicBackupsContent),
-                                            )
+                                            Text(
+                                                S()
+                                                    .onboarding_advanced_magicBackupsContent,
+                                                style: EnvoyTypography.info
+                                                    .copyWith(
+                                                  color:
+                                                      EnvoyColors.textSecondary,
+                                                ))
                                           ],
                                         ),
                                         buildDivider(),
@@ -357,7 +358,7 @@ class _AdvancedSettingsOptionsState
       padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium2),
       child: Divider(
         height: 4,
-        color: EnvoyColors.border1,
+        color: EnvoyColors.textInactive,
       ),
     );
   }

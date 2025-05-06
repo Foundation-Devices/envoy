@@ -1,6 +1,6 @@
 {
   ":": ":",
-  "_": "Note to devs: {MB_name} should be replaced by the name the user gave to each of their Prime devices. If there’s more than one Prime connected, each backup should have the corresponding name of the  Prime it represents",
+  "_": "Here we can introduce the user to the special area here, what important stuff he can do.",
   "about_appVersion": "Versió de l'aplicació",
   "about_openSourceLicences": "Llicències de Codi Obert",
   "about_privacyPolicy": "Política de Privacitat",
@@ -617,6 +617,7 @@
   "onboarding_advanced_magicBackupSwitchText": "Simple, secure backup and recovery",
   "onboarding_advanced_magicBackups": "Magic Backups",
   "onboarding_advanced_magicBackupsContent": "Automatic encrypted backups of your data for instant, stress-free recovery.",
+  "onboarding_advanced_title": "Advanced",
   "onboarding_bluetoothDisabled_content": "Passport Prime requires Bluetooth for initial setup with QuantumLink. This allows for syncing of date and time, firmware updates, security checks, backups, and more.\n\nPlease enable Bluetooth permissions in Envoy settings.",
   "onboarding_bluetoothDisabled_enable": "Enable in Settings",
   "onboarding_bluetoothDisabled_header": "Enable Bluetooth for QuantumLink Connection",

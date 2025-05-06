@@ -20,39 +20,37 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'es';
 
-  static String m0(MB_name) => "USD";
-
-  static String m1(MB_name) =>
+  static String m0(MB_name) =>
       "Copia de Seguridad Mágica de Passport Prime\n\"${MB_name}\"";
 
-  static String m2(period) =>
+  static String m1(period) =>
       "Este cupón caducó el ${period}. \n\n\nPonte en contacto con el emisor si tienes alguna pregunta relacionada con el cupón.";
 
-  static String m3(AccountName) =>
+  static String m2(AccountName) =>
       "Navega a ${AccountName} en Passport, selecciona \'Account Tools\'>\'Verify Address\' y, a continuación, escanea el código QR.";
 
-  static String m4(tagName) =>
+  static String m3(tagName) =>
       "Tu etiqueta ${tagName} ahora está vacía. ¿Quieres eliminarla?";
 
-  static String m5(time_remaining) => "${time_remaining} restante(s)";
+  static String m4(time_remaining) => "${time_remaining} restante(s)";
 
-  static String m6(current_keyOS_version) =>
+  static String m5(current_keyOS_version) =>
       "Tu Passport Prime actualmente utiliza ${current_keyOS_version}.\n\nActualiza ahora para obtener las últimas funcionalidades y correcciones de errores.";
 
-  static String m7(est_upd_time) =>
+  static String m6(est_upd_time) =>
       "Tiempo Estimado de Actualización: ${est_upd_time}";
 
-  static String m8(new_keyOS_version) => "Novedades en ${new_keyOS_version}";
+  static String m7(new_keyOS_version) => "Novedades en ${new_keyOS_version}";
 
-  static String m9(new_keyOS_version) =>
+  static String m8(new_keyOS_version) =>
       "Passport Prime se ha actualizado\ncorrectamente a ${new_keyOS_version}";
 
-  static String m10(amount, total_amount) =>
+  static String m9(amount, total_amount) =>
       "Re-sincronizando tus cuentas.\nPor favor, no cierres Envoy.\n\n${amount} de ${total_amount} sincronizado";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": m0,
+        "_": MessageLookupByLibrary.simpleMessage("USD"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versión de Aplicación"),
         "about_openSourceLicences":
@@ -207,7 +205,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "backups_manualToMagicrModal_subheader":
             MessageLookupByLibrary.simpleMessage(
                 "Esto habilitará la Copia de Seguridad Mágica de Envoy. Tu semilla de Envoy se encriptará y se hará una Copia de Seguridad en tu cuenta de Apple o Google. Los datos de Envoy se encriptarán y se enviarán a los servidores de Foundation."),
-        "backups_primeMagicBackups": m1,
+        "backups_primeMagicBackups": m0,
         "backups_primeMasterKeyBackup": MessageLookupByLibrary.simpleMessage(
             "Copia de Seguridad de Clave Maestra (1 parte de 3)"),
         "backups_settingsAndData":
@@ -227,7 +225,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Dispositivos"),
         "bottomNav_learn": MessageLookupByLibrary.simpleMessage("Aprender"),
         "bottomNav_privacy": MessageLookupByLibrary.simpleMessage("Privacidad"),
-        "btcpay_connection_modal_expired_subheading": m2,
+        "btcpay_connection_modal_expired_subheading": m1,
         "btcpay_connection_modal_fail_heading":
             MessageLookupByLibrary.simpleMessage("Cupón Caducado"),
         "btcpay_connection_modal_fail_subheading":
@@ -264,7 +262,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "buy_bitcoin_accountSelection_verify":
             MessageLookupByLibrary.simpleMessage(
                 "Verificar Dirección con Passport"),
-        "buy_bitcoin_accountSelection_verify_modal_heading": m3,
+        "buy_bitcoin_accountSelection_verify_modal_heading": m2,
         "buy_bitcoin_buyOptions_atms_heading":
             MessageLookupByLibrary.simpleMessage("¿Cómo te gustaría comprar?"),
         "buy_bitcoin_buyOptions_atms_map_modal_openingHours":
@@ -639,7 +637,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Ver Más Tarde"),
         "devices_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
             "Asegura tus Bitcoin con Passport."),
-        "empty_tag_modal_subheading": m4,
+        "empty_tag_modal_subheading": m3,
         "envoy_account_tos_cta": MessageLookupByLibrary.simpleMessage("Acepto"),
         "envoy_account_tos_heading": MessageLookupByLibrary.simpleMessage(
             "Por favor, revise y acepte los Términos de Uso de Passport"),
@@ -947,15 +945,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Actualización Descargada"),
         "firmware_downloadingUpdate_header":
             MessageLookupByLibrary.simpleMessage("Descargando Actualización"),
-        "firmware_downloadingUpdate_timeRemaining": m5,
+        "firmware_downloadingUpdate_timeRemaining": m4,
         "firmware_downloadingUpdate_transferring":
             MessageLookupByLibrary.simpleMessage(
                 "Transfiriendo a Passport Prime"),
-        "firmware_updateAvailable_content2": m6,
-        "firmware_updateAvailable_estimatedUpdateTime": m7,
+        "firmware_updateAvailable_content2": m5,
+        "firmware_updateAvailable_estimatedUpdateTime": m6,
         "firmware_updateAvailable_header":
             MessageLookupByLibrary.simpleMessage("Actualización Disponible"),
-        "firmware_updateAvailable_whatsNew": m8,
+        "firmware_updateAvailable_whatsNew": m7,
         "firmware_updateError_downloadFailed":
             MessageLookupByLibrary.simpleMessage("Error al Descargar"),
         "firmware_updateError_header":
@@ -974,7 +972,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Reconectando..."),
         "firmware_updateModalConnectionLost_tryToReconnect":
             MessageLookupByLibrary.simpleMessage("Reintentar Conexión"),
-        "firmware_updateSuccess_content1": m9,
+        "firmware_updateSuccess_content1": m8,
         "firmware_updateSuccess_content2": MessageLookupByLibrary.simpleMessage(
             "Continúa con la inicialización en Passport Prime."),
         "firmware_updateSuccess_header":
@@ -1379,6 +1377,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "onboarding_advanced_magicBackupsContent":
             MessageLookupByLibrary.simpleMessage(
                 "Copias de seguridad encriptadas y automáticas de tus datos, para una recuperación instantánea y sin estrés."),
+        "onboarding_advanced_title":
+            MessageLookupByLibrary.simpleMessage("Avanzado"),
         "onboarding_bluetoothDisabled_content":
             MessageLookupByLibrary.simpleMessage(
                 "Passport Prime necesita utilizar Bluetooth para la configuración inicial con QuantumLink. Esto permite sincronizar la fecha y la hora, las actualizaciones de firmware, las comprobaciones de seguridad, las copias de seguridad y más.\n\nPor favor, habilita los permisos de Bluetooth en la configuración del Envoy."),
@@ -1462,7 +1462,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Envoy está subiendo la copia de seguridad encriptada de tu cartera a los servidores de Foundation.\n\nComo la copia de seguridad está encriptada de extremo a extremo, Foundation no tiene acceso a ella, ni tiene conocimiento sobre su contenido."),
         "onboarding_magicUserMobileUploading_header":
             MessageLookupByLibrary.simpleMessage("Cargando Copia de Seguridad"),
-        "onboarding_migrating_xOfYSynced": m10,
+        "onboarding_migrating_xOfYSynced": m9,
         "onboarding_passpportSelectCamera_sub235VersionAlert":
             MessageLookupByLibrary.simpleMessage(
                 "¿Quieres inicializar una Passport Core en la versión 2.3.5 o anterior?"),
