@@ -127,7 +127,8 @@ class _OnboardPassportWelcomeScreenState
         leading: CupertinoNavigationBarBackButton(
           color: Colors.white,
           onPressed: () {
-            if (AccountManager().getHotWalletAccount() != null || onboardingComplete) {
+            if (AccountManager().getHotWalletAccount() != null ||
+                onboardingComplete) {
               context.go("/");
             } else {
               Navigator.pop(context);
