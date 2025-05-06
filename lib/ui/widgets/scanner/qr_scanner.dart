@@ -178,8 +178,12 @@ class _QrScannerState extends State<QrScanner> {
   }
 
   void _onQRViewCreated(QRViewController controller, BuildContext context) {
-    setState(() {
-      _controller = controller;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        setState(() {
+          _controller = controller;
+        });
+      }
     });
     final navigator = Navigator.of(context);
     widget.decoder.onProgressUpdates(
