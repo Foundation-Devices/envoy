@@ -88,8 +88,7 @@ final onboardRoutes = GoRoute(
           builder: (context, state) => const SingleImportPpIntroPage(),
         ),
       ],
-      builder: (context, state) =>
-          const OnboardPassportWelcomeScreen(), // TODO: here !!!
+      builder: (context, state) => const OnboardPassportWelcomeScreen(),
     ),
     GoRoute(
       path: "advanced_settings",
