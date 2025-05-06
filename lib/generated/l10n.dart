@@ -52,13 +52,13 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `Note to devs: {MB_name} should be replaced by the name the user gave to each of their Prime devices. If there’s more than one Prime connected, each backup should have the corresponding name of the  Prime it represents`
-  String _(Object MB_name) {
+  /// `Here we can introduce the user to the special area here, what important stuff he can do.`
+  String get _ {
     return Intl.message(
-      'Note to devs: $MB_name should be replaced by the name the user gave to each of their Prime devices. If there’s more than one Prime connected, each backup should have the corresponding name of the  Prime it represents',
+      'Here we can introduce the user to the special area here, what important stuff he can do.',
       name: '_',
       desc: '',
-      args: [MB_name],
+      args: [],
     );
   }
 
@@ -6215,6 +6215,16 @@ class S {
     return Intl.message(
       'Automatic encrypted backups of your data for instant, stress-free recovery.',
       name: 'onboarding_advanced_magicBackupsContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Advanced`
+  String get onboarding_advanced_title {
+    return Intl.message(
+      'Advanced',
+      name: 'onboarding_advanced_title',
       desc: '',
       args: [],
     );

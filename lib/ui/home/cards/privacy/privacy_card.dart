@@ -303,7 +303,7 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
       padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium2),
       child: Divider(
         height: 2,
-        color: EnvoyColors.border1,
+        color: EnvoyColors.textInactive,
       ),
     );
   }

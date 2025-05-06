@@ -20,38 +20,36 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'pt';
 
-  static String m0(MB_name) =>
-      "Note to devs: ${MB_name} should be replaced by the name the user gave to each of their Prime devices. If there’s more than one Prime connected, each backup should have the corresponding name of the  Prime it represents";
+  static String m0(MB_name) => "Passport Prime Magic Backup\n”${MB_name}”";
 
-  static String m1(MB_name) => "Passport Prime Magic Backup\n”${MB_name}”";
-
-  static String m2(period) =>
+  static String m1(period) =>
       "Este vale expirou a ${period}.\n\n\nPor favor entra em contacto com o emissor para quaisquer questões relacionadas com o vale.";
 
-  static String m3(AccountName) =>
+  static String m2(AccountName) =>
       "Acede a ${AccountName} no Passport, escolhe ‘Account Tools’ > ‘Verify Address’ e digitaliza o código QR.";
 
-  static String m4(tagName) =>
+  static String m3(tagName) =>
       "A tua etiqueta ${tagName} está vazia. Pretendes eliminá-la?";
 
-  static String m5(time_remaining) => "${time_remaining} remaining";
+  static String m4(time_remaining) => "${time_remaining} remaining";
 
-  static String m6(current_keyOS_version) =>
+  static String m5(current_keyOS_version) =>
       "Your Passport Prime is currently running ${current_keyOS_version}.\n\nUpdate now for the latest bug fixes and features.";
 
-  static String m7(est_upd_time) => "Estimated Update Time: ${est_upd_time}";
+  static String m6(est_upd_time) => "Estimated Update Time: ${est_upd_time}";
 
-  static String m8(new_keyOS_version) => "What’s New in ${new_keyOS_version}";
+  static String m7(new_keyOS_version) => "What’s New in ${new_keyOS_version}";
 
-  static String m9(new_keyOS_version) =>
+  static String m8(new_keyOS_version) =>
       "Passport Prime was successfully \nupdated to ${new_keyOS_version}";
 
-  static String m10(amount, total_amount) =>
+  static String m9(amount, total_amount) =>
       "Re-syncing your accounts.\nPlease do not close Envoy.\n\n${amount} of ${total_amount} synced";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": m0,
+        "_": MessageLookupByLibrary.simpleMessage(
+            "Here we can introduce the user to the special area here, what important stuff he can do."),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versão da Aplicação"),
         "about_openSourceLicences":
@@ -205,7 +203,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "backups_manualToMagicrModal_subheader":
             MessageLookupByLibrary.simpleMessage(
                 "This will enable a Magic Backup of your Envoy wallet. Your Envoy seed will be encrypted and backed up to your Apple or Google account. Envoy data will be encrypted and sent to the Foundation Server."),
-        "backups_primeMagicBackups": m1,
+        "backups_primeMagicBackups": m0,
         "backups_primeMasterKeyBackup": MessageLookupByLibrary.simpleMessage(
             "Master Key Backup (1 of 3 parts)"),
         "backups_settingsAndData":
@@ -225,7 +223,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "bottomNav_learn": MessageLookupByLibrary.simpleMessage("Aprender"),
         "bottomNav_privacy":
             MessageLookupByLibrary.simpleMessage("Privacidade"),
-        "btcpay_connection_modal_expired_subheading": m2,
+        "btcpay_connection_modal_expired_subheading": m1,
         "btcpay_connection_modal_fail_heading":
             MessageLookupByLibrary.simpleMessage("Vale Expirado"),
         "btcpay_connection_modal_fail_subheading":
@@ -263,7 +261,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "buy_bitcoin_accountSelection_verify":
             MessageLookupByLibrary.simpleMessage(
                 "Verificar o Endereço com o Passport"),
-        "buy_bitcoin_accountSelection_verify_modal_heading": m3,
+        "buy_bitcoin_accountSelection_verify_modal_heading": m2,
         "buy_bitcoin_buyOptions_atms_heading":
             MessageLookupByLibrary.simpleMessage(
                 "Como é que gostarias de comprar?"),
@@ -639,7 +637,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Ver Mais Tarde"),
         "devices_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
             "Protege a tua Bitcoin com o Passport."),
-        "empty_tag_modal_subheading": m4,
+        "empty_tag_modal_subheading": m3,
         "envoy_account_tos_cta": MessageLookupByLibrary.simpleMessage("Aceito"),
         "envoy_account_tos_heading": MessageLookupByLibrary.simpleMessage(
             "Por favor revê e aceita as Condições de Utilização do Passport"),
@@ -944,15 +942,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Update Downloaded"),
         "firmware_downloadingUpdate_header":
             MessageLookupByLibrary.simpleMessage("Downloading Update"),
-        "firmware_downloadingUpdate_timeRemaining": m5,
+        "firmware_downloadingUpdate_timeRemaining": m4,
         "firmware_downloadingUpdate_transferring":
             MessageLookupByLibrary.simpleMessage(
                 "Transferring to Passport Prime"),
-        "firmware_updateAvailable_content2": m6,
-        "firmware_updateAvailable_estimatedUpdateTime": m7,
+        "firmware_updateAvailable_content2": m5,
+        "firmware_updateAvailable_estimatedUpdateTime": m6,
         "firmware_updateAvailable_header":
             MessageLookupByLibrary.simpleMessage("Update Available"),
-        "firmware_updateAvailable_whatsNew": m8,
+        "firmware_updateAvailable_whatsNew": m7,
         "firmware_updateError_downloadFailed":
             MessageLookupByLibrary.simpleMessage("Failed to Download"),
         "firmware_updateError_header":
@@ -971,7 +969,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Reconnecting…"),
         "firmware_updateModalConnectionLost_tryToReconnect":
             MessageLookupByLibrary.simpleMessage("Try to Reconnect"),
-        "firmware_updateSuccess_content1": m9,
+        "firmware_updateSuccess_content1": m8,
         "firmware_updateSuccess_content2": MessageLookupByLibrary.simpleMessage(
             "Continue the setup on Passport Prime."),
         "firmware_updateSuccess_header":
@@ -1372,6 +1370,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "onboarding_advanced_magicBackupsContent":
             MessageLookupByLibrary.simpleMessage(
                 "Automatic encrypted backups of your data for instant, stress-free recovery."),
+        "onboarding_advanced_title":
+            MessageLookupByLibrary.simpleMessage("Advanced"),
         "onboarding_bluetoothDisabled_content":
             MessageLookupByLibrary.simpleMessage(
                 "Passport Prime requires Bluetooth for initial setup with QuantumLink. This allows for syncing of date and time, firmware updates, security checks, backups, and more.\n\nPlease enable Bluetooth permissions in Envoy settings."),
@@ -1447,7 +1447,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents."),
         "onboarding_magicUserMobileUploading_header":
             MessageLookupByLibrary.simpleMessage("Uploading Your Backup"),
-        "onboarding_migrating_xOfYSynced": m10,
+        "onboarding_migrating_xOfYSynced": m9,
         "onboarding_passpportSelectCamera_sub235VersionAlert":
             MessageLookupByLibrary.simpleMessage(
                 "Setting up a Passport Core on firmware v2.3.5 or earlier?"),
