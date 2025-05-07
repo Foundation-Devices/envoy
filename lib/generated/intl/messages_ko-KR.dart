@@ -1628,6 +1628,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "replaceByFee_cancel_success_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "This is a cancellation attempt. There is a slight chance your original transaction is confirmed before this cancellation attempt."),
+        "replaceByFee_coindetails_overlayNotice":
+            MessageLookupByLibrary.simpleMessage(
+                "Boost and Cancel functions will be available after transaction has finished being broadcast."),
         "replaceByFee_coindetails_overlay_boost":
             MessageLookupByLibrary.simpleMessage("Boost"),
         "replaceByFee_coindetails_overlay_modal_heading":

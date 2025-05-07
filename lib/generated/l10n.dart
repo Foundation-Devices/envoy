@@ -7490,6 +7490,16 @@ class S {
     );
   }
 
+  /// `Boost and Cancel functions will be available after transaction has finished being broadcast.`
+  String get replaceByFee_coindetails_overlayNotice {
+    return Intl.message(
+      'Boost and Cancel functions will be available after transaction has finished being broadcast.',
+      name: 'replaceByFee_coindetails_overlayNotice',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Boost`
   String get replaceByFee_coindetails_overlay_boost {
     return Intl.message(
