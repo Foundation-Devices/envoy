@@ -744,6 +744,7 @@
   "replaceByFee_cancel_overlay_modal_subheading": "Reemplaza la transacción no confirmada por una que contenga una tasa más alta y devuelve los fondos a tu cartera.",
   "replaceByFee_cancel_success_heading": "Tu transacción ha sido cancelada",
   "replaceByFee_cancel_success_subheading": "Este es un intento de cancelación. Existe una pequeña posibilidad de que tu transacción original se confirme antes de este intento de cancelación.",
+  "replaceByFee_coindetails_overlayNotice": "Boost and Cancel functions will be available after transaction has finished being broadcast.",
   "replaceByFee_coindetails_overlay_boost": "Acelerar",
   "replaceByFee_coindetails_overlay_modal_heading": "Acelerar Transacción",
   "replaceByFee_coindetails_overlay_modal_subheading": "Aumenta la tasa asociada a tu transacción para acelerar el tiempo de confirmación.",

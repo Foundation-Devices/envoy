@@ -31,6 +31,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
+import 'package:envoy/ui/pages/legal/passport_tou.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 
 enum EscapeHatchTap { logo, text }
 
@@ -217,47 +219,74 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                   alignment: Alignment.center,
                                   child: Column(
                                     children: [
-                                      Text(
-                                        S().onboarding_passpportSelectCamera_sub235VersionAlert,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall
-                                            ?.copyWith(
-                                              fontWeight: FontWeight.w700,
-                                              color: EnvoyColors
-                                                  .textPrimaryInverse,
-                                            ),
-                                        textAlign: TextAlign.center,
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: EnvoySpacing.medium3),
+                                        child: Text(
+                                          S().onboarding_passpportSelectCamera_sub235VersionAlert,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.w700,
+                                                color: EnvoyColors
+                                                    .textPrimaryInverse,
+                                              ),
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
                                       TextButton(
                                         child: Text(
-                                          "Tap here",
+                                          S().onboarding_passpportSelectCamera_tapHere,
                                           style: EnvoyTypography.button
                                               .copyWith(
                                                   color: EnvoyColors
                                                       .textPrimaryInverse),
                                         ),
                                         onPressed: () async {
-                                          final goRouter = GoRouter.of(context);
                                           Navigator.pop(context);
-                                          await Future.delayed(const Duration(
-                                              milliseconds: 200));
-                                          goRouter
-                                              .goNamed(ONBOARD_PASSPORT_SETUP);
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                            return const TouPage();
+                                          }));
                                         },
-                                      )
+                                      ),
+                                      const SizedBox(
+                                          height: EnvoySpacing.medium3),
                                     ],
                                   ),
                                 )
                               ],
                             ),
                             decoder: GenericQrDecoder(onScan: (String payload) {
-                              Navigator.pop(context);
                               final uri = Uri.parse(payload);
-                              context.pushNamed(
-                                ONBOARD_PRIME,
-                                queryParameters: uri.queryParameters,
-                              );
+                              final params = uri.queryParameters;
+
+                              if (params.containsKey("p")) {
+                                Navigator.pop(context);
+                                context.goNamed(ONBOARD_PRIME,
+                                    queryParameters: params);
+                              } else if (params.containsKey("t")) {
+                                Navigator.pop(context);
+                                context.goNamed(ONBOARD_PASSPORT_TOU,
+                                    queryParameters: params);
+                              } else {
+                                // TODO: manage this inside QR decoder ???
+                                EnvoyToast(
+                                  replaceExisting: true,
+                                  duration: const Duration(seconds: 6),
+                                  message: "Invalid QR code",
+                                  isDismissible: true,
+                                  onActionTap: () {
+                                    EnvoyToast.dismissPreviousToasts(context);
+                                  },
+                                  icon: const Icon(
+                                    Icons.info_outline,
+                                    color: EnvoyColors.accentPrimary,
+                                  ),
+                                ).show(context);
+                              }
                             }));
                       },
                     ),

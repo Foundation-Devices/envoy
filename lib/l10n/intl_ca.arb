@@ -744,6 +744,7 @@
   "replaceByFee_cancel_overlay_modal_subheading": "Substituïu la transacció no confirmada per una que contingui una tarifa més alta i que torni els fons a la vostra cartera.",
   "replaceByFee_cancel_success_heading": "La teva transacció s'ha cancel·lat",
   "replaceByFee_cancel_success_subheading": "Aquest és un intent de cancel·lació. Hi ha una petita possibilitat que la teva transacció original sigui confirmada abans d'aquest intent de cancel·lació.",
+  "replaceByFee_coindetails_overlayNotice": "Boost and Cancel functions will be available after transaction has finished being broadcast.",
   "replaceByFee_coindetails_overlay_boost": "Aumenta",
   "replaceByFee_coindetails_overlay_modal_heading": "Augmenta la Transacció",
   "replaceByFee_coindetails_overlay_modal_subheading": "Augmenteu la tarifa adjunta a la vostra transacció per accelerar el temps de confirmació.",

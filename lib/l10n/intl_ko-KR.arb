@@ -744,6 +744,7 @@
   "replaceByFee_cancel_overlay_modal_subheading": "Replace the unconfirmed transaction with one that contains a higher fee and sends the funds back to your wallet.",
   "replaceByFee_cancel_success_heading": "Your transaction has been canceled",
   "replaceByFee_cancel_success_subheading": "This is a cancellation attempt. There is a slight chance your original transaction is confirmed before this cancellation attempt.",
+  "replaceByFee_coindetails_overlayNotice": "Boost and Cancel functions will be available after transaction has finished being broadcast.",
   "replaceByFee_coindetails_overlay_boost": "Boost",
   "replaceByFee_coindetails_overlay_modal_heading": "Boost Transaction",
   "replaceByFee_coindetails_overlay_modal_subheading": "Increase the fee attached to your transaction to speed up confirmation time.",
