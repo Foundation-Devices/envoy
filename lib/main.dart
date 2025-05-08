@@ -191,6 +191,8 @@ bool isMigrationRequired() {
   final hasAccounts =
       LocalStorage().prefs.containsKey(MigrationManager.AccountsPrefKey);
   //check if the user has already migrated
-  final migrationStatus = EnvoyStorage().getBool(migrationPrefs) ?? false;
-  return migrationStatus == false && hasAccounts;
+
+  final hasMigrated = EnvoyStorage().getBool(migrationPrefs) ?? false;
+
+  return hasAccounts && !hasMigrated;
 }
