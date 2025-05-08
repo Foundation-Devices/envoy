@@ -7,11 +7,13 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:bluart/bluart.dart' as bluart;
+import 'package:envoy/business/prime_device.dart';
 import 'package:envoy/util/console.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/uuid_value.dart';
+import 'package:envoy/util/envoy_storage.dart';
 
 class BluetoothManager {
   StreamSubscription? _subscription;
@@ -44,10 +46,13 @@ class BluetoothManager {
     _init();
     kPrint("Instance of BluetoothManager created!");
   }
+
   _init() async {
     await api.RustLib.init();
     await bluart.RustLib.init();
-    events = await bluart.init().asBroadcastStream();
+    events = bluart.init().asBroadcastStream();
+
+    await restorePrimeDevice();
 
     events?.listen((bluart.Event event) {
       //kPrint("Got bluart event: $event");
@@ -108,6 +113,9 @@ class BluetoothManager {
     Future.delayed(Duration(seconds: 1));
     //kPrint("writing after listen...");
     //await bluart.write(id: bleId, data: "123".codeUnits);
+
+    PrimeDevice prime = PrimeDevice(bleId, xid);
+    await EnvoyStorage().savePrime(prime);
   }
 
   Future<void> sendPsbt(String descriptor, String psbt) async {
@@ -188,6 +196,29 @@ class BluetoothManager {
     );
 
     await bluart.writeAll(id: bleId, data: encoded);
+  }
+
+  Future<void> restorePrimeDevice() async {
+    List<PrimeDevice> primes = await EnvoyStorage().getAllPrimes();
+
+    if (primes.isEmpty) {
+      return;
+    }
+
+    try {
+      PrimeDevice prime = primes.first;
+
+      // Convert the xidDocument to a List<int>
+      final List<int> xidBytes = prime.xidDocument.toList();
+
+      final api.XidDocument recipientXid = await api.deserializeXid(
+        data: xidBytes,
+      );
+
+      _recipientXid = recipientXid;
+    } catch (e) {
+      kPrint('Error deserializing XidDocument: $e');
+    }
   }
 
   dispose() {

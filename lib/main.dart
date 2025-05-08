@@ -59,6 +59,7 @@ Future<void> main() async {
 }
 
 Future<void> initSingletons() async {
+  await EnvoyStorage().init();
   try {
     await BluetoothManager.init();
   } catch (e, stack) {
@@ -71,7 +72,6 @@ Future<void> initSingletons() async {
   // // ~10k on iPhone 11 which is much better than the default 256
   // kPrint("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
   //
-  await EnvoyStorage().init();
   await LocalStorage.init();
 
   NgAccountManager.init();
