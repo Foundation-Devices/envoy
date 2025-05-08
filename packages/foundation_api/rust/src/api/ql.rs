@@ -27,6 +27,16 @@ pub async fn serialize_xid(quantum_link_identity:  &QuantumLinkIdentity) -> Vec<
    quantum_link_identity.clone().xid_document.unwrap().to_unsigned_envelope().to_cbor_data()
 }
 
+pub fn deserialize_xid(data: Vec<u8>) -> Result<XIDDocument> {
+    match Envelope::try_from_cbor_data(data) {
+        Ok(envelope) => {
+            let xid_doc = XIDDocument::from_unsigned_envelope(&envelope)?;
+            Ok(xid_doc)
+        }
+        Err(e) => Err(anyhow!("Failed to decode XIDDocument: {:?}", e)),
+    }
+}
+
 pub async fn decode(data: Vec<u8>, decoder: &mut Dechunker, quantum_link_identity:  &QuantumLinkIdentity) -> Result<DecoderStatus> {
     debug!("receiving data");
 

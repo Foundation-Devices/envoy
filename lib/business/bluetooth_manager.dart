@@ -46,10 +46,13 @@ class BluetoothManager {
     _init();
     kPrint("Instance of BluetoothManager created!");
   }
+
   _init() async {
     await api.RustLib.init();
     await bluart.RustLib.init();
-    events = await bluart.init().asBroadcastStream();
+    events = bluart.init().asBroadcastStream();
+
+    await restorePrimeDevice();
 
     events?.listen((bluart.Event event) {
       //kPrint("Got bluart event: $event");
@@ -193,6 +196,29 @@ class BluetoothManager {
     );
 
     await bluart.writeAll(id: bleId, data: encoded);
+  }
+
+  Future<void> restorePrimeDevice() async {
+    List<PrimeDevice> primes = await EnvoyStorage().getAllPrimes();
+
+    if (primes.isEmpty) {
+      return;
+    }
+
+    try {
+      PrimeDevice prime = primes.first;
+
+      // Convert the xidDocument to a List<int>
+      final List<int> xidBytes = prime.xidDocument.toList();
+
+      final api.XidDocument recipientXid = await api.deserializeXid(
+        data: xidBytes,
+      );
+
+      _recipientXid = recipientXid;
+    } catch (e) {
+      kPrint('Error deserializing XidDocument: $e');
+    }
   }
 
   dispose() {
