@@ -194,6 +194,5 @@ bool isMigrationRequired() {
 
   final hasMigrated = EnvoyStorage().getBool(migrationPrefs) ?? false;
 
-  print("Has accounts: $hasAccounts, Has migrated: $hasMigrated");
   return hasAccounts && !hasMigrated;
 }
