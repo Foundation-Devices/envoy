@@ -56,30 +56,28 @@ class PpSetupIntroPage extends StatelessWidget {
       ),
       shield: Padding(
           padding: const EdgeInsets.symmetric(
-              horizontal: EnvoySpacing.medium1, vertical: EnvoySpacing.large2),
+              horizontal: EnvoySpacing.medium2, vertical: EnvoySpacing.medium1),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              const SizedBox(height: EnvoySpacing.small),
               Flexible(
-                //TODO: wrap this guy in a column
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.medium2),
+                            horizontal: EnvoySpacing.small),
                         child: Column(
                           children: [
-                            const Padding(
-                                padding: EdgeInsets.all(EnvoySpacing.small)),
+                            const SizedBox(height: EnvoySpacing.medium3),
                             Text(
                               S().envoy_pp_setup_intro_heading,
                               textAlign: TextAlign.center,
                               style: EnvoyTypography.heading,
                             ),
-                            const Padding(
-                                padding: EdgeInsets.all(EnvoySpacing.small)),
+                            const SizedBox(height: EnvoySpacing.small),
                             Text(
                               S().envoy_pp_setup_intro_subheading,
                               style: EnvoyTypography.info
@@ -93,42 +91,34 @@ class PpSetupIntroPage extends StatelessWidget {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.small,
-                    vertical: EnvoySpacing.small),
-                child: Column(
-                  children: [
-                    EnvoyButton(
-                        type: EnvoyButtonTypes.tertiary,
-                        S().envoy_pp_setup_intro_cta3, onTap: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return const PpRestoreBackupPage();
-                      }));
-                    }),
-                    const Padding(
-                      padding: EdgeInsets.only(top: EnvoySpacing.small),
-                    ),
-                    EnvoyButton(
-                        type: EnvoyButtonTypes.secondary,
-                        S().envoy_pp_setup_intro_cta2, onTap: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return const PpRestoreSeedPage();
-                      }));
-                    }),
-                    const Padding(
-                      padding: EdgeInsets.only(top: EnvoySpacing.small),
-                    ),
-                    EnvoyButton(S().envoy_pp_setup_intro_cta1, onTap: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return const PpNewSeedPage();
-                      }));
-                    }),
-                  ],
-                ),
+              Column(
+                children: [
+                  const SizedBox(height: EnvoySpacing.xs),
+                  EnvoyButton(
+                      type: EnvoyButtonTypes.tertiary,
+                      S().envoy_pp_setup_intro_cta3, onTap: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return const PpRestoreBackupPage();
+                    }));
+                  }),
+                  const SizedBox(height: EnvoySpacing.small),
+                  EnvoyButton(
+                      type: EnvoyButtonTypes.secondary,
+                      S().envoy_pp_setup_intro_cta2, onTap: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return const PpRestoreSeedPage();
+                    }));
+                  }),
+                  const SizedBox(height: EnvoySpacing.small),
+                  EnvoyButton(S().envoy_pp_setup_intro_cta1, onTap: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return const PpNewSeedPage();
+                    }));
+                  }),
+                ],
               )
             ],
           )),

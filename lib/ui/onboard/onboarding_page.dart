@@ -231,11 +231,12 @@ class OnboardingPage extends StatelessWidget {
                       )
                     : const SizedBox.shrink(),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(EnvoySpacing.small),
                   child: helperTextAbove ?? const SizedBox.shrink(),
                 ),
                 ...?buttons,
-                helperTextBelow ?? const SizedBox.shrink()
+                helperTextBelow ?? const SizedBox.shrink(),
+                const SizedBox(height: EnvoySpacing.small),
               ],
             ),
           ),
