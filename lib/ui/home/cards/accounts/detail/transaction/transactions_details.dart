@@ -108,7 +108,7 @@ class _TransactionsDetailsWidgetState
         EnvoyTypography.body.copyWith(color: EnvoyColors.textSecondary);
 
     bool addressNotAvailable = tx.address.isEmpty;
-    final address = tx.address ?? "";
+    final address = tx.address;
 
     bool rbfPossible =
         (tx.confirmations == 0 && tx.isOnChain() && tx.amount < 0);

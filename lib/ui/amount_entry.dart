@@ -4,7 +4,6 @@
 
 import 'dart:async';
 
-import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/bitcoin_parser.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';

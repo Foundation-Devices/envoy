@@ -202,7 +202,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
                   spendableBalance;
       }
       return true;
-    } catch (e, stackTrace) {
+    } catch (e) {
       _setErrorState(e.toString());
     }
     return false;
