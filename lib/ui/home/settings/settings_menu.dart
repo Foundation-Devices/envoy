@@ -218,18 +218,9 @@ class SettingsMenuWidget extends ConsumerWidget {
                           )),
                     ),
                     GestureDetector(
-                        onTap: () async {
-                          // launchUrl(Uri.parse(
-                          //     "https://github.com/Foundation-Devices"));
-                          await BluetoothManager().getPermissions();
-                          if (context.mounted) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const BluetoothDiagnosticsPage(),
-                                ));
-                          }
+                        onTap: () {
+                          launchUrl(Uri.parse(
+                              "https://github.com/Foundation-Devices"));
                         },
                         child: SvgPicture.asset(
                           "assets/github.svg",

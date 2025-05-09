@@ -76,43 +76,51 @@ class MigrationManager {
   }
 
   void migrate() async {
-    try {
-      //clean directory for new wallets
-      if (await Directory(newWalletDirectory).exists()) {
-        await Directory(newWalletDirectory).delete(recursive: true);
-      }
-      final walletOrder = List<String>.empty(growable: true);
-      if (_ls.prefs.containsKey(accountsPrefKey)) {
-        List<dynamic> accountsJson =
-            jsonDecode(_ls.prefs.getString(accountsPrefKey)!).toList();
+    while (true) {
+      accounts.clear();
+      try {
+        // Clean directory for new wallets
+        if (await Directory(newWalletDirectory).exists()) {
+          await Directory(newWalletDirectory).delete(recursive: true);
+        }
 
-        List<LegacyAccount> legacyAccounts =
-            accountsJson.map((json) => LegacyAccount.fromJson(json)).toList();
+        final walletOrder = List<String>.empty(growable: true);
 
-        addMigrationEvent(
-            MigrationProgress(total: legacyAccounts.length, completed: 0));
+        if (_ls.prefs.containsKey(accountsPrefKey)) {
+          List<dynamic> accountsJson =
+              jsonDecode(_ls.prefs.getString(accountsPrefKey)!).toList();
 
-        for (LegacyAccount legacyAccount in legacyAccounts) {
-          //use externalDescriptor and internalDescriptor
-          final newAccountDir =
-              Directory("$newWalletDirectory${legacyAccount.wallet.name}");
-          final oldWalletDir =
-              Directory("$walletsDirectory${legacyAccount.wallet.name}");
-          if (!newAccountDir.existsSync()) {
-            await newAccountDir.create(recursive: true);
-          }
-          var network = Network.bitcoin;
-          if (legacyAccount.wallet.network.toLowerCase() == "testnet") {
-            network = Network.testnet;
-          } else if (legacyAccount.wallet.network.toLowerCase() == "signet") {
-            network = Network.signet;
-          }
-          var addressType = AddressType.p2Wpkh;
-          if (legacyAccount.wallet.type == "taproot") {
-            addressType = AddressType.p2Tr;
-          }
-          walletOrder.add(legacyAccount.id);
-          final envoyAccount = await EnvoyAccountHandler.migrate(
+          List<LegacyAccount> legacyAccounts =
+              accountsJson.map((json) => LegacyAccount.fromJson(json)).toList();
+
+          addMigrationEvent(
+              MigrationProgress(total: legacyAccounts.length, completed: 0));
+
+          for (LegacyAccount legacyAccount in legacyAccounts) {
+            final newAccountDir =
+                Directory("$newWalletDirectory${legacyAccount.wallet.name}");
+            final oldWalletDir =
+                Directory("$walletsDirectory${legacyAccount.wallet.name}");
+
+            if (!newAccountDir.existsSync()) {
+              await newAccountDir.create(recursive: true);
+            }
+
+            var network = Network.bitcoin;
+            if (legacyAccount.wallet.network.toLowerCase() == "testnet") {
+              network = Network.testnet;
+            } else if (legacyAccount.wallet.network.toLowerCase() == "signet") {
+              network = Network.signet;
+            }
+
+            var addressType = AddressType.p2Wpkh;
+            if (legacyAccount.wallet.type == "taproot") {
+              addressType = AddressType.p2Tr;
+            }
+
+            walletOrder.add(legacyAccount.id);
+
+            final envoyAccount = await EnvoyAccountHandler.migrate(
               name: legacyAccount.name,
               color: colorToHex(getAccountColor(legacyAccount)),
               deviceSerial: legacyAccount.deviceSerial,
@@ -124,41 +132,47 @@ class MigrationManager {
               network: network,
               sledDbPath: oldWalletDir.path,
               id: legacyAccount.id,
-              dbPath: newAccountDir.path);
-          envoyAccount.config().id;
-          //add dir names to
-          accounts.add(envoyAccount);
-        }
-        await _ls.prefs
-            .setString(NgAccountManager.ACCOUNT_ORDER, jsonEncode(walletOrder));
-        try {
-          await syncAccounts();
-          for (var account in accounts) {
-            await migrateDoNotSpend(account);
-            await migrateNotes(account);
-            await migrateTags(account);
+              dbPath: newAccountDir.path,
+            );
+            envoyAccount.config().id;
+            accounts.add(envoyAccount);
           }
-          for (var account in accounts) {
-            account.dispose();
+
+          await _ls.prefs.setString(
+              NgAccountManager.ACCOUNT_ORDER, jsonEncode(walletOrder));
+
+          try {
+            await syncAccounts();
+            for (var account in accounts) {
+              await migrateDoNotSpend(account);
+              await migrateNotes(account);
+              await migrateTags(account);
+            }
+            for (var account in accounts) {
+              account.dispose();
+            }
+          } catch (e) {
+            kPrint("Migration: Error $e");
+            EnvoyReport().log("Migration", "Error $e");
+            await Future.delayed(Duration(seconds: 1)); // optional pause
+            continue; // Retry from the start of the while loop
           }
-        } catch (e) {
-          kPrint("Migration: Error $e");
-          EnvoyReport().log("Migration", "Error $e");
-        } finally {
-          //open wallets
-          await NgAccountManager().restore();
+
+          await NgAccountManager().restore(); // open wallets
+        } else {
+          kPrint("Migration: No accounts found");
+          EnvoyReport().log("Migration", "No accounts found");
         }
-        //Load accounts to account manager
-      } else {
-        kPrint("Migration: No accounts found");
-        EnvoyReport().log("Migration", "No accounts found");
+
+        break; // Exit loop on successful migration
+      } catch (e, stack) {
+        EnvoyReport().log("Migration", "Error $e", stackTrace: stack);
+        kPrint("Migration: Error $e", stackTrace: stack);
+        await Future.delayed(Duration(seconds: 1)); // optional pause
       }
-    } catch (e, stack) {
-      EnvoyReport().log("Migration", "Error $e", stackTrace: stack);
-      kPrint("Migration: Error $e", stackTrace: stack);
-    } finally {
-      _onMigrationFinished?.call();
     }
+
+    _onMigrationFinished?.call();
   }
 
   Future syncAccounts() async {
