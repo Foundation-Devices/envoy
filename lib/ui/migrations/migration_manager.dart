@@ -34,7 +34,7 @@ const String migrationPrefs = "envoy_migration_v2";
 class MigrationManager {
   // Singleton instance
   static final MigrationManager _instance = MigrationManager._internal();
-  static const String AccountsPrefKey = "accounts";
+  static const String accountsPrefKey = "accounts";
 
   // Private constructor
   MigrationManager._internal();
@@ -86,9 +86,9 @@ class MigrationManager {
 
         final walletOrder = List<String>.empty(growable: true);
 
-        if (_ls.prefs.containsKey(AccountsPrefKey)) {
+        if (_ls.prefs.containsKey(accountsPrefKey)) {
           List<dynamic> accountsJson =
-              jsonDecode(_ls.prefs.getString(AccountsPrefKey)!).toList();
+              jsonDecode(_ls.prefs.getString(accountsPrefKey)!).toList();
 
           List<LegacyAccount> legacyAccounts =
               accountsJson.map((json) => LegacyAccount.fromJson(json)).toList();

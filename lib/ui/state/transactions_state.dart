@@ -328,7 +328,7 @@ final cancelTxStateProvider = Provider.family<RBFState?, String>(
 );
 
 Future prunePendingTransactions(
-  ProviderRef ref,
+  Ref ref,
   List<EnvoyTransaction> newTxList,
 ) async {
   //TODO: pending impl for ngwallet
@@ -336,15 +336,14 @@ Future prunePendingTransactions(
   //     .where((element) => element)
   //     .toList();
   List<EnvoyTransaction> azteco =
-      newTxList.where((element) => element is AztecoTransaction).toList();
+      newTxList.whereType<AztecoTransaction>().toList();
   List<EnvoyTransaction> transactions =
       newTxList.where((element) => element.isOnChain()).toList();
 
   List<EnvoyTransaction> btcPay =
-      newTxList.where((element) => element is BtcPayTransaction).toList();
+      newTxList.whereType<BtcPayTransaction>().toList();
 
-  List<EnvoyTransaction> ramp =
-      newTxList.where((element) => element is RampTransaction).toList();
+  List<EnvoyTransaction> ramp = newTxList.whereType<RampTransaction>().toList();
 
   if (azteco.isEmpty && btcPay.isEmpty && ramp.isEmpty) {
     return;
@@ -353,12 +352,13 @@ Future prunePendingTransactions(
   //prune azteco transactions
   for (var pendingTx in azteco) {
     transactions
-        .where((tx) => tx.outputs!.contains(pendingTx.address))
+        .where((tx) =>
+            tx.outputs.any((output) => output.address == pendingTx.address))
         .forEach((actualAztecoTx) {
       kPrint("Pruning Azteco tx: ${actualAztecoTx.txId}");
       EnvoyStorage().addTxNote(note: S().azteco_note, key: actualAztecoTx.txId);
-      EnvoyStorage().deleteTxNote(pendingTx.address!);
-      EnvoyStorage().deletePendingTx(pendingTx.address!);
+      EnvoyStorage().deleteTxNote(pendingTx.address);
+      EnvoyStorage().deletePendingTx(pendingTx.address);
     });
   }
 
@@ -374,7 +374,8 @@ Future prunePendingTransactions(
       }
     }
     transactions
-        .where((tx) => tx.outputs!.contains(pendingTx.address))
+        .where((tx) =>
+            tx.outputs.any((output) => output.address == pendingTx.address))
         .forEach((actualBtcPayTx) {
       kPrint("Pruning BtcPay tx: ${actualBtcPayTx.txId}");
       EnvoyStorage().addTxNote(note: S().btcpay_note, key: actualBtcPayTx.txId);
@@ -412,14 +413,15 @@ Future prunePendingTransactions(
     }
 
     transactions
-        .where((tx) => tx.outputs!.contains(pendingTx.address))
+        .where((tx) =>
+            tx.outputs.any((output) => output.address == pendingTx.address))
         .forEach((actualRampTx) {
       kPrint("Pruning Ramp tx: ${actualRampTx.txId}");
       //TODO: fix ramp for ngWallet
       // actualRampTx.setRampFee(pendingTx.rampFee);
       // actualRampTx.setRampId(pendingTx.rampId);
       EnvoyStorage().addTxNote(note: S().ramp_note, key: actualRampTx.txId);
-      EnvoyStorage().deleteTxNote(pendingTx.address!);
+      EnvoyStorage().deleteTxNote(pendingTx.address);
       EnvoyStorage().deletePendingTx(pendingTx.txId);
     });
   }

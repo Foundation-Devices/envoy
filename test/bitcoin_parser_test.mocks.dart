@@ -51,7 +51,6 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
     _i1.throwOnMissingStub(this);
   }
 
-  @override
   String get name => (super.noSuchMethod(
         Invocation.getter(#name),
         returnValue: _i4.dummyValue<String>(
@@ -60,7 +59,6 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         ),
       ) as String);
 
-  @override
   set externalDescriptor(String? _externalDescriptor) => super.noSuchMethod(
         Invocation.setter(
           #externalDescriptor,
@@ -69,7 +67,6 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         returnValueForMissingStub: null,
       );
 
-  @override
   set internalDescriptor(String? _internalDescriptor) => super.noSuchMethod(
         Invocation.setter(
           #internalDescriptor,
@@ -78,7 +75,6 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         returnValueForMissingStub: null,
       );
 
-  @override
   set publicExternalDescriptor(String? _publicExternalDescriptor) =>
       super.noSuchMethod(
         Invocation.setter(
@@ -88,7 +84,6 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         returnValueForMissingStub: null,
       );
 
-  @override
   set publicInternalDescriptor(String? _publicInternalDescriptor) =>
       super.noSuchMethod(
         Invocation.setter(
@@ -98,37 +93,31 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         returnValueForMissingStub: null,
       );
 
-  @override
   _i2.WalletType get type => (super.noSuchMethod(
         Invocation.getter(#type),
         returnValue: _i2.WalletType.witnessPublicKeyHash,
       ) as _i2.WalletType);
 
-  @override
   _i2.Network get network => (super.noSuchMethod(
         Invocation.getter(#network),
         returnValue: _i2.Network.Mainnet,
       ) as _i2.Network);
 
-  @override
   bool get hot => (super.noSuchMethod(
         Invocation.getter(#hot),
         returnValue: false,
       ) as bool);
 
-  @override
   bool get hasPassphrase => (super.noSuchMethod(
         Invocation.getter(#hasPassphrase),
         returnValue: false,
       ) as bool);
 
-  @override
   List<_i2.Transaction> get transactions => (super.noSuchMethod(
         Invocation.getter(#transactions),
         returnValue: <_i2.Transaction>[],
       ) as List<_i2.Transaction>);
 
-  @override
   set transactions(List<_i2.Transaction>? _transactions) => super.noSuchMethod(
         Invocation.setter(
           #transactions,
@@ -137,13 +126,11 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         returnValueForMissingStub: null,
       );
 
-  @override
   List<_i2.Utxo> get utxos => (super.noSuchMethod(
         Invocation.getter(#utxos),
         returnValue: <_i2.Utxo>[],
       ) as List<_i2.Utxo>);
 
-  @override
   set utxos(List<_i2.Utxo>? _utxos) => super.noSuchMethod(
         Invocation.setter(
           #utxos,
@@ -152,13 +139,11 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         returnValueForMissingStub: null,
       );
 
-  @override
   int get balance => (super.noSuchMethod(
         Invocation.getter(#balance),
         returnValue: 0,
       ) as int);
 
-  @override
   set balance(int? _balance) => super.noSuchMethod(
         Invocation.setter(
           #balance,
@@ -167,13 +152,11 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         returnValueForMissingStub: null,
       );
 
-  @override
   double get feeRateFast => (super.noSuchMethod(
         Invocation.getter(#feeRateFast),
         returnValue: 0.0,
       ) as double);
 
-  @override
   set feeRateFast(double? _feeRateFast) => super.noSuchMethod(
         Invocation.setter(
           #feeRateFast,
@@ -182,13 +165,11 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         returnValueForMissingStub: null,
       );
 
-  @override
   double get feeRateSlow => (super.noSuchMethod(
         Invocation.getter(#feeRateSlow),
         returnValue: 0.0,
       ) as double);
 
-  @override
   set feeRateSlow(double? _feeRateSlow) => super.noSuchMethod(
         Invocation.setter(
           #feeRateSlow,
@@ -197,7 +178,6 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         returnValueForMissingStub: null,
       );
 
-  @override
   Map<String, dynamic> toJson() => (super.noSuchMethod(
         Invocation.method(
           #toJson,
@@ -206,14 +186,12 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         returnValue: <String, dynamic>{},
       ) as Map<String, dynamic>);
 
-  @override
   dynamic init(String? walletsDirectory) =>
       super.noSuchMethod(Invocation.method(
         #init,
         [walletsDirectory],
       ));
 
-  @override
   _i5.Future<String> getAddress() => (super.noSuchMethod(
         Invocation.method(
           #getAddress,
@@ -228,7 +206,6 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         )),
       ) as _i5.Future<String>);
 
-  @override
   _i5.Future<String> getChangeAddress() => (super.noSuchMethod(
         Invocation.method(
           #getChangeAddress,
@@ -243,7 +220,6 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         )),
       ) as _i5.Future<String>);
 
-  @override
   _i5.Future<bool?> sync(
     String? electrumAddress,
     int? torPort,
@@ -259,7 +235,6 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         returnValue: _i5.Future<bool?>.value(),
       ) as _i5.Future<bool?>);
 
-  @override
   _i5.Future<int> getMaxFeeRate(
     String? sendTo,
     int? amount, {
@@ -281,7 +256,6 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         returnValue: _i5.Future<int>.value(0),
       ) as _i5.Future<int>);
 
-  @override
   _i5.Future<_i2.Psbt> createPsbt(
     String? sendTo,
     int? amount,
@@ -319,7 +293,6 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         )),
       ) as _i5.Future<_i2.Psbt>);
 
-  @override
   _i5.Future<_i2.Psbt> decodePsbt(String? base64Psbt) => (super.noSuchMethod(
         Invocation.method(
           #decodePsbt,
@@ -334,7 +307,6 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         )),
       ) as _i5.Future<_i2.Psbt>);
 
-  @override
   _i5.Future<_i2.Psbt> getBumpedPSBT(
     String? txId,
     double? feeRate,
@@ -362,7 +334,6 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         )),
       ) as _i5.Future<_i2.Psbt>);
 
-  @override
   _i5.Future<_i2.RawTransaction> decodeWalletRawTx(
     String? rawTransaction,
     _i2.Network? network,
@@ -387,7 +358,6 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         )),
       ) as _i5.Future<_i2.RawTransaction>);
 
-  @override
   _i5.Future<String> broadcastTx(
     String? electrumAddress,
     int? torPort,
@@ -415,7 +385,6 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         )),
       ) as _i5.Future<String>);
 
-  @override
   _i5.Future<bool> validateAddress(String? address) => (super.noSuchMethod(
         Invocation.method(
           #validateAddress,
@@ -424,7 +393,6 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         returnValue: _i5.Future<bool>.value(false),
       ) as _i5.Future<bool>);
 
-  @override
   _i5.Future<String> signPsbt(String? psbt) => (super.noSuchMethod(
         Invocation.method(
           #signPsbt,
@@ -439,7 +407,6 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         )),
       ) as _i5.Future<String>);
 
-  @override
   _i5.Future<_i2.Psbt> cancelTx(
     String? txId,
     List<_i2.Utxo>? doNotSpend,
@@ -467,7 +434,6 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
         )),
       ) as _i5.Future<_i2.Psbt>);
 
-  @override
   _i5.Future<String> getRawTxFromTxId(String? txId) => (super.noSuchMethod(
         Invocation.method(
           #getRawTxFromTxId,

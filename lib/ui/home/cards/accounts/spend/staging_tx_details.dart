@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:convert';
 import 'dart:ui';
 
 import 'package:envoy/business/exchange_rate.dart';
@@ -16,7 +15,6 @@ import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_widget.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_spend_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/indicator_shield.dart';
@@ -91,7 +89,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
 
     final totalReceiveAmount = (stagedTransaction.amount.toInt());
 
-    final inputs = stagedTransaction.inputs ?? [];
+    final inputs = stagedTransaction.inputs;
 
     final totalChangeAmount = (stagedTransaction.outputs.firstWhereOrNull(
           (outPut) => outPut.keychain == KeyChain.internal,

@@ -21,7 +21,6 @@ import 'package:tor/tor.dart';
 import 'dart:convert';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/scheduler.dart';
-import 'package:ngwallet/src/wallet.dart';
 
 part 'notifications.g.dart';
 

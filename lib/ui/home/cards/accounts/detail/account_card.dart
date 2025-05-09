@@ -494,8 +494,8 @@ class TransactionListTile extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     final Locale activeLocale = Localizations.localeOf(context);
 
-    String? currencyAmount = null;
-    String? currency = null;
+    String? currencyAmount;
+    String? currency;
     if (transaction is BtcPayTransaction) {
       currencyAmount = (transaction as BtcPayTransaction).currencyAmount;
       currency = (transaction as BtcPayTransaction).currency;

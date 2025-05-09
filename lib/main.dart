@@ -95,7 +95,9 @@ Future<void> initSingletons() async {
   // Start Tor regardless of whether we are using it or not
   try {
     Tor.instance.start();
-  } on Exception catch (e) {}
+  } on Exception catch (e, stack) {
+    kPrint("Error starting Tor: $e", stackTrace: stack);
+  }
 
   Fees.restore();
   Notifications.init();
@@ -189,7 +191,7 @@ class GlobalScrollBehavior extends ScrollBehavior {
 bool isMigrationRequired() {
   //check if the user already has accounts
   final hasAccounts =
-      LocalStorage().prefs.containsKey(MigrationManager.AccountsPrefKey);
+      LocalStorage().prefs.containsKey(MigrationManager.accountsPrefKey);
   //check if the user has already migrated
 
   final hasMigrated = EnvoyStorage().getBool(migrationPrefs) ?? false;

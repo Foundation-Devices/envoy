@@ -18,7 +18,7 @@ class InsufficientFunds implements Exception {
   InsufficientFunds(String s, this.needed, this.available);
   @override
   String toString() {
-    return "InsufficientFunds: needed=$needed available=${available}";
+    return "InsufficientFunds: needed=$needed available=$available";
   }
 }
 

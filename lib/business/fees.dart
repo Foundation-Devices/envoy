@@ -15,7 +15,6 @@ import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:tor/tor.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:ngwallet/src/wallet.dart' as OldWallet;
 import 'package:envoy/business/fee_rates.dart';
 import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/util/tuple.dart';
