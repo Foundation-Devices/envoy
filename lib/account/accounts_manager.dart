@@ -74,7 +74,7 @@ class NgAccountManager extends ChangeNotifier {
     List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
     _accountsOrder.sink.add(order);
 
-    final walletDirectory = await Directory(walletsDirectory);
+    final walletDirectory = Directory(walletsDirectory);
 
     if (!walletDirectory.existsSync()) {
       await walletDirectory.create(recursive: true);

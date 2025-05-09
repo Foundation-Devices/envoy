@@ -3,12 +3,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:animations/animations.dart';
-import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -16,7 +14,6 @@ import 'package:envoy/ui/widgets/envoy_gradient_progress.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation_api/foundation_api.dart';
 import 'package:rive/rive.dart';
 
 class OnboardPrimeFwUpdate extends ConsumerStatefulWidget {

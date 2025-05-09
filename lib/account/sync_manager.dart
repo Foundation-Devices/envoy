@@ -70,13 +70,13 @@ class SyncManager {
         () async {
           try {
             kPrint(
-                "⏳Syncing  account ${account.name} | ${account.network} | $server  |Tor : ${port}");
+                "⏳Syncing  account ${account.name} | ${account.network} | $server  |Tor : $port");
             while (_pauseSync) {
               await Future.delayed(const Duration(milliseconds: 100));
             }
             await _performWalletSync(account, server, port);
             kPrint(
-                "✨Finished account account ${account.name} | ${account.network} | $server  |Tor : ${port}");
+                "✨Finished account account ${account.name} | ${account.network} | $server  |Tor : $port");
           } catch (e) {
             kPrint("Error syncing account ${account.name}: $e");
           } finally {

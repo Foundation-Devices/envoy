@@ -97,7 +97,6 @@ class Transaction {
 
   Map<String, dynamic> toJson() => _$TransactionToJson(this);
 
-  @override
   int compareTo(other) {
     // 1. if both are in mempool
     if ((date.isBefore(DateTime(2008)) &&

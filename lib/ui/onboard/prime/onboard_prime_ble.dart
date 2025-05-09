@@ -6,7 +6,6 @@ import 'dart:async';
 
 import 'package:animations/animations.dart';
 import 'package:bluart/bluart.dart';
-//import 'package:envoy/business/AccountNg.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -297,7 +296,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
               return Opacity(opacity: value, child: child);
             },
             child: Image.asset(
-              "assets/images/prime_bluetooth_shield.png", // TODO: add "X shield" on deniedBluetooth
+              "assets/images/prime_bluetooth_shield.png",
+              // TODO: add "X shield" on deniedBluetooth
               alignment: Alignment.bottomCenter,
               width: MediaQuery.of(context).size.width * 0.8,
               height: 320,
@@ -562,8 +562,9 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                               }
 
                               await Future.delayed(Duration(milliseconds: 200));
-
-                              context.goNamed(ONBOARD_PRIME_PAIR);
+                              if (context.mounted) {
+                                context.goNamed(ONBOARD_PRIME_PAIR);
+                              }
                             }
                           }));
             },

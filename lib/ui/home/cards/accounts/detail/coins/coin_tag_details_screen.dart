@@ -26,6 +26,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -583,7 +584,9 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                   try {
                     await selectedAccount.handler?.renameTag(
                         existingTag: widget.coinTag.name, newTag: "");
-                  } catch (e) {}
+                  } catch (e) {
+                    kPrint("Error deleting tag: $e");
+                  }
                 }
                 navigator.pop();
                 _menuVisible = false;
@@ -615,7 +618,9 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                   try {
                     await selectedAccount.handler?.renameTag(
                         existingTag: widget.coinTag.name, newTag: "");
-                  } catch (e) {}
+                  } catch (e) {
+                    kPrint("Error deleting empty tag: $e");
+                  }
                 }
                 navigator.pop();
                 _menuVisible = false;

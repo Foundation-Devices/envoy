@@ -15,7 +15,6 @@ import 'package:ramp_flutter/ramp_flutter.dart';
 import 'package:ramp_flutter/send_crypto_payload.dart';
 import 'package:tor/tor.dart';
 import 'package:ngwallet/src/wallet.dart';
-import 'package:envoy/business/account.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/home/cards/purchase_completed.dart';
 import 'package:envoy/ui/shield.dart';

@@ -195,7 +195,7 @@ void addPendingTx(
   String payoutId,
   String btcPayVoucherUri,
 ) {
-  EnvoyStorage().addPendingTx(pullPaymentId, account.id ?? "", DateTime.now(),
+  EnvoyStorage().addPendingTx(pullPaymentId, account.id, DateTime.now(),
       TransactionType.btcPay, amountSats ?? 0, 0, address,
       pullPaymentId: pullPaymentId,
       currency: currency,

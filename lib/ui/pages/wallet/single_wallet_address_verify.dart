@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:ngwallet/src/wallet.dart';
 
 class SingleWalletAddressVerifyPage extends StatelessWidget {
   final EnvoyAccount pairedWallet;
