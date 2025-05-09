@@ -40,7 +40,9 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
 
   @override
   Widget build(BuildContext context) {
-    String descriptor = widget.account.internalDescriptor;
+    //TODO: fix unified descriptor
+    // String descriptor = widget.account.internalDescriptor;
+    String descriptor = "";
 
     return Column(
         crossAxisAlignment: CrossAxisAlignment.center,

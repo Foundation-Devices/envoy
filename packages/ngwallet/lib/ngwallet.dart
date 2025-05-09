@@ -18,6 +18,7 @@ export 'src/rust/api/envoy_wallet.dart' show WalletUpdate;
 export 'src/rust/frb_generated.dart' show RustLib;
 export 'src/rust/third_party/ngwallet/config.dart' show AddressType;
 export 'src/rust/third_party/ngwallet/config.dart' show NgAccountConfig;
+export 'src/rust/third_party/ngwallet/config.dart' show NgDescriptor;
 export 'src/rust/third_party/ngwallet/transaction.dart' show BitcoinTransaction;
 export 'src/rust/third_party/ngwallet/transaction.dart' show Input;
 export 'src/rust/third_party/ngwallet/transaction.dart' show Output;

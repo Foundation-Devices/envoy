@@ -39,7 +39,8 @@ class SyncManager {
     final accounts = accountsCallback();
     for (var account in accounts) {
       if (account.handler != null) {
-        _synRequests[account] = await account.handler!.requestSync();
+        //TODO: unified sync request
+        // _synRequests[account] = await account.handler!.requestSync();
       }
     }
     _startSync();
@@ -53,7 +54,8 @@ class SyncManager {
     }
     if (account.handler != null) {
       pauseSync();
-      _synRequests[account] = await account.handler!.requestSync();
+      //TODO: unified sync request
+      // _synRequests[account] = await account.handler!.requestSync();
       await _performWalletSync(account, server, port);
       resumeSync();
     }
@@ -95,7 +97,8 @@ class SyncManager {
       electrumServer: server,
       torPort: port,
     );
-    await account.handler!.applyUpdate(update: update);
+    //TODO: unified update
+    // await account.handler!.applyUpdate(update: update);
   }
 
   static String getElectrumServer(Network network) {

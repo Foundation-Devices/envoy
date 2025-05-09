@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/btcpay_voucher.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_dialog.dart';
@@ -32,7 +33,7 @@ class BtcPayLoadingPayoutState extends State<BtcPayLoadingPayout> {
 
   Future<void> _createPayout() async {
     //TODO: address for vouchers
-    String address = widget.account.nextAddress;
+    String address = widget.account.getPreferredAddress();
     BtcPayVoucherRedeemResult result =
         await widget.voucher.createPayout(address);
 

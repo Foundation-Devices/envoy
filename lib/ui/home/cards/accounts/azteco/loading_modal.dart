@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,7 @@ class AztecoLoadingModalState extends State<AztecoLoadingModal> {
 
   Future<void> _checkVoucher() async {
     //TODO: dedicated address for Azteco voucher ?
-    String address = widget.account.nextAddress;
+    String address = widget.account.getPreferredAddress();
     AztecoVoucherRedeemResult result = await widget.voucher.redeem(address);
     switch (result) {
       case AztecoVoucherRedeemResult.success:

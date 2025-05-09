@@ -5,11 +5,11 @@
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/setup_overlay.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
 
 class EmptyAccountsCard extends StatelessWidget {
   EmptyAccountsCard() : super(key: UniqueKey());
@@ -38,16 +38,15 @@ class EmptyAccountsCard extends StatelessWidget {
                       dateAdded: DateTime.now().toString(),
                       index: 5,
                       id: '',
-                      addressType: AddressType.p2Wpkh,
+                      preferredAddressType: AddressType.p2Tr,
                       network: Network.bitcoin,
                       balance: BigInt.zero,
                       isHot: true,
                       transactions: [],
-                      internalDescriptor: "",
-                      nextAddress: "",
+                      nextAddress: [],
                       utxo: [],
+                      descriptors: [],
                       unlockedBalance: BigInt.zero,
-                      externalDescriptor: "",
                       walletPath: "ghost",
                       color: Color(0xFFBF755F).toHex(),
                       dateSynced: null,

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/ui/pages/wallet/single_wallet_address_verify_confirm.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -17,7 +18,7 @@ class SingleWalletAddressVerifyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return OnboardingPage(
       key: const Key("single_wallet_address_verify"),
-      qrCode: Future.value(pairedWallet.nextAddress),
+      qrCode: Future.value(pairedWallet.getPreferredAddress()),
       text: [
         Align(
           alignment: Alignment.center,

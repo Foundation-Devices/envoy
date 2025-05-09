@@ -12,7 +12,7 @@ class LegacyAccount {
   final LegacyWallet wallet;
 
   final String name;
-  final String deviceSerial;
+  String deviceSerial;
   final String dateAdded;
   final int number;
   final String id;
@@ -34,6 +34,10 @@ class LegacyAccount {
 
   // Method to convert LegacyAccount to JSON
   Map<String, dynamic> toJson() => _$LegacyAccountToJson(this);
+
+  String getUnificationId() {
+    return "$deviceSerial:${wallet.network}:$number";
+  }
 }
 
 @JsonSerializable()

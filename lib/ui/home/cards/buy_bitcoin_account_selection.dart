@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:ui';
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/ui/components/account_selector.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/button.dart';
@@ -80,7 +81,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
         address = accountAddressCache[selectedAccount?.id];
       });
     } else {
-      String? address = account.nextAddress;
+      String? address = account.getPreferredAddress();
       // Separate setState call to avoid UI lag during the async operation
       setState(() {
         this.address = address;
