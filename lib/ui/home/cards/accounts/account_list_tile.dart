@@ -311,7 +311,7 @@ class AccountBadge extends StatelessWidget {
                   ],
                 ),
                 BadgeIcon(
-                  account: account!,
+                  account: account,
                 ),
               ],
             ),
