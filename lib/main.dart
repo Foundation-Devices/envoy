@@ -189,7 +189,6 @@ class GlobalScrollBehavior extends ScrollBehavior {
 }
 
 bool isMigrationRequired() {
-  return true;
   //check if the user already has accounts
   final hasAccounts =
       LocalStorage().prefs.containsKey(MigrationManager.accountsPrefKey);

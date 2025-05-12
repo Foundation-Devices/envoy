@@ -76,7 +76,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.9.0';
 
   @override
-  int get rustContentHash => 548231996;
+  int get rustContentHash => -1068088407;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -136,6 +136,11 @@ abstract class RustLibApi extends BaseApi {
 
   Future<DraftTransaction> crateApiEnvoyWalletEnvoyAccountHandlerDecodePsbt(
       {required DraftTransaction draftTransaction, required String psbtBase64});
+
+  Future<WalletUpdate> crateApiEnvoyWalletEnvoyAccountHandlerFullScanRequest(
+      {required FullScanRequest scanRequest,
+      required String electrumServer,
+      int? torPort});
 
   Future<TransactionFeeResult>
       crateApiEnvoyWalletEnvoyAccountHandlerGetMaxBumpFeeRates(
@@ -197,14 +202,6 @@ abstract class RustLibApi extends BaseApi {
   Future<FullScanRequest> crateApiEnvoyWalletEnvoyAccountHandlerRequestFullScan(
       {required EnvoyAccountHandler that, required AddressType addressType});
 
-  Future<SyncRequest> crateApiEnvoyWalletEnvoyAccountHandlerRequestSync(
-      {required EnvoyAccountHandler that, required AddressType addressType});
-
-  Future<WalletUpdate> crateApiEnvoyWalletEnvoyAccountHandlerScan(
-      {required FullScanRequest scanRequest,
-      required String electrumServer,
-      int? torPort});
-
   Future<void> crateApiEnvoyWalletEnvoyAccountHandlerSendUpdate(
       {required EnvoyAccountHandler that});
 
@@ -243,6 +240,9 @@ abstract class RustLibApi extends BaseApi {
 
   Stream<EnvoyAccount> crateApiEnvoyWalletEnvoyAccountHandlerStream(
       {required EnvoyAccountHandler that});
+
+  Future<SyncRequest> crateApiEnvoyWalletEnvoyAccountHandlerSyncRequest(
+      {required EnvoyAccountHandler that, required AddressType addressType});
 
   Future<WalletUpdate> crateApiEnvoyWalletEnvoyAccountHandlerSyncWallet(
       {required SyncRequest syncRequest,
@@ -727,6 +727,40 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
 
   @override
+  Future<WalletUpdate> crateApiEnvoyWalletEnvoyAccountHandlerFullScanRequest(
+      {required FullScanRequest scanRequest,
+      required String electrumServer,
+      int? torPort}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(
+            scanRequest, serializer);
+        sse_encode_String(electrumServer, serializer);
+        sse_encode_opt_box_autoadd_u_16(torPort, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 13, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta:
+          kCrateApiEnvoyWalletEnvoyAccountHandlerFullScanRequestConstMeta,
+      argValues: [scanRequest, electrumServer, torPort],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiEnvoyWalletEnvoyAccountHandlerFullScanRequestConstMeta =>
+          const TaskConstMeta(
+            debugName: "EnvoyAccountHandler_full_scan_request",
+            argNames: ["scanRequest", "electrumServer", "torPort"],
+          );
+
+  @override
   Future<TransactionFeeResult>
       crateApiEnvoyWalletEnvoyAccountHandlerGetMaxBumpFeeRates(
           {required EnvoyAccountHandler that,
@@ -741,7 +775,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_box_autoadd_bitcoin_transaction(
             bitcoinTransaction, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 13, port: port_);
+            funcId: 14, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_transaction_fee_result,
@@ -774,7 +808,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_box_autoadd_transaction_params(
             transactionParams, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 14, port: port_);
+            funcId: 15, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_transaction_fee_result,
@@ -800,7 +834,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
             that, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 15)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 16)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -826,7 +860,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
             that, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 16)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 17)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_bool,
@@ -872,7 +906,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_list_String(legacySledDbPath, serializer);
         sse_encode_network(network, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 17, port: port_);
+            funcId: 18, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -942,7 +976,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_network(network, serializer);
         sse_encode_String(id, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 18, port: port_);
+            funcId: 19, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -995,7 +1029,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 19, port: port_);
+            funcId: 20, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_record_string_address_type,
@@ -1022,7 +1056,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(dbPath, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 20, port: port_);
+            funcId: 21, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -1052,7 +1086,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that, serializer);
         sse_encode_String(name, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 21, port: port_);
+            funcId: 22, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1084,7 +1118,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(existingTag, serializer);
         sse_encode_opt_String(newTag, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 22, port: port_);
+            funcId: 23, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1112,7 +1146,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that, serializer);
         sse_encode_address_type(addressType, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 23, port: port_);
+            funcId: 24, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -1134,68 +1168,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
 
   @override
-  Future<SyncRequest> crateApiEnvoyWalletEnvoyAccountHandlerRequestSync(
-      {required EnvoyAccountHandler that, required AddressType addressType}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
-            that, serializer);
-        sse_encode_address_type(addressType, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 24, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData:
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiEnvoyWalletEnvoyAccountHandlerRequestSyncConstMeta,
-      argValues: [that, addressType],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta
-      get kCrateApiEnvoyWalletEnvoyAccountHandlerRequestSyncConstMeta =>
-          const TaskConstMeta(
-            debugName: "EnvoyAccountHandler_request_sync",
-            argNames: ["that", "addressType"],
-          );
-
-  @override
-  Future<WalletUpdate> crateApiEnvoyWalletEnvoyAccountHandlerScan(
-      {required FullScanRequest scanRequest,
-      required String electrumServer,
-      int? torPort}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(
-            scanRequest, serializer);
-        sse_encode_String(electrumServer, serializer);
-        sse_encode_opt_box_autoadd_u_16(torPort, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 25, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData:
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate,
-        decodeErrorData: sse_decode_AnyhowException,
-      ),
-      constMeta: kCrateApiEnvoyWalletEnvoyAccountHandlerScanConstMeta,
-      argValues: [scanRequest, electrumServer, torPort],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiEnvoyWalletEnvoyAccountHandlerScanConstMeta =>
-      const TaskConstMeta(
-        debugName: "EnvoyAccountHandler_scan",
-        argNames: ["scanRequest", "electrumServer", "torPort"],
-      );
-
-  @override
   Future<void> crateApiEnvoyWalletEnvoyAccountHandlerSendUpdate(
       {required EnvoyAccountHandler that}) {
     return handler.executeNormal(NormalTask(
@@ -1204,7 +1176,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 26, port: port_);
+            funcId: 25, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1236,7 +1208,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_box_autoadd_output(utxo, serializer);
         sse_encode_bool(doNotSpend, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 27, port: port_);
+            funcId: 26, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1268,7 +1240,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_list_String(utxo, serializer);
         sse_encode_bool(doNotSpend, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 28, port: port_);
+            funcId: 27, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1301,7 +1273,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(txId, serializer);
         sse_encode_String(note, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 29, port: port_);
+            funcId: 28, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_bool,
@@ -1332,7 +1304,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_box_autoadd_output(utxo, serializer);
         sse_encode_String(tag, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 30, port: port_);
+            funcId: 29, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_bool,
@@ -1363,7 +1335,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_list_String(utxo, serializer);
         sse_encode_String(tag, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 31, port: port_);
+            funcId: 30, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1395,7 +1367,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_list_output(utxo, serializer);
         sse_encode_String(tag, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 32, port: port_);
+            funcId: 31, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_bool,
@@ -1422,7 +1394,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 33, port: port_);
+            funcId: 32, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_envoy_account,
@@ -1451,7 +1423,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that, serializer);
         sse_encode_StreamSink_envoy_account_Sse(streamSink, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 34, port: port_);
+            funcId: 33, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1469,6 +1441,36 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         debugName: "EnvoyAccountHandler_stream",
         argNames: ["that", "streamSink"],
       );
+
+  @override
+  Future<SyncRequest> crateApiEnvoyWalletEnvoyAccountHandlerSyncRequest(
+      {required EnvoyAccountHandler that, required AddressType addressType}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+            that, serializer);
+        sse_encode_address_type(addressType, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 34, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiEnvoyWalletEnvoyAccountHandlerSyncRequestConstMeta,
+      argValues: [that, addressType],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiEnvoyWalletEnvoyAccountHandlerSyncRequestConstMeta =>
+          const TaskConstMeta(
+            debugName: "EnvoyAccountHandler_sync_request",
+            argNames: ["that", "addressType"],
+          );
 
   @override
   Future<WalletUpdate> crateApiEnvoyWalletEnvoyAccountHandlerSyncWallet(
@@ -4062,10 +4064,6 @@ class EnvoyAccountHandlerImpl extends RustOpaque
           .crateApiEnvoyWalletEnvoyAccountHandlerRequestFullScan(
               that: this, addressType: addressType);
 
-  Future<SyncRequest> requestSync({required AddressType addressType}) =>
-      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerRequestSync(
-          that: this, addressType: addressType);
-
   Future<void> sendUpdate() =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerSendUpdate(
         that: this,
@@ -4108,6 +4106,10 @@ class EnvoyAccountHandlerImpl extends RustOpaque
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerStream(
         that: this,
       );
+
+  Future<SyncRequest> syncRequest({required AddressType addressType}) =>
+      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerSyncRequest(
+          that: this, addressType: addressType);
 
   Future<List<BitcoinTransaction>> transactions() =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerTransactions(

@@ -68,6 +68,16 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerDecodePsbt(
           draftTransaction: draftTransaction, psbtBase64: psbtBase64);
 
+  static Future<WalletUpdate> fullScanRequest(
+          {required FullScanRequest scanRequest,
+          required String electrumServer,
+          int? torPort}) =>
+      RustLib.instance.api
+          .crateApiEnvoyWalletEnvoyAccountHandlerFullScanRequest(
+              scanRequest: scanRequest,
+              electrumServer: electrumServer,
+              torPort: torPort);
+
   Future<TransactionFeeResult> getMaxBumpFeeRates(
       {required List<Output> selectedOutputs,
       required BitcoinTransaction bitcoinTransaction});
@@ -140,17 +150,6 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
 
   Future<FullScanRequest> requestFullScan({required AddressType addressType});
 
-  Future<SyncRequest> requestSync({required AddressType addressType});
-
-  static Future<WalletUpdate> scan(
-          {required FullScanRequest scanRequest,
-          required String electrumServer,
-          int? torPort}) =>
-      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerScan(
-          scanRequest: scanRequest,
-          electrumServer: electrumServer,
-          torPort: torPort);
-
   Future<void> sendUpdate();
 
   Future<void> setDoNotSpend({required Output utxo, required bool doNotSpend});
@@ -170,6 +169,8 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
   Future<EnvoyAccount> state();
 
   Stream<EnvoyAccount> stream();
+
+  Future<SyncRequest> syncRequest({required AddressType addressType});
 
   static Future<WalletUpdate> syncWallet(
           {required SyncRequest syncRequest,

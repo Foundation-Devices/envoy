@@ -115,7 +115,7 @@ impl EnvoyAccountHandler {
                 None::<FileBackend>,
                 id.clone(),
                 None,
-                None,
+                false
             ))),
         }
     }
@@ -151,7 +151,7 @@ impl EnvoyAccountHandler {
                 None::<FileBackend>,
                 id.clone(),
                 None,
-                None,
+                false
             ))),
         };
 
@@ -358,7 +358,7 @@ impl EnvoyAccountHandler {
         self.send_update();
     }
 
-    pub fn request_sync(&mut self, address_type: AddressType) -> Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>> {
+    pub fn sync_request(&mut self, address_type: AddressType) -> Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>> {
         let scan_request = self.ng_account.lock().unwrap().sync_request(address_type);
         match scan_request {
             Ok((_, request)) => Arc::new(Mutex::new(Some(request))),
@@ -385,7 +385,7 @@ impl EnvoyAccountHandler {
         };
     }
 
-    pub fn scan(
+    pub fn full_scan_request(
         scan_request: Arc<Mutex<Option<FullScanRequest<KeychainKind>>>>,
         electrum_server: &str,
         tor_port: Option<u16>,
