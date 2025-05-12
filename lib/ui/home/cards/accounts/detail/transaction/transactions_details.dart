@@ -92,6 +92,7 @@ class _TransactionsDetailsWidgetState
   Widget build(BuildContext context) {
     ///watch transaction changes to get real time updates
     final tx = ref.watch(getTransactionProvider(widget.tx.txId)) ?? widget.tx;
+
     final note = ref.watch(getTransactionProvider(widget.tx.txId).select(
       (value) => value?.note ?? "",
     ));
@@ -419,7 +420,7 @@ class _TransactionsDetailsWidgetState
                               ],
                             ),
                     ),
-                  rbfPossible
+                  rbfPossible && tx.vsize != BigInt.zero
                       ? EnvoyInfoCardListItem(
                           centerSingleLineTitle: true,
                           spacingPriority: FlexPriority.trailing,
@@ -493,7 +494,7 @@ class _TransactionsDetailsWidgetState
                       ),
                     ),
                   ),
-                  rbfPossible
+                  rbfPossible && tx.vsize != BigInt.zero
                       ? CancelTxButton(
                           transaction: tx,
                         )
@@ -512,6 +513,24 @@ class _TransactionsDetailsWidgetState
                       horizontal: EnvoySpacing.large1),
                   child: Text(
                     S().replaceByFee_ramp_incompleteTransactionAutodeleteWarning,
+                    style: EnvoyTypography.info
+                        .copyWith(color: EnvoyColors.textPrimaryInverse),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+              if (rbfPossible ==true && tx.vsize == BigInt.zero) ...[
+                const EnvoyIcon(
+                  EnvoyIcons.info,
+                  color: EnvoyColors.textPrimaryInverse,
+                  size: EnvoyIconSize.medium,
+                ),
+                const SizedBox(height: EnvoySpacing.xs),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.large1),
+                  child: Text(
+                    S().replaceByFee_coindetails_overlayNotice,
                     style: EnvoyTypography.info
                         .copyWith(color: EnvoyColors.textPrimaryInverse),
                     textAlign: TextAlign.center,
