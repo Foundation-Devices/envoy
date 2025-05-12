@@ -20,15 +20,15 @@ mixin _$EnvoyAccount {
   String get color => throw _privateConstructorUsedError;
   String? get deviceSerial => throw _privateConstructorUsedError;
   String? get dateAdded => throw _privateConstructorUsedError;
-  AddressType get addressType => throw _privateConstructorUsedError;
+  AddressType get preferredAddressType => throw _privateConstructorUsedError;
   int get index => throw _privateConstructorUsedError;
-  String get internalDescriptor => throw _privateConstructorUsedError;
-  String? get externalDescriptor => throw _privateConstructorUsedError;
+  List<NgDescriptor> get descriptors => throw _privateConstructorUsedError;
   String? get dateSynced => throw _privateConstructorUsedError;
   String? get walletPath => throw _privateConstructorUsedError;
   Network get network => throw _privateConstructorUsedError;
   String get id => throw _privateConstructorUsedError;
-  String get nextAddress => throw _privateConstructorUsedError;
+  List<(String, AddressType)> get nextAddress =>
+      throw _privateConstructorUsedError;
   BigInt get balance => throw _privateConstructorUsedError;
   BigInt get unlockedBalance => throw _privateConstructorUsedError;
   bool get isHot => throw _privateConstructorUsedError;
@@ -55,15 +55,14 @@ abstract class $EnvoyAccountCopyWith<$Res> {
       String color,
       String? deviceSerial,
       String? dateAdded,
-      AddressType addressType,
+      AddressType preferredAddressType,
       int index,
-      String internalDescriptor,
-      String? externalDescriptor,
+      List<NgDescriptor> descriptors,
       String? dateSynced,
       String? walletPath,
       Network network,
       String id,
-      String nextAddress,
+      List<(String, AddressType)> nextAddress,
       BigInt balance,
       BigInt unlockedBalance,
       bool isHot,
@@ -91,10 +90,9 @@ class _$EnvoyAccountCopyWithImpl<$Res, $Val extends EnvoyAccount>
     Object? color = null,
     Object? deviceSerial = freezed,
     Object? dateAdded = freezed,
-    Object? addressType = null,
+    Object? preferredAddressType = null,
     Object? index = null,
-    Object? internalDescriptor = null,
-    Object? externalDescriptor = freezed,
+    Object? descriptors = null,
     Object? dateSynced = freezed,
     Object? walletPath = freezed,
     Object? network = null,
@@ -124,22 +122,18 @@ class _$EnvoyAccountCopyWithImpl<$Res, $Val extends EnvoyAccount>
           ? _value.dateAdded
           : dateAdded // ignore: cast_nullable_to_non_nullable
               as String?,
-      addressType: null == addressType
-          ? _value.addressType
-          : addressType // ignore: cast_nullable_to_non_nullable
+      preferredAddressType: null == preferredAddressType
+          ? _value.preferredAddressType
+          : preferredAddressType // ignore: cast_nullable_to_non_nullable
               as AddressType,
       index: null == index
           ? _value.index
           : index // ignore: cast_nullable_to_non_nullable
               as int,
-      internalDescriptor: null == internalDescriptor
-          ? _value.internalDescriptor
-          : internalDescriptor // ignore: cast_nullable_to_non_nullable
-              as String,
-      externalDescriptor: freezed == externalDescriptor
-          ? _value.externalDescriptor
-          : externalDescriptor // ignore: cast_nullable_to_non_nullable
-              as String?,
+      descriptors: null == descriptors
+          ? _value.descriptors
+          : descriptors // ignore: cast_nullable_to_non_nullable
+              as List<NgDescriptor>,
       dateSynced: freezed == dateSynced
           ? _value.dateSynced
           : dateSynced // ignore: cast_nullable_to_non_nullable
@@ -159,7 +153,7 @@ class _$EnvoyAccountCopyWithImpl<$Res, $Val extends EnvoyAccount>
       nextAddress: null == nextAddress
           ? _value.nextAddress
           : nextAddress // ignore: cast_nullable_to_non_nullable
-              as String,
+              as List<(String, AddressType)>,
       balance: null == balance
           ? _value.balance
           : balance // ignore: cast_nullable_to_non_nullable
@@ -201,15 +195,14 @@ abstract class _$$EnvoyAccountImplCopyWith<$Res>
       String color,
       String? deviceSerial,
       String? dateAdded,
-      AddressType addressType,
+      AddressType preferredAddressType,
       int index,
-      String internalDescriptor,
-      String? externalDescriptor,
+      List<NgDescriptor> descriptors,
       String? dateSynced,
       String? walletPath,
       Network network,
       String id,
-      String nextAddress,
+      List<(String, AddressType)> nextAddress,
       BigInt balance,
       BigInt unlockedBalance,
       bool isHot,
@@ -235,10 +228,9 @@ class __$$EnvoyAccountImplCopyWithImpl<$Res>
     Object? color = null,
     Object? deviceSerial = freezed,
     Object? dateAdded = freezed,
-    Object? addressType = null,
+    Object? preferredAddressType = null,
     Object? index = null,
-    Object? internalDescriptor = null,
-    Object? externalDescriptor = freezed,
+    Object? descriptors = null,
     Object? dateSynced = freezed,
     Object? walletPath = freezed,
     Object? network = null,
@@ -268,22 +260,18 @@ class __$$EnvoyAccountImplCopyWithImpl<$Res>
           ? _value.dateAdded
           : dateAdded // ignore: cast_nullable_to_non_nullable
               as String?,
-      addressType: null == addressType
-          ? _value.addressType
-          : addressType // ignore: cast_nullable_to_non_nullable
+      preferredAddressType: null == preferredAddressType
+          ? _value.preferredAddressType
+          : preferredAddressType // ignore: cast_nullable_to_non_nullable
               as AddressType,
       index: null == index
           ? _value.index
           : index // ignore: cast_nullable_to_non_nullable
               as int,
-      internalDescriptor: null == internalDescriptor
-          ? _value.internalDescriptor
-          : internalDescriptor // ignore: cast_nullable_to_non_nullable
-              as String,
-      externalDescriptor: freezed == externalDescriptor
-          ? _value.externalDescriptor
-          : externalDescriptor // ignore: cast_nullable_to_non_nullable
-              as String?,
+      descriptors: null == descriptors
+          ? _value._descriptors
+          : descriptors // ignore: cast_nullable_to_non_nullable
+              as List<NgDescriptor>,
       dateSynced: freezed == dateSynced
           ? _value.dateSynced
           : dateSynced // ignore: cast_nullable_to_non_nullable
@@ -301,9 +289,9 @@ class __$$EnvoyAccountImplCopyWithImpl<$Res>
           : id // ignore: cast_nullable_to_non_nullable
               as String,
       nextAddress: null == nextAddress
-          ? _value.nextAddress
+          ? _value._nextAddress
           : nextAddress // ignore: cast_nullable_to_non_nullable
-              as String,
+              as List<(String, AddressType)>,
       balance: null == balance
           ? _value.balance
           : balance // ignore: cast_nullable_to_non_nullable
@@ -340,22 +328,23 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
       required this.color,
       this.deviceSerial,
       this.dateAdded,
-      required this.addressType,
+      required this.preferredAddressType,
       required this.index,
-      required this.internalDescriptor,
-      this.externalDescriptor,
+      required final List<NgDescriptor> descriptors,
       this.dateSynced,
       this.walletPath,
       required this.network,
       required this.id,
-      required this.nextAddress,
+      required final List<(String, AddressType)> nextAddress,
       required this.balance,
       required this.unlockedBalance,
       required this.isHot,
       required final List<BitcoinTransaction> transactions,
       required final List<Output> utxo,
       required final List<String> tags})
-      : _transactions = transactions,
+      : _descriptors = descriptors,
+        _nextAddress = nextAddress,
+        _transactions = transactions,
         _utxo = utxo,
         _tags = tags;
 
@@ -368,13 +357,17 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
   @override
   final String? dateAdded;
   @override
-  final AddressType addressType;
+  final AddressType preferredAddressType;
   @override
   final int index;
+  final List<NgDescriptor> _descriptors;
   @override
-  final String internalDescriptor;
-  @override
-  final String? externalDescriptor;
+  List<NgDescriptor> get descriptors {
+    if (_descriptors is EqualUnmodifiableListView) return _descriptors;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_descriptors);
+  }
+
   @override
   final String? dateSynced;
   @override
@@ -383,8 +376,14 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
   final Network network;
   @override
   final String id;
+  final List<(String, AddressType)> _nextAddress;
   @override
-  final String nextAddress;
+  List<(String, AddressType)> get nextAddress {
+    if (_nextAddress is EqualUnmodifiableListView) return _nextAddress;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_nextAddress);
+  }
+
   @override
   final BigInt balance;
   @override
@@ -417,7 +416,7 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
 
   @override
   String toString() {
-    return 'EnvoyAccount(name: $name, color: $color, deviceSerial: $deviceSerial, dateAdded: $dateAdded, addressType: $addressType, index: $index, internalDescriptor: $internalDescriptor, externalDescriptor: $externalDescriptor, dateSynced: $dateSynced, walletPath: $walletPath, network: $network, id: $id, nextAddress: $nextAddress, balance: $balance, unlockedBalance: $unlockedBalance, isHot: $isHot, transactions: $transactions, utxo: $utxo, tags: $tags)';
+    return 'EnvoyAccount(name: $name, color: $color, deviceSerial: $deviceSerial, dateAdded: $dateAdded, preferredAddressType: $preferredAddressType, index: $index, descriptors: $descriptors, dateSynced: $dateSynced, walletPath: $walletPath, network: $network, id: $id, nextAddress: $nextAddress, balance: $balance, unlockedBalance: $unlockedBalance, isHot: $isHot, transactions: $transactions, utxo: $utxo, tags: $tags)';
   }
 
   @override
@@ -431,21 +430,19 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
                 other.deviceSerial == deviceSerial) &&
             (identical(other.dateAdded, dateAdded) ||
                 other.dateAdded == dateAdded) &&
-            (identical(other.addressType, addressType) ||
-                other.addressType == addressType) &&
+            (identical(other.preferredAddressType, preferredAddressType) ||
+                other.preferredAddressType == preferredAddressType) &&
             (identical(other.index, index) || other.index == index) &&
-            (identical(other.internalDescriptor, internalDescriptor) ||
-                other.internalDescriptor == internalDescriptor) &&
-            (identical(other.externalDescriptor, externalDescriptor) ||
-                other.externalDescriptor == externalDescriptor) &&
+            const DeepCollectionEquality()
+                .equals(other._descriptors, _descriptors) &&
             (identical(other.dateSynced, dateSynced) ||
                 other.dateSynced == dateSynced) &&
             (identical(other.walletPath, walletPath) ||
                 other.walletPath == walletPath) &&
             (identical(other.network, network) || other.network == network) &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.nextAddress, nextAddress) ||
-                other.nextAddress == nextAddress) &&
+            const DeepCollectionEquality()
+                .equals(other._nextAddress, _nextAddress) &&
             (identical(other.balance, balance) || other.balance == balance) &&
             (identical(other.unlockedBalance, unlockedBalance) ||
                 other.unlockedBalance == unlockedBalance) &&
@@ -457,28 +454,26 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
   }
 
   @override
-  int get hashCode => Object.hashAll([
-        runtimeType,
-        name,
-        color,
-        deviceSerial,
-        dateAdded,
-        addressType,
-        index,
-        internalDescriptor,
-        externalDescriptor,
-        dateSynced,
-        walletPath,
-        network,
-        id,
-        nextAddress,
-        balance,
-        unlockedBalance,
-        isHot,
-        const DeepCollectionEquality().hash(_transactions),
-        const DeepCollectionEquality().hash(_utxo),
-        const DeepCollectionEquality().hash(_tags)
-      ]);
+  int get hashCode => Object.hash(
+      runtimeType,
+      name,
+      color,
+      deviceSerial,
+      dateAdded,
+      preferredAddressType,
+      index,
+      const DeepCollectionEquality().hash(_descriptors),
+      dateSynced,
+      walletPath,
+      network,
+      id,
+      const DeepCollectionEquality().hash(_nextAddress),
+      balance,
+      unlockedBalance,
+      isHot,
+      const DeepCollectionEquality().hash(_transactions),
+      const DeepCollectionEquality().hash(_utxo),
+      const DeepCollectionEquality().hash(_tags));
 
   /// Create a copy of EnvoyAccount
   /// with the given fields replaced by the non-null parameter values.
@@ -495,15 +490,14 @@ abstract class _EnvoyAccount implements EnvoyAccount {
       required final String color,
       final String? deviceSerial,
       final String? dateAdded,
-      required final AddressType addressType,
+      required final AddressType preferredAddressType,
       required final int index,
-      required final String internalDescriptor,
-      final String? externalDescriptor,
+      required final List<NgDescriptor> descriptors,
       final String? dateSynced,
       final String? walletPath,
       required final Network network,
       required final String id,
-      required final String nextAddress,
+      required final List<(String, AddressType)> nextAddress,
       required final BigInt balance,
       required final BigInt unlockedBalance,
       required final bool isHot,
@@ -520,13 +514,11 @@ abstract class _EnvoyAccount implements EnvoyAccount {
   @override
   String? get dateAdded;
   @override
-  AddressType get addressType;
+  AddressType get preferredAddressType;
   @override
   int get index;
   @override
-  String get internalDescriptor;
-  @override
-  String? get externalDescriptor;
+  List<NgDescriptor> get descriptors;
   @override
   String? get dateSynced;
   @override
@@ -536,7 +528,7 @@ abstract class _EnvoyAccount implements EnvoyAccount {
   @override
   String get id;
   @override
-  String get nextAddress;
+  List<(String, AddressType)> get nextAddress;
   @override
   BigInt get balance;
   @override

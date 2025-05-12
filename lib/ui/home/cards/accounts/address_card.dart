@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/business/account.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
@@ -42,8 +44,10 @@ class _AddressCardState extends ConsumerState<AddressCard> {
 
   @override
   Widget build(BuildContext context) {
-    final address =
-        ref.watch(accountStateProvider(widget.account.id))?.nextAddress ?? "";
+    final address = ref
+            .watch(accountStateProvider(widget.account.id))
+            ?.getPreferredAddress() ??
+        "";
     AddressWidget addressWidget = AddressWidget(address: address);
     double optimalAddressHorizontalPadding =
         addressWidget.calculateOptimalPadding(address, context);

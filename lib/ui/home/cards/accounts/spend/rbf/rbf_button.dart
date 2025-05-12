@@ -132,7 +132,6 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         draftTx: result.draftTransaction,
       );
     } catch (e) {
-      kPrint("Error checking RBF: $e");
       //TODO: handle rbf error
     } finally {
       if (mounted) {

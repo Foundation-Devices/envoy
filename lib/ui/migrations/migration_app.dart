@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/main.dart';
 import 'package:envoy/ui/background.dart';
@@ -93,7 +94,7 @@ class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
         runApp(const EnvoyApp());
       }
     });
-    Future.delayed(const Duration(milliseconds: 300)).then((value) {
+    Future.delayed(const Duration(milliseconds: 100)).then((value) {
       MigrationManager().migrate();
     });
   }

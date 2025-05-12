@@ -14,7 +14,7 @@ crate-type = ["cdylib", "staticlib"]
 flutter_rust_bridge = "=2.9.0"
 
 #ngwallet = { path = "../../../../ngwallet", features = ["envoy"] }
-ngwallet = {  git = "https://github.com/Foundation-Devices/ngwallet", rev = "700c893cae8bdb5f22581bacec763f69afd3a5b4", features = ["envoy"] }
+ngwallet = {  git = "https://github.com/Foundation-Devices/ngwallet", rev = "459ec64f1ca0c4e37e619537e81c4fc3c01dbc13", features = ["envoy"] }
 
 bdk_wallet = { version = "1.1.0", features = ["rusqlite"] }
 bip39 = { version = "2.1.0", features = ["rand"] }

@@ -23,6 +23,15 @@ extension AccountExtension on EnvoyAccount {
   EnvoyAccountHandler? get handler {
     return NgAccountManager().getHandler(this);
   }
+
+  String getPreferredAddress() {
+    return nextAddress
+        .where(
+          (addressRecord) => addressRecord.$2 == preferredAddressType,
+        )
+        .first
+        .$1;
+  }
 }
 
 class NgAccountManager extends ChangeNotifier {

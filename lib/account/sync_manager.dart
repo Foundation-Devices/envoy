@@ -7,12 +7,13 @@ import 'dart:async';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:ngwallet/ngwallet.dart';
 
 class SyncManager {
   final _syncScheduler = EnvoyScheduler().parallel;
-  final Map<EnvoyAccount, SyncRequest> _synRequests = {};
+  final Map<(EnvoyAccount, AddressType), SyncRequest> _synRequests = {};
   final List<EnvoyAccount> Function() accountsCallback;
   Function(EnvoyAccount)? _onUpdateFinished;
   late Timer _syncTimer;
@@ -39,7 +40,11 @@ class SyncManager {
     final accounts = accountsCallback();
     for (var account in accounts) {
       if (account.handler != null) {
-        _synRequests[account] = await account.handler!.requestSync();
+        for (var descriptor in account.descriptors) {
+          final request = await account.handler!
+              .syncRequest(addressType: descriptor.addressType);
+          _synRequests[(account, descriptor.addressType)] = request;
+        }
       }
     }
     _startSync();
@@ -53,14 +58,20 @@ class SyncManager {
     }
     if (account.handler != null) {
       pauseSync();
-      _synRequests[account] = await account.handler!.requestSync();
-      await _performWalletSync(account, server, port);
+      for (var descriptor in account.descriptors) {
+        final request = await account.handler!
+            .syncRequest(addressType: descriptor.addressType);
+        _synRequests[(account, descriptor.addressType)] = request;
+        await _performWalletSync(account, server, port, descriptor.addressType);
+      }
       resumeSync();
     }
   }
 
   void _startSync() async {
-    for (final account in _synRequests.keys) {
+    for (final accountWithType in _synRequests.keys) {
+      final account = accountWithType.$1;
+      final type = accountWithType.$2;
       final server = SyncManager.getElectrumServer(account.network);
       int? port = Settings().getPort(account.network);
       if (port == -1) {
@@ -74,13 +85,13 @@ class SyncManager {
             while (_pauseSync) {
               await Future.delayed(const Duration(milliseconds: 100));
             }
-            await _performWalletSync(account, server, port);
+            await _performWalletSync(account, server, port, type);
             kPrint(
                 "✨Finished account account ${account.name} | ${account.network} | $server  |Tor : $port");
           } catch (e) {
             kPrint("Error syncing account ${account.name}: $e");
           } finally {
-            _synRequests.remove(account);
+            _synRequests.remove(accountWithType);
             _onUpdateFinished?.call(account);
           }
         },
@@ -88,14 +99,25 @@ class SyncManager {
     }
   }
 
-  Future<void> _performWalletSync(
-      EnvoyAccount account, String server, int? port) async {
+  Future<void> _performWalletSync(EnvoyAccount account, String server,
+      int? port, AddressType addressType) async {
+    final syncRequest = _synRequests[(account, addressType)];
+    if (syncRequest == null) {
+      return;
+    }
     WalletUpdate update = await EnvoyAccountHandler.syncWallet(
-      syncRequest: _synRequests[account]!,
+      syncRequest: syncRequest,
       electrumServer: server,
       torPort: port,
     );
-    await account.handler!.applyUpdate(update: update);
+    try {
+      await account.handler!
+          .applyUpdate(update: update, addressType: addressType);
+    } catch (e) {
+      EnvoyReport().log(
+          "Error applying sync for ${account.name} | ${account.network} | $server  |Tor : $port",
+          e.toString());
+    }
   }
 
   static String getElectrumServer(Network network) {

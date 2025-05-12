@@ -7,7 +7,7 @@ import '../../api/envoy_wallet.dart';
 import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `clone`, `clone`, `cmp`, `eq`, `fmt`, `fmt`, `hash`, `partial_cmp`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `clone`, `clone`, `clone`, `cmp`, `eq`, `fmt`, `fmt`, `fmt`, `hash`, `partial_cmp`
 
 enum AddressType {
   /// Pay to pubkey hash.
@@ -32,10 +32,9 @@ class NgAccountConfig {
   final String color;
   final String? deviceSerial;
   final String? dateAdded;
-  final AddressType addressType;
+  final AddressType preferredAddressType;
   final int index;
-  final String internalDescriptor;
-  final String? externalDescriptor;
+  final List<NgDescriptor> descriptors;
   final String? dateSynced;
   final String? walletPath;
   final Network network;
@@ -46,10 +45,9 @@ class NgAccountConfig {
     required this.color,
     this.deviceSerial,
     this.dateAdded,
-    required this.addressType,
+    required this.preferredAddressType,
     required this.index,
-    required this.internalDescriptor,
-    this.externalDescriptor,
+    required this.descriptors,
     this.dateSynced,
     this.walletPath,
     required this.network,
@@ -70,10 +68,9 @@ class NgAccountConfig {
       color.hashCode ^
       deviceSerial.hashCode ^
       dateAdded.hashCode ^
-      addressType.hashCode ^
+      preferredAddressType.hashCode ^
       index.hashCode ^
-      internalDescriptor.hashCode ^
-      externalDescriptor.hashCode ^
+      descriptors.hashCode ^
       dateSynced.hashCode ^
       walletPath.hashCode ^
       network.hashCode ^
@@ -88,12 +85,36 @@ class NgAccountConfig {
           color == other.color &&
           deviceSerial == other.deviceSerial &&
           dateAdded == other.dateAdded &&
-          addressType == other.addressType &&
+          preferredAddressType == other.preferredAddressType &&
           index == other.index &&
-          internalDescriptor == other.internalDescriptor &&
-          externalDescriptor == other.externalDescriptor &&
+          descriptors == other.descriptors &&
           dateSynced == other.dateSynced &&
           walletPath == other.walletPath &&
           network == other.network &&
           id == other.id;
+}
+
+class NgDescriptor {
+  final String internal;
+  final String? external_;
+  final AddressType addressType;
+
+  const NgDescriptor({
+    required this.internal,
+    this.external_,
+    required this.addressType,
+  });
+
+  @override
+  int get hashCode =>
+      internal.hashCode ^ external_.hashCode ^ addressType.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is NgDescriptor &&
+          runtimeType == other.runtimeType &&
+          internal == other.internal &&
+          external_ == other.external_ &&
+          addressType == other.addressType;
 }

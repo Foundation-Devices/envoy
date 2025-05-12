@@ -4,7 +4,8 @@
 
 use crate::api::envoy_wallet::Network;
 use flutter_rust_bridge::frb;
-use ngwallet::config::AddressType;
+use ngwallet::account::Descriptor;
+use ngwallet::config::{AddressType, NgDescriptor};
 use ngwallet::transaction::{BitcoinTransaction, Output};
 
 #[derive(Clone)]
@@ -14,15 +15,14 @@ pub struct EnvoyAccount {
     pub color: String,
     pub device_serial: Option<String>,
     pub date_added: Option<String>,
-    pub address_type: AddressType,
+    pub preferred_address_type: AddressType,
     pub index: u32,
-    pub internal_descriptor: String,
-    pub external_descriptor: Option<String>,
+    pub descriptors: Vec<NgDescriptor>,
     pub date_synced: Option<String>,
     pub wallet_path: Option<String>,
     pub network: Network,
     pub id: String,
-    pub next_address: String,
+    pub next_address: Vec<(String,AddressType)>,
     pub balance: u64,
     pub unlocked_balance: u64,
     pub is_hot: bool,
