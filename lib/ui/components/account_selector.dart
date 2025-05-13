@@ -473,9 +473,9 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
               child: ScrollGradientMask(
                 child: Stack(
                   children: [
-                    for (var (account) in widget.accounts.where(
-                      (element) => element.id != _selectedAccount.id,
-                    ))
+                    for (var account in widget.accounts
+                        .where((element) => element.id != _selectedAccount.id)
+                        .take(6))
                       _buildHeroOverlay(account),
                     for (var (account) in widget.accounts.where(
                       (element) => element.id == _selectedAccount.id,
