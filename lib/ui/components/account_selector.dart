@@ -273,7 +273,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
   late final _forwardSimulation =
       SpringSimulation(_forwardSpring, 0.0, 1.0, 0.0);
   late final _reverseSpringSimulation =
-      SpringSimulation(_reverseSpring, 1.0, 0.012, 0.0);
+      SpringSimulation(_reverseSpring, 1.0, 0.0, 0.0);
 
   @override
   void initState() {
@@ -473,9 +473,9 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
               child: ScrollGradientMask(
                 child: Stack(
                   children: [
-                    for (var (account) in widget.accounts.where(
-                      (element) => element.id != _selectedAccount.id,
-                    ))
+                    for (var account in widget.accounts
+                        .where((element) => element.id != _selectedAccount.id)
+                        .take(6))
                       _buildHeroOverlay(account),
                     for (var (account) in widget.accounts.where(
                       (element) => element.id == _selectedAccount.id,
