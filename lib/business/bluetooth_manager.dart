@@ -8,12 +8,14 @@ import 'dart:typed_data';
 
 import 'package:bluart/bluart.dart' as bluart;
 import 'package:envoy/business/prime_device.dart';
+import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/util/console.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/uuid_value.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:foundation_api/src/rust/third_party/foundation_api/api/scv.dart';
 
 class BluetoothManager {
   StreamSubscription? _subscription;
@@ -118,10 +120,10 @@ class BluetoothManager {
     await EnvoyStorage().savePrime(prime);
   }
 
-  Future<void> sendPsbt(String descriptor, String psbt) async {
+  Future<void> sendPsbt(String accountId, String psbt) async {
     final encoded = await encodeMessage(
         message: api.QuantumLinkMessage.signPsbt(
-            api.SignPsbt(descriptor: descriptor, psbt: psbt)));
+            api.SignPsbt(psbt: psbt, accountId: accountId)));
 
     kPrint("before sending psbt");
     await bluart.writeAll(id: bleId, data: encoded);
@@ -193,6 +195,22 @@ class BluetoothManager {
 
     final encoded = await encodeMessage(
       message: api.QuantumLinkMessage.firmwarePayload(payload),
+    );
+
+    await bluart.writeAll(id: bleId, data: encoded);
+  }
+
+  Future<void> sendChallengeMessage() async {
+    SecurityChallengeMessage? challenge = await ScvServer().getPrimeChallenge();
+
+    if (challenge == null) {
+      // TODO: SCV what now?
+      kPrint("No challenge available");
+      return;
+    }
+
+    final encoded = await encodeMessage(
+      message: api.QuantumLinkMessage.securityChallengeMessage(challenge),
     );
 
     await bluart.writeAll(id: bleId, data: encoded);

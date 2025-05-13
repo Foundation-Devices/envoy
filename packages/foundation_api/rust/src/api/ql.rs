@@ -67,7 +67,7 @@ pub async fn decode(data: Vec<u8>, decoder: &mut Dechunker, quantum_link_identit
             }
         };
         debug!("Unsealing envelope...");
-        let passport_message = PassportMessage::unseal_passport_message(&envelope, &quantum_link_identity.clone().private_keys.unwrap()).unwrap();
+        let (passport_message, _) = PassportMessage::unseal_passport_message(&envelope, &quantum_link_identity.clone().private_keys.unwrap()).unwrap();
 
         return Ok(DecoderStatus {
             progress: 1.0,
