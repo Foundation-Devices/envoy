@@ -7,7 +7,7 @@ import 'dart:io';
 
 import 'package:envoy/util/console.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 void main() {
   test("Benchmark sorting", () async {

@@ -7,7 +7,7 @@ import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 void main() {
   test("Test create voucher from old url format", () async {
