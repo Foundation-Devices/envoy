@@ -120,6 +120,7 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
                     }
 
                     final index = widget.options.indexOf(newValue);
+                    //ENV-1689-buy-account-reorder-visual-miniglitch
                     if (index == -1) {
                       return;
                     }
