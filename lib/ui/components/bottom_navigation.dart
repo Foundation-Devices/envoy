@@ -244,7 +244,7 @@ class EnvoyBottomNavBar extends StatelessWidget {
         color: Colors.transparent,
         child: SizedBox(
           width: double.infinity,
-          // height: 100,
+          height: 73,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
