@@ -118,9 +118,15 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
                         newValue.type == EnvoyDropdownOptionType.sectionBreak) {
                       return;
                     }
+
+                    final index = widget.options.indexOf(newValue);
+                    if (index == -1) {
+                      return;
+                    }
+
                     setState(() {
                       _selectedOption = newValue;
-                      _selectedIndex = widget.options.indexOf(newValue);
+                      _selectedIndex = index;
                       widget.onOptionChanged?.call(newValue);
                     });
                   }
