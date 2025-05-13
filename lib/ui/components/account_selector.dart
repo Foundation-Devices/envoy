@@ -273,7 +273,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
   late final _forwardSimulation =
       SpringSimulation(_forwardSpring, 0.0, 1.0, 0.0);
   late final _reverseSpringSimulation =
-      SpringSimulation(_reverseSpring, 1.0, 0.0, 0.0);
+      SpringSimulation(_reverseSpring, 1.0, 0.012, 0.0);
 
   @override
   void initState() {
