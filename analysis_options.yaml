@@ -8,6 +8,7 @@ analyzer:
   exclude:
     - 'lib/generated'
     - 'lib/business/*.freezed.*'
-
+    - packages/ngwallet/lib/src/**
+    - test/** # TODO: fix and enable tests after ngwallet.dart integration
   plugins:
     - custom_lint

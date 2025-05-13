@@ -519,7 +519,7 @@ class _TransactionsDetailsWidgetState
                   ),
                 ),
               ],
-              if (rbfPossible ==true && tx.vsize == BigInt.zero) ...[
+              if (rbfPossible == true && tx.vsize == BigInt.zero) ...[
                 const EnvoyIcon(
                   EnvoyIcons.info,
                   color: EnvoyColors.textPrimaryInverse,
