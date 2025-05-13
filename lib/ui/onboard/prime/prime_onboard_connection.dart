@@ -11,13 +11,16 @@ import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/prime/onboard_prime.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation_api/foundation_api.dart';
+import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:envoy/ui/components/button.dart';
 
 class PrimeOnboardParing extends ConsumerStatefulWidget {
   const PrimeOnboardParing({super.key});
@@ -75,10 +78,6 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
         });
       }
       final bleStepNotifier = ref.read(bleConnectionProvider.notifier);
-      final deviceSecurityStepNotifier =
-          ref.read(deviceSecurityProvider.notifier);
-      final firmWareUpdateStepNotifier =
-          ref.read(firmWareUpdateProvider.notifier);
 
       String id = LocalStorage().prefs.getString(primeSerialPref) ?? "";
       device = BleDevice(id: id, name: "Passport Prime", connected: false);
@@ -90,36 +89,16 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
       setState(() {
         device = BleDevice(id: id, name: "Passport Prime", connected: true);
       });
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(milliseconds: 200));
       await bleStepNotifier.updateStep(
           S().onboarding_connectionIntro_connectedToPrime,
           EnvoyStepState.FINISHED);
 
-      await deviceSecurityStepNotifier.updateStep(
+      await ref.read(deviceSecurityProvider.notifier).updateStep(
           S().onboarding_connectionIntro_checkingDeviceSecurity,
           EnvoyStepState.LOADING);
-      await Future.delayed(const Duration(seconds: 10));
-      await deviceSecurityStepNotifier.updateStep(
-          S().onboarding_connectionChecking_SecurityPassed,
-          EnvoyStepState.FINISHED);
 
-      await BluetoothManager()
-          .sendOnboardingState(OnboardingState.securityChecked);
-
-      await firmWareUpdateStepNotifier.updateStep(
-          S().onboarding_connectionChecking_forUpdates, EnvoyStepState.LOADING);
-      await Future.delayed(const Duration(seconds: 10));
-      await firmWareUpdateStepNotifier.updateStep(
-          S().onboarding_connectionUpdatesAvailable_updatesAvailable,
-          EnvoyStepState.FINISHED);
-      await BluetoothManager()
-          .sendOnboardingState(OnboardingState.updateAvailable);
-      if (mounted) {
-        setState(() {
-          canPop = true;
-          updateAvailable = true;
-        });
-      }
+      await BluetoothManager().sendChallengeMessage();
     } catch (e) {
       kPrint(e);
     }
@@ -128,6 +107,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
   @override
   Widget build(BuildContext context) {
     final firmWareCheck = ref.watch(firmWareUpdateProvider);
+    final deviceCheck = ref.watch(deviceSecurityProvider);
 
     return PopScope(
       canPop: canPop,
@@ -162,7 +142,6 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
                     ),
                     Expanded(child: Consumer(builder: (context, ref, child) {
                       final bleStep = ref.watch(bleConnectionProvider);
-                      final deviceCheck = ref.watch(deviceSecurityProvider);
                       return Container(
                         margin: const EdgeInsets.symmetric(
                           vertical: EnvoySpacing.medium1,
@@ -176,13 +155,46 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
                           children: [
                             EnvoyStepItem(step: bleStep),
                             EnvoyStepItem(step: deviceCheck),
-                            EnvoyStepItem(
-                                step: firmWareCheck,
-                                highlight: updateAvailable),
+                            if (deviceCheck.state != EnvoyStepState.ERROR)
+                              EnvoyStepItem(
+                                  step: firmWareCheck,
+                                  highlight: updateAvailable),
                           ],
                         ),
                       );
                     })),
+                    if (deviceCheck.state == EnvoyStepState.ERROR)
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            S().onboarding_connectionIntroError_content,
+                            style: EnvoyTypography.body
+                                .copyWith(color: EnvoyColors.textTertiary),
+                            textAlign: TextAlign.center,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: EnvoySpacing.medium1),
+                            child: EnvoyButton(
+                              onTap: () {
+                                context.go("/");
+                              },
+                              label:
+                                  S().onboarding_connectionIntroError_exitSetup,
+                              type: ButtonType.secondary,
+                            ),
+                          ),
+                          EnvoyButton(
+                            onTap: () {
+                              launchUrl(Uri.parse(
+                                  "https://community.foundation.xyz/c/passport-prime/12"));
+                            },
+                            label: S().common_button_contactSupport,
+                            type: ButtonType.primary,
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               )),

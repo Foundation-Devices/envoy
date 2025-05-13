@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:animations/animations.dart';
 import 'package:bluart/bluart.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
+import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -35,6 +36,7 @@ import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/ui/onboard/prime/connection_lost_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'firmware_update/prime_fw_update_state.dart';
+import 'package:foundation_api/src/rust/third_party/foundation_api/api/scv.dart';
 
 class OnboardPrimeBluetooth extends ConsumerStatefulWidget {
   const OnboardPrimeBluetooth({super.key});
@@ -83,6 +85,40 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             (message.message as QuantumLinkMessage_OnboardingState).field0;
 
         _handleOnboardingState(onboardingState);
+      }
+
+      if (message.message is QuantumLinkMessage_SecurityProofMessage) {
+        final SecurityProofMessage proofMessage =
+            (message.message as QuantumLinkMessage_SecurityProofMessage).field0;
+
+        bool isVerified = await ScvServer().isProofVerified(proofMessage);
+
+        if (isVerified) {
+          await ref.read(deviceSecurityProvider.notifier).updateStep(
+              S().onboarding_connectionChecking_SecurityPassed,
+              EnvoyStepState.FINISHED);
+
+          await BluetoothManager()
+              .sendOnboardingState(OnboardingState.securityChecked);
+
+          await ref.read(firmWareUpdateProvider.notifier).updateStep(
+              S().onboarding_connectionChecking_forUpdates,
+              EnvoyStepState.LOADING);
+          await Future.delayed(const Duration(seconds: 10));
+          // TODO: change delayed with real firmware update check
+
+          await ref.read(firmWareUpdateProvider.notifier).updateStep(
+              S().onboarding_connectionUpdatesAvailable_updatesAvailable,
+              EnvoyStepState.FINISHED);
+          await BluetoothManager()
+              .sendOnboardingState(OnboardingState.updateAvailable);
+        } else {
+          await ref.read(deviceSecurityProvider.notifier).updateStep(
+              S().onboarding_connectionIntroError_securityCheckFailed,
+              EnvoyStepState.ERROR);
+          await BluetoothManager()
+              .sendOnboardingState(OnboardingState.securityCheckFailed);
+        }
       }
     });
   }
@@ -231,6 +267,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
       case OnboardingState.updateAvailable:
         break;
       case OnboardingState.updateNotAvailable:
+        break;
+      case OnboardingState.securityCheckFailed:
         break;
     }
   }

@@ -19,6 +19,7 @@ import 'third_party/foundation_api/api/onboarding.dart';
 import 'third_party/foundation_api/api/pairing.dart';
 import 'third_party/foundation_api/api/passport.dart';
 import 'third_party/foundation_api/api/quantum_link.dart';
+import 'third_party/foundation_api/api/scv.dart';
 import 'third_party/foundation_api/api/status.dart';
 
 abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
@@ -111,9 +112,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String dco_decode_String(dynamic raw);
 
   @protected
+  AccountUpdate dco_decode_account_update(dynamic raw);
+
+  @protected
   XidDocument
       dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           dynamic raw);
+
+  @protected
+  AccountUpdate dco_decode_box_autoadd_account_update(dynamic raw);
+
+  @protected
+  BroadcastTransaction dco_decode_box_autoadd_broadcast_transaction(
+      dynamic raw);
 
   @protected
   DeviceStatus dco_decode_box_autoadd_device_status(dynamic raw);
@@ -143,10 +154,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   PassportMessage dco_decode_box_autoadd_passport_message(dynamic raw);
 
   @protected
+  SecurityChallengeMessage dco_decode_box_autoadd_security_challenge_message(
+      dynamic raw);
+
+  @protected
+  SecurityProofMessage dco_decode_box_autoadd_security_proof_message(
+      dynamic raw);
+
+  @protected
   SignPsbt dco_decode_box_autoadd_sign_psbt(dynamic raw);
 
   @protected
-  SyncUpdate dco_decode_box_autoadd_sync_update(dynamic raw);
+  BroadcastTransaction dco_decode_broadcast_transaction(dynamic raw);
 
   @protected
   DecoderStatus dco_decode_decoder_status(dynamic raw);
@@ -232,10 +251,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   QuantumLinkMessage dco_decode_quantum_link_message(dynamic raw);
 
   @protected
-  SignPsbt dco_decode_sign_psbt(dynamic raw);
+  SecurityChallengeMessage dco_decode_security_challenge_message(dynamic raw);
 
   @protected
-  SyncUpdate dco_decode_sync_update(dynamic raw);
+  SecurityProofMessage dco_decode_security_proof_message(dynamic raw);
+
+  @protected
+  SignPsbt dco_decode_sign_psbt(dynamic raw);
 
   @protected
   int dco_decode_u_32(dynamic raw);
@@ -316,9 +338,20 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
+  AccountUpdate sse_decode_account_update(SseDeserializer deserializer);
+
+  @protected
   XidDocument
       sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           SseDeserializer deserializer);
+
+  @protected
+  AccountUpdate sse_decode_box_autoadd_account_update(
+      SseDeserializer deserializer);
+
+  @protected
+  BroadcastTransaction sse_decode_box_autoadd_broadcast_transaction(
+      SseDeserializer deserializer);
 
   @protected
   DeviceStatus sse_decode_box_autoadd_device_status(
@@ -356,10 +389,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  SecurityChallengeMessage sse_decode_box_autoadd_security_challenge_message(
+      SseDeserializer deserializer);
+
+  @protected
+  SecurityProofMessage sse_decode_box_autoadd_security_proof_message(
+      SseDeserializer deserializer);
+
+  @protected
   SignPsbt sse_decode_box_autoadd_sign_psbt(SseDeserializer deserializer);
 
   @protected
-  SyncUpdate sse_decode_box_autoadd_sync_update(SseDeserializer deserializer);
+  BroadcastTransaction sse_decode_broadcast_transaction(
+      SseDeserializer deserializer);
 
   @protected
   DecoderStatus sse_decode_decoder_status(SseDeserializer deserializer);
@@ -449,10 +491,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  SignPsbt sse_decode_sign_psbt(SseDeserializer deserializer);
+  SecurityChallengeMessage sse_decode_security_challenge_message(
+      SseDeserializer deserializer);
 
   @protected
-  SyncUpdate sse_decode_sync_update(SseDeserializer deserializer);
+  SecurityProofMessage sse_decode_security_proof_message(
+      SseDeserializer deserializer);
+
+  @protected
+  SignPsbt sse_decode_sign_psbt(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_32(SseDeserializer deserializer);
@@ -537,9 +584,20 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
+  void sse_encode_account_update(AccountUpdate self, SseSerializer serializer);
+
+  @protected
   void
       sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           XidDocument self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_account_update(
+      AccountUpdate self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_broadcast_transaction(
+      BroadcastTransaction self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_device_status(
@@ -578,12 +636,20 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       PassportMessage self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_security_challenge_message(
+      SecurityChallengeMessage self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_security_proof_message(
+      SecurityProofMessage self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_sign_psbt(
       SignPsbt self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_sync_update(
-      SyncUpdate self, SseSerializer serializer);
+  void sse_encode_broadcast_transaction(
+      BroadcastTransaction self, SseSerializer serializer);
 
   @protected
   void sse_encode_decoder_status(DecoderStatus self, SseSerializer serializer);
@@ -682,10 +748,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       QuantumLinkMessage self, SseSerializer serializer);
 
   @protected
-  void sse_encode_sign_psbt(SignPsbt self, SseSerializer serializer);
+  void sse_encode_security_challenge_message(
+      SecurityChallengeMessage self, SseSerializer serializer);
 
   @protected
-  void sse_encode_sync_update(SyncUpdate self, SseSerializer serializer);
+  void sse_encode_security_proof_message(
+      SecurityProofMessage self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_sign_psbt(SignPsbt self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_32(int self, SseSerializer serializer);
