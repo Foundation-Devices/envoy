@@ -3,11 +3,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:ui';
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/ui/components/account_selector.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/envoy_loader.dart';
-import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:flutter/material.dart';
@@ -75,13 +75,13 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
       selectedAccount = account;
       address = null;
     });
-    if (accountAddressCache.containsKey(selectedAccount?.id!) &&
+    if (accountAddressCache.containsKey(selectedAccount?.id) &&
         accountAddressCache[selectedAccount?.id] != null) {
       setState(() {
         address = accountAddressCache[selectedAccount?.id];
       });
     } else {
-      String? address = account.nextAddress;
+      String? address = account.getPreferredAddress();
       // Separate setState call to avoid UI lag during the async operation
       setState(() {
         this.address = address;
@@ -294,7 +294,7 @@ class ChooseAccountState extends State<ChooseAccount> {
   late Account _currentSelectedAccount;
 
   //to improve shadow animation, bool
-  bool _exiting = false;
+  final bool _exiting = false;
 
   @override
   void initState() {

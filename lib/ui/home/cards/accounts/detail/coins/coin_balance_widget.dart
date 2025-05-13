@@ -16,6 +16,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/rive_util.dart';
@@ -137,7 +138,7 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
       accountId: accountId,
       showLock: widget.showLock,
       onLockTap: () async {
-        if (!output.doNotSpend!) {
+        if (!output.doNotSpend) {
           bool dismissed = await EnvoyStorage()
               .checkPromptDismissed(DismissiblePrompt.coinLockWarning);
           if (!dismissed && context.mounted) {
@@ -222,7 +223,7 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
     final account = ref.read(selectedAccountProvider);
     await account?.handler?.setDoNotSpend(
       utxo: coin,
-      doNotSpend: !(coin.doNotSpend ?? true),
+      doNotSpend: !(coin.doNotSpend),
     );
     setState(() {
       if (coin.doNotSpend == false) {
@@ -393,7 +394,7 @@ class CoinTagBalanceWidget extends ConsumerWidget {
         doNotSpend: true,
       );
     } catch (e) {
-      print(e);
+      kPrint(e);
     }
   }
 
@@ -405,7 +406,7 @@ class CoinTagBalanceWidget extends ConsumerWidget {
         doNotSpend: false,
       );
     } catch (e) {
-      print(e);
+      kPrint(e);
     }
   }
 }
@@ -485,7 +486,7 @@ String getMessage(Tag tag, WidgetRef ref) {
   //TODO: use the actual utxo objects in selection since new api will allow us to send objects to rust
   final selectedCoins =
       selections.where((element) => tag.utxo.contains(element));
-  final lockedCoins = tag.utxo.where((element) => element.doNotSpend ?? false);
+  final lockedCoins = tag.utxo.where((element) => element.doNotSpend);
   final availableCoins = tag.utxo.length - lockedCoins.length;
   String selectionMessage =
       "${selectedCoins.length} ${S().card_label_of} $availableCoins ${S().card_coins_selected}";

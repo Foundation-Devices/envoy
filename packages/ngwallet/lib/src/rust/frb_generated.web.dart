@@ -222,16 +222,26 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<Input> dco_decode_list_input(dynamic raw);
 
   @protected
+  List<NgDescriptor> dco_decode_list_ng_descriptor(dynamic raw);
+
+  @protected
   List<Output> dco_decode_list_output(dynamic raw);
 
   @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  List<(String, AddressType)> dco_decode_list_record_string_address_type(
+      dynamic raw);
+
+  @protected
   Network dco_decode_network(dynamic raw);
 
   @protected
   NgAccountConfig dco_decode_ng_account_config(dynamic raw);
+
+  @protected
+  NgDescriptor dco_decode_ng_descriptor(dynamic raw);
 
   @protected
   RustStreamSink<EnvoyAccount>? dco_decode_opt_StreamSink_envoy_account_Sse(
@@ -254,6 +264,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Output dco_decode_output(dynamic raw);
+
+  @protected
+  (String, AddressType) dco_decode_record_string_address_type(dynamic raw);
 
   @protected
   Seed dco_decode_seed(dynamic raw);
@@ -455,16 +468,27 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<Input> sse_decode_list_input(SseDeserializer deserializer);
 
   @protected
+  List<NgDescriptor> sse_decode_list_ng_descriptor(
+      SseDeserializer deserializer);
+
+  @protected
   List<Output> sse_decode_list_output(SseDeserializer deserializer);
 
   @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
+  List<(String, AddressType)> sse_decode_list_record_string_address_type(
+      SseDeserializer deserializer);
+
+  @protected
   Network sse_decode_network(SseDeserializer deserializer);
 
   @protected
   NgAccountConfig sse_decode_ng_account_config(SseDeserializer deserializer);
+
+  @protected
+  NgDescriptor sse_decode_ng_descriptor(SseDeserializer deserializer);
 
   @protected
   RustStreamSink<EnvoyAccount>? sse_decode_opt_StreamSink_envoy_account_Sse(
@@ -487,6 +511,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Output sse_decode_output(SseDeserializer deserializer);
+
+  @protected
+  (String, AddressType) sse_decode_record_string_address_type(
+      SseDeserializer deserializer);
 
   @protected
   Seed sse_decode_seed(SseDeserializer deserializer);
@@ -694,6 +722,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_list_input(List<Input> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_ng_descriptor(
+      List<NgDescriptor> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_output(List<Output> self, SseSerializer serializer);
 
   @protected
@@ -701,11 +733,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Uint8List self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_record_string_address_type(
+      List<(String, AddressType)> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_network(Network self, SseSerializer serializer);
 
   @protected
   void sse_encode_ng_account_config(
       NgAccountConfig self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_ng_descriptor(NgDescriptor self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_StreamSink_envoy_account_Sse(
@@ -730,6 +769,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_output(Output self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_record_string_address_type(
+      (String, AddressType) self, SseSerializer serializer);
 
   @protected
   void sse_encode_seed(Seed self, SseSerializer serializer);

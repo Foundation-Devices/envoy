@@ -267,7 +267,6 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
 
   @override
   dispose() {
-    print("Tx dialog idsp ");
     super.dispose();
   }
 

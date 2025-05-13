@@ -25,7 +25,6 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/easing.dart';
-import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -66,7 +65,6 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
     if (coinTag.untagged) {
       accountAccentColor = const Color(0xff808080);
     }
-    bool addressNotAvailable = false;
 
     return EnvoyInfoCard(
         backgroundColor: accountAccentColor,
@@ -92,17 +90,13 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                       Tween<double>(begin: 0, end: showExpandedAddress ? 1 : 0),
                   duration: const Duration(milliseconds: 200),
                   builder: (context, value, child) {
-                    return addressNotAvailable
-                        ? Text("Address not available ",
-                            // TODO: Figma
-                            style: trailingTextStyle)
-                        : AddressWidget(
-                            widgetKey: ValueKey<bool>(showExpandedAddress),
-                            address: utxoAddress,
-                            short: true,
-                            sideChunks:
-                                2 + (value * (utxoAddress.length / 4)).round(),
-                          );
+                    return AddressWidget(
+                      widgetKey: ValueKey<bool>(showExpandedAddress),
+                      address: utxoAddress,
+                      short: true,
+                      sideChunks:
+                          2 + (value * (utxoAddress.length / 4)).round(),
+                    );
                   }),
             ),
           ),

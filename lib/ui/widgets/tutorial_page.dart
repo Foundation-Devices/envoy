@@ -13,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/business/account.dart';
 
 final dialogPageProvider = StateProvider<int>((ref) => 1);
 

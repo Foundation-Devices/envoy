@@ -2,10 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/ui/widgets/scanner/scanner_decoder.dart';
-import 'package:ngwallet/ngwallet.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class InvalidPairPayloadException implements Exception {

@@ -2,11 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account.dart';
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
-import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
@@ -44,8 +43,10 @@ class _AddressCardState extends ConsumerState<AddressCard> {
 
   @override
   Widget build(BuildContext context) {
-    final address =
-        ref.watch(accountStateProvider(widget.account.id))?.nextAddress ?? "";
+    final address = ref
+            .watch(accountStateProvider(widget.account.id))
+            ?.getPreferredAddress() ??
+        "";
     AddressWidget addressWidget = AddressWidget(address: address);
     double optimalAddressHorizontalPadding =
         addressWidget.calculateOptimalPadding(address, context);
@@ -127,7 +128,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                 ),
                 IconButton(
                     onPressed: () {
-                      Share.share("bitcoin:${address}");
+                      Share.share("bitcoin:$address");
                     },
                     icon: const EnvoyIcon(
                       icon: "ic_envoy_share.svg",

@@ -134,7 +134,7 @@ class AztecoTransaction extends EnvoyTransaction {
     super.outputs = const [],
     required super.feeRate,
     super.date,
-    super.note = null,
+    super.note,
     required super.vsize,
   });
 }
@@ -174,7 +174,7 @@ class PendingTransaction extends BitcoinTransaction {
   }
 }
 
-extension copyWithExtenstion on BitcoinTransaction {
+extension CopyWithExtenstion on BitcoinTransaction {
   BitcoinTransaction copyWith({
     String? txId,
     String? note,

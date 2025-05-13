@@ -17,7 +17,7 @@ pub use bdk_wallet::bitcoin::{Network, Psbt, ScriptBuf};
 use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse, SyncRequest};
 use bdk_wallet::chain::{CheckPoint, Indexed};
 use bdk_wallet::descriptor::policy::PolicyError;
-use bdk_wallet::descriptor::DescriptorError;
+use bdk_wallet::descriptor::{DescriptorError, DescriptorPublicKey, ExtendedDescriptor};
 use bdk_wallet::error::{CreateTxError, MiniscriptPsbtError};
 use bdk_wallet::rusqlite::{Connection, OpenFlags};
 use bdk_wallet::serde::{Deserialize, Serialize};
@@ -27,8 +27,8 @@ use bdk_wallet::{
 use chrono::{DateTime, Local, Utc};
 use flutter_rust_bridge::frb;
 use log::info;
-use ngwallet::account::NgAccount;
-use ngwallet::config::{AddressType, NgAccountConfig};
+use ngwallet::account::{Descriptor, NgAccount};
+use ngwallet::config::{AddressType, NgAccountConfig, NgDescriptor};
 use ngwallet::ngwallet::NgWallet;
 use ngwallet::rbf::BumpFeeError;
 use ngwallet::redb::backends::FileBackend;
@@ -43,6 +43,8 @@ use std::str::FromStr;
 use std::sync::{Arc, LockResult, Mutex};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use std::{fs, thread};
+use std::any::Any;
+use bdk_wallet::serde_json::json;
 
 #[frb(init)]
 pub fn init_app() {
@@ -90,36 +92,30 @@ impl EnvoyAccountHandler {
         address_type: AddressType,
         color: String,
         index: u32,
-        internal_descriptor: String,
-        external_descriptor: String,
+        descriptors: Vec<NgDescriptor>,
         db_path: String,
         network: Network,
         id: String,
     ) -> EnvoyAccountHandler {
-        let bdk_db_path = Path::new(&db_path).join("wallet.sqlite");
-
-        let connection = Connection::open(bdk_db_path).unwrap();
-        info!("Creating BDK database ");
-
+        let descriptors = Self::get_descriptor(&descriptors, db_path.clone());
         EnvoyAccountHandler {
             stream_sink: None,
             mempool_txs: vec![],
             id: id.clone(),
-            ng_account: Arc::new(Mutex::new(NgAccount::new_from_descriptor(
+            ng_account: Arc::new(Mutex::new(NgAccount::new_from_descriptors(
                 name,
                 color,
                 device_serial,
                 date_added,
                 network,
                 address_type,
-                internal_descriptor,
-                Some(external_descriptor),
+                descriptors,
                 index,
                 Some(db_path),
-                Arc::new(Mutex::new(connection)),
                 None::<FileBackend>,
                 id.clone(),
                 None,
+                false
             ))),
         }
     }
@@ -132,59 +128,65 @@ impl EnvoyAccountHandler {
         address_type: AddressType,
         color: String,
         index: u32,
-        internal_descriptor: String,
-        external_descriptor: String,
+        descriptors: Vec<NgDescriptor>,
         db_path: String,
-        sled_db_path: String,
+        legacy_sled_db_path: Vec<String>,
         network: Network,
     ) -> EnvoyAccountHandler {
-        let bdk_db_path = Path::new(&db_path.clone()).join("wallet.sqlite");
-        let sled_db_path = Path::new(&sled_db_path).to_path_buf();
-        let connection = Connection::open(bdk_db_path).unwrap();
-        let indexes = get_last_used_index(&sled_db_path, name.clone());
+        let descriptors = Self::get_descriptor(&descriptors, db_path.clone());
         let account = EnvoyAccountHandler {
             stream_sink: None,
             mempool_txs: vec![],
             id: id.clone(),
-            ng_account: Arc::new(Mutex::new(NgAccount::new_from_descriptor(
-                name,
+            ng_account: Arc::new(Mutex::new(NgAccount::new_from_descriptors(
+                name.clone(),
                 color,
                 device_serial,
                 date_added,
                 network,
                 address_type,
-                internal_descriptor,
-                Some(external_descriptor),
+                descriptors,
                 index,
                 Some(db_path.clone()),
-                Arc::new(Mutex::new(connection)),
                 None::<FileBackend>,
                 id.clone(),
                 None,
+                false
             ))),
         };
 
-        account
-            .ng_account
-            .lock()
-            .unwrap()
-            .wallet
-            .reveal_addresses_up_to(
-                KeychainKind::Internal,
-                *indexes.get(&KeychainKind::Internal).unwrap_or(&0),
-            )
-            .unwrap();
+        for (index, sled_path) in legacy_sled_db_path.iter().enumerate() {
+            let sled_db_path = Path::new(&sled_path).to_path_buf();
+            let indexes = get_last_used_index(&sled_db_path, name.clone());
+            info!("Opening sled database at: {} {:?}", sled_db_path.clone().display(),indexes.clone());
+            let mut account = account.ng_account.lock().unwrap();
+            let ngwallet = &mut account.wallets[index];
+            match ngwallet
+                .reveal_addresses_up_to(
+                    KeychainKind::Internal,
+                    *indexes.get(&KeychainKind::Internal).unwrap_or(&0),
+                ) {
+                Ok(_) => {
+                    info!("Revealed addresses up to index Internal: {:?}", indexes);
+                }
+                Err(e) => {
+                    info!("Error  up to index Internal: {:?}", e);
+                }
+            };
 
-        account
-            .ng_account
-            .lock()
-            .unwrap()
-            .wallet
-            .reveal_addresses_up_to(
-                KeychainKind::External,
-                *indexes.get(&KeychainKind::External).unwrap_or(&0),
-            )
-            .unwrap();
+            match ngwallet
+                .reveal_addresses_up_to(
+                    KeychainKind::External,
+                    *indexes.get(&KeychainKind::External).unwrap_or(&0),
+                ) {
+                Ok(_) => {
+                    info!("Revealed addresses up to index External: {:?}", indexes);
+                }
+                Err(e) => {
+                    info!("Error  up to index External: {:?}", e);
+                }
+            };
+        }
 
         account
     }
@@ -193,13 +195,29 @@ impl EnvoyAccountHandler {
         self.stream_sink = Some(stream_sink);
     }
 
-    pub fn open_wallet(db_path: String) -> EnvoyAccountHandler {
-        let bdk_db_path = Path::new(&db_path).join("wallet.sqlite");
-        let connection = Connection::open(bdk_db_path.clone()).unwrap();
-        info!("Opening BDK database at: {}", bdk_db_path.display());
-        let ng_account = NgAccount::open_wallet(
+    pub fn open_wallet(db_path: String) -> Result<EnvoyAccountHandler> {
+        let config = NgAccount::<Connection>::read_config(db_path.clone(), None::<FileBackend>);
+        let Some(config) = config else {
+            return Err(anyhow!("Failed to read config"));
+        };
+
+        let descriptors = config.descriptors.
+            iter()
+            .enumerate()
+            .map(|(index, descriptor)| {
+                let internal = descriptor.clone().internal;
+                let external = descriptor.clone().external;
+                let bdk_db_path = Path::new(&db_path.clone()).join(format!("wallet_{}_{:?}.sqlite", index, descriptor.address_type));
+                Descriptor {
+                    internal: internal.clone(),
+                    external,
+                    bdk_persister: Arc::new(Mutex::new(Connection::open(bdk_db_path).unwrap())),
+                }
+            }).collect();
+
+        let ng_account = NgAccount::open_account(
             db_path,
-            Arc::new(Mutex::new(connection)),
+            descriptors,
             None::<FileBackend>,
         );
         let account = EnvoyAccountHandler {
@@ -208,7 +226,7 @@ impl EnvoyAccountHandler {
             id: ng_account.config.clone().id,
             ng_account: Arc::new(Mutex::new(ng_account)),
         };
-        account
+        Ok(account)
     }
 
     pub fn rename_account(&mut self, name: &str) -> Result<()> {
@@ -224,10 +242,10 @@ impl EnvoyAccountHandler {
         return match self.ng_account.lock() {
             Ok(mut account) => {
                 let config = account.config.clone();
-                let balance = account.wallet.balance().unwrap().total().to_sat();
-                let wallet_transactions = account.wallet.transactions().unwrap_or(vec![]);
-                let utxo = account.wallet.unspend_outputs().unwrap_or(vec![]);
-                let tags = account.wallet.list_tags().unwrap_or(vec![]);
+                let balance = account.balance().unwrap_or_default().total().to_sat();
+                let wallet_transactions = account.transactions().unwrap_or_default();
+                let utxo = account.utxos().unwrap_or_default();
+                let tags = account.list_tags().unwrap_or_default();
 
                 let mut transactions = vec![];
 
@@ -249,22 +267,26 @@ impl EnvoyAccountHandler {
                         transactions.push(tx.clone());
                     }
                 }
-
+                let next_address = account
+                    .next_address()
+                    .unwrap_or_default()
+                    .iter()
+                    .map(|(address, address_type)| (address.to_string(), address_type.clone()))
+                    .collect::<Vec<(String, AddressType)>>();
                 Ok(EnvoyAccount {
                     name: config.name.clone(),
                     color: config.color.clone(),
                     device_serial: config.device_serial.clone(),
                     date_added: config.date_added.clone(),
-                    address_type: config.address_type,
+                    preferred_address_type: config.preferred_address_type,
                     index: config.index,
-                    internal_descriptor: config.internal_descriptor.clone(),
-                    external_descriptor: config.external_descriptor.clone(),
+                    descriptors: config.descriptors.clone(),
                     date_synced: config.date_synced.clone(),
                     wallet_path: config.wallet_path.clone(),
                     network: config.network,
                     id: config.id.clone(),
-                    is_hot: account.wallet.is_hot(),
-                    next_address: account.wallet.next_address().unwrap().address.to_string(),
+                    is_hot: account.is_hot(),
+                    next_address,
                     balance,
                     transactions,
                     unlocked_balance: 0,
@@ -276,20 +298,26 @@ impl EnvoyAccountHandler {
         };
     }
 
-    pub fn next_address(&mut self) -> String {
+    pub fn next_address(&mut self) -> Vec<(String, AddressType)> {
         self.ng_account
             .lock()
             .unwrap()
-            .wallet
             .next_address()
             .unwrap()
-            .address
-            .to_string()
+            .iter().map(|(address_info, address_type)| {
+            (
+                address_info.address.to_string(),
+                address_type.clone(),
+            )
+        }).collect::<Vec<(String, AddressType)>>()
     }
 
-    pub fn request_full_scan(&mut self) -> Arc<Mutex<Option<FullScanRequest<KeychainKind>>>> {
-        let scan_request = self.ng_account.lock().unwrap().wallet.full_scan_request();
-        return Arc::new(Mutex::new(Some(scan_request)));
+    pub fn request_full_scan(&mut self, address_type: AddressType) -> Arc<Mutex<Option<FullScanRequest<KeychainKind>>>> {
+        let scan_request_result = self.ng_account.lock().unwrap().full_scan_request(address_type);
+        match scan_request_result {
+            Ok((_, request)) => Arc::new(Mutex::new(Some(request))),
+            Err(_) => return Arc::new(Mutex::new(None)),
+        }
     }
 
     pub fn update_broadcast_state(&mut self, draft_transaction: DraftTransaction) {
@@ -304,14 +332,12 @@ impl EnvoyAccountHandler {
             let mut account = self.ng_account.lock().unwrap();
             if tx.note.is_some() {
                 account
-                    .wallet
                     .set_note_unchecked(&tx.tx_id.to_string(), &tx.note.unwrap())
                     .unwrap();
             }
             for output in tx.outputs.iter() {
                 if output.tag.is_some() {
                     account
-                        .wallet
                         .set_tag(output, &output.tag.clone().unwrap())
                         .unwrap();
                 }
@@ -327,14 +353,17 @@ impl EnvoyAccountHandler {
             .unwrap();
         {
             let account = self.ng_account.lock().unwrap();
-            account.wallet.mark_utxo_as_used(psbt.unsigned_tx.clone());
+            account.mark_utxo_as_used(psbt.unsigned_tx.clone());
         }
         self.send_update();
     }
 
-    pub fn request_sync(&mut self) -> Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>> {
-        let scan_request = self.ng_account.lock().unwrap().wallet.sync_request();
-        return Arc::new(Mutex::new(Some(scan_request)));
+    pub fn sync_request(&mut self, address_type: AddressType) -> Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>> {
+        let scan_request = self.ng_account.lock().unwrap().sync_request(address_type);
+        match scan_request {
+            Ok((_, request)) => Arc::new(Mutex::new(Some(request))),
+            Err(_) => return Arc::new(Mutex::new(None)),
+        }
     }
 
     //cannot use sync since it is used by flutter_rust_bridge
@@ -356,7 +385,7 @@ impl EnvoyAccountHandler {
         };
     }
 
-    pub fn scan(
+    pub fn full_scan_request(
         scan_request: Arc<Mutex<Option<FullScanRequest<KeychainKind>>>>,
         electrum_server: &str,
         tor_port: Option<u16>,
@@ -375,12 +404,12 @@ impl EnvoyAccountHandler {
         };
     }
 
-    pub fn apply_update(&mut self, update: Arc<Mutex<Update>>)  {
+    pub fn apply_update(&mut self, update: Arc<Mutex<Update>>, address_type: AddressType) {
         let scan_request_guard = update.lock().unwrap();
         {
             let mut account = self.ng_account.lock().unwrap();
-            account.wallet.apply(scan_request_guard.to_owned()).unwrap();
-            account.config.date_synced = Some(format!("{:?}", chrono::Utc::now()));
+            account.apply((address_type, scan_request_guard.to_owned(), )).unwrap();
+            account.config.date_synced = Some(format!("{:?}", Utc::now()));
             account.persist().unwrap();
         }
         self.send_update();
@@ -396,7 +425,6 @@ impl EnvoyAccountHandler {
         self.ng_account
             .lock()
             .unwrap()
-            .wallet
             .balance()
             .unwrap()
             .total()
@@ -406,20 +434,18 @@ impl EnvoyAccountHandler {
         self.ng_account
             .lock()
             .unwrap()
-            .wallet
-            .unspend_outputs()
+            .utxos()
             .unwrap_or_default()
     }
     pub fn transactions(&mut self) -> Vec<BitcoinTransaction> {
         self.ng_account
             .lock()
             .unwrap()
-            .wallet
             .transactions()
             .unwrap()
     }
     pub fn set_tag(&mut self, utxo: &Output, tag: &str) -> Result<bool> {
-        let status = self.ng_account.lock().unwrap().wallet.set_tag(utxo, tag);
+        let status = self.ng_account.lock().unwrap().set_tag(utxo, tag);
         self.send_update();
         status
     }
@@ -428,19 +454,17 @@ impl EnvoyAccountHandler {
             self.ng_account
                 .lock()
                 .unwrap()
-                .wallet
                 .set_tag(utxo, tag)
                 .unwrap();
         });
         self.send_update();
         Ok(true)
     }
-    pub fn set_do_not_spend(&mut self, utxo: &Output, do_not_spend: bool) -> Result<bool> {
+    pub fn set_do_not_spend(&mut self, utxo: &Output, do_not_spend: bool) -> Result<()> {
         let result = self
             .ng_account
             .lock()
             .unwrap()
-            .wallet
             .set_do_not_spend(utxo, do_not_spend);
         self.send_update();
         result
@@ -459,7 +483,6 @@ impl EnvoyAccountHandler {
                 self.ng_account
                     .lock()
                     .unwrap()
-                    .wallet
                     .set_do_not_spend(output, do_not_spend)
                     .unwrap();
             });
@@ -475,7 +498,6 @@ impl EnvoyAccountHandler {
                 self.ng_account
                     .lock()
                     .unwrap()
-                    .wallet
                     .set_tag(output, tag)
                     .unwrap();
             });
@@ -491,20 +513,19 @@ impl EnvoyAccountHandler {
         self.ng_account
             .lock()
             .unwrap()
-            .wallet
             .remove_tag(existing_tag, new_tag_ref)
             .unwrap();
         self.send_update();
         Ok(())
     }
     pub fn set_note(&mut self, tx_id: &str, note: &str) -> Result<bool> {
-        let result = self.ng_account.lock().unwrap().wallet.set_note(tx_id, note);
+        let result = self.ng_account.lock().unwrap().set_note(tx_id, note);
         self.send_update();
         result
     }
     #[frb(sync)]
     pub fn is_hot(&self) -> bool {
-        self.ng_account.lock().unwrap().wallet.is_hot()
+        self.ng_account.lock().unwrap().is_hot()
     }
     #[frb(sync)]
     pub fn config(&self) -> NgAccountConfig {
@@ -514,16 +535,6 @@ impl EnvoyAccountHandler {
     pub fn id(&self) -> String {
         self.id.clone()
     }
-    pub fn send(&mut self, address: String, amount: u64) -> Result<String, Error> {
-        let result = self
-            .ng_account
-            .lock()
-            .unwrap()
-            .wallet
-            .create_send(address, amount)
-            .map_err(|e| anyhow!("Failed to create send transaction: {}", e))?;
-        Ok(result.serialize_hex())
-    }
 
     pub fn get_max_fee(
         &mut self,
@@ -532,7 +543,6 @@ impl EnvoyAccountHandler {
         self.ng_account
             .lock()
             .unwrap()
-            .wallet
             .get_max_fee(transaction_params)
             .map_err(ComposeTxError::map_err)
     }
@@ -544,7 +554,6 @@ impl EnvoyAccountHandler {
         self.ng_account
             .lock()
             .unwrap()
-            .wallet
             .compose_psbt(transaction_params)
             .map_err(ComposeTxError::map_err)
     }
@@ -556,7 +565,6 @@ impl EnvoyAccountHandler {
         self.ng_account
             .lock()
             .unwrap()
-            .wallet
             .compose_cancellation_tx(bitcoin_transaction)
     }
 
@@ -568,7 +576,6 @@ impl EnvoyAccountHandler {
         self.ng_account
             .lock()
             .unwrap()
-            .wallet
             .get_max_bump_fee(selected_outputs, bitcoin_transaction)
     }
 
@@ -578,7 +585,7 @@ impl EnvoyAccountHandler {
         fee_rate: u64,
         bitcoin_transaction: BitcoinTransaction,
     ) -> Result<DraftTransaction, BumpFeeError> {
-        self.ng_account.lock().unwrap().wallet.get_rbf_draft_tx(
+        self.ng_account.lock().unwrap().get_rbf_draft_tx(
             selected_outputs,
             bitcoin_transaction,
             fee_rate,
@@ -589,7 +596,7 @@ impl EnvoyAccountHandler {
         draft_transaction: DraftTransaction,
         psbt_base64: &str,
     ) -> Result<DraftTransaction> {
-        NgWallet::<Connection>::decode_psbt(draft_transaction, psbt_base64)
+        NgAccount::<Connection>::decode_psbt(draft_transaction, psbt_base64)
     }
 
     pub fn broadcast(
@@ -599,7 +606,7 @@ impl EnvoyAccountHandler {
     ) -> std::result::Result<String, BroadcastError> {
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
         let socks_proxy = socks_proxy.as_ref().map(|s| s.as_str());
-        NgWallet::<Connection>::broadcast_psbt(draft_transaction, electrum_server, socks_proxy)
+        NgAccount::<Connection>::broadcast_psbt(draft_transaction, electrum_server, socks_proxy)
             .map_err(BroadcastError::from)
             .map(|tx_id| tx_id.to_string())
     }
@@ -611,5 +618,23 @@ impl EnvoyAccountHandler {
             },
             Err(_) => false,
         };
+    }
+
+    fn get_descriptor(descriptors: &Vec<NgDescriptor>, db_path: String) -> Vec<Descriptor<Connection>> {
+        descriptors
+            .iter()
+            .enumerate()
+            .map(|(index, descriptor)| {
+                let internal = descriptor.clone().internal;
+                let external = descriptor.clone().external;
+                let bdk_db_path = Path::new(&db_path.clone()).join(format!("wallet_{}_{:?}.sqlite", index, descriptor.address_type));
+                let connection = Connection::open(bdk_db_path).unwrap();
+                Descriptor {
+                    internal: internal.clone(),
+                    external,
+                    bdk_persister: Arc::new(Mutex::new(connection)),
+                }
+            })
+            .collect::<Vec<Descriptor<Connection>>>()
     }
 }

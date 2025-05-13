@@ -7,7 +7,7 @@ import 'dart:math';
 import 'package:envoy/business/bitcoin_parser.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:test/test.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'bitcoin_parser_test.mocks.dart';

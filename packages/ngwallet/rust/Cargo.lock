@@ -1005,13 +1005,14 @@ dependencies = [
 
 [[package]]
 name = "ngwallet"
-version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/ngwallet?rev=700c893cae8bdb5f22581bacec763f69afd3a5b4#700c893cae8bdb5f22581bacec763f69afd3a5b4"
+version = "0.2.0"
+source = "git+https://github.com/Foundation-Devices/ngwallet?rev=459ec64f1ca0c4e37e619537e81c4fc3c01dbc13#459ec64f1ca0c4e37e619537e81c4fc3c01dbc13"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
  "bdk_electrum",
  "bdk_wallet",
+ "bip39",
  "log",
  "redb",
  "serde",

@@ -23,6 +23,15 @@ extension AccountExtension on EnvoyAccount {
   EnvoyAccountHandler? get handler {
     return NgAccountManager().getHandler(this);
   }
+
+  String getPreferredAddress() {
+    return nextAddress
+        .where(
+          (addressRecord) => addressRecord.$2 == preferredAddressType,
+        )
+        .first
+        .$1;
+  }
 }
 
 class NgAccountManager extends ChangeNotifier {
@@ -74,7 +83,7 @@ class NgAccountManager extends ChangeNotifier {
     List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
     _accountsOrder.sink.add(order);
 
-    final walletDirectory = await Directory(walletsDirectory);
+    final walletDirectory = Directory(walletsDirectory);
 
     if (!walletDirectory.existsSync()) {
       await walletDirectory.create(recursive: true);

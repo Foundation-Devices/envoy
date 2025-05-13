@@ -251,7 +251,7 @@ class AccountBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isTaproot = account.addressType == AddressType.p2Tr;
+    bool isTaproot = account.preferredAddressType == AddressType.p2Tr;
     bool isTestnet = account.network == Network.testnet;
     bool isSignet = account.network == Network.signet;
 
@@ -311,7 +311,7 @@ class AccountBadge extends StatelessWidget {
                   ],
                 ),
                 BadgeIcon(
-                  account: account!,
+                  account: account,
                 ),
               ],
             ),

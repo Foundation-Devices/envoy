@@ -93,7 +93,7 @@ class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
         runApp(const EnvoyApp());
       }
     });
-    Future.delayed(const Duration(milliseconds: 300)).then((value) {
+    Future.delayed(const Duration(milliseconds: 100)).then((value) {
       MigrationManager().migrate();
     });
   }

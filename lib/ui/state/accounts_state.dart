@@ -54,8 +54,8 @@ final accountsProvider = Provider<List<EnvoyAccount>>((ref) {
     if (!signetEnabled && account.network == Network.signet) {
       return false;
     }
-
-    if (!taprootEnabled && account.addressType == AddressType.p2Tr) {
+    //TODO: fix for unified accounts
+    if (!taprootEnabled && account.preferredAddressType == AddressType.p2Tr) {
       return false;
     }
     return true;

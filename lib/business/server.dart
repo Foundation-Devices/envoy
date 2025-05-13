@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-library envoy.server;
-
 import 'dart:convert';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/home/home_page.dart';

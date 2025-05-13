@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
@@ -41,7 +40,9 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
 
   @override
   Widget build(BuildContext context) {
-    String descriptor = widget.account.internalDescriptor;
+    //TODO: fix unified descriptor
+    // String descriptor = widget.account.internalDescriptor;
+    String descriptor = "";
 
     return Column(
         crossAxisAlignment: CrossAxisAlignment.center,

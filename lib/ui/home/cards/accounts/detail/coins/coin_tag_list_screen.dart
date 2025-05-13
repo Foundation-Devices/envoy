@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account.dart';
-import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
@@ -39,7 +37,7 @@ class _CoinsListState extends ConsumerState<CoinsList> {
 
   @override
   Widget build(BuildContext context) {
-    List<Tag> tags = ref.watch(tagsProvider(widget.account.id ?? ""));
+    List<Tag> tags = ref.watch(tagsProvider(widget.account.id));
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
       child: FadingEdgeScrollView.fromScrollView(

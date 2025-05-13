@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-library expandable_page_view;
-
 import 'size_reporting_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
