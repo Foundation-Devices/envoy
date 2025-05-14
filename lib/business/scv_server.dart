@@ -120,17 +120,17 @@ class ScvServer {
   }
 
   Future<SecurityChallengeMessage?> getPrimeChallenge() async {
-    final response = await http.get('$primeSecurityCheckUrl/challenge');
-    if (response.statusCode != 200) {
+    try {
+      final response = await http.get('$primeSecurityCheckUrl/challenge');
+      if (response.statusCode != 200) {
+        return null;
+      }
+
+      return SecurityChallengeMessage(
+          data: Uint8List.fromList(response.bodyBytes));
+    } catch (e) {
       return null;
     }
-
-    // TODO: SCV get challenge from response
-
-    final dummyMessage =
-        SecurityChallengeMessage(data: Uint8List.fromList([1, 2, 3, 4]));
-
-    return dummyMessage;
   }
 
   Future<bool> isProofVerified(SecurityProofMessage message) async {
