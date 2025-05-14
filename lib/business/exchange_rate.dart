@@ -6,7 +6,9 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
+import 'package:envoy/business/prime_device.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -125,6 +127,15 @@ class ExchangeRate extends ChangeNotifier {
       EnvoyReport().log("ExchangeRate", "Error loading currencies: $e");
       // Get rate from storage and set currency from Settings
       restore();
+    });
+
+    Timer.periodic(const Duration(seconds: 30), (_) async {
+      PrimeDevice? prime =
+          await EnvoyStorage().getPrimeByBleId(BluetoothManager().bleId);
+
+      if (prime != null) {
+        await BluetoothManager().sendExchangeRate();
+      }
     });
 
     // Refresh from time to time

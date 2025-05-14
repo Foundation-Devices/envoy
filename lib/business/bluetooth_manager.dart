@@ -7,8 +7,10 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:bluart/bluart.dart' as bluart;
+import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/prime_device.dart';
 import 'package:envoy/business/scv_server.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/console.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:permission_handler/permission_handler.dart';
@@ -236,6 +238,30 @@ class BluetoothManager {
       _recipientXid = recipientXid;
     } catch (e) {
       kPrint('Error deserializing XidDocument: $e');
+    }
+  }
+
+  Future<void> sendExchangeRate() async {
+    try {
+      final exchangeRate = ExchangeRate();
+      final settings = Settings();
+      if (exchangeRate.selectedCurrencyRate == null ||
+          settings.selectedFiat == null) {
+        return;
+      }
+
+      final exchangeRateMessage = api.ExchangeRate(
+        currencyCode: settings.selectedFiat!,
+        rate: exchangeRate.selectedCurrencyRate!,
+      );
+
+      final encoded = await encodeMessage(
+        message: api.QuantumLinkMessage.exchangeRate(exchangeRateMessage),
+      );
+
+      await bluart.writeAll(id: bleId, data: encoded);
+    } catch (e, stack) {
+      kPrint('Failed to send exchange rate: $e');
     }
   }
 
