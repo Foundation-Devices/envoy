@@ -168,9 +168,8 @@ checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
 
 [[package]]
 name = "bdk_chain"
-version = "0.21.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4955734f97b2baed3f36d16ae7c203fdde31ae85391ac44ee3cbcaf0886db5ce"
+version = "0.22.0"
+source = "git+https://github.com/Foundation-Devices/bdk-1?rev=0a532f6bcb042edb192a2db2673e331e7189e00e#0a532f6bcb042edb192a2db2673e331e7189e00e"
 dependencies = [
  "bdk_core",
  "bitcoin",
@@ -181,9 +180,8 @@ dependencies = [
 
 [[package]]
 name = "bdk_core"
-version = "0.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b545aea1efc090e4f71f1dd5468090d9f54c3de48002064c04895ef811fbe0b2"
+version = "0.5.0"
+source = "git+https://github.com/Foundation-Devices/bdk-1?rev=0a532f6bcb042edb192a2db2673e331e7189e00e#0a532f6bcb042edb192a2db2673e331e7189e00e"
 dependencies = [
  "bitcoin",
  "hashbrown",
@@ -192,9 +190,8 @@ dependencies = [
 
 [[package]]
 name = "bdk_electrum"
-version = "0.21.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cb2ac12acbf8f263c59d74ceeeed015e0fd00982aa8e71824f63d102999be040"
+version = "0.22.0"
+source = "git+https://github.com/Foundation-Devices/bdk-1?rev=0a532f6bcb042edb192a2db2673e331e7189e00e#0a532f6bcb042edb192a2db2673e331e7189e00e"
 dependencies = [
  "bdk_core",
  "electrum-client",
@@ -202,9 +199,8 @@ dependencies = [
 
 [[package]]
 name = "bdk_wallet"
-version = "1.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6a13c947be940d32a91b876fc5223a6d839a40bc219496c5c78af74714b1b3f7"
+version = "2.0.0-alpha.0"
+source = "git+https://github.com/Foundation-Devices/bdk_wallet?rev=19760ac3cc7fb12b21a9e6143220a870747ffdc0#19760ac3cc7fb12b21a9e6143220a870747ffdc0"
 dependencies = [
  "bdk_chain",
  "bip39",
@@ -537,9 +533,9 @@ checksum = "48c757948c5ede0e46177b7add2e67155f70e33c07fea8284df6576da70b3719"
 
 [[package]]
 name = "electrum-client"
-version = "0.23.0"
+version = "0.23.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a8ed4d35bb98a55540bb5b735731486febddf9cc9b6e96f5b3fd2536eed81a4e"
+checksum = "5ed9a037f88aa61d3627a20af1c68fa0405ed5a16d9a0d9dc0e66adcda44afbe"
 dependencies = [
  "bitcoin",
  "byteorder",
@@ -978,6 +974,36 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f665ee40bc4a3c5590afb1e9677db74a508659dfd71e126420da8274909a0167"
 
 [[package]]
+name = "minicbor"
+version = "0.26.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8a309f581ade7597820083bc275075c4c6986e57e53f8d26f88507cfefc8c987"
+dependencies = [
+ "minicbor-derive",
+]
+
+[[package]]
+name = "minicbor-derive"
+version = "0.16.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a9882ef5c56df184b8ffc107fc6c61e33ee3a654b021961d790a78571bb9d67a"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "minicbor-serde"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "54e45e8beeefea1b8b6f52fa188a5b6ea3746c2885606af8d4d8bf31cee633fb"
+dependencies = [
+ "minicbor",
+ "serde",
+]
+
+[[package]]
 name = "minimal-lexical"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -985,9 +1011,9 @@ checksum = "68354c5c6bd36d73ff3feceb05efa59b6acb7626617f4962be322a825e61f79a"
 
 [[package]]
 name = "miniscript"
-version = "12.3.0"
+version = "12.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5bd3c9608217b0d6fa9c9c8ddd875b85ab72bd4311cfc8db35e1b5a08fc11f4d"
+checksum = "0760e92feaf4ee26bd2e616f557de64712bf1e75f3b1b218dfb475c0a84c7943"
 dependencies = [
  "bech32",
  "bitcoin",
@@ -1005,8 +1031,7 @@ dependencies = [
 
 [[package]]
 name = "ngwallet"
-version = "0.2.0"
-source = "git+https://github.com/Foundation-Devices/ngwallet?rev=459ec64f1ca0c4e37e619537e81c4fc3c01dbc13#459ec64f1ca0c4e37e619537e81c4fc3c01dbc13"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -1014,6 +1039,7 @@ dependencies = [
  "bdk_wallet",
  "bip39",
  "log",
+ "minicbor-serde",
  "redb",
  "serde",
  "serde_json",

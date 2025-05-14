@@ -21,6 +21,7 @@ mixin _$EnvoyAccount {
   String? get deviceSerial => throw _privateConstructorUsedError;
   String? get dateAdded => throw _privateConstructorUsedError;
   AddressType get preferredAddressType => throw _privateConstructorUsedError;
+  bool get seedHasPassphrase => throw _privateConstructorUsedError;
   int get index => throw _privateConstructorUsedError;
   List<NgDescriptor> get descriptors => throw _privateConstructorUsedError;
   String? get dateSynced => throw _privateConstructorUsedError;
@@ -56,6 +57,7 @@ abstract class $EnvoyAccountCopyWith<$Res> {
       String? deviceSerial,
       String? dateAdded,
       AddressType preferredAddressType,
+      bool seedHasPassphrase,
       int index,
       List<NgDescriptor> descriptors,
       String? dateSynced,
@@ -91,6 +93,7 @@ class _$EnvoyAccountCopyWithImpl<$Res, $Val extends EnvoyAccount>
     Object? deviceSerial = freezed,
     Object? dateAdded = freezed,
     Object? preferredAddressType = null,
+    Object? seedHasPassphrase = null,
     Object? index = null,
     Object? descriptors = null,
     Object? dateSynced = freezed,
@@ -126,6 +129,10 @@ class _$EnvoyAccountCopyWithImpl<$Res, $Val extends EnvoyAccount>
           ? _value.preferredAddressType
           : preferredAddressType // ignore: cast_nullable_to_non_nullable
               as AddressType,
+      seedHasPassphrase: null == seedHasPassphrase
+          ? _value.seedHasPassphrase
+          : seedHasPassphrase // ignore: cast_nullable_to_non_nullable
+              as bool,
       index: null == index
           ? _value.index
           : index // ignore: cast_nullable_to_non_nullable
@@ -196,6 +203,7 @@ abstract class _$$EnvoyAccountImplCopyWith<$Res>
       String? deviceSerial,
       String? dateAdded,
       AddressType preferredAddressType,
+      bool seedHasPassphrase,
       int index,
       List<NgDescriptor> descriptors,
       String? dateSynced,
@@ -229,6 +237,7 @@ class __$$EnvoyAccountImplCopyWithImpl<$Res>
     Object? deviceSerial = freezed,
     Object? dateAdded = freezed,
     Object? preferredAddressType = null,
+    Object? seedHasPassphrase = null,
     Object? index = null,
     Object? descriptors = null,
     Object? dateSynced = freezed,
@@ -264,6 +273,10 @@ class __$$EnvoyAccountImplCopyWithImpl<$Res>
           ? _value.preferredAddressType
           : preferredAddressType // ignore: cast_nullable_to_non_nullable
               as AddressType,
+      seedHasPassphrase: null == seedHasPassphrase
+          ? _value.seedHasPassphrase
+          : seedHasPassphrase // ignore: cast_nullable_to_non_nullable
+              as bool,
       index: null == index
           ? _value.index
           : index // ignore: cast_nullable_to_non_nullable
@@ -329,6 +342,7 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
       this.deviceSerial,
       this.dateAdded,
       required this.preferredAddressType,
+      required this.seedHasPassphrase,
       required this.index,
       required final List<NgDescriptor> descriptors,
       this.dateSynced,
@@ -358,6 +372,8 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
   final String? dateAdded;
   @override
   final AddressType preferredAddressType;
+  @override
+  final bool seedHasPassphrase;
   @override
   final int index;
   final List<NgDescriptor> _descriptors;
@@ -416,7 +432,7 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
 
   @override
   String toString() {
-    return 'EnvoyAccount(name: $name, color: $color, deviceSerial: $deviceSerial, dateAdded: $dateAdded, preferredAddressType: $preferredAddressType, index: $index, descriptors: $descriptors, dateSynced: $dateSynced, walletPath: $walletPath, network: $network, id: $id, nextAddress: $nextAddress, balance: $balance, unlockedBalance: $unlockedBalance, isHot: $isHot, transactions: $transactions, utxo: $utxo, tags: $tags)';
+    return 'EnvoyAccount(name: $name, color: $color, deviceSerial: $deviceSerial, dateAdded: $dateAdded, preferredAddressType: $preferredAddressType, seedHasPassphrase: $seedHasPassphrase, index: $index, descriptors: $descriptors, dateSynced: $dateSynced, walletPath: $walletPath, network: $network, id: $id, nextAddress: $nextAddress, balance: $balance, unlockedBalance: $unlockedBalance, isHot: $isHot, transactions: $transactions, utxo: $utxo, tags: $tags)';
   }
 
   @override
@@ -432,6 +448,8 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
                 other.dateAdded == dateAdded) &&
             (identical(other.preferredAddressType, preferredAddressType) ||
                 other.preferredAddressType == preferredAddressType) &&
+            (identical(other.seedHasPassphrase, seedHasPassphrase) ||
+                other.seedHasPassphrase == seedHasPassphrase) &&
             (identical(other.index, index) || other.index == index) &&
             const DeepCollectionEquality()
                 .equals(other._descriptors, _descriptors) &&
@@ -454,26 +472,28 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      name,
-      color,
-      deviceSerial,
-      dateAdded,
-      preferredAddressType,
-      index,
-      const DeepCollectionEquality().hash(_descriptors),
-      dateSynced,
-      walletPath,
-      network,
-      id,
-      const DeepCollectionEquality().hash(_nextAddress),
-      balance,
-      unlockedBalance,
-      isHot,
-      const DeepCollectionEquality().hash(_transactions),
-      const DeepCollectionEquality().hash(_utxo),
-      const DeepCollectionEquality().hash(_tags));
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        name,
+        color,
+        deviceSerial,
+        dateAdded,
+        preferredAddressType,
+        seedHasPassphrase,
+        index,
+        const DeepCollectionEquality().hash(_descriptors),
+        dateSynced,
+        walletPath,
+        network,
+        id,
+        const DeepCollectionEquality().hash(_nextAddress),
+        balance,
+        unlockedBalance,
+        isHot,
+        const DeepCollectionEquality().hash(_transactions),
+        const DeepCollectionEquality().hash(_utxo),
+        const DeepCollectionEquality().hash(_tags)
+      ]);
 
   /// Create a copy of EnvoyAccount
   /// with the given fields replaced by the non-null parameter values.
@@ -491,6 +511,7 @@ abstract class _EnvoyAccount implements EnvoyAccount {
       final String? deviceSerial,
       final String? dateAdded,
       required final AddressType preferredAddressType,
+      required final bool seedHasPassphrase,
       required final int index,
       required final List<NgDescriptor> descriptors,
       final String? dateSynced,
@@ -515,6 +536,8 @@ abstract class _EnvoyAccount implements EnvoyAccount {
   String? get dateAdded;
   @override
   AddressType get preferredAddressType;
+  @override
+  bool get seedHasPassphrase;
   @override
   int get index;
   @override
