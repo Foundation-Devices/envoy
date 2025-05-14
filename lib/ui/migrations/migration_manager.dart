@@ -39,7 +39,7 @@ class LegacyUnifiedAccounts {
       {required this.accounts, required this.network, this.isUnified = true});
 }
 
-const String migrationPrefs = "v2_envoy_migration";
+const String migrationPrefs = "envoy_v2_migration";
 
 class MigrationManager {
   // Singleton instance
@@ -65,8 +65,7 @@ class MigrationManager {
   final LocalStorage _ls = LocalStorage();
   static String walletsDirectory =
       "${LocalStorage().appDocumentsDir.path}/wallets/";
-  static String newWalletDirectory =
-      "${LocalStorage().appDocumentsDir.path}/wallets_new/";
+
   List<EnvoyAccountHandler> accounts = [];
 
   final StreamController<MigrationProgress> _streamController =
@@ -86,6 +85,7 @@ class MigrationManager {
   }
 
   void migrate() async {
+    final newWalletDirectory = NgAccountManager.walletsDirectory;
     //clean directory for new wallets
     if (await Directory(newWalletDirectory).exists()) {
       await Directory(newWalletDirectory).delete(recursive: true);
@@ -97,6 +97,11 @@ class MigrationManager {
       List<LegacyAccount> legacyAccounts =
           accountsJson.map((json) => LegacyAccount.fromJson(json)).toList();
 
+      EnvoyReport().log(
+        "Migration",
+        "Total accounts found: ${legacyAccounts.length} ",
+      );
+
       List<LegacyUnifiedAccounts> unifiedLegacyAccounts = unify(legacyAccounts);
 
       addMigrationEvent(
@@ -105,14 +110,12 @@ class MigrationManager {
       for (LegacyUnifiedAccounts unified in unifiedLegacyAccounts) {
         //use externalDescriptor and internalDescriptor
         final legacyAccount = unified.accounts.first;
-        Directory newAccountDir = Directory(
-            "$newWalletDirectory${legacyAccount.deviceSerial}_${legacyAccount.wallet.network}_acc_${legacyAccount.number}");
+        Directory newAccountDir = NgAccountManager.getAccountDirectory(
+            deviceSerial: legacyAccount.deviceSerial,
+            network: legacyAccount.wallet.network,
+            accountId: !unified.isUnified ? legacyAccount.id : null,
+            number: legacyAccount.number);
 
-        //work around for non standard legacy account
-        if (!unified.isUnified) {
-          newAccountDir = Directory(
-              "$newWalletDirectory${legacyAccount.deviceSerial}__${legacyAccount.id.substring(0, 8)}__${legacyAccount.wallet.network}_unified");
-        }
         if (!newAccountDir.existsSync()) {
           await newAccountDir.create(recursive: true);
         }
@@ -188,7 +191,7 @@ class MigrationManager {
     _onMigrationFinished?.call();
   }
 
-  List<LegacyUnifiedAccounts> unify(List<LegacyAccount> legacyAccount) {
+  static List<LegacyUnifiedAccounts> unify(List<LegacyAccount> legacyAccount) {
     final unifiedId =
         legacyAccount.map((item) => item.getUnificationId()).toSet().toList();
 
@@ -198,9 +201,17 @@ class MigrationManager {
           legacyAccount.where((item) => item.getUnificationId() == id).toList();
 
       if (accounts.length <= 2) {
+        EnvoyReport().log(
+          "Migration",
+          "Unifying accounts with id ${accounts.map((item) => item.name)} ",
+        );
         unifiedWallets.add(LegacyUnifiedAccounts(
             accounts: accounts, network: accounts.first.wallet.network));
       } else {
+        EnvoyReport().log(
+          "Migration",
+          "Will treat as single accounts ::  ${accounts.map((item) => item.name)} ",
+        );
         //SFT-5217, duplicated accounts with similar device serial and account number
         //to properly migrate without conflict,adding account id as part of the device serial
         for (var account in accounts) {
@@ -226,11 +237,19 @@ class MigrationManager {
       for (var descriptor in accountConfig.descriptors) {
         final scan =
             await account.requestFullScan(addressType: descriptor.addressType);
+        EnvoyReport().log(
+          "Migration",
+          "Syncing account ${accountConfig.name} | ${accountConfig.network} | $server  |Tor : $port",
+        );
         final request = await EnvoyAccountHandler.fullScanRequest(
             scanRequest: scan, electrumServer: server, torPort: port);
         await account.applyUpdate(
           update: request,
           addressType: descriptor.addressType,
+        );
+        EnvoyReport().log(
+          "Migration",
+          "Syncing Finished ${accountConfig.name} | ${accountConfig.network} | $server  |Tor : $port",
         );
       }
 
@@ -249,6 +268,12 @@ class MigrationManager {
     try {
       for (var entry in notes.entries) {
         try {
+          EnvoyReport().log(
+            "Migration",
+            "Migrating note ${entry.key}  with ${entry.value} -> ${envoyAccount.config().name } ${envoyAccount.config().descriptors.map(
+              (e) => " ${e.external_}\n",
+            )}\n",
+          );
           await envoyAccount.setNote(note: entry.value, txId: entry.key);
         } catch (_) {}
       }
@@ -268,6 +293,10 @@ class MigrationManager {
       for (var tag in tags) {
         kPrint(
             "Migration: Migrating tag ${tag.name}  with ${tag.coins.length} coins");
+        EnvoyReport().log(
+          "Migration",
+          "Migrating tag ${tag.name}  with ${tag.coins.length}  to account -->  ${account.config().name}",
+        );
         for (var id in tag.coinsId) {
           final txId = id.split(":")[0];
           final vout = int.parse(id.split(":")[1]);
