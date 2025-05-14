@@ -136,18 +136,21 @@ class ScvServer {
   Future<bool> isProofVerified(SecurityProofMessage message) async {
     final uri = '$primeSecurityCheckUrl/verify';
 
-    // TODO: SCV check utf8.decode(message.data)
     final response = await http.post(
       uri,
-      body: utf8.decode(message.data),
+      body: message.data.toList().toString(),
       headers: {'Content-Type': 'application/octet-stream'},
     );
 
     if (response.statusCode == 200) {
-      kPrint('Server response: ${response.body}');
+      List<int> rawVerificationMessage = response.bodyBytes;
 
-      // TODO: SCV handle response if needed
-      return true;
+      // Error code is the 33rd byte in the response
+      final errorCode =
+          rawVerificationMessage.length > 32 ? rawVerificationMessage[32] : -1;
+      kPrint('Error code: $errorCode');
+
+      return errorCode == 0; // 0 means `ErrorCode::Ok`
     } else {
       kPrint('Error: ${response.statusCode}');
       return false;
