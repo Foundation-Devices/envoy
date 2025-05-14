@@ -5,7 +5,6 @@
 import 'dart:async';
 import 'dart:math';
 import 'dart:typed_data';
-
 import 'package:bluart/bluart.dart' as bluart;
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/prime_device.dart';
@@ -66,6 +65,7 @@ class BluetoothManager {
     });
 
     _generateQlIdentity();
+    setupExchangeRateListener();
   }
 
   getPermissions() async {
@@ -263,6 +263,16 @@ class BluetoothManager {
     } catch (e, stack) {
       kPrint('Failed to send exchange rate: $e');
     }
+  }
+
+  void setupExchangeRateListener() {
+    ExchangeRate().addListener(() async {
+      final prime =
+          await EnvoyStorage().getPrimeByBleId(BluetoothManager().bleId);
+      if (prime != null) {
+        await BluetoothManager().sendExchangeRate();
+      }
+    });
   }
 
   dispose() {
