@@ -2,10 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
-import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/components/pop_up.dart';
@@ -13,7 +11,6 @@ import 'package:envoy/ui/home/settings/fiat/settings_fiat_chooser.dart';
 import 'package:envoy/ui/home/settings/logs_report.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/home/settings/setting_toggle.dart';
-import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/bug_report_helper.dart';
@@ -24,7 +21,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:pub_semver/pub_semver.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -47,24 +43,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   bool canBuy = true;
 
   final LocalAuthentication auth = LocalAuthentication();
-
-  Future<bool> shouldShowPassportTaprootDialog() async {
-    if (!AccountManager().passportAccountsExist() &&
-        !AccountManager().passportTaprootAccountsExist()) {
-      return false;
-    }
-
-    final currentFwVersion = await UpdatesManager().getStoredFirmwareVersion(1);
-    if (currentFwVersion == null) {
-      return false;
-    }
-
-    if (currentFwVersion >= Version(2, 3, 0)) {
-      return true;
-    }
-
-    return false;
-  }
 
   final s = Settings();
 
@@ -282,32 +260,43 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               ListTile(
                 dense: true,
                 contentPadding: const EdgeInsets.all(0),
-                title: SettingText(S().settings_advanced_taproot),
-                trailing: SettingToggle(s.taprootEnabled, s.setTaprootEnabled,
-                    onEnabled: () async {
-                  if (await shouldShowPassportTaprootDialog() &&
-                      context.mounted) {
-                    showEnvoyPopUp(
-                      context,
-                      title: S().taproot_passport_dialog_heading,
-                      S().taproot_passport_dialog_subheading,
-                      S().taproot_passport_dialog_reconnect,
-                      (BuildContext context) {
-                        Navigator.pop(context);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const SingleImportPpIntroPage()));
-                      },
-                      icon: EnvoyIcons.info,
-                      secondaryButtonLabel: S().taproot_passport_dialog_later,
-                      onSecondaryButtonTap: (BuildContext context) {
-                        Navigator.pop(context);
-                      },
-                    );
-                  }
-                }),
+                title: SettingText(S().settings_advanced_receiveToTaproot),
+                trailing: SettingToggle(
+                  s.taprootEnabled,
+                  s.setTaprootEnabled,
+                  onEnabled: () async {
+                    if (context.mounted) {
+                      showEnvoyPopUp(
+                        context,
+                        icon: EnvoyIcons.info,
+                        showCloseButton: false,
+                        title: S().settings_advancedModalReceiveTaproot_title,
+                        S().settings_advancedModalReceiveTaproot_content,
+                        S().component_confirm,
+                        (BuildContext context) {
+                          s.enableTaprootSetting = true;
+                          Navigator.pop(context);
+                        },
+                      );
+                    }
+                  },
+                  onDisabled: () async {
+                    if (context.mounted) {
+                      showEnvoyPopUp(
+                        context,
+                        icon: EnvoyIcons.info,
+                        showCloseButton: false,
+                        title: S().settings_advancedModalReceiveSegwit_title,
+                        S().settings_advancedModalReceiveSegwit_content,
+                        S().component_confirm,
+                        (BuildContext context) {
+                          s.enableTaprootSetting = false;
+                          Navigator.pop(context);
+                        },
+                      );
+                    }
+                  },
+                ),
               ),
               canBuy
                   ? ListTile(
