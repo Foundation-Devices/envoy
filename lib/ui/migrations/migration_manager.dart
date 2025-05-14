@@ -270,9 +270,9 @@ class MigrationManager {
         try {
           EnvoyReport().log(
             "Migration",
-            "Migrating note ${entry.key}  with ${entry.value} -> ${envoyAccount.config().name } ${envoyAccount.config().descriptors.map(
-              (e) => " ${e.external_}\n",
-            )}\n",
+            "Migrating note ${entry.key}  with ${entry.value} -> ${envoyAccount.config().name} ${envoyAccount.config().descriptors.map(
+                  (e) => " ${e.external_}\n",
+                )}\n",
           );
           await envoyAccount.setNote(note: entry.value, txId: entry.key);
         } catch (_) {}

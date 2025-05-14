@@ -251,11 +251,11 @@ class AccountBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isTaproot = account.preferredAddressType == AddressType.p2Tr;
-    bool isTestnet = account.network == Network.testnet;
+    bool isTestnet = account.network == Network.testnet ||
+        account.network == Network.testnet4;
     bool isSignet = account.network == Network.signet;
 
-    bool isNotCircular = isTestnet || isTaproot || isSignet;
+    bool isNotCircular = isTestnet || isSignet;
     return Container(
         width: (isNotCircular) ? null : containerHeight / 2,
         height: containerHeight / 2.0,
@@ -288,25 +288,8 @@ class AccountBadge extends StatelessWidget {
                             isTestnet
                                 ? S().account_type_sublabel_testnet
                                 : "Signet",
-                            style: isTaproot
-                                ? EnvoyTypography.label
-                                    .copyWith(color: Colors.white)
-                                : EnvoyTypography.info
-                                    .copyWith(color: Colors.white)),
-                      ),
-                    if (isTaproot)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.xs),
-                        child: DefaultTextStyle(
-                          style: EnvoyTypography.info
-                              .copyWith(color: Colors.white),
-                          child: Text(
-                            S().account_type_label_taproot,
                             style: EnvoyTypography.info
-                                .copyWith(color: Colors.white),
-                          ),
-                        ),
+                                .copyWith(color: Colors.white)),
                       ),
                   ],
                 ),

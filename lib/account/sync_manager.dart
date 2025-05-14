@@ -28,7 +28,7 @@ class SyncManager {
       if (_pauseSync) {
         return;
       }
-      _syncAll();
+      // _syncAll();
     });
   }
 
@@ -37,8 +37,20 @@ class SyncManager {
   }
 
   void _syncAll() async {
+    bool synTestnet = Settings().showTestnetAccounts();
+    bool syncSignet = Settings().showSignetAccounts();
     final accounts = accountsCallback();
     for (var account in accounts) {
+      //skip tetnet accounts if not enabled
+      if (!synTestnet && account.network == Network.testnet4 ||
+          !syncSignet && account.network == Network.testnet) {
+        continue;
+      }
+      //skip signet accounts if not enabled
+      if (!syncSignet && account.network == Network.signet) {
+        continue;
+      }
+
       if (account.handler != null) {
         for (var descriptor in account.descriptors) {
           final request = await account.handler!
@@ -131,7 +143,7 @@ class SyncManager {
         }
         break;
       case Network.testnet4:
-        server = Settings.TESTNET_ELECTRUM_SERVER;
+        server = Settings.TESTNET4_ELECTRUM_SERVER;
         break;
       case Network.testnet:
         server = Settings.TESTNET_ELECTRUM_SERVER;

@@ -9,18 +9,31 @@ import 'package:envoy/business/settings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
 
-final accountOrderStream = StreamProvider<List<String>>(((ref) {
+final _accountOrderStream = StreamProvider<List<String>>(((ref) {
   return NgAccountManager().order;
 }));
+final accountOrderStream = Provider<List<String>>(((ref) {
+  return ref.watch(_accountOrderStream).value ?? [];
+}));
+
+final accountManagerNotifier = ChangeNotifierProvider(
+  (ref) {
+    final accountManager = NgAccountManager();
+    ref.onDispose(() {
+      accountManager.dispose();
+    });
+    return accountManager;
+  },
+);
 
 final accountsListStreamProvider =
     StreamProvider<List<EnvoyAccount>>((ref) async* {
+  final manager = ref.watch(accountManagerNotifier);
   //send the initial state
-  yield NgAccountManager().accounts;
+  yield manager.accounts;
   // create new list to avoid mutating the original
-  final latestStates = List.from(NgAccountManager().accounts);
-  await for (EnvoyAccount state
-      in StreamGroup.merge(NgAccountManager().streams)) {
+  final latestStates = List.from(manager.accounts);
+  await for (EnvoyAccount state in StreamGroup.merge(manager.streams)) {
     // Replace or add the updated state in the list
     final index = latestStates.indexWhere((s) => s.id == state.id);
     if (index != -1) {
@@ -43,11 +56,12 @@ final _accountListProvider = Provider<List<EnvoyAccount>>(
 final accountsProvider = Provider<List<EnvoyAccount>>((ref) {
   var testnetEnabled = ref.watch(showTestnetAccountsProvider);
   var signetEnabled = ref.watch(showSignetAccountsProvider);
-  var taprootEnabled = ref.watch(showTaprootAccountsProvider);
   final accounts = ref.watch(_accountListProvider);
 
   final visibleItem = accounts.where((account) {
-    if (!testnetEnabled && account.network == Network.testnet) {
+    if (!testnetEnabled &&
+        (account.network == Network.testnet ||
+            account.network == Network.testnet4)) {
       return false;
     }
 
@@ -55,9 +69,9 @@ final accountsProvider = Provider<List<EnvoyAccount>>((ref) {
       return false;
     }
     //TODO: fix for unified accounts
-    if (!taprootEnabled && account.preferredAddressType == AddressType.p2Tr) {
-      return false;
-    }
+    // if (!taprootEnabled && account.preferredAddressType == AddressType.p2Tr) {
+    //   return false;
+    // }
     return true;
   }).toList();
 
