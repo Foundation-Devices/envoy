@@ -4,8 +4,8 @@
 
 import 'package:envoy/business/seed_qr_extract.dart';
 import 'package:envoy/ui/widgets/scanner/scanner_decoder.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:ngwallet/src/wallet.dart';
 
 class InvalidSeedQRException implements Exception {
   @override
@@ -24,8 +24,7 @@ class SeedQrDecoder extends ScannerDecoder {
       return;
     }
     final seed = extractSeedFromQRCode(code, rawBytes: barCode.rawBytes);
-    // TODO: account for passphrases (when we reenable that feature)
-    if (isValidSeedLength(seed) && Wallet.validateSeed(seed)) {
+    if (isValidSeedLength(seed) && await EnvoyBip39.validateSeed(seedWords: seed)) {
       onSeedValidated!(seed);
       return;
     } else {

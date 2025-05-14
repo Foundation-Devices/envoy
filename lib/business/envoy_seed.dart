@@ -20,6 +20,7 @@ import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/video.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/migrations/migration_manager.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/util/bug_report_helper.dart';
@@ -352,7 +353,6 @@ class EnvoySeed {
     } catch (e) {
       throw SeedNotFound();
     }
-
     if (filePath == null) {
       try {
         return Backup.restore(seed, Settings().envoyServerAddress, Tor.instance)
@@ -447,14 +447,15 @@ class EnvoySeed {
 
     var accounts = values[keys.indexOf(AccountManager.ACCOUNTS_PREFS)];
     var jsonAccounts = jsonDecode(accounts);
+    List<LegacyAccount> legacyWallets = jsonAccounts
+        .map((e) => LegacyAccount.fromJson(e as Map<String, dynamic>))
+        .toList();
 
-    for (var account in jsonAccounts) {
-      // LegacyWallet wallet = LegacyWallet.fromJson(account["wallet"]);
-      // print("wallet ${wallet.toJson()}");
-      // if(!wallet.hot){
-      //     wa
-      // }
-    }
+    List<LegacyUnifiedAccounts> legacy = MigrationManager.unify(legacyWallets);
+    final accountOrder =
+        LocalStorage().prefs.getString(NgAccountManager.ACCOUNT_ORDER);
+    List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
+    await MigrationManager().createAccounts(legacy, order);
 
     accounts = jsonEncode(jsonAccounts);
     json["stores"][indexOfPreferences]["values"]

@@ -107,67 +107,9 @@ class MigrationManager {
       addMigrationEvent(
           MigrationProgress(total: unifiedLegacyAccounts.length, completed: 0));
 
-      for (LegacyUnifiedAccounts unified in unifiedLegacyAccounts) {
-        //use externalDescriptor and internalDescriptor
-        final legacyAccount = unified.accounts.first;
-        Directory newAccountDir = NgAccountManager.getAccountDirectory(
-            deviceSerial: legacyAccount.deviceSerial,
-            network: legacyAccount.wallet.network,
-            accountId: !unified.isUnified ? legacyAccount.id : null,
-            number: legacyAccount.number);
+      await createAccounts(
+          unifiedLegacyAccounts, walletOrder);
 
-        if (!newAccountDir.existsSync()) {
-          await newAccountDir.create(recursive: true);
-        }
-        var network = Network.bitcoin;
-        if (legacyAccount.wallet.network.toLowerCase() == "testnet") {
-          network = Network.testnet;
-        } else if (legacyAccount.wallet.network.toLowerCase() == "signet") {
-          network = Network.signet;
-        }
-        final oldWalletDirPaths = unified.accounts.map((account) {
-          return Directory("$walletsDirectory${account.wallet.name}");
-        }).toList();
-
-        final descriptors = unified.accounts.map((account) {
-          AddressType addressType = AddressType.p2Wpkh;
-          if (account.wallet.type == "taproot") {
-            addressType = AddressType.p2Tr;
-          }
-          return NgDescriptor(
-            addressType: addressType,
-            internal: account.wallet.internalDescriptor,
-            external_: account.wallet.externalDescriptor,
-          );
-        }).toList();
-
-        var addressType = AddressType.p2Wpkh;
-        if (legacyAccount.wallet.type == "taproot") {
-          addressType = AddressType.p2Tr;
-        }
-        final newId = Uuid().v4();
-
-        final envoyAccount = await EnvoyAccountHandler.migrate(
-            name: legacyAccount.name,
-            color: colorToHex(getAccountColor(legacyAccount)),
-            deviceSerial: legacyAccount.deviceSerial,
-            dateAdded: legacyAccount.dateAdded,
-            addressType: addressType,
-            descriptors: descriptors,
-            index: legacyAccount.number,
-            network: network,
-            id: newId,
-            dbPath: newAccountDir.path,
-            legacySledDbPath: oldWalletDirPaths
-                .map(
-                  (e) => e.path,
-                )
-                .toList());
-        accounts.add(envoyAccount);
-        walletOrder.add(newId);
-      }
-      await _ls.prefs
-          .setString(NgAccountManager.ACCOUNT_ORDER, jsonEncode(walletOrder));
       try {
         for (var account in accounts) {
           await migrateDoNotSpend(account);
@@ -189,6 +131,75 @@ class MigrationManager {
       EnvoyReport().log("Migration", "No accounts found");
     }
     _onMigrationFinished?.call();
+  }
+
+  Future createAccounts(List<LegacyUnifiedAccounts> unifiedLegacyAccounts,
+      List<String> existingWalletOrder) async {
+    final walletOrder = List<String>.empty(growable: true);
+    for (LegacyUnifiedAccounts unified in unifiedLegacyAccounts) {
+      //use externalDescriptor and internalDescriptor
+      final legacyAccount = unified.accounts.first;
+      Directory newAccountDir = NgAccountManager.getAccountDirectory(
+          deviceSerial: legacyAccount.deviceSerial,
+          network: legacyAccount.wallet.network,
+          accountId: !unified.isUnified ? legacyAccount.id : null,
+          number: legacyAccount.number);
+
+      if (!newAccountDir.existsSync()) {
+        await newAccountDir.create(recursive: true);
+      }
+      var network = Network.bitcoin;
+      if (legacyAccount.wallet.network.toLowerCase() == "testnet") {
+        network = Network.testnet;
+      } else if (legacyAccount.wallet.network.toLowerCase() == "signet") {
+        network = Network.signet;
+      }
+      List<Directory> oldWalletDirPaths = [];
+      for (var account in unified.accounts) {
+        final dir = Directory("$walletsDirectory${account.wallet.name}");
+        if (dir.existsSync()) {
+          oldWalletDirPaths.add(dir);
+        }
+      }
+      final descriptors = unified.accounts.map((account) {
+        AddressType addressType = AddressType.p2Wpkh;
+        if (account.wallet.type == "taproot") {
+          addressType = AddressType.p2Tr;
+        }
+        return NgDescriptor(
+          addressType: addressType,
+          internal: account.wallet.internalDescriptor,
+          external_: account.wallet.externalDescriptor,
+        );
+      }).toList();
+
+      var addressType = AddressType.p2Wpkh;
+      if (legacyAccount.wallet.type == "taproot") {
+        addressType = AddressType.p2Tr;
+      }
+      final newId = Uuid().v4();
+
+      final envoyAccount = await EnvoyAccountHandler.migrate(
+          name: legacyAccount.name,
+          color: colorToHex(getAccountColor(legacyAccount)),
+          deviceSerial: legacyAccount.deviceSerial,
+          dateAdded: legacyAccount.dateAdded,
+          addressType: addressType,
+          descriptors: descriptors,
+          index: legacyAccount.number,
+          network: network,
+          id: newId,
+          dbPath: newAccountDir.path,
+          legacySledDbPath: oldWalletDirPaths
+              .map(
+                (e) => e.path,
+              )
+              .toList());
+      accounts.add(envoyAccount);
+      walletOrder.add(newId);
+    }
+    await _ls.prefs
+        .setString(NgAccountManager.ACCOUNT_ORDER, jsonEncode(walletOrder));
   }
 
   static List<LegacyUnifiedAccounts> unify(List<LegacyAccount> legacyAccount) {
@@ -252,7 +263,6 @@ class MigrationManager {
           "Syncing Finished ${accountConfig.name} | ${accountConfig.network} | $server  |Tor : $port",
         );
       }
-
       addMigrationEvent(MigrationProgress(
           total: accounts.length, completed: accounts.indexOf(account) + 1));
     }

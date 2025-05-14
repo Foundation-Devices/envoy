@@ -27,7 +27,7 @@ pub struct EnvoyBip39 {}
 
 impl EnvoyBip39 {
     pub fn validate_seed(seed_words: &str) -> bool {
-        true
+        return Mnemonic::parse(seed_words).is_ok();
     }
 
     pub fn generate_seed() -> Result<String> {
