@@ -12,6 +12,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 import 'pairing.dart';
 import 'passport.dart';
+import 'scv.dart';
 import 'status.dart';
 part 'message.freezed.dart';
 
@@ -85,10 +86,19 @@ sealed class QuantumLinkMessage with _$QuantumLinkMessage {
   const factory QuantumLinkMessage.signPsbt(
     SignPsbt field0,
   ) = QuantumLinkMessage_SignPsbt;
-  const factory QuantumLinkMessage.syncUpdate(
-    SyncUpdate field0,
-  ) = QuantumLinkMessage_SyncUpdate;
+  const factory QuantumLinkMessage.accountUpdate(
+    AccountUpdate field0,
+  ) = QuantumLinkMessage_AccountUpdate;
   const factory QuantumLinkMessage.firmwarePayload(
     FirmwarePayload field0,
   ) = QuantumLinkMessage_FirmwarePayload;
+  const factory QuantumLinkMessage.broadcastTransaction(
+    BroadcastTransaction field0,
+  ) = QuantumLinkMessage_BroadcastTransaction;
+  const factory QuantumLinkMessage.securityChallengeMessage(
+    SecurityChallengeMessage field0,
+  ) = QuantumLinkMessage_SecurityChallengeMessage;
+  const factory QuantumLinkMessage.securityProofMessage(
+    SecurityProofMessage field0,
+  ) = QuantumLinkMessage_SecurityProofMessage;
 }

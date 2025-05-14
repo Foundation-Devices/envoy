@@ -31,5 +31,6 @@ enum OnboardingState {
   securityChecked,
   updateAvailable,
   updateNotAvailable,
+  securityCheckFailed,
   ;
 }

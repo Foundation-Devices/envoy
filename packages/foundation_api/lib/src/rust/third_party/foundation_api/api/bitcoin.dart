@@ -6,44 +6,65 @@
 import '../../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-class SignPsbt {
-  final String descriptor;
+class AccountUpdate {
+  final String accountId;
+  final Uint8List update;
+
+  const AccountUpdate({
+    required this.accountId,
+    required this.update,
+  });
+
+  @override
+  int get hashCode => accountId.hashCode ^ update.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AccountUpdate &&
+          runtimeType == other.runtimeType &&
+          accountId == other.accountId &&
+          update == other.update;
+}
+
+class BroadcastTransaction {
+  final String accountId;
   final String psbt;
 
-  const SignPsbt({
-    required this.descriptor,
+  const BroadcastTransaction({
+    required this.accountId,
     required this.psbt,
   });
 
   @override
-  int get hashCode => descriptor.hashCode ^ psbt.hashCode;
+  int get hashCode => accountId.hashCode ^ psbt.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BroadcastTransaction &&
+          runtimeType == other.runtimeType &&
+          accountId == other.accountId &&
+          psbt == other.psbt;
+}
+
+class SignPsbt {
+  final String accountId;
+  final String psbt;
+
+  const SignPsbt({
+    required this.accountId,
+    required this.psbt,
+  });
+
+  @override
+  int get hashCode => accountId.hashCode ^ psbt.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is SignPsbt &&
           runtimeType == other.runtimeType &&
-          descriptor == other.descriptor &&
+          accountId == other.accountId &&
           psbt == other.psbt;
-}
-
-class SyncUpdate {
-  final String descriptor;
-  final Uint8List update;
-
-  const SyncUpdate({
-    required this.descriptor,
-    required this.update,
-  });
-
-  @override
-  int get hashCode => descriptor.hashCode ^ update.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is SyncUpdate &&
-          runtimeType == other.runtimeType &&
-          descriptor == other.descriptor &&
-          update == other.update;
 }

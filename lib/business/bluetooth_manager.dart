@@ -5,15 +5,18 @@
 import 'dart:async';
 import 'dart:math';
 import 'dart:typed_data';
-
 import 'package:bluart/bluart.dart' as bluart;
+import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/prime_device.dart';
+import 'package:envoy/business/scv_server.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/console.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/uuid_value.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:foundation_api/src/rust/third_party/foundation_api/api/scv.dart';
 
 class BluetoothManager {
   StreamSubscription? _subscription;
@@ -62,6 +65,7 @@ class BluetoothManager {
     });
 
     _generateQlIdentity();
+    setupExchangeRateListener();
   }
 
   getPermissions() async {
@@ -118,10 +122,10 @@ class BluetoothManager {
     await EnvoyStorage().savePrime(prime);
   }
 
-  Future<void> sendPsbt(String descriptor, String psbt) async {
+  Future<void> sendPsbt(String accountId, String psbt) async {
     final encoded = await encodeMessage(
         message: api.QuantumLinkMessage.signPsbt(
-            api.SignPsbt(descriptor: descriptor, psbt: psbt)));
+            api.SignPsbt(psbt: psbt, accountId: accountId)));
 
     kPrint("before sending psbt");
     await bluart.writeAll(id: bleId, data: encoded);
@@ -198,6 +202,22 @@ class BluetoothManager {
     await bluart.writeAll(id: bleId, data: encoded);
   }
 
+  Future<void> sendChallengeMessage() async {
+    SecurityChallengeMessage? challenge = await ScvServer().getPrimeChallenge();
+
+    if (challenge == null) {
+      // TODO: SCV what now?
+      kPrint("No challenge available");
+      return;
+    }
+
+    final encoded = await encodeMessage(
+      message: api.QuantumLinkMessage.securityChallengeMessage(challenge),
+    );
+
+    await bluart.writeAll(id: bleId, data: encoded);
+  }
+
   Future<void> restorePrimeDevice() async {
     List<PrimeDevice> primes = await EnvoyStorage().getAllPrimes();
 
@@ -219,6 +239,40 @@ class BluetoothManager {
     } catch (e) {
       kPrint('Error deserializing XidDocument: $e');
     }
+  }
+
+  Future<void> sendExchangeRate() async {
+    try {
+      final exchangeRate = ExchangeRate();
+      final settings = Settings();
+      if (exchangeRate.selectedCurrencyRate == null ||
+          settings.selectedFiat == null) {
+        return;
+      }
+
+      final exchangeRateMessage = api.ExchangeRate(
+        currencyCode: settings.selectedFiat!,
+        rate: exchangeRate.selectedCurrencyRate!,
+      );
+
+      final encoded = await encodeMessage(
+        message: api.QuantumLinkMessage.exchangeRate(exchangeRateMessage),
+      );
+
+      await bluart.writeAll(id: bleId, data: encoded);
+    } catch (e, stack) {
+      kPrint('Failed to send exchange rate: $e');
+    }
+  }
+
+  void setupExchangeRateListener() {
+    ExchangeRate().addListener(() async {
+      final prime =
+          await EnvoyStorage().getPrimeByBleId(BluetoothManager().bleId);
+      if (prime != null) {
+        await BluetoothManager().sendExchangeRate();
+      }
+    });
   }
 
   dispose() {

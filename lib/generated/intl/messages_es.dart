@@ -60,6 +60,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "about_show": MessageLookupByLibrary.simpleMessage("Mostrar"),
         "about_termsOfUse":
             MessageLookupByLibrary.simpleMessage("Condiciones de Uso"),
+        "accountDetails_descriptor_legacy":
+            MessageLookupByLibrary.simpleMessage("Legacy"),
+        "accountDetails_descriptor_segwit":
+            MessageLookupByLibrary.simpleMessage("Segwit"),
+        "accountDetails_descriptor_taproot":
+            MessageLookupByLibrary.simpleMessage("Taproot"),
+        "accountDetails_descriptor_wrappedSegwit":
+            MessageLookupByLibrary.simpleMessage("Wrapped Segwit"),
         "account_details_filter_tags_sortBy":
             MessageLookupByLibrary.simpleMessage("Ordenar por"),
         "account_details_untagged_card":
@@ -179,7 +187,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Descargar Copia de Seguridad de Configuración y Datos"),
         "backups_downloadSettingsMetadataBackupFile":
             MessageLookupByLibrary.simpleMessage(
-                "Descargar Copia de Seguridad de Ajustes y Metadatos"),
+                "Descargar Copia de Seguridad de Metadatos"),
         "backups_erase_wallets_and_backups":
             MessageLookupByLibrary.simpleMessage(
                 "Eliminar Carteras y Copias de Seguridad"),
@@ -574,7 +582,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("No volver a mostrar"),
         "component_filter": MessageLookupByLibrary.simpleMessage("Filtrar"),
         "component_filter_button_all":
-            MessageLookupByLibrary.simpleMessage("Todo"),
+            MessageLookupByLibrary.simpleMessage("Todos"),
         "component_goToSettings":
             MessageLookupByLibrary.simpleMessage("Ir a Ajustes"),
         "component_learnMore":
@@ -1327,7 +1335,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_toggle_on_seed_backedup_android_wallet_seed":
             MessageLookupByLibrary.simpleMessage("Semilla Envoy"),
         "manual_toggle_on_seed_backedup_iOS_backup_now":
-            MessageLookupByLibrary.simpleMessage("Ejecutar"),
+            MessageLookupByLibrary.simpleMessage("Realizar Copia de Seguridad"),
         "manual_toggle_on_seed_backedup_iOS_stored_in_cloud":
             MessageLookupByLibrary.simpleMessage(
                 "Almacenado en el Llavero iCloud"),
@@ -1365,6 +1373,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "menu_privacy": MessageLookupByLibrary.simpleMessage("Privacidad"),
         "menu_settings": MessageLookupByLibrary.simpleMessage("AJUSTES"),
         "menu_support": MessageLookupByLibrary.simpleMessage("AYUDA"),
+        "onboardin_unifiedAccountsModal_content":
+            MessageLookupByLibrary.simpleMessage(
+                "From version 2.0.0, all address types are now accessible under a single account card.\n\nThe default receive address type can be changed in Settings."),
+        "onboardin_unifiedAccountsModal_tilte":
+            MessageLookupByLibrary.simpleMessage("Unified Address Types"),
         "onboarding_advancedModal_content": MessageLookupByLibrary.simpleMessage(
             "Si continúas sin una Copia de Seguridad Mágica, serás responsable de almacenar tu propia semilla y datos de recuperación."),
         "onboarding_advancedModal_header":
@@ -1678,7 +1691,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Este es un intento de cancelación. Existe una pequeña posibilidad de que tu transacción original se confirme antes de este intento de cancelación."),
         "replaceByFee_coindetails_overlayNotice":
             MessageLookupByLibrary.simpleMessage(
-                "Boost and Cancel functions will be available after transaction has finished being broadcast."),
+                "Las funciones Acelerar y Cancelar estarán disponibles después de que la transacción haya terminado de emitirse."),
         "replaceByFee_coindetails_overlay_boost":
             MessageLookupByLibrary.simpleMessage("Acelerar"),
         "replaceByFee_coindetails_overlay_modal_heading":
@@ -1732,6 +1745,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "send_reviewScreen_sendMaxWarning": MessageLookupByLibrary.simpleMessage(
             "Envío máximo: \nLas tasas se deducen de la cantidad que se envía."),
         "settings_advanced": MessageLookupByLibrary.simpleMessage("Avanzado"),
+        "settings_advancedModalReceiveSegwit_content":
+            MessageLookupByLibrary.simpleMessage(
+                "With this toggle off, Native Segwit addresses will be generated when you tap receive. This is the default address type used by most Bitcoin wallets."),
+        "settings_advancedModalReceiveSegwit_title":
+            MessageLookupByLibrary.simpleMessage("Receive to Segwit"),
+        "settings_advancedModalReceiveTaproot_content":
+            MessageLookupByLibrary.simpleMessage(
+                "With this toggle on, Taproot addresses will be generated when you tap receive. Ensure entities sending you Bitcoin are Taproot compatible before proceeding."),
+        "settings_advancedModalReceiveTaproot_title":
+            MessageLookupByLibrary.simpleMessage("Receive to Taproot"),
         "settings_advanced_enableBuyRamp":
             MessageLookupByLibrary.simpleMessage("Comprar en Envoy"),
         "settings_advanced_enabled_signet_modal_link":
@@ -1745,6 +1768,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_advanced_enabled_testnet_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Al habilitar Testnet, se añade una versión de Testnet3 de tu Cartera Envoy y te permite conectar cuentas de Testnet de tu Passport."),
+        "settings_advanced_receiveToTaproot":
+            MessageLookupByLibrary.simpleMessage("Receive to Taproot"),
         "settings_advanced_signet":
             MessageLookupByLibrary.simpleMessage("Signet"),
         "settings_advanced_taproot":

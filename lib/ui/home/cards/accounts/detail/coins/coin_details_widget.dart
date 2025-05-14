@@ -65,7 +65,6 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
     if (coinTag.untagged) {
       accountAccentColor = const Color(0xff808080);
     }
-    bool addressNotAvailable = false;
 
     return EnvoyInfoCard(
         backgroundColor: accountAccentColor,
@@ -91,17 +90,13 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                       Tween<double>(begin: 0, end: showExpandedAddress ? 1 : 0),
                   duration: const Duration(milliseconds: 200),
                   builder: (context, value, child) {
-                    return addressNotAvailable
-                        ? Text("Address not available ",
-                            // TODO: Figma
-                            style: trailingTextStyle)
-                        : AddressWidget(
-                            widgetKey: ValueKey<bool>(showExpandedAddress),
-                            address: utxoAddress,
-                            short: true,
-                            sideChunks:
-                                2 + (value * (utxoAddress.length / 4)).round(),
-                          );
+                    return AddressWidget(
+                      widgetKey: ValueKey<bool>(showExpandedAddress),
+                      address: utxoAddress,
+                      short: true,
+                      sideChunks:
+                          2 + (value * (utxoAddress.length / 4)).round(),
+                    );
                   }),
             ),
           ),

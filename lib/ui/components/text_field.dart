@@ -17,6 +17,7 @@ class EnvoyTextField extends StatefulWidget {
     this.additionalButtons = false,
     this.onQrScan,
     required this.onChanged,
+    this.onSubmitted,
     this.errorText,
     this.isError = false,
     this.isLoading,
@@ -34,6 +35,7 @@ class EnvoyTextField extends StatefulWidget {
   final bool? isLoading;
   final TextEditingController controller;
   final String? infoContent;
+  final dynamic onSubmitted;
 
   @override
   State<EnvoyTextField> createState() => _EnvoyTextFieldState();
@@ -88,6 +90,7 @@ class _EnvoyTextFieldState extends State<EnvoyTextField> {
                   onChanged: (text) {
                     widget.onChanged(text);
                   },
+                  onFieldSubmitted: widget.onSubmitted,
                   style: EnvoyTypography.body,
                   controller: widget.controller,
                   focusNode: _focus,
