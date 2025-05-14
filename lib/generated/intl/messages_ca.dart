@@ -48,8 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage(
-            "Here we can introduce the user to the special area here, what important stuff he can do."),
+        "_": MessageLookupByLibrary.simpleMessage("Secondary action"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versió de l\'aplicació"),
         "about_openSourceLicences":
@@ -59,6 +58,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "about_show": MessageLookupByLibrary.simpleMessage("Mostra"),
         "about_termsOfUse":
             MessageLookupByLibrary.simpleMessage("Condicions d\'Ús"),
+        "accountDetails_descriptor_legacy":
+            MessageLookupByLibrary.simpleMessage("Legacy"),
+        "accountDetails_descriptor_segwit":
+            MessageLookupByLibrary.simpleMessage("Segwit"),
+        "accountDetails_descriptor_taproot":
+            MessageLookupByLibrary.simpleMessage("Taproot"),
+        "accountDetails_descriptor_wrappedSegwit":
+            MessageLookupByLibrary.simpleMessage("Wrapped Segwit"),
         "account_details_filter_tags_sortBy":
             MessageLookupByLibrary.simpleMessage("Ordena per"),
         "account_details_untagged_card":
@@ -1366,6 +1373,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "menu_privacy": MessageLookupByLibrary.simpleMessage("Privacy"),
         "menu_settings": MessageLookupByLibrary.simpleMessage("CONFIGURACIÓ"),
         "menu_support": MessageLookupByLibrary.simpleMessage("SUPORT"),
+        "onboardin_unifiedAccountsModal_content":
+            MessageLookupByLibrary.simpleMessage(
+                "From version 2.0.0, all address types are now accessible under a single account card.\n\nThe default receive address type can be changed in Settings."),
+        "onboardin_unifiedAccountsModal_tilte":
+            MessageLookupByLibrary.simpleMessage("Unified Address Types"),
         "onboarding_advancedModal_content": MessageLookupByLibrary.simpleMessage(
             "If you continue without Magic Backups, you will be responsible for storing your own seed words and backup data."),
         "onboarding_advancedModal_header":
@@ -1729,6 +1741,16 @@ class MessageLookup extends MessageLookupByLibrary {
             "Enviar el Màxim:\nLes tarifes es dedueixen de l\'import enviat."),
         "settings_advanced":
             MessageLookupByLibrary.simpleMessage("Opcions Avançades"),
+        "settings_advancedModalReceiveSegwit_content":
+            MessageLookupByLibrary.simpleMessage(
+                "With this toggle off, Native Segwit addresses will be generated when you tap receive. This is the default address type used by most Bitcoin wallets."),
+        "settings_advancedModalReceiveSegwit_title":
+            MessageLookupByLibrary.simpleMessage("Receive to Segwit"),
+        "settings_advancedModalReceiveTaproot_content":
+            MessageLookupByLibrary.simpleMessage(
+                "With this toggle on, Taproot addresses will be generated when you tap receive. Ensure entities sending you Bitcoin are Taproot compatible before proceeding."),
+        "settings_advancedModalReceiveTaproot_title":
+            MessageLookupByLibrary.simpleMessage("Receive to Taproot"),
         "settings_advanced_enableBuyRamp":
             MessageLookupByLibrary.simpleMessage("Compra a Envoy"),
         "settings_advanced_enabled_signet_modal_link":
@@ -1742,6 +1764,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_advanced_enabled_testnet_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Si activeu Testnet, s\'afegeix una versió de Testnet3 del vostre Envoy Wallet i us permet connectar comptes de Testnet des del vostre Passport."),
+        "settings_advanced_receiveToTaproot":
+            MessageLookupByLibrary.simpleMessage("Receive to Taproot"),
         "settings_advanced_signet":
             MessageLookupByLibrary.simpleMessage("Signet"),
         "settings_advanced_taproot":

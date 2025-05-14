@@ -52,10 +52,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `Here we can introduce the user to the special area here, what important stuff he can do.`
+  /// `Secondary action`
   String get _ {
     return Intl.message(
-      'Here we can introduce the user to the special area here, what important stuff he can do.',
+      'Secondary action',
       name: '_',
       desc: '',
       args: [],
@@ -107,6 +107,46 @@ class S {
     return Intl.message(
       'Terms of Use',
       name: 'about_termsOfUse',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Legacy`
+  String get accountDetails_descriptor_legacy {
+    return Intl.message(
+      'Legacy',
+      name: 'accountDetails_descriptor_legacy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Segwit`
+  String get accountDetails_descriptor_segwit {
+    return Intl.message(
+      'Segwit',
+      name: 'accountDetails_descriptor_segwit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Taproot`
+  String get accountDetails_descriptor_taproot {
+    return Intl.message(
+      'Taproot',
+      name: 'accountDetails_descriptor_taproot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wrapped Segwit`
+  String get accountDetails_descriptor_wrappedSegwit {
+    return Intl.message(
+      'Wrapped Segwit',
+      name: 'accountDetails_descriptor_wrappedSegwit',
       desc: '',
       args: [],
     );
@@ -6168,6 +6208,26 @@ class S {
     );
   }
 
+  /// `From version 2.0.0, all address types are now accessible under a single account card.\n\nThe default receive address type can be changed in Settings.`
+  String get onboardin_unifiedAccountsModal_content {
+    return Intl.message(
+      'From version 2.0.0, all address types are now accessible under a single account card.\n\nThe default receive address type can be changed in Settings.',
+      name: 'onboardin_unifiedAccountsModal_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unified Address Types`
+  String get onboardin_unifiedAccountsModal_tilte {
+    return Intl.message(
+      'Unified Address Types',
+      name: 'onboardin_unifiedAccountsModal_tilte',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'onboarding.connectionChecking.forUpdates' key
 
   /// `If you continue without Magic Backups, you will be responsible for storing your own seed words and backup data.`
@@ -7740,6 +7800,46 @@ class S {
     );
   }
 
+  /// `With this toggle off, Native Segwit addresses will be generated when you tap receive. This is the default address type used by most Bitcoin wallets.`
+  String get settings_advancedModalReceiveSegwit_content {
+    return Intl.message(
+      'With this toggle off, Native Segwit addresses will be generated when you tap receive. This is the default address type used by most Bitcoin wallets.',
+      name: 'settings_advancedModalReceiveSegwit_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Receive to Segwit`
+  String get settings_advancedModalReceiveSegwit_title {
+    return Intl.message(
+      'Receive to Segwit',
+      name: 'settings_advancedModalReceiveSegwit_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `With this toggle on, Taproot addresses will be generated when you tap receive. Ensure entities sending you Bitcoin are Taproot compatible before proceeding.`
+  String get settings_advancedModalReceiveTaproot_content {
+    return Intl.message(
+      'With this toggle on, Taproot addresses will be generated when you tap receive. Ensure entities sending you Bitcoin are Taproot compatible before proceeding.',
+      name: 'settings_advancedModalReceiveTaproot_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Receive to Taproot`
+  String get settings_advancedModalReceiveTaproot_title {
+    return Intl.message(
+      'Receive to Taproot',
+      name: 'settings_advancedModalReceiveTaproot_title',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Buy in Envoy`
   String get settings_advanced_enableBuyRamp {
     return Intl.message(
@@ -7785,6 +7885,16 @@ class S {
     return Intl.message(
       'Enabling Testnet adds a Testnet3 version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport.',
       name: 'settings_advanced_enabled_testnet_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Receive to Taproot`
+  String get settings_advanced_receiveToTaproot {
+    return Intl.message(
+      'Receive to Taproot',
+      name: 'settings_advanced_receiveToTaproot',
       desc: '',
       args: [],
     );
