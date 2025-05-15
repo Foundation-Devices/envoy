@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ui/home/setup_overlay.dart';
 import 'package:envoy/ui/pages/scv/scv_intro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,7 +14,9 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class TouPage extends StatefulWidget {
-  const TouPage({super.key});
+  final bool callFromOnboard;
+
+  const TouPage({super.key, this.callFromOnboard = true});
 
   @override
   State<TouPage> createState() => _TouPageState();
@@ -61,6 +64,8 @@ class _TouPageState extends State<TouPage> {
                         child: GestureDetector(
                           onTap: () {
                             Navigator.pop(context);
+                            setUpPassportDialog(
+                                context, widget.callFromOnboard);
                           },
                           child: const Icon(Icons.arrow_back_ios_rounded,
                               size: 20),

@@ -11,6 +11,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
+import 'package:envoy/ui/home/setup_overlay.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/routes/routes.dart';
@@ -202,92 +203,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       ),
                       title: S().onboarding_welcome_setUpPassport,
                       onTap: () {
-                        showScannerDialog(
-                            context: context,
-                            onBackPressed: (context) {
-                              Navigator.pop(context);
-                            },
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: EnvoySpacing.medium3,
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: EnvoySpacing.medium3),
-                                        child: Text(
-                                          S().onboarding_passpportSelectCamera_sub235VersionAlert,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall
-                                              ?.copyWith(
-                                                fontWeight: FontWeight.w700,
-                                                color: EnvoyColors
-                                                    .textPrimaryInverse,
-                                              ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                      TextButton(
-                                        child: Text(
-                                          S().onboarding_passpportSelectCamera_tapHere,
-                                          style: EnvoyTypography.button
-                                              .copyWith(
-                                                  color: EnvoyColors
-                                                      .textPrimaryInverse),
-                                        ),
-                                        onPressed: () async {
-                                          Navigator.pop(context);
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) {
-                                            return const TouPage();
-                                          }));
-                                        },
-                                      ),
-                                      const SizedBox(
-                                          height: EnvoySpacing.medium3),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                            decoder: GenericQrDecoder(onScan: (String payload) {
-                              final uri = Uri.parse(payload);
-                              final params = uri.queryParameters;
-
-                              if (params.containsKey("p")) {
-                                Navigator.pop(context);
-                                context.goNamed(ONBOARD_PRIME,
-                                    queryParameters: params);
-                              } else if (params.containsKey("t")) {
-                                Navigator.pop(context);
-                                context.goNamed(ONBOARD_PASSPORT_TOU,
-                                    queryParameters: params);
-                              } else {
-                                // TODO: manage this inside QR decoder ???
-                                EnvoyToast(
-                                  replaceExisting: true,
-                                  duration: const Duration(seconds: 6),
-                                  message: "Invalid QR code",
-                                  isDismissible: true,
-                                  onActionTap: () {
-                                    EnvoyToast.dismissPreviousToasts(context);
-                                  },
-                                  icon: const Icon(
-                                    Icons.info_outline,
-                                    color: EnvoyColors.accentPrimary,
-                                  ),
-                                ).show(context);
-                              }
-                            }));
+                        setUpPassportDialog(context, true);
                       },
                     ),
                   ),

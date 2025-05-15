@@ -24,6 +24,8 @@ import 'package:envoy/ui/widgets/scanner/decoders/generic_qr_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/ui/pages/legal/passport_tou.dart';
 
+import '../routes/routes.dart';
+
 double cardButtonHeight = 125;
 
 class AnimatedBottomOverlay extends ConsumerStatefulWidget {
@@ -191,129 +193,7 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                                         title: S()
                                             .onboarding_welcome_setUpPassport,
                                         onTap: () {
-                                          showScannerDialog(
-                                              context: context,
-                                              onBackPressed: (context) {
-                                                Navigator.pop(context);
-                                              },
-                                              child: GestureDetector(
-                                                // prevent scanner drag
-                                                onVerticalDragUpdate: (_) {},
-                                                onVerticalDragStart: (_) {},
-                                                onVerticalDragEnd: (_) {},
-                                                behavior:
-                                                    HitTestBehavior.opaque,
-                                                child: SafeArea(
-                                                  child: Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.max,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.end,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                          vertical: EnvoySpacing
-                                                              .medium3,
-                                                        ),
-                                                        alignment:
-                                                            Alignment.center,
-                                                        child: Column(
-                                                          children: [
-                                                            Padding(
-                                                              padding: const EdgeInsets
-                                                                  .symmetric(
-                                                                  horizontal:
-                                                                      EnvoySpacing
-                                                                          .medium3),
-                                                              child: Text(
-                                                                S().onboarding_passpportSelectCamera_sub235VersionAlert,
-                                                                style: Theme.of(
-                                                                        context)
-                                                                    .textTheme
-                                                                    .bodySmall
-                                                                    ?.copyWith(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w700,
-                                                                      color: EnvoyColors
-                                                                          .textPrimaryInverse,
-                                                                    ),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                              ),
-                                                            ),
-                                                            TextButton(
-                                                              child: Text(
-                                                                S().onboarding_passpportSelectCamera_tapHere,
-                                                                style: EnvoyTypography
-                                                                    .button
-                                                                    .copyWith(
-                                                                        color: EnvoyColors
-                                                                            .textPrimaryInverse),
-                                                              ),
-                                                              onPressed:
-                                                                  () async {
-                                                                Navigator.pop(
-                                                                    context);
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .push(MaterialPageRoute(
-                                                                        builder:
-                                                                            (context) {
-                                                                  return const TouPage();
-                                                                }));
-                                                              },
-                                                            )
-                                                          ],
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              decoder: GenericQrDecoder(
-                                                  onScan: (String payload) {
-                                                final uri = Uri.parse(payload);
-                                                final params =
-                                                    uri.queryParameters;
-
-                                                if (params.containsKey("p")) {
-                                                  Navigator.pop(context);
-                                                  context.goNamed(ONBOARD_PRIME,
-                                                      queryParameters: params);
-                                                } else if (params
-                                                    .containsKey("t")) {
-                                                  Navigator.pop(context);
-                                                  context.goNamed(
-                                                      ONBOARD_PASSPORT_TOU,
-                                                      queryParameters: params);
-                                                } else {
-                                                  // TODO: manage this inside QR decoder ???
-                                                  EnvoyToast(
-                                                    replaceExisting: true,
-                                                    duration: const Duration(
-                                                        seconds: 6),
-                                                    message: "Invalid QR code",
-                                                    isDismissible: true,
-                                                    onActionTap: () {
-                                                      EnvoyToast
-                                                          .dismissPreviousToasts(
-                                                              context);
-                                                    },
-                                                    icon: const Icon(
-                                                      Icons.info_outline,
-                                                      color: EnvoyColors
-                                                          .accentPrimary,
-                                                    ),
-                                                  ).show(context);
-                                                }
-                                              }));
+                                          setUpPassportDialog(context, false);
                                         },
                                       ),
                                       const SizedBox(
@@ -336,6 +216,102 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
       ),
     );
   }
+}
+
+void setUpPassportDialog(BuildContext context, bool callFromOnboard) {
+  showScannerDialog(
+      context: context,
+      onBackPressed: (context) {
+        print("Should go: $callFromOnboard");
+        // Navigator.pop(context);
+        // if (callFromOnboard) {
+        //   context.go("/onboard");
+        // } else {
+        //   context.go("/");
+        // }
+        Navigator.pop(context);
+      },
+      child: GestureDetector(
+        // prevent scanner drag
+        onVerticalDragUpdate: (_) {},
+        onVerticalDragStart: (_) {},
+        onVerticalDragEnd: (_) {},
+        behavior: HitTestBehavior.opaque,
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: EnvoySpacing.medium3,
+                ),
+                alignment: Alignment.center,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium3),
+                      child: Text(
+                        S().onboarding_passpportSelectCamera_sub235VersionAlert,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: EnvoyColors.textPrimaryInverse,
+                            ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    TextButton(
+                      child: Text(
+                        S().onboarding_passpportSelectCamera_tapHere,
+                        style: EnvoyTypography.button
+                            .copyWith(color: EnvoyColors.textPrimaryInverse),
+                      ),
+                      onPressed: () async {
+                        Navigator.pop(context);
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return TouPage(
+                            callFromOnboard: callFromOnboard,
+                          );
+                        }));
+                      },
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+      decoder: GenericQrDecoder(onScan: (String payload) {
+        final uri = Uri.parse(payload);
+        final params = uri.queryParameters;
+
+        if (params.containsKey("p")) {
+          Navigator.pop(context);
+          context.goNamed(ONBOARD_PRIME, queryParameters: params);
+        } else if (params.containsKey("t")) {
+          Navigator.pop(context);
+          context.goNamed(ONBOARD_PASSPORT_TOU, queryParameters: params);
+        } else {
+          // TODO: manage this inside QR decoder ???
+          EnvoyToast(
+            replaceExisting: true,
+            duration: const Duration(seconds: 6),
+            message: "Invalid QR code",
+            isDismissible: true,
+            onActionTap: () {
+              EnvoyToast.dismissPreviousToasts(context);
+            },
+            icon: const Icon(
+              Icons.info_outline,
+              color: EnvoyColors.accentPrimary,
+            ),
+          ).show(context);
+        }
+      }));
 }
 
 class EnvoyCardButton extends StatefulWidget {
