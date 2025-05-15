@@ -5,7 +5,9 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:math';
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/node_url.dart';
 import 'package:envoy/util/console.dart';
@@ -107,6 +109,10 @@ class Settings extends ChangeNotifier {
   // FD testnet server
   static const String TESTNET_ELECTRUM_SERVER =
       "ssl://testnet.foundation.xyz:50002";
+
+  // FD testnet server
+  static const String TESTNET4_ELECTRUM_SERVER =
+      "ssl://testnet4.foundation.xyz:50002";
 
   // MutinyNet Electrum
   static const String MUTINYNET_ELECTRUM_SERVER =
@@ -296,8 +302,8 @@ class Settings extends ChangeNotifier {
     if (showSignetAccounts &&
         AccountManager().hotAccountsExist() &&
         !AccountManager().hotSignetAccountExist()) {
-      // await EnvoySeed()
-      //     .deriveAndAddWalletsFromCurrentSeed(network: Network.signet);
+      await EnvoySeed()
+          .deriveAndAddWalletsFromCurrentSeed(network: Network.signet);
     }
 
     notifyListeners();
@@ -322,6 +328,7 @@ class Settings extends ChangeNotifier {
     //   await EnvoySeed()
     //       .deriveAndAddWalletsFromCurrentSeed(type: WalletType.taproot);
     // }
+    NgAccountManager().setTaprootEnabled(taprootEnabled);
 
     notifyListeners();
     store();

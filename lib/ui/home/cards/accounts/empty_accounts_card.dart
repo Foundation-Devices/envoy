@@ -48,6 +48,7 @@ class EmptyAccountsCard extends StatelessWidget {
                       descriptors: [],
                       unlockedBalance: BigInt.zero,
                       walletPath: "ghost",
+                      seedHasPassphrase: false,
                       color: Color(0xFFBF755F).toHex(),
                       dateSynced: null,
                       tags: []),

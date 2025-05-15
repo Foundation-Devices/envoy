@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -171,6 +172,8 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                                               title: S()
                                                   .onboarding_welcome_createMobileWallet,
                                               onTap: () {
+                                                Navigator.pop(context);
+                                                EnvoySeed().generate();
                                                 context.pushNamed(
                                                     ONBOARD_ENVOY_SETUP,
                                                     queryParameters: {

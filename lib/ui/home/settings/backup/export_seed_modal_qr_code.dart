@@ -37,7 +37,7 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
 
   @override
   Widget build(BuildContext context) {
-    final hasPassphrase = EnvoySeed().getWallet()!.hasPassphrase;
+    final hasPassphrase = EnvoySeed().getWallet()!.seedHasPassphrase;
 
     return SingleChildScrollView(
       child: SizedBox(

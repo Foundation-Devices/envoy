@@ -78,6 +78,8 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
               electrumServer: electrumServer,
               torPort: torPort);
 
+  Future<String> getAccountBackup();
+
   Future<TransactionFeeResult> getMaxBumpFeeRates(
       {required List<Output> selectedOutputs,
       required BitcoinTransaction bitcoinTransaction});
@@ -158,6 +160,8 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
       {required List<String> utxo, required bool doNotSpend});
 
   Future<bool> setNote({required String txId, required String note});
+
+  Future<void> setPreferredAddressType({required AddressType addressType});
 
   Future<bool> setTag({required Output utxo, required String tag});
 

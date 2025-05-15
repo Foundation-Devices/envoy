@@ -175,6 +175,8 @@ class _AccountsListState extends ConsumerState<AccountsList> {
   final ScrollController _scrollController = ScrollController();
   final double _accountHeight = 124;
   bool _onReOrderStart = false;
+
+  //keep order state in the widget to avoid unnecessary rebuilds
   List<String> _accountsOrder = [];
 
   @override
@@ -192,11 +194,30 @@ class _AccountsListState extends ConsumerState<AccountsList> {
   Widget build(BuildContext context) {
     final accounts = ref.watch(accountsProvider);
     final listContentHeight = accounts.length * _accountHeight;
+    //update order if and only if new accounts are added
+    ref.listen(accountOrderStream,
+        (List<String>? previous, List<String>? next) {
+      if (previous?.length != next?.length) {
+        setState(() {
+          _accountsOrder = next!;
+        });
+      }
+    });
+
     if (_accountsOrder.isEmpty) {
-      _accountsOrder = ref.read(accountOrderStream).value ?? [];
+      _accountsOrder = ref.read(accountOrderStream);
     }
+
     ref.listen(accountsProvider,
         (List<EnvoyAccount>? previous, List<EnvoyAccount> next) {
+      //update order if and only if new accounts are added
+      // for (var account in accounts) {
+      //   if (!_accountsOrder.contains(account.id)) {
+      //     _accountsOrder.add(account.id);
+      //     NgAccountManager().updateAccountOrder(List.from(_accountsOrder));
+      //   }
+      // }
+
       if (previous!.length < next.length) {
         if (_scrollController.hasClients) {
           _scrollController.animateTo(

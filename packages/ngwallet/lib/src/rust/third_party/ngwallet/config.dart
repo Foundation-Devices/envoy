@@ -7,7 +7,9 @@ import '../../api/envoy_wallet.dart';
 import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `clone`, `clone`, `clone`, `cmp`, `eq`, `fmt`, `fmt`, `fmt`, `hash`, `partial_cmp`
+// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `NgAccountBuilder`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `assert_receiver_is_total_eq`, `clone`, `clone`, `clone`, `cmp`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `hash`, `partial_cmp`
+// These functions are ignored (category: IgnoreBecauseOwnerTyShouldIgnore): `build`, `color`, `date_added`, `date_synced`, `db_path`, `default`, `descriptors`, `device_serial`, `id`, `index`, `name`, `network`, `open_in_memory`, `preferred_address_type`, `seed_has_passphrase`
 
 enum AddressType {
   /// Pay to pubkey hash.
@@ -24,12 +26,14 @@ enum AddressType {
 
   /// Pay to taproot.
   p2Tr,
+  p2ShWpkh,
   ;
 }
 
 class NgAccountConfig {
   final String name;
   final String color;
+  final bool seedHasPassphrase;
   final String? deviceSerial;
   final String? dateAdded;
   final AddressType preferredAddressType;
@@ -43,6 +47,7 @@ class NgAccountConfig {
   const NgAccountConfig({
     required this.name,
     required this.color,
+    required this.seedHasPassphrase,
     this.deviceSerial,
     this.dateAdded,
     required this.preferredAddressType,
@@ -66,6 +71,7 @@ class NgAccountConfig {
   int get hashCode =>
       name.hashCode ^
       color.hashCode ^
+      seedHasPassphrase.hashCode ^
       deviceSerial.hashCode ^
       dateAdded.hashCode ^
       preferredAddressType.hashCode ^
@@ -83,6 +89,7 @@ class NgAccountConfig {
           runtimeType == other.runtimeType &&
           name == other.name &&
           color == other.color &&
+          seedHasPassphrase == other.seedHasPassphrase &&
           deviceSerial == other.deviceSerial &&
           dateAdded == other.dateAdded &&
           preferredAddressType == other.preferredAddressType &&

@@ -38,26 +38,33 @@ class NgAccountManager extends ChangeNotifier {
   static const String ACCOUNT_ORDER = "accounts_order";
 
   static String walletsDirectory =
-      "${LocalStorage().appDocumentsDir.path}/wallets_new/";
+      "${LocalStorage().appDocumentsDir.path}/wallets_v2/";
   final LocalStorage _ls = LocalStorage();
   static final NgAccountManager _instance = NgAccountManager._internal();
 
   late SyncManager _syncManager;
-  List<EnvoyAccount> _accounts = [];
   final StreamController<List<String>> _accountsOrder =
       StreamController<List<String>>.broadcast(sync: true);
 
-  final List<EnvoyAccountHandler> _accountsHandler = [];
+  final List<(EnvoyAccount, EnvoyAccountHandler)> _accountsHandler = [];
   var s = Settings();
 
-  List<EnvoyAccount> get accounts => _accounts;
+  List<EnvoyAccount> get accounts => _accountsHandler
+      .map(
+        (e) => e.$1,
+      )
+      .toList();
 
-  List<EnvoyAccountHandler> get handlers => _accountsHandler;
+  List<EnvoyAccountHandler> get handlers => _accountsHandler
+      .map(
+        (e) => e.$2,
+      )
+      .toList();
 
   Stream<List<String>> get order => _accountsOrder.stream;
 
   List<Stream<EnvoyAccount>> get streams =>
-      _accountsHandler.map((e) => e.stream()).toList();
+      _accountsHandler.map((e) => e.$2.stream()).toList();
 
   factory NgAccountManager() {
     return _instance;
@@ -76,9 +83,14 @@ class NgAccountManager extends ChangeNotifier {
 
   NgAccountManager._internal();
 
-  restore() async {
-    _syncManager = SyncManager(accountsCallback: () => _accounts);
-    _accounts = [];
+  Future restore() async {
+    _accountsHandler.clear();
+    _syncManager = SyncManager(
+        accountsCallback: () => _accountsHandler
+            .map(
+              (e) => e.$1,
+            )
+            .toList());
     final accountOrder = _ls.prefs.getString(ACCOUNT_ORDER);
     List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
     _accountsOrder.sink.add(order);
@@ -95,8 +107,8 @@ class NgAccountManager extends ChangeNotifier {
         try {
           final accountHandler =
               await EnvoyAccountHandler.openWallet(dbPath: dir.path);
-          _accountsHandler.add(accountHandler);
-          _accounts.add((await accountHandler.state()));
+          final state = await accountHandler.state();
+          _accountsHandler.add((state, accountHandler));
           await accountHandler.sendUpdate();
         } catch (e) {
           kPrint("Error opening wallet: $e");
@@ -109,12 +121,12 @@ class NgAccountManager extends ChangeNotifier {
   }
 
   EnvoyAccount? getAccountById(String id) {
-    return _accounts.firstWhereOrNull((element) => element.id == id);
+    return accounts.firstWhereOrNull((element) => element.id == id);
   }
 
   SyncManager get syncManager => _syncManager;
 
-  updateAccountOrder(List<String> accountsOrder) async {
+  Future updateAccountOrder(List<String> accountsOrder) async {
     _accountsOrder.sink.add(accountsOrder);
     await _ls.prefs.setString(ACCOUNT_ORDER, jsonEncode(accountsOrder));
     return;
@@ -149,7 +161,96 @@ class NgAccountManager extends ChangeNotifier {
   }
 
   EnvoyAccountHandler? getHandler(EnvoyAccount envoyAccount) {
-    return _accountsHandler
+    return handlers
         .firstWhereOrNull((element) => element.id() == envoyAccount.id);
+  }
+
+  bool hotAccountsExist() {
+    for (var account in accounts) {
+      if (account.isHot) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  Future<bool> checkIfWalletFromSeedExists(String seed,
+      {String? passphrase,
+      required AddressType type,
+      required Network network}) async {
+    final derivations = await EnvoyBip39.deriveDescriptorFromSeed(
+        seedWords: seed, network: network, passphrase: passphrase);
+    final descriptor = derivations.firstWhereOrNull(
+      (element) => element.addressType == type,
+    );
+    if (descriptor != null) {
+      for (var account in accounts) {
+        for (var desc in account.descriptors) {
+          if (desc.external_ == descriptor.externalPubDescriptor ||
+              desc.external_ == descriptor.externalDescriptor) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  addAccount(EnvoyAccount state, EnvoyAccountHandler handler) async {
+    final accountOrder = _ls.prefs.getString(ACCOUNT_ORDER);
+    List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
+    order.add(state.id);
+    _accountsHandler.add((state, handler));
+    await updateAccountOrder(order);
+    notifyListeners();
+    //wait for the stream to propagate
+    await Future.delayed(const Duration(milliseconds: 100));
+  }
+
+  //generates unique directory for account
+  //uniqueness is based on device serial, network and account number
+  //eg. hot wallet will look like this ( deviceSerial will be "envoy")
+  // unified    :  wallets_v2/envoy_testnet_acc_0
+  // non-unified:  wallets_v2/envoy_testnet_acc_0_d68ab671
+  // non-unified will include unique id
+  static Directory getAccountDirectory({
+    required String deviceSerial,
+    required String network,
+    required int number,
+    String? accountId,
+  }) {
+    if (accountId != null) {
+      return Directory(
+          "$walletsDirectory${deviceSerial}_${network.toLowerCase()}_acc_${number}_${accountId.substring(0, 8)}");
+    } else {
+      return Directory(
+          "$walletsDirectory${deviceSerial}_${network.toLowerCase()}_acc_$number");
+    }
+  }
+
+  void setTaprootEnabled(bool taprootEnabled) async {
+    for (var handler in handlers) {
+      try {
+        //if wallets contains taproot and p2wpkh, then set the preferred address type
+        List<AddressType> types = handler
+            .config()
+            .descriptors
+            .map(
+              (e) => e.addressType,
+            )
+            .toList();
+        if (types.contains(AddressType.p2Tr) &&
+            types.contains(AddressType.p2Wpkh)) {
+          await handler.setPreferredAddressType(
+              addressType:
+                  taprootEnabled ? AddressType.p2Tr : AddressType.p2Wpkh);
+        }
+      } catch (e) {
+        EnvoyReport().log(
+          "Error setting taproot address type",
+          e.toString(),
+        );
+      }
+    }
   }
 }

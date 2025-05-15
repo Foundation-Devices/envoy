@@ -22,6 +22,7 @@ class EnvoyAccount with _$EnvoyAccount {
     String? deviceSerial,
     String? dateAdded,
     required AddressType preferredAddressType,
+    required bool seedHasPassphrase,
     required int index,
     required List<NgDescriptor> descriptors,
     String? dateSynced,

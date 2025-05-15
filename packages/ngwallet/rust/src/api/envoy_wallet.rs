@@ -28,7 +28,7 @@ use chrono::{DateTime, Local, Utc};
 use flutter_rust_bridge::frb;
 use log::info;
 use ngwallet::account::{Descriptor, NgAccount};
-use ngwallet::config::{AddressType, NgAccountConfig, NgDescriptor};
+use ngwallet::config::{AddressType, NgAccountBuilder, NgAccountConfig, NgDescriptor};
 use ngwallet::ngwallet::NgWallet;
 use ngwallet::rbf::BumpFeeError;
 use ngwallet::redb::backends::FileBackend;
@@ -45,6 +45,7 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use std::{fs, thread};
 use std::any::Any;
 use bdk_wallet::serde_json::json;
+use crate::api::bip39::EnvoyBip39;
 
 #[frb(init)]
 pub fn init_app() {
@@ -96,27 +97,34 @@ impl EnvoyAccountHandler {
         db_path: String,
         network: Network,
         id: String,
-    ) -> EnvoyAccountHandler {
+    ) -> Result<EnvoyAccountHandler> {
         let descriptors = Self::get_descriptor(&descriptors, db_path.clone());
-        EnvoyAccountHandler {
-            stream_sink: None,
-            mempool_txs: vec![],
-            id: id.clone(),
-            ng_account: Arc::new(Mutex::new(NgAccount::new_from_descriptors(
-                name,
-                color,
-                device_serial,
-                date_added,
-                network,
-                address_type,
-                descriptors,
-                index,
-                Some(db_path),
-                None::<FileBackend>,
-                id.clone(),
-                None,
-                false
-            ))),
+
+        let mut ng_account = NgAccountBuilder::default()
+            .name(name.clone())
+            .color(color.clone())
+            .descriptors(descriptors)
+            .device_serial(device_serial)
+            .date_added(date_added)
+            .date_synced(None)
+            .db_path(Some(db_path))
+            .network(network)
+            .id(id.clone())
+            .preferred_address_type(address_type.clone())
+            .index(index)
+            .build(None::<FileBackend>);
+        match ng_account.persist() {
+            Ok(_) => {
+                Ok(EnvoyAccountHandler {
+                    stream_sink: None,
+                    mempool_txs: vec![],
+                    id: id.clone(),
+                    ng_account: Arc::new(Mutex::new(ng_account)),
+                })
+            }
+            Err(_) => {
+                return Err(anyhow!("Failed to persist account"));
+            }
         }
     }
 
@@ -134,25 +142,27 @@ impl EnvoyAccountHandler {
         network: Network,
     ) -> EnvoyAccountHandler {
         let descriptors = Self::get_descriptor(&descriptors, db_path.clone());
+
+        let ng_account = NgAccountBuilder::default()
+            .name(name.clone())
+            .color(color.clone())
+            .descriptors(descriptors)
+            .device_serial(device_serial)
+            .date_added(date_added)
+            .date_synced(None)
+            .db_path(Some(db_path))
+            .network(network)
+            .id(id.clone())
+            .preferred_address_type(address_type.clone())
+            .index(index)
+            .build(None::<FileBackend>);
+
+
         let account = EnvoyAccountHandler {
             stream_sink: None,
             mempool_txs: vec![],
             id: id.clone(),
-            ng_account: Arc::new(Mutex::new(NgAccount::new_from_descriptors(
-                name.clone(),
-                color,
-                device_serial,
-                date_added,
-                network,
-                address_type,
-                descriptors,
-                index,
-                Some(db_path.clone()),
-                None::<FileBackend>,
-                id.clone(),
-                None,
-                false
-            ))),
+            ng_account: Arc::new(Mutex::new(ng_account)),
         };
 
         for (index, sled_path) in legacy_sled_db_path.iter().enumerate() {
@@ -237,6 +247,14 @@ impl EnvoyAccountHandler {
         self.send_update();
         Ok(())
     }
+    pub fn set_preferred_address_type(&mut self, address_type: AddressType) -> Result<()> {
+        {
+            let mut account = self.ng_account.lock().unwrap();
+            account.set_preferred_address_type(address_type).unwrap();
+        }
+        self.send_update();
+        Ok(())
+    }
 
     pub fn state(&mut self) -> Result<EnvoyAccount, Error> {
         return match self.ng_account.lock() {
@@ -286,6 +304,7 @@ impl EnvoyAccountHandler {
                     network: config.network,
                     id: config.id.clone(),
                     is_hot: account.is_hot(),
+                    seed_has_passphrase: config.seed_has_passphrase,
                     next_address,
                     balance,
                     transactions,
@@ -636,5 +655,18 @@ impl EnvoyAccountHandler {
                 }
             })
             .collect::<Vec<Descriptor<Connection>>>()
+    }
+
+    pub fn get_account_backup(
+        &mut self,
+    ) -> Result<String> {
+        match self.ng_account.lock().unwrap().get_backup_json() {
+            Ok(json) => {
+                Ok(json)
+            }
+            Err(er) => {
+                Err(anyhow!("Failed to get backup {:?}", er))
+            }
+        }
     }
 }

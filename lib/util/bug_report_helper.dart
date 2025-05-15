@@ -74,7 +74,7 @@ class EnvoyReport extends ChangeNotifier {
   Future<void> log(String category, String message,
       {StackTrace? stackTrace, int limitTrace = 50}) async {
     await _ensureDbInitialized();
-
+    kPrint("EnvoyReport: $category: $message");
     if (_db != null) {
       Map<String, String?> report = {
         "category": category,

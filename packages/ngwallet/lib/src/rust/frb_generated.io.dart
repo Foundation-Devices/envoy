@@ -187,7 +187,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ComposeTxError dco_decode_compose_tx_error(dynamic raw);
 
   @protected
-  DescriptorFromSeed dco_decode_descriptor_from_seed(dynamic raw);
+  DerivedDescriptor dco_decode_derived_descriptor(dynamic raw);
 
   @protected
   DraftTransaction dco_decode_draft_transaction(dynamic raw);
@@ -215,6 +215,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<BitcoinTransaction> dco_decode_list_bitcoin_transaction(dynamic raw);
+
+  @protected
+  List<DerivedDescriptor> dco_decode_list_derived_descriptor(dynamic raw);
 
   @protected
   List<Input> dco_decode_list_input(dynamic raw);
@@ -265,9 +268,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   (String, AddressType) dco_decode_record_string_address_type(dynamic raw);
-
-  @protected
-  Seed dco_decode_seed(dynamic raw);
 
   @protected
   TransactionFeeResult dco_decode_transaction_fee_result(dynamic raw);
@@ -431,8 +431,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ComposeTxError sse_decode_compose_tx_error(SseDeserializer deserializer);
 
   @protected
-  DescriptorFromSeed sse_decode_descriptor_from_seed(
-      SseDeserializer deserializer);
+  DerivedDescriptor sse_decode_derived_descriptor(SseDeserializer deserializer);
 
   @protected
   DraftTransaction sse_decode_draft_transaction(SseDeserializer deserializer);
@@ -460,6 +459,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<BitcoinTransaction> sse_decode_list_bitcoin_transaction(
+      SseDeserializer deserializer);
+
+  @protected
+  List<DerivedDescriptor> sse_decode_list_derived_descriptor(
       SseDeserializer deserializer);
 
   @protected
@@ -513,9 +516,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   (String, AddressType) sse_decode_record_string_address_type(
       SseDeserializer deserializer);
-
-  @protected
-  Seed sse_decode_seed(SseDeserializer deserializer);
 
   @protected
   TransactionFeeResult sse_decode_transaction_fee_result(
@@ -684,8 +684,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       ComposeTxError self, SseSerializer serializer);
 
   @protected
-  void sse_encode_descriptor_from_seed(
-      DescriptorFromSeed self, SseSerializer serializer);
+  void sse_encode_derived_descriptor(
+      DerivedDescriptor self, SseSerializer serializer);
 
   @protected
   void sse_encode_draft_transaction(
@@ -715,6 +715,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_list_bitcoin_transaction(
       List<BitcoinTransaction> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_derived_descriptor(
+      List<DerivedDescriptor> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_input(List<Input> self, SseSerializer serializer);
@@ -771,9 +775,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_record_string_address_type(
       (String, AddressType) self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_seed(Seed self, SseSerializer serializer);
 
   @protected
   void sse_encode_transaction_fee_result(
