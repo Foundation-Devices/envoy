@@ -24,7 +24,8 @@ class SeedQrDecoder extends ScannerDecoder {
       return;
     }
     final seed = extractSeedFromQRCode(code, rawBytes: barCode.rawBytes);
-    if (isValidSeedLength(seed) && await EnvoyBip39.validateSeed(seedWords: seed)) {
+    if (isValidSeedLength(seed) &&
+        await EnvoyBip39.validateSeed(seedWords: seed)) {
       onSeedValidated!(seed);
       return;
     } else {
