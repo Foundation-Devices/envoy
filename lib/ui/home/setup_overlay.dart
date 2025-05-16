@@ -193,7 +193,8 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                                         title: S()
                                             .onboarding_welcome_setUpPassport,
                                         onTap: () {
-                                          setUpPassportDialog(context, false);
+                                          showPassportScannerDialog(
+                                              context, false);
                                         },
                                       ),
                                       const SizedBox(
@@ -218,17 +219,10 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
   }
 }
 
-void setUpPassportDialog(BuildContext context, bool callFromOnboard) {
+void showPassportScannerDialog(BuildContext context, bool callFromOnboard) {
   showScannerDialog(
       context: context,
       onBackPressed: (context) {
-        print("Should go: $callFromOnboard");
-        // Navigator.pop(context);
-        // if (callFromOnboard) {
-        //   context.go("/onboard");
-        // } else {
-        //   context.go("/");
-        // }
         Navigator.pop(context);
       },
       child: GestureDetector(
@@ -294,7 +288,11 @@ void setUpPassportDialog(BuildContext context, bool callFromOnboard) {
           context.goNamed(ONBOARD_PRIME, queryParameters: params);
         } else if (params.containsKey("t")) {
           Navigator.pop(context);
-          context.goNamed(ONBOARD_PASSPORT_TOU, queryParameters: params);
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            return TouPage(
+              callFromOnboard: callFromOnboard,
+            );
+          }));
         } else {
           // TODO: manage this inside QR decoder ???
           EnvoyToast(

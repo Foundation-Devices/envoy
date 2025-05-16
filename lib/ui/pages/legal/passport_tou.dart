@@ -64,7 +64,7 @@ class _TouPageState extends State<TouPage> {
                         child: GestureDetector(
                           onTap: () {
                             Navigator.pop(context);
-                            setUpPassportDialog(
+                            showPassportScannerDialog(
                                 context, widget.callFromOnboard);
                           },
                           child: const Icon(Icons.arrow_back_ios_rounded,

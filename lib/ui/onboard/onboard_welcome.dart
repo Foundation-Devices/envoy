@@ -203,7 +203,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       ),
                       title: S().onboarding_welcome_setUpPassport,
                       onTap: () {
-                        setUpPassportDialog(context, true);
+                        showPassportScannerDialog(context, true);
                       },
                     ),
                   ),
