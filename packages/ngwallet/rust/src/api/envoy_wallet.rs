@@ -128,6 +128,19 @@ impl EnvoyAccountHandler {
         }
     }
 
+    pub fn new_from_config(wallets_dir: String, config: NgAccountConfig) -> Result<EnvoyAccountHandler> {
+        let db_path = Path::new(&wallets_dir).join(config.clone().id);
+
+        let db_path_str = match db_path.to_str() {
+            None => {
+                return Err(anyhow!("Failed to used wallets directoy"))
+            }
+            Some(s) => { s.to_string() }
+        };
+
+        Ok(Self::from_config(db_path_str, config))
+    }
+
     pub fn migrate(
         name: String,
         id: String,
@@ -211,6 +224,10 @@ impl EnvoyAccountHandler {
             return Err(anyhow!("Failed to read config"));
         };
 
+        Ok(Self::from_config(db_path, config))
+    }
+
+    fn from_config(db_path: String, config: NgAccountConfig) -> EnvoyAccountHandler {
         let descriptors = config.descriptors.
             iter()
             .enumerate()
@@ -236,7 +253,7 @@ impl EnvoyAccountHandler {
             id: ng_account.config.clone().id,
             ng_account: Arc::new(Mutex::new(ng_account)),
         };
-        Ok(account)
+        account
     }
 
     pub fn rename_account(&mut self, name: &str) -> Result<()> {
@@ -427,7 +444,7 @@ impl EnvoyAccountHandler {
         let scan_request_guard = update.lock().unwrap();
         {
             let mut account = self.ng_account.lock().unwrap();
-            account.apply((address_type, scan_request_guard.to_owned(), )).unwrap();
+            account.apply((address_type, scan_request_guard.to_owned(),)).unwrap();
             account.config.date_synced = Some(format!("{:?}", Utc::now()));
             account.persist().unwrap();
         }

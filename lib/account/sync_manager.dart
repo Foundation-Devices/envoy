@@ -28,7 +28,7 @@ class SyncManager {
       if (_pauseSync) {
         return;
       }
-      // _syncAll();
+      _syncAll();
     });
   }
 

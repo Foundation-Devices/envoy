@@ -65,7 +65,6 @@ class MigrationManager {
   final LocalStorage _ls = LocalStorage();
   static String walletsDirectory =
       "${LocalStorage().appDocumentsDir.path}/wallets/";
-
   List<EnvoyAccountHandler> accounts = [];
 
   final StreamController<MigrationProgress> _streamController =
@@ -107,8 +106,7 @@ class MigrationManager {
       addMigrationEvent(
           MigrationProgress(total: unifiedLegacyAccounts.length, completed: 0));
 
-      await createAccounts(
-          unifiedLegacyAccounts, walletOrder);
+      await createAccounts(unifiedLegacyAccounts, walletOrder);
 
       try {
         for (var account in accounts) {
@@ -135,6 +133,7 @@ class MigrationManager {
 
   Future createAccounts(List<LegacyUnifiedAccounts> unifiedLegacyAccounts,
       List<String> existingWalletOrder) async {
+    bool taprootEnabled = Settings().taprootEnabled();
     final walletOrder = List<String>.empty(growable: true);
     for (LegacyUnifiedAccounts unified in unifiedLegacyAccounts) {
       //use externalDescriptor and internalDescriptor
@@ -173,9 +172,11 @@ class MigrationManager {
         );
       }).toList();
 
-      var addressType = AddressType.p2Wpkh;
-      if (legacyAccount.wallet.type == "taproot") {
-        addressType = AddressType.p2Tr;
+      //default to first address type as the preferred address type
+      var addressType = descriptors.first.addressType;
+      if (descriptors.length != 1) {
+        //  if the user already has a taproot enabled use taproot as preferred
+        addressType = taprootEnabled ? AddressType.p2Tr : AddressType.p2Wpkh;
       }
       final newId = Uuid().v4();
 
