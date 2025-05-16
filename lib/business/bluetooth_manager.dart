@@ -84,9 +84,10 @@ class BluetoothManager {
   Future<List<Uint8List>> encodeMessage(
       {required api.QuantumLinkMessage message}) async {
     DateTime dateTime = await NTP.now();
+    final timestampSeconds = (dateTime.millisecondsSinceEpoch ~/ 1000);
 
-    api.EnvoyMessage envoyMessage = api.EnvoyMessage(
-        message: message, timestamp: dateTime.millisecondsSinceEpoch);
+    api.EnvoyMessage envoyMessage =
+        api.EnvoyMessage(message: message, timestamp: timestampSeconds);
 
     return await api.encode(
       message: envoyMessage,
