@@ -5,6 +5,7 @@
 import 'package:async/async.dart';
 import 'package:collection/collection.dart';
 import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
@@ -12,8 +13,15 @@ import 'package:ngwallet/ngwallet.dart';
 final _accountOrderStream = StreamProvider<List<String>>(((ref) {
   return NgAccountManager().order;
 }));
+final _accountSync = StreamProvider<WalletProgress>(((ref) {
+  return SyncManager().currentLoading;
+}));
 final accountOrderStream = Provider<List<String>>(((ref) {
   return ref.watch(_accountOrderStream).value ?? [];
+}));
+
+final accountSync = Provider<WalletProgress>(((ref) {
+  return ref.watch(_accountSync).value ?? None();
 }));
 
 final accountManagerNotifier = ChangeNotifierProvider(
