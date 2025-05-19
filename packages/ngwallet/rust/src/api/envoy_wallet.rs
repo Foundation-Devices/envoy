@@ -127,20 +127,7 @@ impl EnvoyAccountHandler {
             }
         }
     }
-
-    pub fn new_from_config(wallets_dir: String, config: NgAccountConfig) -> Result<EnvoyAccountHandler> {
-        let db_path = Path::new(&wallets_dir).join(config.clone().id);
-
-        let db_path_str = match db_path.to_str() {
-            None => {
-                return Err(anyhow!("Failed to used wallets directoy"))
-            }
-            Some(s) => { s.to_string() }
-        };
-
-        Ok(Self::from_config(db_path_str, config))
-    }
-
+    
     pub fn migrate(
         name: String,
         id: String,
@@ -218,7 +205,7 @@ impl EnvoyAccountHandler {
         self.stream_sink = Some(stream_sink);
     }
 
-    pub fn open_wallet(db_path: String) -> Result<EnvoyAccountHandler> {
+    pub fn open_account(db_path: String) -> Result<EnvoyAccountHandler> {
         let config = NgAccount::<Connection>::read_config(db_path.clone(), None::<FileBackend>);
         let Some(config) = config else {
             return Err(anyhow!("Failed to read config"));
@@ -227,7 +214,7 @@ impl EnvoyAccountHandler {
         Ok(Self::from_config(db_path, config))
     }
 
-    fn from_config(db_path: String, config: NgAccountConfig) -> EnvoyAccountHandler {
+    pub fn from_config(db_path: String, config: NgAccountConfig) -> EnvoyAccountHandler {
         let descriptors = config.descriptors.
             iter()
             .enumerate()
