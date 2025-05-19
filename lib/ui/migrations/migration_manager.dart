@@ -11,7 +11,6 @@ import 'package:envoy/account/legacy/legacy_account.dart';
 import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/local_storage.dart';
-import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/util/bug_report_helper.dart';
@@ -39,12 +38,11 @@ class LegacyUnifiedAccounts {
       {required this.accounts, required this.network, this.isUnified = true});
 }
 
-const String migrationPrefs = "envoy_v2_migration";
-
 class MigrationManager {
   // Singleton instance
   static final MigrationManager _instance = MigrationManager._internal();
   static const String accountsPrefKey = "accounts";
+  static String migrationPrefs = "envoy_v2_migration";
 
   // Private constructor
   MigrationManager._internal();
@@ -55,9 +53,16 @@ class MigrationManager {
   }
 
   VoidCallback? _onMigrationFinished;
+  VoidCallback? _onMigrationError;
 
-  void onMigrationFinished(VoidCallback onMigrationFinished) {
+  MigrationManager onMigrationFinished(VoidCallback onMigrationFinished) {
     _onMigrationFinished = onMigrationFinished;
+    return this;
+  }
+
+  MigrationManager onMigrationError(VoidCallback onMigrationError) {
+    _onMigrationError = onMigrationError;
+    return this;
   }
 
   Function(MigrationProgress progress)? onProgressListener;
@@ -107,8 +112,7 @@ class MigrationManager {
       addMigrationEvent(
           MigrationProgress(total: unifiedLegacyAccounts.length, completed: 0));
 
-      await createAccounts(
-          unifiedLegacyAccounts, walletOrder);
+      final accounts = await createAccounts(unifiedLegacyAccounts, walletOrder);
 
       try {
         for (var account in accounts) {
@@ -116,25 +120,45 @@ class MigrationManager {
           await migrateNotes(account);
           await migrateTags(account);
         }
-        await syncAccounts();
+        await NgAccountManager().updateAccountOrder(walletOrder);
+        for (var account in accounts) {
+          final state = await account.state();
+          for (var descriptor in state.descriptors) {
+            final scanRequest = await account.requestFullScan(
+                addressType: descriptor.addressType);
+            await SyncManager()
+                .performFullScan(account, descriptor.addressType, scanRequest);
+          }
+          addMigrationEvent(MigrationProgress(
+              total: accounts.length,
+              completed: accounts.indexOf(account) + 1));
+        }
         for (var account in accounts) {
           account.dispose();
         }
+        //restore will reload all accounts and start normal sync
+        await NgAccountManager().restore();
+        await LocalStorage().prefs.remove(accountsPrefKey);
+        await Future.delayed(const Duration(milliseconds: 300));
+        final v1backupFile = File("${LocalStorage().appDocumentsDir.path}/v1_accounts.json");
+        await v1backupFile.create(recursive: true);
+        await v1backupFile.writeAsString(jsonEncode(accountsJson));
 
-        await NgAccountManager().restore(); // open wallets
+        _onMigrationFinished?.call();
       } catch (e) {
-        kPrint("Migration: No accounts found");
-        EnvoyReport().log("Migration", "No accounts found");
+        _onMigrationError?.call();
+        EnvoyReport().log("Migration", "Error migrating accounts: $e");
       }
       //   //Load accounts to account manager
     } else {
       EnvoyReport().log("Migration", "No accounts found");
     }
-    _onMigrationFinished?.call();
   }
 
-  Future createAccounts(List<LegacyUnifiedAccounts> unifiedLegacyAccounts,
+  Future<List<EnvoyAccountHandler>> createAccounts(
+      List<LegacyUnifiedAccounts> unifiedLegacyAccounts,
       List<String> existingWalletOrder) async {
+    final List<EnvoyAccountHandler> handlers = [];
     final walletOrder = List<String>.empty(growable: true);
     for (LegacyUnifiedAccounts unified in unifiedLegacyAccounts) {
       //use externalDescriptor and internalDescriptor
@@ -168,7 +192,7 @@ class MigrationManager {
         }
         return NgDescriptor(
           addressType: addressType,
-          internal: account.wallet.internalDescriptor,
+          internal: account.wallet.internalDescriptor!,
           external_: account.wallet.externalDescriptor,
         );
       }).toList();
@@ -195,11 +219,12 @@ class MigrationManager {
                 (e) => e.path,
               )
               .toList());
-      accounts.add(envoyAccount);
+      handlers.add(envoyAccount);
       walletOrder.add(newId);
     }
     await _ls.prefs
         .setString(NgAccountManager.ACCOUNT_ORDER, jsonEncode(walletOrder));
+    return handlers;
   }
 
   static List<LegacyUnifiedAccounts> unify(List<LegacyAccount> legacyAccount) {
@@ -235,37 +260,6 @@ class MigrationManager {
       }
     }
     return unifiedWallets;
-  }
-
-  Future syncAccounts() async {
-    for (EnvoyAccountHandler account in accounts) {
-      final accountConfig = account.config();
-      final server = SyncManager.getElectrumServer(accountConfig.network);
-      int? port = Settings().getPort(accountConfig.network);
-      if (port == -1) {
-        port = null;
-      }
-      for (var descriptor in accountConfig.descriptors) {
-        final scan =
-            await account.requestFullScan(addressType: descriptor.addressType);
-        EnvoyReport().log(
-          "Migration",
-          "Syncing account ${accountConfig.name} | ${accountConfig.network} | $server  |Tor : $port",
-        );
-        final request = await EnvoyAccountHandler.fullScanRequest(
-            scanRequest: scan, electrumServer: server, torPort: port);
-        await account.applyUpdate(
-          update: request,
-          addressType: descriptor.addressType,
-        );
-        EnvoyReport().log(
-          "Migration",
-          "Syncing Finished ${accountConfig.name} | ${accountConfig.network} | $server  |Tor : $port",
-        );
-      }
-      addMigrationEvent(MigrationProgress(
-          total: accounts.length, completed: accounts.indexOf(account) + 1));
-    }
   }
 
   //migrate notes to new db.
