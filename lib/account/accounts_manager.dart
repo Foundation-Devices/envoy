@@ -106,7 +106,7 @@ class NgAccountManager extends ChangeNotifier {
       if (dir is Directory) {
         try {
           final accountHandler =
-              await EnvoyAccountHandler.openWallet(dbPath: dir.path);
+              await EnvoyAccountHandler.openAccount(dbPath: dir.path);
           final state = await accountHandler.state();
           _accountsHandler.add((state, accountHandler));
           await accountHandler.sendUpdate();

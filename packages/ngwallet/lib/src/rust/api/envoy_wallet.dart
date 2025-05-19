@@ -68,6 +68,11 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerDecodePsbt(
           draftTransaction: draftTransaction, psbtBase64: psbtBase64);
 
+  static Future<EnvoyAccountHandler> fromConfig(
+          {required String dbPath, required NgAccountConfig config}) =>
+      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerFromConfig(
+          dbPath: dbPath, config: config);
+
   static Future<WalletUpdate> fullScanRequest(
           {required FullScanRequest scanRequest,
           required String electrumServer,
@@ -142,9 +147,9 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
 
   Future<List<(String, AddressType)>> nextAddress();
 
-  static Future<EnvoyAccountHandler> openWallet({required String dbPath}) =>
+  static Future<EnvoyAccountHandler> openAccount({required String dbPath}) =>
       RustLib.instance.api
-          .crateApiEnvoyWalletEnvoyAccountHandlerOpenWallet(dbPath: dbPath);
+          .crateApiEnvoyWalletEnvoyAccountHandlerOpenAccount(dbPath: dbPath);
 
   Future<void> renameAccount({required String name});
 
