@@ -49,7 +49,7 @@ use crate::api::bip39::EnvoyBip39;
 
 #[frb(init)]
 pub fn init_app() {
-    flutter_rust_bridge::setup_default_user_utils();
+    // flutter_rust_bridge::setup_default_user_utils();
 }
 
 #[derive(Clone)]
@@ -685,6 +685,40 @@ impl EnvoyAccountHandler {
             }
             Err(er) => {
                 Err(anyhow!("Failed to get backup {:?}", er))
+            }
+        }
+    }
+
+
+    pub fn from_config(
+        config: NgAccountConfig,
+        db_path: String,
+    ) -> Result<EnvoyAccountHandler> {
+        let descriptors = Self::get_descriptor(&config.descriptors, db_path.clone());
+        let ng_account = NgAccountBuilder::default()
+            .name(config.name.clone())
+            .color(config.color.clone())
+            .descriptors(descriptors)
+            .device_serial(config.device_serial)
+            .date_added(config.date_added)
+            .date_synced(config.date_synced)
+            .db_path(Some(db_path.clone()))
+            .network(config.network)
+            .id(config.id.clone())
+            .preferred_address_type(config.preferred_address_type)
+            .index(config.index)
+            .build_from_file(Some(db_path));
+        match ng_account {
+            Ok(ng_account) => {
+                Ok(EnvoyAccountHandler {
+                    stream_sink: None,
+                    mempool_txs: vec![],
+                    id: config.id.clone(),
+                    ng_account: Arc::new(Mutex::new(ng_account)),
+                })
+            }
+            Err(err) => {
+                return Err(anyhow!("Failed to create account: {:?}", err));
             }
         }
     }

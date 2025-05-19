@@ -33,7 +33,7 @@ import 'package:envoy/business/bip329.dart';
 
 class AccountAlreadyPaired implements Exception {}
 
-class AccountManager extends ChangeNotifier {
+class AccountMaxnager extends ChangeNotifier {
   @override
   // ignore: must_call_super
   void dispose({bool? force}) {
@@ -56,20 +56,20 @@ class AccountManager extends ChangeNotifier {
   final _syncScheduler = EnvoyScheduler().parallel;
 
   static const String ACCOUNTS_PREFS = "accounts";
-  static final AccountManager _instance = AccountManager._internal();
+  static final AccountMaxnager _instance = AccountMaxnager._internal();
   static String walletsDirectory =
       "${LocalStorage().appDocumentsDir.path}/wallets/";
 
-  factory AccountManager() {
+  factory AccountMaxnager() {
     return _instance;
   }
 
-  static Future<AccountManager> init() async {
-    var singleton = AccountManager._instance;
+  static Future<AccountMaxnager> init() async {
+    var singleton = AccountMaxnager._instance;
     return singleton;
   }
 
-  AccountManager._internal() {
+  AccountMaxnager._internal() {
     kPrint("Instance of AccountManager created!");
     restore();
   }
@@ -231,7 +231,7 @@ class AccountManager extends ChangeNotifier {
           seed,
           EnvoySeed
               .hotWalletDerivationPaths[type]![network ?? Network.Mainnet]!,
-          AccountManager.walletsDirectory,
+          AccountMaxnager.walletsDirectory,
           network ?? Network.Mainnet,
           privateKey: true,
           passphrase: passphrase,
@@ -705,22 +705,21 @@ class AccountManager extends ChangeNotifier {
   Future<void> exportBIP329() async {
     List<String> allData = [];
 
-    for (Account account in accounts) {
-      Wallet wallet = account.wallet;
-
-      // Get xpub and create JSON data
-      String xpub = getXpub(wallet);
-      String xpubData = buildKeyJson("xpub", xpub, account.name);
-      allData.add(xpubData);
-
-      // Get output data and add each entry to allData
-      List<String> outputData = await getUtxosData(account);
-      allData.addAll(outputData);
-
-      // Get transaction data and add each entry to allData
-      List<String> txData = await getTxData(wallet);
-      allData.addAll(txData);
-    }
+    // for (Account account in accounts) {
+    //   Wallet wallet = account.wallet;
+    //   // Get xpub and create JSON data
+    //   String xpub = getXpub(wallet);
+    //   String xpubData = buildKeyJson("xpub", xpub, account.name);
+    //   allData.add(xpubData);
+    //
+    //   // Get output data and add each entry to allData
+    //   List<String> outputData = await getUtxosData(account);
+    //   allData.addAll(outputData);
+    //
+    //   // Get transaction data and add each entry to allData
+    //   List<String> txData = await getTxData(wallet);
+    //   allData.addAll(txData);
+    // }
 
     // Join each JSON string with a newline character
     String fileContent = allData.join('\n');

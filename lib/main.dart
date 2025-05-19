@@ -53,6 +53,8 @@ Future<void> main() async {
   } else if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
     runApp(const AuthenticateApp());
   } else {
+    //fresh install,already passed migration check
+    EnvoyStorage().setBool(MigrationManager.migrationPrefs, true);
     runApp(const EnvoyApp());
   }
   listenToRouteChanges();
@@ -190,10 +192,12 @@ class GlobalScrollBehavior extends ScrollBehavior {
 
 bool isMigrationRequired() {
   //check if the user already has accounts
-  final hasAccounts = LocalStorage().prefs.containsKey(MigrationManager.accountsPrefKey);
+  final hasAccounts =
+      LocalStorage().prefs.containsKey(MigrationManager.accountsPrefKey);
   //check if the user has already migrated
 
-  final hasMigrated = EnvoyStorage().getBool(migrationPrefs) ?? false;
+  final hasMigrated =
+      EnvoyStorage().getBool(MigrationManager.migrationPrefs) ?? false;
 
   return hasAccounts && !hasMigrated;
 }
