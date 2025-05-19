@@ -96,8 +96,8 @@ class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
         runApp(const EnvoyApp());
       }
     }).onMigrationError(() async {
-      EnvoyReport().log(
-          "Migration", "Error migrating accounts retrying... $retries");
+      EnvoyReport()
+          .log("Migration", "Error migrating accounts retrying... $retries");
       await Future.delayed(const Duration(seconds: 1));
       MigrationManager().migrate();
       retries++;

@@ -140,7 +140,8 @@ class MigrationManager {
         await NgAccountManager().restore();
         await LocalStorage().prefs.remove(accountsPrefKey);
         await Future.delayed(const Duration(milliseconds: 300));
-        final v1backupFile = File("${LocalStorage().appDocumentsDir.path}/v1_accounts.json");
+        final v1backupFile =
+            File("${LocalStorage().appDocumentsDir.path}/v1_accounts.json");
         await v1backupFile.create(recursive: true);
         await v1backupFile.writeAsString(jsonEncode(accountsJson));
 
