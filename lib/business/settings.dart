@@ -6,7 +6,6 @@
 
 import 'dart:math';
 import 'package:envoy/account/accounts_manager.dart';
-import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/node_url.dart';
@@ -300,8 +299,8 @@ class Settings extends ChangeNotifier {
 
     // if a other hot wallet exists and no signet then add one
     if (showSignetAccounts &&
-        AccountManager().hotAccountsExist() &&
-        !AccountManager().hotSignetAccountExist()) {
+        NgAccountManager().hotAccountsExist() &&
+        !NgAccountManager().hotSignetAccountExist()) {
       await EnvoySeed()
           .deriveAndAddWalletsFromCurrentSeed(network: Network.signet);
     }

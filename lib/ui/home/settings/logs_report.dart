@@ -137,7 +137,7 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                         String stackTrace = log["stackTrace"] ?? "None";
                         String lib = log["lib"] ?? "None";
                         String time = log["time"] ?? "";
-                        return  Column(
+                        return Column(
                           mainAxisSize: MainAxisSize.max,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -222,8 +222,7 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                                       color: Colors.black,
                                     )),
                                 const TextSpan(
-                                    text:
-                                    "\nStack Trace\n\n", // TODO: FIGMA
+                                    text: "\nStack Trace\n\n", // TODO: FIGMA
                                     style: TextStyle(
                                       fontSize: 10,
                                       fontWeight: FontWeight.w700,
@@ -241,10 +240,10 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                                   .textTheme
                                   .bodySmall
                                   ?.copyWith(
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.2,
-                                  color: Colors.grey[400],
-                                  fontSize: 11),
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.2,
+                                      color: Colors.grey[400],
+                                      fontSize: 11),
                               // overflow: TextOverflow.ellipsis,
                               // softWrap: true,
                             ),

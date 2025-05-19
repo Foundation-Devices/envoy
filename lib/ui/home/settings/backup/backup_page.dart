@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'dart:io' show Platform;
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
@@ -30,7 +31,6 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as new_colors;
-import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/ui/onboard/magic/wallet_security/wallet_security_modal.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 
@@ -296,7 +296,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                               title: SettingText(
                                   S().backups_downloadBIP329BackupFile,
                                   onTap: () {
-                                AccountManager().exportBIP329();
+                                NgAccountManager().exportBIP329();
                               }),
                             ),
                           ],

@@ -56,6 +56,7 @@ class _SeedScreenState extends State<SeedScreen> {
       }
     });
   }
+
   @override
   void dispose() {
     disableSecureScreen();

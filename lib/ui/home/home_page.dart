@@ -6,8 +6,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
-import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
@@ -173,7 +173,7 @@ class HomePageState extends ConsumerState<HomePage>
         .listen((dismissed) {
       // if is not dismissed listen balance
       if (!dismissed) {
-        AccountManager()
+        NgAccountManager()
             .isAccountBalanceHigherThanUsd1000Stream
             .stream
             .listen((event) {
@@ -375,7 +375,7 @@ class HomePageState extends ConsumerState<HomePage>
   }
 
   _notifyAboutHighBalance() {
-    AccountManager().isAccountBalanceHigherThanUsd1000Stream.close();
+    NgAccountManager().isAccountBalanceHigherThanUsd1000Stream.close();
     showSecurityDialog(context);
   }
 

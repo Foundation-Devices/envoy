@@ -4,8 +4,8 @@
 
 import 'dart:async';
 
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
-import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/util/bug_report_helper.dart';
@@ -88,7 +88,7 @@ EnvoyNotification transactionToEnvoyNotification(EnvoyTransaction transaction) {
     transaction.txId,
     transaction,
     amount: transaction.amount,
-    accountId: AccountManager().getAccountIdByTransaction(transaction.txId),
+    accountId: NgAccountManager().getAccountIdByTransaction(transaction.txId),
   );
 }
 
@@ -321,7 +321,7 @@ class Notifications {
       return true;
     }
 
-    return !AccountManager()
+    return !NgAccountManager()
         .accounts
         .any((account) => account.id == notification.accountId);
   }

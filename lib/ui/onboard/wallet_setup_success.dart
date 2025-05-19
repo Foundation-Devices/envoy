@@ -30,7 +30,6 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
     Future.delayed(const Duration(milliseconds: 100)).then((_) {
       ref.read(successfulSetupWallet.notifier).state = true;
     });
-
     super.initState();
   }
 

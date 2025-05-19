@@ -2,11 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/coins.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:ngwallet/src/rust/api/envoy_account.dart';
 import 'package:uuid/uuid.dart';
 
 part 'coin_tag.g.dart';
@@ -86,8 +88,8 @@ class CoinTag {
     return coins.map((e) => e.id);
   }
 
-  Account? getAccount() {
-    return AccountManager()
+  EnvoyAccount? getAccount() {
+    return NgAccountManager()
         .accounts
         .firstWhereOrNull((account) => this.account == account.id);
   }

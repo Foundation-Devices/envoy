@@ -211,12 +211,12 @@ class _AccountsListState extends ConsumerState<AccountsList> {
     ref.listen(accountsProvider,
         (List<EnvoyAccount>? previous, List<EnvoyAccount> next) {
       //update order if and only if new accounts are added
-      // for (var account in accounts) {
-      //   if (!_accountsOrder.contains(account.id)) {
-      //     _accountsOrder.add(account.id);
-      //     NgAccountManager().updateAccountOrder(List.from(_accountsOrder));
-      //   }
-      // }
+      for (var account in accounts) {
+        if (!_accountsOrder.contains(account.id)) {
+          _accountsOrder.add(account.id);
+          NgAccountManager().updateAccountOrder(List.from(_accountsOrder));
+        }
+      }
 
       if (previous!.length < next.length) {
         if (_scrollController.hasClients) {

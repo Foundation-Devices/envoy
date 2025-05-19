@@ -4,7 +4,7 @@
 
 import 'dart:io';
 
-import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -162,7 +162,7 @@ class _EraseWalletsAndBackupsWarningState
                 onTap: () {
                   int currentPage = _pageController.page?.toInt() ?? 0;
                   if (currentPage == 1) {
-                    if (AccountManager().hotWalletAccountsEmpty()) {
+                    if (NgAccountManager().hotWalletAccountsEmpty()) {
                       // Safe to delete
                       displaySeedBeforeNuke(context);
                     } else {

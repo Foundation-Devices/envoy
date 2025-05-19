@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
@@ -48,7 +48,7 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
     path = ref.read(routePathProvider);
 
     numOfButtons =
-        path == ROUTE_ACCOUNTS_HOME && !AccountManager().hotAccountsExist()
+        path == ROUTE_ACCOUNTS_HOME && !NgAccountManager().hotAccountsExist()
             ? 2
             : 1;
 
