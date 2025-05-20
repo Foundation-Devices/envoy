@@ -48,7 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("Secondary action"),
+        "_": MessageLookupByLibrary.simpleMessage("Skip"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences":
             MessageLookupByLibrary.simpleMessage("Open Source Licences"),
@@ -106,7 +106,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Global Signet"),
         "accounts_upgradeBdkTestnetModal_content":
             MessageLookupByLibrary.simpleMessage(
-                "‘testnet3’ has been deprecated and Envoy now uses ‘testnet4’. Your previous testnet3 accounts have been removed. \n\nTo begin using testnet4, go Settings and enable the Testnet toggle."),
+                "‘Testnet3’ has been deprecated and Envoy now uses ‘testnet4’. Your previous testnet3 accounts have been removed. \n\nTo begin using testnet4, go Settings and enable the Testnet toggle."),
         "accounts_upgradeBdkTestnetModal_header":
             MessageLookupByLibrary.simpleMessage("Introducing testnet4"),
         "activity_boosted": MessageLookupByLibrary.simpleMessage("Boosted"),
@@ -609,6 +609,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Delete Tag"),
         "delete_tag_modal_subheading": MessageLookupByLibrary.simpleMessage(
             "Deleting this tag will automatically mark these coins as untagged."),
+        "delete_wallet_for_good_error_content":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy was unable to contact the Foundation server to delete your encrypted wallet data. Please try again or contact support."),
+        "delete_wallet_for_good_error_title":
+            MessageLookupByLibrary.simpleMessage("Unable to Delete"),
         "delete_wallet_for_good_instant_android_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Android automatically backs up your Envoy data every 24 hours.\n\nTo immediately remove your Envoy Seed from Android Auto Backups, you can perform a manual backup in your device [[Settings.]]"),
@@ -1719,7 +1724,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Learn how to do that [[here]]."),
         "settings_advanced_enabled_testnet_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Enabling Testnet adds a Testnet3 version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport."),
+                "Enabling Testnet adds a Testnet4 version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport."),
         "settings_advanced_receiveToTaproot":
             MessageLookupByLibrary.simpleMessage("Receive to Taproot"),
         "settings_advanced_signet":

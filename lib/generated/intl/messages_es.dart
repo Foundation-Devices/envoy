@@ -67,7 +67,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "accountDetails_descriptor_taproot":
             MessageLookupByLibrary.simpleMessage("Taproot"),
         "accountDetails_descriptor_wrappedSegwit":
-            MessageLookupByLibrary.simpleMessage("Wrapped Segwit"),
+            MessageLookupByLibrary.simpleMessage("Segwit Envuelto"),
         "account_details_filter_tags_sortBy":
             MessageLookupByLibrary.simpleMessage("Ordenar por"),
         "account_details_untagged_card":
@@ -626,6 +626,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Eliminar Etiqueta"),
         "delete_tag_modal_subheading": MessageLookupByLibrary.simpleMessage(
             "Al eliminar esta etiqueta, las monedas se marcarán automáticamente como Sin etiquetar."),
+        "delete_wallet_for_good_error_content":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy no ha podido ponerse en contacto con el servidor de la Foundation para eliminar los datos encriptados de tu cartera. Por favor, vuelve a intentarlo o ponte en contacto con atención al cliente."),
+        "delete_wallet_for_good_error_title":
+            MessageLookupByLibrary.simpleMessage("Error al Eliminar"),
         "delete_wallet_for_good_instant_android_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Android realiza automáticamente una copia de seguridad de tus datos de Envoy cada 24 horas.\n\nPara eliminar tu Semilla Envoy de la Copia de Seguridad de Android de manera inmediata, puedes realizar una copia de seguridad manual en los [[Ajustes]] de tu dispositivo."),
@@ -1375,9 +1380,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "menu_support": MessageLookupByLibrary.simpleMessage("AYUDA"),
         "onboardin_unifiedAccountsModal_content":
             MessageLookupByLibrary.simpleMessage(
-                "From version 2.0.0, all address types are now accessible under a single account card.\n\nThe default receive address type can be changed in Settings."),
+                "A partir de la versión 2.0.0, todos los tipos de dirección son accesibles desde una única cuenta.\n\nEl tipo de dirección de recepción por defecto se puede cambiar en Ajustes."),
         "onboardin_unifiedAccountsModal_tilte":
-            MessageLookupByLibrary.simpleMessage("Unified Address Types"),
+            MessageLookupByLibrary.simpleMessage(
+                "Tipos de Dirección Unificados"),
         "onboarding_advancedModal_content": MessageLookupByLibrary.simpleMessage(
             "Si continúas sin una Copia de Seguridad Mágica, serás responsable de almacenar tu propia semilla y datos de recuperación."),
         "onboarding_advancedModal_header":
@@ -1747,14 +1753,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_advanced": MessageLookupByLibrary.simpleMessage("Avanzado"),
         "settings_advancedModalReceiveSegwit_content":
             MessageLookupByLibrary.simpleMessage(
-                "With this toggle off, Native Segwit addresses will be generated when you tap receive. This is the default address type used by most Bitcoin wallets."),
+                "Con esta opción desactivada, se generarán direcciones Segwit Nativas cuando pulses Recibir. Este es el tipo de dirección por defecto que utilizan la mayoría de las carteras Bitcoin."),
         "settings_advancedModalReceiveSegwit_title":
-            MessageLookupByLibrary.simpleMessage("Receive to Segwit"),
+            MessageLookupByLibrary.simpleMessage("Recibir a Segwit"),
         "settings_advancedModalReceiveTaproot_content":
             MessageLookupByLibrary.simpleMessage(
-                "With this toggle on, Taproot addresses will be generated when you tap receive. Ensure entities sending you Bitcoin are Taproot compatible before proceeding."),
+                "Con esta opción activada, se generarán direcciones Taproot cuando pulses Recibir. Asegúrate de que las entidades que te envían Bitcoin son compatibles con Taproot antes de continuar."),
         "settings_advancedModalReceiveTaproot_title":
-            MessageLookupByLibrary.simpleMessage("Receive to Taproot"),
+            MessageLookupByLibrary.simpleMessage("Recibir a Taproot"),
         "settings_advanced_enableBuyRamp":
             MessageLookupByLibrary.simpleMessage("Comprar en Envoy"),
         "settings_advanced_enabled_signet_modal_link":
@@ -1769,7 +1775,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Al habilitar Testnet, se añade una versión de Testnet3 de tu Cartera Envoy y te permite conectar cuentas de Testnet de tu Passport."),
         "settings_advanced_receiveToTaproot":
-            MessageLookupByLibrary.simpleMessage("Receive to Taproot"),
+            MessageLookupByLibrary.simpleMessage("Recibir a Taproot"),
         "settings_advanced_signet":
             MessageLookupByLibrary.simpleMessage("Signet"),
         "settings_advanced_taproot":

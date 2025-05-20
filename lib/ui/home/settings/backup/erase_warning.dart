@@ -377,18 +377,27 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
                         if (!_deleteInProgress) {
                           title = _isDeleted
                               ? S().delete_wallet_for_good_success_heading
-                              : "Your wallet could not be deleted"; // TODO: wait Figma for screen
+                              : S().delete_wallet_for_good_error_title;
                         }
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 24),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
+                            spacing: EnvoySpacing.large3,
                             children: [
                               Text(
                                 title,
                                 textAlign: TextAlign.center,
                                 style: EnvoyTypography.heading,
                               ),
+                              if (!_isDeleted && !_deleteInProgress)
+                                Text(
+                                  S().delete_wallet_for_good_error_content,
+                                  textAlign: TextAlign.center,
+                                  style: EnvoyTypography.info.copyWith(
+                                      color: EnvoyColors.textSecondary),
+                                )
+
                               //const Padding(padding: EdgeInsets.all(18)),
                             ],
                           ),
@@ -397,13 +406,26 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
                     ),
                   ],
                 ),
-                // TODO: change per Figma
                 if (!_isDeleted && !_deleteInProgress)
-                  OnboardingButton(
-                      label: S().component_retry,
-                      onTap: () {
-                        _onInit();
-                      }),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        bottom: EnvoySpacing.medium2,
+                        right: EnvoySpacing.medium2,
+                        left: EnvoySpacing.medium2),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: EnvoySpacing.medium1,
+                      children: [
+                        EnvoyButton(S().component_cancel,
+                            type: EnvoyButtonTypes.secondary, onTap: () {
+                          Navigator.of(context).pop();
+                        }),
+                        EnvoyButton(S().component_retry, onTap: () {
+                          _onInit();
+                        }),
+                      ],
+                    ),
+                  ),
               ],
             ),
           ),
