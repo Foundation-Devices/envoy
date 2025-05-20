@@ -41,6 +41,12 @@ extension AccountExtension on EnvoyAccount {
   }
 }
 
+enum DeviceAccountResult {
+  ADDED,
+  UPDATED_WITH_NEW_DESCRIPTOR,
+  ERROR,
+}
+
 class NgAccountManager extends ChangeNotifier {
   static const String ACCOUNT_ORDER = "accounts_order";
 
@@ -365,38 +371,91 @@ class NgAccountManager extends ChangeNotifier {
         (element) => element.isHot && element.network == network);
   }
 
-  processPassportAccounts(Binary binary) async {
+  Future<(DeviceAccountResult, EnvoyAccount?)> addPassportAccount(
+      Binary binary) async {
     var jsonIndex = binary.decoded.indexOf("{");
     var decoded = binary.decoded.substring(jsonIndex);
     var json = jsonDecode(decoded);
 
-    bool oldJsonFormat = json['xpub'] != null;
-
-    // Old format with single WPKH account
     NgAccountConfig config = await getPassportAccountFromJson(json);
 
-    for (var account in accounts) {
-      for (var descriptor in account.descriptors) {
-        for (var configDescriptor in config.descriptors) {
-          if (descriptor.external_ == configDescriptor.external_) {
-            throw AccountAlreadyPaired();
-          }
+    final alreadyPairedAccount = accounts.firstWhereOrNull(
+      (account) {
+        return account.index == config.index &&
+            account.network == config.network &&
+            account.deviceSerial == config.deviceSerial;
+      },
+    );
+
+    final List<NgDescriptor> missingDescriptors = [];
+    if (alreadyPairedAccount != null) {
+      for (var descriptor in config.descriptors) {
+        final found = alreadyPairedAccount.descriptors.firstWhereOrNull(
+          (accountDescriptor) =>
+              accountDescriptor.external_ == descriptor.external_ &&
+              accountDescriptor.addressType == descriptor.addressType,
+        );
+        //if the descriptor is not found, add it to the list of missing descriptors
+        if (found == null) {
+          missingDescriptors.add(descriptor);
+          print("Found descriptor ${descriptor.addressType}");
         }
       }
+      if (missingDescriptors.isEmpty) {
+        throw AccountAlreadyPaired();
+      }
+      final handler = alreadyPairedAccount.handler;
+      if (handler == null) {
+        return (DeviceAccountResult.ERROR, null);
+      }
+      if (missingDescriptors.isNotEmpty) {
+        for (var descriptor in missingDescriptors) {
+          try {
+            bool taprootEnabled = Settings().taprootEnabled();
+            await handler.addDescriptor(
+              ngDescriptor: descriptor,
+            );
+            final state = await handler.state();
+            //if the user added a taproot descriptor
+            //and if taproot is enabled, set the preferred address type to taproot
+            if (taprootEnabled) {
+              var taprootDescriptor = state.descriptors.firstWhereOrNull(
+                  (element) => element.addressType == AddressType.p2Tr);
+              if (taprootDescriptor != null) {
+                await handler.setPreferredAddressType(
+                    addressType: AddressType.p2Tr);
+              }
+            }
+          } catch (e) {
+            EnvoyReport().log("AccountManager",
+                "Error adding descriptor to account ${alreadyPairedAccount.name} $e");
+          }
+        }
+        return (DeviceAccountResult.UPDATED_WITH_NEW_DESCRIPTOR, (await handler.state()));
+      }
     }
+
     Directory dir = NgAccountManager.getAccountDirectory(
       deviceSerial: config.deviceSerial ?? "unknown-serial_${config.id}",
-      accountId: config.id,
       network: config.network.toString(),
       number: config.index,
     );
+    if (await dir.exists()) {
+      EnvoyReport().log("AccountManager",
+          "Failed to create account directory for ${config.name}:${config.deviceSerial}, already exists: ${dir.path}");
+    } else {
+      await dir.create(recursive: true);
+    }
+
     try {
-      // final handler = await EnvoyAccountHandler.fromConfig(
-      //     config: config, dbPath: dir.path);
-      // print("handler created");
-      // await addAccount(await handler.state(), handler);
+      final handler = await EnvoyAccountHandler.addAccountFromConfig(
+          config: config, dbPath: dir.path);
+      await addAccount(await handler.state(), handler);
+      return (DeviceAccountResult.ADDED, (await handler.state()));
     } catch (e) {
+      EnvoyReport().log("AccountManager", "Error Adding account: $e");
       kPrint("Error creating account directory: $e");
+      return (DeviceAccountResult.ERROR, null);
     }
   }
 }

@@ -752,7 +752,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
           ),
           onTap: () {
             HomePageState.of(context)?.toggleOptions();
-            context.go(ROUTE_ACCOUNT_DESCRIPTOR, extra: widget.account);
+            context.go(ROUTE_ACCOUNT_DESCRIPTOR, extra: widget.account.id);
           },
         ),
         const SizedBox(

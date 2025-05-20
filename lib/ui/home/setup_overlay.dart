@@ -4,6 +4,7 @@
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -266,7 +267,7 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                                                                     .push(MaterialPageRoute(
                                                                         builder:
                                                                             (context) {
-                                                                  return const TouPage();
+                                                                  return const OnboardPassportWelcomeScreen();
                                                                 }));
                                                               },
                                                             )

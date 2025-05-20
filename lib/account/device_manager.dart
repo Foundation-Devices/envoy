@@ -1,21 +1,30 @@
 import 'package:envoy/business/devices.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/util/xfp_endian.dart';
+import 'package:flutter/material.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:uuid/uuid.dart';
 
 Future<NgAccountConfig> getPassportAccountFromJson(dynamic json) async {
+  bool oldJsonFormat = json['xpub'] != null;
+  bool taprootEnabled = Settings().taprootEnabled();
   List<NgDescriptor> descriptors = [];
 
-  final bip84 = json["bip84"];
-  if (bip84 != null) {
+  if (!oldJsonFormat) {
+    final bip84 = json["bip84"];
+    if (bip84 != null) {
 // TODO: try here
-    descriptors.add(await getWalletFromJson(bip84));
-  }
+      descriptors.add(await getWalletFromJson(bip84));
+    }
 
-  final bip86 = json["bip86"];
-  if (bip86 != null) {
-    descriptors.add(await getWalletFromJson(bip86));
+    final bip86 = json["bip86"];
+    if (bip86 != null) {
+      descriptors.add(await getWalletFromJson(bip86));
+    }
+  } else {
+    descriptors.add(await getWalletFromJson(json));
   }
 
   Device device = getDeviceFromJson(json);
@@ -23,19 +32,49 @@ Future<NgAccountConfig> getPassportAccountFromJson(dynamic json) async {
 
   int accountNumber = json["acct_num"];
 
+  String externalDescriptor = descriptors.first.external_ ?? "";
+  int publicKeyIndex = externalDescriptor.indexOf("]") + 1;
+
+  String publicKeyType =
+      externalDescriptor.substring(publicKeyIndex, publicKeyIndex + 4);
+
+  Network network;
+  if (publicKeyType == "tpub") {
+    network = Network.testnet4;
+  } else {
+    network = Network.bitcoin;
+  }
+
+  AddressType addressType = AddressType.p2Wpkh;
+
+  if(taprootEnabled){
+    //if any of the descriptors is taproot,
+    //then use taproot as the preferred address type
+    for (var descriptor in descriptors) {
+      if (descriptor.addressType == AddressType.p2Tr) {
+        addressType = AddressType.p2Tr;
+        break;
+      }
+    }
+  }
+
+  int colorIndex = (accountNumber) % (EnvoyColors.listAccountTileColors.length);
+  Color color = EnvoyColors.listAccountTileColors[colorIndex];
+  if (accountNumber == 2147483646) {
+    color = Colors.red;
+  }
   NgAccountConfig accountConfig = NgAccountConfig(
       name: json["acct_name"] + " (#${accountNumber.toString()})",
-      color: "blue",
+      color: color.toHex(),
       seedHasPassphrase: false,
       deviceSerial: device.serial,
       dateAdded: DateTime.now().toString(),
-      preferredAddressType: AddressType.p2Wpkh,
+      preferredAddressType: addressType,
       index: accountNumber,
       descriptors: descriptors,
       dateSynced: null,
       id: Uuid().v4(),
-      network: Network.bitcoin);
-
+      network: network);
   return accountConfig;
 }
 
