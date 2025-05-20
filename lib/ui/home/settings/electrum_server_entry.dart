@@ -122,11 +122,12 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
                 _textBelow = S().privacy_node_configure;
               }
             },
-            onSubmitted: (address) {
-              if (address.isNotEmpty) {
-                final parsedAddress = parseNodeUrl(address);
-                _onAddressChanged(parsedAddress);
-                _controller.text = normalizeProtocol(address);
+            onEditingComplete: () {
+              final raw = _controller.text;
+              if (raw.isNotEmpty) {
+                final parsed = parseNodeUrl(raw);
+                _onAddressChanged(parsed);
+                _controller.text = normalizeProtocol(raw);
               }
             },
             isError: _isError,
