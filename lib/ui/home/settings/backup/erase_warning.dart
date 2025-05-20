@@ -331,72 +331,105 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
   rive.StateMachineController? _stateMachineController;
 
   bool _deleteInProgress = true;
+  bool _isDeleted = false;
 
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: !_deleteInProgress,
-      onPopInvokedWithResult: (didPop, result) {
-        if (didPop) {
-          context.go("/");
-        }
-      },
-      child: OnboardPageBackground(
+        canPop: !_deleteInProgress,
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) {
+            context.go("/");
+          }
+        },
+        child: OnboardPageBackground(
           child: Material(
-        color: Colors.transparent,
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: 260,
-                  child: rive.RiveAnimation.asset(
-                    "assets/envoy_loader.riv",
-                    fit: BoxFit.contain,
-                    onInit: (artboard) {
-                      _stateMachineController =
-                          rive.StateMachineController.fromArtboard(
-                              artboard, 'STM');
-                      artboard.addController(_stateMachineController!);
-                      _stateMachineController
-                          ?.findInput<bool>("indeterminate")
-                          ?.change(true);
-                      _onInit();
-                    },
-                  ),
-                ),
-              ),
-              const SliverPadding(padding: EdgeInsets.all(28)),
-              SliverToBoxAdapter(
-                child: Builder(
-                  builder: (context) {
-                    String title = S().delete_wallet_for_good_loading_heading;
-                    if (!_deleteInProgress) {
-                      title = S().delete_wallet_for_good_success_heading;
-                    }
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            title,
-                            textAlign: TextAlign.center,
-                            style: EnvoyTypography.heading,
-                          ),
-                          const Padding(padding: EdgeInsets.all(18)),
-                        ],
+            color: Colors.transparent,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      height: 260,
+                      child: rive.RiveAnimation.asset(
+                        "assets/envoy_loader.riv",
+                        fit: BoxFit.contain,
+                        onInit: (artboard) {
+                          _stateMachineController =
+                              rive.StateMachineController.fromArtboard(
+                                  artboard, 'STM');
+                          artboard.addController(_stateMachineController!);
+                          _stateMachineController
+                              ?.findInput<bool>("indeterminate")
+                              ?.change(true);
+                          _onInit();
+                        },
                       ),
-                    );
-                  },
+                    ),
+                    //const Padding(padding: EdgeInsets.all(28)),
+                    Builder(
+                      builder: (context) {
+                        String title =
+                            S().delete_wallet_for_good_loading_heading;
+                        if (!_deleteInProgress) {
+                          title = _isDeleted
+                              ? S().delete_wallet_for_good_success_heading
+                              : S().delete_wallet_for_good_error_title;
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            spacing: EnvoySpacing.large3,
+                            children: [
+                              Text(
+                                title,
+                                textAlign: TextAlign.center,
+                                style: EnvoyTypography.heading,
+                              ),
+                              if (!_isDeleted && !_deleteInProgress)
+                                Text(
+                                  S().delete_wallet_for_good_error_content,
+                                  textAlign: TextAlign.center,
+                                  style: EnvoyTypography.info.copyWith(
+                                      color: EnvoyColors.textSecondary),
+                                )
+
+                              //const Padding(padding: EdgeInsets.all(18)),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
-              ),
-            ],
+                if (!_isDeleted && !_deleteInProgress)
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        bottom: EnvoySpacing.medium2,
+                        right: EnvoySpacing.medium2,
+                        left: EnvoySpacing.medium2),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: EnvoySpacing.medium1,
+                      children: [
+                        EnvoyButton(S().component_cancel,
+                            type: EnvoyButtonTypes.secondary, onTap: () {
+                          Navigator.of(context).pop();
+                        }),
+                        EnvoyButton(S().component_retry, onTap: () {
+                          _onInit();
+                        }),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
           ),
-        ),
-      )),
-    );
+        ));
   }
 
   _onInit() async {
@@ -409,34 +442,52 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
       //wait for animation
       await Future.delayed(const Duration(seconds: 1));
-      await Future.delayed(const Duration(seconds: 4));
-      await EnvoySeed().delete();
-      _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
-      _stateMachineController?.findInput<bool>("happy")?.change(true);
-      _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+
+      bool isDeleted = await EnvoySeed().delete();
+      setState(() {
+        _isDeleted = isDeleted;
+      });
+
+      if (_isDeleted) {
+        _stateMachineController
+            ?.findInput<bool>("indeterminate")
+            ?.change(false);
+        _stateMachineController?.findInput<bool>("happy")?.change(true);
+        _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+      }
+      if (!_isDeleted) {
+        _stateMachineController
+            ?.findInput<bool>("indeterminate")
+            ?.change(false);
+        _stateMachineController?.findInput<bool>("happy")?.change(false);
+        _stateMachineController?.findInput<bool>("unhappy")?.change(true);
+      }
+
       setState(() {
         _deleteInProgress = false;
       });
       await Future.delayed(const Duration(milliseconds: 2000));
 
-      //Show android backup info
-      if (Platform.isAndroid) {
-        await Future.delayed(const Duration(milliseconds: 300));
-        if (mounted) {
-          context.pushNamed(WALLET_BACKUP_WARNING, extra: true);
+      if (_isDeleted) {
+        //Show android backup info
+        if (Platform.isAndroid) {
+          await Future.delayed(const Duration(milliseconds: 300));
+          if (mounted) {
+            context.pushNamed(WALLET_BACKUP_WARNING, extra: true);
+          }
+        } else {
+          //wait for pop animation to finish
+          await Future.delayed(const Duration(milliseconds: 300));
+          // Show home page and navigate to accounts
+          if (mounted) {
+            context.goNamed("/");
+          }
+          ref.read(homePageBackgroundProvider.notifier).state =
+              HomePageBackgroundState.hidden;
+          ref.read(homePageTabProvider.notifier).state =
+              HomePageTabState.accounts;
+          ref.read(homePageTitleProvider.notifier).state = "";
         }
-      } else {
-        //wait for pop animation to finish
-        await Future.delayed(const Duration(milliseconds: 300));
-        // Show home page and navigate to accounts
-        if (mounted) {
-          context.goNamed("/");
-        }
-        ref.read(homePageBackgroundProvider.notifier).state =
-            HomePageBackgroundState.hidden;
-        ref.read(homePageTabProvider.notifier).state =
-            HomePageTabState.accounts;
-        ref.read(homePageTitleProvider.notifier).state = "";
       }
     } catch (e) {
       kPrint(e);

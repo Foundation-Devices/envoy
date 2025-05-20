@@ -48,7 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("Secondary action"),
+        "_": MessageLookupByLibrary.simpleMessage("Skip"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versió de l\'aplicació"),
         "about_openSourceLicences":
@@ -107,7 +107,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Global Signet"),
         "accounts_upgradeBdkTestnetModal_content":
             MessageLookupByLibrary.simpleMessage(
-                "‘testnet3’ has been deprecated and Envoy now uses ‘testnet4’. Your previous testnet3 accounts have been removed. \n\nTo begin using testnet4, go Settings and enable the Testnet toggle."),
+                "‘Testnet3’ has been deprecated and Envoy now uses ‘testnet4’. Your previous testnet3 accounts have been removed. \n\nTo begin using testnet4, go Settings and enable the Testnet toggle."),
         "accounts_upgradeBdkTestnetModal_header":
             MessageLookupByLibrary.simpleMessage("Introducing testnet4"),
         "activity_boosted": MessageLookupByLibrary.simpleMessage("Aumentat"),
@@ -626,6 +626,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Suprimeix L\'etiqueta"),
         "delete_tag_modal_subheading": MessageLookupByLibrary.simpleMessage(
             "En suprimir aquesta etiqueta, aquestes monedes es marcaran automàticament com a sense etiquetar."),
+        "delete_wallet_for_good_error_content":
+            MessageLookupByLibrary.simpleMessage(
+                "Envoy was unable to contact the Foundation server to delete your encrypted wallet data. Please try again or contact support."),
+        "delete_wallet_for_good_error_title":
+            MessageLookupByLibrary.simpleMessage("Unable to Delete"),
         "delete_wallet_for_good_instant_android_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Android fa una còpia de seguretat automàtica de les teves dades d\'Envoy cada 24 hores.\n\nPer eliminar immediatament el vostre Envoy Seed de les còpies de seguretat d\'Android Auto, podeu fer una còpia de seguretat manual al vostre dispositiu [[Configuració.]]"),
