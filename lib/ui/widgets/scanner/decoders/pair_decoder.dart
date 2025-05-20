@@ -23,6 +23,7 @@ class InvalidNetworkException implements Exception {
 
 class PairPayloadDecoder extends ScannerDecoder {
   final Function(Binary binary) onScan;
+  bool _scanFinished = false;
 
   PairPayloadDecoder({required this.onScan});
 
@@ -34,15 +35,16 @@ class PairPayloadDecoder extends ScannerDecoder {
       //show progress if the code is UR
       progressCallBack?.call(urDecoder.urDecoder.progress);
       if (payload is Binary) {
-        if (_validatePairData(payload)) {
+        if (_validatePairData(payload) && !_scanFinished) {
           onScan(payload);
+          _scanFinished = true;
         } else {
           throw InvalidPairPayloadException();
         }
       } else if (urDecoder.urDecoder.progress == 1) {
         throw InvalidPairPayloadException();
       }
-    }else{
+    } else {
       //handle new paring flow
     }
     return;
