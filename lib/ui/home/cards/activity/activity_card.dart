@@ -76,91 +76,107 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
     super.dispose();
   }
 
-  _redraw() {
-    setState(() {});
-  }
+  void _redraw() => setState(() {});
 
   @override
   Widget build(BuildContext context) {
     ref.watch(settingsProvider);
-    List<EnvoyNotification> envoyNotification =
-        ref.watch(combinedNotificationsProvider);
 
-    return ScrollGradientMask(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
-        child: CustomScrollView(slivers: [
-          envoyNotification.isEmpty
-              ? SliverFillRemaining(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            height: EnvoySpacing.small,
-                          ),
-                          ListHeader(
-                            title: S().activity_listHeader_Today,
-                          ),
-                          const ActivityGhostListTile(
-                            animate: false,
-                          ),
-                        ],
-                      ),
-                      Text(
-                        S().activity_emptyState_label,
-                        style: EnvoyTypography.body
-                            .copyWith(color: EnvoyColors.textSecondary),
-                      ),
-                      const SizedBox(
-                        height: EnvoySpacing.medium2,
-                      ),
-                    ],
-                  ),
-                )
-              : SliverToBoxAdapter(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      ListView.builder(
-                          padding: const EdgeInsets.only(top: 15.0),
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (BuildContext context, int index) {
-                            return Column(
+    // pull your two lists synchronously
+    final nonTxList = ref.watch(nonTxNotificationStreamProvider);
+    final txList = ref.watch(allTxProvider);
+
+    // wrap the combination in a Future so that FutureBuilder can show a loader
+    final futureNotifications = Future<List<EnvoyNotification>>.value(
+      combineNotifications(nonTxList, txList),
+    );
+
+    return FutureBuilder<List<EnvoyNotification>>(
+      future: futureNotifications,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+
+        final envoyNotification = snapshot.data!;
+
+        return ScrollGradientMask(
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
+            child: CustomScrollView(
+              slivers: [
+                envoyNotification.isEmpty
+                    ? SliverFillRemaining(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                if (index == 0 ||
-                                    showHeader(envoyNotification[index],
-                                        envoyNotification[index - 1]))
-                                  Column(
-                                    children: [
-                                      if (index != 0)
-                                        const SizedBox(
-                                          height: EnvoySpacing.medium2,
-                                        ),
-                                      if (index == 0)
-                                        const SizedBox(
-                                          height: EnvoySpacing.small,
-                                        ),
-                                      ListHeader(
-                                          title: getTransactionDateString(
-                                              envoyNotification[index])),
-                                    ],
-                                  ),
-                                ActivityListTile(envoyNotification[index]),
+                                const SizedBox(height: EnvoySpacing.small),
+                                ListHeader(
+                                    title: S().activity_listHeader_Today),
+                                const ActivityGhostListTile(animate: false),
                               ],
-                            );
-                          },
-                          itemCount: envoyNotification.length),
-                      const SizedBox(height: EnvoySpacing.large2)
-                    ],
-                  ),
-                )
-        ]),
-      ),
+                            ),
+                            Text(
+                              S().activity_emptyState_label,
+                              style: EnvoyTypography.body
+                                  .copyWith(color: EnvoyColors.textSecondary),
+                            ),
+                            const SizedBox(height: EnvoySpacing.medium2),
+                          ],
+                        ),
+                      )
+                    : SliverToBoxAdapter(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            ListView.builder(
+                              padding: const EdgeInsets.only(top: 15.0),
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: envoyNotification.length,
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  children: [
+                                    if (index == 0 ||
+                                        (index > 0 &&
+                                            showHeader(envoyNotification[index],
+                                                envoyNotification[index - 1])))
+                                      Column(
+                                        children: [
+                                          if (index != 0)
+                                            const SizedBox(
+                                                height: EnvoySpacing.medium2),
+                                          if (index == 0)
+                                            const SizedBox(
+                                                height: EnvoySpacing.small),
+                                          ListHeader(
+                                            title: getTransactionDateString(
+                                                envoyNotification[index]),
+                                          ),
+                                        ],
+                                      ),
+                                    ActivityListTile(envoyNotification[index]),
+                                  ],
+                                );
+                              },
+                            ),
+                            const SizedBox(height: EnvoySpacing.large2),
+                          ],
+                        ),
+                      ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

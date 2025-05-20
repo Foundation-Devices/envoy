@@ -5,15 +5,16 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:animations/animations.dart';
-import 'package:envoy/business/account.dart';
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_card.dart';
 import 'package:envoy/ui/home/cards/accounts/address_card.dart';
 import 'package:envoy/ui/home/cards/accounts/descriptor_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/send_card.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
 import 'package:envoy/ui/home/cards/buy_bitcoin.dart';
 import 'package:envoy/ui/home/cards/buy_bitcoin_account_selection.dart';
@@ -25,6 +26,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 /// Different routes for accounts.
 /// The nested routes cannot start with a slash,
@@ -66,6 +68,8 @@ const ROUTE_ACCOUNT_SEND_CONFIRM = '$ROUTE_ACCOUNT_SEND/$_ACCOUNT_SEND_CONFIRM';
 const _ACCOUNT_SEND_REVIEW = 'review';
 const ROUTE_ACCOUNT_SEND_REVIEW =
     '$ROUTE_ACCOUNT_SEND_CONFIRM/$_ACCOUNT_SEND_REVIEW';
+
+const ACCOUNT_SEND_SCAN_PSBT = "spend_scan_psbt";
 
 /// simple wrapper to add page animation
 Page wrapWithEnvoyPageAnimation(
@@ -154,7 +158,7 @@ final accountsRouter = StatefulShellBranch(
                       /// but only if we are not in edit mode
                       if (ProviderScope.containerOf(context)
                               .read(spendEditModeProvider) !=
-                          SpendOverlayContext.hidden) {
+                          SpendOverlayContext.editCoins) {
                         clearSpendState(ProviderScope.containerOf(context));
                       }
                       return true;
@@ -204,6 +208,17 @@ final accountsRouter = StatefulShellBranch(
                         routes: [
                           GoRoute(
                             name: "spend_review",
+                            routes: [
+                              GoRoute(
+                                name: ACCOUNT_SEND_SCAN_PSBT,
+                                path: "scan",
+                                pageBuilder: (context, state) {
+                                  return wrapWithEnvoyPageAnimation(
+                                      child: PsbtCard(
+                                          state.extra as DraftTransaction));
+                                },
+                              ),
+                            ],
                             onExit: (context, GoRouterState state) {
                               /// if we are exiting the send screen, we need to clear the spend state
                               /// but only if we are not in edit mode
@@ -230,29 +245,35 @@ final accountsRouter = StatefulShellBranch(
                 GoRoute(
                   path: _ACCOUNT_RECEIVE,
                   pageBuilder: (context, state) {
-                    Account? account;
-                    if (state.extra is Map) {
-                      account =
-                          Account.fromJson(state.extra as Map<String, dynamic>);
-                    } else {
-                      account = state.extra as Account;
+                    EnvoyAccount? account;
+                    try {
+                      account = NgAccountManager()
+                          .getAccountById(state.extra as String);
+                      if (account == null) {
+                        throw Exception("Account not found");
+                      }
+                      return wrapWithEnvoyPageAnimation(
+                          child: AddressCard(account));
+                    } catch (e) {
+                      return wrapWithEnvoyPageAnimation(child: Container());
                     }
-                    return wrapWithEnvoyPageAnimation(
-                        child: AddressCard(account));
                   },
                 ),
                 GoRoute(
                   path: _ACCOUNT_DESCRIPTOR,
                   pageBuilder: (context, state) {
-                    Account? account;
-                    if (state.extra is Map) {
-                      account =
-                          Account.fromJson(state.extra as Map<String, dynamic>);
-                    } else {
-                      account = state.extra as Account;
+                    EnvoyAccount? account;
+                    try {
+                      account = NgAccountManager()
+                          .getAccountById(state.extra as String);
+                      if (account == null) {
+                        throw Exception("Account not found");
+                      }
+                      return wrapWithEnvoyPageAnimation(
+                          child: DescriptorCard(account));
+                    } catch (e) {
+                      return wrapWithEnvoyPageAnimation(child: Container());
                     }
-                    return wrapWithEnvoyPageAnimation(
-                        child: DescriptorCard(account));
                   },
                 ),
               ],

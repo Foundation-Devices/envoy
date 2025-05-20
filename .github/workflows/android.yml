@@ -19,8 +19,8 @@ jobs:
       - name: Build APK and AAB
         env:
           KEY_JKS: ${{ secrets.KEY_JKS }}
-          KEY_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
-          ALIAS_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
           GITHUB_ACCESS_TOKEN: ${{ secrets.GH_TOKEN }}
         run: echo -n $KEY_JKS | base64 -di > android/key.jks && just docker-build-android-sign
 

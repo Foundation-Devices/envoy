@@ -654,7 +654,7 @@ Future<void> onboardingAndEnterSeed(
 }
 
 Future<void> disableTorOnboarding(WidgetTester tester) async {
-  await findAndPressTextButton(tester, "Advanced Options");
+  await findAndPressTextButton(tester, "Advanced");
   await enablePerformance(tester);
   Finder backButtonFinder = find.byType(CupertinoNavigationBarBackButton);
   expect(backButtonFinder, findsOne);
@@ -705,7 +705,11 @@ Future<void> checkBuyOptionAndTitle(WidgetTester tester) async {
 Future<void> setUpFromStartNoAccounts(WidgetTester tester) async {
   await tester.pump();
 
-  final setUpButtonFinder = find.text('Create a\nMobile Wallet');
+  final setUpButtonFinder = find.byWidgetPredicate((widget) =>
+      widget is Text &&
+      widget.data != null &&
+      widget.data!.contains('Create a\nMobile Wallet'));
+
   expect(setUpButtonFinder, findsOneWidget);
   await tester.tap(setUpButtonFinder);
   await tester.pump(Durations.long2);
@@ -1135,7 +1139,7 @@ Future<bool> isAccountTaproot(
   return meetsCriteria;
 }
 
-Future<void> openAdvanced(WidgetTester tester) async {
+Future<void> openAdvancedMenu(WidgetTester tester) async {
   await tester.pump();
   final advancedButton = find.text('Advanced');
   expect(advancedButton, findsOneWidget);
@@ -1209,7 +1213,7 @@ Future<void> findAndTapFirstAccText(
 Future<void> fromHomeToAdvancedMenu(WidgetTester tester) async {
   await pressHamburgerMenu(tester);
   await goToSettings(tester);
-  await openAdvanced(tester);
+  await openAdvancedMenu(tester);
 }
 
 Future<void> findAndTapPopUpText(WidgetTester tester, String tapText) async {

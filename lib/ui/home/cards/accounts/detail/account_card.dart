@@ -3,8 +3,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:animations/animations.dart';
-import 'package:envoy/business/account.dart';
-import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/account/envoy_transaction.dart';
+import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -15,18 +16,19 @@ import 'package:envoy/ui/envoy_icons.dart' as old_icons;
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/home/cards/accounts/azteco/azteco_dialog.dart';
+import 'package:envoy/ui/home/cards/accounts/btcPay/btcpay_dialog.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_list_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/loader_ghost.dart';
-import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/shield.dart';
@@ -41,14 +43,17 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/tx_utils.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
+import 'package:envoy/ui/widgets/scanner/decoders/payment_qr_decoder.dart';
+import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/util/blur_container_transform.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:wallet/wallet.dart';
-import 'package:envoy/business/exchange_rate.dart';
+import 'package:ngwallet/ngwallet.dart' as ngwallet;
+import 'package:ngwallet/ngwallet.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget {
@@ -66,7 +71,7 @@ class AccountCard extends ConsumerStatefulWidget {
 class _AccountCardState extends ConsumerState<AccountCard>
     with SingleTickerProviderStateMixin {
   late AnimationController animationController;
-  late Account account;
+  late EnvoyAccount account;
   late Animation<Alignment> animation;
 
   _redraw() {
@@ -87,7 +92,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
 
     Future.delayed(const Duration()).then((value) {
       account =
-          ref.read(selectedAccountProvider) ?? AccountManager().accounts[0];
+          ref.read(selectedAccountProvider) ?? NgAccountManager().accounts[0];
       ref.read(homePageTitleProvider.notifier).state = "";
 
       ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
@@ -133,9 +138,10 @@ class _AccountCardState extends ConsumerState<AccountCard>
   @override
   Widget build(BuildContext context) {
     ref.watch(settingsProvider);
-    account = ref.read(selectedAccountProvider) ?? AccountManager().accounts[0];
+    account =
+        ref.read(selectedAccountProvider) ?? NgAccountManager().accounts[0];
 
-    List<Transaction> transactions =
+    List<EnvoyTransaction> transactions =
         ref.watch(filteredTransactionsProvider(account.id));
 
     bool txFiltersEnabled = ref.watch(isTransactionFiltersEnabled);
@@ -246,7 +252,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                     child: EnvoyTextButton(
                         label: S().receive_tx_list_receive,
                         onTap: () {
-                          context.go(ROUTE_ACCOUNT_RECEIVE, extra: account);
+                          context.go(ROUTE_ACCOUNT_RECEIVE, extra: account.id);
                         }),
                   ),
                 ),
@@ -261,19 +267,30 @@ class _AccountCardState extends ConsumerState<AccountCard>
                         color: EnvoyColors.accentPrimary,
                       ),
                       onPressed: () {
-                        Navigator.of(context, rootNavigator: true).push(
-                          MaterialPageRoute(builder: (context) {
-                            return MediaQuery.removePadding(
-                              context: context,
-                              child: ScannerPage(
-                                const [
-                                  ScannerType.address,
-                                  ScannerType.azteco,
-                                  ScannerType.btcPay
-                                ],
+                        final navigator = Navigator.of(context);
+                        final goRouter = GoRouter.of(context);
+                        showScannerDialog(
+                            context: context,
+                            onBackPressed: (context) {
+                              Navigator.of(context).pop();
+                            },
+                            decoder: PaymentQrDecoder(
                                 account: account,
+                                onAztecoScan: (aztecoVoucher) {
+                                  navigator.pop();
+                                  showEnvoyDialog(
+                                      context: context,
+                                      dialog:
+                                          AztecoDialog(aztecoVoucher, account));
+                                },
+                                btcPayVoucherScan: (voucher) {
+                                  navigator.pop();
+                                  showEnvoyDialog(
+                                      context: context,
+                                      dialog: BtcPayDialog(voucher, account));
+                                },
                                 onAddressValidated: (address, amount, message) {
-                                  // Navigator.pop(context);
+                                  navigator.pop();
                                   ref
                                       .read(spendAddressProvider.notifier)
                                       .state = address;
@@ -282,16 +299,12 @@ class _AccountCardState extends ConsumerState<AccountCard>
                                   ref
                                       .read(stagingTxNoteProvider.notifier)
                                       .state = message;
-                                  context.go(ROUTE_ACCOUNT_SEND, extra: {
+                                  goRouter.go(ROUTE_ACCOUNT_SEND, extra: {
                                     "account": account,
                                     "address": address,
                                     "amount": amount
                                   });
-                                },
-                              ),
-                            );
-                          }),
-                        );
+                                }));
                       },
                     ),
                   ),
@@ -318,8 +331,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
     );
   }
 
-  Widget _getMainWidget(BuildContext context, List<Transaction> transactions,
-      bool txFiltersEnabled) {
+  Widget _getMainWidget(BuildContext context,
+      List<EnvoyTransaction> transactions, bool txFiltersEnabled) {
     AccountToggleState accountToggleState =
         ref.watch(accountToggleStateProvider);
     return PageTransitionSwitcher(
@@ -344,7 +357,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
   }
 
   Widget _buildTransactionListWidget(
-      List<Transaction> transactions, bool txFiltersEnabled) {
+      List<EnvoyTransaction> transactions, bool txFiltersEnabled) {
     if (transactions.isEmpty) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -455,15 +468,15 @@ class GhostListTile extends StatelessWidget {
   }
 }
 
-class TransactionListTile extends StatelessWidget {
+class TransactionListTile extends ConsumerWidget {
   TransactionListTile({
     super.key,
     required this.transaction,
     required this.account,
   });
 
-  final Transaction transaction;
-  final Account account;
+  final EnvoyTransaction transaction;
+  final EnvoyAccount account;
 
   final TextStyle _transactionTextStyleInfo = EnvoyTypography.body.copyWith(
     fontWeight: FontWeight.w400,
@@ -478,18 +491,27 @@ class TransactionListTile extends StatelessWidget {
   final Settings s = Settings();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     final Locale activeLocale = Localizations.localeOf(context);
 
+    String? currencyAmount;
+    String? currency;
+    if (transaction is BtcPayTransaction) {
+      currencyAmount = (transaction as BtcPayTransaction).currencyAmount;
+      currency = (transaction as BtcPayTransaction).currency;
+    }
     return BlurContainerTransform(
       useRootNavigator: true,
       closedBuilder: (context, action) {
         return GestureDetector(
           onTap: () {
-            action();
+            if (!ref.read(transactionDetailsOpen.notifier).state) {
+              ref.read(transactionDetailsOpen.notifier).state = true;
+              action();
+            }
           },
           onLongPress: () async {
-            await copyTxId(context, transaction.txId, transaction.type);
+            await copyTxId(context, transaction.txId, transaction);
           },
           onDoubleTap: () {},
           // Avoids unintended behavior, prevents list item disappearance
@@ -504,7 +526,9 @@ class TransactionListTile extends StatelessWidget {
                   subtitle: txSubtitle(activeLocale),
                   contentPadding: const EdgeInsets.all(0),
                   trailing: Column(
-                    mainAxisAlignment: s.displayFiat() == null
+                    mainAxisAlignment: s.displayFiat() == null ||
+                            (kDebugMode &&
+                                account.network != ngwallet.Network.bitcoin)
                         ? MainAxisAlignment.start
                         : MainAxisAlignment.center,
                     crossAxisAlignment: Settings().selectedFiat == null
@@ -529,20 +553,18 @@ class TransactionListTile extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            (transaction.amount == 0 &&
-                                    transaction.currency != null &&
-                                    transaction.currencyAmount != null)
+                            ((!transaction.isOnChain()) &&
+                                    currency != null &&
+                                    currencyAmount != null)
                                 ? Text(
-                                    "${transaction.currencyAmount!} ${transaction.currency!}",
+                                    "$currencyAmount $currency",
                                     style: EnvoyTypography.body.copyWith(
                                       color: EnvoyColors.textPrimary,
                                     ),
                                   )
                                 : Padding(
-                                    padding: EdgeInsets.only(
-                                        top: s.displayFiat() == null
-                                            ? EnvoySpacing.small
-                                            : 0),
+                                    padding: const EdgeInsets.only(
+                                        top: EnvoySpacing.small),
                                     child: EnvoyAmount(
                                         account: account,
                                         amountSats: transaction.amount,
@@ -585,7 +607,7 @@ class TransactionListTile extends StatelessWidget {
   }
 }
 
-Widget transactionTitle(BuildContext context, Transaction transaction,
+Widget transactionTitle(BuildContext context, EnvoyTransaction transaction,
     {TextStyle? txTitleStyle}) {
   final TextStyle? defaultStyle = Theme.of(context)
       .textTheme
@@ -611,7 +633,7 @@ Widget transactionTitle(BuildContext context, Transaction transaction,
 
 Widget transactionIcon(
   BuildContext context,
-  Transaction transaction, {
+  EnvoyTransaction transaction, {
   Color iconColor = EnvoyColors.textTertiary,
 }) {
   return FittedBox(
@@ -643,7 +665,7 @@ Widget transactionIcon(
 }
 
 Future<void> copyTxId(
-    BuildContext context, String txId, TransactionType txType) async {
+    BuildContext context, String txId, EnvoyTransaction? tx) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
   bool dismissed =
       await EnvoyStorage().checkPromptDismissed(DismissiblePrompt.copyTxId);
@@ -652,15 +674,12 @@ Future<void> copyTxId(
   } else {
     Clipboard.setData(ClipboardData(text: txId));
     String message;
-    switch (txType) {
-      case TransactionType.ramp:
-        message = "Ramp ID copied to clipboard!";
-        break;
-      case TransactionType.btcPay:
-        message = "Payment ID copied to clipboard!";
-        break;
-      default:
-        message = "Transaction ID copied to clipboard!"; //TODO: FIGMA
+    if (tx is RampTransaction) {
+      message = "Ramp ID copied to clipboard!";
+    } else if (tx is BtcPayTransaction) {
+      message = "Payment ID copied to clipboard!";
+    } else {
+      message = "Transaction ID copied to clipboard!"; //TODO: FIGMA
     }
     scaffoldMessenger.showSnackBar(SnackBar(
       content: Text(message),
@@ -697,7 +716,7 @@ void showWarningOnTxIdCopy(BuildContext context, String txId) {
 }
 
 class AccountOptions extends ConsumerStatefulWidget {
-  final Account account;
+  final EnvoyAccount account;
 
   AccountOptions(
     this.account,
@@ -718,7 +737,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
 
   @override
   Widget build(context) {
-    final account = ref.watch(accountStateProvider(widget.account.id!));
+    final account = ref.watch(accountStateProvider(widget.account.id));
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -770,10 +789,11 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                     actions: [
                       EnvoyButton(
                         S().component_save,
-                        onTap: () {
-                          AccountManager().renameAccount(
-                              widget.account, textEntry.enteredText);
-                          Navigator.pop(context);
+                        onTap: () async {
+                          final navigator = Navigator.of(context);
+                          await account?.handler
+                              ?.renameAccount(name: textEntry.enteredText);
+                          navigator.pop();
                         },
                       ),
                     ],
@@ -791,26 +811,42 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
               style: const TextStyle(color: EnvoyColors.accentSecondary)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
-            if (!widget.account.wallet.hot) {
+            if (!widget.account.isHot) {
               showEnvoyDialog(
                   context: context,
-                  dialog: EnvoyDialog(
-                    title: S().manage_account_remove_heading,
-                    content: Text(S().manage_account_remove_subheading),
-                    actions: [
-                      EnvoyButton(
-                        S().component_delete,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(8)),
-                        onTap: () async {
-                          Navigator.pop(context);
-                          GoRouter.of(context).pop();
-                          await Future.delayed(
-                              const Duration(milliseconds: 50));
-                          AccountManager().deleteAccount(widget.account);
-                        },
-                      ),
-                    ],
+                  dialog: EnvoyPopUp(
+                    icon: EnvoyIcons.alert,
+                    typeOfMessage: PopUpState.warning,
+                    showCloseButton: true,
+                    customWidget: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          S().manage_account_remove_heading,
+                          style: EnvoyTypography.info,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(
+                          height: EnvoySpacing.medium1,
+                        ),
+                        Text(
+                          S().manage_account_remove_subheading,
+                          style: EnvoyTypography.info,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(
+                          height: EnvoySpacing.medium1,
+                        ),
+                      ],
+                    ),
+                    primaryButtonLabel: S().component_delete,
+                    onPrimaryButtonTap: (context) async {
+                      Navigator.pop(context);
+                      GoRouter.of(context).pop();
+                      await Future.delayed(const Duration(milliseconds: 50));
+                      //TODO: add delete account
+                      // AccountManager().deleteAccount(widget.account);
+                    },
                   ));
             } else {
               ref.read(homePageBackgroundProvider.notifier).state =

@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account.dart';
-import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -14,10 +12,11 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/create_coin_tag_dialog.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/warning_dialogs.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -32,8 +31,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 OverlayEntry? overlayEntry;
 final GlobalKey<CoinSelectionOverlayState> coinSelectionOverlayKey =
@@ -126,7 +125,7 @@ class CoinSelectionOverlayState extends ConsumerState<CoinSelectionOverlay> {
 }
 
 class SpendRequirementOverlay extends ConsumerStatefulWidget {
-  final Account account;
+  final EnvoyAccount account;
 
   const SpendRequirementOverlay({super.key, required this.account});
 
@@ -245,7 +244,7 @@ class SpendRequirementOverlayState
   @override
   Widget build(BuildContext context) {
     final totalSelectedAmount =
-        ref.watch(getTotalSelectedAmount(widget.account.id!));
+        ref.watch(getTotalSelectedAmount(widget.account.id));
     final size = MediaQuery.of(context).size;
 
     ref.listen(spendEditModeProvider, (previous, next) {
@@ -546,13 +545,15 @@ class SpendRequirementOverlayState
 
   Future<void> onPrimaryButtonTap(BuildContext context) async {
     final scope = ProviderScope.containerOf(context);
-    final router = GoRouter.of(context);
     final navigator = Navigator.of(context);
     final mode = ref.read(spendEditModeProvider);
     final account = ref.read(selectedAccountProvider);
     Set<String> walletSelection = ref.read(coinSelectionFromWallet);
     Set<String> coinSelection = ref.read(coinSelectionStateProvider);
-    Set coinSelectionDiff = coinSelection.difference(walletSelection);
+    Set coinSelectionDiff1 = walletSelection.difference(coinSelection);
+    Set coinSelectionDiff2 = coinSelection.difference(walletSelection);
+    Set coinSelectionDiff = coinSelectionDiff1
+        .union(coinSelectionDiff2); // all the diff (excluding all duplicates)
 
     if (mode == SpendOverlayContext.editCoins) {
       if (ref.read(coinDetailsActiveProvider)) {
@@ -566,9 +567,10 @@ class SpendRequirementOverlayState
       if (coinSelectionDiff.isNotEmpty) {
         ///reset fees if coin selection changed
         ref.read(spendFeeRateProvider.notifier).state =
-            Fees().slowRate(account!.wallet.network) * 100000;
+            Fees().slowRate(account!.network) * 100000;
         ref.read(spendTransactionProvider.notifier).validate(scope);
       }
+
       ref.read(spendEditModeProvider.notifier).state =
           SpendOverlayContext.hidden;
       await Future.delayed(const Duration(milliseconds: 120));
@@ -593,7 +595,7 @@ class SpendRequirementOverlayState
           SpendOverlayContext.hidden;
       ref.read(hideBottomNavProvider.notifier).state = false;
       _dismiss();
-      router.push(ROUTE_ACCOUNT_SEND);
+      mainRouter.go(ROUTE_ACCOUNT_SEND);
       return;
     }
   }
@@ -601,10 +603,13 @@ class SpendRequirementOverlayState
   Widget transactionEditButton(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        ref.watch(getTotalSelectedAmount(widget.account.id!));
+        ref.watch(getTotalSelectedAmount(widget.account.id));
         Set<String> walletSelection = ref.watch(coinSelectionFromWallet);
         Set<String> coinSelection = ref.watch(coinSelectionStateProvider);
-        Set diff = coinSelection.difference(walletSelection);
+        Set coinSelectionDiff1 = walletSelection.difference(coinSelection);
+        Set coinSelectionDiff2 = coinSelection.difference(walletSelection);
+        Set diff = coinSelectionDiff1.union(
+            coinSelectionDiff2); // all the diff (excluding all duplicates)
         bool selectionChanged = diff.isNotEmpty;
         return EnvoyButton(
           selectionChanged
@@ -701,16 +706,15 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (_, ref, child) {
-        Account? selectedAccount = ref.read(selectedAccountProvider);
+        EnvoyAccount? selectedAccount = ref.read(selectedAccountProvider);
         Set<String> selection = ref.watch(coinSelectionStateProvider);
 
         String buttonText = S().component_cancel;
         if (widget.inTagSelectionMode) {
-          List<CoinTag> tags =
-              ref.read(coinsTagProvider(selectedAccount?.id ?? "")) ?? [];
+          List<Tag> tags =
+              ref.read(tagsProvider(selectedAccount?.id ?? "")) ?? [];
           bool isCoinsOnlyPartOfUntagged = false;
-          CoinTag? untagged =
-              tags.firstWhereOrNull((element) => element.untagged);
+          Tag? untagged = tags.firstWhereOrNull((element) => element.untagged);
           if (untagged == null) {
             isCoinsOnlyPartOfUntagged = false;
           } else {
@@ -718,7 +722,7 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
 
             /// check if selected coins are only part of untagged coins
             selection.toList().forEach((selectionId) {
-              if (!untagged.coinsId.contains(selectionId)) {
+              if (!untagged.utxo.map((e) => e.getId()).contains(selectionId)) {
                 isCoinsOnlyPartOfUntagged = false;
               }
             });
@@ -761,7 +765,7 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
                 },
                 builder: Builder(
                   builder: (context) => CreateCoinTag(
-                    accountId: selectedAccount.id ?? "",
+                    accountId: selectedAccount.id,
                     onTagUpdate: () async {
                       ref.read(coinSelectionStateProvider.notifier).reset();
                       await Future.delayed(const Duration(milliseconds: 100));
@@ -806,7 +810,7 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
                         },
                         builder: Builder(
                           builder: (context) => CreateCoinTag(
-                            accountId: selectedAccount.id ?? "",
+                            accountId: selectedAccount.id,
                             onTagUpdate: () async {
                               ref
                                   .read(coinSelectionStateProvider.notifier)

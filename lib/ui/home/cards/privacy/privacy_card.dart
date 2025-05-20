@@ -43,6 +43,9 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
   @override
   void initState() {
     super.initState();
+
+    _showPersonalNodeTextField = _isCustomPersonalNode;
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       bool? value = LocalStorage().prefs.getBool("useLocalAuth");
       if (value != null) {
@@ -58,13 +61,41 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
       _showPersonalNodeTextField =
           newOption.type == EnvoyDropdownOptionType.personalNode;
     });
+
+    switch (newOption.type) {
+      case EnvoyDropdownOptionType.normal:
+        Settings().useDefaultElectrumServer(true);
+      case EnvoyDropdownOptionType.personalNode:
+        Settings().useDefaultElectrumServer(false);
+      case EnvoyDropdownOptionType.blockStream:
+        Settings().setCustomElectrumAddress(PublicServer.blockStream.address);
+      case EnvoyDropdownOptionType.diyNodes:
+        Settings().setCustomElectrumAddress(PublicServer.diyNodes.address);
+      case EnvoyDropdownOptionType.luke:
+        Settings().setCustomElectrumAddress(PublicServer.luke.address);
+      case EnvoyDropdownOptionType.sectionBreak:
+      // do nothing
+    }
+  }
+
+  bool get _isCustomPersonalNode {
+    // only show Personal Node Text Field when the app is *not* using the default server
+    // and the selectedElectrumAddress does *not* match any of the public servers
+    final addr = Settings().selectedElectrumAddress;
+    final isDefault = Settings().usingDefaultElectrumServer;
+    final isPublic = [
+      PublicServer.blockStream.address,
+      PublicServer.diyNodes.address,
+      PublicServer.luke.address,
+    ].contains(addr);
+
+    return !isDefault && !isPublic;
   }
 
   @override
   Widget build(BuildContext context) {
     var keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     var bottomPadding = keyboardHeight - 10 * EnvoySpacing.medium2;
-    var s = Settings();
     //popscope added to not popback when pressing back,since theis widget will be in a shell route
     return PopScope(
       canPop: false,
@@ -157,36 +188,37 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
                       ),
                       const SizedBox(height: EnvoySpacing.medium2),
                       EnvoyDropdown(
-                        initialIndex:
-                            ConnectivityManager().usingDefaultServer ? 0 : 1,
+                        initialIndex: getInitialElectrumDropdownIndex(),
                         options: [
                           EnvoyDropdownOption(
                               S().privacy_node_nodeType_foundation),
                           EnvoyDropdownOption(
                               S().privacy_node_nodeType_personal,
                               type: EnvoyDropdownOptionType.personalNode),
+                          EnvoyDropdownOption(
+                              S().privacy_node_nodeType_publicServers,
+                              type: EnvoyDropdownOptionType.sectionBreak),
+                          EnvoyDropdownOption(PublicServer.blockStream.label,
+                              type: EnvoyDropdownOptionType.blockStream),
+                          EnvoyDropdownOption(PublicServer.diyNodes.label,
+                              type: EnvoyDropdownOptionType.diyNodes),
+                          EnvoyDropdownOption(PublicServer.luke.label,
+                              type: EnvoyDropdownOptionType.luke),
                         ],
                         onOptionChanged: (selectedOption) {
                           if (selectedOption != null) {
-                            setState(() {
-                              _handleDropdownChange(selectedOption);
-                              if (!(selectedOption.type ==
-                                  EnvoyDropdownOptionType.personalNode)) {
-                                s.useDefaultElectrumServer(true);
-                              }
-                            });
+                            _handleDropdownChange(selectedOption);
                           }
                         },
                       ),
-                      if (!ConnectivityManager().usingDefaultServer ||
-                          _showPersonalNodeTextField)
+                      if (_showPersonalNodeTextField)
                         Padding(
                           padding:
                               const EdgeInsets.only(top: EnvoySpacing.medium1),
                           child: SingleChildScrollView(
                               child: ElectrumServerEntry(
-                                  s.customElectrumAddress,
-                                  s.setCustomElectrumAddress)),
+                                  Settings().customElectrumAddress,
+                                  Settings().setCustomElectrumAddress)),
                         ),
                       if (!Platform.isLinux)
                         FutureBuilder<bool>(
@@ -288,7 +320,7 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
       padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium2),
       child: Divider(
         height: 2,
-        color: EnvoyColors.border1,
+        color: EnvoyColors.textInactive,
       ),
     );
   }

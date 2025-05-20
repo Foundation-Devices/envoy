@@ -3,20 +3,24 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // ignore_for_file: constant_identifier_names
 
+import 'package:bluart/bluart.dart';
+import 'package:envoy/business/bluetooth_manager.dart';
+import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
-import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
-import 'package:envoy/ui/onboard/prime/prime_routes.dart';
+import 'package:envoy/ui/onboard/prime/onboard_prime.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
-import 'package:envoy/util/build_context_extension.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:envoy/ui/components/button.dart';
 
 class PrimeOnboardParing extends ConsumerStatefulWidget {
   const PrimeOnboardParing({super.key});
@@ -27,57 +31,83 @@ class PrimeOnboardParing extends ConsumerStatefulWidget {
 
 class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
   bool canPop = false;
+
   //TODO: use provider to get firmware update status
   bool updateAvailable = false;
+  BleDevice? device;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _mimicBleConnection();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      try {
+        // await Permission.bluetooth.request();
+        // await Permission.bluetoothConnect.request();
+        _connectBLE();
+      } catch (e) {
+        if (mounted && context.mounted) {
+          //TODO: fix this dialog
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Permission Error"),
+                content: const Text(
+                    "Please enable Bluetooth and Location permissions to continue."),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text("OK"))
+                ],
+              );
+            },
+          );
+        }
+        kPrint("Error getting permissions: $e");
+      }
     });
   }
 
-  _mimicBleConnection() async {
-    if (mounted) {
+  _connectBLE() async {
+    try {
+      if (mounted) {
+        setState(() {
+          canPop = false;
+        });
+      }
+      final bleStepNotifier = ref.read(bleConnectionProvider.notifier);
+
+      String id = LocalStorage().prefs.getString(primeSerialPref) ?? "";
+      device = BleDevice(id: id, name: "Passport Prime", connected: false);
+      kPrint("Connecting to Prime with ID: $id");
+      await bleStepNotifier.updateStep(
+          "Connecting to Prime", EnvoyStepState.LOADING);
+      //  await BluetoothManager().connect(id: id);
+      ref.read(primeBleIdProvider.notifier).state = id;
       setState(() {
-        canPop = false;
+        device = BleDevice(id: id, name: "Passport Prime", connected: true);
       });
-    }
-    final bleStepNotifier = ref.read(bleConnectionProvider.notifier);
-    final deviceSecurityStepNotifier =
-        ref.read(deviceSecurityProvider.notifier);
-    final firmWareUpdateStepNotifier =
-        ref.read(firmWareUpdateProvider.notifier);
+      await Future.delayed(const Duration(milliseconds: 200));
+      await bleStepNotifier.updateStep(
+          S().onboarding_connectionIntro_connectedToPrime,
+          EnvoyStepState.FINISHED);
 
-    await bleStepNotifier.updateStep(
-        "Connecting to Prime", EnvoyStepState.LOADING);
+      await ref.read(deviceSecurityProvider.notifier).updateStep(
+          S().onboarding_connectionIntro_checkingDeviceSecurity,
+          EnvoyStepState.LOADING);
 
-    await Future.delayed(const Duration(seconds: 1));
-    await bleStepNotifier.updateStep(
-        "Connected to Passport Prime", EnvoyStepState.FINISHED);
-
-    await deviceSecurityStepNotifier.updateStep(
-        "Checking Device Security", EnvoyStepState.LOADING);
-    await Future.delayed(const Duration(seconds: 2));
-    await deviceSecurityStepNotifier.updateStep(
-        "Checked Device Security", EnvoyStepState.FINISHED);
-
-    await firmWareUpdateStepNotifier.updateStep(
-        "Checking firmware updates", EnvoyStepState.LOADING);
-    await Future.delayed(const Duration(seconds: 3));
-    await firmWareUpdateStepNotifier.updateStep(
-        "New Update available", EnvoyStepState.FINISHED);
-    if (mounted) {
-      setState(() {
-        canPop = true;
-        updateAvailable = true;
-      });
+      await BluetoothManager().sendChallengeMessage();
+    } catch (e) {
+      kPrint(e);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final firmWareCheck = ref.watch(firmWareUpdateProvider);
+    final deviceCheck = ref.watch(deviceSecurityProvider);
 
     return PopScope(
       canPop: canPop,
@@ -106,14 +136,12 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
                 child: Column(
                   children: [
                     Text(
-                      //TODO: copy update
-                      "Passport Prime Connected",
+                      S().onboarding_connectionIntro_header,
                       textAlign: TextAlign.center,
                       style: EnvoyTypography.heading,
                     ),
                     Expanded(child: Consumer(builder: (context, ref, child) {
                       final bleStep = ref.watch(bleConnectionProvider);
-                      final deviceCheck = ref.watch(deviceSecurityProvider);
                       return Container(
                         margin: const EdgeInsets.symmetric(
                           vertical: EnvoySpacing.medium1,
@@ -127,45 +155,49 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
                           children: [
                             EnvoyStepItem(step: bleStep),
                             EnvoyStepItem(step: deviceCheck),
-                            EnvoyStepItem(
-                                step: firmWareCheck,
-                                highlight: updateAvailable),
+                            if (deviceCheck.state != EnvoyStepState.ERROR)
+                              EnvoyStepItem(
+                                  step: firmWareCheck,
+                                  highlight: updateAvailable),
                           ],
                         ),
                       );
                     })),
-                    const Text(
-                      "Optional place for a detailed message for\nour users so they understand the step.",
-                      textAlign: TextAlign.center,
-                    )
+                    if (deviceCheck.state == EnvoyStepState.ERROR)
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            S().onboarding_connectionIntroError_content,
+                            style: EnvoyTypography.body
+                                .copyWith(color: EnvoyColors.textTertiary),
+                            textAlign: TextAlign.center,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: EnvoySpacing.medium1),
+                            child: EnvoyButton(
+                              onTap: () {
+                                context.go("/");
+                              },
+                              label:
+                                  S().onboarding_connectionIntroError_exitSetup,
+                              type: ButtonType.secondary,
+                            ),
+                          ),
+                          EnvoyButton(
+                            onTap: () {
+                              launchUrl(Uri.parse(
+                                  "https://community.foundation.xyz/c/passport-prime/12"));
+                            },
+                            label: S().common_button_contactSupport,
+                            type: ButtonType.primary,
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               )),
-              IntrinsicHeight(
-                child: AnimatedOpacity(
-                  opacity: updateAvailable ? 1 : 0,
-                  duration: const Duration(milliseconds: 300),
-                  child: Offstage(
-                    offstage: !updateAvailable,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        OnboardingButton(
-                            label: "Update Device",
-                            type: EnvoyButtonTypes.primary,
-                            fontWeight: FontWeight.w600,
-                            onTap: () {
-                              context.goNamed(ONBOARD_PRIME_FIRMWARE_UPDATE);
-                            }),
-                        SizedBox(
-                            height: context.isSmallScreen
-                                ? EnvoySpacing.xs
-                                : EnvoySpacing.medium2),
-                      ],
-                    ),
-                  ),
-                ),
-              )
             ],
           ),
         ),

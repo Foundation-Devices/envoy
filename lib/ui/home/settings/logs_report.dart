@@ -20,7 +20,7 @@ class EnvoyLogsScreen extends ConsumerStatefulWidget {
   ConsumerState<EnvoyLogsScreen> createState() => _EnvoyLogsScreenState();
 }
 
-final _envoyLogs = FutureProvider((ref) => EnvoyReport().getAllLogs());
+final envoyReportProvider = ChangeNotifierProvider((ref) => EnvoyReport());
 
 class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
   @override
@@ -39,7 +39,7 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
               tooltip: "Copy logs",
               onPressed: () async {
                 try {
-                  String logs = await EnvoyReport().getLogAsString();
+                  String logs = await EnvoyReport().getLogAsString(15);
                   await Clipboard.setData(ClipboardData(text: logs));
                   if (context.mounted) {
                     EnvoyToast(
@@ -104,20 +104,31 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
         padding: const EdgeInsets.all(8.0),
         child: Consumer(
           builder: (context, ref, child) {
-            final data = ref.watch(_envoyLogs);
-            return data.when(
-              data: (logs) {
+            final envoyReport = ref.watch(envoyReportProvider);
+
+            return FutureBuilder<List<Map<String, Object?>>>(
+              future: envoyReport.getAllLogs(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (snapshot.hasError) {
+                  return Center(child: Text("Error: ${snapshot.error}"));
+                }
+
+                final logs = snapshot.data ?? [];
+
                 if (logs.isEmpty) {
                   return const Center(
                       child: Text("No logs found")); // TODO: FIGMA
                 }
-                final latestLogs = logs.reversed.toList();
 
                 return CustomScrollView(
                   slivers: [
                     SliverList.builder(
                       itemBuilder: (context, index) {
-                        Map log = latestLogs[index];
+                        Map log = logs[index];
                         String category = (log["category"] ?? "None") as String;
                         String message = (log["message"] ?? "None") as String;
                         String occurrences =
@@ -246,19 +257,9 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                           ],
                         );
                       },
-                      itemCount: latestLogs.length,
+                      itemCount: logs.length,
                     )
                   ],
-                );
-              },
-              error: (error, stackTrace) {
-                return Center(
-                  child: Text("Error: $error"),
-                );
-              },
-              loading: () {
-                return const Center(
-                  child: CircularProgressIndicator(),
                 );
               },
             );

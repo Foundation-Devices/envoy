@@ -2,27 +2,28 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/envoy_icons.dart';
-import 'package:envoy/ui/pages/scanner_page.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/widgets/scanner/decoders/payment_qr_decoder.dart';
+import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/bitcoin_parser.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class AddressEntry extends ConsumerStatefulWidget {
   final Function(String)? onAddressChanged;
   final Function(int)? onAmountChanged;
   final bool canEdit;
-  final Account account;
+  final EnvoyAccount account;
   final String? initalAddress;
   final TextEditingController? controller;
   final Function(ParseResult)? onPaste;
@@ -130,7 +131,7 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                                       textCopied!,
                                       fiatExchangeRate:
                                           ExchangeRate().selectedCurrencyRate,
-                                      wallet: widget.account.wallet,
+                                      account: widget.account,
                                       selectedFiat: Settings().selectedFiat,
                                       currentUnit: unit);
                                   widget.onPaste!(decodedInfo);
@@ -166,26 +167,28 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                                 //   context,
                                 //   MaterialPageRoute(builder: (context) => const SelectionScreen()),
                                 // );
-
-                                Navigator.of(context, rootNavigator: true)
-                                    .push(MaterialPageRoute(builder: (context) {
-                                  return MediaQuery.removePadding(
+                                showScannerDialog(
                                     context: context,
-                                    child: ScannerPage.address(
-                                        (address, amount, message) {
-                                      widget.controller?.text = address;
-                                      ref
-                                          .read(stagingTxNoteProvider.notifier)
-                                          .state = message;
-                                      if (widget.onAddressChanged != null) {
-                                        widget.onAddressChanged?.call(address);
-                                      }
-                                      if (widget.onAmountChanged != null) {
-                                        widget.onAmountChanged!(amount);
-                                      }
-                                    }, widget.account),
-                                  );
-                                }));
+                                    onBackPressed: (context) {
+                                      Navigator.pop(context);
+                                    },
+                                    decoder: PaymentQrDecoder(
+                                        onAddressValidated:
+                                            (address, amount, message) {
+                                          widget.controller?.text = address;
+                                          ref
+                                              .read(stagingTxNoteProvider
+                                                  .notifier)
+                                              .state = message;
+                                          if (widget.onAddressChanged != null) {
+                                            widget.onAddressChanged
+                                                ?.call(address);
+                                          }
+                                          if (widget.onAmountChanged != null) {
+                                            widget.onAmountChanged!(amount);
+                                          }
+                                        },
+                                        account: widget.account));
                               },
                             )
                           ],
@@ -198,7 +201,8 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
   }
 
   Future<void> validate(String value) async {
-    final check = await widget.account.wallet.validateAddress(value);
+    final check = await EnvoyAccountHandler.validateAddress(
+        address: value, network: widget.account.network);
     setState(() => addressValid = check);
     widget.onAddressChanged?.call(value);
   }

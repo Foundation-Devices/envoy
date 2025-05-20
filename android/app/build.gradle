@@ -30,7 +30,7 @@ if (flutterVersionName == null) {
 
 
 android {
-    compileSdkVersion 34
+    compileSdkVersion 35
     ndkVersion "26.1.10909125"
 
     sourceSets {
@@ -53,9 +53,9 @@ android {
     signingConfigs {
         release {
             storeFile file("../key.jks")
-            storePassword = "$System.env.KEY_PASSWORD"
+            storePassword = System.getenv("KEY_PASSWORD")
             keyAlias = "upload"
-            keyPassword = "$System.env.ALIAS_PASSWORD"
+            keyPassword = System.getenv("ALIAS_PASSWORD")
         }
     }
 
@@ -82,8 +82,12 @@ android {
     compileOptions {
         // Flag to enable support for the new language APIs
         coreLibraryDesugaringEnabled true
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+    }
+
+    kotlinOptions {
+        jvmTarget = "21"
     }
 }
 

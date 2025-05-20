@@ -4,13 +4,13 @@
 
 import 'dart:convert';
 
-import 'package:envoy/business/account.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class HideStateNotifier extends ChangeNotifier {
   @override
@@ -36,9 +36,9 @@ class HideStateNotifier extends ChangeNotifier {
     });
   }
 
-  setHideState(bool hide, Account account) {
-    if (hide && account.id != null) {
-      amountHiddenAccounts.add(account.id!);
+  setHideState(bool hide, EnvoyAccount account) {
+    if (hide) {
+      amountHiddenAccounts.add(account.id);
 
       // Hiding for the first time dismisses the "hide amount" prompt
       EnvoyStorage().addPromptState(DismissiblePrompt.hideAmount);

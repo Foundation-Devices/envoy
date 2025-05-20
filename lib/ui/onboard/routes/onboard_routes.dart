@@ -22,7 +22,7 @@ import 'package:envoy/ui/pages/legal/passport_tou.dart';
 import 'package:envoy/ui/pages/wallet/single_wallet_pair_success.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:go_router/go_router.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 /*
 * named onboarding routes
@@ -73,7 +73,7 @@ final onboardRoutes = GoRoute(
           path: "scv_success",
           name: ONBOARD_PASSPORT_SCV_SUCCESS,
           builder: (context, state) =>
-              SingleWalletPairSuccessPage(state.extra as Wallet),
+              SingleWalletPairSuccessPage(state.extra as EnvoyAccount),
         ),
         GoRoute(
           path: "pair",
@@ -153,7 +153,17 @@ final onboardRoutes = GoRoute(
             GoRoute(
               path: "generate",
               name: ONBOARD_ENVOY_MAGIC_GENERATE_SETUP,
-              builder: (context, state) => const MagicSetupGenerate(),
+              pageBuilder: (context, state) {
+                return CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const MagicSetupGenerate(),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    return child; // No transition
+                  },
+                  transitionDuration: Duration.zero,
+                );
+              },
             ),
             GoRoute(
               path: "recover",

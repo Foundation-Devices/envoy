@@ -4,15 +4,17 @@
 
 import 'dart:async';
 
+import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_spend_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -21,49 +23,48 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
-import 'package:envoy/util/bug_report_helper.dart';
-import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:wallet/generated_bindings.dart' as rust;
-import 'package:wallet/wallet.dart';
-import 'package:envoy/ui/components/pop_up.dart';
 
 class RBFSpendState {
-  Psbt psbt;
-  rust.RBFfeeRates rbfFeeRates;
   String receiveAddress;
   num receiveAmount;
   int feeRate;
   int originalAmount;
-  Transaction originalTx;
+  DraftTransaction draftTx;
+  BitcoinTransaction originalTx;
 
   RBFSpendState(
-      {required this.psbt,
-      required this.rbfFeeRates,
-      required this.receiveAddress,
+      {required this.receiveAddress,
       required this.receiveAmount,
       required this.feeRate,
+      required this.originalTx,
       required this.originalAmount,
-      required this.originalTx});
+      required this.draftTx});
 
-  RBFSpendState? copyWith(
-      {required Psbt psbt, required int feeRate, required num receiveAmount}) {
+  RBFSpendState? copyWith({
+    required int feeRate,
+    required DraftTransaction preparedTx,
+  }) {
     return RBFSpendState(
-        psbt: psbt,
-        rbfFeeRates: rbfFeeRates,
         receiveAddress: receiveAddress,
         receiveAmount: receiveAmount,
         feeRate: feeRate,
+        originalTx: originalTx,
         originalAmount: originalAmount,
-        originalTx: originalTx);
+        draftTx: preparedTx);
+  }
+
+  BitcoinTransaction get getBumpedTransaction {
+    return draftTx.transaction;
   }
 }
 
 class TxRBFButton extends ConsumerStatefulWidget {
-  final Transaction tx;
+  final EnvoyTransaction tx;
 
   const TxRBFButton({super.key, required this.tx});
 
@@ -77,119 +78,60 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance
-        .addPostFrameCallback((timeStamp) => _checkIfCanBoost());
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _checkIfCanBoost();
+      setState(() {
+        _isLoading = true;
+      });
+    });
   }
 
   Future<void> _checkIfCanBoost() async {
     try {
       ref.watch(rbfSpendStateProvider.notifier).state = null;
       final account = ref.read(selectedAccountProvider);
-      if (account == null) {
+      final handler = account?.handler;
+      if (account == null || handler == null) {
         return;
       }
       setState(() {
         _isLoading = true;
       });
-      final lockedUtxos = ref.read(lockedUtxosProvider(account.id!));
+      BitcoinTransaction originalTx = widget.tx;
 
-      final originalTx = widget.tx;
-      int originalAmount = originalTx.amount - originalTx.fee;
+      TransactionFeeResult result = await handler.getMaxBumpFeeRates(
+          selectedOutputs: [], bitcoinTransaction: originalTx);
 
-      rust.RBFfeeRates? rates = await account.wallet
-          .getBumpedPSBTMaxFeeRate(originalTx.txId, lockedUtxos);
-      final originalRawTx =
-          await account.wallet.getRawTxFromTxId(originalTx.txId);
-      final originalRawTxDecoded = await account.wallet
-          .decodeWalletRawTx(originalRawTx, account.wallet.network);
-      for (var output in originalRawTxDecoded.outputs) {
-        //if the output is external, this will be the original amount
-        if (output.path == TxOutputPath.NotMine) {
-          originalAmount = output.amount;
-        }
-      }
-      //if the amount is the same as the fee, this is a self spend
-      if (originalTx.amount.abs() == originalTx.fee) {
-        //since the transaction object doesn't have the raw the tx we need to get it
-        for (var output in originalRawTxDecoded.outputs) {
-          //if the output is external, this will be the original amount
-          if (output.path == TxOutputPath.External) {
-            originalAmount = output.amount;
-          }
-        }
-      }
+      setState(() {
+        _isLoading = false;
+      });
+      int minRate = result.minFeeRate.toInt();
+      int maxRate = result.maxFeeRate.toInt();
+      int fasterFeeRate = minRate + 1;
 
-      if (rates.min_fee_rate > 0) {
-        double minFeeRate = rates.min_fee_rate.ceil().toDouble();
-        Psbt? psbt = await account.wallet.getBumpedPSBT(
-            widget.tx.txId, convertToFeeRate(minFeeRate), lockedUtxos);
-        final rawTxx = await account.wallet
-            .decodeWalletRawTx(psbt.rawTx, account.wallet.network);
-
-        RawTransactionOutput receiveOutPut =
-            rawTxx.outputs.firstWhere((element) {
-          return (element.path == TxOutputPath.NotMine ||
-              element.path == TxOutputPath.External);
-        }, orElse: () => rawTxx.outputs.first);
-
-        RBFSpendState rbfSpendState = RBFSpendState(
-            psbt: psbt,
-            rbfFeeRates: rates,
-            receiveAddress: receiveOutPut.address,
-            receiveAmount: 0,
-            originalAmount: originalAmount,
-            feeRate: minFeeRate.toInt(),
-            originalTx: widget.tx);
-
-        int minRate = minFeeRate.toInt();
-        int maxRate = rates.max_fee_rate.toInt();
-        int fasterFeeRate = minRate + 1;
-
-        ///TODO: this is a hack to make sure the faster fee rate is always higher than the standard fee rate
-        if (minRate == maxRate) {
-          fasterFeeRate = maxRate;
-        } else {
-          if (minRate < maxRate) {
-            fasterFeeRate = (minRate + 1).clamp(minRate, maxRate);
-          }
-        }
-        if (mounted) {
-          ref.read(feeChooserStateProvider.notifier).state = FeeChooserState(
-            standardFeeRate: minFeeRate,
-            fasterFeeRate: fasterFeeRate,
-            minFeeRate: rates.min_fee_rate.ceil().toInt(),
-            maxFeeRate: rates.max_fee_rate.floor().toInt(),
-          );
-          ref.read(rbfSpendStateProvider.notifier).state = rbfSpendState;
-          setState(() {
-            _isLoading = false;
-          });
-        }
-        return;
-      }
-
-      if (rates.min_fee_rate > 0) {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-          });
-        }
-        return;
+      if (minRate == maxRate) {
+        fasterFeeRate = maxRate;
       } else {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-          });
+        if (minRate < maxRate) {
+          fasterFeeRate = (minRate + 1).clamp(minRate, maxRate);
         }
       }
+      ref.read(feeChooserStateProvider.notifier).state = FeeChooserState(
+        standardFeeRate: minRate,
+        fasterFeeRate: fasterFeeRate,
+        minFeeRate: minRate,
+        maxFeeRate: maxRate,
+      );
+      ref.read(rbfSpendStateProvider.notifier).state = RBFSpendState(
+        receiveAddress: result.draftTransaction.transaction.address,
+        receiveAmount: originalTx.amount,
+        feeRate: minRate,
+        originalTx: originalTx,
+        originalAmount: originalTx.amount,
+        draftTx: result.draftTransaction,
+      );
     } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-      EnvoyReport().log("RBF-button", "Error $e");
-      kPrint(e);
+      //TODO: handle rbf error
     } finally {
       if (mounted) {
         setState(() {
@@ -223,6 +165,16 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
     final rbfSpendState = ref.read(rbfSpendStateProvider);
     if (rbfSpendState != null) {
       ref.read(spendFeeRateProvider.notifier).state = rbfSpendState.feeRate;
+      ref.read(stagingTxNoteProvider.notifier).state =
+          rbfSpendState.originalTx.note;
+      ref.read(stagingTxChangeOutPutTagProvider.notifier).state =
+          rbfSpendState.draftTx.changeOutPutTag;
+      for (var element in rbfSpendState.originalTx.outputs) {
+        if (element.keychain == KeyChain.internal) {
+          ref.read(stagingTxChangeOutPutTagProvider.notifier).state =
+              element.tag;
+        }
+      }
       navigator.push(MaterialPageRoute(
         builder: (context) {
           return const RBFSpendScreen();
@@ -446,8 +398,10 @@ void showNoBoostNoFundsDialog(BuildContext context) {
       showCloseButton: true,
       content: S().coindetails_overlay_noBoostNoFunds_subheading,
       learnMoreText: S().component_learnMore,
-      linkUrl:
-          "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions",
+      onLearnMore: () {
+        launchUrl(Uri.parse(
+            "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions"));
+      },
       primaryButtonLabel: S().component_continue,
       onPrimaryButtonTap: (context) {
         Navigator.of(context, rootNavigator: true).pop();

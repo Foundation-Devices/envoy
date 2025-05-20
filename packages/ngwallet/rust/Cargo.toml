@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: 2025 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+[package]
+name = "rust_lib_ngwallet"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+flutter_rust_bridge = "=2.9.0"
+
+#ngwallet = { path = "../../../../ngwallet", features = ["envoy"] }
+ngwallet = {  git = "https://github.com/Foundation-Devices/ngwallet", rev = "9ded47bc6f82fcf4e141260cc28c6173a232bbd0", features = ["envoy"] }
+
+bdk_wallet = { version =  "2.0.0-alpha.0" , features = ["rusqlite"] }
+bip39 = { version = "2.1.0", features = ["rand"] }
+# TODO: Check if this is necessary for the iOS build.
+#aws-lc-sys = { version = "0.26.0", features = ["bindgen"] }
+anyhow = "1.0.97"
+log = "0.4.26"
+sled = { version = "0.34" }
+chrono = "0.4.40"
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
+
+[patch.crates-io]
+bdk_wallet = { git = "https://github.com/Foundation-Devices/bdk_wallet", rev = "19760ac3cc7fb12b21a9e6143220a870747ffdc0" }
+bdk_chain = { git = "https://github.com/Foundation-Devices/bdk-1", rev = "0a532f6bcb042edb192a2db2673e331e7189e00e" }
+bdk_core = { git = "https://github.com/Foundation-Devices/bdk-1", rev = "0a532f6bcb042edb192a2db2673e331e7189e00e" }
+bdk_electrum = { git = "https://github.com/Foundation-Devices/bdk-1", rev = "0a532f6bcb042edb192a2db2673e331e7189e00e" }

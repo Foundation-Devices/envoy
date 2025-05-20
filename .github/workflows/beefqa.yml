@@ -17,8 +17,11 @@ jobs:
       - uses: extractions/setup-just@v1
       - uses: actions/checkout@v2
 
+      - name: Install bindgen-cli (for aws-lc-sys)
+        run: cargo install --force --locked bindgen-cli
+
       - name: Build ffi
-        run: ./build_ffi_ios.sh
+        run: ./scripts/build_ffi_ios.sh
 
       - name: Run BeefQA Tests
         run: just qa

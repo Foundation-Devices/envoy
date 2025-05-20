@@ -296,7 +296,7 @@ Future<void> tryMagicRecover(List<String> seedList, String seed,
   bool success = await EnvoySeed().processRecoveryData(seed, data);
 
   if (success) {
-    Settings().syncToCloud = true;
+    Settings().setSyncToCloud(true);
     EnvoySeed().copySeedToNonSecure();
     navigator.push(MaterialPageRoute(builder: (context) {
       return const WalletSetupSuccess();

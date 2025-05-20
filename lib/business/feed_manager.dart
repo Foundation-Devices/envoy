@@ -125,6 +125,20 @@ class FeedManager {
           ? null
           : int.tryParse(orderString.split('-').last);
 
+      // Extract additional tags
+      List<String> filterTags = [
+        "Envoy",
+        "Passport",
+        "PassportPrime",
+      ];
+
+      for (var tag in vimeoTags) {
+        String tagName = tag["name"].toString();
+        if (filterTags.any((relevantTag) => tagName.contains(relevantTag))) {
+          tags.add(tagName);
+        }
+      }
+
       currentVideos.add(Video(
         video["name"],
         video["description"],
@@ -150,6 +164,23 @@ class FeedManager {
       String? thumbnailUrl = item.content?.images.firstOrNull;
       String htmlContent = item.content!.value;
 
+      List<String> tags = [];
+
+      if (item.categories != null) {
+        // Extract category values and store them in tags
+        tags.addAll(item.categories!
+            .map((category) => category.value.trim().toLowerCase()));
+      }
+
+      List<String> filterTags = [
+        "envoy",
+        "passport core",
+        "passport prime",
+      ];
+
+      // Filter tags to include only the relevant ones
+      tags = tags.where((tag) => filterTags.contains(tag)).toList();
+
       currentBlogPosts.add(BlogPost(
         item.title!,
         htmlContent, // Use the decoded HTML content
@@ -157,6 +188,7 @@ class FeedManager {
         item.link!,
         item.guid!,
         null,
+        tags: tags,
         thumbnailUrl: thumbnailUrl,
       ));
     }

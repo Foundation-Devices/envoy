@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account.dart';
+import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_entry.dart';
@@ -10,7 +10,8 @@ import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_button.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_spend_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -19,7 +20,6 @@ import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:wallet/wallet.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/util/easing.dart';
@@ -27,10 +27,11 @@ import 'package:envoy/ui/components/stripe_painter.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class TransactionReviewCard extends ConsumerStatefulWidget {
-  final Psbt psbt;
-  final bool psbtFinalized;
+  final BitcoinTransaction transaction;
+  final bool canModifyPsbt;
   final String address;
   final bool loading;
   final int? amountToSend;
@@ -42,8 +43,8 @@ class TransactionReviewCard extends ConsumerStatefulWidget {
 
   const TransactionReviewCard({
     super.key,
-    required this.psbt,
-    required this.psbtFinalized,
+    required this.transaction,
+    required this.canModifyPsbt,
     required this.loading,
     required this.address,
     //for RBF spend screen
@@ -77,15 +78,37 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
     final uneconomicSpends = ref.watch(uneconomicSpendsProvider);
 
     // send amount is passed as a prop to the widget, use that if available
-    int amount = widget.amountToSend ??
-        ref.watch(spendTransactionProvider.select((value) => value.amount));
 
-    Psbt psbt = widget.psbt;
+    BitcoinTransaction transaction = widget.transaction;
+    int amount = transaction.amount;
     // total amount to spend including fee
-    int totalSpendAmount = amount + psbt.fee;
+    int totalSpendAmount =
+        transaction.amount.toInt() + transaction.feeRate.toInt();
 
-    Account account = ref.read(selectedAccountProvider)!;
+    TransactionModel transactionModel = ref.watch(spendTransactionProvider);
 
+    final s = Settings();
+
+    /// Leave total as it is (total will be visible after sending)
+    double displayFiatTotalAmount =
+        ExchangeRate().convertSatsToFiat(totalSpendAmount);
+
+    double? displayFiatSendAmount;
+    double? displayFiatFeeAmount;
+
+    if (s.displayFiat() != null) {
+      if (transactionModel.mode == SpendMode.sendMax) {
+        displayFiatFeeAmount =
+            ExchangeRate().convertSatsToFiat(transaction.fee.toInt());
+        displayFiatSendAmount = displayFiatTotalAmount - displayFiatFeeAmount;
+      } else {
+        displayFiatSendAmount = ref.watch(displayFiatSendAmountProvider)!;
+        displayFiatFeeAmount = displayFiatTotalAmount - displayFiatSendAmount;
+      }
+    }
+
+    EnvoyAccount account = ref.read(selectedAccountProvider)!;
+    final accountAccent = fromHex(account.color);
     final sendScreenUnit = ref.watch(sendScreenUnitProvider);
 
     /// if user selected unit from the form screen then use that, otherwise use the default
@@ -101,12 +124,12 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
         unit == DisplayUnit.btc ? AmountDisplayUnit.btc : AmountDisplayUnit.sat;
 
     RBFSpendState? rbfSpendState = ref.read(rbfSpendStateProvider);
-    Transaction? originalTx = rbfSpendState?.originalTx;
+    BitcoinTransaction? originalTx = rbfSpendState?.originalTx;
 
     return Container(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(cardRadius - 1)),
-        color: account.color,
+        color: accountAccent,
         border:
             Border.all(color: Colors.black, width: 2, style: BorderStyle.solid),
       ),
@@ -125,7 +148,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
               ],
             ),
             border: Border.all(
-                width: 2, color: account.color, style: BorderStyle.solid)),
+                width: 2, color: accountAccent, style: BorderStyle.solid)),
         child: ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(cardRadius - 4)),
           child: CustomPaint(
@@ -189,6 +212,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                           account: account,
                           unit: formatUnit,
                           amountSats: amount,
+                          displayFiatAmount: displayFiatSendAmount,
                           millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                   Padding(
@@ -241,8 +265,11 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                             widget.feeTitleIconButton != null
                                 ? GestureDetector(
                                     onTap: () {
-                                      showNewTransactionDialog(context, account,
-                                          psbt.fee, originalTx!.fee);
+                                      showNewTransactionDialog(
+                                          context,
+                                          account,
+                                          transaction.fee.toInt(),
+                                          originalTx!.fee.toInt());
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.only(
@@ -272,9 +299,9 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                               ),
                               const Padding(padding: EdgeInsets.all(4)),
                               Opacity(
-                                opacity: widget.psbtFinalized ? 0.0 : 1,
+                                opacity: widget.canModifyPsbt ? 1.0 : 0,
                                 child: IgnorePointer(
-                                  ignoring: widget.psbtFinalized,
+                                  ignoring: !widget.canModifyPsbt,
                                   child: widget.feeChooserWidget,
                                 ),
                               ),
@@ -288,7 +315,8 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                       child: EnvoyAmount(
                           unit: formatUnit,
                           account: account,
-                          amountSats: psbt.fee,
+                          amountSats: transaction.fee.toInt(),
+                          displayFiatAmount: displayFiatFeeAmount,
                           millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                   Padding(
@@ -332,7 +360,9 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                       child: EnvoyAmount(
                           account: account,
                           unit: formatUnit,
-                          amountSats: totalSpendAmount,
+                          amountSats: transaction.amount.toInt().abs() +
+                              transaction.fee.toInt(),
+                          displayFiatAmount: displayFiatTotalAmount,
                           millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine)),
                 ],
@@ -367,7 +397,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
   }
 
   void showNewTransactionDialog(
-      BuildContext context, Account account, int newFee, int oldFee) {
+      BuildContext context, EnvoyAccount account, int newFee, int oldFee) {
     showEnvoyDialog(
         context: context,
         dialog: SizedBox(

@@ -175,13 +175,12 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
             setState(() {
               if (index == _selectedIndex) {
                 // if selected index is "Accounts"
-                if (index == 2 && GoRouter.of(context).canPop()) {
+                if (index == 1 && GoRouter.of(context).canPop()) {
                   GoRouter.of(context).pop();
                 } else {
                   return;
                 }
               }
-
               _selectedIndex = index;
               if (widget.onIndexChanged != null) {
                 widget.onIndexChanged!(_selectedIndex);
@@ -245,7 +244,7 @@ class EnvoyBottomNavBar extends StatelessWidget {
         color: Colors.transparent,
         child: SizedBox(
           width: double.infinity,
-          // height: 100,
+          height: 73,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceAround,

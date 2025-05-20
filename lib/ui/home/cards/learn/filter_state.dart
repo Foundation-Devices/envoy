@@ -6,10 +6,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum LearnFilters { all, videos, faqs, blogs }
 
+enum DeviceFilters { all, envoy, passport, passportPrime }
+
 enum LearnSortTypes {
   newestFirst,
   oldestFirst,
 }
+
+final deviceFilterStateProvider = StateProvider<Set<DeviceFilters>>(
+    (ref) => {}..addAll(DeviceFilters.values));
 
 final learnFilterStateProvider =
     StateProvider<Set<LearnFilters>>((ref) => {}..addAll(LearnFilters.values));

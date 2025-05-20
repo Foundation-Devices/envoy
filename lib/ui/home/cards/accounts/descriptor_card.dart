@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
@@ -17,10 +16,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 //ignore: must_be_immutable
 class DescriptorCard extends ConsumerStatefulWidget {
-  final Account account;
+  final EnvoyAccount account;
 
   DescriptorCard(this.account) : super(key: UniqueKey());
 
@@ -40,7 +40,9 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
 
   @override
   Widget build(BuildContext context) {
-    String descriptor = widget.account.descriptor;
+    //TODO: fix unified descriptor
+    // String descriptor = widget.account.internalDescriptor;
+    String descriptor = "";
 
     return Column(
         crossAxisAlignment: CrossAxisAlignment.center,

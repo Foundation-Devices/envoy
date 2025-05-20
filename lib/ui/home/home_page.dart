@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -32,8 +33,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/wallet.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/util/amount.dart';
@@ -134,11 +136,13 @@ class HomePageState extends ConsumerState<HomePage>
     _resetServerDownWarningTimer();
     _resetBackupWarningTimer();
 
-    isNewExpiredBuyTxAvailable.stream.listen((List<Transaction> expiredBuyTx) {
+    isNewExpiredBuyTxAvailable.stream
+        .listen((List<EnvoyTransaction> expiredBuyTx) {
       if (mounted && expiredBuyTx.isNotEmpty) {
         _notifyAboutRemovedRampTx(expiredBuyTx, context);
       }
     });
+
     Future.delayed(const Duration(milliseconds: 10), () {
       ///register for back button press
       backButtonDispatcher.takePriority();
@@ -214,7 +218,7 @@ class HomePageState extends ConsumerState<HomePage>
   }
 
   void _notifyAboutRemovedRampTx(
-      List<Transaction> expiredTransactions, context) async {
+      List<EnvoyTransaction> expiredTransactions, context) async {
     bool dismissed = await EnvoyStorage()
         .checkPromptDismissed(DismissiblePrompt.buyTxWarning);
 
@@ -233,8 +237,10 @@ class HomePageState extends ConsumerState<HomePage>
             isNewExpiredBuyTxAvailable.add([]); // reset stream after pop
           },
           learnMoreText: S().contactRampForSupport,
-          learnMoreLink:
-              "https://support.ramp.network/en/collections/6690-customer-support-help-center",
+          onLearnMore: () {
+            launchUrl(Uri.parse(
+                "https://support.ramp.network/en/collections/6690-customer-support-help-center"));
+          },
           icon: EnvoyIcons.info,
           checkBoxText: S().component_dontShowAgain,
           checkedValue: dismissed,
@@ -535,28 +541,20 @@ class HomePageState extends ConsumerState<HomePage>
                     )),
               ),
               // Tab bar
-              AnimatedSlide(
-                  duration: Duration(
-                      milliseconds: _animationsDuration.inMilliseconds),
-                  offset: Offset(
-                      0,
-                      _backgroundShown ||
-                              (modalShown || optionsShown || fullScreen)
-                          ? 0.5
-                          : 0.0),
-                  curve: EnvoyEasing.easeOut,
-                  child: Container(
-                    alignment: Alignment.bottomCenter,
-                    child: IgnorePointer(
-                      ignoring: _backgroundShown || modalShown || fullScreen,
-                      child: EnvoyBottomNavigation(
-                        onIndexChanged: (selectedIndex) {
-                          widget.mainNavigationShell
-                              .goBranch(selectedIndex, initialLocation: true);
-                        },
+              _backgroundShown || (modalShown || optionsShown || fullScreen)
+                  ? SizedBox.shrink()
+                  : Container(
+                      alignment: Alignment.bottomCenter,
+                      child: IgnorePointer(
+                        ignoring: _backgroundShown || modalShown || fullScreen,
+                        child: EnvoyBottomNavigation(
+                          onIndexChanged: (selectedIndex) {
+                            widget.mainNavigationShell
+                                .goBranch(selectedIndex, initialLocation: true);
+                          },
+                        ),
                       ),
                     ),
-                  )),
               Positioned(
                   top: shieldTop - 20,
                   left: 0,
@@ -634,7 +632,7 @@ class ShieldFadeInAnimationCurve extends Curve {
 }
 
 class RemovedBuyTransactionsList extends StatefulWidget {
-  final List<Transaction> expiredTransactions;
+  final List<EnvoyTransaction> expiredTransactions;
   final Map<String, bool> transactionIdExpandedState;
 
   const RemovedBuyTransactionsList({
@@ -665,12 +663,12 @@ class _RemovedBuyTransactionsListState
             return GestureDetector(
               behavior: HitTestBehavior.opaque,
               onLongPress: () {
-                if (tx.type != TransactionType.ramp) {
-                  copyTxId(context, tx.txId, tx.type);
+                if (tx is RampTransaction) {
+                  copyTxId(context, tx.txId, tx);
                 }
               },
               onTap: () {
-                if (tx.type != TransactionType.ramp) {
+                if (tx is RampTransaction) {
                   setState(() {
                     widget.transactionIdExpandedState[tx.txId] =
                         !showTxIdExpanded;

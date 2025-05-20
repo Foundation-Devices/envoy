@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -10,7 +12,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/loader_ghost.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 enum AmountWidgetStyle { normal, large, singleLine, sendScreen }
 
@@ -19,10 +21,11 @@ class AmountWidget extends StatelessWidget {
   final AmountDisplayUnit primaryUnit;
   final AmountWidgetStyle style;
   final AmountDisplayUnit? secondaryUnit;
+  final double? displayFiat;
   final String symbolFiat;
   final double? fxRateFiat;
   final Color? badgeColor;
-  final Network? network;
+  final EnvoyAccount? envoyAccount;
   final bool alignToEnd;
   final String locale;
   final bool millionaireMode;
@@ -31,12 +34,13 @@ class AmountWidget extends StatelessWidget {
     super.key,
     required this.amountSats,
     required this.primaryUnit,
+    this.displayFiat,
     this.style = AmountWidgetStyle.normal,
     this.secondaryUnit,
     this.symbolFiat = "",
     this.fxRateFiat,
     this.badgeColor,
-    this.network = Network.Mainnet,
+    this.envoyAccount,
     this.alignToEnd = true,
     required this.locale,
     this.millionaireMode = true,
@@ -79,20 +83,21 @@ class AmountWidget extends StatelessWidget {
                 symbolFiat: symbolFiat,
                 fxRateFiat: fxRateFiat,
                 badgeColor: badgeColor,
-                network: network,
+                envoyAccount: envoyAccount,
                 locale: locale,
                 textScaleFactor: textScaleFactor,
                 millionaireMode: millionaireMode),
             if (secondaryUnit != null)
               SecondaryAmountWidget(
                   unit: secondaryUnit!,
+                  displayFiat: displayFiat,
                   style: SecondaryAmountWidgetStyle.large,
                   amountSats: amountSats,
                   symbolFiat: symbolFiat,
                   fxRateFiat: fxRateFiat,
                   decimalSeparator: decimalSeparator,
                   groupSeparator: groupSeparator,
-                  network: network,
+                  envoyAccount: envoyAccount,
                   locale: locale,
                   textScaleFactor: textScaleFactor,
                   millionaireMode: millionaireMode),
@@ -112,7 +117,7 @@ class AmountWidget extends StatelessWidget {
                 symbolFiat: symbolFiat,
                 fxRateFiat: fxRateFiat,
                 badgeColor: badgeColor,
-                network: network,
+                envoyAccount: envoyAccount,
                 locale: locale,
                 textScaleFactor: textScaleFactor,
                 millionaireMode: millionaireMode),
@@ -121,13 +126,14 @@ class AmountWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(top: EnvoySpacing.xs),
                 child: SecondaryAmountWidget(
                     unit: secondaryUnit!,
+                    displayFiat: displayFiat,
                     style: SecondaryAmountWidgetStyle.normal,
                     amountSats: amountSats,
                     symbolFiat: symbolFiat,
                     fxRateFiat: fxRateFiat,
                     decimalSeparator: decimalSeparator,
                     groupSeparator: groupSeparator,
-                    network: network,
+                    envoyAccount: envoyAccount,
                     locale: locale,
                     textScaleFactor: textScaleFactor,
                     millionaireMode: millionaireMode),
@@ -149,7 +155,7 @@ class AmountWidget extends StatelessWidget {
                 symbolFiat: symbolFiat,
                 fxRateFiat: fxRateFiat,
                 badgeColor: badgeColor,
-                network: network,
+                envoyAccount: envoyAccount,
                 locale: locale,
                 textScaleFactor: textScaleFactor,
                 millionaireMode: millionaireMode),
@@ -158,13 +164,14 @@ class AmountWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(left: EnvoySpacing.small),
                 child: SecondaryAmountWidget(
                     unit: secondaryUnit!,
+                    displayFiat: displayFiat,
                     style: SecondaryAmountWidgetStyle.normal,
                     amountSats: amountSats,
                     symbolFiat: symbolFiat,
                     fxRateFiat: fxRateFiat,
                     decimalSeparator: decimalSeparator,
                     groupSeparator: groupSeparator,
-                    network: network,
+                    envoyAccount: envoyAccount,
                     locale: locale,
                     textScaleFactor: textScaleFactor,
                     millionaireMode: millionaireMode),
@@ -182,7 +189,7 @@ class AmountWidget extends StatelessWidget {
             symbolFiat: symbolFiat,
             fxRateFiat: fxRateFiat,
             badgeColor: badgeColor,
-            network: network,
+            envoyAccount: envoyAccount,
             locale: locale,
             sendScreen: true,
             textScaleFactor: textScaleFactor,
@@ -203,7 +210,7 @@ class PrimaryAmountWidget extends StatelessWidget {
   final double? fxRateFiat;
   final PrimaryAmountWidgetStyle style;
   final Color? badgeColor;
-  final Network? network;
+  final EnvoyAccount? envoyAccount;
   final bool sendScreen;
   final String locale;
   final double textScaleFactor;
@@ -226,7 +233,7 @@ class PrimaryAmountWidget extends StatelessWidget {
       this.fxRateFiat,
       this.style = PrimaryAmountWidgetStyle.normal,
       this.badgeColor,
-      this.network,
+      this.envoyAccount,
       this.sendScreen = false,
       this.textScaleFactor = 1,
       required this.millionaireMode});
@@ -282,13 +289,13 @@ class PrimaryAmountWidget extends StatelessWidget {
                             .copyWith(color: EnvoyColors.textSecondary)
                         : textStyleFiatSymbol,
                   )
-                : (network == Network.Mainnet
+                : (envoyAccount?.network == Network.bitcoin
                     ? EnvoyIcon(
                         unit == AmountDisplayUnit.btc ? iconBtc : iconSat,
                         size: iconSize,
                         color: iconColor,
                       )
-                    : getNonMainnetIcon(unit, badgeColor!, network!,
+                    : getNonMainnetIcon(unit, badgeColor!, envoyAccount!,
                         iconSize: iconSize, iconColor: iconColor))),
         RichText(
           textScaler: TextScaler.linear(textScaleFactor),
@@ -323,9 +330,10 @@ class SecondaryAmountWidget extends StatelessWidget {
   final double? fxRateFiat;
   final String decimalSeparator;
   final String groupSeparator;
+  final double? displayFiat;
   final SecondaryAmountWidgetStyle style;
   final Color? badgeColor;
-  final Network? network;
+  final EnvoyAccount? envoyAccount;
   final String locale;
   final EnvoyIcons iconBtc = EnvoyIcons.btc;
   final double textScaleFactor;
@@ -335,6 +343,7 @@ class SecondaryAmountWidget extends StatelessWidget {
       {super.key,
       required this.unit,
       required this.amountSats,
+      this.displayFiat,
       required this.locale,
       this.symbolFiat = "",
       this.fxRateFiat,
@@ -342,7 +351,7 @@ class SecondaryAmountWidget extends StatelessWidget {
       this.groupSeparator = ",",
       this.style = SecondaryAmountWidgetStyle.normal,
       this.badgeColor,
-      this.network,
+      this.envoyAccount,
       this.textScaleFactor = 1,
       required this.millionaireMode});
 
@@ -372,13 +381,13 @@ class SecondaryAmountWidget extends StatelessWidget {
         Padding(
             padding: const EdgeInsets.only(right: 2.0),
             child: unit == AmountDisplayUnit.btc
-                ? (network == Network.Mainnet
+                ? (envoyAccount?.network == Network.bitcoin
                     ? EnvoyIcon(
                         iconBtc,
                         size: EnvoyIconSize.extraSmall,
                         color: iconColor,
                       )
-                    : getNonMainnetBtcIcon(badgeColor!, network!,
+                    : getNonMainnetIcon(unit, badgeColor!, envoyAccount!,
                         iconSize: EnvoyIconSize.extraSmall,
                         iconColor: iconColor))
                 : Text(
@@ -393,8 +402,14 @@ class SecondaryAmountWidget extends StatelessWidget {
           textScaler: TextScaler.linear(textScaleFactor),
           text: TextSpan(
               children: unit == AmountDisplayUnit.fiat
-                  ? buildFiatTextSpans(amountSats, fxRateFiat!, textStyle,
-                      locale, decimalSeparator, groupSeparator,
+                  ? buildFiatTextSpans(
+                      amountSats,
+                      fxRateFiat!,
+                      displayFiat: displayFiat,
+                      textStyle,
+                      locale,
+                      decimalSeparator,
+                      groupSeparator,
                       millionaireMode: millionaireMode)
                   : buildSecondaryBtcTextSpans(amountSats, decimalSeparator,
                       groupSeparator, textStyle, textStyle)),
@@ -578,7 +593,8 @@ List<TextSpan> buildFiatTextSpans(
     String locale,
     String decimalSeparator,
     String groupSeparator,
-    {required bool millionaireMode}) {
+    {required bool millionaireMode,
+    double? displayFiat}) {
   List<TextSpan> textSpans = [];
 
   String amountFiatString =
@@ -607,9 +623,16 @@ List<TextSpan> buildFiatTextSpans(
     }
   } else {
     // Display the original amount
-    for (int i = 0; i < amountFiatString.length; i++) {
-      String char = amountFiatString[i];
-      textSpans.add(_createTextSpan(char, textStyle!));
+
+    if (displayFiat != null) {
+      String formattedDisplayFiat =
+          ExchangeRate().formatFiatToString(displayFiat);
+      textSpans.add(_createTextSpan(formattedDisplayFiat, textStyle!));
+    } else {
+      for (int i = 0; i < amountFiatString.length; i++) {
+        String char = amountFiatString[i];
+        textSpans.add(_createTextSpan(char, textStyle!));
+      }
     }
   }
 
@@ -727,8 +750,9 @@ double convertFiatStringToFiat(
 
 String convertSatsToFiatString(
     int amountSats, double fxRateFiat, String locale) {
-  NumberFormat currencyFormatter =
-      NumberFormat.currency(locale: locale, symbol: "");
+  // format via Settings().selectedFiat
+  NumberFormat currencyFormatter = NumberFormat.currency(
+      locale: locale, symbol: "", name: Settings().selectedFiat);
 
   String formattedAmount =
       currencyFormatter.format(fxRateFiat * amountSats / 100000000);
@@ -736,35 +760,14 @@ String convertSatsToFiatString(
   return formattedAmount;
 }
 
-Widget getNonMainnetBtcIcon(Color badgeColor, Network network,
+Widget getNonMainnetIcon(
+    AmountDisplayUnit unit, Color badgeColor, EnvoyAccount envoyAccount,
     {EnvoyIconSize? iconSize, Color? iconColor}) {
   return NonMainnetIcon(
-    EnvoyIcons.btc,
+    unit == AmountDisplayUnit.btc ? EnvoyIcons.btc : EnvoyIcons.sats,
     badgeColor: badgeColor,
     size: iconSize ?? EnvoyIconSize.normal,
     iconColor: iconColor,
-    network: network,
+    network: envoyAccount.network,
   );
-}
-
-Widget getNonMainnetSatsIcon(Color badgeColor, Network network,
-    {EnvoyIconSize? iconSize, Color? iconColor}) {
-  return NonMainnetIcon(
-    EnvoyIcons.sats,
-    badgeColor: badgeColor,
-    size: iconSize ?? EnvoyIconSize.normal,
-    iconColor: iconColor,
-    network: network,
-  );
-}
-
-Widget getNonMainnetIcon(AmountDisplayUnit unit, Color color, Network network,
-    {EnvoyIconSize? iconSize, Color? iconColor}) {
-  if (unit == AmountDisplayUnit.btc) {
-    return getNonMainnetBtcIcon(color, network,
-        iconSize: iconSize, iconColor: iconColor);
-  } else {
-    return getNonMainnetSatsIcon(color, network,
-        iconSize: iconSize, iconColor: iconColor);
-  }
 }

@@ -8,8 +8,6 @@ import 'package:envoy/business/devices.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/embedded_video.dart';
 import 'package:envoy/ui/home/cards/devices/device_list_tile.dart';
-import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
-import 'package:envoy/ui/pages/legal/passport_tou.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -158,66 +156,6 @@ class _DevicesListState extends ConsumerState<DevicesList> {
                 ),
               ),
             ),
-    );
-  }
-}
-
-class DevicesOptions extends ConsumerWidget {
-  const DevicesOptions({super.key});
-
-  @override
-  Widget build(context, ref) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        const Divider(),
-        const SizedBox(
-          height: 10,
-        ),
-        GestureDetector(
-          child: Text(
-            S().passport_welcome_screen_cta2.toUpperCase(),
-            style: const TextStyle(color: Colors.white),
-          ),
-          onTap: () {
-            ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
-            // Delay navigation to allow the UI to update
-            Future.delayed(const Duration(milliseconds: 200), () {
-              if (context.mounted) {
-                Navigator.of(context).push(PageRouteBuilder(
-                  pageBuilder: (context, animation, secondaryAnimation) {
-                    return const SingleImportPpIntroPage();
-                  },
-                  reverseTransitionDuration: Duration.zero,
-                  transitionDuration: Duration.zero,
-                ));
-              }
-            });
-          },
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        GestureDetector(
-          child: Text(S().passport_welcome_screen_cta1.toUpperCase(),
-              style: const TextStyle(color: EnvoyColors.accentSecondary)),
-          onTap: () {
-            ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
-            // Delay navigation to allow the UI to update
-            Future.delayed(const Duration(milliseconds: 200), () {
-              if (context.mounted) {
-                Navigator.of(context).push(PageRouteBuilder(
-                  pageBuilder: (context, animation, secondaryAnimation) {
-                    return const TouPage();
-                  },
-                  reverseTransitionDuration: Duration.zero,
-                  transitionDuration: Duration.zero,
-                ));
-              }
-            });
-          },
-        ),
-      ],
     );
   }
 }

@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 enum GlobalState {
   normal,
   nuclearDelete,
+  backupDelete,
 }
 
 final globalStateProvider =

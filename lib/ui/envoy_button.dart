@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,8 @@ class EnvoyButton extends StatefulWidget {
   final TextStyle? textStyle;
   final FontWeight? fontWeight;
   final bool enabled;
+  final Widget? leading;
+  final Widget? trailing;
 
   const EnvoyButton(
     this.label, {
@@ -28,6 +31,8 @@ class EnvoyButton extends StatefulWidget {
     this.fontWeight,
     this.backgroundColor,
     this.enabled = true,
+    this.leading,
+    this.trailing,
   });
 
   @override
@@ -88,19 +93,33 @@ class _EnvoyButtonState extends State<EnvoyButton> {
             Container(
                 height: 40.0,
                 decoration: _getBoxDecoration(),
-                child: Center(
-                    child: Text(
-                  widget.label,
-                  style: textStyle,
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ))),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (widget.leading != null) ...[
+                      widget.leading!,
+                      SizedBox(width: EnvoySpacing.small),
+                    ],
+                    Text(
+                      widget.label,
+                      style: textStyle,
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (widget.trailing != null) ...[
+                      SizedBox(width: EnvoySpacing.small),
+                      widget.trailing!,
+                    ],
+                  ],
+                )),
             if (!widget.enabled)
               Positioned.fill(
                 child: Container(
-                  color: EnvoyColors.textPrimaryInverse.applyOpacity(0.5),
-                ),
+                    decoration: BoxDecoration(
+                        color: EnvoyColors.textPrimaryInverse.applyOpacity(0.5),
+                        borderRadius: widget.borderRadius ??
+                            const BorderRadius.all(Radius.circular(13.0)))),
               ),
           ],
         ),

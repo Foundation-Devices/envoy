@@ -4,14 +4,15 @@
 
 import 'dart:async';
 
-import 'package:envoy/business/account.dart';
 import 'package:envoy/business/bitcoin_parser.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_display.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -26,20 +27,28 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/locale.dart';
+import 'package:intl/intl.dart' as intl;
+import 'package:ngwallet/ngwallet.dart';
+
+final isNumpadPressed = StateProvider<bool>((ref) => false);
 
 enum AmountDisplayUnit { btc, sat, fiat }
 
+final displayFiatSendAmountProvider = StateProvider<double?>((ref) => 0);
+
 class AmountEntry extends ConsumerStatefulWidget {
-  final Account? account;
+  final EnvoyAccount? account;
   final Function(int)? onAmountChanged;
   final int initalSatAmount;
   final Function(ParseResult)? onPaste;
+  final bool trailingZeroes;
 
   const AmountEntry(
       {this.account,
       this.onAmountChanged,
       this.initalSatAmount = 0,
       this.onPaste,
+      this.trailingZeroes = false,
       super.key});
 
   @override
@@ -47,20 +56,27 @@ class AmountEntry extends ConsumerStatefulWidget {
 }
 
 class AmountEntryState extends ConsumerState<AmountEntry> {
-  String _enteredAmount = "";
+  String _enteredAmount = "0";
   int _amountSats = 0;
   final GlobalKey _fittedBoxKey = GlobalKey();
   double? _fittedBoxHeight;
-  bool _addTrailingZeros = true;
 
   @override
   void initState() {
     super.initState();
+    var unit = ref.read(sendScreenUnitProvider);
 
     if (widget.initalSatAmount > 0) {
       _amountSats = widget.initalSatAmount;
-      _enteredAmount =
-          getDisplayAmount(_amountSats, ref.read(sendScreenUnitProvider));
+
+      if (unit == AmountDisplayUnit.fiat) {
+        _enteredAmount = ExchangeRate()
+            .formatFiatToString(ref.read(displayFiatSendAmountProvider)!);
+      } else {
+        _enteredAmount = getDisplayAmount(
+            _amountSats, ref.read(sendScreenUnitProvider),
+            trailingZeros: !widget.trailingZeroes && _amountSats != 0);
+      }
     }
 
     WidgetsBinding.instance.addPostFrameCallback(_getFittedBoxHeight);
@@ -86,21 +102,29 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
   }
 
   Future<void> pasteAmount() async {
+    final selectedAccount = ref.read(selectedAccountProvider);
+    if (selectedAccount == null) {
+      return;
+    }
     var unit = ref.read(sendScreenUnitProvider);
     ClipboardData? cdata = await Clipboard.getData(Clipboard.kTextPlain);
 
     String? text = cdata?.text;
     if (text != null) {
-      var decodedInfo = await BitcoinParser.parse(text,
-          fiatExchangeRate: ExchangeRate().selectedCurrencyRate,
-          wallet: widget.account?.wallet,
-          selectedFiat: Settings().selectedFiat,
-          currentUnit: unit);
+      var decodedInfo = await BitcoinParser.parse(
+        text,
+        fiatExchangeRate: ExchangeRate().selectedCurrencyRate,
+        account: selectedAccount,
+        selectedFiat: Settings().selectedFiat,
+        currentUnit: unit,
+      );
       ref.read(sendScreenUnitProvider.notifier).state =
           decodedInfo.unit ?? unit;
 
       setState(() {
         unit = decodedInfo.unit ?? unit;
+        ref.read(displayFiatSendAmountProvider.notifier).state =
+            decodedInfo.displayFiat;
       });
 
       if (widget.onPaste != null) {
@@ -110,14 +134,14 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
   }
 
   void onNumPadEvents(dynamic event) {
+    final s = Settings();
+
     TransactionModel tx = ref.read(spendTransactionProvider);
     // Lock numpad while loading after tapping confirm
     if (tx.loading) {
       return;
     }
     var unit = ref.read(sendScreenUnitProvider);
-    _addTrailingZeros =
-        false; // Do not add trailing zeros when manually typing the amount
     switch (event) {
       case NumPadEvents.backspace:
         {
@@ -138,6 +162,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
           setState(() {
             _enteredAmount = "0";
             _amountSats = 0;
+            ref.read(displayFiatSendAmountProvider.notifier).state = 0;
           });
           if (widget.onAmountChanged != null) {
             widget.onAmountChanged!(0);
@@ -215,11 +240,56 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
             ? "0"
             : (_enteredAmount) + (addDot ? (fiatDecimalSeparator) : "");
       });
-    } else {
-      // Format it nicely
-      setState(() {
-        _enteredAmount = getDisplayAmount(_amountSats, unit);
-      });
+    }
+
+    /// if entering Fiat
+    if (unit == AmountDisplayUnit.fiat) {
+      String sanitizedAmount = _enteredAmount
+          .replaceAll(RegExp('[^0-9$fiatDecimalSeparator]'), '')
+          .replaceAll(fiatGroupSeparator, '');
+
+      sanitizedAmount = sanitizedAmount.replaceAll(fiatDecimalSeparator, '.');
+
+      ref.read(displayFiatSendAmountProvider.notifier).state =
+          double.tryParse(sanitizedAmount);
+
+      if (!addDot && !addZero) {
+        setState(() {
+          // Format it nicely
+          _enteredAmount = getDisplayAmount(
+              _amountSats,
+              displayFiat: ref.read(displayFiatSendAmountProvider),
+              unit);
+        });
+      }
+    }
+
+    /// if entering btc/sat
+    else {
+      if (s.displayFiat() != null) {
+        String formattedFiatAmount =
+            getDisplayAmount(_amountSats, AmountDisplayUnit.fiat);
+
+        String sanitizedFiatAmount = formattedFiatAmount
+            .replaceAll(RegExp('[^0-9$fiatDecimalSeparator]'), '')
+            .replaceAll(fiatGroupSeparator, '');
+
+        sanitizedFiatAmount =
+            sanitizedFiatAmount.replaceAll(fiatDecimalSeparator, '.');
+
+        ref.read(displayFiatSendAmountProvider.notifier).state =
+            double.parse(sanitizedFiatAmount);
+      }
+
+      if (!addDot && !addZero) {
+        setState(() {
+          // Format it nicely
+          _enteredAmount = getDisplayAmount(_amountSats, unit,
+              trailingZeros: !widget.trailingZeroes &&
+                  _amountSats !=
+                      0); // Do not add trailing zeros when manually typing the amount
+        });
+      }
     }
 
     if (widget.onAmountChanged != null) {
@@ -238,6 +308,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
       onNumPadEvents(digit);
     }, onNumPadEvents: (event) {
       onNumPadEvents(event);
+      ref.read(isNumpadPressed.notifier).state = true;
     }, isDecimalSeparator: _enteredAmount.contains(fiatDecimalSeparator));
 
     return Column(
@@ -251,20 +322,20 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
               account: widget.account,
               inputMode: true,
               displayedAmount: _enteredAmount,
+              displayFiat: ref.watch(displayFiatSendAmountProvider),
               amountSats: _amountSats,
               onUnitToggled: (enteredAmount) {
                 // SFT-2508: special rule for circling through is to pad fiat with last 0
                 final unit = ref.watch(sendScreenUnitProvider);
-                if (unit == AmountDisplayUnit.fiat &&
-                    enteredAmount.contains(fiatDecimalSeparator) &&
-                    ((enteredAmount.length -
-                            enteredAmount.indexOf(fiatDecimalSeparator)) ==
-                        2)) {
-                  enteredAmount = "${enteredAmount}0";
+                if (unit == AmountDisplayUnit.fiat) {
+                  enteredAmount = ExchangeRate().formatFiatToString(
+                      ref.watch(displayFiatSendAmountProvider)!,
+                      isPrimaryValue: true);
                 }
-                if (_addTrailingZeros && unit == AmountDisplayUnit.btc) {
-                  enteredAmount =
-                      getDisplayAmount(_amountSats, AmountDisplayUnit.btc);
+                if (unit == AmountDisplayUnit.btc) {
+                  enteredAmount = getDisplayAmount(
+                      _amountSats, AmountDisplayUnit.btc,
+                      trailingZeros: widget.trailingZeroes && _amountSats != 0);
                 }
                 _enteredAmount = enteredAmount;
               },
@@ -289,7 +360,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 }
 
 class SpendableAmountWidget extends ConsumerWidget {
-  final Account account;
+  final EnvoyAccount account;
 
   const SpendableAmountWidget(this.account, {super.key});
 
@@ -398,6 +469,9 @@ class _NumPadState extends State<NumPad> {
     // Calculate the child aspect ratio, based on the width and height
     final childAspectRatio = (width / crossAxisCount) / (height / rowCount);
 
+    intl.NumberFormat currencyFormatter = intl.NumberFormat.currency(
+        locale: currentLocale, symbol: "", name: Settings().selectedFiat);
+
     return GridView.count(
       crossAxisCount: crossAxisCount,
       childAspectRatio: childAspectRatio,
@@ -417,8 +491,11 @@ class _NumPadState extends State<NumPad> {
             },
           );
         })),
-        widget.amountDisplayUnit != AmountDisplayUnit.sat
-            ? NumpadButton(
+        widget.amountDisplayUnit == AmountDisplayUnit.sat ||
+                (currencyFormatter.decimalDigits == 0 &&
+                    widget.amountDisplayUnit == AmountDisplayUnit.fiat)
+            ? const SizedBox.shrink()
+            : NumpadButton(
                 NumpadButtonType.text,
                 text: fiatDecimalSeparator,
                 onTap: () {
@@ -427,8 +504,7 @@ class _NumPadState extends State<NumPad> {
                     widget.onNumPadEvents(NumPadEvents.separator);
                   }
                 },
-              )
-            : const SizedBox.shrink(),
+              ),
         NumpadButton(
           NumpadButtonType.text,
           text: "0",

@@ -2,17 +2,17 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_list_screen.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class ChooseCoinsWidget extends ConsumerStatefulWidget {
   const ChooseCoinsWidget({super.key});
@@ -24,7 +24,7 @@ class ChooseCoinsWidget extends ConsumerStatefulWidget {
 class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
   @override
   Widget build(BuildContext context) {
-    Account? account = ref.watch(selectedAccountProvider);
+    EnvoyAccount? account = ref.watch(selectedAccountProvider);
     if (account == null) {
       return Container();
     }
@@ -77,7 +77,6 @@ class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
                             right: 20,
                           ),
                           child: AccountListTile(account, onTap: () {
-                            // ref.read(fullscreenHomePageProvider.notifier).state = true;
                             Navigator.pop(context);
                           }),
                         ),

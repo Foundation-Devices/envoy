@@ -13,9 +13,14 @@ class SettingToggle extends StatefulWidget {
   final int delay;
   final bool enabled;
   final Function()? onEnabled;
+  final Function()? onDisabled;
 
   const SettingToggle(this.getter, this.setter,
-      {super.key, this.delay = 0, this.enabled = true, this.onEnabled});
+      {super.key,
+      this.delay = 0,
+      this.enabled = true,
+      this.onEnabled,
+      this.onDisabled});
 
   @override
   State<SettingToggle> createState() => _SettingToggleState();
@@ -25,19 +30,16 @@ class _SettingToggleState extends State<SettingToggle> {
   Timer? _timer;
 
   @override
-  initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return IgnorePointer(
       ignoring: !widget.enabled,
       child: EnvoySwitch(
           value: widget.getter(),
           onChanged: (enabled) {
-            if (enabled && widget.onEnabled != null) {
-              widget.onEnabled!();
+            if (enabled) {
+              widget.onEnabled?.call();
+            } else {
+              widget.onDisabled?.call();
             }
 
             if (widget.delay > 0) {

@@ -5,7 +5,7 @@
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
@@ -38,9 +38,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final rate = ref.read(spendFeeRateProvider);
       setFees(ref.read(feeChooserStateProvider));
-      selectFeeTab(rate);
     });
     Future.delayed(const Duration(milliseconds: 10))
         .then((value) => calculateFeeBoundary());
@@ -83,7 +81,10 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
       calculateFeeBoundary();
     });
 
-    ref.listen(spendFeeRateProvider, (previous, next) {
+    ref.listen(
+        spendTransactionProvider.select(
+          (value) => value.transaction?.feeRate.toInt() ?? 1,
+        ), (previous, next) {
       selectFeeTab(next);
     });
 

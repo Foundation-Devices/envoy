@@ -4,49 +4,53 @@
 
 import 'dart:ui';
 
-import 'package:envoy/business/account.dart';
+import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/account/envoy_transaction.dart';
+import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/locale.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/button.dart';
+import 'package:envoy/ui/components/envoy_info_card.dart';
+import 'package:envoy/ui/components/envoy_tag_list_item.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_button.dart';
 import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
-import 'package:envoy/ui/state/transactions_note_state.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/tuple.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:ngwallet/ngwallet.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:wallet/wallet.dart';
-import 'package:envoy/business/fees.dart';
-import 'package:envoy/util/tuple.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/components/envoy_info_card.dart';
-import 'package:envoy/ui/components/envoy_tag_list_item.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
-import 'package:envoy/ui/state/home_page_state.dart';
+
+final transactionDetailsOpen = StateProvider<bool>((ref) => false);
 
 class TransactionsDetailsWidget extends ConsumerStatefulWidget {
-  final Account account;
-  final Transaction tx;
+  final EnvoyAccount account;
+  final EnvoyTransaction tx;
   final Widget? iconTitleWidget;
   final Widget? titleWidget;
 
@@ -88,11 +92,14 @@ class _TransactionsDetailsWidgetState
   Widget build(BuildContext context) {
     ///watch transaction changes to get real time updates
     final tx = ref.watch(getTransactionProvider(widget.tx.txId)) ?? widget.tx;
-    final note = ref.watch(txNoteProvider(tx.txId)) ?? "";
+
+    final note = ref.watch(getTransactionProvider(widget.tx.txId).select(
+      (value) => value?.note ?? "",
+    ));
 
     final hideBalance =
         ref.watch(balanceHideStateStatusProvider(widget.account.id));
-    final accountAccentColor = widget.account.color;
+    final accountAccentColor = fromHex(widget.account.color);
     final trailingTextStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
           color: EnvoyColors.textPrimary,
           fontWeight: FontWeight.w600,
@@ -101,11 +108,11 @@ class _TransactionsDetailsWidgetState
     final idTextStyle =
         EnvoyTypography.body.copyWith(color: EnvoyColors.textSecondary);
 
-    bool addressNotAvailable = tx.address == null || tx.address!.isEmpty;
-    final address = tx.address ?? "";
+    bool addressNotAvailable = tx.address.isEmpty;
+    final address = tx.address;
 
     bool rbfPossible =
-        (!tx.isConfirmed && tx.type == TransactionType.normal && tx.amount < 0);
+        (tx.confirmations == 0 && tx.isOnChain() && tx.amount < 0);
 
     final cancelState = ref.watch(cancelTxStateProvider(tx.txId));
 
@@ -113,398 +120,431 @@ class _TransactionsDetailsWidgetState
       rbfPossible = false;
     }
 
-    bool showTxInfo = showTxId(tx.type);
+    bool showTxInfo = tx.isOnChain();
 
-    return GestureDetector(
-      onTapUp: (details) {
-        final RenderBox box =
-            _detailWidgetKey.currentContext?.findRenderObject() as RenderBox;
-        final Offset localOffset = box.globalToLocal(details.globalPosition);
-
-        if (!box.paintBounds.contains(localOffset)) {
-          Navigator.of(context).pop();
-        }
+    return PopScope(
+      onPopInvokedWithResult: (_, __) {
+        ref.read(transactionDetailsOpen.notifier).state = false;
       },
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          leading: CupertinoNavigationBarBackButton(
-            color: Colors.white,
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          flexibleSpace: SafeArea(
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                const SizedBox(
-                  height: 100,
-                  child: IndicatorShield(),
-                ),
-                Text(
-                  S().coincontrol_tx_detail_expand_heading.toUpperCase(),
-                  style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                ),
-              ],
+      child: GestureDetector(
+        onTapUp: (details) {
+          final RenderBox box =
+              _detailWidgetKey.currentContext?.findRenderObject() as RenderBox;
+          final Offset localOffset = box.globalToLocal(details.globalPosition);
+
+          if (!box.paintBounds.contains(localOffset)) {
+            Navigator.of(context).pop();
+          }
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            leading: CupertinoNavigationBarBackButton(
+              color: Colors.white,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            flexibleSpace: SafeArea(
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  const SizedBox(
+                    height: 100,
+                    child: IndicatorShield(),
+                  ),
+                  Text(
+                    S().coincontrol_tx_detail_expand_heading.toUpperCase(),
+                    style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-        body: Column(
-          children: [
-            EnvoyInfoCard(
-              key: _detailWidgetKey,
-              backgroundColor: accountAccentColor,
-              titleWidget: widget.titleWidget,
-              iconTitleWidget: widget.iconTitleWidget,
-              topWidget: hideBalance
-                  ? const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // hide placeholder for btc
-                        LoaderGhost(
-                          width: 110,
-                          height: 20,
-                          animate: false,
-                        ),
-                        // hide placeholder for fiat
-                        LoaderGhost(
-                          width: 80,
-                          height: 20,
-                          animate: false,
-                        ),
-                      ],
-                    )
-                  : (tx.amount == 0 &&
-                          tx.currency != null &&
-                          tx.currencyAmount != null)
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const LoaderGhost(
-                              width: 110,
-                              height: 20,
-                              animate: false,
-                            ),
-                            // hide placeholder for fiat
-                            Text(
-                              "${tx.currencyAmount!} ${tx.currency!}",
-                              style: EnvoyTypography.body.copyWith(
-                                color: EnvoyColors.textPrimary,
+          body: Column(
+            children: [
+              EnvoyInfoCard(
+                key: _detailWidgetKey,
+                backgroundColor: accountAccentColor,
+                titleWidget: widget.titleWidget,
+                iconTitleWidget: widget.iconTitleWidget,
+                topWidget: hideBalance
+                    ? const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // hide placeholder for btc
+                          LoaderGhost(
+                            width: 110,
+                            height: 20,
+                            animate: false,
+                          ),
+                          // hide placeholder for fiat
+                          LoaderGhost(
+                            width: 80,
+                            height: 20,
+                            animate: false,
+                          ),
+                        ],
+                      )
+                    : (tx is BtcPayTransaction &&
+                            tx.currency != null &&
+                            tx.currencyAmount != null)
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const LoaderGhost(
+                                width: 110,
+                                height: 20,
+                                animate: false,
                               ),
-                            ),
-                          ],
-                        )
-                      : EnvoyAmount(
-                          account: widget.account,
-                          amountSats: tx.amount,
-                          amountWidgetStyle: AmountWidgetStyle.singleLine),
-              bottomWidgets: [
-                EnvoyInfoCardListItem(
-                  title: S().coindetails_overlay_address,
-                  icon: const EnvoyIcon(EnvoyIcons.send,
-                      color: EnvoyColors.textPrimary,
-                      size: EnvoyIconSize.extraSmall),
-                  trailing: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      setState(() {
-                        showAddressExpanded = !showAddressExpanded;
-                        showTxIdExpanded = false;
-                        showPaymentId = false;
-                      });
-                    },
-                    child: TweenAnimationBuilder(
-                        curve: EnvoyEasing.easeInOut,
-                        tween: Tween<double>(
-                            begin: 0, end: showAddressExpanded ? 1 : 0),
-                        duration: const Duration(milliseconds: 200),
-                        builder: (context, value, child) {
-                          return addressNotAvailable
-                              ? Text("Address not available ",
-                                  // TODO: Figma
-                                  style: trailingTextStyle)
-                              : AddressWidget(
-                                  widgetKey:
-                                      ValueKey<bool>(showAddressExpanded),
-                                  address: address,
-                                  short: true,
-                                  sideChunks: 2 +
-                                      (value * (address.length / 4)).round(),
-                                );
-                        }),
-                  ),
-                ),
-                EnvoyInfoCardListItem(
-                  title: S().coindetails_overlay_transactionID,
-                  icon: const EnvoyIcon(EnvoyIcons.compass,
-                      color: EnvoyColors.textPrimary,
-                      size: EnvoyIconSize.small),
-                  trailing: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onLongPress: () {
-                      if (showTxInfo) {
-                        copyTxId(context, tx.txId, tx.type);
-                      }
-                    },
-                    onTap: () {
-                      if (showTxInfo) {
+                              // hide placeholder for fiat
+                              Text(
+                                "${tx.currencyAmount!} ${tx.currency!}",
+                                style: EnvoyTypography.body.copyWith(
+                                  color: EnvoyColors.textPrimary,
+                                ),
+                              ),
+                            ],
+                          )
+                        : EnvoyAmount(
+                            account: widget.account,
+                            amountSats: tx.amount,
+                            amountWidgetStyle: AmountWidgetStyle.singleLine),
+                bottomWidgets: [
+                  EnvoyInfoCardListItem(
+                    title: S().coindetails_overlay_address,
+                    icon: const EnvoyIcon(EnvoyIcons.send,
+                        color: EnvoyColors.textPrimary,
+                        size: EnvoyIconSize.extraSmall),
+                    trailing: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
                         setState(() {
-                          showTxIdExpanded = !showTxIdExpanded;
-                          showAddressExpanded = false;
+                          showAddressExpanded = !showAddressExpanded;
+                          showTxIdExpanded = false;
                           showPaymentId = false;
                         });
-                      }
-                    },
-                    child: TweenAnimationBuilder(
-                      curve: EnvoyEasing.easeInOut,
-                      tween: Tween<double>(
-                          begin: 0, end: showTxIdExpanded ? 1 : 0),
-                      duration: const Duration(milliseconds: 200),
-                      builder: (context, value, child) {
-                        String txId =
-                            showTxInfo ? tx.txId : S().activity_pending;
-                        return Container(
-                          constraints: const BoxConstraints(
-                            maxHeight: 80,
-                          ),
-                          child: SingleChildScrollView(
-                            child: Text(
-                              truncateWithEllipsisInCenter(
-                                txId,
-                                lerpDouble(16, txId.length, value)!.toInt(),
-                              ),
-                              style:
-                                  showTxInfo ? idTextStyle : trailingTextStyle,
-                              textAlign: TextAlign.end,
-                            ),
-                          ),
-                        );
                       },
-                    ),
-                  ),
-                  button: (showTxIdExpanded)
-                      ? EnvoyButton(
-                          height: EnvoySpacing.medium3,
-                          icon: EnvoyIcons.externalLink,
-                          label: S().coindetails_overlay_explorer,
-                          type: ButtonType.primary,
-                          state: ButtonState.defaultState,
-                          onTap: () {
-                            openTxDetailsInExplorer(context, tx.txId,
-                                widget.account.wallet.network);
-                          },
-                          edgeInsets: const EdgeInsets.symmetric(
-                              horizontal: EnvoySpacing.medium1),
-                        )
-                      : null,
-                ),
-                EnvoyInfoCardListItem(
-                  title: S().coindetails_overlay_date,
-                  icon: const EnvoyIcon(EnvoyIcons.calendar,
-                      color: EnvoyColors.textPrimary,
-                      size: EnvoyIconSize.small),
-                  trailing: Text(getTransactionDateAndTimeString(tx),
-                      textAlign: TextAlign.end, style: trailingTextStyle),
-                ),
-                EnvoyInfoCardListItem(
-                  title: S().coindetails_overlay_status,
-                  icon: const EnvoyIcon(EnvoyIcons.activity,
-                      color: EnvoyColors.textPrimary,
-                      size: EnvoyIconSize.small),
-                  trailing: Text(getTransactionStatusString(tx),
-                      style: trailingTextStyle),
-                ),
-                if (tx.pullPaymentId != null)
-                  EnvoyInfoCardListItem(
-                      title: S().coindetails_overlay_paymentID,
-                      icon: const EnvoyIcon(EnvoyIcons.btcPay,
-                          color: EnvoyColors.textPrimary,
-                          size: EnvoyIconSize.small),
-                      trailing: GestureDetector(
-                        onLongPress: () {
-                          Clipboard.setData(
-                              ClipboardData(text: tx.pullPaymentId!));
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                              content: Text(
-                                  'Payment ID copied to clipboard!'))); //TODO: FIGMA
-                        },
-                        onTap: () {
-                          setState(() {
-                            showPaymentId = !showPaymentId;
-                            showTxIdExpanded = false;
-                            showAddressExpanded = false;
-                          });
-                        },
-                        child: TweenAnimationBuilder(
+                      child: TweenAnimationBuilder(
                           curve: EnvoyEasing.easeInOut,
                           tween: Tween<double>(
-                              begin: 0, end: showPaymentId ? 1 : 0),
+                              begin: 0, end: showAddressExpanded ? 1 : 0),
                           duration: const Duration(milliseconds: 200),
                           builder: (context, value, child) {
-                            return Text(
-                                truncateWithEllipsisInCenter(
-                                    tx.pullPaymentId!,
-                                    lerpDouble(16, tx.pullPaymentId!.length,
-                                            value)!
-                                        .toInt()),
-                                style: idTextStyle,
-                                textAlign: TextAlign.end,
-                                maxLines: 4);
-                          },
-                        ),
-                      )),
-                if (tx.rampId != null)
-                  EnvoyInfoCardListItem(
-                    title: S().coindetails_overlay_rampID,
-                    centerSingleLineTitle: true,
-                    icon: const EnvoyIcon(
-                      EnvoyIcons.ramp_without_name,
-                      size: EnvoyIconSize.small,
-                      color: EnvoyColors.textPrimary,
+                            return addressNotAvailable
+                                ? Text("Address not available ",
+                                    // TODO: Figma
+                                    style: trailingTextStyle)
+                                : AddressWidget(
+                                    widgetKey:
+                                        ValueKey<bool>(showAddressExpanded),
+                                    address: address,
+                                    short: true,
+                                    sideChunks: 2 +
+                                        (value * (address.length / 4)).round(),
+                                  );
+                          }),
                     ),
+                  ),
+                  EnvoyInfoCardListItem(
+                    title: S().coindetails_overlay_transactionID,
+                    icon: const EnvoyIcon(EnvoyIcons.compass,
+                        color: EnvoyColors.textPrimary,
+                        size: EnvoyIconSize.small),
                     trailing: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onLongPress: () {
-                        copyTxId(context, tx.rampId!, tx.type);
+                        if (showTxInfo) {
+                          copyTxId(context, tx.txId, tx);
+                        }
                       },
-                      child: Text(
-                        tx.rampId!,
-                        style: idTextStyle,
+                      onTap: () {
+                        if (showTxInfo) {
+                          setState(() {
+                            showTxIdExpanded = !showTxIdExpanded;
+                            showAddressExpanded = false;
+                            showPaymentId = false;
+                          });
+                        }
+                      },
+                      child: TweenAnimationBuilder(
+                        curve: EnvoyEasing.easeInOut,
+                        tween: Tween<double>(
+                            begin: 0, end: showTxIdExpanded ? 1 : 0),
+                        duration: const Duration(milliseconds: 200),
+                        builder: (context, value, child) {
+                          String txId =
+                              showTxInfo ? tx.txId : S().activity_pending;
+                          return Container(
+                            constraints: const BoxConstraints(
+                              maxHeight: 80,
+                            ),
+                            child: SingleChildScrollView(
+                              child: Text(
+                                truncateWithEllipsisInCenter(
+                                  txId,
+                                  lerpDouble(16, txId.length, value)!.toInt(),
+                                ),
+                                style: showTxInfo
+                                    ? idTextStyle
+                                    : trailingTextStyle,
+                                textAlign: TextAlign.end,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    button: (showTxIdExpanded)
+                        ? EnvoyButton(
+                            height: EnvoySpacing.medium3,
+                            icon: EnvoyIcons.externalLink,
+                            label: S().coindetails_overlay_explorer,
+                            type: ButtonType.primary,
+                            state: ButtonState.defaultState,
+                            onTap: () {
+                              openTxDetailsInExplorer(
+                                  context, tx.txId, widget.account.network);
+                            },
+                            edgeInsets: const EdgeInsets.symmetric(
+                                horizontal: EnvoySpacing.medium1),
+                          )
+                        : null,
+                  ),
+                  EnvoyInfoCardListItem(
+                    title: S().coindetails_overlay_date,
+                    icon: const EnvoyIcon(EnvoyIcons.calendar,
+                        color: EnvoyColors.textPrimary,
+                        size: EnvoyIconSize.small),
+                    trailing: Text(
+                        getTransactionDateAndTimeString(
+                            tx.date?.toInt(), tx.isConfirmed),
                         textAlign: TextAlign.end,
-                        overflow: TextOverflow.ellipsis,
+                        style: trailingTextStyle),
+                  ),
+                  EnvoyInfoCardListItem(
+                    title: S().coindetails_overlay_status,
+                    icon: const EnvoyIcon(EnvoyIcons.activity,
+                        color: EnvoyColors.textPrimary,
+                        size: EnvoyIconSize.small),
+                    trailing: Text(getTransactionStatusString(tx),
+                        style: trailingTextStyle),
+                  ),
+                  if (tx is BtcPayTransaction && tx.pullPaymentId != null)
+                    EnvoyInfoCardListItem(
+                        title: S().coindetails_overlay_paymentID,
+                        icon: const EnvoyIcon(EnvoyIcons.btcPay,
+                            color: EnvoyColors.textPrimary,
+                            size: EnvoyIconSize.small),
+                        trailing: GestureDetector(
+                          onLongPress: () {
+                            Clipboard.setData(
+                                ClipboardData(text: tx.pullPaymentId!));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        'Payment ID copied to clipboard!'))); //TODO: FIGMA
+                          },
+                          onTap: () {
+                            setState(() {
+                              showPaymentId = !showPaymentId;
+                              showTxIdExpanded = false;
+                              showAddressExpanded = false;
+                            });
+                          },
+                          child: TweenAnimationBuilder(
+                            curve: EnvoyEasing.easeInOut,
+                            tween: Tween<double>(
+                                begin: 0, end: showPaymentId ? 1 : 0),
+                            duration: const Duration(milliseconds: 200),
+                            builder: (context, value, child) {
+                              return Text(
+                                  truncateWithEllipsisInCenter(
+                                      tx.pullPaymentId!,
+                                      lerpDouble(16, tx.pullPaymentId!.length,
+                                              value)!
+                                          .toInt()),
+                                  style: idTextStyle,
+                                  textAlign: TextAlign.end,
+                                  maxLines: 4);
+                            },
+                          ),
+                        )),
+                  if (tx is RampTransaction && tx.rampId != null)
+                    EnvoyInfoCardListItem(
+                      title: S().coindetails_overlay_rampID,
+                      centerSingleLineTitle: true,
+                      icon: const EnvoyIcon(
+                        EnvoyIcons.ramp_without_name,
+                        size: EnvoyIconSize.small,
+                        color: EnvoyColors.textPrimary,
+                      ),
+                      trailing: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onLongPress: () {
+                          copyTxId(context, tx.rampId!, tx);
+                        },
+                        child: Text(
+                          tx.rampId!,
+                          style: idTextStyle,
+                          textAlign: TextAlign.end,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                  if (tx is RampTransaction && tx.rampFee != null)
+                    EnvoyInfoCardListItem(
+                      title: S().coindetails_overlay_rampFee,
+                      centerSingleLineTitle: true,
+                      icon: const EnvoyIcon(
+                        EnvoyIcons.ramp_without_name,
+                        size: EnvoyIconSize.small,
+                        color: EnvoyColors.textPrimary,
+                      ),
+                      trailing: hideBalance
+                          ? const LoaderGhost(
+                              width: 74, animate: false, height: 16)
+                          : Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                EnvoyAmount(
+                                    account: widget.account,
+                                    amountSats: tx.rampFee!,
+                                    amountWidgetStyle:
+                                        AmountWidgetStyle.normal),
+                              ],
+                            ),
+                    ),
+                  rbfPossible && tx.vsize != BigInt.zero
+                      ? EnvoyInfoCardListItem(
+                          centerSingleLineTitle: true,
+                          spacingPriority: FlexPriority.trailing,
+                          title: _getConfirmationTimeString(ref.watch(
+                              txEstimatedConfirmationTimeProvider(
+                                  Tuple(tx, widget.account.network)))),
+                          icon: const EnvoyIcon(
+                            EnvoyIcons.clock,
+                            size: EnvoyIconSize.extraSmall,
+                            color: EnvoyColors.textPrimary,
+                          ),
+                          trailing: TxRBFButton(
+                            tx: tx,
+                          ),
+                        )
+                      : Container(),
+                  if (tx is! RampTransaction) _renderFeeWidget(context, tx),
+                  GestureDetector(
+                    onTap: () {
+                      showEnvoyDialog(
+                          context: context,
+                          dialog: TxNoteDialog(
+                            txId: tx.txId,
+                            value: note,
+                            noteTitle: S().add_note_modal_heading,
+                            noteHintText: S().add_note_modal_ie_text_field,
+                            noteSubTitle: S().add_note_modal_subheading,
+                            onAdd: (note) {
+                              widget.account.handler?.setNote(
+                                note: note,
+                                txId: tx.txId,
+                              );
+                              Navigator.pop(context);
+                            },
+                          ),
+                          alignment: const Alignment(0.0, -0.8));
+                    },
+                    child: EnvoyInfoCardListItem(
+                      title: S().coincontrol_tx_history_tx_detail_note,
+                      icon: const EnvoyIcon(
+                        EnvoyIcons.note,
+                        size: EnvoyIconSize.small,
+                        color: EnvoyColors.textPrimary,
+                      ),
+                      trailing: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Flexible(
+                            child: Text(note,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: EnvoyTypography.body
+                                    .copyWith(color: EnvoyColors.textPrimary),
+                                textAlign: TextAlign.end),
+                          ),
+                          const Padding(
+                              padding: EdgeInsets.all(EnvoySpacing.xs)),
+                          note.trim().isNotEmpty
+                              ? SvgPicture.asset(
+                                  note.trim().isNotEmpty
+                                      ? "assets/icons/ic_edit_note.svg"
+                                      : "assets/icons/ic_notes.svg",
+                                  color: Theme.of(context).primaryColor,
+                                  height: 14,
+                                )
+                              : const Icon(Icons.add_circle_rounded,
+                                  color: EnvoyColors.accentPrimary, size: 24),
+                        ],
                       ),
                     ),
                   ),
-                if (tx.rampFee != null)
-                  EnvoyInfoCardListItem(
-                    title: S().coindetails_overlay_rampFee,
-                    centerSingleLineTitle: true,
-                    icon: const EnvoyIcon(
-                      EnvoyIcons.ramp_without_name,
-                      size: EnvoyIconSize.small,
-                      color: EnvoyColors.textPrimary,
-                    ),
-                    trailing: hideBalance
-                        ? const LoaderGhost(
-                            width: 74, animate: false, height: 16)
-                        : Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              EnvoyAmount(
-                                  account: widget.account,
-                                  amountSats: tx.rampFee!,
-                                  amountWidgetStyle: AmountWidgetStyle.normal),
-                            ],
-                          ),
-                  ),
-                rbfPossible
-                    ? EnvoyInfoCardListItem(
-                        centerSingleLineTitle: true,
-                        spacingPriority: FlexPriority.trailing,
-                        title: _getConfirmationTimeString(ref.watch(
-                            txEstimatedConfirmationTimeProvider(
-                                Tuple(tx, widget.account.wallet.network)))),
-                        icon: const EnvoyIcon(
-                          EnvoyIcons.clock,
-                          size: EnvoyIconSize.extraSmall,
-                          color: EnvoyColors.textPrimary,
-                        ),
-                        trailing: TxRBFButton(
-                          tx: tx,
-                        ),
-                      )
-                    : Container(),
-                if (tx.type != TransactionType.ramp)
-                  _renderFeeWidget(context, tx),
-                GestureDetector(
-                  onTap: () {
-                    showEnvoyDialog(
-                        context: context,
-                        dialog: TxNoteDialog(
-                          txId: tx.txId,
-                          noteTitle: S().add_note_modal_heading,
-                          noteHintText: S().add_note_modal_ie_text_field,
-                          noteSubTitle: S().add_note_modal_subheading,
-                          onAdd: (note) {
-                            EnvoyStorage().addTxNote(note: note, key: tx.txId);
-                            Navigator.pop(context);
-                          },
-                        ),
-                        alignment: const Alignment(0.0, -0.8));
-                  },
-                  child: EnvoyInfoCardListItem(
-                    title: S().coincontrol_tx_history_tx_detail_note,
-                    icon: const EnvoyIcon(
-                      EnvoyIcons.note,
-                      size: EnvoyIconSize.small,
-                      color: EnvoyColors.textPrimary,
-                    ),
-                    trailing: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Flexible(
-                          child: Text(note,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: EnvoyTypography.body
-                                  .copyWith(color: EnvoyColors.textPrimary),
-                              textAlign: TextAlign.end),
-                        ),
-                        const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                        note.trim().isNotEmpty
-                            ? SvgPicture.asset(
-                                note.trim().isNotEmpty
-                                    ? "assets/icons/ic_edit_note.svg"
-                                    : "assets/icons/ic_notes.svg",
-                                color: Theme.of(context).primaryColor,
-                                height: 14,
-                              )
-                            : const Icon(Icons.add_circle_rounded,
-                                color: EnvoyColors.accentPrimary, size: 24),
-                      ],
-                    ),
+                  rbfPossible && tx.vsize != BigInt.zero
+                      ? CancelTxButton(
+                          transaction: tx,
+                        )
+                      : const SizedBox.shrink(),
+                ],
+              ),
+              if (tx is RampTransaction) ...[
+                const EnvoyIcon(
+                  EnvoyIcons.info,
+                  color: EnvoyColors.textPrimaryInverse,
+                  size: EnvoyIconSize.medium,
+                ),
+                const SizedBox(height: EnvoySpacing.xs),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.large1),
+                  child: Text(
+                    S().replaceByFee_ramp_incompleteTransactionAutodeleteWarning,
+                    style: EnvoyTypography.info
+                        .copyWith(color: EnvoyColors.textPrimaryInverse),
+                    textAlign: TextAlign.center,
                   ),
                 ),
-                rbfPossible
-                    ? CancelTxButton(
-                        transaction: tx,
-                      )
-                    : const SizedBox.shrink(),
               ],
-            ),
-            if (tx.type == TransactionType.ramp) ...[
-              const EnvoyIcon(
-                EnvoyIcons.info,
-                color: EnvoyColors.textPrimaryInverse,
-                size: EnvoyIconSize.medium,
-              ),
-              const SizedBox(height: EnvoySpacing.xs),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: EnvoySpacing.large1),
-                child: Text(
-                  S().replaceByFee_ramp_incompleteTransactionAutodeleteWarning,
-                  style: EnvoyTypography.info
-                      .copyWith(color: EnvoyColors.textPrimaryInverse),
-                  textAlign: TextAlign.center,
+              if (rbfPossible == true && tx.vsize == BigInt.zero) ...[
+                const EnvoyIcon(
+                  EnvoyIcons.info,
+                  color: EnvoyColors.textPrimaryInverse,
+                  size: EnvoyIconSize.medium,
                 ),
-              ),
+                const SizedBox(height: EnvoySpacing.xs),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.large1),
+                  child: Text(
+                    S().replaceByFee_coindetails_overlayNotice,
+                    style: EnvoyTypography.info
+                        .copyWith(color: EnvoyColors.textPrimaryInverse),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _renderFeeWidget(BuildContext context, Transaction tx) {
+  Widget _renderFeeWidget(BuildContext context, EnvoyTransaction tx) {
     final isBoosted =
         (ref.watch(isTxBoostedProvider(tx.txId)) ?? false) && tx.amount < 0;
     final cancelState = ref.watch(cancelTxStateProvider(tx.txId));
@@ -543,7 +583,7 @@ class _TransactionsDetailsWidgetState
               children: [
                 EnvoyAmount(
                     account: widget.account,
-                    amountSats: tx.fee,
+                    amountSats: tx.fee.toInt(),
                     amountWidgetStyle: AmountWidgetStyle.normal),
               ],
             ),
@@ -551,17 +591,19 @@ class _TransactionsDetailsWidgetState
   }
 }
 
-String getTransactionDateAndTimeString(Transaction transaction) {
-  if (!transaction.isConfirmed) {
+String getTransactionDateAndTimeString(int? date, bool isConfirmed) {
+  if (!isConfirmed || date == null) {
     return S().activity_pending;
   }
   final String transactionDateInfo =
-      "${DateFormat.yMd(currentLocale).format(transaction.date)} ${S().coindetails_overlay_at} ${DateFormat.Hm(currentLocale).format(transaction.date)}";
+      "${DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(date, isUtc: true))} ${S().coindetails_overlay_at} ${DateFormat.Hm(currentLocale).format(
+    DateTime.fromMillisecondsSinceEpoch(date, isUtc: true),
+  )}";
   return transactionDateInfo;
 }
 
-String getTransactionStatusString(Transaction tx) {
-  return tx.type == TransactionType.normal && tx.isConfirmed
+String getTransactionStatusString(EnvoyTransaction tx) {
+  return tx.isOnChain() && tx.isConfirmed
       ? S().coindetails_overlay_status_confirmed
       : S().activity_pending;
 }
@@ -580,7 +622,10 @@ Future<void> openTxDetailsInExplorer(
           openTxDetailPage(network, txId);
         },
         title: S().coindetails_overlay_modal_explorer_heading,
-        learnMoreLink: "https://docs.foundation.xyz/faq/home/#envoy-privacy",
+        onLearnMore: () {
+          launchUrl(
+              Uri.parse("https://docs.foundation.xyz/faq/home/#envoy-privacy"));
+        },
         icon: EnvoyIcons.info,
         secondaryButtonLabel: S().component_cancel,
         onSecondaryButtonTap: (BuildContext context) {
@@ -613,21 +658,15 @@ void openTxDetailPage(Network network, String txId) {
 
 String? getBaseUrlForNetwork(Network network) {
   switch (network) {
-    case Network.Mainnet:
+    case Network.bitcoin:
       return Fees.mempoolFoundationInstance;
-    case Network.Signet:
+    case Network.signet:
       return Fees.mutinynetMempoolFoundationInstance;
-    case Network.Testnet:
+    case Network.testnet4:
       return Fees.testnetMempoolFoundationInstance;
-    case Network.Regtest:
+    case Network.testnet:
+      return Fees.testnetMempoolFoundationInstance;
+    case Network.regtest:
       return null;
-  }
-}
-
-bool showTxId(TransactionType type) {
-  if (type == TransactionType.pending || type == TransactionType.normal) {
-    return true;
-  } else {
-    return false;
   }
 }

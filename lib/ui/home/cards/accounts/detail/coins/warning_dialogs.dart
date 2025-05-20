@@ -5,6 +5,9 @@
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -91,7 +94,7 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
   Widget build(BuildContext context) {
     return Container(
       width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
-      padding: const EdgeInsets.all(EnvoySpacing.medium1),
+      padding: const EdgeInsets.all(EnvoySpacing.medium2),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -102,6 +105,10 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
               padding: const EdgeInsets.all(EnvoySpacing.small),
               icon: const Icon(Icons.close),
               onPressed: () {
+                if (ref.read(selectedAccountProvider) != null) {
+                  coinSelectionOverlayKey.currentState
+                      ?.show(SpendOverlayContext.preselectCoins);
+                }
                 Navigator.of(context).pop();
               },
             ),
@@ -111,10 +118,10 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
             height: 68,
             width: 68,
           ),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          const SizedBox(height: EnvoySpacing.medium1),
           Text(S().change_output_from_multiple_tags_modal_heading,
               style: EnvoyTypography.heading),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          const SizedBox(height: EnvoySpacing.medium1),
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
@@ -125,7 +132,7 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
                     ?.copyWith(fontWeight: FontWeight.w400, fontSize: 12),
                 textAlign: TextAlign.center),
           ),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          const SizedBox(height: EnvoySpacing.medium1),
           GestureDetector(
             onTap: () {
               setState(() {
@@ -158,18 +165,25 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
               ],
             ),
           ),
+          const SizedBox(height: EnvoySpacing.medium1),
           EnvoyButton(
             label: S().component_back,
             onTap: () {
+              if (ref.read(selectedAccountProvider) != null) {
+                coinSelectionOverlayKey.currentState
+                    ?.show(SpendOverlayContext.preselectCoins);
+              }
               Navigator.pop(context);
             },
-            type: ButtonType.primary,
+            type: ButtonType.secondary,
             state: ButtonState.defaultState,
+            height: 36,
           ),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+          const SizedBox(height: EnvoySpacing.medium1),
           EnvoyButton(
             state: ButtonState.defaultState,
             label: S().component_continue,
+            height: 36,
             onTap: () {
               ///user has dismissed the prompt
               if (dismissed) {

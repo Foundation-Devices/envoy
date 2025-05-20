@@ -9,25 +9,25 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_method_channel.dart';
+import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
-import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
-import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/business/envoy_seed.dart';
 
@@ -420,6 +420,7 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
       //wait for animation
       await Future.delayed(const Duration(seconds: 1));
+
       bool isDeleted = await EnvoySeed().delete();
       setState(() {
         _isDeleted = isDeleted;
@@ -439,6 +440,7 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
         _stateMachineController?.findInput<bool>("happy")?.change(false);
         _stateMachineController?.findInput<bool>("unhappy")?.change(true);
       }
+
       setState(() {
         _deleteInProgress = false;
       });

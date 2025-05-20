@@ -59,7 +59,7 @@ class EnvoyToast<T> extends StatefulWidget {
     this.backgroundColor,
   });
 
-  Future<T?> show(BuildContext context) async {
+  Future<T?> show(BuildContext context, {bool rootNavigator = false}) async {
     envoyToastRoute = showToast<T>(
       context: context,
       toast: this,
@@ -72,15 +72,16 @@ class EnvoyToast<T> extends StatefulWidget {
       }
     }
     _toast = this;
-    T? result = await Navigator.of(context, rootNavigator: false)
+    T? result = await Navigator.of(context, rootNavigator: rootNavigator)
         .push(envoyToastRoute as Route<T>);
     _toast = null;
     return result;
   }
 
   // clear all previous toasts overlays
-  static dismissPreviousToasts(BuildContext context) {
-    Navigator.of(context, rootNavigator: false)
+  static dismissPreviousToasts(BuildContext context,
+      {bool rootNavigator = false}) {
+    Navigator.of(context, rootNavigator: rootNavigator)
         .popUntil((route) => route.settings.name != ENVY_TOAST_ROUTE);
   }
 
@@ -91,32 +92,36 @@ class EnvoyToast<T> extends StatefulWidget {
 class EnvoyToastState extends State<EnvoyToast> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-        constraints: BoxConstraints(minHeight: Platform.isIOS ? 65 : 55),
-        decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: [
-              .2,
-              1,
-              1
-            ],
-                colors: [
-              Color(0xFF000000),
-              Color(0xff2f3334),
-              Color(0xFF000000),
-            ])),
-        child: Material(
-          color: Colors.transparent,
-          child: SafeArea(
-            bottom: false,
-            top: true,
-            left: false,
-            right: false,
-            child: createGenericToast(context),
-          ),
-        ));
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
+            constraints: BoxConstraints(minHeight: Platform.isIOS ? 65 : 55),
+            decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: [
+                  .2,
+                  1,
+                  1
+                ],
+                    colors: [
+                  Color(0xFF000000),
+                  Color(0xff2f3334),
+                  Color(0xFF000000),
+                ])),
+            child: Material(
+              color: Colors.transparent,
+              child: SafeArea(
+                bottom: false,
+                top: true,
+                left: false,
+                right: false,
+                child: createGenericToast(context),
+              ),
+            ));
+      },
+    );
   }
 
   Widget createGenericToast(context) {

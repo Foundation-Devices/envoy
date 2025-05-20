@@ -8,11 +8,10 @@ import 'package:envoy/util/console.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:stack_trace/stack_trace.dart';
 
-class EnvoyReport {
+class EnvoyReport extends ChangeNotifier {
   static final EnvoyReport _instance = EnvoyReport._();
 
   EnvoyReport._();
@@ -22,7 +21,7 @@ class EnvoyReport {
   }
 
   // The maximum number of logs to keep in the database
-  final int _logCapacity = 25;
+  static const int _logCapacity = 25;
   Database? _db;
   final StoreRef<int, Map<String, Object?>> _logsStore =
       intMapStoreFactory.store("logs");
@@ -68,13 +67,14 @@ class EnvoyReport {
     }
     if (_db != null) {
       _logsStore.add(_db!, report);
+      notifyListeners();
     }
   }
 
   Future<void> log(String category, String message,
       {StackTrace? stackTrace, int limitTrace = 50}) async {
     await _ensureDbInitialized();
-
+    kPrint("EnvoyReport: $category: $message");
     if (_db != null) {
       Map<String, String?> report = {
         "category": category,
@@ -86,6 +86,7 @@ class EnvoyReport {
             getStackTraceElements(stackTrace, limitTrace).join("\n");
       }
       _logsStore.add(_db!, report);
+      notifyListeners();
     }
   }
 
@@ -95,17 +96,18 @@ class EnvoyReport {
     }
   }
 
-  Future<List<Map<String, Object?>>> getAllLogs() async {
-    await _ensureDbInitialized(); // Ensure the database is ready
+  Future<List<Map<String, Object?>>> getAllLogs({int? limit}) async {
+    await _ensureDbInitialized();
     if (_db == null) {
-      return []; // Return an empty list if the database is still null
+      return [];
     }
     var log = await _logsStore.find(_db!,
         finder: Finder(
-          limit: _logCapacity,
+          limit: limit ?? _logCapacity,
           sortOrders: [SortOrder(Field.key, false)],
         ));
-    var logs = log.map((e) => e.value).toList().reversed.toList();
+
+    var logs = log.map((e) => e.value).toList();
     return logs;
   }
 
@@ -148,8 +150,8 @@ class EnvoyReport {
     return null;
   }
 
-  Future<String> getLogAsString() async {
-    final allLogs = await getAllLogs();
+  Future<String> getLogAsString([int limit = _logCapacity]) async {
+    final allLogs = await getAllLogs(limit: limit);
     String logs = "";
     for (var logMap in allLogs) {
       String log = "";

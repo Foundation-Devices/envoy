@@ -5,26 +5,29 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/business/blog_post.dart';
 import 'package:envoy/business/coins.dart';
+import 'package:envoy/business/country.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/media.dart';
+import 'package:envoy/business/server.dart';
 import 'package:envoy/business/video.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/business/prime_device.dart';
+
+// ignore: implementation_imports
+import 'package:ngwallet/src/wallet.dart' as wallet;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 
 // ignore: implementation_imports
 import 'package:sembast/src/type.dart';
 import 'package:sembast/utils/sembast_import_export.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wallet/wallet.dart' as wallet;
-import 'package:envoy/business/country.dart';
-import 'package:envoy/business/server.dart';
 
 class Action {
   Action({
@@ -68,7 +71,7 @@ class FirmwareInfo {
 }
 
 final pendingTxStreamProvider =
-    StreamProvider.family<List<wallet.Transaction>, String?>(
+    StreamProvider.family<List<EnvoyTransaction>, String?>(
         (ref, account) => EnvoyStorage().getPendingTxsSteam(account));
 
 final firmwareStreamProvider = StreamProvider.family<FirmwareInfo?, int>(
@@ -95,6 +98,7 @@ const String exchangeRateStoreName = "exchange_rate";
 const String locationsStoreName = "locations";
 const String selectedCountryStoreName = "countries";
 const String apiKeysStoreName = "api_keys";
+const String primeDataStoreName = "prime";
 
 ///keeps track of spend input tags, this would be handy to show previously used tags
 ///for example when user trying RBF.
@@ -147,6 +151,9 @@ class EnvoyStorage {
       StoreRef<int, String>(locationsStoreName);
 
   StoreRef<int, String> apiKeysStore = StoreRef<int, String>(apiKeysStoreName);
+
+  StoreRef<String, Map<String, dynamic>> primeStore =
+      StoreRef<String, Map<String, dynamic>>(primeDataStoreName);
 
   // Store everything except videos, blogs and locations
   Map<String, StoreRef> storesToBackUp = {};
@@ -328,7 +335,7 @@ class EnvoyStorage {
     return true;
   }
 
-  Future<List<wallet.Transaction>> getPendingTxs(
+  Future<List<EnvoyTransaction>> getPendingTxs(
       String accountId, wallet.TransactionType type) async {
     var finder = Finder(
       filter: Filter.and([
@@ -340,7 +347,7 @@ class EnvoyStorage {
     return transformPendingTxRecords(records);
   }
 
-  List<wallet.Transaction> transformPendingTxRecords(
+  List<EnvoyTransaction> transformPendingTxRecords(
       List<RecordSnapshot<Key?, Value?>> records) {
     return records.map(
       (e) {
@@ -353,29 +360,66 @@ class EnvoyStorage {
             break;
           }
         }
-        bool isReceived = type == wallet.TransactionType.ramp ||
-            type == wallet.TransactionType.btcPay;
-        int received = isReceived ? (e["amount"] as int) : 0;
-        int sent = isReceived ? 0 : (e["amount"] as int);
-        return wallet.Transaction(
-          e.key as String,
-          e.key as String,
-          DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
-          e["fee"] as int,
-          received,
-          sent,
-          0,
-          e["address"] as String,
-          type: type,
-          purchaseViewToken: e['purchaseViewToken'] as String?,
-          pullPaymentId: e['pullPaymentId'] as String?,
-          currencyAmount: e['currencyAmount'] as String?,
-          currency: e['currency'] as String?,
-          payoutId: e['payoutId'] as String?,
-          btcPayVoucherUri: e['btcPayVoucherUri'] as String?,
-          rampId: e['rampId'] as String?,
-          rampFee: e['rampFee'] as int?,
-        );
+        if (type == wallet.TransactionType.ramp) {
+          return RampTransaction(
+              txId: e.key as String,
+              accountId: e["account"] as String,
+              timestamp:
+                  DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
+              fee: BigInt.from((e["fee"] as int? ?? 0)),
+              amount: 0,
+              address: e["address"] as String,
+              purchaseViewToken: e['purchaseViewToken'] as String,
+              rampId: e['rampId'] as String?,
+              vsize: BigInt.zero,
+              feeRate: BigInt.zero,
+              rampFee: e['rampFee'] as int?);
+        }
+        if (type == wallet.TransactionType.btcPay) {
+          return BtcPayTransaction(
+            txId: e.key as String,
+            accountId: e["account"] as String,
+            vsize: BigInt.zero,
+            feeRate: BigInt.zero,
+            timestamp:
+                DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
+            fee: BigInt.from((e["fee"] as int? ?? 0)),
+            amount: 0,
+            address: e["address"] as String,
+            pullPaymentId: e['pullPaymentId'] as String?,
+            currency: e['currency'] as String?,
+            currencyAmount: e['currencyAmount'] as String?,
+            payoutId: e['payoutId'] as String?,
+            btcPayVoucherUri: e['btcPayVoucherUri'] as String?,
+          );
+        }
+        if (type == wallet.TransactionType.azteco) {
+          return AztecoTransaction(
+            txId: e.key as String,
+            amount: 0,
+            timestamp:
+                DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
+            accountId: e["account"] as String,
+            fee: BigInt.from((e["fee"] as int? ?? 0)),
+            address: e["address"] as String,
+            vsize: BigInt.zero,
+            feeRate: BigInt.zero,
+          );
+        }
+        return EnvoyTransaction(
+            txId: e.key as String,
+            fee: BigInt.from((e["fee"] as int? ?? 0)),
+            amount: 0,
+            address: e["address"] as String,
+            inputs: const [],
+            outputs: const [],
+            blockHeight: 0,
+            confirmations: 0,
+            vsize: BigInt.zero,
+            feeRate: BigInt.zero,
+            isConfirmed: false,
+            note: null,
+            date: BigInt.zero);
       },
     ).toList();
   }
@@ -437,7 +481,7 @@ class EnvoyStorage {
   }
 
   //returns a stream of all pending transactions that stored in the database
-  Stream<List<wallet.Transaction>> getPendingTxsSteam(String? accountId) {
+  Stream<List<EnvoyTransaction>> getPendingTxsSteam(String? accountId) {
     var finder = Finder(filter: Filter.equals('account', accountId));
     return EnvoyStorage()
         .pendingTxStore
@@ -492,6 +536,16 @@ class EnvoyStorage {
       return true;
     }
     return false;
+  }
+
+  Future<Map<String, String>> getAllNotes() async {
+    Map<String, String> notes = {};
+    await txNotesStore.find(_db).then((records) {
+      for (var record in records) {
+        notes[record.key] = record.value;
+      }
+    });
+    return notes;
   }
 
   void clearDismissedStatesStore() async {
@@ -843,6 +897,26 @@ class EnvoyStorage {
       return ApiKeys.fromJson(jsonDecode(keys.value));
     }
     return null;
+  }
+
+  Future<bool> savePrime(PrimeDevice prime) async {
+    await primeStore.record(prime.bleId).put(_db, prime.toJson());
+    return true;
+  }
+
+  Future<PrimeDevice?> getPrimeByBleId(String bleId) async {
+    final json = await primeStore.record(bleId).get(_db);
+    return json == null ? null : PrimeDevice.fromJson(json);
+  }
+
+  Future<List<PrimeDevice>> getAllPrimes() async {
+    final records = await primeStore.find(_db);
+    return records.map((record) => PrimeDevice.fromJson(record.value)).toList();
+  }
+
+  Future<bool> deletePrimeByBleId(String bleId) async {
+    final deletedKey = await primeStore.record(bleId).delete(_db);
+    return deletedKey != null;
   }
 
   Database db() => _db;

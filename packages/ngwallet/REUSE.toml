@@ -1,0 +1,57 @@
+# SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
+# SPDX-FileCopyrightText: 2025 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+version = 1
+SPDX-PackageName = "ngwallet"
+SPDX-PackageSupplier = "Igor Cota <hello@foundation.xyz>"
+SPDX-PackageDownloadLocation = "https://github.com/Foundation-Devices/envoy"
+
+[[annotations]]
+path = "lib/src/rust/api/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 Foundation Devices Inc."
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "lib/src/rust/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 Foundation Devices Inc."
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "rust/src/frb_generated.*"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 Foundation Devices Inc."
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "android/gradle/wrapper/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 Foundation Devices Inc."
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "android/gradlew*"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 Foundation Devices Inc."
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "rust_builder/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 Foundation Devices Inc."
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "lib/src/*.freezed.dart"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 Foundation Devices Inc."
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "lib/src/*.g.dart"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 Foundation Devices Inc."
+SPDX-License-Identifier = "GPL-3.0-or-later"

@@ -8,7 +8,7 @@ use jni::{AttachGuard, JNIEnv, JavaVM};
 use std::cell::RefCell;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::OnceLock;
-
+use log::{debug, info};
 // use crate::api::ble::Error;
 
 use super::RUNTIME;
@@ -22,7 +22,7 @@ std::thread_local! {
 
 #[frb(ignore)]
 pub fn create_runtime() -> anyhow::Result<()> {
-    tracing::info!("Create runtime");
+    info!("Create runtime");
     let vm = JAVAVM.get().ok_or(anyhow::anyhow!("Cannot get JavaVM"))?;
     let env = vm.attach_current_thread().unwrap();
 
@@ -35,18 +35,18 @@ pub fn create_runtime() -> anyhow::Result<()> {
             format!("bluart-thread-{}", id)
         })
         .on_thread_stop(move || {
-            tracing::debug!("Stopping runtime thread");
+            debug!("Stopping runtime thread");
             JNI_ENV.with(|f| *f.borrow_mut() = None);
         })
         .on_thread_start(move || {
-            tracing::debug!("Wrapping new thread in vm");
+            debug!("Wrapping new thread in vm");
 
             // We now need to call the following code block via JNI calls. God help us.
             //
             //  java.lang.Thread.currentThread().setContextClassLoader(
             //    java.lang.ClassLoader.getSystemClassLoader()
             //  );
-            tracing::debug!("Adding classloader to thread");
+            debug!("Adding classloader to thread");
 
             let vm = JAVAVM.get().unwrap();
             let env = vm.attach_current_thread().unwrap();
@@ -68,7 +68,7 @@ pub fn create_runtime() -> anyhow::Result<()> {
                 &[CLASS_LOADER.get().unwrap().as_obj().into()],
             )
             .unwrap();
-            tracing::debug!("Classloader added to thread");
+            debug!("Classloader added to thread");
             JNI_ENV.with(|f| *f.borrow_mut() = Some(env));
         })
         .build()

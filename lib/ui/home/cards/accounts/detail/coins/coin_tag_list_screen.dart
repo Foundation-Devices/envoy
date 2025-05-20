@@ -2,10 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account.dart';
-import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_details_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
@@ -17,6 +16,7 @@ import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 //to track if the coin details screen is active,
 //so we can close it when the use exits coin selection screen
@@ -24,7 +24,7 @@ import 'package:envoy/ui/components/stripe_painter.dart';
 final coinDetailsActiveProvider = StateProvider<bool>((ref) => false);
 
 class CoinsList extends ConsumerStatefulWidget {
-  final Account account;
+  final EnvoyAccount account;
 
   const CoinsList({super.key, required this.account});
 
@@ -37,7 +37,7 @@ class _CoinsListState extends ConsumerState<CoinsList> {
 
   @override
   Widget build(BuildContext context) {
-    List<CoinTag> tags = ref.watch(coinsTagProvider(widget.account.id ?? ""));
+    List<Tag> tags = ref.watch(tagsProvider(widget.account.id));
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
       child: FadingEdgeScrollView.fromScrollView(
@@ -81,7 +81,7 @@ class _CoinsListState extends ConsumerState<CoinsList> {
 }
 
 class CoinItemWidget extends ConsumerWidget {
-  final CoinTag tag;
+  final Tag tag;
 
   const CoinItemWidget({super.key, required this.tag});
 
@@ -93,10 +93,10 @@ class CoinItemWidget extends ConsumerWidget {
               fontSize: 16,
               fontWeight: FontWeight.w600,
             );
-
-    Color cardBackground = tag.untagged
-        ? const Color(0xff808080)
-        : tag.getAccount()?.color ?? EnvoyColors.listAccountTileColors[0];
+    EnvoyAccount? account = ref.read(selectedAccountProvider);
+    Color color =
+        account?.color.toColor() ?? EnvoyColors.listAccountTileColors[0];
+    Color cardBackground = tag.untagged ? const Color(0xff808080) : color;
     double cardRadius = EnvoySpacing.medium2;
     double textHeight =
         (EnvoyTypography.info.height ?? 1.3) * EnvoyTypography.info.fontSize!;

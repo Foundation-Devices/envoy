@@ -11,8 +11,7 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/business/account.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:envoy/business/locale.dart';
 
 //ignore: must_be_immutable
@@ -21,13 +20,15 @@ class AmountDisplay extends ConsumerStatefulWidget {
   final int? amountSats;
   String displayedAmount;
   final Function? onLongPress;
-  final Account? account;
+  double? displayFiat;
+  final EnvoyAccount? account;
 
   final Function(String)? onUnitToggled;
 
   AmountDisplay(
       {this.displayedAmount = "",
       this.amountSats,
+      this.displayFiat,
       this.onUnitToggled,
       this.inputMode = false,
       this.onLongPress,
@@ -35,7 +36,11 @@ class AmountDisplay extends ConsumerStatefulWidget {
       super.key});
 
   void setDisplayAmount(AmountDisplayUnit unit) {
-    displayedAmount = getDisplayAmount(amountSats!, unit);
+    if (unit == AmountDisplayUnit.fiat) {
+      displayedAmount = ExchangeRate().formatFiatToString(displayFiat!);
+    } else {
+      displayedAmount = getDisplayAmount(amountSats!, unit);
+    }
   }
 
   @override
@@ -51,7 +56,7 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
 
     // Fiat is always at the end of enum
     if (Settings().selectedFiat == null ||
-        widget.account?.wallet.network != Network.Mainnet) {
+        widget.account?.network != Network.bitcoin) {
       length--;
     }
 
@@ -104,7 +109,7 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
 
     bool isFormattedAmountEmpty = ExchangeRate().getFormattedAmount(
           widget.amountSats ?? 0,
-          wallet: widget.account?.wallet,
+          network: widget.account?.network,
         ) ==
         "";
 
@@ -115,7 +120,9 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.only(right: 6.0),
+                padding: EdgeInsets.only(
+                    right: unit == AmountDisplayUnit.fiat ? 10 : 6.0,
+                    left: unit == AmountDisplayUnit.fiat ? 6 : 0),
                 child: displayIcon(widget.account!, unit),
               ),
               Text(
@@ -134,35 +141,60 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
           ),
           isFormattedAmountEmpty
               ? const SizedBox.shrink()
-              : RichText(
-                  textScaler: TextScaler.linear(textScaleFactor),
-                  text: TextSpan(
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          color: EnvoyColors.accentPrimary, fontSize: 16),
-                      children: [
-                        if (unit == AmountDisplayUnit.fiat)
-                          WidgetSpan(
-                            alignment: PlaceholderAlignment.middle,
-                            child: SizedBox(
-                                height: 20,
-                                child: getUnitIcon(widget.account!)),
-                          ),
-                        TextSpan(
-                          text: unit != AmountDisplayUnit.fiat
-                              ? ExchangeRate().getFormattedAmount(
-                                  widget.amountSats ?? 0,
-                                  wallet: widget.account?.wallet)
-                              : (Settings().displayUnit == DisplayUnit.btc
-                                  ? getDisplayAmount(
-                                      widget.amountSats ?? 0,
-                                      AmountDisplayUnit.btc,
-                                    )
-                                  : getDisplayAmount(
-                                      widget.amountSats ?? 0,
-                                      AmountDisplayUnit.sat,
-                                    )),
-                        ),
-                      ])),
+              : Row(
+                  children: [
+                    unit != AmountDisplayUnit.fiat
+                        ? Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Text(
+                              ExchangeRate().getSymbol(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall!
+                                  .copyWith(
+                                      color: EnvoyColors.accentPrimary,
+                                      fontSize: 16),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                    RichText(
+                        textScaler: TextScaler.linear(textScaleFactor),
+                        text: TextSpan(
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall!
+                                .copyWith(
+                                    color: EnvoyColors.accentPrimary,
+                                    fontSize: 16),
+                            children: [
+                              //TODO: fix with envoyAccount
+                              // if (unit == AmountDisplayUnit.fiat)
+                              //   WidgetSpan(
+                              //     alignment: PlaceholderAlignment.middle,
+                              //     child: SizedBox(
+                              //         height: 20,
+                              //         child: getUnitIcon(widget.account!)),
+                              //   ),
+                              TextSpan(
+                                text: unit != AmountDisplayUnit.fiat
+                                    ? ExchangeRate().getFormattedAmount(
+                                        widget.amountSats ?? 0,
+                                        displayFiat: widget.displayFiat,
+                                        network: widget.account?.network,
+                                        includeSymbol: false)
+                                    : (Settings().displayUnit == DisplayUnit.btc
+                                        ? getDisplayAmount(
+                                            widget.amountSats ?? 0,
+                                            AmountDisplayUnit.btc,
+                                          )
+                                        : getDisplayAmount(
+                                            widget.amountSats ?? 0,
+                                            AmountDisplayUnit.sat,
+                                          )),
+                              ),
+                            ])),
+                  ],
+                ),
         ],
       ),
       onPressed: () {

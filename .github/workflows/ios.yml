@@ -62,10 +62,15 @@ jobs:
       - name: Install automake
         run: brew install automake
 
+      - name: Install bindgen-cli (for aws-lc-sys)
+        run: cargo install --force --locked bindgen-cli
+
       - name: Build Rust libs
-        run: ./build_ffi_ios.sh
+        run: ./scripts/build_ffi_ios.sh
 
       - name: Build iOS App Store Package
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
 

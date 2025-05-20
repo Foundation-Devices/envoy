@@ -26,8 +26,9 @@ import 'package:envoy/util/console.dart';
 import 'package:envoy/util/xfp_endian.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
-import 'package:wallet/exceptions.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/src/exceptions.dart';
+import 'package:ngwallet/src/wallet.dart';
+import 'package:ngwallet/ngwallet.dart' as ng_wallet;
 import 'package:envoy/business/bip329.dart';
 
 class AccountAlreadyPaired implements Exception {}
@@ -145,7 +146,7 @@ class AccountManager extends ChangeNotifier {
 
   Future<Account> _syncAccount(Account account) async {
     bool? changed;
-    int port = Settings().getPort(account.wallet.network);
+    int port = Settings().getPort(ng_wallet.Network.bitcoin);
     String server;
     String network = account.wallet.network.toString();
 
@@ -170,7 +171,7 @@ class AccountManager extends ChangeNotifier {
 
     try {
       changed = await account.wallet
-          .sync(Settings().electrumAddress(account.wallet.network), port);
+          .sync(Settings().electrumAddress(ng_wallet.Network.bitcoin), port);
     } on Exception catch (e) {
       // Let ConnectivityManager know that we can't reach Electrum
       if (account.wallet.network == Network.Mainnet) {
@@ -433,7 +434,7 @@ class AccountManager extends ChangeNotifier {
         Account restoredAccount = Account.fromJson(account);
         accounts.add(restoredAccount);
         try {
-          restoredAccount.wallet.init(walletsDirectory);
+          // restoredAccount.wallet.init(walletsDirectory);
         } on Exception catch (e) {
           EnvoyReport().log("recovery", e.toString());
         }
@@ -444,10 +445,10 @@ class AccountManager extends ChangeNotifier {
   }
 
   _startPeriodicSync() {
-    // Sync periodically
-    _syncTimer = Timer.periodic(const Duration(seconds: 15), (timer) {
-      syncAll();
-    });
+    // // Sync periodically
+    // _syncTimer = Timer.periodic(const Duration(seconds: 15), (timer) {
+    //   syncAll();
+    // });
   }
 
   static Future<Wallet> _getWallet(String fingerprint,

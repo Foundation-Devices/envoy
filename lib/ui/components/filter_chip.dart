@@ -25,12 +25,14 @@ class EnvoyFilterChip extends StatelessWidget {
     final chipBorder = BorderRadius.circular(EnvoySpacing.medium3);
     final foregroundColor =
         selected ? EnvoyColors.solidWhite : EnvoyColors.textTertiary;
-    return InkWell(
+
+    return IntrinsicWidth(
+        child: InkWell(
       borderRadius: chipBorder,
       mouseCursor: SystemMouseCursors.click,
       onTap: onTap,
       child: AnimatedContainer(
-        constraints: const BoxConstraints(minWidth: 48),
+        constraints: const BoxConstraints(minWidth: 48, minHeight: 30),
         alignment: Alignment.center,
         padding: const EdgeInsets.all(EnvoySpacing.xs),
         decoration: BoxDecoration(
@@ -42,6 +44,7 @@ class EnvoyFilterChip extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
           child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               if (icon != null)
                 Padding(
@@ -58,6 +61,6 @@ class EnvoyFilterChip extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ));
   }
 }

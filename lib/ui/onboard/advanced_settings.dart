@@ -67,8 +67,7 @@ class _AdvancedSettingsOptionsState
                       child: IndicatorShield(),
                     ),
                     Text(
-                      //TODO: copy update
-                      "ADVANCED OPTIONS",
+                      S().onboarding_advanced_title.toUpperCase(),
                       style:
                           Theme.of(context).textTheme.displayMedium?.copyWith(
                                 color: Colors.white,
@@ -123,37 +122,42 @@ class _AdvancedSettingsOptionsState
                                         Column(
                                           children: [
                                             ListTile(
-                                              //TODO: copy update
                                               leading: Text(
-                                                "This is infotext about magic backups",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleSmall,
+                                                S().onboarding_advanced_magicBackupSwitchText,
+                                                style: EnvoyTypography.info
+                                                    .copyWith(
+                                                  color:
+                                                      EnvoyColors.textPrimary,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
                                               ),
-                                              trailing: EnvoyToggle(
-                                                value: enableMagicBackup,
-                                                onChanged: (bool value) async {
-                                                  setState(() {
-                                                    enableMagicBackup =
-                                                        !enableMagicBackup;
-                                                  });
-                                                },
+                                              trailing: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 2),
+                                                child: EnvoyToggle(
+                                                  value: enableMagicBackup,
+                                                  onChanged:
+                                                      (bool value) async {
+                                                    setState(() {
+                                                      enableMagicBackup =
+                                                          !enableMagicBackup;
+                                                    });
+                                                  },
+                                                ),
                                               ),
                                               contentPadding:
                                                   const EdgeInsets.symmetric(
-                                                      vertical:
-                                                          EnvoySpacing.small,
-                                                      horizontal:
-                                                          EnvoySpacing.small),
+                                                vertical: EnvoySpacing.medium1,
+                                              ),
                                             ),
-                                            //TODO: copy update
-                                            const Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: EnvoySpacing.small,
-                                                  horizontal: EnvoySpacing.xs),
-                                              child: Text(
-                                                  "Here we can introduce the user to the special area here, what important stuff he can do."),
-                                            )
+                                            Text(
+                                                S()
+                                                    .onboarding_advanced_magicBackupsContent,
+                                                style: EnvoyTypography.info
+                                                    .copyWith(
+                                                  color:
+                                                      EnvoyColors.textSecondary,
+                                                ))
                                           ],
                                         ),
                                         buildDivider(),
@@ -252,40 +256,51 @@ class _AdvancedSettingsOptionsState
                                         const SizedBox(
                                             height: EnvoySpacing.medium2),
                                         Material(
-                                          color: Colors.transparent,
-                                          child: EnvoyDropdown(
-                                            initialIndex: ConnectivityManager()
-                                                    .usingDefaultServer
-                                                ? 0
-                                                : 1,
-                                            options: [
-                                              EnvoyDropdownOption(S()
-                                                  .privacy_node_nodeType_foundation),
-                                              EnvoyDropdownOption(
-                                                  S()
-                                                      .privacy_node_nodeType_personal,
-                                                  type: EnvoyDropdownOptionType
-                                                      .personalNode),
-                                            ],
-                                            onOptionChanged: (selectedOption) {
-                                              if (selectedOption != null) {
-                                                setState(() {
+                                            color: Colors.transparent,
+                                            child: EnvoyDropdown(
+                                              initialIndex:
+                                                  getInitialElectrumDropdownIndex(),
+                                              options: [
+                                                EnvoyDropdownOption(S()
+                                                    .privacy_node_nodeType_foundation),
+                                                EnvoyDropdownOption(
+                                                    S()
+                                                        .privacy_node_nodeType_personal,
+                                                    type:
+                                                        EnvoyDropdownOptionType
+                                                            .personalNode),
+                                                EnvoyDropdownOption(
+                                                    S()
+                                                        .privacy_node_nodeType_publicServers,
+                                                    type:
+                                                        EnvoyDropdownOptionType
+                                                            .sectionBreak),
+                                                EnvoyDropdownOption(
+                                                    PublicServer
+                                                        .blockStream.label,
+                                                    type:
+                                                        EnvoyDropdownOptionType
+                                                            .blockStream),
+                                                EnvoyDropdownOption(
+                                                    PublicServer.diyNodes.label,
+                                                    type:
+                                                        EnvoyDropdownOptionType
+                                                            .diyNodes),
+                                                EnvoyDropdownOption(
+                                                    PublicServer.luke.label,
+                                                    type:
+                                                        EnvoyDropdownOptionType
+                                                            .luke),
+                                              ],
+                                              onOptionChanged:
+                                                  (selectedOption) {
+                                                if (selectedOption != null) {
                                                   _handleDropdownChange(
                                                       selectedOption);
-                                                  if (!(selectedOption.type ==
-                                                      EnvoyDropdownOptionType
-                                                          .personalNode)) {
-                                                    s.useDefaultElectrumServer(
-                                                        true);
-                                                  }
-                                                });
-                                              }
-                                            },
-                                          ),
-                                        ),
-                                        if (!ConnectivityManager()
-                                                .usingDefaultServer ||
-                                            _showPersonalNodeTextField)
+                                                }
+                                              },
+                                            )),
+                                        if (_showPersonalNodeTextField)
                                           Padding(
                                             padding: const EdgeInsets.only(
                                                 top: EnvoySpacing.medium1),
@@ -321,6 +336,21 @@ class _AdvancedSettingsOptionsState
       _showPersonalNodeTextField =
           newOption.type == EnvoyDropdownOptionType.personalNode;
     });
+
+    switch (newOption.type) {
+      case EnvoyDropdownOptionType.normal:
+        Settings().useDefaultElectrumServer(true);
+      case EnvoyDropdownOptionType.personalNode:
+        Settings().useDefaultElectrumServer(false);
+      case EnvoyDropdownOptionType.blockStream:
+        Settings().setCustomElectrumAddress(PublicServer.blockStream.address);
+      case EnvoyDropdownOptionType.diyNodes:
+        Settings().setCustomElectrumAddress(PublicServer.diyNodes.address);
+      case EnvoyDropdownOptionType.luke:
+        Settings().setCustomElectrumAddress(PublicServer.luke.address);
+      case EnvoyDropdownOptionType.sectionBreak:
+      // do nothing
+    }
   }
 
   Widget buildDivider() {
@@ -328,7 +358,7 @@ class _AdvancedSettingsOptionsState
       padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium2),
       child: Divider(
         height: 4,
-        color: EnvoyColors.border1,
+        color: EnvoyColors.textInactive,
       ),
     );
   }

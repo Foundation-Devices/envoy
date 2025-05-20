@@ -4,37 +4,37 @@
 
 import 'dart:ui';
 
-import 'package:envoy/business/coin_tag.dart';
-import 'package:envoy/business/coins.dart';
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/address_widget.dart';
+import 'package:envoy/ui/components/envoy_info_card.dart';
+import 'package:envoy/ui/components/envoy_tag_list_item.dart';
 import 'package:envoy/ui/envoy_colors.dart' as old_colors;
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_widget.dart';
 import 'package:envoy/ui/state/transactions_note_state.dart';
-import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/util/amount.dart';
-import 'package:envoy/util/envoy_storage.dart';
-import 'package:envoy/util/list_utils.dart';
+import 'package:envoy/util/easing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
-import 'package:envoy/ui/components/address_widget.dart';
-import 'package:envoy/ui/components/envoy_tag_list_item.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
-import 'package:envoy/ui/components/envoy_info_card.dart';
-import 'package:envoy/util/easing.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 class CoinDetailsWidget extends ConsumerStatefulWidget {
-  final Coin coin;
-  final CoinTag tag;
+  final Output output;
+  final Tag tag;
 
-  const CoinDetailsWidget({super.key, required this.coin, required this.tag});
+  const CoinDetailsWidget({super.key, required this.output, required this.tag});
 
   @override
   ConsumerState<CoinDetailsWidget> createState() => _CoinDetailsWidgetState();
@@ -46,20 +46,16 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    Color accountAccentColor = widget.tag.getAccount()?.color ??
-        old_colors.EnvoyColors.listAccountTileColors[0];
-    final accountTransactions =
-        ref.read(transactionsProvider(widget.tag.account));
-    final tx = accountTransactions
-        .firstWhereOrNull((element) => element.txId == widget.coin.utxo.txid);
-    //if tx is not found in the list of transactions,
-    if (tx == null) {
-      return Container();
-    }
-    final utxoAddress = tx.outputs?[widget.coin.utxo.vout] ?? "";
+    Color accountAccentColor =
+        ref.read(selectedAccountProvider)?.color.toColor() ??
+            old_colors.EnvoyColors.listAccountTileColors[0];
+
+    final String utxoAddress = widget.output.address;
     final coinTag = widget.tag;
-    final coin = widget.coin;
-    final note = ref.watch(txNoteProvider(tx.txId)) ?? "";
+    final output =
+        ref.watch(outputProvider(widget.output.getId())) ?? widget.output;
+    final tag = ref.watch(tagProvider(widget.tag.name)) ?? widget.tag;
+    final note = ref.watch(txNoteProvider(output.txId)) ?? "";
 
     final trailingTextStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
           color: EnvoyColors.textPrimary,
@@ -70,13 +66,11 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
       accountAccentColor = const Color(0xff808080);
     }
 
-    bool addressNotAvailable = utxoAddress.isEmpty;
-
     return EnvoyInfoCard(
         backgroundColor: accountAccentColor,
         topWidget: CoinBalanceWidget(
-          coin: coin,
-          coinTag: widget.tag,
+          output: output,
+          coinTag: tag,
         ),
         bottomWidgets: [
           EnvoyInfoCardListItem(
@@ -96,17 +90,13 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                       Tween<double>(begin: 0, end: showExpandedAddress ? 1 : 0),
                   duration: const Duration(milliseconds: 200),
                   builder: (context, value, child) {
-                    return addressNotAvailable
-                        ? Text("Address not available ",
-                            // TODO: Figma
-                            style: trailingTextStyle)
-                        : AddressWidget(
-                            widgetKey: ValueKey<bool>(showExpandedAddress),
-                            address: utxoAddress,
-                            short: true,
-                            sideChunks:
-                                2 + (value * (utxoAddress.length / 4)).round(),
-                          );
+                    return AddressWidget(
+                      widgetKey: ValueKey<bool>(showExpandedAddress),
+                      address: utxoAddress,
+                      short: true,
+                      sideChunks:
+                          2 + (value * (utxoAddress.length / 4)).round(),
+                    );
                   }),
             ),
           ),
@@ -116,7 +106,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                 color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
             trailing: GestureDetector(
                 onLongPress: () {
-                  copyTxId(context, tx.txId, tx.type);
+                  copyTxId(context, output.txId, null);
                 },
                 onTap: () {
                   setState(() {
@@ -136,9 +126,8 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                       child: SingleChildScrollView(
                         child: Text(
                           truncateWithEllipsisInCenter(
-                              widget.coin.utxo.txid,
-                              lerpDouble(
-                                      16, widget.coin.utxo.txid.length, value)!
+                              output.txId,
+                              lerpDouble(16, output.txId.length, value)!
                                   .toInt()),
                           style: EnvoyTypography.body
                               .copyWith(color: EnvoyColors.textSecondary),
@@ -154,7 +143,9 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
             title: S().coindetails_overlay_date,
             icon: const EnvoyIcon(EnvoyIcons.calendar,
                 color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
-            trailing: Text(getTransactionDateAndTimeString(tx),
+            trailing: Text(
+                getTransactionDateAndTimeString(
+                    output.date?.toInt(), output.isConfirmed),
                 style: trailingTextStyle),
           ),
           EnvoyInfoCardListItem(
@@ -167,8 +158,11 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
             title: S().coindetails_overlay_status,
             icon: const EnvoyIcon(EnvoyIcons.activity,
                 color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
-            trailing:
-                Text(getTransactionStatusString(tx), style: trailingTextStyle),
+            trailing: Text(
+                output.isConfirmed
+                    ? S().coindetails_overlay_status_confirmed
+                    : S().activity_pending,
+                style: trailingTextStyle),
           ),
           GestureDetector(
             onTap: () {
@@ -177,12 +171,17 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                   context: context,
                   useRootNavigator: true,
                   dialog: TxNoteDialog(
-                    txId: tx.txId,
+                    txId: output.txId,
                     noteTitle: S().add_note_modal_heading,
                     noteHintText: S().add_note_modal_ie_text_field,
                     noteSubTitle: S().add_note_modal_subheading,
                     onAdd: (note) async {
-                      await EnvoyStorage().addTxNote(key: tx.txId, note: note);
+                      final selectedAccount = ref.read(selectedAccountProvider);
+                      if (selectedAccount == null) {
+                        return;
+                      }
+                      selectedAccount.handler
+                          ?.setNote(txId: output.txId, note: note);
                       navigator.pop();
                     },
                   ),

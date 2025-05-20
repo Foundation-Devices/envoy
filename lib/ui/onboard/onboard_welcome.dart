@@ -10,7 +10,6 @@ import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/components/button.dart';
-import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
@@ -21,6 +20,9 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
+import 'package:envoy/ui/widgets/scanner/decoders/generic_qr_decoder.dart';
+import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,6 +31,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
+import 'package:envoy/ui/pages/legal/passport_tou.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 
 enum EscapeHatchTap { logo, text }
 
@@ -90,7 +94,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
       child: EnvoyPatternScaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
-          leading: isOnboardingComplete
+          leading: isOnboardingComplete && GoRouter.of(context).canPop()
               ? CupertinoNavigationBarBackButton(
                   color: EnvoyColors.textPrimaryInverse,
                   onPressed: () => context.go("/"),
@@ -100,8 +104,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: TextButton(
-                //TODO: copy local
-                child: Text("Advanced Options",
+                child: Text(S().component_advanced,
                     style: EnvoyTypography.button
                         .copyWith(color: EnvoyColors.textPrimaryInverse)),
                 onPressed: () {
@@ -140,14 +143,14 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const SizedBox(height: EnvoySpacing.small),
+                        const SizedBox(height: EnvoySpacing.medium1),
                         Text(
                           S().welcome_screen_heading,
                           style: EnvoyTypography.heading,
                           textAlign: TextAlign.center,
                         ),
                         const Padding(
-                            padding: EdgeInsets.all(EnvoySpacing.medium1)),
+                            padding: EdgeInsets.all(EnvoySpacing.small)),
                         GestureDetector(
                           onTap: () {
                             registerEscapeTap(EscapeHatchTap.text);
@@ -157,8 +160,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                 horizontal: EnvoySpacing.xs),
                             child: Text(
                               //TODO: sync latest copy and button links
-                              S().welcome_screen_subheading,
-                              style: Theme.of(context).textTheme.bodySmall,
+                              S().onboarding_welcome_content,
+                              style: EnvoyTypography.info
+                                  .copyWith(color: EnvoyColors.textTertiary),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -180,10 +184,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                     child: EnvoyWelcomeButton(
                       asset: Image.asset(
                         'assets/welcome_envoy_sm.png',
-                        // Replace with your image URL or asset
-                        fit: BoxFit.cover, // Adjust as per your layout
+                        fit: BoxFit.cover,
                       ),
-                      title: "Create a\nMobile Wallet",
+                      title: S().onboarding_welcome_createMobileWallet,
                       onTap: () {
                         context.pushNamed(ONBOARD_ENVOY_SETUP,
                             queryParameters: {"setupEnvoy": "1"});
@@ -195,12 +198,96 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                     child: EnvoyWelcomeButton(
                       asset: Image.asset(
                         'assets/passport_and_prime.png',
-                        // Replace with your image URL or asset
-                        fit: BoxFit.cover, // Adjust as per your layout
+                        fit: BoxFit.cover,
                       ),
-                      title: "Set Up a\nPassport Device",
+                      title: S().onboarding_welcome_setUpPassport,
                       onTap: () {
-                        showScanDialog(context);
+                        showScannerDialog(
+                            context: context,
+                            onBackPressed: (context) {
+                              Navigator.pop(context);
+                            },
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: EnvoySpacing.medium3,
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: EnvoySpacing.medium3),
+                                        child: Text(
+                                          S().onboarding_passpportSelectCamera_sub235VersionAlert,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.w700,
+                                                color: EnvoyColors
+                                                    .textPrimaryInverse,
+                                              ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                      TextButton(
+                                        child: Text(
+                                          S().onboarding_passpportSelectCamera_tapHere,
+                                          style: EnvoyTypography.button
+                                              .copyWith(
+                                                  color: EnvoyColors
+                                                      .textPrimaryInverse),
+                                        ),
+                                        onPressed: () async {
+                                          Navigator.pop(context);
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                            return const TouPage();
+                                          }));
+                                        },
+                                      ),
+                                      const SizedBox(
+                                          height: EnvoySpacing.medium3),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                            decoder: GenericQrDecoder(onScan: (String payload) {
+                              final uri = Uri.parse(payload);
+                              final params = uri.queryParameters;
+
+                              if (params.containsKey("p")) {
+                                Navigator.pop(context);
+                                context.goNamed(ONBOARD_PRIME,
+                                    queryParameters: params);
+                              } else if (params.containsKey("t")) {
+                                Navigator.pop(context);
+                                context.goNamed(ONBOARD_PASSPORT_TOU,
+                                    queryParameters: params);
+                              } else {
+                                // TODO: manage this inside QR decoder ???
+                                EnvoyToast(
+                                  replaceExisting: true,
+                                  duration: const Duration(seconds: 6),
+                                  message: "Invalid QR code",
+                                  isDismissible: true,
+                                  onActionTap: () {
+                                    EnvoyToast.dismissPreviousToasts(context);
+                                  },
+                                  icon: const Icon(
+                                    Icons.info_outline,
+                                    color: EnvoyColors.accentPrimary,
+                                  ),
+                                ).show(context);
+                              }
+                            }));
                       },
                     ),
                   ),
@@ -213,10 +300,10 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
     );
   }
 
+// ignore: unused_element
   void showScanDialog(BuildContext context) async {
     bool promptDismissed = await EnvoyStorage()
         .checkPromptDismissed(DismissiblePrompt.scanToConnect);
-    bool dismissed = false;
 
     if (!promptDismissed && context.mounted) {
       showEnvoyDialog(
@@ -249,64 +336,70 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                             fit: BoxFit.contain,
                           ),
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              dismissed = !dismissed;
-                            });
-                          },
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                child: EnvoyCheckbox(
-                                  value: dismissed,
-                                  onChanged: (value) {
-                                    if (value != null) {
-                                      setState(() {
-                                        dismissed = value;
-                                      });
-                                    }
-                                  },
-                                ),
-                              ),
-                              Text(
-                                S().component_dontShowAgain,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                      color: dismissed
-                                          ? Colors.black
-                                          : const Color(0xff808080),
-                                    ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        //TODO: add more context instead of dismissible
+                        // GestureDetector(
+                        //   onTap: () {
+                        //     setState(() {
+                        //       dismissed = !dismissed;
+                        //     });
+                        //   },
+                        //   child: Row(
+                        //     crossAxisAlignment: CrossAxisAlignment.center,
+                        //     mainAxisAlignment: MainAxisAlignment.center,
+                        //     children: [
+                        //       SizedBox(
+                        //         child: EnvoyCheckbox(
+                        //           value: dismissed,
+                        //           onChanged: (value) {
+                        //             if (value != null) {
+                        //               setState(() {
+                        //                 dismissed = value;
+                        //               });
+                        //             }
+                        //           },
+                        //         ),
+                        //       ),
+                        //       Text(
+                        //         S().component_dontShowAgain,
+                        //         style: Theme.of(context)
+                        //             .textTheme
+                        //             .bodyMedium
+                        //             ?.copyWith(
+                        //               color: dismissed
+                        //                   ? Colors.black
+                        //                   : const Color(0xff808080),
+                        //             ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
                         EnvoyButton(
                           label: "Continue",
                           type: ButtonType.primary,
                           state: ButtonState.defaultState,
                           onTap: () {
-                            if (dismissed) {
-                              EnvoyStorage().addPromptState(
-                                  DismissiblePrompt.scanToConnect);
-                            }
+                            // if (dismissed) {
+                            //   EnvoyStorage().addPromptState(
+                            //       DismissiblePrompt.scanToConnect);
+                            // }
+                            // Navigator.pop(context);
 
-                            context.goNamed(ONBOARD_PRIME);
-                            //TODO: use scanner
-                            return;
-                            // Navigator.push(context, MaterialPageRoute(
-                            //   builder: (context) {
-                            //     return ScannerPage.devicePair(
-                            //       (payload) {
-                            //         Navigator.pop(context);
-                            //       },
-                            //     );
-                            //   },
-                            // ));
+                            showScannerDialog(
+                                context: context,
+                                onBackPressed: (context) {
+                                  Navigator.pop(context);
+                                },
+                                decoder:
+                                    GenericQrDecoder(onScan: (String payload) {
+                                  Navigator.pop(context);
+                                  final uri = Uri.parse(payload);
+                                  kPrint(
+                                      "BLE UriParams ${uri.queryParameters}");
+                                  context.pushNamed(
+                                    ONBOARD_PRIME,
+                                    queryParameters: uri.queryParameters,
+                                  );
+                                }));
                           },
                         )
                       ],
@@ -486,7 +579,7 @@ class _EnvoyWelcomeButtonState extends State<EnvoyWelcomeButton> {
                           ),
                           Container(
                             height: 2,
-                            color: EnvoyColors.danger,
+                            color: EnvoyColors.accentSecondary,
                           ),
                           Flexible(
                             flex: 4,

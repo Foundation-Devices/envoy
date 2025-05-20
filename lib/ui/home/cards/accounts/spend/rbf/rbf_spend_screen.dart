@@ -5,37 +5,36 @@
 import 'dart:ui';
 
 import 'package:animations/animations.dart';
-import 'package:envoy/business/account.dart';
-import 'package:envoy/business/coin_tag.dart';
-import 'package:envoy/business/coins.dart';
+import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/choose_coins_widget.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_button.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_details.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/transaction_review_card.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/shield.dart';
-import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
-import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -43,12 +42,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart' as rive;
-import 'package:wallet/exceptions.dart';
-import 'package:wallet/generated_bindings.dart' as rust;
-import 'package:wallet/wallet.dart';
-import 'package:envoy/util/bug_report_helper.dart';
-import 'package:envoy/ui/components/pop_up.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 final rbfSpendStateProvider = StateProvider<RBFSpendState?>((ref) => null);
 
@@ -64,8 +60,6 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
   BroadcastProgress _broadcastProgress = BroadcastProgress.staging;
   bool _warningShown = false;
   bool _inputsChanged = false;
-  RawTransaction? _rawTransaction;
-  Psbt? finalizedPsbt;
 
   @override
   void initState() {
@@ -75,15 +69,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       if (rbfSpendState == null) {
         return;
       }
-      //add the note as staging note
-      EnvoyStorage().getTxNote(rbfSpendState.originalTx.txId).then(
-          (value) => ref.read(stagingTxNoteProvider.notifier).state = value);
       _checkInputsChanged();
       //Since the BDK will give the spend amount as a negative value,
       //we need to show the amount in the transaction review card with the absolute value.
-      ref
-          .read(spendTransactionProvider.notifier)
-          .setAmount(rbfSpendState.originalAmount.abs());
     });
   }
 
@@ -94,24 +82,23 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       return const SizedBox();
     }
 
-    Psbt psbt = rbfState.psbt;
     bool showProgress = _broadcastProgress == BroadcastProgress.inProgress ||
         _broadcastProgress == BroadcastProgress.success ||
         _broadcastProgress == BroadcastProgress.failed;
 
-    Account? account = ref.watch(selectedAccountProvider);
+    final draftTransaction = rbfState.draftTx;
+    EnvoyAccount? account = ref.watch(selectedAccountProvider);
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
 
-    String subHeading =
-        (account!.wallet.hot || transactionModel.isPSBTFinalized)
-            ? S().coincontrol_tx_detail_subheading
-            : S().coincontrol_txDetail_subheading_passport;
+    String subHeading = (account!.isHot || transactionModel.isFinalized)
+        ? S().coincontrol_tx_detail_subheading
+        : S().coincontrol_txDetail_subheading_passport;
 
     bool canPop =
         !(_broadcastProgress == BroadcastProgress.inProgress) && !_rebuildingTx;
     ProviderContainer scope = ProviderScope.containerOf(context);
 
-    bool canBoost = _inputsChanged && finalizedPsbt == null;
+    bool canBoost = _inputsChanged && !draftTransaction.isFinalized;
     return CoinSelectionOverlay(
       child: Builder(builder: (context) {
         return PopScope(
@@ -121,7 +108,6 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
             ref.read(coinSelectionFromWallet.notifier).reset();
             ref.read(coinSelectionStateProvider.notifier).reset();
             clearSpendState(scope);
-            kPrint("RBF Spend Screen Pop Invoked: $didPop");
           },
           child: background(
             child: MediaQuery.removePadding(
@@ -271,42 +257,16 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                         Consumer(
                                             builder: (context, ref, child) {
                                           return TransactionReviewCard(
-                                            psbt: psbt,
+                                            transaction:
+                                                rbfState.draftTx.transaction,
                                             amountToSend:
                                                 rbfState.originalAmount.abs(),
                                             onTxDetailTap: () {
-                                              Navigator.of(context,
-                                                      rootNavigator: true)
-                                                  .push(PageRouteBuilder(
-                                                      pageBuilder: (context,
-                                                          animation,
-                                                          secondaryAnimation) {
-                                                        return StagingTxDetails(
-                                                          psbt: psbt,
-                                                          previousTransaction:
-                                                              rbfState
-                                                                  .originalTx,
-                                                        );
-                                                      },
-                                                      transitionDuration: const Duration(
-                                                          milliseconds: 100),
-                                                      transitionsBuilder:
-                                                          (context,
-                                                              animation,
-                                                              secondaryAnimation,
-                                                              child) {
-                                                        return FadeTransition(
-                                                          opacity: animation,
-                                                          child: child,
-                                                        );
-                                                      },
-                                                      opaque: false,
-                                                      fullscreenDialog: true));
+                                              _showTxDetailsPage(context);
                                             },
-                                            psbtFinalized:
-                                                finalizedPsbt != null,
+                                            canModifyPsbt: true,
                                             hideTxDetailsDialog: true,
-                                            loading: _rebuildingTx,
+                                            loading: transactionModel.loading,
                                             feeTitleIconButton: EnvoyIcons.info,
                                             feeTitle: S()
                                                 .coincontrol_tx_detail_newFee,
@@ -470,7 +430,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
   /// if the newly created RBF tx has more inputs
   /// than the original tx, show a warning
   _checkInputsChanged() async {
-    Account? account = ref.read(selectedAccountProvider);
+    EnvoyAccount? account = ref.read(selectedAccountProvider);
     RBFSpendState? rbfSpendState = ref.read(rbfSpendStateProvider);
     if (account == null || rbfSpendState == null) {
       return;
@@ -478,105 +438,99 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     if (_broadcastProgress != BroadcastProgress.staging) {
       return;
     }
-    setState(() {
-      _rebuildingTx = true;
-    });
-    Psbt psbt = rbfSpendState.psbt;
-    Transaction originalTx = rbfSpendState.originalTx;
 
-    final rawTx =
-        await ref.read(rawWalletTransactionProvider(psbt.rawTx).future);
+    BitcoinTransaction originalTx = rbfSpendState.originalTx;
+    BitcoinTransaction draftRbfTx = rbfSpendState.draftTx.transaction;
+    List<Input> originalInputs = originalTx.inputs;
+    List<Input> draftInputs = draftRbfTx.inputs;
 
-    if (rawTx != null &&
-        rawTx.inputs.length != originalTx.inputs?.length &&
-        mounted) {
+    if (originalInputs.length != draftInputs.length) {
       setState(() {
         _inputsChanged = true;
         _rebuildingTx = false;
-        _rawTransaction = rawTx;
-      });
-      if (_warningShown) {
-        return;
-      }
-      showEnvoyDialog(
-          context: context,
-          dialog: Builder(builder: (context) {
-            return EnvoyPopUp(
-              icon: EnvoyIcons.alert,
-              typeOfMessage: PopUpState.warning,
-              title: S().component_warning,
-              showCloseButton: false,
-              content:
-                  S().replaceByFee_warning_extraUTXO_overlay_modal_subheading,
-              linkUrl:
-                  "https://docs.foundation.xyz/en/troubleshooting#why-is-envoy-adding-more-coins-to-my-boost-or-cancel-transaction",
-              primaryButtonLabel: S().component_continue,
-              onPrimaryButtonTap: (context) {
-                _warningShown = true;
-                Navigator.pop(context);
-              },
-              secondaryButtonLabel: S().component_back,
-              onSecondaryButtonTap: (context) {
-                //hide dialog
-                Navigator.pop(context);
-                //hide RBF screen
-                Navigator.pop(context);
-              },
-            );
-          }));
-    } else {
-      setState(() {
-        _inputsChanged = false;
-        _rebuildingTx = false;
       });
     }
+    if (_warningShown) {
+      return;
+    }
+    showEnvoyDialog(
+        context: context,
+        dialog: Builder(builder: (context) {
+          return EnvoyPopUp(
+            icon: EnvoyIcons.alert,
+            typeOfMessage: PopUpState.warning,
+            title: S().component_warning,
+            showCloseButton: false,
+            content:
+                S().replaceByFee_warning_extraUTXO_overlay_modal_subheading,
+            onLearnMore: () {
+              launchUrl(Uri.parse(
+                  "https://docs.foundation.xyz/en/troubleshooting#why-is-envoy-adding-more-coins-to-my-boost-or-cancel-transaction"));
+            },
+            primaryButtonLabel: S().component_continue,
+            onPrimaryButtonTap: (context) {
+              _warningShown = true;
+              Navigator.pop(context);
+            },
+            secondaryButtonLabel: S().component_back,
+            onSecondaryButtonTap: (context) {
+              //hide dialog
+              Navigator.pop(context);
+              //hide RBF screen
+              Navigator.pop(context);
+            },
+          );
+        }));
   }
 
   _boostTx(BuildContext context) async {
-    Account? account = ref.read(selectedAccountProvider);
+    EnvoyAccount? account = ref.read(selectedAccountProvider);
     RBFSpendState? rbfSpendState = ref.read(rbfSpendStateProvider);
     if (account == null || rbfSpendState == null) {
       return;
     }
-    final psbt = rbfSpendState.psbt;
 
-    if (account.wallet.hot) {
-      broadcastTx(account, psbt, context);
+    if (account.isHot) {
+      broadcastTx(account, rbfSpendState.draftTx, context);
     } else {
-      if (finalizedPsbt != null) {
-        broadcastTx(account, psbt, context);
+      if (rbfSpendState.draftTx.isFinalized) {
+        broadcastTx(account, rbfSpendState.draftTx, context);
         return;
       }
-      await Navigator.of(context, rootNavigator: false).push(MaterialPageRoute(
-          builder: (context) => background(
-              child: PsbtCard(
-                psbt,
-                account,
-                onSignedPsbtScanned: (psbt) {
-                  Navigator.pop(context);
-                  finalizedPsbt = psbt;
-                  ref.read(rbfSpendStateProvider.notifier).state =
-                      rbfSpendState.copyWith(
-                          psbt: psbt,
-                          feeRate: rbfSpendState.feeRate,
-                          receiveAmount: rbfSpendState.receiveAmount);
-                  if (mounted) {
-                    setState(() {
-                      finalizedPsbt = psbt;
-                    });
-                  }
-                },
-              ),
-              context: context)));
+
+      //TODO: ngwallet
+      // await Navigator.of(context, rootNavigator: false).push(MaterialPageRoute(
+      //     builder: (context) => background(
+      //         child: PsbtCard(
+      //           psbt,
+      //           account,
+      //           onSignedPsbtScanned: (psbt) {
+      //             Navigator.pop(context);
+      //             finalizedPsbt = psbt;
+      //             ref.read(rbfSpendStateProvider.notifier).state =
+      //                 rbfSpendState.copyWith(
+      //                     psbt: psbt,
+      //                     feeRate: rbfSpendState.feeRate,
+      //                     receiveAmount: rbfSpendState.receiveAmount);
+      //             if (mounted) {
+      //               setState(() {
+      //                 finalizedPsbt = psbt;
+      //               });
+      //             }
+      //           },
+      //         ),
+      //         context: context)));
     }
   }
 
-  Future broadcastTx(Account account, Psbt psbt, BuildContext context) async {
+  Future broadcastTx(
+      EnvoyAccount account, DraftTransaction psbt, BuildContext context) async {
     final rbfState = ref.read(rbfSpendStateProvider);
-    if (rbfState == null) {
+    final handler = account.handler;
+    if (rbfState == null || handler == null) {
       return;
     }
-    Psbt psbt = finalizedPsbt ?? rbfState.psbt;
+
     try {
       setState(() {
         _broadcastProgress = BroadcastProgress.inProgress;
@@ -604,29 +558,38 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
       _stateMachineController?.findInput<bool>("happy")?.change(false);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+      final txid = "";
 
-      int port = Settings().getPort(account.wallet.network);
-      final txid = await account.wallet.broadcastTx(
-          Settings().electrumAddress(account.wallet.network), port, psbt.rawTx);
-      //wait for BDK to broadcast the transaction
-      await Future.delayed(const Duration(seconds: 5));
+      final server = SyncManager.getElectrumServer(account.network);
+      final syncManager = NgAccountManager().syncManager;
+      int? port = Settings().getPort(account.network);
+      if (port == -1) {
+        port = null;
+      }
+
+      final rawTx = await EnvoyAccountHandler.broadcast(
+        draftTransaction: rbfState.draftTx,
+        electrumServer: server,
+        torPort: port,
+      );
+      await handler.updateBroadcastState(draftTransaction: rbfState.draftTx);
+      //TODO: implement ngwallet broadcast
       //
       try {
         /// get the raw transaction from the database
-        final rawTx =
-            await ref.read(rawWalletTransactionProvider(psbt.rawTx).future);
 
-        Transaction originalTx = rbfState.originalTx;
+        BitcoinTransaction originalTx = rbfState.originalTx;
+        BitcoinTransaction bumpedTx = rbfState.getBumpedTransaction;
 
         await EnvoyStorage().addRBFBoost(
-          psbt.txid,
+          bumpedTx.txId,
           RBFState(
             originalTxId: originalTx.txId,
-            newTxId: psbt.txid,
-            accountId: account.id ?? "",
-            newFee: psbt.fee,
-            oldFee: originalTx.fee,
-            previousTxTimeStamp: originalTx.date.millisecondsSinceEpoch,
+            newTxId: bumpedTx.txId,
+            accountId: account.id,
+            newFee: bumpedTx.fee.toInt(),
+            oldFee: originalTx.fee.toInt(),
+            previousTxTimeStamp: originalTx.date?.toInt() ?? 0,
             rbfTimeStamp: DateTime.now().millisecondsSinceEpoch,
           ),
         );
@@ -642,52 +605,55 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         }
 
         /// get all the tags for searching change output tag in the original transaction
-        final tags = ref.read(coinsTagProvider(account.id!));
+        // final tags = ref.read(coinsTagProvider(accountId));
 
-        CoinTag? tag = ref.read(stagingTxChangeOutPutTagProvider);
+        // CoinTag? tag = ref.read(stagingTxChangeOutPutTagProvider);
 
-        if (tag != null) {
-          ///add change tag if its new and if it is not already added to the database
-          if (tags.map((e) => e.id).contains(tag.id) == false &&
-              tag.untagged == false) {
-            await CoinRepository().addCoinTag(tag);
-            await Future.delayed(const Duration(milliseconds: 100));
-          }
-        } else {
-          ///if user already selected a change output tag to original transaction then find it and add it to the new transaction
-          CoinTag? foundAnExistingChangeTag;
+        // if (tag != null) {
+        ///add change tag if its new and if it is not already added to the database
+        ///TODO: use ngwallet to set tags
+        // if (tags.map((e) => e.id).contains(tag.id) == false &&
+        //     tag.untagged == false) {
+        //   await CoinRepository().addCoinTag(tag);
+        //   await Future.delayed(const Duration(milliseconds: 100));
+        // }
+        // } else {
+        ///if user already selected a change output tag to original transaction then find it and add it to the new transaction
+        // CoinTag? foundAnExistingChangeTag;
 
-          /// Find any change tag present in the original transaction
-          for (var tag in tags) {
-            for (var existingId in tag.coinsId) {
-              /// check with original tx to see if any change output tag is present
-              if (existingId.contains(rbfState.originalTx.txId)) {
-                foundAnExistingChangeTag = tag;
-              }
-            }
-          }
-          tag = foundAnExistingChangeTag;
-        }
+        /// Find any change tag present in the original transaction
+        /// TODO: use ngwallet to set tags
+        // for (var tag in tags) {
+        //   for (var existingId in tag.coinsId) {
+        //     /// check with original tx to see if any change output tag is present
+        //     if (existingId.contains(rbfState.originalTx.txId)) {
+        //       foundAnExistingChangeTag = tag;
+        //     }
+        //   }
+        // }
+        // tag = foundAnExistingChangeTag;
+        // }
+        final tag = null;
 
         ///move new change output to tags based on user selection or from the original selection
-        if (rawTx != null && tag != null) {
-          for (var output in rawTx.outputs) {
-            if (output.path == TxOutputPath.Internal) {
-              final coin = Coin(
-                  Utxo(
-                      txid: psbt.txid,
-                      vout: rawTx.outputs.indexOf(output),
-                      value: output.amount),
-                  account: account.id!);
-              tag.coinsId.add(coin.id);
-              await CoinRepository().updateCoinTag(tag);
-              // ignore: unused_result
-              ref.refresh(accountsProvider);
-              await Future.delayed(const Duration(seconds: 1));
-              final _ = ref.refresh(coinsTagProvider(account.id!));
-            }
-          }
-        }
+        // if (rawTx != null && tag != null) {
+        //   for (var output in rawTx.outputs) {
+        //     if (output.path == TxOutputPath.Internal) {
+        //       final coin = Coin(
+        //           Utxo(
+        //               txid: psbt.txid,
+        //               vout: rawTx.outputs.indexOf(output),
+        //               value: output.amount),
+        //           account: accountId);
+        //       tag.coinsId.add(coin.id);
+        //       await CoinRepository().updateCoinTag(tag);
+        //       // ignore: unused_result
+        //       ref.refresh(accountsProvider);
+        //       await Future.delayed(const Duration(seconds: 1));
+        //       final _ = ref.refresh(tagProvider(accountId));
+        //     }
+        //   }
+        // }
       } catch (e) {
         kPrint(e);
       }
@@ -698,15 +664,15 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       String receiverAddress = rbfState.receiveAddress;
 
       final originalTx = rbfState.originalTx;
-      await EnvoyStorage().addPendingTx(
-        psbt.txid,
-        account.id!,
-        DateTime.now(),
-        TransactionType.pending,
-        (originalTx.amount.abs() - originalTx.fee) + psbt.fee,
-        psbt.fee,
-        receiverAddress,
-      );
+      // await EnvoyStorage().addPendingTx(
+      //   psbt.txid,
+      //   accountId,
+      //   DateTime.now(),
+      //   TransactionType.pending,
+      //   (originalTx.amount.abs() - originalTx.fee) + psbt.fee,
+      //   psbt.fee,
+      //   receiverAddress,
+      // );
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
       _stateMachineController?.findInput<bool>("happy")?.change(true);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
@@ -739,11 +705,10 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
   }
 
   Future _setFee(int fee, BuildContext context, bool customFee) async {
-    kPrint("Setting fee to $fee");
-    Account? account = ref.read(selectedAccountProvider);
+    EnvoyAccount? account = ref.read(selectedAccountProvider);
     num? existingFeeRate = ref.read(spendFeeRateProvider);
     setState(() {
-      _rebuildingTx = true;
+      _rebuildingTx = false;
     });
     try {
       if (account == null) {
@@ -751,26 +716,36 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       }
       ref.read(spendFeeProcessing.notifier).state = true;
       ref.read(spendFeeRateProvider.notifier).state = fee;
-      final lockedUtXOs = ref.read(lockedUtxosProvider(account.id!));
       final rbfState = ref.read(rbfSpendStateProvider);
+      final selectedOutputs =
+          ref.read(getSelectedCoinsProvider(account.id)).toList();
       if (rbfState == null) {
         return;
       }
       final originalTx = rbfState.originalTx;
-      final psbt = await account.wallet
-          .getBumpedPSBT(originalTx.txId, convertToFeeRate(fee), lockedUtXOs);
-      ref.read(rbfSpendStateProvider.notifier).state =
-          rbfState.copyWith(psbt: psbt, feeRate: fee, receiveAmount: psbt.fee);
+
+      final transaction = await account.handler?.composeRbfPsbt(
+          selectedOutputs: selectedOutputs,
+          feeRate: BigInt.from(fee),
+          bitcoinTransaction: originalTx);
+
+      if (transaction == null) {
+        return;
+      }
+
+      ref.read(rbfSpendStateProvider.notifier).state = rbfState.copyWith(
+          feeRate: transaction.transaction.feeRate.toInt(),
+          preparedTx: transaction);
+
       if (customFee && context.mounted) {
         /// hide the fee slider
         Navigator.of(context, rootNavigator: false).pop();
       }
       _checkInputsChanged();
     } catch (e, stack) {
+      //TODO: handle error
       String message = "$e";
-      if (e is InsufficientFunds) {
-        message = S().send_keyboard_amount_insufficient_funds_info;
-      }
+      message = S().send_keyboard_amount_insufficient_funds_info;
       if (context.mounted) {
         EnvoyToast(
           replaceExisting: true,
@@ -821,6 +796,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
   //if the user changed coin selection, recalculate the fee boundaries and rebuild the boosted tx
   _editCoins(BuildContext context) async {
     final selectedAccount = ref.read(selectedAccountProvider);
+    final accountId = selectedAccount?.id ?? "";
     if (selectedAccount == null) {
       return;
     }
@@ -832,18 +808,16 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
 
     /// The user has is in edit mode and if the psbt
     /// has inputs then use them to populate the coin selection state
-    if (_rawTransaction != null) {
-      List<String> inputs = _rawTransaction!.inputs
-          .map((e) => "${e.previousOutputHash}:${e.previousOutputIndex}")
-          .toList();
+    List<String> inputs = rbfState.draftTx.transaction.inputs
+        .map((e) => "${e.txId}:${e.vout}")
+        .toList();
 
-      ref.read(coinSelectionStateProvider.notifier).reset();
-      ref.read(coinSelectionStateProvider.notifier).addAll(inputs);
+    ref.read(coinSelectionStateProvider.notifier).reset();
+    ref.read(coinSelectionStateProvider.notifier).addAll(inputs);
 
-      ///make a copy of wallet selected coins so that we can backtrack to it
-      ref.read(coinSelectionFromWallet.notifier).reset();
-      ref.read(coinSelectionFromWallet.notifier).addAll(inputs);
-    }
+    ///make a copy of wallet selected coins so that we can backtrack to it
+    ref.read(coinSelectionFromWallet.notifier).reset();
+    ref.read(coinSelectionFromWallet.notifier).addAll(inputs);
 
     if (ref.read(selectedAccountProvider) != null) {
       CoinSelectionOverlay.of(context)?.show(SpendOverlayContext.rbfSelection);
@@ -852,151 +826,179 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         builder: (context) => const ChooseCoinsWidget(),
         fullscreenDialog: true));
 
-    if (refresh == true) {
-      final account = ref.read(selectedAccountProvider);
-      if (account == null) {
-        return;
-      }
-      setState(() {
-        _rebuildingTx = true;
-      });
-
-      final existingLockedUtxos = ref.read(lockedUtxosProvider(account.id!));
-      final originalTx = rbfState.originalTx;
-      final selected = ref.read(coinSelectionStateProvider);
-      final coins = ref.read(coinsProvider(account.id!));
-
-      List<Utxo> lockedUtxos = [];
-      lockedUtxos.addAll(existingLockedUtxos);
-
-      if (selected.isNotEmpty) {
-        for (var element in coins) {
-          if (!selected.contains(element.id)) {
-            lockedUtxos.add(element.utxo);
-          }
-        }
-
-        try {
-          rust.RBFfeeRates rates = await account.wallet
-              .getBumpedPSBTMaxFeeRate(originalTx.txId, lockedUtxos);
-
-          if (rates.min_fee_rate > 0) {
-            double minFeeRate = rates.min_fee_rate.ceil().toDouble();
-            Psbt? psbt = await account.wallet.getBumpedPSBT(
-                rbfState.originalTx.txId,
-                convertToFeeRate(minFeeRate),
-                lockedUtxos);
-            final rawTxx = await account.wallet
-                .decodeWalletRawTx(psbt.rawTx, account.wallet.network);
-            _rawTransaction = rawTxx;
-            RawTransactionOutput receiveOutPut =
-                rawTxx.outputs.firstWhere((element) {
-              return (element.path == TxOutputPath.NotMine ||
-                  element.path == TxOutputPath.External);
-            }, orElse: () => rawTxx.outputs.first);
-
-            RBFSpendState rbfSpendState = RBFSpendState(
-                psbt: psbt,
-                rbfFeeRates: rates,
-                receiveAddress: receiveOutPut.address,
-                receiveAmount: 0,
-                originalAmount: rbfState.originalAmount,
-                feeRate: minFeeRate.toInt(),
-                originalTx: rbfState.originalTx);
-
-            ref.read(spendAddressProvider.notifier).state =
-                receiveOutPut.address;
-            ref.read(spendAmountProvider.notifier).state = receiveOutPut.amount;
-
-            int minRate = minFeeRate.toInt();
-            int maxRate = rates.max_fee_rate.toInt();
-            int fasterFeeRate = minRate + 1;
-
-            if (minRate == maxRate) {
-              fasterFeeRate = maxRate;
-            } else {
-              if (minRate < maxRate) {
-                fasterFeeRate = (minRate + 1).clamp(minRate, maxRate);
-              }
-            }
-
-            ref.read(feeChooserStateProvider.notifier).state = FeeChooserState(
-              standardFeeRate: minFeeRate,
-              fasterFeeRate: fasterFeeRate,
-              minFeeRate: rates.min_fee_rate.ceil().toInt(),
-              maxFeeRate: rates.max_fee_rate.floor().toInt(),
-            );
-            ref.read(rbfSpendStateProvider.notifier).state = rbfSpendState;
-            setState(() {
-              _rebuildingTx = false;
-            });
-            return;
-          }
-        } on InsufficientFunds {
-          setState(() {
-            _rebuildingTx = false;
-          });
-          if (context.mounted) {
-            EnvoyToast(
-              backgroundColor: EnvoyColors.danger,
-              replaceExisting: true,
-              duration: const Duration(seconds: 4),
-              message: S().send_keyboard_amount_insufficient_funds_info,
-              icon: const Icon(
-                Icons.info_outline,
-                color: EnvoyColors.solidWhite,
-              ),
-            ).show(context);
-          }
-        } catch (e) {
-          setState(() {
-            _rebuildingTx = false;
-          });
-          final originalTx = rbfState.originalTx;
-          if (ref.read(getTransactionProvider(originalTx.txId))?.isConfirmed ==
-                  true &&
-              context.mounted) {
-            EnvoyToast(
-              backgroundColor: EnvoyColors.danger,
-              replaceExisting: true,
-              duration: const Duration(seconds: 4),
-              message: "Error: Transaction Confirmed",
-              // TODO: Figma
-              icon: const Icon(
-                Icons.info_outline,
-                color: EnvoyColors.solidWhite,
-              ),
-            ).show(context);
-            return;
-          } else {
-            EnvoyReport().log("RBF", "Coin Selection Failure : $e");
-            if (context.mounted) {
-              EnvoyToast(
-                backgroundColor: EnvoyColors.danger,
-                replaceExisting: true,
-                duration: const Duration(seconds: 4),
-                message: e.toString().replaceAll(":Exception", ""),
-                overflow: TextOverflow.visible,
-                // TODO: Figma
-                icon: const Icon(
-                  Icons.info_outline,
-                  color: EnvoyColors.solidWhite,
-                ),
-              ).show(context);
-            }
-          }
-        }
-      }
-    }
+    //TODO: RBF using ngwallet
+    // if (refresh == true) {
+    //   final account = ref.read(selectedAccountProvider);
+    //   if (account == null) {
+    //     return;
+    //   }
+    //   setState(() {
+    //     _rebuildingTx = true;
+    //   });
+    //
+    //   final existingLockedUtxos = ref.read(lockedUtxosProvider(account.id!));
+    //   final originalTx = rbfState.originalTx;
+    //   final selected = ref.read(coinSelectionStateProvider);
+    //   final coins = ref.read(coinsProvider(accountId));
+    //
+    //   List<Utxo> lockedUtxos = [];
+    //   lockedUtxos.addAll(existingLockedUtxos);
+    //
+    //   if (selected.isNotEmpty) {
+    //     for (var element in coins) {
+    //       if (!selected.contains(element.id)) {
+    //         lockedUtxos.add(element.utxo);
+    //       }
+    //     }
+    //
+    //     try {
+    //       rust.RBFfeeRates rates = await account.wallet
+    //           .getBumpedPSBTMaxFeeRate(originalTx.txId, lockedUtxos);
+    //
+    //       if (rates.min_fee_rate > 0) {
+    //         double minFeeRate = rates.min_fee_rate.ceil().toDouble();
+    //         Psbt? psbt = await account.wallet.getBumpedPSBT(
+    //             rbfState.originalTx.txId,
+    //             convertToFeeRate(minFeeRate),
+    //             lockedUtxos);
+    //         final rawTxx = await account.wallet
+    //             .decodeWalletRawTx(psbt.rawTx, account.wallet.network);
+    //         _rawTransaction = rawTxx;
+    //         RawTransactionOutput receiveOutPut =
+    //             rawTxx.outputs.firstWhere((element) {
+    //           return (element.path == TxOutputPath.NotMine ||
+    //               element.path == TxOutputPath.External);
+    //         }, orElse: () => rawTxx.outputs.first);
+    //
+    //         RBFSpendState rbfSpendState = RBFSpendState(
+    //             psbt: psbt,
+    //             rbfFeeRates: rates,
+    //             receiveAddress: receiveOutPut.address,
+    //             receiveAmount: 0,
+    //             originalAmount: rbfState.originalAmount,
+    //             feeRate: minFeeRate.toInt(),
+    //             originalTx: rbfState.originalTx);
+    //
+    //         ref.read(spendAddressProvider.notifier).state =
+    //             receiveOutPut.address;
+    //         ref.read(spendAmountProvider.notifier).state = receiveOutPut.amount;
+    //
+    //         int minRate = minFeeRate.toInt();
+    //         int maxRate = rates.max_fee_rate.toInt();
+    //         int fasterFeeRate = minRate + 1;
+    //
+    //         if (minRate == maxRate) {
+    //           fasterFeeRate = maxRate;
+    //         } else {
+    //           if (minRate < maxRate) {
+    //             fasterFeeRate = (minRate + 1).clamp(minRate, maxRate);
+    //           }
+    //         }
+    //
+    //         ref.read(feeChooserStateProvider.notifier).state = FeeChooserState(
+    //           standardFeeRate: minFeeRate,
+    //           fasterFeeRate: fasterFeeRate,
+    //           minFeeRate: rates.min_fee_rate.ceil().toInt(),
+    //           maxFeeRate: rates.max_fee_rate.floor().toInt(),
+    //         );
+    //         ref.read(rbfSpendStateProvider.notifier).state = rbfSpendState;
+    //         setState(() {
+    //           _rebuildingTx = false;
+    //         });
+    //         return;
+    //       }
+    //     } on InsufficientFunds {
+    //       setState(() {
+    //         _rebuildingTx = false;
+    //       });
+    //       if (context.mounted) {
+    //         EnvoyToast(
+    //           backgroundColor: EnvoyColors.danger,
+    //           replaceExisting: true,
+    //           duration: const Duration(seconds: 4),
+    //           message: S().send_keyboard_amount_insufficient_funds_info,
+    //           icon: const Icon(
+    //             Icons.info_outline,
+    //             color: EnvoyColors.solidWhite,
+    //           ),
+    //         ).show(context);
+    //       }
+    //     } catch (e) {
+    //       setState(() {
+    //         _rebuildingTx = false;
+    //       });
+    //       final originalTx = rbfState.originalTx;
+    //       if (ref.read(getTransactionProvider(originalTx.txId))?.isConfirmed ==
+    //               true &&
+    //           context.mounted) {
+    //         EnvoyToast(
+    //           backgroundColor: EnvoyColors.danger,
+    //           replaceExisting: true,
+    //           duration: const Duration(seconds: 4),
+    //           message: "Error: Transaction Confirmed",
+    //           // TODO: Figma
+    //           icon: const Icon(
+    //             Icons.info_outline,
+    //             color: EnvoyColors.solidWhite,
+    //           ),
+    //         ).show(context);
+    //         return;
+    //       } else {
+    //         EnvoyReport().log("RBF", "Coin Selection Failure : $e");
+    //         if (context.mounted) {
+    //           EnvoyToast(
+    //             backgroundColor: EnvoyColors.danger,
+    //             replaceExisting: true,
+    //             duration: const Duration(seconds: 4),
+    //             message: e.toString().replaceAll(":Exception", ""),
+    //             overflow: TextOverflow.visible,
+    //             // TODO: Figma
+    //             icon: const Icon(
+    //               Icons.info_outline,
+    //               color: EnvoyColors.solidWhite,
+    //             ),
+    //           ).show(context);
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
   }
 
   String getButtonText(BuildContext context) {
-    Account? account = ref.read(selectedAccountProvider);
-    if (account != null && !account.wallet.hot) {
-      if (finalizedPsbt == null) {
+    EnvoyAccount? account = ref.read(selectedAccountProvider);
+    RBFSpendState? rbfSpendState = ref.read(rbfSpendStateProvider);
+    if (account != null && !account.isHot && rbfSpendState != null) {
+      if (!rbfSpendState.draftTx.isFinalized) {
         return S().coincontrol_txDetail_cta1_passport;
       }
     }
     return S().replaceByFee_coindetails_overlay_modal_heading;
+  }
+
+  void _showTxDetailsPage(BuildContext context) {
+    final rbfState = ref.read(rbfSpendStateProvider);
+    if (rbfState == null) {
+      return;
+    }
+    Navigator.of(context, rootNavigator: true).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return StagingTxDetails(
+            isRBFSpend: true,
+            draftTransaction: rbfState.draftTx,
+            previousTransaction: rbfState.originalTx,
+            onTagUpdate: () {},
+            onTxNoteUpdated: () {},
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 100),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
+        opaque: false,
+        fullscreenDialog: true));
   }
 }

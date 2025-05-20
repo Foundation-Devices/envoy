@@ -2,13 +2,14 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account.dart';
 import 'package:envoy/business/bitcoin_parser.dart';
+import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/address_entry.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
@@ -23,6 +24,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 //ignore: must_be_immutable
 class SendCard extends ConsumerStatefulWidget {
@@ -34,7 +36,7 @@ class SendCard extends ConsumerStatefulWidget {
 
 class _SendCardState extends ConsumerState<SendCard>
     with AutomaticKeepAliveClientMixin {
-  Account? account;
+  EnvoyAccount? account;
   final TextEditingController _controller = TextEditingController();
 
   var _amountEntry = const AmountEntry();
@@ -65,6 +67,7 @@ class _SendCardState extends ConsumerState<SendCard>
       account: ref.read(selectedAccountProvider),
     );
     Future.delayed(const Duration(milliseconds: 10)).then((_) {
+      ref.read(homeShellOptionsProvider.notifier).state = null;
       ref.read(homePageTitleProvider.notifier).state =
           S().receive_tx_list_send.toUpperCase();
       account = ref.read(selectedAccountProvider);
@@ -287,8 +290,14 @@ class _SendCardState extends ConsumerState<SendCard>
                           }
                         }
                         if (spendAmount == 0) {
+                          /// Send Max
                           ref.read(spendAmountProvider.notifier).state =
                               ref.read(totalSpendableAmountProvider);
+                          ref
+                                  .read(displayFiatSendAmountProvider.notifier)
+                                  .state =
+                              ExchangeRate().convertSatsToFiat(
+                                  ref.read(totalSpendableAmountProvider));
                           setState(() {
                             _amountEntry = AmountEntry(
                               onAmountChanged: _updateAmount,
@@ -297,6 +306,7 @@ class _SendCardState extends ConsumerState<SendCard>
                               key: UniqueKey(),
                               account: account!,
                               onPaste: _onPaste,
+                              trailingZeroes: true,
                             );
                           });
                           return;

@@ -7,7 +7,7 @@ import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'util/preload_fonts.dart';
 
 void main() {

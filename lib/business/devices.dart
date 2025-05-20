@@ -162,4 +162,10 @@ class Devices extends ChangeNotifier {
   Device? getDeviceById(int deviceId) {
     return devices.firstWhereOrNull((device) => device.type.index == deviceId);
   }
+
+  List<Device> get getPrimeDevices {
+    return devices
+        .where((device) => device.type == DeviceType.passportPrime)
+        .toList();
+  }
 }

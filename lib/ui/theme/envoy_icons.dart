@@ -4,10 +4,10 @@
 
 // ignore_for_file: constant_identifier_names
 
-import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:wallet/wallet.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 enum EnvoyIconSize {
   normal,
@@ -87,6 +87,8 @@ enum EnvoyIcons {
   wallet,
   mail,
   chevron_right,
+  phone,
+  prime,
 }
 
 class EnvoyIcon extends StatelessWidget {
@@ -127,13 +129,15 @@ class NonMainnetIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     String badgeAssetName = () {
       switch (network) {
-        case Network.Mainnet:
+        case Network.bitcoin:
           return "";
-        case Network.Testnet:
+        case Network.testnet:
           return "assets/components/icons/testnet_badge.svg";
-        case Network.Signet:
+        case Network.testnet4:
+          return "assets/components/icons/testnet_badge.svg";
+        case Network.signet:
           return "assets/components/icons/signet_badge.svg";
-        case Network.Regtest:
+        case Network.regtest:
           return "";
       }
     }();

@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 // ignore_for_file: constant_identifier_names
-library envoy.scv_server;
 
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:http_tor/http_tor.dart';
@@ -12,6 +12,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/scheduler.dart';
+import 'package:foundation_api/src/rust/third_party/foundation_api/api/scv.dart';
 
 // Generated
 part 'scv_server.g.dart';
@@ -19,6 +20,7 @@ part 'scv_server.g.dart';
 class ScvServer {
   static HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
   static String serverAddress = "https://validate.foundation.xyz";
+  static String primeSecurityCheckUrl = "https://security-check.foundation.xyz";
 
   final LocalStorage _ls = LocalStorage();
   static const String SCV_CHALLENGE_PREFS = "scv_challenge";
@@ -113,6 +115,50 @@ class ScvServer {
     } else {
       EnvoyReport().log("scv",
           "Failed to validate challenge,status: ${response.code},body: ${response.body}");
+      return false;
+    }
+  }
+
+  Future<SecurityChallengeMessage?> getPrimeChallenge() async {
+    try {
+      final response = await http.get('$primeSecurityCheckUrl/challenge');
+
+      kPrint("response status code: ${response.statusCode}");
+      if (response.statusCode != 200) {
+        return null;
+      }
+
+      return SecurityChallengeMessage(
+          data: Uint8List.fromList(response.bodyBytes));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<bool> isProofVerified(SecurityProofMessage message) async {
+    final uri = '$primeSecurityCheckUrl/verify';
+
+    final response = await http.post(
+      uri,
+      body: message.data.toList().toString(),
+      headers: {'Content-Type': 'application/octet-stream'},
+    );
+
+    if (response.statusCode == 200) {
+      List<int> rawVerificationMessage = response.bodyBytes;
+
+      // Error code is the 33rd byte in the response
+      final errorCode =
+          rawVerificationMessage.length > 32 ? rawVerificationMessage[32] : -1;
+      kPrint('Error code: $errorCode');
+
+      // TODO: remove, just for demo
+
+      return true;
+
+      //return errorCode == 0; // 0 means `ErrorCode::Ok`
+    } else {
+      kPrint('Error: ${response.statusCode}');
       return false;
     }
   }

@@ -16,7 +16,11 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: ^2.0.11
-  tor: 0.0.8
+
+  tor:
+    git:
+      url: https://github.com/Foundation-Devices/tor.git
+      ref: 66c62b1f3b332b2e2fd506e07786a70fc53ab7f4
 
 
 
