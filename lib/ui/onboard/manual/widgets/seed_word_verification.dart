@@ -3,10 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:math';
-
 import 'package:collection/collection.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -16,6 +14,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 
 class VerifySeedPuzzleWidget extends StatefulWidget {
   final List<String> seed;
@@ -346,8 +345,10 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Icon(EnvoyIcons.exclamationWarning,
-                  color: EnvoyColors.accentSecondary, size: 14),
+              const EnvoyIcon(
+                EnvoyIcons.alert,
+                color: EnvoyColors.accentSecondary,
+              ),
               const Padding(padding: EdgeInsets.all(4)),
               Text(
                 S().manual_setup_generate_seed_verify_seed_quiz_fail_invalid,
