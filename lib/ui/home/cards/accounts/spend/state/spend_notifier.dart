@@ -420,7 +420,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       }
       state = state.clone()..broadcastInProgress = true;
       final server = SyncManager.getElectrumServer(account.network);
-      final syncManager = NgAccountManager().syncManager;
+      final syncManager = SyncManager();
       int? port = Settings().getPort(account.network);
       if (port == -1) {
         port = null;

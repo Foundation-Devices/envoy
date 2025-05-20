@@ -12,6 +12,7 @@ import 'package:envoy/ui/lock/authenticate_page.dart';
 import 'package:envoy/ui/migrations/migration_manager.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -82,16 +83,24 @@ class MigrationAppPage extends ConsumerStatefulWidget {
 }
 
 class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
+  int retries = 1;
+
   @override
   void initState() {
     super.initState();
     MigrationManager().onMigrationFinished(() async {
-      await EnvoyStorage().setBool(migrationPrefs, true);
+      await EnvoyStorage().setBool(MigrationManager.migrationPrefs, true);
       if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
         runApp(const AuthenticateApp());
       } else {
         runApp(const EnvoyApp());
       }
+    }).onMigrationError(() async {
+      EnvoyReport()
+          .log("Migration", "Error migrating accounts retrying... $retries");
+      await Future.delayed(const Duration(seconds: 1));
+      MigrationManager().migrate();
+      retries++;
     });
     Future.delayed(const Duration(milliseconds: 100)).then((value) {
       MigrationManager().migrate();

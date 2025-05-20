@@ -11,7 +11,7 @@ import 'dart:io';
 import 'package:backup/backup.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/legacy/legacy_account.dart';
-import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/blog_post.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
@@ -28,6 +28,7 @@ import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:file_saver/file_saver.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:tor/tor.dart';
@@ -44,6 +45,7 @@ const String LOCAL_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME =
     "$LOCAL_SECRET_FILE_NAME.backup_timestamp";
 
 const int SECRET_LENGTH_BYTES = 16;
+const magicBackupVersion = 2;
 
 class EnvoySeed {
   static final EnvoySeed _instance = EnvoySeed._internal();
@@ -107,7 +109,8 @@ class EnvoySeed {
 
   Future<bool> create(List<String> seedList, {String? passphrase}) async {
     String seed = seedList.join(" ");
-    return await deriveAndAddWallets(seed, passphrase: passphrase);
+    return await deriveAndAddWallets(seed,
+        passphrase: passphrase, requireScan: false);
   }
 
   Future<bool> deriveAndAddWalletsFromCurrentSeed(
@@ -122,7 +125,7 @@ class EnvoySeed {
   }
 
   Future<bool> deriveAndAddWallets(String seed,
-      {String? passphrase, Network? network}) async {
+      {String? passphrase, Network? network, bool requireScan = true}) async {
     await clearDeleteFlag();
 
     if (await NgAccountManager().checkIfWalletFromSeedExists(seed,
@@ -136,22 +139,26 @@ class EnvoySeed {
 
     try {
       if (network == null) {
-        await addEnvoyAccount(seed, Network.bitcoin, passphrase);
+        await addEnvoyAccount(seed, Network.bitcoin, passphrase,
+            requireScan: requireScan);
         // Always derive testnet and signet wallets too
-        await addEnvoyAccount(seed, Network.testnet4, passphrase);
-        await addEnvoyAccount(seed, Network.signet, passphrase);
+        await addEnvoyAccount(seed, Network.testnet4, passphrase,
+            requireScan: requireScan);
+        await addEnvoyAccount(seed, Network.signet, passphrase,
+            requireScan: requireScan);
       } else {
-        await addEnvoyAccount(seed, network, passphrase);
+        await addEnvoyAccount(seed, network, passphrase,
+            requireScan: requireScan);
       }
-
+      if (requireScan) SyncManager().initiateFullScan();
       return true;
     } on Exception catch (_) {
       return false;
     }
   }
 
-  Future addEnvoyAccount(
-      String seed, Network network, String? passphrase) async {
+  Future addEnvoyAccount(String seed, Network network, String? passphrase,
+      {bool requireScan = false}) async {
     String newWalletDirectory = NgAccountManager.walletsDirectory;
     Directory newAccountDir = Directory(
         "${newWalletDirectory}envoy_${network.toString().toLowerCase()}_acc_0");
@@ -174,7 +181,6 @@ class EnvoySeed {
         .toList();
 
     if (descriptors.isEmpty || descriptors.length != 2) {
-      kPrint("Error: descriptors length not sufficient");
       EnvoyReport().log("EnvoySeed",
           "Error creating account from descriptor: descriptors.length ${descriptors.length}");
       return false;
@@ -191,7 +197,16 @@ class EnvoySeed {
           network: network,
           id: Uuid().v4());
       final state = await handler.state();
-      NgAccountManager().addAccount(state, handler);
+      if (!requireScan) {
+        for (var element in descriptors) {
+          kPrint("Skipping scan for ${element.addressType}");
+          //set accounts as scanned. descriptors created by envoy doesn't need scanning
+          await LocalStorage()
+              .prefs
+              .setAccountScanStatus(state.id, element.addressType, true);
+        }
+      }
+      await NgAccountManager().addAccount(state, handler);
       return true;
     } catch (e) {
       EnvoyReport().log("EnvoySeed",
@@ -201,8 +216,6 @@ class EnvoySeed {
   }
 
   bool walletDerived() {
-    print(
-        "NgAccountManager().hotAccountsExist() = ${NgAccountManager().hotAccountsExist()}");
     return NgAccountManager().hotAccountsExist();
   }
 
@@ -230,15 +243,9 @@ class EnvoySeed {
     // Add sembast DB
     backupData[EnvoyStorage.dbName] = await EnvoyStorage().export();
 
-    if (backupData.containsKey(EnvoyStorage.dbName)) {
-      backupData = await processBackupData(backupData, cloud);
-    }
+    //add accounts
+    backupData = await processBackupData(backupData, cloud);
 
-    File("${LocalStorage().appDocumentsDir.path}/testbck.json")
-      ..createSync(recursive: true)
-      ..writeAsString(jsonEncode(backupData));
-
-    return;
     return Backup.perform(
             backupData, seed, Settings().envoyServerAddress, Tor.instance,
             path: encryptedBackupFilePath, cloud: cloud)
@@ -284,18 +291,25 @@ class EnvoySeed {
         json["stores"][indexOfPreferences]["values"]
             [keys.indexOf(Settings.SETTINGS_PREFS)] = settings;
       } catch (e, stack) {
-        EnvoyReport().log("EnvoySeed", e.toString(), stackTrace: stack);
+        EnvoyReport()
+            .log("EnvoySeed checking online", e.toString(), stackTrace: stack);
       }
     }
-
-    // Strip keys from hot wallets
-    //TODO: fix this for unified wallets
-
     var account = List<dynamic>.from([]);
     for (var accountHandler in NgAccountManager().handlers) {
       try {
-        final json = await accountHandler.getAccountBackup();
-        account.add(jsonDecode(json));
+        final state = await accountHandler.state();
+        final dirWithId = NgAccountManager.getAccountDirectory(
+            deviceSerial: state.deviceSerial ?? "envoy",
+            network: state.network.toString(),
+            number: state.index,
+            accountId: state.id);
+        final jsonStr = await accountHandler.getAccountBackup();
+        final json = jsonDecode(jsonStr);
+        if (await dirWithId.exists()) {
+          json["require_unique_path"] = true;
+        }
+        account.add(json);
       } catch (e, stack) {
         EnvoyReport().log(
           "EnvoySeed",
@@ -304,11 +318,9 @@ class EnvoySeed {
         );
       }
     }
-    json["stores"][indexOfPreferences]["values"]
-        [keys.indexOf(AccountManager.ACCOUNTS_PREFS)] = account;
-
+    backupData[NgAccountManager.accountsPrefKey] = jsonEncode(account);
     backupData[EnvoyStorage.dbName] = jsonEncode(json);
-
+    backupData["version"] = magicBackupVersion.toString();
     return backupData;
   }
 
@@ -329,7 +341,8 @@ class EnvoySeed {
       }
     }
 
-    AccountManager().deleteHotWalletAccounts();
+    await NgAccountManager().deleteHotWalletAccounts();
+
     Settings().syncToCloud = false;
 
     try {
@@ -371,8 +384,9 @@ class EnvoySeed {
     if (filePath == null) {
       try {
         return Backup.restore(seed, Settings().envoyServerAddress, Tor.instance)
-            .then((data) {
-          return processRecoveryData(seed!, data);
+            .then((data) async {
+          bool status = await processRecoveryData(seed!, data);
+          return status;
         });
       } catch (e) {
         rethrow;
@@ -380,7 +394,8 @@ class EnvoySeed {
     } else {
       try {
         Map<String, String>? data = Backup.restoreOffline(seed, filePath);
-        return processRecoveryData(seed, data);
+        bool success = await processRecoveryData(seed, data);
+        return success;
       } catch (e) {
         return false;
       }
@@ -393,10 +408,18 @@ class EnvoySeed {
     if (success) {
       migrateFromSharedPreferences(data);
 
-      // Restore wallets previously censored in censorHotWalletDescriptors,
-      // magic backup wont have any xprv keys, only seed
-      if (data.containsKey(EnvoyStorage.dbName)) {
-        data = await restoreLegacyWallet(data, seed);
+      // if the data contains accountsPrefKey at root ,
+      // data is from newer backup
+      if (data.containsKey(EnvoyStorage.dbName) &&
+          !data.containsKey(NgAccountManager.accountsPrefKey)) {
+        await restoreLegacyWallet(data, seed);
+      } else {
+        // legacy accounts restore
+        // Restore wallets previously censored in censorHotWalletDescriptors,
+        // magic backup wont have any xprv keys, only seed
+        if (data.containsKey(NgAccountManager.accountsPrefKey)) {
+          await restoreAccounts(data, seed);
+        }
       }
 
       // Restore the database
@@ -415,6 +438,7 @@ class EnvoySeed {
       }
 
       _restoreSingletons();
+      await LocalStorage().prefs.setBool(MigrationManager.migrationPrefs, true);
     }
     return success;
   }
@@ -424,7 +448,6 @@ class EnvoySeed {
   static void migrateFromSharedPreferences(Map<String, String> data) {
     List<String> preferencesKeysFormerlyBackedUp = [
       Settings.SETTINGS_PREFS,
-      AccountManager.ACCOUNTS_PREFS,
       Devices.DEVICES_PREFS,
     ];
 
@@ -454,27 +477,44 @@ class EnvoySeed {
     List<dynamic> stores = json["stores"];
     var preferences = stores
         .singleWhere((element) => element["name"] == preferencesStoreName);
-    int indexOfPreferences =
-        stores.indexWhere((element) => element["name"] == preferencesStoreName);
-
     List<String> keys = List<String>.from(preferences["keys"]);
     List<dynamic> values = preferences["values"];
 
-    var accounts = values[keys.indexOf(AccountManager.ACCOUNTS_PREFS)];
+    var accounts = values[keys.indexOf(NgAccountManager.accountsPrefKey)];
     var jsonAccounts = jsonDecode(accounts);
-    List<LegacyAccount> legacyWallets = jsonAccounts
-        .map((e) => LegacyAccount.fromJson(e as Map<String, dynamic>))
-        .toList();
-
+    List<LegacyAccount> legacyWallets = [];
+    for (var e in jsonAccounts) {
+      try {
+        final account = LegacyAccount.fromJson(e);
+        if (!account.wallet.hot) {
+          legacyWallets.add(account);
+        }
+      } catch (e, stack) {
+        debugPrintStack(stackTrace: stack);
+      }
+    }
     List<LegacyUnifiedAccounts> legacy = MigrationManager.unify(legacyWallets);
+
     final accountOrder =
         LocalStorage().prefs.getString(NgAccountManager.ACCOUNT_ORDER);
     List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
-    await MigrationManager().createAccounts(legacy, order);
-
-    accounts = jsonEncode(jsonAccounts);
-    json["stores"][indexOfPreferences]["values"]
-        [keys.indexOf(AccountManager.ACCOUNTS_PREFS)] = accounts;
+    try {
+      List<EnvoyAccountHandler> accountHandler =
+          await MigrationManager().createAccounts(legacy, order);
+      for (var handler in accountHandler) {
+        await NgAccountManager().addAccount(
+          await handler.state(),
+          handler,
+        );
+      }
+    } catch (e, stack) {
+      EnvoyReport().log(
+        "EnvoySeed",
+        "Error creating accounts from legacy wallets: ${e.toString()}",
+        stackTrace: stack,
+      );
+    }
+    values[keys.indexOf(NgAccountManager.accountsPrefKey)];
     data[EnvoyStorage.dbName] = jsonEncode(json);
     return data;
   }
@@ -482,9 +522,7 @@ class EnvoySeed {
   _restoreSingletons() {
     Settings.restore(fromBackup: true);
     Settings().store();
-
     Devices().restore();
-    AccountManager().restore();
     ExchangeRate().restore();
     Notifications().restoreNotifications();
   }
@@ -614,6 +652,33 @@ class EnvoySeed {
   static Future clearDeleteFlag() async {
     if (await LocalStorage().readSecure(SEED_CLEAR_FLAG) != null) {
       await LocalStorage().deleteSecure(SEED_CLEAR_FLAG);
+    }
+  }
+
+  Future restoreAccounts(Map<String, String> data, String seed) async {
+    try {
+      List<dynamic> accounts =
+          jsonDecode(data[NgAccountManager.accountsPrefKey]!);
+      for (var account in accounts) {
+        Directory dir = NgAccountManager.getAccountDirectory(
+          deviceSerial: account["deviceSerial"],
+          network: account["network"],
+          number: account["index"],
+        );
+        if (account.containsKey("require_unique_path")) {
+          dir = NgAccountManager.getAccountDirectory(
+              deviceSerial: account["deviceSerial"],
+              network: account["network"],
+              number: account["index"],
+              accountId: account["id"]);
+        }
+        final handler = await EnvoyAccountHandler.restoreFromBackup(
+            backupJson: jsonEncode(account), dbPath: dir.path);
+        final state = await handler.state();
+        await NgAccountManager().addAccount(state, handler);
+      }
+    } catch (e) {
+      EnvoyReport().log("EnvoySeed", "Error restoring accounts: $e");
     }
   }
 }

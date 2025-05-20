@@ -2,13 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/account_manager.dart';
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
-import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,11 +17,7 @@ import 'package:envoy/ui/glow.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:go_router/go_router.dart';
-import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
-import 'package:envoy/ui/widgets/scanner/decoders/generic_qr_decoder.dart';
-import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
-import 'package:envoy/ui/pages/legal/passport_tou.dart';
 
 double cardButtonHeight = 125;
 
@@ -48,7 +43,7 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
     path = ref.read(routePathProvider);
 
     numOfButtons =
-        path == ROUTE_ACCOUNTS_HOME && !AccountManager().hotAccountsExist()
+        path == ROUTE_ACCOUNTS_HOME && !NgAccountManager().hotAccountsExist()
             ? 2
             : 1;
 
@@ -191,129 +186,8 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                                         title: S()
                                             .onboarding_welcome_setUpPassport,
                                         onTap: () {
-                                          showScannerDialog(
-                                              context: context,
-                                              onBackPressed: (context) {
-                                                Navigator.pop(context);
-                                              },
-                                              child: GestureDetector(
-                                                // prevent scanner drag
-                                                onVerticalDragUpdate: (_) {},
-                                                onVerticalDragStart: (_) {},
-                                                onVerticalDragEnd: (_) {},
-                                                behavior:
-                                                    HitTestBehavior.opaque,
-                                                child: SafeArea(
-                                                  child: Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.max,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.end,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                          vertical: EnvoySpacing
-                                                              .medium3,
-                                                        ),
-                                                        alignment:
-                                                            Alignment.center,
-                                                        child: Column(
-                                                          children: [
-                                                            Padding(
-                                                              padding: const EdgeInsets
-                                                                  .symmetric(
-                                                                  horizontal:
-                                                                      EnvoySpacing
-                                                                          .medium3),
-                                                              child: Text(
-                                                                S().onboarding_passpportSelectCamera_sub235VersionAlert,
-                                                                style: Theme.of(
-                                                                        context)
-                                                                    .textTheme
-                                                                    .bodySmall
-                                                                    ?.copyWith(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w700,
-                                                                      color: EnvoyColors
-                                                                          .textPrimaryInverse,
-                                                                    ),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                              ),
-                                                            ),
-                                                            TextButton(
-                                                              child: Text(
-                                                                S().onboarding_passpportSelectCamera_tapHere,
-                                                                style: EnvoyTypography
-                                                                    .button
-                                                                    .copyWith(
-                                                                        color: EnvoyColors
-                                                                            .textPrimaryInverse),
-                                                              ),
-                                                              onPressed:
-                                                                  () async {
-                                                                Navigator.pop(
-                                                                    context);
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .push(MaterialPageRoute(
-                                                                        builder:
-                                                                            (context) {
-                                                                  return const TouPage();
-                                                                }));
-                                                              },
-                                                            )
-                                                          ],
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              decoder: GenericQrDecoder(
-                                                  onScan: (String payload) {
-                                                final uri = Uri.parse(payload);
-                                                final params =
-                                                    uri.queryParameters;
-
-                                                if (params.containsKey("p")) {
-                                                  Navigator.pop(context);
-                                                  context.goNamed(ONBOARD_PRIME,
-                                                      queryParameters: params);
-                                                } else if (params
-                                                    .containsKey("t")) {
-                                                  Navigator.pop(context);
-                                                  context.goNamed(
-                                                      ONBOARD_PASSPORT_TOU,
-                                                      queryParameters: params);
-                                                } else {
-                                                  // TODO: manage this inside QR decoder ???
-                                                  EnvoyToast(
-                                                    replaceExisting: true,
-                                                    duration: const Duration(
-                                                        seconds: 6),
-                                                    message: "Invalid QR code",
-                                                    isDismissible: true,
-                                                    onActionTap: () {
-                                                      EnvoyToast
-                                                          .dismissPreviousToasts(
-                                                              context);
-                                                    },
-                                                    icon: const Icon(
-                                                      Icons.info_outline,
-                                                      color: EnvoyColors
-                                                          .accentPrimary,
-                                                    ),
-                                                  ).show(context);
-                                                }
-                                              }));
+                                          context
+                                              .goNamed(ONBOARD_PASSPORT_SCAN);
                                         },
                                       ),
                                       const SizedBox(

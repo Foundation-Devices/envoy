@@ -3,20 +3,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:convert';
-import 'package:collection/collection.dart';
-import 'package:ngwallet/src/wallet.dart';
-import 'package:envoy/ui/storage/coins_repository.dart';
-import 'package:envoy/util/envoy_storage.dart';
-import 'package:envoy/business/account.dart';
-import 'package:envoy/business/coin_tag.dart';
 
-String getXpub(Wallet wallet) {
+import 'package:envoy/util/envoy_storage.dart';
+import 'package:ngwallet/ngwallet.dart';
+import 'package:ngwallet/src/wallet.dart';
+
+String getXpub(NgDescriptor ngDescriptor, EnvoyAccount account) {
   // Check if the wallet is hot
-  if (!wallet.hot) {
-    return wallet.name;
+  if (!account.isHot) {
+    return account.name;
   } else {
     // Extract xpub from publicExternalDescriptor
-    String descriptor = wallet.publicExternalDescriptor ?? "";
+    //TODO: fix for unified descriptors
+    String descriptor = ngDescriptor.external_ ?? "";
     int start = descriptor.indexOf(']') + 1;
     int end = descriptor.indexOf('/', start);
     if (start > 0 && end > start) {
@@ -60,39 +59,32 @@ String extractDescriptor(String input) {
   }
 }
 
-Future<List<String>> getTxData(Wallet wallet) async {
-  List<Transaction> transactions = wallet.transactions;
-  String origin = extractDescriptor(wallet.externalDescriptor ?? "");
-  List<String> txDataList = [];
-
-  for (Transaction tx in transactions) {
-    String note = await EnvoyStorage().getTxNote(tx.txId) ?? "";
-    String txData = buildKeyJson("tx", tx.txId, note, origin: origin);
-    txDataList.add(txData);
-  }
+//TODO: fix for unified wallet transactions
+Future<List<String>> getTxData(EnvoyAccount account) async {
+    List<String> txDataList = [];
+  List<BitcoinTransaction> transactions = account.transactions;
+  // for(NgDescriptor descriptor in account.descriptors) {
+  //
+  //   String origin = extractDescriptor(descriptor.external_ ?? "");
+  //   List<String> txDataList = [];
+  //   for (Transaction tx in transactions) {
+  //     String note = await EnvoyStorage().getTxNote(tx.txId) ?? "";
+  //     String txData = buildKeyJson("tx", tx.txId, note, origin: origin);
+  //     txDataList.add(txData);
+  //   }
+  //
+  // }
 
   return txDataList;
 }
 
-Future<List<String>> getUtxosData(Account account) async {
-  List<Utxo> utxos = account.wallet.utxos;
-  List<String> locked = await CoinRepository().getBlockedCoins();
-  List<CoinTag> tags =
-      await CoinRepository().getCoinTags(accountId: account.id);
+Future<List<String>> getUtxosData(EnvoyAccount account) async {
   List<String> utxoDataList = [];
-
-  for (Utxo utxo in utxos) {
-    String utxoInfo = "${utxo.txid}:${utxo.vout}";
-
-    // Set label based on whether utxoInfo is in coinsId
-    String label =
-        tags.firstWhereOrNull((tag) => tag.coinsId.contains(utxoInfo))?.name ??
-            "";
-    bool isSpendable = !locked.contains(utxoInfo);
-
+  for (Output utxo in account.utxo) {
     // Generate utxoData and add it to the list
-    String utxoData =
-        buildKeyJson("output", utxoInfo, label, spendable: isSpendable);
+    String utxoData = buildKeyJson(
+        "output", "${utxo.txId}:${utxo.vout}", utxo.tag ?? "",
+        spendable: !utxo.doNotSpend);
     utxoDataList.add(utxoData);
   }
 

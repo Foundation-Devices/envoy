@@ -2,12 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use bdk_wallet::KeychainKind;
 use std::collections::HashMap;
 use std::error::Error;
 use std::ops::Index;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
+use bdk_wallet::KeychainKind;
 use sled::{IVec, Tree};
 
 pub(crate) enum MapKey {

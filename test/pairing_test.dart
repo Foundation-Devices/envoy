@@ -5,7 +5,6 @@
 import 'dart:convert';
 
 import 'package:envoy/business/account.dart';
-import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/services.dart';
@@ -37,7 +36,7 @@ void main() async {
     var json = jsonDecode(payload);
 
     List<Account> accounts =
-        await AccountManager.getPassportAccountsFromJson(json);
+        await NgAccountManager().getPassportAccountsFromJson(json);
 
     // Try are supposed to have same name initially
     expect(accounts[0].name, accounts[1].name);

@@ -43,8 +43,8 @@ class LegacyAccount {
 @JsonSerializable()
 class LegacyWallet {
   final String name;
-  final String externalDescriptor;
-  final String internalDescriptor;
+  final String? externalDescriptor;
+  final String? internalDescriptor;
 
   final String? publicExternalDescriptor;
 
@@ -55,26 +55,20 @@ class LegacyWallet {
   final bool hot;
   final bool hasPassphrase;
 
-  @JsonKey(defaultValue: [])
-  final List<dynamic> transactions;
-
-  final List<dynamic> utxos;
   final int balance;
   final double feeRateFast;
   final double feeRateSlow;
 
   LegacyWallet({
     required this.name,
-    required this.externalDescriptor,
-    required this.internalDescriptor,
+    this.externalDescriptor,
+    this.internalDescriptor,
     this.publicExternalDescriptor,
     this.publicInternalDescriptor,
     required this.type,
     required this.network,
     required this.hot,
     required this.hasPassphrase,
-    this.transactions = const [],
-    required this.utxos,
     required this.balance,
     required this.feeRateFast,
     required this.feeRateSlow,

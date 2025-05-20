@@ -117,7 +117,7 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                   return Center(child: Text("Error: ${snapshot.error}"));
                 }
 
-                final logs = snapshot.data ?? [];
+                final logs = (snapshot.data ?? []).reversed.toList();
 
                 if (logs.isEmpty) {
                   return const Center(
@@ -138,122 +138,119 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                         String lib = log["lib"] ?? "None";
                         String time = log["time"] ?? "";
                         return Column(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Column(
-                              children: [
-                                SelectableText.rich(
-                                  TextSpan(children: [
-                                    const TextSpan(
-                                        text: "Time : ", // TODO: FIGMA
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black,
-                                        )),
-                                    TextSpan(
-                                        text: "$time\n",
-                                        style: const TextStyle(
-                                          fontSize: 10,
-                                          color: Colors.black,
-                                        )),
-                                    const TextSpan(
-                                        text: "Category : ", // TODO: FIGMA
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black,
-                                        )),
-                                    TextSpan(
-                                        text: "$category\n",
-                                        style: const TextStyle(
-                                          fontSize: 10,
-                                          color: Colors.black,
-                                        )),
-                                    const TextSpan(
-                                        text: "Message : ", // TODO: FIGMA
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black,
-                                        )),
-                                    TextSpan(
-                                        text: "$message\n",
-                                        style: const TextStyle(
-                                          fontSize: 10,
-                                          color: Colors.black,
-                                        )),
-                                    const TextSpan(
-                                        text: "Occurrences : ", // TODO: FIGMA
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black,
-                                        )),
-                                    TextSpan(
-                                        text: "$occurrences\n",
-                                        style: const TextStyle(
-                                          fontSize: 10,
-                                          color: Colors.black,
-                                        )),
-                                    const TextSpan(
-                                        text: "Library : ", // TODO: FIGMA
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black,
-                                        )),
-                                    TextSpan(
-                                        text: "$lib\n",
-                                        style: const TextStyle(
-                                          fontSize: 10,
-                                          color: Colors.black,
-                                        )),
-                                    const TextSpan(
-                                        text: "\nException\n\n", // TODO: FIGMA
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black,
-                                        )),
-                                    TextSpan(
-                                        text: "$exception\n",
-                                        style: const TextStyle(
-                                          fontSize: 10,
-                                          color: Colors.black,
-                                        )),
-                                    const TextSpan(
-                                        text:
-                                            "\nStack Trace\n\n", // TODO: FIGMA
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black,
-                                        )),
-                                    TextSpan(
-                                        text: "$stackTrace \n",
-                                        style: const TextStyle(
-                                          fontSize: 10,
-                                          color: Colors.black,
-                                        ))
-                                  ]),
-                                  scrollPhysics: const ClampingScrollPhysics(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall
-                                      ?.copyWith(
-                                          fontWeight: FontWeight.w400,
-                                          height: 1.2,
-                                          color: Colors.grey[400],
-                                          fontSize: 11),
-                                  // overflow: TextOverflow.ellipsis,
-                                  // softWrap: true,
-                                ),
-                                const Divider(
-                                  color: Colors.black,
-                                  thickness: 1,
-                                ),
-                              ],
-                            )
+                            SelectableText.rich(
+                              TextSpan(children: [
+                                const TextSpan(
+                                    text: "Time : ", // TODO: FIGMA
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black,
+                                    )),
+                                TextSpan(
+                                    text: "$time\n",
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.black,
+                                    )),
+                                const TextSpan(
+                                    text: "Category : ", // TODO: FIGMA
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black,
+                                    )),
+                                TextSpan(
+                                    text: "$category\n",
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.black,
+                                    )),
+                                const TextSpan(
+                                    text: "Message : ", // TODO: FIGMA
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black,
+                                    )),
+                                TextSpan(
+                                    text: "$message\n",
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.black,
+                                    )),
+                                const TextSpan(
+                                    text: "Occurrences : ", // TODO: FIGMA
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black,
+                                    )),
+                                TextSpan(
+                                    text: "$occurrences\n",
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.black,
+                                    )),
+                                const TextSpan(
+                                    text: "Library : ", // TODO: FIGMA
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black,
+                                    )),
+                                TextSpan(
+                                    text: "$lib\n",
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.black,
+                                    )),
+                                const TextSpan(
+                                    text: "\nException\n\n", // TODO: FIGMA
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black,
+                                    )),
+                                TextSpan(
+                                    text: "$exception\n",
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.black,
+                                    )),
+                                const TextSpan(
+                                    text: "\nStack Trace\n\n", // TODO: FIGMA
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black,
+                                    )),
+                                TextSpan(
+                                    text: "$stackTrace \n",
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.black,
+                                    ))
+                              ]),
+                              scrollPhysics: const ClampingScrollPhysics(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.2,
+                                      color: Colors.grey[400],
+                                      fontSize: 11),
+                              // overflow: TextOverflow.ellipsis,
+                              // softWrap: true,
+                            ),
+                            const Divider(
+                              color: Colors.black,
+                              thickness: 1,
+                            ),
                           ],
                         );
                       },
