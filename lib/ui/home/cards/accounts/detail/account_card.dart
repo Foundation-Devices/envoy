@@ -563,8 +563,14 @@ class TransactionListTile extends ConsumerWidget {
                                     ),
                                   )
                                 : Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: EnvoySpacing.small),
+                                    padding: EdgeInsets.only(
+                                        top: s.displayFiat() == null ||
+                                                (kDebugMode &&
+                                                    account.network !=
+                                                        ngwallet
+                                                            .Network.bitcoin)
+                                            ? EnvoySpacing.small
+                                            : 0),
                                     child: EnvoyAmount(
                                         account: account,
                                         amountSats: transaction.amount,
