@@ -167,14 +167,13 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
                                     color: EnvoyColors.accentPrimary,
                                     fontSize: 16),
                             children: [
-                              //TODO: fix with envoyAccount
-                              // if (unit == AmountDisplayUnit.fiat)
-                              //   WidgetSpan(
-                              //     alignment: PlaceholderAlignment.middle,
-                              //     child: SizedBox(
-                              //         height: 20,
-                              //         child: getUnitIcon(widget.account!)),
-                              //   ),
+                              if (unit == AmountDisplayUnit.fiat)
+                                WidgetSpan(
+                                  alignment: PlaceholderAlignment.middle,
+                                  child: SizedBox(
+                                      height: 18,
+                                      child: getUnitIcon(widget.account!)),
+                                ),
                               TextSpan(
                                 text: unit != AmountDisplayUnit.fiat
                                     ? ExchangeRate().getFormattedAmount(
@@ -186,7 +185,10 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
                                         ? getDisplayAmount(
                                             widget.amountSats ?? 0,
                                             AmountDisplayUnit.btc,
-                                          )
+                                            trailingZeros:
+                                                widget.amountSats == 0
+                                                    ? false
+                                                    : true)
                                         : getDisplayAmount(
                                             widget.amountSats ?? 0,
                                             AmountDisplayUnit.sat,

@@ -75,7 +75,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
       } else {
         _enteredAmount = getDisplayAmount(
             _amountSats, ref.read(sendScreenUnitProvider),
-            trailingZeros: !widget.trailingZeroes && _amountSats != 0);
+            trailingZeros: widget.onPaste != null);
       }
     }
 
@@ -284,10 +284,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
       if (!addDot && !addZero) {
         setState(() {
           // Format it nicely
-          _enteredAmount = getDisplayAmount(_amountSats, unit,
-              trailingZeros: !widget.trailingZeroes &&
-                  _amountSats !=
-                      0); // Do not add trailing zeros when manually typing the amount
+          _enteredAmount = getDisplayAmount(_amountSats, unit);
         });
       }
     }
@@ -335,7 +332,8 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
                 if (unit == AmountDisplayUnit.btc) {
                   enteredAmount = getDisplayAmount(
                       _amountSats, AmountDisplayUnit.btc,
-                      trailingZeros: widget.trailingZeroes && _amountSats != 0);
+                      trailingZeros:
+                          widget.onPaste != null || _amountSats != 0);
                 }
                 _enteredAmount = enteredAmount;
               },
