@@ -14,9 +14,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class TouPage extends StatefulWidget {
-  final bool callFromOnboard;
-
-  const TouPage({super.key, this.callFromOnboard = true});
+  const TouPage({super.key});
 
   @override
   State<TouPage> createState() => _TouPageState();
@@ -64,8 +62,6 @@ class _TouPageState extends State<TouPage> {
                         child: GestureDetector(
                           onTap: () {
                             Navigator.pop(context);
-                            showPassportScannerDialog(
-                                context, widget.callFromOnboard);
                           },
                           child: const Icon(Icons.arrow_back_ios_rounded,
                               size: 20),

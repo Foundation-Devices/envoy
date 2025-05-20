@@ -11,7 +11,6 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
-import 'package:envoy/ui/home/setup_overlay.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/routes/routes.dart';
@@ -32,8 +31,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
-import 'package:envoy/ui/pages/legal/passport_tou.dart';
-import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 
 enum EscapeHatchTap { logo, text }
 
@@ -203,7 +200,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       ),
                       title: S().onboarding_welcome_setUpPassport,
                       onTap: () {
-                        showPassportScannerDialog(context, true);
+                        context.goNamed(ONBOARD_PASSPORT_SCAN);
                       },
                     ),
                   ),
