@@ -5,7 +5,6 @@
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
@@ -19,6 +18,7 @@ import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 
 class ManualSetupImportSeed extends ConsumerStatefulWidget {
   final SeedLength seedLength;
@@ -255,8 +255,9 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                         ),
                       ),
                     ),
-                    const Icon(EnvoyIcons.exclamationWarning,
-                        color: EnvoyColors.accentSecondary, size: 60),
+                    const EnvoyIcon(EnvoyIcons.alert,
+                        color: EnvoyColors.accentSecondary,
+                        size: EnvoyIconSize.big),
                     const Padding(padding: EdgeInsets.all(4)),
                     Padding(
                       padding: const EdgeInsets.symmetric(
