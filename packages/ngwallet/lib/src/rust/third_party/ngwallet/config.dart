@@ -10,7 +10,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `NgAccountBuilder`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `assert_receiver_is_total_eq`, `clone`, `clone`, `clone`, `clone`, `cmp`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `hash`, `partial_cmp`
-// These functions are ignored (category: IgnoreBecauseOwnerTyShouldIgnore): `build_from_backend`, `build_from_file`, `build_in_memory`, `color`, `date_added`, `date_synced`, `db_path`, `default`, `descriptors`, `device_serial`, `id`, `index`, `name`, `network`, `preferred_address_type`, `seed_has_passphrase`
+// These functions are ignored (category: IgnoreBecauseOwnerTyShouldIgnore): `account_path`, `build_from_backend`, `build_from_file`, `build_in_memory`, `color`, `date_added`, `date_synced`, `default`, `descriptors`, `device_serial`, `id`, `index`, `name`, `network`, `preferred_address_type`, `seed_has_passphrase`
 
 enum AddressType {
   /// Pay to pubkey hash.
@@ -70,6 +70,7 @@ class NgAccountConfig {
   final int index;
   final List<NgDescriptor> descriptors;
   final String? dateSynced;
+  final String? accountPath;
   final Network network;
   final String id;
 
@@ -83,6 +84,7 @@ class NgAccountConfig {
     required this.index,
     required this.descriptors,
     this.dateSynced,
+    this.accountPath,
     required this.network,
     required this.id,
   });
@@ -106,6 +108,7 @@ class NgAccountConfig {
       index.hashCode ^
       descriptors.hashCode ^
       dateSynced.hashCode ^
+      accountPath.hashCode ^
       network.hashCode ^
       id.hashCode;
 
@@ -123,6 +126,7 @@ class NgAccountConfig {
           index == other.index &&
           descriptors == other.descriptors &&
           dateSynced == other.dateSynced &&
+          accountPath == other.accountPath &&
           network == other.network &&
           id == other.id;
 }

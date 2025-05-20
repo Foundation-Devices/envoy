@@ -38,7 +38,7 @@ use std::collections::BTreeMap;
 use std::env;
 use std::fmt::format;
 use std::fs::File;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::str::FromStr;
 use std::sync::{Arc, LockResult, Mutex};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
@@ -98,7 +98,7 @@ impl EnvoyAccountHandler {
         network: Network,
         id: String,
     ) -> Result<EnvoyAccountHandler> {
-        let descriptors = Self::get_descriptor(&descriptors, db_path.clone());
+        let descriptors = Self::get_descriptors(&descriptors, db_path.clone());
 
         let mut ng_account = NgAccountBuilder::default()
             .name(name.clone())
@@ -107,7 +107,7 @@ impl EnvoyAccountHandler {
             .device_serial(device_serial)
             .date_added(date_added)
             .date_synced(None)
-            .db_path(Some(db_path.clone()))
+            .account_path(Some(db_path.clone()))
             .network(network)
             .id(id.clone())
             .preferred_address_type(address_type.clone())
@@ -134,7 +134,7 @@ impl EnvoyAccountHandler {
             }
         }
     }
-    
+
     pub fn migrate(
         name: String,
         id: String,
@@ -148,7 +148,7 @@ impl EnvoyAccountHandler {
         legacy_sled_db_path: Vec<String>,
         network: Network,
     ) -> Result<EnvoyAccountHandler> {
-        let descriptors = Self::get_descriptor(&descriptors, db_path.clone());
+        let descriptors = Self::get_descriptors(&descriptors, db_path.clone());
 
         let ng_account = NgAccountBuilder::default()
             .name(name.clone())
@@ -157,7 +157,7 @@ impl EnvoyAccountHandler {
             .device_serial(device_serial)
             .date_added(date_added)
             .date_synced(None)
-            .db_path(Some(db_path.clone()))
+            .account_path(Some(db_path.clone()))
             .network(network)
             .id(id.clone())
             .preferred_address_type(address_type.clone())
@@ -457,7 +457,7 @@ impl EnvoyAccountHandler {
         let scan_request_guard = update.lock().unwrap();
         {
             let mut account = self.ng_account.lock().unwrap();
-            account.apply((address_type, scan_request_guard.to_owned(),)).unwrap();
+            account.apply((address_type, scan_request_guard.to_owned(), )).unwrap();
             account.config.date_synced = Some(format!("{:?}", Utc::now()));
             account.persist().unwrap();
         }
@@ -668,22 +668,53 @@ impl EnvoyAccountHandler {
             Err(_) => false,
         };
     }
-    fn get_descriptor(descriptors: &Vec<NgDescriptor>, db_path: String) -> Vec<Descriptor<Connection>> {
+
+    pub fn add_descriptor(&mut self,
+                          ng_descriptor: NgDescriptor) -> Result<()> {
+        let result = {
+            let mut account = self.ng_account.lock().unwrap();
+            let path = Self::bdk_db_path(&account.config.account_path.clone().expect("Unable get account path"), account.config.descriptors.len(), &ng_descriptor);
+            if path.exists() {
+                return Err(anyhow!("Descriptor already exists"));
+            }
+            let descriptor = Self::get_descriptor(&ng_descriptor, path);
+            account.add_new_descriptor(&descriptor)
+        };
+        match result {
+            Ok(_) => {
+                self.send_update();
+                Ok(())
+            }
+            Err(err) => {
+                Err(anyhow!("Failed to add descriptor : {:?}", err))
+            }
+        }
+    }
+
+    fn get_descriptors(descriptors: &Vec<NgDescriptor>, db_path: String) -> Vec<Descriptor<Connection>> {
         descriptors
             .iter()
             .enumerate()
             .map(|(index, descriptor)| {
-                let internal = descriptor.clone().internal;
-                let external = descriptor.clone().external;
-                let bdk_db_path = Path::new(&db_path.clone()).join(format!("wallet_{}_{:?}.sqlite", index, descriptor.address_type));
-                let connection = Connection::open(bdk_db_path).unwrap();
-                Descriptor {
-                    internal: internal.clone(),
-                    external,
-                    bdk_persister: Arc::new(Mutex::new(connection)),
-                }
+                Self::get_descriptor(descriptor, Self::bdk_db_path(&db_path, index, descriptor))
             })
             .collect::<Vec<Descriptor<Connection>>>()
+    }
+
+    fn get_descriptor(descriptor: &NgDescriptor, bdk_db_path: PathBuf) -> Descriptor<Connection> {
+        let internal = descriptor.clone().internal;
+        let external = descriptor.clone().external;
+        let connection = Connection::open(bdk_db_path).unwrap();
+        Descriptor {
+            internal: internal.clone(),
+            external,
+            bdk_persister: Arc::new(Mutex::new(connection)),
+        }
+    }
+
+    fn bdk_db_path(db_path: &String, index: usize, descriptor: &NgDescriptor) -> PathBuf {
+        let bdk_db_path = Path::new(&db_path.clone()).join(format!("wallet_{}_{:?}.sqlite", index, descriptor.address_type));
+        bdk_db_path
     }
 
     pub fn get_account_backup(
@@ -700,7 +731,6 @@ impl EnvoyAccountHandler {
     }
 
 
-
     pub fn restore_from_backup(
         backup_json: &str,
         db_path: String,
@@ -709,7 +739,7 @@ impl EnvoyAccountHandler {
             Ok(backup) => {
                 let config = backup.ng_account_config;
                 let indexes = backup.last_used_index;
-                let descriptors = Self::get_descriptor(&config.descriptors, db_path.clone());
+                let descriptors = Self::get_descriptors(&config.descriptors, db_path.clone());
 
                 let ng_account = NgAccountBuilder::default()
                     .name(config.name.clone())
@@ -718,7 +748,7 @@ impl EnvoyAccountHandler {
                     .device_serial(config.device_serial)
                     .date_added(config.date_added)
                     .date_synced(config.date_synced)
-                    .db_path(Some(db_path.clone()))
+                    .account_path(Some(db_path.clone()))
                     .network(config.network)
                     .id(config.id.clone())
                     .preferred_address_type(config.preferred_address_type)
@@ -754,6 +784,49 @@ impl EnvoyAccountHandler {
             }
             Err(_) => {
                 return Err(anyhow!("Failed to deserialize backup"));
+            }
+        }
+    }
+
+
+    pub fn add_account_from_config(
+        config: NgAccountConfig,
+        db_path: String,
+    ) -> Result<EnvoyAccountHandler> {
+        let descriptors = Self::get_descriptors(&config.descriptors, db_path.clone());
+
+        let ng_account = NgAccountBuilder::default()
+            .name(config.name.clone())
+            .color(config.color.clone())
+            .descriptors(descriptors)
+            .device_serial(config.device_serial)
+            .date_added(config.date_added)
+            .date_synced(None)
+            .account_path(Some(db_path.clone()))
+            .network(config.network)
+            .id(config.id.clone())
+            .preferred_address_type(config.preferred_address_type.clone())
+            .index(config.index)
+            .build_from_file(Some(db_path.clone()));
+
+        match ng_account {
+            Ok(mut account) => {
+                match account.persist() {
+                    Ok(_) => {
+                        Ok(EnvoyAccountHandler {
+                            stream_sink: None,
+                            mempool_txs: vec![],
+                            id: config.id.clone(),
+                            ng_account: Arc::new(Mutex::new(account)),
+                        })
+                    }
+                    Err(err) => {
+                        return Err(anyhow!("Failed to persist: {:?}", err));
+                    }
+                }
+            }
+            Err(err) => {
+                return Err(anyhow!("Failed to create account: {:?}", err));
             }
         }
     }

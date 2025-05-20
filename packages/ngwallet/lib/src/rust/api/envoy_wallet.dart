@@ -13,7 +13,7 @@ import 'envoy_account.dart';
 import 'errors.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `get_descriptor`
+// These functions are ignored because they are not marked as `pub`: `bdk_db_path`, `get_descriptor`, `get_descriptors`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < Option < FullScanRequest < KeychainKind > > > >>>
@@ -27,6 +27,14 @@ abstract class WalletUpdate implements RustOpaqueInterface {}
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>>
 abstract class EnvoyAccountHandler implements RustOpaqueInterface {
+  static Future<EnvoyAccountHandler> addAccountFromConfig(
+          {required NgAccountConfig config, required String dbPath}) =>
+      RustLib.instance.api
+          .crateApiEnvoyWalletEnvoyAccountHandlerAddAccountFromConfig(
+              config: config, dbPath: dbPath);
+
+  Future<void> addDescriptor({required NgDescriptor ngDescriptor});
+
   Future<void> applyUpdate(
       {required WalletUpdate update, required AddressType addressType});
 
