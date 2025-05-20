@@ -320,7 +320,6 @@ class EnvoySeed {
     }
     backupData[NgAccountManager.accountsPrefKey] = jsonEncode(account);
     backupData[EnvoyStorage.dbName] = jsonEncode(json);
-    backupData["version"] = magicBackupVersion.toString();
     return backupData;
   }
 
@@ -432,6 +431,7 @@ class EnvoySeed {
   static void migrateFromSharedPreferences(Map<String, String> data) {
     List<String> preferencesKeysFormerlyBackedUp = [
       Settings.SETTINGS_PREFS,
+      NgAccountManager.accountsPrefKey,
       Devices.DEVICES_PREFS,
     ];
 
