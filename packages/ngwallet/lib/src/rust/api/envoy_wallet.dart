@@ -69,9 +69,9 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
           draftTransaction: draftTransaction, psbtBase64: psbtBase64);
 
   static Future<EnvoyAccountHandler> fromConfig(
-          {required NgAccountConfig config, required String dbPath}) =>
+          {required String dbPath, required NgAccountConfig config}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerFromConfig(
-          config: config, dbPath: dbPath);
+          dbPath: dbPath, config: config);
 
   Future<String> getAccountBackup();
 
@@ -137,9 +137,9 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
 
   Future<List<(String, AddressType)>> nextAddress();
 
-  static Future<EnvoyAccountHandler> openWallet({required String dbPath}) =>
+  static Future<EnvoyAccountHandler> openAccount({required String dbPath}) =>
       RustLib.instance.api
-          .crateApiEnvoyWalletEnvoyAccountHandlerOpenWallet(dbPath: dbPath);
+          .crateApiEnvoyWalletEnvoyAccountHandlerOpenAccount(dbPath: dbPath);
 
   Future<void> renameAccount({required String name});
 

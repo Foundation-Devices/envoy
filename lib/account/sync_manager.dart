@@ -163,11 +163,6 @@ class SyncManager {
               await Future.delayed(const Duration(milliseconds: 100));
             }
             await _performWalletSync(account, server, port, type);
-            if (account.network == Network.testnet4) {
-              print("\n\n\n account \n ${account.descriptors.map(
-                (element) => "${element.external_},\n ${element.addressType}\n",
-              )}\n\n\n ");
-            }
             kPrint(
                 "✨Finished Syncing account ${account.name} | ${account.network} | $server  |Tor : $port");
           } catch (e) {

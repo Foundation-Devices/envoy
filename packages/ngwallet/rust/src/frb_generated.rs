@@ -48,7 +48,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.9.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1035024905;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1585834688;
 
 // Section: executor
 
@@ -679,15 +679,15 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_from_config_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_config = <ngwallet::config::NgAccountConfig>::sse_decode(&mut deserializer);
             let api_db_path = <String>::sse_decode(&mut deserializer);
+            let api_config = <ngwallet::config::NgAccountConfig>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || {
                         let output_ok = crate::api::envoy_wallet::EnvoyAccountHandler::from_config(
-                            api_config,
                             api_db_path,
+                            api_config,
                         )?;
                         Ok(output_ok)
                     })(),
@@ -1126,7 +1126,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_next_address_impl(
         },
     )
 }
-fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_open_wallet_impl(
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_open_account_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -1134,7 +1134,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_open_wallet_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "EnvoyAccountHandler_open_wallet",
+            debug_name: "EnvoyAccountHandler_open_account",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -1153,9 +1153,10 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_open_wallet_impl(
             move |context| {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || {
-                        let output_ok = crate::api::envoy_wallet::EnvoyAccountHandler::open_wallet(
-                            api_db_path,
-                        )?;
+                        let output_ok =
+                            crate::api::envoy_wallet::EnvoyAccountHandler::open_account(
+                                api_db_path,
+                            )?;
                         Ok(output_ok)
                     })(),
                 )
@@ -3618,7 +3619,7 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        22 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_open_wallet_impl(
+        22 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_open_account_impl(
             port,
             ptr,
             rust_vec_len,

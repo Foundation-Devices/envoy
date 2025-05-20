@@ -11,6 +11,7 @@ import 'package:envoy/business/prime_device.dart';
 import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/util/ntp.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
@@ -82,8 +83,11 @@ class BluetoothManager {
 
   Future<List<Uint8List>> encodeMessage(
       {required api.QuantumLinkMessage message}) async {
+    DateTime dateTime = await NTP.now();
+    final timestampSeconds = (dateTime.millisecondsSinceEpoch ~/ 1000);
+
     api.EnvoyMessage envoyMessage =
-        api.EnvoyMessage(message: message, timestamp: 0);
+        api.EnvoyMessage(message: message, timestamp: timestampSeconds);
 
     return await api.encode(
       message: envoyMessage,

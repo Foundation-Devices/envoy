@@ -134,7 +134,7 @@ impl EnvoyAccountHandler {
             }
         }
     }
-
+    
     pub fn migrate(
         name: String,
         id: String,
@@ -219,12 +219,22 @@ impl EnvoyAccountHandler {
         self.stream_sink = Some(stream_sink);
     }
 
-    pub fn open_wallet(db_path: String) -> Result<EnvoyAccountHandler> {
+    pub fn open_account(db_path: String) -> Result<EnvoyAccountHandler> {
         let config = NgAccount::<Connection>::read_config_from_file(Some(db_path.clone()));
         let Some(config) = config else {
             return Err(anyhow!("Failed to read config"));
         };
+        match Self::from_config(db_path, config) {
+            Ok(account) => {
+                Ok(account)
+            }
+            Err(err) => {
+                return Err(anyhow!("Failed to load account: {}", err));
+            }
+        }
+    }
 
+    pub fn from_config(db_path: String, config: NgAccountConfig) -> Result<EnvoyAccountHandler> {
         let descriptors = config.descriptors.
             iter()
             .enumerate()
@@ -447,7 +457,7 @@ impl EnvoyAccountHandler {
         let scan_request_guard = update.lock().unwrap();
         {
             let mut account = self.ng_account.lock().unwrap();
-            account.apply((address_type, scan_request_guard.to_owned(), )).unwrap();
+            account.apply((address_type, scan_request_guard.to_owned(),)).unwrap();
             account.config.date_synced = Some(format!("{:?}", Utc::now()));
             account.persist().unwrap();
         }
@@ -690,38 +700,6 @@ impl EnvoyAccountHandler {
     }
 
 
-    pub fn from_config(
-        config: NgAccountConfig,
-        db_path: String,
-    ) -> Result<EnvoyAccountHandler> {
-        let descriptors = Self::get_descriptor(&config.descriptors, db_path.clone());
-        let ng_account = NgAccountBuilder::default()
-            .name(config.name.clone())
-            .color(config.color.clone())
-            .descriptors(descriptors)
-            .device_serial(config.device_serial)
-            .date_added(config.date_added)
-            .date_synced(config.date_synced)
-            .db_path(Some(db_path.clone()))
-            .network(config.network)
-            .id(config.id.clone())
-            .preferred_address_type(config.preferred_address_type)
-            .index(config.index)
-            .build_from_file(Some(db_path));
-        match ng_account {
-            Ok(ng_account) => {
-                Ok(EnvoyAccountHandler {
-                    stream_sink: None,
-                    mempool_txs: vec![],
-                    id: config.id.clone(),
-                    ng_account: Arc::new(Mutex::new(ng_account)),
-                })
-            }
-            Err(err) => {
-                return Err(anyhow!("Failed to create account: {:?}", err));
-            }
-        }
-    }
 
     pub fn restore_from_backup(
         backup_json: &str,

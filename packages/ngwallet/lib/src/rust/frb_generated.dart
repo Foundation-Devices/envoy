@@ -76,7 +76,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.9.0';
 
   @override
-  int get rustContentHash => 1035024905;
+  int get rustContentHash => -1585834688;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -138,7 +138,7 @@ abstract class RustLibApi extends BaseApi {
       {required DraftTransaction draftTransaction, required String psbtBase64});
 
   Future<EnvoyAccountHandler> crateApiEnvoyWalletEnvoyAccountHandlerFromConfig(
-      {required NgAccountConfig config, required String dbPath});
+      {required String dbPath, required NgAccountConfig config});
 
   Future<String> crateApiEnvoyWalletEnvoyAccountHandlerGetAccountBackup(
       {required EnvoyAccountHandler that});
@@ -189,7 +189,7 @@ abstract class RustLibApi extends BaseApi {
       crateApiEnvoyWalletEnvoyAccountHandlerNextAddress(
           {required EnvoyAccountHandler that});
 
-  Future<EnvoyAccountHandler> crateApiEnvoyWalletEnvoyAccountHandlerOpenWallet(
+  Future<EnvoyAccountHandler> crateApiEnvoyWalletEnvoyAccountHandlerOpenAccount(
       {required String dbPath});
 
   Future<void> crateApiEnvoyWalletEnvoyAccountHandlerRenameAccount(
@@ -754,12 +754,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<EnvoyAccountHandler> crateApiEnvoyWalletEnvoyAccountHandlerFromConfig(
-      {required NgAccountConfig config, required String dbPath}) {
+      {required String dbPath, required NgAccountConfig config}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_box_autoadd_ng_account_config(config, serializer);
         sse_encode_String(dbPath, serializer);
+        sse_encode_box_autoadd_ng_account_config(config, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 13, port: port_);
       },
@@ -769,7 +769,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiEnvoyWalletEnvoyAccountHandlerFromConfigConstMeta,
-      argValues: [config, dbPath],
+      argValues: [dbPath, config],
       apiImpl: this,
     ));
   }
@@ -778,7 +778,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       get kCrateApiEnvoyWalletEnvoyAccountHandlerFromConfigConstMeta =>
           const TaskConstMeta(
             debugName: "EnvoyAccountHandler_from_config",
-            argNames: ["config", "dbPath"],
+            argNames: ["dbPath", "config"],
           );
 
   @override
@@ -1099,7 +1099,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
 
   @override
-  Future<EnvoyAccountHandler> crateApiEnvoyWalletEnvoyAccountHandlerOpenWallet(
+  Future<EnvoyAccountHandler> crateApiEnvoyWalletEnvoyAccountHandlerOpenAccount(
       {required String dbPath}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
@@ -1113,16 +1113,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler,
         decodeErrorData: sse_decode_AnyhowException,
       ),
-      constMeta: kCrateApiEnvoyWalletEnvoyAccountHandlerOpenWalletConstMeta,
+      constMeta: kCrateApiEnvoyWalletEnvoyAccountHandlerOpenAccountConstMeta,
       argValues: [dbPath],
       apiImpl: this,
     ));
   }
 
   TaskConstMeta
-      get kCrateApiEnvoyWalletEnvoyAccountHandlerOpenWalletConstMeta =>
+      get kCrateApiEnvoyWalletEnvoyAccountHandlerOpenAccountConstMeta =>
           const TaskConstMeta(
-            debugName: "EnvoyAccountHandler_open_wallet",
+            debugName: "EnvoyAccountHandler_open_account",
             argNames: ["dbPath"],
           );
 

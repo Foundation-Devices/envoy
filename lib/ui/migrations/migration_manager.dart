@@ -11,6 +11,7 @@ import 'package:envoy/account/legacy/legacy_account.dart';
 import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/util/bug_report_helper.dart';
@@ -70,7 +71,6 @@ class MigrationManager {
   final LocalStorage _ls = LocalStorage();
   static String walletsDirectory =
       "${LocalStorage().appDocumentsDir.path}/wallets/";
-
   List<EnvoyAccountHandler> accounts = [];
 
   final StreamController<MigrationProgress> _streamController =
@@ -161,6 +161,8 @@ class MigrationManager {
       List<String> existingWalletOrder) async {
     final List<EnvoyAccountHandler> handlers = [];
     final walletOrder = List<String>.empty(growable: true);
+    bool taprootEnabled = Settings().taprootEnabled();
+
     for (LegacyUnifiedAccounts unified in unifiedLegacyAccounts) {
       //use externalDescriptor and internalDescriptor
       final legacyAccount = unified.accounts.first;
@@ -198,9 +200,11 @@ class MigrationManager {
         );
       }).toList();
 
-      var addressType = AddressType.p2Wpkh;
-      if (legacyAccount.wallet.type == "taproot") {
-        addressType = AddressType.p2Tr;
+      //default to first address type as the preferred address type
+      var addressType = descriptors.first.addressType;
+      if (descriptors.length != 1) {
+        //  if the user already has a taproot enabled use taproot as preferred
+        addressType = taprootEnabled ? AddressType.p2Tr : AddressType.p2Wpkh;
       }
       final newId = Uuid().v4();
 

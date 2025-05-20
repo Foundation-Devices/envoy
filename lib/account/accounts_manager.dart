@@ -96,7 +96,6 @@ class NgAccountManager extends ChangeNotifier {
   NgAccountManager._internal();
 
   Future restore() async {
-    print("RESTORING ACCOUNTS");
     _accountsHandler.clear();
     final accountOrder = _ls.prefs.getString(ACCOUNT_ORDER);
     List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
@@ -112,9 +111,8 @@ class NgAccountManager extends ChangeNotifier {
     for (var dir in dirs) {
       if (dir is Directory) {
         try {
-          print("OPening dir ${dir.path}");
           final accountHandler =
-              await EnvoyAccountHandler.openWallet(dbPath: dir.path);
+              await EnvoyAccountHandler.openAccount(dbPath: dir.path);
           final state = await accountHandler.state();
           _accountsHandler.add((state, accountHandler));
           await accountHandler.sendUpdate();
@@ -288,7 +286,6 @@ class NgAccountManager extends ChangeNotifier {
 
   notifyIfAccountBalanceHigherThanUsd1000() {
     for (var account in accounts) {
-      print("calculating usd value for account ${account.name}");
       if (account.isHot && account.network == Network.bitcoin) {
         var amountUSD = ExchangeRate().getUsdValue(account.balance.toInt());
         if (amountUSD >= 1000) {
@@ -399,7 +396,7 @@ class NgAccountManager extends ChangeNotifier {
       // print("handler created");
       // await addAccount(await handler.state(), handler);
     } catch (e) {
-      print("Error creating account directory: $e");
+      kPrint("Error creating account directory: $e");
     }
   }
 }
