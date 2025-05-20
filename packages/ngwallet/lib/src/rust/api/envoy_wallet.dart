@@ -73,16 +73,6 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerFromConfig(
           dbPath: dbPath, config: config);
 
-  static Future<WalletUpdate> fullScanRequest(
-          {required FullScanRequest scanRequest,
-          required String electrumServer,
-          int? torPort}) =>
-      RustLib.instance.api
-          .crateApiEnvoyWalletEnvoyAccountHandlerFullScanRequest(
-              scanRequest: scanRequest,
-              electrumServer: electrumServer,
-              torPort: torPort);
-
   Future<String> getAccountBackup();
 
   Future<TransactionFeeResult> getMaxBumpFeeRates(
@@ -156,6 +146,21 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
   Future<void> renameTag({required String existingTag, String? newTag});
 
   Future<FullScanRequest> requestFullScan({required AddressType addressType});
+
+  static Future<EnvoyAccountHandler> restoreFromBackup(
+          {required String backupJson, required String dbPath}) =>
+      RustLib.instance.api
+          .crateApiEnvoyWalletEnvoyAccountHandlerRestoreFromBackup(
+              backupJson: backupJson, dbPath: dbPath);
+
+  static Future<WalletUpdate> scanWallet(
+          {required FullScanRequest scanRequest,
+          required String electrumServer,
+          int? torPort}) =>
+      RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerScanWallet(
+          scanRequest: scanRequest,
+          electrumServer: electrumServer,
+          torPort: torPort);
 
   Future<void> sendUpdate();
 

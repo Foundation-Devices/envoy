@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
@@ -64,6 +65,11 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
   Widget build(BuildContext context) {
     ref.watch(settingsProvider);
     ref.watch(accountsProvider);
+    final currentProgress = ref.watch(accountSync);
+    bool isScanning = false;
+    if (currentProgress is Scanning) {
+      isScanning = currentProgress.id == widget.account.id;
+    }
     EnvoyAccount? account = ref.watch(accountStateProvider(widget.account.id));
     if (widget.account.walletPath == "ghost") {
       account = widget.account;
@@ -177,7 +183,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                         builder: (context, ref, child) {
                           final hide = ref.watch(
                               balanceHideStateStatusProvider(account!.id));
-                          if (hide || account.deviceSerial == null) {
+                          if (hide || isScanning) {
                             return Container(
                               decoration: ShapeDecoration(
                                 color: const Color(0xFFF8F8F8),
@@ -196,12 +202,12 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                     LoaderGhost(
                                       width: 200,
                                       height: 24,
-                                      animate: account.dateAdded == null,
+                                      animate: isScanning,
                                     ),
                                     LoaderGhost(
                                       width: 50,
                                       height: 24,
-                                      animate: account.dateSynced == null,
+                                      animate: isScanning,
                                     ),
                                   ],
                                 ),

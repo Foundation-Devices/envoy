@@ -1,7 +1,3 @@
-// SPDX-FileCopyrightText: 2025 Foundation Devices Inc.
-//
-// SPDX-License-Identifier: GPL-3.0-or-later
-
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'legacy_account.dart';
@@ -34,16 +30,14 @@ Map<String, dynamic> _$LegacyAccountToJson(LegacyAccount instance) =>
 
 LegacyWallet _$WalletFromJson(Map<String, dynamic> json) => LegacyWallet(
       name: json['name'] as String,
-      externalDescriptor: json['externalDescriptor'] as String,
-      internalDescriptor: json['internalDescriptor'] as String,
+      externalDescriptor: json['externalDescriptor'] as String?,
+      internalDescriptor: json['internalDescriptor'] as String?,
       publicExternalDescriptor: json['publicExternalDescriptor'] as String?,
       publicInternalDescriptor: json['publicInternalDescriptor'] as String?,
       type: json['type'] as String,
       network: json['network'] as String,
       hot: json['hot'] as bool,
       hasPassphrase: json['hasPassphrase'] as bool,
-      transactions: json['transactions'] as List<dynamic>? ?? [],
-      utxos: json['utxos'] as List<dynamic>,
       balance: (json['balance'] as num).toInt(),
       feeRateFast: (json['feeRateFast'] as num).toDouble(),
       feeRateSlow: (json['feeRateSlow'] as num).toDouble(),
@@ -59,8 +53,6 @@ Map<String, dynamic> _$WalletToJson(LegacyWallet instance) => <String, dynamic>{
       'network': instance.network,
       'hot': instance.hot,
       'hasPassphrase': instance.hasPassphrase,
-      'transactions': instance.transactions,
-      'utxos': instance.utxos,
       'balance': instance.balance,
       'feeRateFast': instance.feeRateFast,
       'feeRateSlow': instance.feeRateSlow,

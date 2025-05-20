@@ -34,7 +34,7 @@ class PairPayloadDecoder extends ScannerDecoder {
       //show progress if the code is UR
       progressCallBack?.call(urDecoder.urDecoder.progress);
       if (payload is Binary) {
-        if (_validatePairData(payload) && await _binaryValidated(payload)) {
+        if (_validatePairData(payload)) {
           onScan(payload);
         } else {
           throw InvalidPairPayloadException();
@@ -42,6 +42,8 @@ class PairPayloadDecoder extends ScannerDecoder {
       } else if (urDecoder.urDecoder.progress == 1) {
         throw InvalidPairPayloadException();
       }
+    }else{
+      //handle new paring flow
     }
     return;
   }
@@ -57,21 +59,5 @@ class PairPayloadDecoder extends ScannerDecoder {
       }
     }
     return false;
-  }
-
-  Future<bool> _binaryValidated(Binary object) async {
-    // TODO: reenable
-    return true;
-    // try {
-    //   EnvoyAccountHandler? pairedAccount =
-    //       await NgAccountManager().processPassportAccounts(object);
-    //   if (pairedAccount == null) {
-    //     return true;
-    //   } else {
-    //     throw AccountAlreadyPairedException();
-    //   }
-    // } on AccountAlreadyPaired catch (_) {
-    //   throw AccountAlreadyPairedException();
-    // }
   }
 }

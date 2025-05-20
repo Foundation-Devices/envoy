@@ -4,23 +4,23 @@
 
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
-import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/util/tuple.dart';
-import 'package:rive/rive.dart';
-import 'package:ngwallet/src/wallet.dart';
-import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
-import 'package:envoy/ui/onboard/manual/widgets/seed_word_verification.dart';
-import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:envoy/util/haptics.dart';
-import 'package:flutter/material.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup_create_and_store_backup.dart';
-import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
+import 'package:envoy/ui/onboard/manual/widgets/seed_word_verification.dart';
+import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/util/haptics.dart';
+import 'package:envoy/util/tuple.dart';
+import 'package:flutter/material.dart';
+import 'package:ngwallet/ngwallet.dart';
+import 'package:rive/rive.dart';
 
 class SeedScreen extends StatefulWidget {
   final bool generate;
@@ -43,14 +43,11 @@ class _SeedScreenState extends State<SeedScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       enableSecureScreen();
-
       if (widget.generate) {
-        await Future.delayed(const Duration(seconds: 1));
+        final seed = (await EnvoyBip39.generateSeed()).split(" ");
         setState(() {
-          seedList = Wallet.generateSeed().split(" ");
+          seedList = seed;
         });
-        _pageController.animateToPage(1,
-            duration: const Duration(milliseconds: 300), curve: Curves.ease);
       } else {
         final seed = await EnvoySeed().get();
         setState(() {
@@ -75,7 +72,6 @@ class _SeedScreenState extends State<SeedScreen> {
           controller: _pageController,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            if (widget.generate) _buildSeedGenerating(context),
             _buildMnemonicGrid(context),
             _buildSeedVerification(context),
             VerifySeedPuzzleWidget(
@@ -98,7 +94,6 @@ class _SeedScreenState extends State<SeedScreen> {
                       }));
                     }
                   } else {
-                    await Future.delayed(const Duration(milliseconds: 100));
                     Haptics.heavyImpact();
                     if (context.mounted) {
                       showVerificationFailedDialog(context);

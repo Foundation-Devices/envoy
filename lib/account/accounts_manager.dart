@@ -7,13 +7,20 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:envoy/account/device_manager.dart';
 import 'package:envoy/account/sync_manager.dart';
+import 'package:envoy/business/bip329.dart';
+import 'package:envoy/business/devices.dart';
+import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/list_utils.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:ngwallet/ngwallet.dart';
 
@@ -41,13 +48,18 @@ class NgAccountManager extends ChangeNotifier {
       "${LocalStorage().appDocumentsDir.path}/wallets_v2/";
   final LocalStorage _ls = LocalStorage();
   static final NgAccountManager _instance = NgAccountManager._internal();
+  List<StreamSubscription?> _syncSubscription = [];
 
-  late SyncManager _syncManager;
   final StreamController<List<String>> _accountsOrder =
       StreamController<List<String>>.broadcast(sync: true);
 
+  StreamController<bool> isAccountBalanceHigherThanUsd1000Stream =
+      StreamController.broadcast();
+
   final List<(EnvoyAccount, EnvoyAccountHandler)> _accountsHandler = [];
   var s = Settings();
+
+  static const String accountsPrefKey = "accounts";
 
   List<EnvoyAccount> get accounts => _accountsHandler
       .map(
@@ -85,12 +97,6 @@ class NgAccountManager extends ChangeNotifier {
 
   Future restore() async {
     _accountsHandler.clear();
-    _syncManager = SyncManager(
-        accountsCallback: () => _accountsHandler
-            .map(
-              (e) => e.$1,
-            )
-            .toList());
     final accountOrder = _ls.prefs.getString(ACCOUNT_ORDER);
     List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
     _accountsOrder.sink.add(order);
@@ -115,16 +121,19 @@ class NgAccountManager extends ChangeNotifier {
         }
       }
     }
-    _syncManager.startSync();
+    SyncManager().startSync();
     _accountsOrder.sink.add(order);
     notifyListeners();
+    // for (var stream in streams) {
+    //   _syncSubscription.add(stream.listen((_) {
+    //     notifyIfAccountBalanceHigherThanUsd1000();
+    //   }));
+    // }
   }
 
   EnvoyAccount? getAccountById(String id) {
     return accounts.firstWhereOrNull((element) => element.id == id);
   }
-
-  SyncManager get syncManager => _syncManager;
 
   Future updateAccountOrder(List<String> accountsOrder) async {
     _accountsOrder.sink.add(accountsOrder);
@@ -154,7 +163,10 @@ class NgAccountManager extends ChangeNotifier {
   @override
   // ignore: must_call_super
   void dispose({bool? force}) {
-    _syncManager.dispose();
+    for (var subscription in _syncSubscription) {
+      subscription?.cancel();
+    }
+    SyncManager().dispose();
     if (force == true) {
       super.dispose();
     }
@@ -168,6 +180,24 @@ class NgAccountManager extends ChangeNotifier {
   bool hotAccountsExist() {
     for (var account in accounts) {
       if (account.isHot) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool hotSignetAccountExist() {
+    for (var account in accounts) {
+      if (account.isHot && account.network == Network.signet) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool hotWalletAccountsEmpty() {
+    for (var account in accounts) {
+      if (account.isHot && account.balance != BigInt.zero) {
         return true;
       }
     }
@@ -251,6 +281,122 @@ class NgAccountManager extends ChangeNotifier {
           e.toString(),
         );
       }
+    }
+  }
+
+  notifyIfAccountBalanceHigherThanUsd1000() {
+    for (var account in accounts) {
+      if (account.isHot && account.network == Network.bitcoin) {
+        var amountUSD = ExchangeRate().getUsdValue(account.balance.toInt());
+        if (amountUSD >= 1000) {
+          if (!isAccountBalanceHigherThanUsd1000Stream.isClosed) {
+            isAccountBalanceHigherThanUsd1000Stream.add(true);
+          }
+        }
+      }
+    }
+  }
+
+  Future deleteHotWalletAccounts() async {
+    final accountOrder = _ls.prefs.getString(ACCOUNT_ORDER);
+    List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
+    final hotWallets = accounts.where((element) => element.isHot).toList();
+    for (var element in hotWallets) {
+      _accountsHandler.removeWhere((e) => e.$1.id == element.id);
+      order.remove(element.id);
+    }
+    await _ls.prefs.setString(ACCOUNT_ORDER, jsonEncode(order));
+    _accountsOrder.sink.add(order);
+    for (var account in hotWallets) {
+      await deleteAccount(account);
+    }
+    notifyListeners();
+  }
+
+  Future deleteAccount(EnvoyAccount account) async {
+    account.handler?.dispose();
+    final dir = Directory(account.walletPath!);
+    await dir.delete(recursive: true);
+  }
+
+  Future deleteDeviceAccounts(Device device) async {
+    final accountsToDelete = accounts
+        .where((element) => element.deviceSerial == device.serial)
+        .toList();
+    for (var account in accountsToDelete) {
+      await deleteAccount(account);
+    }
+  }
+
+  Future<void> exportBIP329() async {
+    List<String> allData = [];
+
+    for (EnvoyAccount account in accounts) {
+      for (var descriptor in account.descriptors) {
+        String xpub = getXpub(descriptor, account);
+        String xpubData = buildKeyJson("xpub", xpub, account.name);
+        allData.add(xpubData);
+
+        // Get output data and add each entry to allData
+        List<String> outputData = await getUtxosData(account);
+        allData.addAll(outputData);
+
+        // Get transaction data and add each entry to allData
+        List<String> txData = await getTxData(account);
+        allData.addAll(txData);
+      }
+      // Get xpub and create JSON data
+
+      // Join each JSON string with a newline character
+
+      // Save the file
+    }
+    String fileContent = allData.join('\n');
+    Uint8List fileContentBytes = Uint8List.fromList(utf8.encode(fileContent));
+    await FileSaver.instance.saveAs(
+        mimeType: MimeType.json,
+        name: 'bip329_export',
+        bytes: fileContentBytes,
+        ext: 'json');
+  }
+
+  EnvoyAccount? getHotWalletAccount({network = Network.bitcoin}) {
+    return accounts.firstWhereOrNull(
+        (element) => element.isHot && element.network == network);
+  }
+
+  processPassportAccounts(Binary binary) async {
+    var jsonIndex = binary.decoded.indexOf("{");
+    var decoded = binary.decoded.substring(jsonIndex);
+    var json = jsonDecode(decoded);
+
+    bool oldJsonFormat = json['xpub'] != null;
+
+    // Old format with single WPKH account
+    NgAccountConfig config = await getPassportAccountFromJson(json);
+
+    for (var account in accounts) {
+      for (var descriptor in account.descriptors) {
+        for (var configDescriptor in config.descriptors) {
+          if (descriptor.external_ == configDescriptor.external_) {
+            throw AccountAlreadyPaired();
+          }
+        }
+      }
+    }
+    Directory dir = NgAccountManager.getAccountDirectory(
+      deviceSerial: config.deviceSerial ?? "unknown-serial_${config.id}",
+      accountId: config.id,
+      network: config.network.toString(),
+      number: config.index,
+    );
+    try {
+      // final handler = await EnvoyAccountHandler.fromConfig(
+      //     config: config, dbPath: dir.path);
+      // print("handler created");
+      // await addAccount(await handler.state(), handler);
+    } catch (e) {
+      kPrint("Error creating account directory: $e");
     }
   }
 }

@@ -5,11 +5,12 @@
 
 import '../../api/envoy_wallet.dart';
 import '../../frb_generated.dart';
+import '../../lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `NgAccountBuilder`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `assert_receiver_is_total_eq`, `clone`, `clone`, `clone`, `cmp`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `hash`, `partial_cmp`
-// These functions are ignored (category: IgnoreBecauseOwnerTyShouldIgnore): `build`, `color`, `date_added`, `date_synced`, `db_path`, `default`, `descriptors`, `device_serial`, `id`, `index`, `name`, `network`, `open_in_memory`, `preferred_address_type`, `seed_has_passphrase`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `assert_receiver_is_total_eq`, `clone`, `clone`, `clone`, `clone`, `cmp`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `hash`, `partial_cmp`
+// These functions are ignored (category: IgnoreBecauseOwnerTyShouldIgnore): `build_from_backend`, `build_from_file`, `build_in_memory`, `color`, `date_added`, `date_synced`, `db_path`, `default`, `descriptors`, `device_serial`, `id`, `index`, `name`, `network`, `preferred_address_type`, `seed_has_passphrase`
 
 enum AddressType {
   /// Pay to pubkey hash.
@@ -30,6 +31,35 @@ enum AddressType {
   ;
 }
 
+class NgAccountBackup {
+  final NgAccountConfig ngAccountConfig;
+  final List<(AddressType, KeychainKind, int)> lastUsedIndex;
+
+  const NgAccountBackup({
+    required this.ngAccountConfig,
+    required this.lastUsedIndex,
+  });
+
+  static Future<NgAccountBackup> deserialize({required String data}) =>
+      RustLib.instance.api.ngwalletConfigNgAccountBackupDeserialize(data: data);
+
+  Future<String> serialize() =>
+      RustLib.instance.api.ngwalletConfigNgAccountBackupSerialize(
+        that: this,
+      );
+
+  @override
+  int get hashCode => ngAccountConfig.hashCode ^ lastUsedIndex.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is NgAccountBackup &&
+          runtimeType == other.runtimeType &&
+          ngAccountConfig == other.ngAccountConfig &&
+          lastUsedIndex == other.lastUsedIndex;
+}
+
 class NgAccountConfig {
   final String name;
   final String color;
@@ -40,7 +70,6 @@ class NgAccountConfig {
   final int index;
   final List<NgDescriptor> descriptors;
   final String? dateSynced;
-  final String? walletPath;
   final Network network;
   final String id;
 
@@ -54,7 +83,6 @@ class NgAccountConfig {
     required this.index,
     required this.descriptors,
     this.dateSynced,
-    this.walletPath,
     required this.network,
     required this.id,
   });
@@ -78,7 +106,6 @@ class NgAccountConfig {
       index.hashCode ^
       descriptors.hashCode ^
       dateSynced.hashCode ^
-      walletPath.hashCode ^
       network.hashCode ^
       id.hashCode;
 
@@ -96,7 +123,6 @@ class NgAccountConfig {
           index == other.index &&
           descriptors == other.descriptors &&
           dateSynced == other.dateSynced &&
-          walletPath == other.walletPath &&
           network == other.network &&
           id == other.id;
 }
