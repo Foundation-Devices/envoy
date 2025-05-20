@@ -204,7 +204,7 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
                     bottom: s.displayFiat() == null ||
                             (kDebugMode &&
                                 transactionAccount?.network != Network.bitcoin)
-                        ? EnvoySpacing.medium1
+                        ? EnvoySpacing.medium2
                         : 0),
                 child: FittedBox(
                   child: EnvoyAmount(
