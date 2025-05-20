@@ -5,7 +5,6 @@
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
@@ -20,6 +19,7 @@ import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 
 class AddressCard extends ConsumerStatefulWidget {
   final EnvoyAccount account;
@@ -116,8 +116,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                       _copyAddressToClipboard(context, address);
                     },
                     icon: const EnvoyIcon(
-                      icon: "ic_copy.svg",
-                      size: 21,
+                      EnvoyIcons.copy,
                       color: EnvoyColors.darkTeal,
                     )),
                 EnvoyTextButton(
@@ -131,8 +130,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                       Share.share("bitcoin:$address");
                     },
                     icon: const EnvoyIcon(
-                      icon: "ic_envoy_share.svg",
-                      size: 21,
+                      EnvoyIcons.externalLink,
                       color: EnvoyColors.darkTeal,
                     )),
               ],

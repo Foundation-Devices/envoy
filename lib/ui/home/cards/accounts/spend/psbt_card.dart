@@ -3,13 +3,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:convert';
-
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/animated_qr_image.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/ui/envoy_icons.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/shield.dart';
@@ -23,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 
 //ignore: must_be_immutable
 class PsbtCard extends ConsumerWidget {
@@ -115,8 +114,7 @@ class PsbtCard extends ConsumerWidget {
                             ));
                           },
                           icon: const EnvoyIcon(
-                            icon: "ic_copy.svg",
-                            size: 21,
+                            EnvoyIcons.copy,
                             color: EnvoyColors.darkTeal,
                           )),
                       QrShield(
@@ -126,9 +124,9 @@ class PsbtCard extends ConsumerWidget {
                                 builder: (_, ref, child) {
                                   return IconButton(
                                     padding: EdgeInsets.zero,
-                                    icon: const Icon(
-                                      EnvoyIcons.qrScan,
-                                      size: 30,
+                                    icon: const EnvoyIcon(
+                                      EnvoyIcons.scan,
+                                      size: EnvoyIconSize.medium,
                                       color: EnvoyColors.darkTeal,
                                     ),
                                     onPressed: () {
@@ -158,8 +156,7 @@ class PsbtCard extends ConsumerWidget {
                             Share.share(transaction.psbtBase64);
                           },
                           icon: const EnvoyIcon(
-                            icon: "ic_envoy_share.svg",
-                            size: 21,
+                            EnvoyIcons.externalLink,
                             color: EnvoyColors.darkTeal,
                           )),
                     ],

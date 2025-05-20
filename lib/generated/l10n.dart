@@ -52,10 +52,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `Secondary action`
+  /// `Skip`
   String get _ {
     return Intl.message(
-      'Secondary action',
+      'Skip',
       name: '_',
       desc: '',
       args: [],
@@ -332,10 +332,10 @@ class S {
     );
   }
 
-  /// `‘testnet3’ has been deprecated and Envoy now uses ‘testnet4’. Your previous testnet3 accounts have been removed. \n\nTo begin using testnet4, go Settings and enable the Testnet toggle.`
+  /// `‘Testnet3’ has been deprecated and Envoy now uses ‘testnet4’. Your previous testnet3 accounts have been removed. \n\nTo begin using testnet4, go Settings and enable the Testnet toggle.`
   String get accounts_upgradeBdkTestnetModal_content {
     return Intl.message(
-      '‘testnet3’ has been deprecated and Envoy now uses ‘testnet4’. Your previous testnet3 accounts have been removed. \n\nTo begin using testnet4, go Settings and enable the Testnet toggle.',
+      '‘Testnet3’ has been deprecated and Envoy now uses ‘testnet4’. Your previous testnet3 accounts have been removed. \n\nTo begin using testnet4, go Settings and enable the Testnet toggle.',
       name: 'accounts_upgradeBdkTestnetModal_content',
       desc: '',
       args: [],
@@ -2833,6 +2833,26 @@ class S {
     return Intl.message(
       'Deleting this tag will automatically mark these coins as untagged.',
       name: 'delete_tag_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy was unable to contact the Foundation server to delete your encrypted wallet data. Please try again or contact support.`
+  String get delete_wallet_for_good_error_content {
+    return Intl.message(
+      'Envoy was unable to contact the Foundation server to delete your encrypted wallet data. Please try again or contact support.',
+      name: 'delete_wallet_for_good_error_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to Delete`
+  String get delete_wallet_for_good_error_title {
+    return Intl.message(
+      'Unable to Delete',
+      name: 'delete_wallet_for_good_error_title',
       desc: '',
       args: [],
     );
@@ -7880,10 +7900,10 @@ class S {
     );
   }
 
-  /// `Enabling Testnet adds a Testnet3 version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport.`
+  /// `Enabling Testnet adds a Testnet4 version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport.`
   String get settings_advanced_enabled_testnet_modal_subheading {
     return Intl.message(
-      'Enabling Testnet adds a Testnet3 version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport.',
+      'Enabling Testnet adds a Testnet4 version of your Envoy Wallet, and allows you to connect Testnet accounts from your Passport.',
       name: 'settings_advanced_enabled_testnet_modal_subheading',
       desc: '',
       args: [],

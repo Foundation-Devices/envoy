@@ -65,6 +65,7 @@ class BluetoothManager {
       }
     });
 
+    // TODO: serialize and store
     _generateQlIdentity();
     setupExchangeRateListener();
   }
@@ -223,13 +224,13 @@ class BluetoothManager {
   }
 
   Future<void> restorePrimeDevice() async {
-    List<PrimeDevice> primes = await EnvoyStorage().getAllPrimes();
-
-    if (primes.isEmpty) {
-      return;
-    }
-
     try {
+      List<PrimeDevice> primes = await EnvoyStorage().getAllPrimes();
+
+      if (primes.isEmpty) {
+        return;
+      }
+
       PrimeDevice prime = primes.first;
 
       // Convert the xidDocument to a List<int>

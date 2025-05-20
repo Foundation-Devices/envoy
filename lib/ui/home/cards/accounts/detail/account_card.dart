@@ -12,7 +12,6 @@ import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
-import 'package:envoy/ui/envoy_icons.dart' as old_icons;
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
@@ -261,9 +260,9 @@ class _AccountCardState extends ConsumerState<AccountCard>
                     padding: const EdgeInsets.all(8),
                     child: IconButton(
                       padding: EdgeInsets.zero,
-                      icon: const Icon(
-                        old_icons.EnvoyIcons.qrScan,
-                        size: 30,
+                      icon: const EnvoyIcon(
+                        EnvoyIcons.scan,
+                        size: EnvoyIconSize.medium,
                         color: EnvoyColors.accentPrimary,
                       ),
                       onPressed: () {
@@ -563,8 +562,14 @@ class TransactionListTile extends ConsumerWidget {
                                     ),
                                   )
                                 : Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: EnvoySpacing.small),
+                                    padding: EdgeInsets.only(
+                                        top: s.displayFiat() == null ||
+                                                (kDebugMode &&
+                                                    account.network !=
+                                                        ngwallet
+                                                            .Network.bitcoin)
+                                            ? EnvoySpacing.small
+                                            : 0),
                                     child: EnvoyAmount(
                                         account: account,
                                         amountSats: transaction.amount,

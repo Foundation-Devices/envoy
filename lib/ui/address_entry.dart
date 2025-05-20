@@ -6,7 +6,7 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/payment_qr_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
@@ -154,9 +154,8 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                               child: const Padding(
                                 padding: EdgeInsets.symmetric(
                                     vertical: 4, horizontal: 4),
-                                child: Icon(
-                                  EnvoyIcons.qrScan,
-                                  size: 20,
+                                child: EnvoyIcon(
+                                  EnvoyIcons.scan,
                                   color: EnvoyColors.accentPrimary,
                                 ),
                               ),

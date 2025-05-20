@@ -13,7 +13,6 @@ import 'package:envoy/ui/onboard/manual/manual_setup_import_seed.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
-import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
@@ -23,6 +22,7 @@ import 'package:envoy/ui/pages/wallet/single_wallet_pair_success.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:envoy/ui/onboard/passport_scanner_screen.dart';
 
 /*
 * named onboarding routes
@@ -55,39 +55,40 @@ const ONBOARD_ENVOY_MAGIC_RECOVER_SETUP = 'welcome_envoy_magic_recover_setup';
 const ONBOARD_ENVOY_MAGIC_RECOVER_INFO = 'welcome_envoy_magic_recovery_info';
 const ONBOARD_ENVOY_MAGIC_WALLET_READY = 'welcome_envoy_magic_wallet_ready';
 
+const ONBOARD_PASSPORT_SCAN = "passport_scan";
+
 final onboardRoutes = GoRoute(
   path: "/onboard",
   name: ROUTE_SPLASH,
   routes: [
     primeRoutes,
     GoRoute(
-      path: "device",
-      name: ONBOARD_PASSPORT_SETUP,
+        path: "passport_scan",
+        name: ONBOARD_PASSPORT_SCAN,
+        builder: (context, state) => const PassportScannerScreen(),
+        routes: [
+          GoRoute(
+            path: "tou",
+            name: ONBOARD_PASSPORT_TOU,
+            builder: (context, state) => const TouPage(),
+          ),
+        ]),
+    GoRoute(
+      path: "scv_success",
+      name: ONBOARD_PASSPORT_SCV_SUCCESS,
+      builder: (context, state) =>
+          SingleWalletPairSuccessPage(state.extra as EnvoyAccount),
+    ),
+    GoRoute(
+      path: "pair",
+      name: ONBOARD_PASSPORT_EXISTING,
       routes: [
         GoRoute(
-          path: "tou",
-          name: ONBOARD_PASSPORT_TOU,
-          builder: (context, state) => const TouPage(),
-        ),
-        GoRoute(
-          path: "scv_success",
-          name: ONBOARD_PASSPORT_SCV_SUCCESS,
-          builder: (context, state) =>
-              SingleWalletPairSuccessPage(state.extra as EnvoyAccount),
-        ),
-        GoRoute(
-          path: "pair",
-          name: ONBOARD_PASSPORT_EXISTING,
-          routes: [
-            GoRoute(
-                path: "scan",
-                builder: (context, state) => const SingleImportPpScanPage(),
-                name: ONBOARD_PASSPORT_EXISTING_SCAN)
-          ],
-          builder: (context, state) => const SingleImportPpIntroPage(),
-        ),
+            path: "scan",
+            builder: (context, state) => const SingleImportPpScanPage(),
+            name: ONBOARD_PASSPORT_EXISTING_SCAN)
       ],
-      builder: (context, state) => const OnboardPassportWelcomeScreen(),
+      builder: (context, state) => const SingleImportPpIntroPage(),
     ),
     GoRoute(
       path: "advanced_settings",
