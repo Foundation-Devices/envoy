@@ -63,6 +63,8 @@ class TopLevelActivityCard extends ConsumerStatefulWidget {
 }
 
 class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
+  bool _initialLoadDone = false;
+
   @override
   void initState() {
     super.initState();
@@ -95,10 +97,22 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
       future: futureNotifications,
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
-          return const Center(child: CircularProgressIndicator());
+          if (!_initialLoadDone) {
+            return const Center(child: CircularProgressIndicator());
+          }
         }
         if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
+        }
+
+        if (!_initialLoadDone) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              setState(() {
+                _initialLoadDone = true;
+              });
+            }
+          });
         }
 
         final envoyNotification = snapshot.data!;
