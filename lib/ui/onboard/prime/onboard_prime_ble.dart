@@ -579,6 +579,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
           dialog: QuantumLinkCommunicationInfo(
             onContinue: () async {
               await showScannerDialog(
+                  showInfoDialog: true,
                   context: context,
                   onBackPressed: (context) {
                     Navigator.pop(context);

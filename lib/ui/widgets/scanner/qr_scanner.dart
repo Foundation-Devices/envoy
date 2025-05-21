@@ -23,7 +23,8 @@ showScannerDialog(
     {required BuildContext context,
     Widget? child,
     required Function(BuildContext context) onBackPressed,
-    required ScannerDecoder decoder}) {
+    required ScannerDecoder decoder,
+    bool showInfoDialog = false}) {
   return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -31,6 +32,7 @@ showScannerDialog(
         return QrScanner(
           onBackPressed: onBackPressed,
           decoder: decoder,
+          showInfoDialog: showInfoDialog,
           child: child,
         );
       },
@@ -41,12 +43,14 @@ class QrScanner extends StatefulWidget {
   final Function(BuildContext context) onBackPressed;
   final ScannerDecoder decoder;
   final Widget? child;
+  final bool showInfoDialog;
 
   const QrScanner(
       {super.key,
       required this.onBackPressed,
       required this.decoder,
-      this.child});
+      this.child,
+      this.showInfoDialog = false});
 
   @override
   State<QrScanner> createState() => _QrScannerState();
@@ -67,7 +71,7 @@ class _QrScannerState extends State<QrScanner> {
   @override
   void initState() {
     _userInteractionTimer = Timer(const Duration(seconds: 8), () {
-      if (mounted) {
+      if (mounted && widget.showInfoDialog) {
         showScanDialog(context);
         _userInteractionTimer.cancel();
       }

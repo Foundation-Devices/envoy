@@ -266,7 +266,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
                         color: EnvoyColors.accentPrimary,
                       ),
                       onPressed: () {
-                        final navigator = Navigator.of(context);
+                        final navigator =
+                            Navigator.of(context, rootNavigator: true);
                         final goRouter = GoRouter.of(context);
                         showScannerDialog(
                             context: context,
@@ -279,6 +280,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                                   navigator.pop();
                                   showEnvoyDialog(
                                       context: context,
+                                      useRootNavigator: true,
                                       dialog:
                                           AztecoDialog(aztecoVoucher, account));
                                 },
@@ -286,6 +288,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                                   navigator.pop();
                                   showEnvoyDialog(
                                       context: context,
+                                      useRootNavigator: true,
                                       dialog: BtcPayDialog(voucher, account));
                                 },
                                 onAddressValidated: (address, amount, message) {

@@ -138,7 +138,7 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
                     Navigator.pop(context);
                   },
                   decoder: GenericQrDecoder(onScan: (result) {
-                    Navigator.pop(context);
+                    Navigator.of(context, rootNavigator: true).pop();
                     var parsedUrl = parseNodeUrl(result);
                     _controller.text = parsedUrl;
                     _onAddressChanged(parsedUrl);
