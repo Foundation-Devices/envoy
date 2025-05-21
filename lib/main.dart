@@ -84,9 +84,15 @@ Future<void> initSingletons() async {
   await NTPUtil.init();
   EnvoyScheduler.init();
   await KeysManager.init();
+  await Settings.restore();
   await ExchangeRate.init();
+  try {
+    BluetoothManager().setupExchangeRateListener();
+  } catch (e, stack) {
+    kPrint("Error setting up exchange rate listener: $e", stackTrace: stack);
+  }
+
   EnvoyReport().init();
-  Settings.restore();
   Tor.init(enabled: Settings().torEnabled());
   UpdatesManager.init();
   ScvServer.init();
