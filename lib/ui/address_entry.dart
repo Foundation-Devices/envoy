@@ -174,6 +174,9 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                                     decoder: PaymentQrDecoder(
                                         onAddressValidated:
                                             (address, amount, message) {
+                                          Navigator.of(context,
+                                                  rootNavigator: true)
+                                              .pop();
                                           widget.controller?.text = address;
                                           ref
                                               .read(stagingTxNoteProvider

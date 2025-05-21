@@ -30,6 +30,7 @@ class PassportScannerScreen extends ConsumerWidget {
               context.goNamed("/");
             },
             child: QrScanner(
+              showInfoDialog: true,
               onBackPressed: (context) {
                 Navigator.of(context).pop();
               },
