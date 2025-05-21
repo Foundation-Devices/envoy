@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/business/region_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/linear_gradient.dart';
@@ -30,7 +30,6 @@ import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:ngwallet/ngwallet.dart';
 
 class AccountsCard extends ConsumerStatefulWidget {
@@ -40,18 +39,6 @@ class AccountsCard extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<AccountsCard> createState() => _AccountsCardState();
-}
-
-//IOS app store restricted countries
-const buyDisabled = [];
-
-Future<bool> checkBuyDisabled() async {
-  if (Platform.isIOS) {
-    return InAppPurchase.instance.countryCode().then(
-          (value) => buyDisabled.contains(value),
-        );
-  }
-  return false;
 }
 
 // The keep alive mixin is necessary to maintain state when widget is not visible
@@ -74,7 +61,7 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
         Padding(
           padding: const EdgeInsets.only(bottom: 10),
           child: FutureBuilder(
-              future: checkBuyDisabled(),
+              future: AllowedRegions.checkBuyDisabled(),
               builder: (context, snapshot) {
                 bool countryRestricted =
                     snapshot.data != null && snapshot.data!;

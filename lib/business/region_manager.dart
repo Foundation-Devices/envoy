@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 
 class AllowedRegions {
   static Future<Map<String, Map<String, dynamic>>> allowedRegions() async {
@@ -34,5 +35,13 @@ class AllowedRegions {
       }
     }
     return false;
+  }
+
+  static const buyDisabled = ["IND", "GBR"];
+
+  static Future<bool> checkBuyDisabled() async {
+    return InAppPurchase.instance.countryCode().then(
+          (value) => buyDisabled.contains(value),
+        );
   }
 }
