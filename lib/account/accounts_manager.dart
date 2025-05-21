@@ -48,7 +48,7 @@ class NgAccountManager extends ChangeNotifier {
       "${LocalStorage().appDocumentsDir.path}/wallets_v2/";
   final LocalStorage _ls = LocalStorage();
   static final NgAccountManager _instance = NgAccountManager._internal();
-  List<StreamSubscription?> _syncSubscription = [];
+  final List<StreamSubscription?> _syncSubscription = [];
 
   final StreamController<List<String>> _accountsOrder =
       StreamController<List<String>>.broadcast(sync: true);

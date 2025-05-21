@@ -8,6 +8,7 @@ import 'package:envoy/ui/components/account_selector.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/envoy_loader.dart';
+import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ import 'package:envoy/ui/components/ramp_widget.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'accounts/account_list_tile.dart';
 
 GlobalKey<ChooseAccountState> chooseAccountKey =
     GlobalKey<ChooseAccountState>();
@@ -47,20 +49,26 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero).then((_) {
-      // TODO: use EnvoyAccount
-      // setState(() {
-      //   selectedAccount = ref.read(mainnetAccountsProvider(null)).first;
-      //   ref.read(homeShellOptionsProvider.notifier).state = null;
-      // });
-      // selectedAccount?.wallet.getAddress().then((value) {
-      //   setState(() {
-      //     address = value;
-      //     if (selectedAccount != null && selectedAccount?.id != null) {
-      //       accountAddressCache[selectedAccount!.id!] = address;
-      //     }
-      //   });
-      // }).catchError((error) {});
+    Future.microtask(() async {
+      final account = ref.read(mainnetAccountsProvider(null)).firstOrNull;
+      if (account == null) return;
+
+      setState(() {
+        selectedAccount = ref.read(mainnetAccountsProvider(null)).first;
+        ref.read(homeShellOptionsProvider.notifier).state = null;
+      });
+
+      try {
+        final addr = account.getPreferredAddress();
+        setState(() {
+          address = addr;
+          if (selectedAccount != null && selectedAccount?.id != null) {
+            accountAddressCache[account.id] = addr;
+          }
+        });
+      } catch (e) {
+        debugPrint('Failed to get address: $e');
+      }
     });
   }
 
@@ -93,8 +101,8 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
   @override
   Widget build(BuildContext context) {
     List<EnvoyAccount> filteredAccounts = [];
+
     if (selectedAccount != null) {
-      // TODO: use EnvoyAccount
       filteredAccounts = ref.watch(mainnetAccountsProvider(selectedAccount));
     }
     if ((selectedAccount == null)) {
@@ -281,8 +289,8 @@ class ChooseAccount extends StatefulWidget {
   });
 
   final List<Account> accounts;
-  final Function(Account) onSelectAccount;
-  final Account selectedAccount;
+  final Function(EnvoyAccount) onSelectAccount;
+  final EnvoyAccount selectedAccount;
   final GlobalKey<ChooseAccountState>? chooseAccountKey;
 
   @override
@@ -290,16 +298,16 @@ class ChooseAccount extends StatefulWidget {
 }
 
 class ChooseAccountState extends State<ChooseAccount> {
-  late List<Account> accounts;
-  late Account _currentSelectedAccount;
+  late List<EnvoyAccount> accounts;
+  late EnvoyAccount _currentSelectedAccount;
 
   //to improve shadow animation, bool
-  final bool _exiting = false;
+  late bool _exiting = false;
 
   @override
   void initState() {
     super.initState();
-    accounts = List<Account>.from(widget.accounts);
+    accounts = List<EnvoyAccount>.from(widget.accounts);
     _currentSelectedAccount = widget.selectedAccount;
   }
 
@@ -413,7 +421,7 @@ class ChooseAccountState extends State<ChooseAccount> {
 
   Widget _buildAccountItem(
     BuildContext context,
-    Account account,
+    EnvoyAccount account,
   ) {
     return Padding(
       key: ValueKey(account.id),
@@ -421,39 +429,36 @@ class ChooseAccountState extends State<ChooseAccount> {
           vertical: EnvoySpacing.small, horizontal: EnvoySpacing.medium1),
       child: Hero(
         transitionOnUserGestures: true,
-        tag: account.id!,
+        tag: account.id,
         child: Consumer(builder: (context, ref, child) {
-          return Container();
+          return AccountListTile(
+            account,
+            onTap: () async {
+              final navigator = Navigator.of(context);
+              setState(() {
+                _exiting = true;
+              });
+              await Future.delayed(const Duration(milliseconds: 100));
 
-          //TODO: use EnvoyAccount
-          // return AccountListTile(
-          //   account,
-          //   onTap: () async {
-          //     final navigator = Navigator.of(context);
-          //     setState(() {
-          //       _exiting = true;
-          //     });
-          //     await Future.delayed(const Duration(milliseconds: 100));
-          //
-          //     _currentSelectedAccount = account;
-          //     widget.onSelectAccount(account);
-          //     // moveAccountToEnd(account);
-          //     await Future.delayed(const Duration(milliseconds: 100));
-          //     navigator.pop();
-          //   },
-          //   draggable: false,
-          // );
+              _currentSelectedAccount = account;
+              widget.onSelectAccount(account);
+              // moveAccountToEnd(account);
+              await Future.delayed(const Duration(milliseconds: 100));
+              navigator.pop();
+            },
+            draggable: false,
+          );
         }),
       ),
     );
   }
 
-  void moveAccountToEnd(Account accountToMove) {
+  void moveAccountToEnd(EnvoyAccount accountToMove) {
     // Ensure moving the correct account to prevent lag when navigating back on Android.
     if (_currentSelectedAccount == accountToMove) {
       int index = _getAccountIndexById(accountToMove.id);
       setState(() {
-        final Account account = accounts.removeAt(index);
+        final EnvoyAccount account = accounts.removeAt(index);
         accounts.insert(accounts.length, account);
       });
     }
