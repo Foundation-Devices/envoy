@@ -42,7 +42,7 @@ class PairPayloadDecoder extends ScannerDecoder {
       } else if (urDecoder.urDecoder.progress == 1) {
         throw InvalidPairPayloadException();
       }
-    }else{
+    } else {
       //handle new paring flow
     }
     return;

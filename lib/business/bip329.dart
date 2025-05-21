@@ -61,7 +61,7 @@ String extractDescriptor(String input) {
 
 //TODO: fix for unified wallet transactions
 Future<List<String>> getTxData(EnvoyAccount account) async {
-    List<String> txDataList = [];
+  List<String> txDataList = [];
   List<BitcoinTransaction> transactions = account.transactions;
   // for(NgDescriptor descriptor in account.descriptors) {
   //
