@@ -67,7 +67,6 @@ class BluetoothManager {
 
     // TODO: serialize and store
     _generateQlIdentity();
-    setupExchangeRateListener();
   }
 
   getPermissions() async {
