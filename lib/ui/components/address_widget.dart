@@ -127,6 +127,7 @@ class AddressWidget extends StatelessWidget {
     return textSpans;
   }
 
+// TODO: try splitting the address in 2 rather than calculating halves to eliminate edge cases?
   double calculateOptimalPadding(String address, BuildContext context,
       {double allHorizontalPaddings = 0}) {
     double screenWidth = MediaQuery.of(context).size.width;

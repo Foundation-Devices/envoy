@@ -83,7 +83,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                 padding: EdgeInsets.only(
                   top: context.isSmallScreen
                       ? EnvoySpacing.xs
-                      : EnvoySpacing.medium1,
+                      : EnvoySpacing.medium2,
                   left: optimalAddressHorizontalPadding * 0.5,
                   right: optimalAddressHorizontalPadding * 0.5,
                 ),
