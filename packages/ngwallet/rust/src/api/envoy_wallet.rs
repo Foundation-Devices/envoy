@@ -441,13 +441,20 @@ impl EnvoyAccountHandler {
     ) -> Result<Arc<Mutex<Update>>, Error> {
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
         let socks_proxy = socks_proxy.as_ref().map(|s| s.as_str());
-        let mut scan_request_guard = scan_request.lock().unwrap();
+        let mut scan_request_guard = scan_request.lock().expect(
+            "Failed to lock scan request mutex",
+        );
         return if let Some(scan_request) = scan_request_guard.take() {
             // Use take() to move the value out
             // Simulate a delay for the scan operation
-            let update =
-                NgWallet::<Connection>::scan(scan_request, electrum_server, socks_proxy).unwrap();
-            Ok(Arc::new(Mutex::new(Update::from(update))))
+            match NgWallet::<Connection>::scan(scan_request, electrum_server, socks_proxy) {
+                Ok(update) => {
+                    Ok(Arc::new(Mutex::new(Update::from(update))))
+                }
+                Err(er) => {
+                    Err(anyhow!("Error during scan: {}", er))
+                }
+            }
         } else {
             Err(anyhow!("No Scan request found"))
         };
@@ -734,12 +741,49 @@ impl EnvoyAccountHandler {
     pub fn restore_from_backup(
         backup_json: &str,
         db_path: String,
+        seed: Option<String>,
+        passphrase: Option<String>,
     ) -> Result<EnvoyAccountHandler> {
         match NgAccountBackup::deserialize(backup_json) {
             Ok(backup) => {
                 let config = backup.ng_account_config;
                 let indexes = backup.last_used_index;
-                let descriptors = Self::get_descriptors(&config.descriptors, db_path.clone());
+                if config.descriptors.is_empty() && seed.is_none() {
+                    return Err(anyhow!("No descriptors or seed required for restore"));
+                }
+                let descriptors = {
+                    if config.descriptors.is_empty() {
+                        match EnvoyBip39::derive_descriptor_from_seed(
+                            seed.unwrap().as_str(),
+                            config.network,
+                            passphrase,
+                        ) {
+                            Ok(descriptors) => {
+                                let ng_descriptors = descriptors
+                                    .iter()
+                                    .filter(|descriptor| {
+                                        //envoy hot wallets only support  P2wpkh, P2tr
+                                        descriptor.address_type == AddressType::P2tr ||
+                                            descriptor.address_type == AddressType::P2wpkh
+                                    })
+                                    .map(|descriptor| {
+                                        NgDescriptor {
+                                            internal: descriptor.internal_descriptor.clone(),
+                                            external: Some(descriptor.external_descriptor.clone()),
+                                            address_type: descriptor.address_type.clone(),
+                                        }
+                                    })
+                                    .collect::<Vec<NgDescriptor>>();
+                                Self::get_descriptors(&ng_descriptors, db_path.clone())
+                            }
+                            Err(err) => {
+                                return Err(anyhow!("Failed to derive descriptor from seed: {:?}", err));
+                            }
+                        }
+                    } else {
+                        Self::get_descriptors(&config.descriptors, db_path.clone())
+                    }
+                };
 
                 let ng_account = NgAccountBuilder::default()
                     .name(config.name.clone())
@@ -781,6 +825,21 @@ impl EnvoyAccountHandler {
                         return Err(anyhow!("Failed to create account: {:?}", err));
                     }
                 }
+            }
+            Err(_) => {
+                return Err(anyhow!("Failed to deserialize backup"));
+            }
+        }
+    }
+
+    #[frb(sync)]
+    pub fn get_config_from_backup(
+        backup_json: &str,
+    ) -> Result<NgAccountConfig> {
+        match NgAccountBackup::deserialize(backup_json) {
+            Ok(backup) => {
+                let config = backup.ng_account_config;
+                Ok(config)
             }
             Err(_) => {
                 return Err(anyhow!("Failed to deserialize backup"));

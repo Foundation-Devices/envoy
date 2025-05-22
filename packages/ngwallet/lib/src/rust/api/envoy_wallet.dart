@@ -83,6 +83,11 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
 
   Future<String> getAccountBackup();
 
+  static NgAccountConfig getConfigFromBackup({required String backupJson}) =>
+      RustLib.instance.api
+          .crateApiEnvoyWalletEnvoyAccountHandlerGetConfigFromBackup(
+              backupJson: backupJson);
+
   Future<TransactionFeeResult> getMaxBumpFeeRates(
       {required List<Output> selectedOutputs,
       required BitcoinTransaction bitcoinTransaction});
@@ -156,10 +161,16 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
   Future<FullScanRequest> requestFullScan({required AddressType addressType});
 
   static Future<EnvoyAccountHandler> restoreFromBackup(
-          {required String backupJson, required String dbPath}) =>
+          {required String backupJson,
+          required String dbPath,
+          String? seed,
+          String? passphrase}) =>
       RustLib.instance.api
           .crateApiEnvoyWalletEnvoyAccountHandlerRestoreFromBackup(
-              backupJson: backupJson, dbPath: dbPath);
+              backupJson: backupJson,
+              dbPath: dbPath,
+              seed: seed,
+              passphrase: passphrase);
 
   static Future<WalletUpdate> scanWallet(
           {required FullScanRequest scanRequest,
