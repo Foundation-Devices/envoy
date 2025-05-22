@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -403,7 +403,8 @@ class _DotsIndicatorState extends State<DotsIndicator> {
       height: 8,
       decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isActive ? EnvoyColors.darkTeal : EnvoyColors.grey),
+          color:
+              isActive ? EnvoyColors.accentPrimary : EnvoyColors.textInactive),
     );
   }
 }
