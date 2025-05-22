@@ -373,7 +373,7 @@ class EnvoyStorage {
               timestamp:
                   DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
               fee: BigInt.from((e["fee"] as int? ?? 0)),
-              amount: 0,
+              amount: e["amount"] as int,
               address: e["address"] as String,
               purchaseViewToken: e['purchaseViewToken'] as String,
               rampId: e['rampId'] as String?,
