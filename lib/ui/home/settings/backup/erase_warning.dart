@@ -250,7 +250,8 @@ class _EraseWalletsConfirmationState
       width: MediaQuery.of(context).size.width * 0.8,
       constraints: const BoxConstraints(maxHeight: 360, maxWidth: 320),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+        padding: const EdgeInsets.symmetric(
+            horizontal: EnvoySpacing.medium2, vertical: EnvoySpacing.medium2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -258,30 +259,25 @@ class _EraseWalletsConfirmationState
           children: [
             Align(
               alignment: Alignment.centerRight,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
+              child: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
               ),
             ),
-            //const Padding(padding: EdgeInsets.all(8)),
             Image.asset(
               "assets/exclamation_triangle.png",
               height: 80,
               width: 80,
+              color: EnvoyColors.danger,
             ),
             Flexible(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.only(
-                      top: EnvoySpacing.medium2,
-                      bottom: EnvoySpacing.medium3,
-                      left: EnvoySpacing.medium3,
-                      right: EnvoySpacing.medium3),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.small,
+                      vertical: EnvoySpacing.medium2),
                   child: Text(
                     S().delete_wallet_for_good_modal_subheading,
                     textAlign: TextAlign.center,
@@ -293,6 +289,8 @@ class _EraseWalletsConfirmationState
             OnboardingButton(
                 type: EnvoyButtonTypes.tertiary,
                 label: S().delete_wallet_for_good_modal_cta2,
+                textStyle: EnvoyTypography.subheading
+                    .copyWith(color: EnvoyColors.danger),
                 onTap: () {
                   Navigator.push(
                       context,
@@ -305,9 +303,6 @@ class _EraseWalletsConfirmationState
                 onTap: () {
                   context.go("/");
                 }),
-            const SizedBox(
-              height: EnvoySpacing.medium3,
-            )
           ],
         ),
       ),
