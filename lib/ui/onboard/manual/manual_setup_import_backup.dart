@@ -292,8 +292,7 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
 Future<void> tryMagicRecover(List<String> seedList, String seed,
     Map<String, String>? data, BuildContext context) async {
   final navigator = Navigator.of(context);
-  await EnvoySeed().create(seedList);
-  bool success = await EnvoySeed().processRecoveryData(seed, data);
+  bool success = await EnvoySeed().processRecoveryData(seed, data, null);
 
   if (success) {
     Settings().setSyncToCloud(true);

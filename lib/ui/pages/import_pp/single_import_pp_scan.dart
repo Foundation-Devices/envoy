@@ -50,7 +50,7 @@ class SingleImportPpScanPage extends OnboardingPage {
                               account = paringResult.$2;
                               break;
                             case DeviceAccountResult
-                                .UPDATED_WITH_NEW_DESCRIPTOR:
+                                  .UPDATED_WITH_NEW_DESCRIPTOR:
                               account = paringResult.$2;
                               break;
                             case DeviceAccountResult.ERROR:

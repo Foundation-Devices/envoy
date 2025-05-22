@@ -48,13 +48,14 @@ Future<void> main() async {
   } catch (e, stack) {
     EnvoyReport().log("Envoy init", stack.toString());
   }
-  if (isMigrationRequired()) {
+  if (await isMigrationRequired()) {
     runApp(MigrationApp());
   } else if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
     runApp(const AuthenticateApp());
   } else {
     //fresh install,already passed migration check
-    EnvoyStorage().setBool(MigrationManager.migrationPrefs, true);
+    EnvoyStorage().setNoBackUpPreference(
+        MigrationManager.migrationPrefs, MigrationManager.migrationVersion);
     runApp(const EnvoyApp());
   }
   listenToRouteChanges();
@@ -78,7 +79,7 @@ Future<void> initSingletons() async {
 
   NgAccountManager.init();
 
-  if (!isMigrationRequired()) {
+  if (!(await isMigrationRequired())) {
     await NgAccountManager().restore();
   }
   await NTPUtil.init();
@@ -190,14 +191,15 @@ class GlobalScrollBehavior extends ScrollBehavior {
   }
 }
 
-bool isMigrationRequired() {
+Future<bool> isMigrationRequired() async {
   //check if the user already has accounts
   final hasAccounts =
-      LocalStorage().prefs.containsKey(MigrationManager.accountsPrefKey);
+      LocalStorage().prefs.containsKey(NgAccountManager.v1AccountsPrefKey);
   //check if the user has already migrated
 
-  final hasMigrated =
-      EnvoyStorage().getBool(MigrationManager.migrationPrefs) ?? false;
+  final hasMigrated = (await EnvoyStorage()
+          .getNoBackUpPreference(MigrationManager.migrationPrefs)) ==
+      MigrationManager.migrationVersion;
 
   return hasAccounts && !hasMigrated;
 }

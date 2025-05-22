@@ -47,7 +47,7 @@ Future<NgAccountConfig> getPassportAccountFromJson(dynamic json) async {
 
   AddressType addressType = AddressType.p2Wpkh;
 
-  if(taprootEnabled){
+  if (taprootEnabled) {
     //if any of the descriptors is taproot,
     //then use taproot as the preferred address type
     for (var descriptor in descriptors) {

@@ -65,7 +65,8 @@ class NgAccountManager extends ChangeNotifier {
   final List<(EnvoyAccount, EnvoyAccountHandler)> _accountsHandler = [];
   var s = Settings();
 
-  static const String accountsPrefKey = "accounts";
+  static const String accountsPrefKey = "ng_accounts";
+  static const String v1AccountsPrefKey = "accounts";
 
   List<EnvoyAccount> get accounts => _accountsHandler
       .map(
@@ -314,13 +315,18 @@ class NgAccountManager extends ChangeNotifier {
     await _ls.prefs.setString(ACCOUNT_ORDER, jsonEncode(order));
     _accountsOrder.sink.add(order);
     for (var account in hotWallets) {
-      await deleteAccount(account);
+      try {
+        await deleteAccount(account);
+      } catch (e) {
+        EnvoyReport().log("Error deleting account", e.toString());
+      }
     }
     notifyListeners();
   }
 
   Future deleteAccount(EnvoyAccount account) async {
     account.handler?.dispose();
+    await Future.delayed(const Duration(milliseconds: 50));
     final dir = Directory(account.walletPath!);
     await dir.delete(recursive: true);
   }
@@ -398,7 +404,6 @@ class NgAccountManager extends ChangeNotifier {
         //if the descriptor is not found, add it to the list of missing descriptors
         if (found == null) {
           missingDescriptors.add(descriptor);
-          print("Found descriptor ${descriptor.addressType}");
         }
       }
       if (missingDescriptors.isEmpty) {
@@ -431,7 +436,10 @@ class NgAccountManager extends ChangeNotifier {
                 "Error adding descriptor to account ${alreadyPairedAccount.name} $e");
           }
         }
-        return (DeviceAccountResult.UPDATED_WITH_NEW_DESCRIPTOR, (await handler.state()));
+        return (
+          DeviceAccountResult.UPDATED_WITH_NEW_DESCRIPTOR,
+          (await handler.state())
+        );
       }
     }
 

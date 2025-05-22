@@ -30,7 +30,6 @@ class DescriptorCard extends ConsumerStatefulWidget {
 }
 
 class _DescriptorCardState extends ConsumerState<DescriptorCard> {
-
   late List<NgDescriptor> descriptors = widget.account.descriptors;
   int selectedIndex = 0;
 
@@ -55,9 +54,9 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
               padding: const EdgeInsets.all(EnvoySpacing.medium2),
               child: GestureDetector(
                 onTap: () {
-                   setState(() {
-                     selectedIndex = (selectedIndex + 1) % descriptors.length;
-                   });
+                  setState(() {
+                    selectedIndex = (selectedIndex + 1) % descriptors.length;
+                  });
                 },
                 child: QrTab(
                   title: widget.account.name,
