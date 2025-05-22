@@ -167,7 +167,7 @@ class _AdvancedSettingsOptionsState
                                           onTap: () {
                                             launchUrl(
                                                 Uri.parse(
-                                                    "https://docs.foundation.xyz/envoy/envoy-menu/privacy"),
+                                                    "https://docs.foundation.xyz/envoy/envoy-menu/privacy/#privacy-mode"),
                                                 mode: LaunchMode
                                                     .externalApplication);
                                           },
@@ -247,7 +247,7 @@ class _AdvancedSettingsOptionsState
                                           onTap: () {
                                             launchUrl(
                                                 Uri.parse(
-                                                    "https://docs.foundation.xyz/envoy/envoy-menu/privacy"),
+                                                    "https://docs.foundation.xyz/envoy/envoy-menu/privacy/#node"),
                                                 mode: LaunchMode
                                                     .externalApplication);
                                           },
