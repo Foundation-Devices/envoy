@@ -171,13 +171,14 @@ class _SelectRegionState extends ConsumerState<SelectRegion> {
   }
 
   Widget buildWidget() {
-    List<EnvoyDropdownOption> dropdownCountryOptions =
-        countries.map((country) => EnvoyDropdownOption(country.name)).toList();
+    List<EnvoyDropdownOption> dropdownCountryOptions = countries
+        .map((country) => EnvoyDropdownOption(country.name, country.code))
+        .toList();
     List<EnvoyDropdownOption> divisionDropdownOptions = [];
     divisionDropdownOptions
-        .add(EnvoyDropdownOption('Select State')); // TODO:Figma
+        .add(EnvoyDropdownOption('Select State', 'selectState')); // TODO:Figma
     divisionDropdownOptions.addAll(selectedCountry!.divisions
-        .map((division) => EnvoyDropdownOption(division)));
+        .map((division) => EnvoyDropdownOption(division, division)));
 
     return Padding(
       padding: const EdgeInsets.symmetric(

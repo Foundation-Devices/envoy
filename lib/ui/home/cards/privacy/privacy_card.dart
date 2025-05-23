@@ -58,23 +58,30 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
 
   void _handleDropdownChange(EnvoyDropdownOption newOption) {
     setState(() {
-      _showPersonalNodeTextField =
-          newOption.type == EnvoyDropdownOptionType.personalNode;
+      _showPersonalNodeTextField = newOption.value == "personalNode";
     });
 
-    switch (newOption.type) {
-      case EnvoyDropdownOptionType.normal:
-        Settings().useDefaultElectrumServer(true);
-      case EnvoyDropdownOptionType.personalNode:
-        Settings().useDefaultElectrumServer(false);
-      case EnvoyDropdownOptionType.blockStream:
-        Settings().setCustomElectrumAddress(PublicServer.blockStream.address);
-      case EnvoyDropdownOptionType.diyNodes:
-        Settings().setCustomElectrumAddress(PublicServer.diyNodes.address);
-      case EnvoyDropdownOptionType.luke:
-        Settings().setCustomElectrumAddress(PublicServer.luke.address);
-      case EnvoyDropdownOptionType.sectionBreak:
-      // do nothing
+    if (newOption.value == "break") {
+      return;
+    }
+    if (newOption.value == "foundation") {
+      Settings().useDefaultElectrumServer(true);
+      return;
+    }
+    if (newOption.value == "personalNode") {
+      Settings().useDefaultElectrumServer(false);
+      return;
+    }
+    if (newOption.value == "blockStream") {
+      Settings().setCustomElectrumAddress(PublicServer.blockStream.address);
+      return;
+    }
+    if (newOption.value == "diyNodes") {
+      Settings().setCustomElectrumAddress(PublicServer.diyNodes.address);
+      return;
+    }
+    if (newOption.value == "luke") {
+      Settings().setCustomElectrumAddress(PublicServer.luke.address);
     }
   }
 
@@ -191,19 +198,19 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
                         initialIndex: getInitialElectrumDropdownIndex(),
                         options: [
                           EnvoyDropdownOption(
-                              S().privacy_node_nodeType_foundation),
+                              S().privacy_node_nodeType_foundation,
+                              "foundation"),
                           EnvoyDropdownOption(
                               S().privacy_node_nodeType_personal,
-                              type: EnvoyDropdownOptionType.personalNode),
+                              "personalNode"),
                           EnvoyDropdownOption(
-                              S().privacy_node_nodeType_publicServers,
+                              S().privacy_node_nodeType_publicServers, "break",
                               type: EnvoyDropdownOptionType.sectionBreak),
-                          EnvoyDropdownOption(PublicServer.blockStream.label,
-                              type: EnvoyDropdownOptionType.blockStream),
-                          EnvoyDropdownOption(PublicServer.diyNodes.label,
-                              type: EnvoyDropdownOptionType.diyNodes),
-                          EnvoyDropdownOption(PublicServer.luke.label,
-                              type: EnvoyDropdownOptionType.luke),
+                          EnvoyDropdownOption(
+                              PublicServer.blockStream.label, "blockStream"),
+                          EnvoyDropdownOption(
+                              PublicServer.diyNodes.label, "diyNodes"),
+                          EnvoyDropdownOption(PublicServer.luke.label, "luke"),
                         ],
                         onOptionChanged: (selectedOption) {
                           if (selectedOption != null) {
