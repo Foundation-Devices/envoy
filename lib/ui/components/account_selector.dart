@@ -256,14 +256,14 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
   // forward the spring properties, defines how bouncy the list items are
   final SpringDescription _forwardSpring = const SpringDescription(
     mass: 1.2,
-    stiffness: 130.0,
+    stiffness: 140.0,
     damping: 13.5,
   );
 
   // return spring properties, defines how bouncy the stacked accounts are
   final SpringDescription _reverseSpring = const SpringDescription(
     mass: 1.6,
-    stiffness: 120.0,
+    stiffness: 180.0,
     damping: 12.0,
   );
 
@@ -284,7 +284,8 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
       setState(() {});
     });
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
+
+    SchedulerBinding.instance.addPostFrameCallback(
       (timeStamp) {
         _calcStackCardRect();
         _calcListCardRect();
@@ -312,7 +313,17 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
   _calcStackCardRect() {
     widget.cardStackKeys.forEach((key, value) {
       Rect? rect = _getRect(value);
+      // Remove or comment out this debug print
       if (rect == null) {
+        // rect is null try getting rect again in next frame
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          final newRect = _getRect(value);
+          if (newRect != null && mounted) {
+            setState(() {
+              _stackCardRect[key] = newRect;
+            });
+          }
+        });
         return;
       }
       _stackCardRect[key] = rect;
@@ -372,7 +383,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
             child: GestureDetector(
               onTap: () {
                 if (!animationController.isAnimating ||
-                    animationController.value > 0.85) {
+                    animationController.value > 0.35) {
                   _selectAccount(widget.account);
                 }
               },
@@ -528,6 +539,8 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
 
   //dismiss overlay by selecting default selected account
   void dismiss() {
-    _selectAccount(widget.account);
+    if (!animationController.isAnimating || animationController.value > 0.50) {
+      _selectAccount(widget.account);
+    }
   }
 }
