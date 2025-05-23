@@ -774,17 +774,29 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
             return SizedBox.expand(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                child: Material(
-                  color: Colors.transparent,
-                  elevation: 0,
-                  shape: openShape,
-                  child: Container(
-                    color: scrimBlackColor,
-                    child: Builder(
-                      key: _openBuilderKey,
-                      builder: (BuildContext context) {
-                        return openBuilder(context, closeContainer);
-                      },
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black,
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    elevation: 0,
+                    shape: openShape,
+                    child: Container(
+                      color: scrimBlackColor,
+                      child: Builder(
+                        key: _openBuilderKey,
+                        builder: (BuildContext context) {
+                          return openBuilder(context, closeContainer);
+                        },
+                      ),
                     ),
                   ),
                 ),
