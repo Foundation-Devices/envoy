@@ -312,9 +312,11 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       case ROUTE_LEARN_BLOG:
         return S().bottomNav_learn;
       case ROUTE_ACCOUNT_SEND:
-        return "send"; //TODO: Figma
+        return S().receive_tx_list_send;
       case ROUTE_ACCOUNT_DETAIL:
         return S().manage_account_address_heading;
+      case ROUTE_ACCOUNT_RECEIVE:
+        return S().receive_qr_code_heading;
       case ROUTE_BUY_BITCOIN:
         return S().header_buyBitcoin;
       case ROUTE_PEER_TO_PEER:

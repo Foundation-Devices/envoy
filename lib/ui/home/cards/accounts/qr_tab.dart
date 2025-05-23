@@ -66,56 +66,64 @@ class QrTab extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    ListTile(
-                      leading: Container(
-                        width: 32,
-                        height: 32,
-                        decoration: BoxDecoration(
-                            color: Colors.black.applyOpacity(0.6),
-                            borderRadius: BorderRadius.circular(36),
-                            border: Border.all(
-                                color: color,
-                                width: 3,
-                                style: BorderStyle.solid)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: SvgPicture.asset(
-                            "assets/i.svg",
-                          ),
-                        ),
-                      ),
-                      title: ConstrainedBox(
-                        constraints: const BoxConstraints(
-                          maxHeight: 200,
-                        ),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                title,
-                                style: EnvoyTypography.body.copyWith(
-                                    color:
-                                        design_system.EnvoyColors.solidWhite),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
                     Padding(
                       padding: const EdgeInsets.only(
-                        left: EnvoySpacing.medium1,
-                        right: EnvoySpacing.medium1,
-                        bottom: EnvoySpacing.small,
-                      ),
-                      child: Text(
-                        subtitle,
-                        style:
-                            EnvoyTypography.label.copyWith(color: Colors.white),
-                      ),
+                          left: EnvoySpacing.medium1,
+                          top: EnvoySpacing.medium1,
+                          right: EnvoySpacing.small,
+                          bottom: EnvoySpacing.medium1),
+                      child: Row(children: [
+                        Container(
+                          width: 45,
+                          height: 45,
+                          decoration: BoxDecoration(
+                              color: Colors.black.applyOpacity(0.6),
+                              borderRadius: BorderRadius.circular(36),
+                              border: Border.all(
+                                  color: color,
+                                  width: 2,
+                                  style: BorderStyle.solid)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SvgPicture.asset(
+                              "assets/i.svg",
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: EnvoySpacing.medium1),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ConstrainedBox(
+                              constraints: const BoxConstraints(
+                                  maxHeight: 100, maxWidth: 220),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      title,
+                                      style: EnvoyTypography.body
+                                          .copyWith(
+                                              color: design_system
+                                                  .EnvoyColors.solidWhite)
+                                          .setWeight(FontWeight.w600),
+                                    ),
+                                    Text(
+                                      subtitle,
+                                      style: EnvoyTypography.label
+                                          .copyWith(color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ]),
                     ),
                     Flexible(
                       child: Container(
