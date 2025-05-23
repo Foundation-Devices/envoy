@@ -305,14 +305,11 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
     String? accountId = NgAccountManager().getAccountIdByTransaction(tx.txId);
 
     // Fallbacks by transaction type
-    if (accountId == null) {
-      if (tx is RampTransaction) {
-        accountId = tx.accountId;
-      } else if (tx is BtcPayTransaction) {
-        accountId = tx.accountId;
-      } else if (tx is AztecoTransaction) {
-        accountId = tx.accountId;
-      }
+    if (accountId == null &&
+        (tx is RampTransaction ||
+            tx is BtcPayTransaction ||
+            tx is AztecoTransaction)) {
+      accountId = (tx as dynamic).accountId;
     }
 
     return accountId;
