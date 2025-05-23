@@ -41,7 +41,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   final _animationsDuration = const Duration(milliseconds: 200);
   bool _advancedVisible = false;
   bool canBuy = true;
-  late bool buyDisabledByCountry;
+  bool buyDisabledByCountry = true;
 
   final LocalAuthentication auth = LocalAuthentication();
 

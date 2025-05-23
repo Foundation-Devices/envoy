@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
@@ -11,12 +12,12 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/generated/l10n.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter/services.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:envoy/ui/components/select_dropdown.dart';
 
 //ignore: must_be_immutable
 class DescriptorCard extends ConsumerStatefulWidget {
@@ -29,6 +30,9 @@ class DescriptorCard extends ConsumerStatefulWidget {
 }
 
 class _DescriptorCardState extends ConsumerState<DescriptorCard> {
+  late List<NgDescriptor> descriptors = widget.account.descriptors;
+  int selectedIndex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -40,10 +44,7 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
 
   @override
   Widget build(BuildContext context) {
-    //TODO: fix unified descriptor
-    // String descriptor = widget.account.internalDescriptor;
-    String descriptor = "";
-
+    String descriptor = descriptors[selectedIndex].external_ ?? "";
     return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -51,16 +52,33 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
           Flexible(
             child: Padding(
               padding: const EdgeInsets.all(EnvoySpacing.medium2),
-              child: QrTab(
-                title: widget.account.name,
-                subtitle: S().manage_account_descriptor_subheading,
-                account: widget.account,
-                qr: EnvoyQR(
-                  data: descriptor,
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    selectedIndex = (selectedIndex + 1) % descriptors.length;
+                  });
+                },
+                child: QrTab(
+                  title: widget.account.name,
+                  subtitle: S().manage_account_descriptor_subheading,
+                  account: widget.account,
+                  qr: EnvoyQR(
+                    data: descriptor,
+                  ),
                 ),
               ),
             ),
           ),
+          //TODO: add dropdown to switch between descriptors
+          // EnvoyDropdown(
+          //   options: [
+          //
+          //   ],
+          //   onOptionChanged: (selectedOption) {
+          //     if (selectedOption != null) {
+          //     }
+          //   },
+          // ),
           Padding(
             padding: const EdgeInsets.only(bottom: EnvoySpacing.xl),
             child: Row(

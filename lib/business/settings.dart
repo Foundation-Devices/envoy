@@ -105,17 +105,16 @@ class Settings extends ChangeNotifier {
     return fullPaths;
   }
 
-  // FD testnet server
+  // FD testnet3 server
   static const String TESTNET_ELECTRUM_SERVER =
       "ssl://testnet.foundation.xyz:50002";
 
-  // FD testnet server
+  // FD testnet4 server
   static const String TESTNET4_ELECTRUM_SERVER =
       "ssl://testnet4.foundation.xyz:50002";
 
   // MutinyNet Electrum
-  static const String MUTINYNET_ELECTRUM_SERVER =
-      "ssl://mutinynet.foundation.xyz:50002";
+  static const String SIGNET_ELECTRUM_SERVER = "ssl://mempool.space:60602";
 
   DisplayUnit displayUnit = DisplayUnit.btc;
 
@@ -166,11 +165,7 @@ class Settings extends ChangeNotifier {
     }
 
     if (network == Network.signet) {
-      if (usingTor) {
-        return MUTINYNET_ONION_ELECTRUM_SERVER;
-      } else {
-        return MUTINYNET_ELECTRUM_SERVER;
-      }
+      return SIGNET_ELECTRUM_SERVER;
     }
 
     if (usingDefaultElectrumServer) {

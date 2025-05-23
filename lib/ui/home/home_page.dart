@@ -10,38 +10,41 @@ import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/components/bottom_navigation.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_card.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
 import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/home/migration_dialogs.dart';
 import 'package:envoy/ui/home/top_bar_home.dart';
 import 'package:envoy/ui/lock/session_manager.dart';
+import 'package:envoy/ui/migrations/migration_manager.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/tor_warning.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ngwallet/src/wallet.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:ngwallet/src/wallet.dart';
-import 'package:envoy/business/notifications.dart';
-import 'package:envoy/ui/components/pop_up.dart';
-import 'package:envoy/util/amount.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 final _fullScreenProvider = Provider((ref) {
   bool fullScreen = ref.watch(hideBottomNavProvider);
@@ -214,6 +217,7 @@ class HomePageState extends ConsumerState<HomePage>
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final router = Navigator.of(context);
       SessionManager().bind(router);
+      notifyAboutNetworkMigrationDialog(context);
     });
   }
 

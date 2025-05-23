@@ -13,6 +13,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -230,18 +231,22 @@ final showSpendRequirementOverlayProvider = Provider<bool>(
 ///clears all the spend related states. this is need once the user exits the spend screen or account details...
 ///or when the user finishes the spend flow
 void clearSpendState(ProviderContainer ref) {
-  ref.read(spendAddressProvider.notifier).state = "";
-  ref.read(spendAmountProvider.notifier).state = 0;
-  //reset fee to default
-  ref.read(spendFeeRateProvider.notifier).state = Fees().slowRate(
-    ref.read(selectedAccountProvider)!.network,
-  );
-  ref.read(stagingTxChangeOutPutTagProvider.notifier).state = null;
-  ref.read(stagingTxNoteProvider.notifier).state = null;
-  ref.read(spendFeeProcessing.notifier).state = false;
-  ref.read(sendScreenUnitProvider.notifier).state =
-      Settings().displayUnit == DisplayUnit.btc
-          ? AmountDisplayUnit.btc
-          : AmountDisplayUnit.sat;
-  ref.read(displayFiatSendAmountProvider.notifier).state = 0;
+  try {
+    ref.read(spendAddressProvider.notifier).state = "";
+    ref.read(spendAmountProvider.notifier).state = 0;
+    //reset fee to default
+    ref.read(spendFeeRateProvider.notifier).state = Fees().slowRate(
+      ref.read(selectedAccountProvider)!.network,
+    );
+    ref.read(stagingTxChangeOutPutTagProvider.notifier).state = null;
+    ref.read(stagingTxNoteProvider.notifier).state = null;
+    ref.read(spendFeeProcessing.notifier).state = false;
+    ref.read(sendScreenUnitProvider.notifier).state =
+        Settings().displayUnit == DisplayUnit.btc
+            ? AmountDisplayUnit.btc
+            : AmountDisplayUnit.sat;
+    ref.read(displayFiatSendAmountProvider.notifier).state = 0;
+  } catch (e) {
+    kPrint("Error clearing spend state: $e");
+  }
 }

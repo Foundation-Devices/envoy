@@ -99,7 +99,7 @@ class PassportScannerScreen extends ConsumerWidget {
                                 ),
                               ),
                               onPressed: () async {
-                                context.goNamed(ONBOARD_PASSPORT_TOU);
+                                context.goNamed(ONBOARD_PASSPORT_SETUP);
                               },
                             ),
                           ],

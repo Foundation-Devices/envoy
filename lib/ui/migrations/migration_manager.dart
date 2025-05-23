@@ -42,8 +42,14 @@ class LegacyUnifiedAccounts {
 class MigrationManager {
   // Singleton instance
   static final MigrationManager _instance = MigrationManager._internal();
-  static const String accountsPrefKey = "accounts";
+  static const String v1accountsPrefKey = "accounts";
   static String migrationPrefs = "envoy_v2_migration";
+  static String migrationVersion = "v2";
+
+  //adds to preferences to indicate that the user has migrated to testnet4
+  static String migratedToTestnet4 = "migrated_to_testnet4";
+  static String migratedToSignetGlobal = "migrated_to_signet_global";
+  static String migratedToUnifiedAccounts = "migrated_to_unified_accounts";
 
   // Private constructor
   MigrationManager._internal();
@@ -96,9 +102,10 @@ class MigrationManager {
       await Directory(newWalletDirectory).delete(recursive: true);
     }
     final walletOrder = List<String>.empty(growable: true);
-    if (_ls.prefs.containsKey(accountsPrefKey)) {
+    if (_ls.prefs.containsKey(NgAccountManager.v1AccountsPrefKey)) {
       List<dynamic> accountsJson =
-          jsonDecode(_ls.prefs.getString(accountsPrefKey)!).toList();
+          jsonDecode(_ls.prefs.getString(NgAccountManager.v1AccountsPrefKey)!)
+              .toList();
       List<LegacyAccount> legacyAccounts =
           accountsJson.map((json) => LegacyAccount.fromJson(json)).toList();
 
@@ -138,13 +145,11 @@ class MigrationManager {
         }
         //restore will reload all accounts and start normal sync
         await NgAccountManager().restore();
-        await LocalStorage().prefs.remove(accountsPrefKey);
         await Future.delayed(const Duration(milliseconds: 300));
         final v1backupFile =
             File("${LocalStorage().appDocumentsDir.path}/v1_accounts.json");
         await v1backupFile.create(recursive: true);
         await v1backupFile.writeAsString(jsonEncode(accountsJson));
-
         _onMigrationFinished?.call();
       } catch (e) {
         _onMigrationError?.call();
@@ -162,6 +167,8 @@ class MigrationManager {
     final List<EnvoyAccountHandler> handlers = [];
     final walletOrder = List<String>.empty(growable: true);
     bool taprootEnabled = Settings().taprootEnabled();
+    bool showTestnet = Settings().showTestnetAccounts();
+    bool showSignet = Settings().showSignetAccounts();
 
     for (LegacyUnifiedAccounts unified in unifiedLegacyAccounts) {
       //use externalDescriptor and internalDescriptor
@@ -177,10 +184,12 @@ class MigrationManager {
       }
       var network = Network.bitcoin;
       if (legacyAccount.wallet.network.toLowerCase() == "testnet") {
-        network = Network.testnet;
+        network = Network.testnet4;
       } else if (legacyAccount.wallet.network.toLowerCase() == "signet") {
+        LocalStorage().prefs.setBool(migratedToTestnet4, true);
         network = Network.signet;
       }
+
       List<Directory> oldWalletDirPaths = [];
       for (var account in unified.accounts) {
         final dir = Directory("$walletsDirectory${account.wallet.name}");
@@ -227,6 +236,18 @@ class MigrationManager {
       handlers.add(envoyAccount);
       walletOrder.add(newId);
     }
+
+    bool hasTestnet = unifiedLegacyAccounts.any((element) =>
+        element.accounts.first.wallet.network.toLowerCase() == "testnet");
+    bool hasSignet = unifiedLegacyAccounts.any((element) =>
+        element.accounts.first.wallet.network.toLowerCase() == "signet");
+    if (showTestnet && hasTestnet) {
+      await _ls.prefs.setBool(migratedToTestnet4, true);
+    }
+    if (showSignet && hasSignet) {
+      _ls.prefs.setBool(migratedToSignetGlobal, true);
+    }
+
     await _ls.prefs
         .setString(NgAccountManager.ACCOUNT_ORDER, jsonEncode(walletOrder));
     return handlers;
@@ -248,6 +269,9 @@ class MigrationManager {
         );
         unifiedWallets.add(LegacyUnifiedAccounts(
             accounts: accounts, network: accounts.first.wallet.network));
+        LocalStorage()
+            .prefs
+            .setBool(MigrationManager.migratedToUnifiedAccounts, true);
       } else {
         EnvoyReport().log(
           "Migration",

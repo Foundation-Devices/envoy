@@ -22,7 +22,7 @@ class _ExportSeedModalState extends State<ExportSeedModal> {
     return EnvoyPopUp(
       icon: EnvoyIcons.alert,
       typeOfMessage: PopUpState.warning,
-      title: S().component_warning,
+      title: S().component_warning.toUpperCase(),
       showCloseButton: true,
       content: S().export_seed_modal_subheading,
       primaryButtonLabel: S().component_continue,

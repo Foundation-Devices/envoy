@@ -37,28 +37,41 @@ class SingleImportPpScanPage extends OnboardingPage {
                     },
                     decoder: PairPayloadDecoder(
                       onScan: (binary) async {
+                        Navigator.pop(context);
                         final scaffold = ScaffoldMessenger.of(context);
                         final goRouter = GoRouter.of(context);
-                        EnvoyAccountHandler? pairedAccount;
-                        EnvoyAccount? account;
+                        (DeviceAccountResult, EnvoyAccount?) paringResult;
                         try {
-                          pairedAccount = await NgAccountManager()
-                              .processPassportAccounts(binary);
-                          account = await pairedAccount!.state();
+                          paringResult = await NgAccountManager()
+                              .addPassportAccount(binary);
+                          EnvoyAccount? account;
+                          switch (paringResult.$1) {
+                            case DeviceAccountResult.ADDED:
+                              account = paringResult.$2;
+                              break;
+                            case DeviceAccountResult
+                                  .UPDATED_WITH_NEW_DESCRIPTOR:
+                              account = paringResult.$2;
+                              break;
+                            case DeviceAccountResult.ERROR:
+                              break;
+                          }
+                          if (account == null) {
+                            goRouter.go("/");
+                          } else {
+                            //TODO: let the user know if the account
+                            //was updated or added ?
+                            goRouter.goNamed(ONBOARD_PASSPORT_SCV_SUCCESS,
+                                extra: account);
+                          }
                         } on AccountAlreadyPaired catch (_) {
                           scaffold.showSnackBar(const SnackBar(
                             content: Text(
                                 "Account already connected"), // TODO: FIGMA
                           ));
-                          await Future.delayed(const Duration(seconds: 2));
+                          await Future.delayed(const Duration(seconds: 1));
                           goRouter.go("/");
                           return;
-                        }
-                        if (account == null) {
-                          goRouter.go("/");
-                        } else {
-                          goRouter.goNamed(ONBOARD_PASSPORT_SCV_SUCCESS,
-                              extra: account!);
                         }
                       },
                     ));

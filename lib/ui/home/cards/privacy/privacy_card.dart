@@ -122,7 +122,7 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
                           onTap: () {
                             launchUrl(
                                 Uri.parse(
-                                    "https://docs.foundation.xyz/envoy/envoy-menu/privacy"),
+                                    "https://docs.foundation.xyz/envoy/envoy-menu/privacy/#privacy-mode"),
                                 mode: LaunchMode.externalApplication);
                           },
                           icon: EnvoyIcons.privacy,
@@ -181,7 +181,7 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
                         onTap: () {
                           launchUrl(
                               Uri.parse(
-                                  "https://docs.foundation.xyz/envoy/envoy-menu/privacy"),
+                                  "https://docs.foundation.xyz/envoy/envoy-menu/privacy/#node"),
                               mode: LaunchMode.externalApplication);
                         },
                         icon: EnvoyIcons.node,

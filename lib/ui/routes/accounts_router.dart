@@ -272,7 +272,11 @@ final accountsRouter = StatefulShellBranch(
                       return wrapWithEnvoyPageAnimation(
                           child: DescriptorCard(account));
                     } catch (e) {
-                      return wrapWithEnvoyPageAnimation(child: Container());
+                      return wrapWithEnvoyPageAnimation(
+                          child: Container(
+                        padding: const EdgeInsets.all(20),
+                        child: Center(child: Text("Account not found")),
+                      ));
                     }
                   },
                 ),

@@ -13,6 +13,7 @@ import 'package:envoy/ui/onboard/manual/manual_setup_import_seed.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/onboard/onboard_welcome_envoy.dart';
+import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/pages/import_pp/single_import_pp_intro.dart';
@@ -67,6 +68,11 @@ final onboardRoutes = GoRoute(
         name: ONBOARD_PASSPORT_SCAN,
         builder: (context, state) => const PassportScannerScreen(),
         routes: [
+          GoRoute(
+            path: "welcome",
+            name: ONBOARD_PASSPORT_SETUP,
+            builder: (context, state) => const OnboardPassportWelcomeScreen(),
+          ),
           GoRoute(
             path: "tou",
             name: ONBOARD_PASSPORT_TOU,

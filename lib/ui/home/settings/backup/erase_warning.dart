@@ -58,7 +58,7 @@ class _EraseWalletsAndBackupsWarningState
 
     biggerText = text1Height > text2Height ? text1Height : text2Height;
 
-    return biggerText + EnvoySpacing.medium1;
+    return biggerText + EnvoySpacing.medium2;
   }
 
   double estimateTextHeight(
@@ -79,104 +79,108 @@ class _EraseWalletsAndBackupsWarningState
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+        padding: const EdgeInsets.symmetric(
+            horizontal: EnvoySpacing.medium2, vertical: EnvoySpacing.medium2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
             Align(
               alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
-                child: IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
+              child: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
               ),
             ),
-            const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
             Column(
               children: [
                 const EnvoyIcon(EnvoyIcons.alert,
                     color: EnvoyColors.accentSecondary,
                     size: EnvoyIconSize.big),
-                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                Padding(
+                const SizedBox(height: EnvoySpacing.medium1),
+                Text(
+                  S().component_warning.toUpperCase(),
+                  textAlign: TextAlign.center,
+                  style: EnvoyTypography.info,
+                ),
+                const SizedBox(height: EnvoySpacing.medium1),
+                Container(
+                  height: expandablePageViewHeight,
+                  constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height *
+                        0.6, // max size of PageView
+                  ),
+                  child: Padding(
                     padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.small,
-                        horizontal: EnvoySpacing.xs),
-                    child: Text(
-                      S().component_warning,
-                      textAlign: TextAlign.center,
-                      style: EnvoyTypography.info,
-                    )),
-                Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.small,
-                        horizontal: EnvoySpacing.medium1),
-                    child: Container(
-                      height: expandablePageViewHeight,
-                      constraints: BoxConstraints(
-                        maxHeight: MediaQuery.of(context).size.height *
-                            0.6, // max size of PageView
+                        horizontal: EnvoySpacing.small),
+                    child: SingleChildScrollView(
+                      child: ExpandablePageView(
+                        controller: _pageController,
+                        children: [
+                          Text(
+                            Platform.isAndroid
+                                ? S()
+                                    .backups_erase_wallets_and_backups_modal_1_2_android_subheading
+                                : S()
+                                    .backups_erase_wallets_and_backups_modal_1_2_ios_subheading,
+                            textAlign: TextAlign.center,
+                            style: EnvoyTypography.info,
+                          ),
+                          Text(
+                            S().backups_erase_wallets_and_backups_modal_2_2_subheading,
+                            textAlign: TextAlign.center,
+                            style: EnvoyTypography.info,
+                          ),
+                        ],
                       ),
-                      child: SingleChildScrollView(
-                        child: ExpandablePageView(
-                          controller: _pageController,
-                          children: [
-                            Text(
-                              Platform.isAndroid
-                                  ? S()
-                                      .backups_erase_wallets_and_backups_modal_1_2_android_subheading
-                                  : S()
-                                      .backups_erase_wallets_and_backups_modal_1_2_ios_subheading,
-                              textAlign: TextAlign.center,
-                              style: EnvoyTypography.info,
-                            ),
-                            Text(
-                              S().backups_erase_wallets_and_backups_modal_2_2_subheading,
-                              textAlign: TextAlign.center,
-                              style: EnvoyTypography.info,
-                            ),
-                          ],
-                        ),
-                      ),
-                    )),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: EnvoySpacing.medium2),
                 DotsIndicator(
                   totalPages: 2,
                   pageController: _pageController,
                 ),
+                const SizedBox(height: EnvoySpacing.small)
               ],
             ),
-            OnboardingButton(
-                type: EnvoyButtonTypes.tertiary,
-                label: S().component_cancel,
-                onTap: () {
-                  Navigator.pop(context);
-                }),
-            OnboardingButton(
-                type: EnvoyButtonTypes.primaryModal,
-                label: S().component_continue,
-                onTap: () {
-                  int currentPage = _pageController.page?.toInt() ?? 0;
-                  if (currentPage == 1) {
-                    if (NgAccountManager().hotWalletAccountsEmpty()) {
-                      // Safe to delete
-                      displaySeedBeforeNuke(context);
-                    } else {
-                      showEnvoyDialog(
-                          context: context,
-                          dialog: const EraseWalletsBalanceWarning());
-                    }
-                  } else {
-                    _pageController.nextPage(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOutCubicEmphasized);
-                  }
-                }),
-            const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
+              child: Column(
+                children: [
+                  OnboardingButton(
+                      type: EnvoyButtonTypes.tertiary,
+                      label: S().component_cancel,
+                      onTap: () {
+                        Navigator.pop(context);
+                      }),
+                  OnboardingButton(
+                      type: EnvoyButtonTypes.primaryModal,
+                      label: S().component_continue,
+                      onTap: () {
+                        int currentPage = _pageController.page?.toInt() ?? 0;
+                        if (currentPage == 1) {
+                          if (NgAccountManager().hotWalletAccountsEmpty()) {
+                            // Safe to delete
+                            displaySeedBeforeNuke(context);
+                          } else {
+                            showEnvoyDialog(
+                                context: context,
+                                dialog: const EraseWalletsBalanceWarning());
+                          }
+                        } else {
+                          _pageController.nextPage(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeInOutCubicEmphasized);
+                        }
+                      }),
+                  const SizedBox(height: EnvoySpacing.small)
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -250,7 +254,8 @@ class _EraseWalletsConfirmationState
       width: MediaQuery.of(context).size.width * 0.8,
       constraints: const BoxConstraints(maxHeight: 360, maxWidth: 320),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+        padding: const EdgeInsets.symmetric(
+            horizontal: EnvoySpacing.medium2, vertical: EnvoySpacing.medium2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -258,30 +263,25 @@ class _EraseWalletsConfirmationState
           children: [
             Align(
               alignment: Alignment.centerRight,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
+              child: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
               ),
             ),
-            //const Padding(padding: EdgeInsets.all(8)),
             Image.asset(
               "assets/exclamation_triangle.png",
               height: 80,
               width: 80,
+              color: EnvoyColors.danger,
             ),
             Flexible(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.only(
-                      top: EnvoySpacing.medium2,
-                      bottom: EnvoySpacing.medium3,
-                      left: EnvoySpacing.medium3,
-                      right: EnvoySpacing.medium3),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.small,
+                      vertical: EnvoySpacing.medium2),
                   child: Text(
                     S().delete_wallet_for_good_modal_subheading,
                     textAlign: TextAlign.center,
@@ -293,6 +293,8 @@ class _EraseWalletsConfirmationState
             OnboardingButton(
                 type: EnvoyButtonTypes.tertiary,
                 label: S().delete_wallet_for_good_modal_cta2,
+                textStyle: EnvoyTypography.subheading
+                    .copyWith(color: EnvoyColors.danger),
                 onTap: () {
                   Navigator.push(
                       context,
@@ -305,9 +307,6 @@ class _EraseWalletsConfirmationState
                 onTap: () {
                   context.go("/");
                 }),
-            const SizedBox(
-              height: EnvoySpacing.medium3,
-            )
           ],
         ),
       ),
