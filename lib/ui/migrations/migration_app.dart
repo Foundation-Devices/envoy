@@ -89,7 +89,8 @@ class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
   void initState() {
     super.initState();
     MigrationManager().onMigrationFinished(() async {
-      await EnvoyStorage().setBool(MigrationManager.migrationPrefs, true);
+      await EnvoyStorage().setNoBackUpPreference(
+          MigrationManager.migrationPrefs, MigrationManager.migrationVersion);
       if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
         runApp(const AuthenticateApp());
       } else {

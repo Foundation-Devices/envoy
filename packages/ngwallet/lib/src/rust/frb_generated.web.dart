@@ -188,6 +188,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   NgAccountConfig dco_decode_box_autoadd_ng_account_config(dynamic raw);
 
   @protected
+  NgDescriptor dco_decode_box_autoadd_ng_descriptor(dynamic raw);
+
+  @protected
   Output dco_decode_box_autoadd_output(dynamic raw);
 
   @protected
@@ -458,6 +461,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   NgAccountConfig sse_decode_box_autoadd_ng_account_config(
+      SseDeserializer deserializer);
+
+  @protected
+  NgDescriptor sse_decode_box_autoadd_ng_descriptor(
       SseDeserializer deserializer);
 
   @protected
@@ -740,6 +747,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_ng_account_config(
       NgAccountConfig self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_ng_descriptor(
+      NgDescriptor self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_output(Output self, SseSerializer serializer);

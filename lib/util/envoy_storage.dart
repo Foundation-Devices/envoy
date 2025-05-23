@@ -101,7 +101,8 @@ const String primeDataStoreName = "prime";
 
 ///keeps track of the prime account full scan status, and migration,
 ///no backup for this store
-const String accountFullsScanStateStoreName = "prime";
+const String accountFullsScanStateStoreName = "account_scan_state";
+const String noBackUpPrefsStoreName = "pref_no_backup";
 
 ///keeps track of spend input tags, this would be handy to show previously used tags
 ///for example when user trying RBF.
@@ -160,6 +161,9 @@ class EnvoyStorage {
 
   StoreRef<String, bool> accountFullsScanStateStore =
       StoreRef<String, bool>(accountFullsScanStateStoreName);
+
+  StoreRef<String, String> noBackUpPrefsStore =
+      StoreRef<String, String>(noBackUpPrefsStoreName);
 
   // Store everything except videos, blogs and locations
   Map<String, StoreRef> storesToBackUp = {};
@@ -928,16 +932,25 @@ class EnvoyStorage {
   Future<bool> setAccountScanStatus(
       String accountId, AddressType addressType, bool isFullScanDone) async {
     await accountFullsScanStateStore
-        .record("${addressType}-${addressType}")
+        .record("${accountId}:${addressType.toString()}")
         .put(_db, isFullScanDone);
     return true;
   }
 
-  Future<bool?> getAccountScanStatus(
+  Future<bool> getAccountScanStatus(
       String accountId, AddressType addressType) async {
-    return await accountFullsScanStateStore
-        .record("$addressType-$addressType")
-        .get(_db);
+    return await (accountFullsScanStateStore
+            .record("${accountId}:${addressType.toString()}")
+            .get(_db)) ??
+        false;
+  }
+
+  Future setNoBackUpPreference(String key, String value) async {
+    await noBackUpPrefsStore.record(key).put(_db, value);
+  }
+
+  Future<String?> getNoBackUpPreference(String key) async {
+    return await (noBackUpPrefsStore.record(key).get(_db));
   }
 
   Database db() => _db;

@@ -10,6 +10,8 @@ import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/util/envoy_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:ngwallet/ngwallet.dart';
 
 sealed class WalletProgress {}
@@ -35,6 +37,7 @@ class SyncManager {
   Function(EnvoyAccount)? _onUpdateFinished;
   late Timer _syncTimer;
   bool _pauseSync = false;
+  bool _fullScanInProgress = false;
 
   final StreamController<WalletProgress> _currentLoading =
       StreamController<WalletProgress>.broadcast(sync: true);
@@ -51,11 +54,7 @@ class SyncManager {
 
   startSync() {
     _syncTimer = Timer.periodic(const Duration(seconds: 15), (timer) {
-      if (_pauseSync) {
-        return;
-      }
-      if (_fullScanRequest.isNotEmpty) {
-        _startFullScan();
+      if (NgAccountManager().accounts.isEmpty || _pauseSync) {
         return;
       }
       _syncAll();
@@ -103,19 +102,21 @@ class SyncManager {
       if (account.handler != null) {
         for (var descriptor in account.descriptors) {
           //only sync accounts that are passed full scans
-          bool? isScanned = await LocalStorage()
-              .prefs
+          bool isScanned = await EnvoyStorage()
               .getAccountScanStatus(account.id, descriptor.addressType);
           //only sync accounts that are passed full scans
+          if (!isScanned) {
+            kPrint(
+                "Account ${account.name} | ${account.network} is not scanned");
+          }
           if (isScanned == true) {
             final request = await account.handler!
                 .syncRequest(addressType: descriptor.addressType);
             _synRequests[(account, descriptor.addressType)] = request;
           } else {
-            _fullScanRequest[(account, descriptor.addressType)] = await account
-                .handler!
-                .requestFullScan(addressType: descriptor.addressType);
-            _startFullScan();
+            if (_fullScanRequest[(account, descriptor.addressType)] == null) {
+              initiateFullScan();
+            }
           }
         }
       }
@@ -123,15 +124,16 @@ class SyncManager {
     _startSync();
   }
 
+  //initiate full scan for all non scanned accounts
   Future<void> initiateFullScan() async {
     final accounts = NgAccountManager().accounts;
+    _fullScanRequest.clear();
     for (var account in accounts) {
       //skip testnet accounts if not enabled
       for (var descriptor in account.descriptors) {
         bool isScanned = await LocalStorage()
-                .prefs
-                .getAccountScanStatus(account.id, descriptor.addressType) ??
-            false;
+            .prefs
+            .getAccountScanStatus(account.id, descriptor.addressType);
         if (!isScanned) {
           FullScanRequest request = await account.handler!
               .requestFullScan(addressType: descriptor.addressType);
@@ -143,7 +145,9 @@ class SyncManager {
   }
 
   void _startSync() async {
-    for (final accountWithType in _synRequests.keys) {
+    final iterator = _synRequests.keys.iterator;
+    while (iterator.moveNext()) {
+      final accountWithType = iterator.current;
       final account = accountWithType.$1;
       final type = accountWithType.$2;
       final server = SyncManager.getElectrumServer(account.network);
@@ -154,12 +158,10 @@ class SyncManager {
       _syncScheduler.run(
         () async {
           try {
-            if (_fullScanRequest.isNotEmpty) {
-              return;
-            }
             kPrint(
                 "⏳Syncing account ${account.name} | ${account.network} | $server  |Tor : $port");
             while (_pauseSync) {
+              //wait until resume
               await Future.delayed(const Duration(milliseconds: 100));
             }
             await _performWalletSync(account, server, port, type);
@@ -176,12 +178,12 @@ class SyncManager {
   }
 
   Future _startFullScan() async {
+    _fullScanInProgress = true;
     for (final accountWithType in _fullScanRequest.keys) {
       final account = accountWithType.$1;
       final type = accountWithType.$2;
       bool isScanned =
-          await LocalStorage().prefs.getAccountScanStatus(account.id, type) ??
-              false;
+          await LocalStorage().prefs.getAccountScanStatus(account.id, type);
       if (isScanned) {
         return;
       }
@@ -197,15 +199,17 @@ class SyncManager {
               return;
             }
             await performFullScan(account.handler!, type, fullScanRequest);
-          } catch (e) {
-            kPrint("Error fullScan account ${account.name}: $e");
+          } catch (e, stack) {
+            debugPrintStack(stackTrace: stack);
+            kPrint("Error fullScan account ${account.name} | ${account.network}"
+                ": $e");
           } finally {
-            _fullScanRequest.remove(accountWithType);
             _onUpdateFinished?.call(account);
           }
         },
       );
     }
+    _fullScanInProgress = false;
   }
 
   Future<void> performFullScan(EnvoyAccountHandler handler,
@@ -213,22 +217,26 @@ class SyncManager {
     final account = await handler.state();
     final server = SyncManager.getElectrumServer(account.network);
     int? port = Settings().getPort(account.network);
-    // if (port == -1) {
-    //   port = null;
-    // }
+    if (port == -1) {
+      port = null;
+    }
     kPrint(
-        "🔍 PerformFullScan ${account.name} | ${account.network} | $server  |Tor : ${port != null}");
+        "🔍 PerformFullScan ${account.name} | ${account.network} | $server  |Tor : ${port != null} | request_disposed:${fullScanRequest.isDisposed}");
     _currentLoading.sink.add(Scanning(account.id));
-    WalletUpdate update = await EnvoyAccountHandler.scanWallet(
-      scanRequest: fullScanRequest,
-      electrumServer: server,
-      torPort: null,
-    );
+    if (fullScanRequest.isDisposed) {
+      kPrint("FullScanRequest is disposed");
+      return;
+    }
     try {
+      WalletUpdate update = await EnvoyAccountHandler.scanWallet(
+        scanRequest: fullScanRequest,
+        electrumServer: server,
+        torPort: port,
+      );
       await handler.applyUpdate(update: update, addressType: addressType);
-      LocalStorage().prefs.setAccountScanStatus(account.id, addressType, true);
+      await EnvoyStorage().setAccountScanStatus(account.id, addressType, true);
       kPrint(
-          "✨ Finished FullScan account ${account.name} | ${account.network} | $server  |Tor : ${port != null}");
+          "✨Finished FullScan account ${account.name} | ${account.network} | $server  |Tor : ${port != null}");
     } catch (e) {
       kPrint(
           "Error fullScan: for ${account.name} | ${account.network} | $server  |Tor : $port $e");
@@ -236,7 +244,8 @@ class SyncManager {
           "Error fullScan: for ${account.name} | ${account.network} | $server  |Tor : $port",
           e.toString());
     } finally {
-      _fullScanRequest.remove((account, addressType));
+      _fullScanRequest
+          .removeWhere((k, v) => k.$1.id == account.id && k.$2 == addressType);
       _currentLoading.sink.add(None());
     }
   }
@@ -250,7 +259,7 @@ class SyncManager {
     WalletUpdate update = await EnvoyAccountHandler.syncWallet(
       syncRequest: syncRequest,
       electrumServer: server,
-      torPort: null,
+      torPort: port,
     );
     try {
       _currentLoading.sink.add(Syncing(account.id));
@@ -282,7 +291,7 @@ class SyncManager {
         server = Settings.TESTNET_ELECTRUM_SERVER;
         break;
       case Network.signet:
-        server = Settings.MUTINYNET_ELECTRUM_SERVER;
+        server = Settings.SIGNET_ELECTRUM_SERVER;
         break;
       default:
         server = "Unknown server";
