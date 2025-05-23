@@ -7,7 +7,6 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -20,6 +19,7 @@ class AddressWidget extends StatelessWidget {
   final TextAlign? align;
   final int sideChunks;
   final bool showWarningOnCopy;
+  final bool returnAddressHalves;
 
   final TextStyle textStyleBold =
       EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary);
@@ -27,14 +27,16 @@ class AddressWidget extends StatelessWidget {
     color: EnvoyColors.textTertiary,
   );
 
-  AddressWidget(
-      {super.key,
-      required this.address,
-      this.short = false,
-      this.widgetKey,
-      this.align = TextAlign.right,
-      this.sideChunks = 2,
-      this.showWarningOnCopy = true});
+  AddressWidget({
+    super.key,
+    required this.address,
+    this.short = false,
+    this.widgetKey,
+    this.align = TextAlign.right,
+    this.sideChunks = 2,
+    this.showWarningOnCopy = true,
+    this.returnAddressHalves = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -54,21 +56,47 @@ class AddressWidget extends StatelessWidget {
         } else {
           Clipboard.setData(ClipboardData(text: address));
           if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text('Address copied to clipboard!'))); //TODO: FIGMA
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text('Address copied to clipboard!')), //TODO: FIGMA
+            );
           }
         }
       },
-      child: RichText(
-        textScaler: TextScaler.linear(textScaleFactor),
-        text: TextSpan(
-          children: short
-              ? _buildShortAddressTextSpans(address)
-              : _buildFullAddressTextSpans(address),
-        ),
-        textAlign: align!,
-      ),
+      child: returnAddressHalves
+          ? Column(
+              children: [
+                RichText(
+                  textScaler: TextScaler.linear(textScaleFactor),
+                  text: TextSpan(
+                    children: _buildFirstHalfAddressChunks(address),
+                  ),
+                  textAlign: align!,
+                ),
+                RichText(
+                  textScaler: TextScaler.linear(textScaleFactor),
+                  text: TextSpan(
+                    children: _buildSecondHalfAddressChunks(address),
+                  ),
+                  textAlign: align!,
+                ),
+              ],
+            )
+          : RichText(
+              textScaler: TextScaler.linear(textScaleFactor),
+              text: TextSpan(
+                children: _buildAddressTextSpans(),
+              ),
+              textAlign: align!,
+            ),
     );
+  }
+
+  List<TextSpan> _buildAddressTextSpans() {
+    if (short) {
+      return _buildShortAddressTextSpans(address);
+    }
+    return _buildAddressChunks(address);
   }
 
   List<TextSpan> _buildShortAddressTextSpans(String address) {
@@ -80,80 +108,57 @@ class AddressWidget extends StatelessWidget {
     }
 
     shortTextSpans
-        .addAll(fullTextSpans.getRange(0, 2 * sideChunks)); // "space" included
-
-    shortTextSpans.add(
-      TextSpan(
-        text: '...',
-        style: textStyleNormal,
-      ),
-    );
-
+        .addAll(fullTextSpans.getRange(0, sideChunks * 2)); // "space" included
+    shortTextSpans.add(TextSpan(text: '...', style: textStyleNormal));
     shortTextSpans.addAll(fullTextSpans.getRange(
-        fullTextSpans.length - 2 * sideChunks, fullTextSpans.length));
+        fullTextSpans.length - sideChunks * 2, fullTextSpans.length));
 
     return shortTextSpans;
   }
 
-  List<TextSpan> _buildFullAddressTextSpans(String address) {
-    return _buildAddressChunks(address);
+  List<TextSpan> _buildAddressChunks(String address) {
+    return _buildAddressChunksInRange(address, 0, (address.length / 4).ceil());
   }
 
-  List<TextSpan> _buildAddressChunks(String address) {
+  List<TextSpan> _buildFirstHalfAddressChunks(String address) {
+    int totalChunks = (address.length / 4).ceil();
+    int mid = (totalChunks / 2).ceil();
+    return _buildAddressChunksInRange(address, 0, mid);
+  }
+
+  List<TextSpan> _buildSecondHalfAddressChunks(String address) {
+    int totalChunks = (address.length / 4).ceil();
+    int mid = (totalChunks / 2).ceil();
+    return _buildAddressChunksInRange(address, mid, totalChunks);
+  }
+
+  List<TextSpan> _buildAddressChunksInRange(
+      String address, int startChunk, int endChunk) {
     List<TextSpan> textSpans = [];
     const int chunkSize = 4;
     bool isBold = true;
 
-    for (int i = 0; i < address.length; i += chunkSize) {
-      int currentChunkSize =
-          (address.length >= (i + chunkSize)) ? chunkSize : address.length - i;
-      String chunk = address.substring(i, i + currentChunkSize);
+    for (int i = startChunk; i < endChunk; i++) {
+      int start = i * chunkSize;
+      int end = (start + chunkSize < address.length)
+          ? start + chunkSize
+          : address.length;
+      String chunk = address.substring(start, end);
 
-      if (i != 0) {
-        // Add a space before each chunk (except the first one)
+      // Add a space before each chunk (except the first one)
+      if (i != startChunk) {
         textSpans.add(TextSpan(text: ' ', style: textStyleNormal));
       }
 
-      textSpans.add(
-        TextSpan(
-          text: chunk,
-          style: isBold ? textStyleBold : textStyleNormal,
-        ),
-      );
+      textSpans.add(TextSpan(
+        text: chunk,
+        style: isBold ? textStyleBold : textStyleNormal,
+      ));
 
-      isBold = !isBold; // Alternate between bold and regular
+      isBold = !isBold;
     }
 
     return textSpans;
-  }
-
-// TODO: try splitting the address in 2 rather than calculating halves to eliminate edge cases?
-  double calculateOptimalPadding(String address, BuildContext context,
-      {double allHorizontalPaddings = 0}) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double addressBox = screenWidth - allHorizontalPaddings;
-    double addressHalfWidth = 0;
-    double optimalPadding = 0;
-
-    TextPainter textPainter = TextPainter(
-      // calculate address width in a single line
-      text: TextSpan(children: _buildAddressChunks(address)),
-      textDirection: TextDirection.ltr,
-      maxLines: 1,
-    );
-    textPainter.layout();
-
-    addressHalfWidth = textPainter.width * 0.5 +
-        EnvoySpacing.large2; // half the address width + a bit more
-
-    if (addressBox > addressHalfWidth) {
-      // calculate padding if it is positive
-      optimalPadding = (addressBox - addressHalfWidth) * 0.5;
-    } else {
-      optimalPadding = EnvoySpacing.xs;
-    }
-
-    return optimalPadding;
   }
 }
 

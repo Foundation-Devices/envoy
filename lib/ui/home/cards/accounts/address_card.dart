@@ -47,9 +47,6 @@ class _AddressCardState extends ConsumerState<AddressCard> {
             .watch(accountStateProvider(widget.account.id))
             ?.getPreferredAddress() ??
         "";
-    AddressWidget addressWidget = AddressWidget(address: address);
-    double optimalAddressHorizontalPadding =
-        addressWidget.calculateOptimalPadding(address, context);
     return Padding(
       padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
       child:
@@ -84,12 +81,10 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                   top: context.isSmallScreen
                       ? EnvoySpacing.xs
                       : EnvoySpacing.medium2,
-                  left: optimalAddressHorizontalPadding * 0.5,
-                  right: optimalAddressHorizontalPadding * 0.5,
                 ),
                 child: AddressWidget(
                   address: address,
-                  short: false,
+                  returnAddressHalves: true,
                   align: TextAlign.center,
                   showWarningOnCopy: false,
                 ),

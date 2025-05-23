@@ -74,17 +74,17 @@ class QrTab extends StatelessWidget {
                           bottom: EnvoySpacing.medium1),
                       child: Row(children: [
                         Container(
-                          width: 50,
-                          height: 50,
+                          width: 45,
+                          height: 45,
                           decoration: BoxDecoration(
                               color: Colors.black.applyOpacity(0.6),
                               borderRadius: BorderRadius.circular(36),
                               border: Border.all(
                                   color: color,
-                                  width: 3,
+                                  width: 2,
                                   style: BorderStyle.solid)),
                           child: Padding(
-                            padding: const EdgeInsets.all(7.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: SvgPicture.asset(
                               "assets/i.svg",
                             ),
@@ -97,7 +97,7 @@ class QrTab extends StatelessWidget {
                           children: [
                             ConstrainedBox(
                               constraints: const BoxConstraints(
-                                  maxHeight: 100, maxWidth: 220),
+                                  maxHeight: 100, maxWidth: 230),
                               child: SingleChildScrollView(
                                 child: Column(
                                   mainAxisSize: MainAxisSize.max,
