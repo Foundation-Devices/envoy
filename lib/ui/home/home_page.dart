@@ -22,6 +22,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
 import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/home/migration_dialogs.dart';
 import 'package:envoy/ui/home/top_bar_home.dart';
 import 'package:envoy/ui/lock/session_manager.dart';
 import 'package:envoy/ui/migrations/migration_manager.dart';
@@ -216,60 +217,8 @@ class HomePageState extends ConsumerState<HomePage>
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final router = Navigator.of(context);
       SessionManager().bind(router);
-      _notifyAboutNetworkMigrationDialog(context);
+      notifyAboutNetworkMigrationDialog(context);
     });
-  }
-
-  void _notifyAboutNetworkMigrationDialog(BuildContext context) {
-    void notifyAboutNetworkMigration(
-        BuildContext context, String title, String subtitle, Function onTap) {
-      if (context.mounted) {
-        showEnvoyPopUp(
-          context,
-          icon: EnvoyIcons.info,
-          showCloseButton: false,
-          title: title,
-          subtitle,
-          S().component_confirm,
-          (BuildContext context) {
-            context.pop();
-            onTap();
-          },
-        );
-      }
-    }
-
-    final prefs = LocalStorage().prefs;
-    final bool showT4Dialog =
-        prefs.getBool(MigrationManager.migratedToTestnet4) ?? false;
-    final bool showSignetDialog =
-        prefs.getBool(MigrationManager.migratedToSignetGlobal) ?? false;
-
-    if (showT4Dialog) {
-      notifyAboutNetworkMigration(
-        context,
-        S().accounts_upgradeBdkTestnetModal_header,
-        S().accounts_upgradeBdkTestnetModal_content,
-        () {
-          LocalStorage().prefs.remove(MigrationManager.migratedToTestnet4);
-          if (showSignetDialog) {
-            notifyAboutNetworkMigration(
-              context,
-              S().accounts_upgradeBdkSignetModal_header,
-              S().accounts_upgradeBdkSignetModal_content,
-              () => prefs.remove(MigrationManager.migratedToSignetGlobal),
-            );
-          }
-        },
-      );
-    } else if (showSignetDialog) {
-      notifyAboutNetworkMigration(
-        context,
-        S().accounts_upgradeBdkSignetModal_header,
-        S().accounts_upgradeBdkSignetModal_content,
-        () => prefs.remove(MigrationManager.migratedToSignetGlobal),
-      );
-    }
   }
 
   void _notifyAboutRemovedRampTx(

@@ -49,6 +49,7 @@ class MigrationManager {
   //adds to preferences to indicate that the user has migrated to testnet4
   static String migratedToTestnet4 = "migrated_to_testnet4";
   static String migratedToSignetGlobal = "migrated_to_signet_global";
+  static String migratedToUnifiedAccounts = "migrated_to_unified_accounts";
 
   // Private constructor
   MigrationManager._internal();
@@ -268,6 +269,9 @@ class MigrationManager {
         );
         unifiedWallets.add(LegacyUnifiedAccounts(
             accounts: accounts, network: accounts.first.wallet.network));
+        LocalStorage()
+            .prefs
+            .setBool(MigrationManager.migratedToUnifiedAccounts, true);
       } else {
         EnvoyReport().log(
           "Migration",
