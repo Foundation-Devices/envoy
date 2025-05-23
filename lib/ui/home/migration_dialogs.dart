@@ -51,7 +51,7 @@ void notifyAboutNetworkMigrationDialog(BuildContext context) {
             ),
           ),
           EnvoyButton(
-              label: S().component_continue,
+              label: S().component_confirm,
               type: ButtonType.primary,
               state: ButtonState.defaultState,
               onTap: () {
@@ -117,7 +117,7 @@ void notifyAboutNetworkMigrationDialog(BuildContext context) {
               children: [...pages],
             ),
           ),
-          dismissible: true);
+          dismissible: false);
     }
   }
 

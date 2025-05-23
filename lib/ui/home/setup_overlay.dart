@@ -4,21 +4,26 @@
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
-import 'package:envoy/ui/onboard/onboard_welcome_passport.dart';
-import 'package:envoy/ui/routes/accounts_router.dart';
-import 'package:envoy/ui/routes/route_state.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/widgets/color_util.dart';
-import 'package:envoy/util/haptics.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';
 import 'package:envoy/ui/glow.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:go_router/go_router.dart';
+import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/routes/route_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
+import 'package:envoy/ui/widgets/scanner/decoders/device_decoder.dart';
+import 'package:envoy/ui/widgets/scanner/decoders/pair_decoder.dart';
+import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
+import 'package:envoy/util/haptics.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 double cardButtonHeight = 125;
 
@@ -187,8 +192,11 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                                         title: S()
                                             .onboarding_welcome_setUpPassport,
                                         onTap: () {
-                                          context
-                                              .goNamed(ONBOARD_PASSPORT_SCAN);
+                                          try {
+                                            _scanForDevice(context);
+                                          } catch (e) {
+                                            print(e);
+                                          }
                                         },
                                       ),
                                       const SizedBox(
@@ -211,6 +219,66 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
       ),
     );
   }
+
+  void _scanForDevice(BuildContext context) {
+    showScannerDialog(
+        context: context,
+        onBackPressed: (context) {
+          Navigator.pop(context);
+        },
+        decoder: DeviceDecoder(
+            pairPayloadDecoder: PairPayloadDecoder(
+              onScan: (binary) {
+                addPassportAccount(binary, context);
+              },
+            ),
+            onScan: (String payload) {
+              Navigator.pop(context);
+              final uri = Uri.parse(payload);
+              context.pushNamed(ONBOARD_PRIME,
+                  queryParameters: uri.queryParameters);
+            }));
+  }
+
+  void addPassportAccount(Binary binary, BuildContext context) async{
+    final scaffold = ScaffoldMessenger.of(context);
+    final goRouter = GoRouter.of(context);
+    try {
+      final paringResult = await NgAccountManager()
+          .addPassportAccount(binary);
+      EnvoyAccount? account;
+      switch (paringResult.$1) {
+        case DeviceAccountResult.ADDED:
+          account = paringResult.$2;
+          break;
+        case DeviceAccountResult
+            .UPDATED_WITH_NEW_DESCRIPTOR:
+          account = paringResult.$2;
+          break;
+        case DeviceAccountResult.ERROR:
+          break;
+      }
+      if (account == null) {
+        goRouter.go("/");
+      } else {
+        //TODO: let the user know if the account
+        //was updated or added ?
+        goRouter.goNamed(ONBOARD_PASSPORT_SCV_SUCCESS,
+            extra: account);
+      }
+    } on AccountAlreadyPaired catch (_) {
+       //pop scanner
+      goRouter.pop();
+      //pop overlay
+      goRouter.pop();
+      scaffold.showSnackBar(const SnackBar(
+        content: Text(
+            "Account already connected"), // TODO: FIGMA
+      ));
+      return;
+    }
+  }
+
 }
 
 class EnvoyCardButton extends StatefulWidget {
