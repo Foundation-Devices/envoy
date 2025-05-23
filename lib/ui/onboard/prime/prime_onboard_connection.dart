@@ -10,6 +10,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/prime/onboard_prime.dart';
+import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -94,11 +95,18 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
           S().onboarding_connectionIntro_connectedToPrime,
           EnvoyStepState.FINISHED);
 
-      await ref.read(deviceSecurityProvider.notifier).updateStep(
-          S().onboarding_connectionIntro_checkingDeviceSecurity,
-          EnvoyStepState.LOADING);
+      await Future.delayed(const Duration(milliseconds: 1000));
 
-      await BluetoothManager().sendChallengeMessage();
+      // TODO: revert this post-demo
+      if (mounted) {
+        context.go("/");
+      }
+
+      // await ref.read(deviceSecurityProvider.notifier).updateStep(
+      //     S().onboarding_connectionIntro_checkingDeviceSecurity,
+      //     EnvoyStepState.LOADING);
+      //
+      // await BluetoothManager().sendChallengeMessage();
     } catch (e) {
       kPrint(e);
     }

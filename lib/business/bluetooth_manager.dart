@@ -31,6 +31,8 @@ class BluetoothManager {
   api.Dechunker? _decoder;
   api.XidDocument? _recipientXid;
 
+  bool connected = false;
+
   factory BluetoothManager() {
     return _instance;
   }
@@ -59,9 +61,8 @@ class BluetoothManager {
     await restorePrimeDevice();
 
     events?.listen((bluart.Event event) {
-      //kPrint("Got bluart event: $event");
-      if (event is bluart.Event_ScanResult) {
-        //kPrint("Got scan result: ${event.field0}");
+      if (event is bluart.Event_DeviceConnected) {
+        connected = true;
       }
     });
 
@@ -108,19 +109,17 @@ class BluetoothManager {
     final encoded = await encodeMessage(
         message: api.QuantumLinkMessage.pairingRequest(request));
 
-    kPrint("Encoded...");
-
+/*    kPrint("Encoded...");
     kPrint("post-decode quantum isDisposed = ${qlIdentity!.isDisposed}");
-
-    kPrint("Number of chunks: ${encoded.length}");
+    kPrint("Number of chunks: ${encoded.length}");*/
 
     await bluart.writeAll(id: bleId, data: encoded);
 
     // Listen for response
     listen(id: bleId);
     Future.delayed(Duration(seconds: 1));
-    //kPrint("writing after listen...");
-    //await bluart.write(id: bleId, data: "123".codeUnits);
+
+    connected = true;
 
     PrimeDevice prime = PrimeDevice(bleId, xid);
     await EnvoyStorage().savePrime(prime);
@@ -248,15 +247,11 @@ class BluetoothManager {
   Future<void> sendExchangeRate() async {
     try {
       final exchangeRate = ExchangeRate();
-      final settings = Settings();
-      if (exchangeRate.selectedCurrencyRate == null ||
-          settings.selectedFiat == null) {
-        return;
-      }
 
+      // TODO: remove the randomness post-demo	
       final exchangeRateMessage = api.ExchangeRate(
-        currencyCode: settings.selectedFiat!,
-        rate: exchangeRate.selectedCurrencyRate!,
+        currencyCode: "USD",
+        rate: exchangeRate.usdRate! + Random().nextDouble() * 10,
       );
 
       final encoded = await encodeMessage(
@@ -271,10 +266,8 @@ class BluetoothManager {
 
   void setupExchangeRateListener() {
     ExchangeRate().addListener(() async {
-      final prime =
-          await EnvoyStorage().getPrimeByBleId(BluetoothManager().bleId);
-      if (prime != null) {
-        await BluetoothManager().sendExchangeRate();
+      if (connected) {
+        await sendExchangeRate();
       }
     });
   }

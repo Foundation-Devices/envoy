@@ -571,7 +571,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   }
 
   showCommunicationModal(BuildContext context) async {
-    final decoder = await getQrDecoder();
     if (context.mounted) {
       showEnvoyDialog(
           context: context,
@@ -587,9 +586,9 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                   decoder:
                       //parse UR payload
                       PrimeQlPayloadDecoder(
-                          decoder: decoder,
+                          decoder: await getQrDecoder(),
                           onScan: (XidDocument payload) async {
-                            kPrint("payload $payload");
+                            kPrint("XID payload: $payload");
                             await pairWithPrime(payload);
 
                             //TODO: process XidDocument for connection

@@ -137,12 +137,13 @@ class ExchangeRate extends ChangeNotifier {
     });
 
     // *Always* get USD
-    Timer.periodic(const Duration(seconds: 30), (_) async {
+    // TODO: move this back to 30 sec post-demo
+    Timer.periodic(const Duration(seconds: 5), (_) async {
       await _getUsdRate();
       if (_selectedCurrency != null && _selectedCurrency!.code == "USD") {
         _selectedCurrencyRate = _usdRate;
-        notifyListeners();
       }
+      notifyListeners();
     });
   }
 

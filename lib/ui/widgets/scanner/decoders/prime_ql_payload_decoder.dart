@@ -10,6 +10,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 class PrimeQlPayloadDecoder extends ScannerDecoder {
   final Function(XidDocument binary) onScan;
   final ArcMutexDecoder decoder;
+  bool successfullyDecoded = false;
 
   PrimeQlPayloadDecoder({required this.decoder, required this.onScan});
 
@@ -21,10 +22,11 @@ class PrimeQlPayloadDecoder extends ScannerDecoder {
       try {
         final decoderStatus = await decodeQr(decoder: decoder, qr: code);
         progressCallBack?.call(decoderStatus.progress);
-        if (decoderStatus.payload != null) {
+        if (decoderStatus.payload != null && !successfullyDecoded) {
           progressCallBack?.call(1);
           kPrint("Got the xidDoc ${decoderStatus.payload}");
           onScan(decoderStatus.payload!);
+          successfullyDecoded = true;
         }
       } catch (e) {
         kPrint(e);

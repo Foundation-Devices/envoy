@@ -87,7 +87,7 @@ impl Device {
         for data in data {
             self.peripheral.write(&uart_characteristic, &data, WriteType::WithoutResponse)
                 .await?;
-            tokio::time::sleep(time::Duration::from_millis(20)).await;
+            tokio::time::sleep(time::Duration::from_millis(25)).await;
         }
 
         let duration = start.elapsed();
