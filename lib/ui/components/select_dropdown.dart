@@ -11,20 +11,15 @@ import 'package:flutter/material.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/settings.dart';
 
-enum EnvoyDropdownOptionType {
-  normal,
-  personalNode,
-  blockStream,
-  diyNodes,
-  luke,
-  sectionBreak
-}
+enum EnvoyDropdownOptionType { normal, sectionBreak }
 
 class EnvoyDropdownOption {
   final String label;
+  final String value;
   final EnvoyDropdownOptionType type;
 
-  EnvoyDropdownOption(this.label, {this.type = EnvoyDropdownOptionType.normal});
+  EnvoyDropdownOption(this.label, this.value,
+      {this.type = EnvoyDropdownOptionType.normal});
 }
 
 class EnvoyDropdown extends StatefulWidget {
