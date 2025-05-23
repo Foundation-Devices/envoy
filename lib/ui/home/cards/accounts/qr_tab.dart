@@ -97,7 +97,7 @@ class QrTab extends StatelessWidget {
                           children: [
                             ConstrainedBox(
                               constraints: const BoxConstraints(
-                                  maxHeight: 100, maxWidth: 230),
+                                  maxHeight: 100, maxWidth: 220),
                               child: SingleChildScrollView(
                                 child: Column(
                                   mainAxisSize: MainAxisSize.max,
