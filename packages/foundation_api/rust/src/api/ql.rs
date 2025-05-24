@@ -3,16 +3,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use anyhow::anyhow;
+use anyhow::Result;
 use bc_components::{PrivateKeys, ARID};
-use bc_envelope::{Envelope, EventBehavior, Expression, ExpressionBehavior};
 use bc_envelope::prelude::CBOREncodable;
+use bc_envelope::{Envelope, EventBehavior, Expression, ExpressionBehavior};
+use bc_ur::prelude::{CBORCase, CBOR};
 use bc_xid::XIDDocument;
 use btp::{chunk, Dechunker};
 use foundation_api::message::{EnvoyMessage, PassportMessage};
-use foundation_api::quantum_link::{QuantumLink, QUANTUM_LINK, QuantumLinkIdentity, generate_identity};
+use foundation_api::quantum_link::{
+    generate_identity, QuantumLink, QuantumLinkIdentity, QUANTUM_LINK,
+};
 use gstp::SealedEvent;
 use log::debug;
-use anyhow::Result;
 
 pub async fn get_decoder() -> Dechunker {
     Dechunker::new()
@@ -37,7 +40,45 @@ pub fn deserialize_xid(data: Vec<u8>) -> Result<XIDDocument> {
     }
 }
 
-pub async fn decode(data: Vec<u8>, decoder: &mut Dechunker, quantum_link_identity:  &QuantumLinkIdentity) -> Result<DecoderStatus> {
+pub async fn serialize_ql_identity(quantum_link_identity: &QuantumLinkIdentity) -> Result<Vec<u8>> {
+    let mut map = bc_envelope::prelude::Map::new();
+    map.insert(CBOR::from("xid_document"), quantum_link_identity.clone().xid_document.unwrap());
+    map.insert(CBOR::from("private_keys"), quantum_link_identity.clone().private_keys.unwrap());
+    map.insert(CBOR::from("public_keys"), quantum_link_identity.clone().public_keys.unwrap());
+    Ok(CBOR::from(map).to_cbor_data())
+}
+
+pub fn deserialize_ql_identity(data: Vec<u8>) -> Result<QuantumLinkIdentity> {
+    let cbor = CBOR::try_from_data(data)
+        .ok()
+        .ok_or_else(|| anyhow::anyhow!("Invalid CBOR"))?;
+    let case = cbor.into_case();
+
+    let CBORCase::Map(map) = case else {
+        return Err(anyhow::anyhow!("Invalid CBOR case"));
+    };
+
+    Ok(QuantumLinkIdentity {
+        xid_document: Some(
+            map.get("xid_document")
+                .ok_or_else(|| anyhow::anyhow!("xid_document not found"))?,
+        ),
+        private_keys: Some(
+            map.get("private_keys")
+                .ok_or_else(|| anyhow::anyhow!("private_keys not found"))?,
+        ),
+        public_keys: Some(
+            map.get("public_keys")
+                .ok_or_else(|| anyhow::anyhow!("public_keys not found"))?,
+        ),
+    })
+}
+
+pub async fn decode(
+    data: Vec<u8>,
+    decoder: &mut Dechunker,
+    quantum_link_identity: &QuantumLinkIdentity,
+) -> Result<DecoderStatus> {
     debug!("receiving data");
 
     match decoder.receive(&data) {
@@ -56,10 +97,10 @@ pub async fn decode(data: Vec<u8>, decoder: &mut Dechunker, quantum_link_identit
             Ok(env) => {
                 decoder.clear();
                 env
-            },
+            }
             Err(e) => {
                 debug!("Failed to decode CBOR: {:?}", e);
-                decoder.clear(); 
+                decoder.clear();
                 return Ok(DecoderStatus {
                     progress: 0.0,
                     payload: None,
@@ -67,7 +108,11 @@ pub async fn decode(data: Vec<u8>, decoder: &mut Dechunker, quantum_link_identit
             }
         };
         debug!("Unsealing envelope...");
-        let (passport_message, _) = PassportMessage::unseal_passport_message(&envelope, &quantum_link_identity.clone().private_keys.unwrap()).unwrap();
+        let (passport_message, _) = PassportMessage::unseal_passport_message(
+            &envelope,
+            &quantum_link_identity.clone().private_keys.unwrap(),
+        )
+        .unwrap();
 
         return Ok(DecoderStatus {
             progress: 1.0,
@@ -81,10 +126,17 @@ pub async fn decode(data: Vec<u8>, decoder: &mut Dechunker, quantum_link_identit
     })
 }
 
-pub async fn encode(message: EnvoyMessage, sender: &QuantumLinkIdentity, recipient: &XIDDocument) -> Vec<Vec<u8>> {
+pub async fn encode(
+    message: EnvoyMessage,
+    sender: &QuantumLinkIdentity,
+    recipient: &XIDDocument,
+) -> Vec<Vec<u8>> {
     let expression = QuantumLink::encode(&message);
-    let event: SealedEvent<Expression> =
-        SealedEvent::new(expression, ARID::new(), sender.clone().xid_document.unwrap());
+    let event: SealedEvent<Expression> = SealedEvent::new(
+        expression,
+        ARID::new(),
+        sender.clone().xid_document.unwrap(),
+    );
 
     let envelope = event
         .to_envelope(
@@ -119,8 +171,8 @@ mod tests {
 
     #[test]
     async fn test_generate_identity() -> Result<()> {
-            let identity = generate_identity();
-            println!("{:?}", identity);
+        let identity = generate_identity();
+        println!("{:?}", identity);
 
         Ok(())
     }
