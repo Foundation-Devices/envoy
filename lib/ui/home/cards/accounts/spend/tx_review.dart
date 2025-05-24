@@ -113,10 +113,35 @@ class _TxReviewState extends ConsumerState<TxReview> {
       ProviderContainer providerScope) async {
     TransactionModel transactionModel = ref.read(spendTransactionProvider);
     String? psbt = transactionModel.draftTransaction?.psbtBase64;
-    kPrint("Psbt ${psbt}");
+    //if serial is prime, send psbt through ql
     if (account.deviceSerial == "prime" && psbt != null) {
       kPrint("Sending to prime $psbt");
+      showEnvoyDialog(
+          context: rootContext,
+          blur: 16,
+          blurColor: Colors.black,
+          linearGradient: true,
+          dialog: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              EnvoyIcon(EnvoyIcons.prime,
+                  size: EnvoyIconSize.mediumLarge, color: EnvoyColors.solidWhite),
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: EnvoySpacing.medium2,
+                ),
+                child: Text("Waiting for Prime to sign transaction...",
+                    style: EnvoyTypography.digitsMedium
+                        .copyWith(color: EnvoyColors.textPrimaryInverse)),
+              ),
+            ],
+          ),
+          cardColor: Colors.transparent,
+          useRootNavigator: true);
       try {
+
         await BluetoothManager().send(QuantumLinkMessage_SignPsbt(SignPsbt(
           accountId: account.id,
           psbt: psbt,
@@ -132,6 +157,10 @@ class _TxReviewState extends ConsumerState<TxReview> {
             await ref
                 .read(spendTransactionProvider.notifier)
                 .decodePrimePsbt(providerScope, signedPsbt.psbt);
+            //hide the dialog
+            if (rootContext.mounted) {
+              Navigator.pop(rootContext);
+            }
           }
         });
       } catch (e, stack) {

@@ -343,8 +343,12 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           tag: changeOutput,
           doNotSpendChange: false);
 
+      if(handler == null){
+        kPrint("Handler is null");
+        return false;
+      }
       //calculate max fee only if we are not setting fee
-      final feeCalcResult = await handler!.getMaxFee(transactionParams: params);
+      final feeCalcResult = await handler.getMaxFee(transactionParams: params);
       final preparedTransaction = feeCalcResult.draftTransaction;
 
       //update the fee rate

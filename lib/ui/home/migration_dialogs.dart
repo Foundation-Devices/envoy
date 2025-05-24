@@ -109,6 +109,8 @@ void notifyAboutNetworkMigrationDialog(BuildContext context) {
       showEnvoyDialog(
           context: context,
           useRootNavigator: true,
+          linearGradient: true,
+          blurColor: Colors.black,
           dialog: SizedBox(
             width: MediaQuery.of(context).size.width * 0.85,
             height: MediaQuery.of(context).size.height * 0.44,
