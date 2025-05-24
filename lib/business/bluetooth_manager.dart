@@ -205,6 +205,13 @@ class BluetoothManager {
     await bluart.writeAll(id: bleId, data: encoded);
   }
 
+  Future<void> send(api.QuantumLinkMessage message) async {
+    final encoded = await encodeMessage(
+      message: message,
+    );
+    await bluart.writeAll(id: bleId, data: encoded);
+  }
+
   Future<void> sendFirmwarePayload() async {
     // Create 100 KB of random data
     final random = Random();

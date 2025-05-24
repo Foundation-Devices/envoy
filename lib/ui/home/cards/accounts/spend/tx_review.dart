@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:animations/animations.dart';
+import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
@@ -18,10 +19,10 @@ import 'package:envoy/ui/home/cards/accounts/spend/choose_coins_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_details.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/transaction_review_card.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/shield_path.dart';
@@ -37,6 +38,7 @@ import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart' as rive;
@@ -102,15 +104,30 @@ class _TxReviewState extends ConsumerState<TxReview> {
   _handleQRExchange(EnvoyAccount account, BuildContext rootContext,
       ProviderContainer providerScope) async {
     TransactionModel transactionModel = ref.read(spendTransactionProvider);
-    TransactionModeNotifier transactionModeNotifier =
-        ref.read(spendTransactionProvider.notifier);
-    bool received = false;
-    final cryptoPsbt = await GoRouter.of(rootContext).pushNamed(
-        ACCOUNT_SEND_SCAN_PSBT,
-        extra: transactionModel.draftTransaction);
-    if (cryptoPsbt is CryptoPsbt && received == false) {
-      transactionModeNotifier.decodePSBT(providerScope, cryptoPsbt);
-      received = true;
+    String? psbt = transactionModel.draftTransaction?.psbtBase64;
+    kPrint("Psbt ${psbt}");
+    if (account.deviceSerial == "prime" && psbt != null) {
+      kPrint("Sending to prime $psbt");
+      try {
+        await BluetoothManager().send(QuantumLinkMessage_SignPsbt(SignPsbt(
+          accountId: account.id,
+          psbt: psbt,
+        )));
+      } catch (e, stack) {
+        debugPrintStack(stackTrace: stack);
+        kPrint("Error sending to prime: $e");
+      }
+    } else {
+      TransactionModeNotifier transactionModeNotifier =
+          ref.read(spendTransactionProvider.notifier);
+      bool received = false;
+      final cryptoPsbt = await GoRouter.of(rootContext).pushNamed(
+          ACCOUNT_SEND_SCAN_PSBT,
+          extra: transactionModel.draftTransaction);
+      if (cryptoPsbt is CryptoPsbt && received == false) {
+        transactionModeNotifier.decodePSBT(providerScope, cryptoPsbt);
+        received = true;
+      }
     }
     return;
   }
