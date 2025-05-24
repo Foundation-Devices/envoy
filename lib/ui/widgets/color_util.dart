@@ -4,6 +4,8 @@
 
 import 'dart:ui';
 
+import 'package:envoy/ui/envoy_colors.dart';
+
 extension ColorExtension on Color {
   applyOpacity(double opacity) {
     return withAlpha((255.0 * opacity).round());
@@ -26,7 +28,14 @@ Color fromHex(String hexColor) {
     buffer.write('ff');
   }
   buffer.write(hexColor.replaceFirst('#', ''));
-  return Color(int.parse(buffer.toString(), radix: 16));
+
+  try {
+    final colorValue = int.parse(buffer.toString(), radix: 16);
+    return Color(colorValue);
+  } on Exception catch (_) {
+     return EnvoyColors.listAccountTileColors.first;
+  }
+
 }
 
 String toColorHex(Color color) {

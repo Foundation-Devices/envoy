@@ -97,7 +97,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             number: config.index);
         kPrint("Account path! ${dir.path}");
         await dir.create();
-        final accountHandler = await EnvoyAccountHandler.fromConfig(
+        final accountHandler = await EnvoyAccountHandler.addAccountFromConfig(
             dbPath: dir.path, config: config);
         await NgAccountManager().addAccount(await accountHandler.state(), accountHandler);
         kPrint("Account added!");
