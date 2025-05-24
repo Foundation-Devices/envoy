@@ -90,7 +90,7 @@ fn send(command: Command) -> Result<()> {
 /// At the moment the developer has to make sure it is only called once.
 pub async fn init(sink: StreamSink<Event>) -> Result<()> {
     // Disabled for now -> way too chatty
-    flutter_rust_bridge::setup_default_user_utils();
+    //flutter_rust_bridge::setup_default_user_utils();
     create_runtime()?;
     let runtime = RUNTIME
         .get()
