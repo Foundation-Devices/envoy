@@ -27,6 +27,14 @@ Future<Uint8List> serializeXid(
 Future<XidDocument> deserializeXid({required List<int> data}) =>
     RustLib.instance.api.crateApiQlDeserializeXid(data: data);
 
+Future<Uint8List> serializeQlIdentity(
+        {required QuantumLinkIdentity quantumLinkIdentity}) =>
+    RustLib.instance.api.crateApiQlSerializeQlIdentity(
+        quantumLinkIdentity: quantumLinkIdentity);
+
+Future<QuantumLinkIdentity> deserializeQlIdentity({required List<int> data}) =>
+    RustLib.instance.api.crateApiQlDeserializeQlIdentity(data: data);
+
 Future<DecoderStatus> decode(
         {required List<int> data,
         required Dechunker decoder,
