@@ -75,11 +75,11 @@ final spendEstimatedBlockTimeProvider = Provider<String>((ref) {
   Network network = account.network;
 
   //with in 10 minutes
-  double feeRateFast = Fees().fees[network]!.mempoolFastestRate;
+  double feeRateFast = Fees().fees[network]?.mempoolFastestRate ?? 2;
   //with in 30 minutes
-  double feeHalfHourRate = Fees().fees[network]!.mempoolHalfHourRate;
+  double feeHalfHourRate = Fees().fees[network]?.mempoolHalfHourRate ?? 1;
 
-  double feeHourRate = Fees().fees[network]!.mempoolHourRate;
+  double feeHourRate = Fees().fees[network]?.mempoolHourRate ?? 1;
 
   double selectedFeeRate = convertToFeeRate(feeRate);
 

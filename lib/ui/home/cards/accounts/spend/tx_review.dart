@@ -52,6 +52,8 @@ class TxReview extends ConsumerStatefulWidget {
 }
 
 class _TxReviewState extends ConsumerState<TxReview> {
+  StreamSubscription<PassportMessage>? _passportMessageSubscription;
+
   @override
   Widget build(BuildContext context) {
     EnvoyAccount? account = ref.watch(selectedAccountProvider);
@@ -101,6 +103,12 @@ class _TxReviewState extends ConsumerState<TxReview> {
     );
   }
 
+  @override
+  dispose() {
+    _passportMessageSubscription?.cancel();
+    super.dispose();
+  }
+
   _handleQRExchange(EnvoyAccount account, BuildContext rootContext,
       ProviderContainer providerScope) async {
     TransactionModel transactionModel = ref.read(spendTransactionProvider);
@@ -113,6 +121,19 @@ class _TxReviewState extends ConsumerState<TxReview> {
           accountId: account.id,
           psbt: psbt,
         )));
+        //wait for response from prime. maybe show some dialog while waiting?
+        _passportMessageSubscription = BluetoothManager()
+            .passportMessageStream
+            .listen((PassportMessage message) async {
+          if (message.message is QuantumLinkMessage_SignPsbt) {
+            final signedPsbt =
+                (message.message as QuantumLinkMessage_SignPsbt).field0;
+            kPrint("Signed Psbt $signedPsbt");
+            await ref
+                .read(spendTransactionProvider.notifier)
+                .decodePrimePsbt(providerScope, signedPsbt.psbt);
+          }
+        });
       } catch (e, stack) {
         debugPrintStack(stackTrace: stack);
         kPrint("Error sending to prime: $e");

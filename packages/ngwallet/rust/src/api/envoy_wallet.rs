@@ -330,7 +330,7 @@ impl EnvoyAccountHandler {
                     index: config.index,
                     descriptors: config.descriptors.clone(),
                     date_synced: config.date_synced.clone(),
-                    wallet_path: None,
+                    wallet_path: config.account_path.clone(),
                     network: config.network,
                     id: config.id.clone(),
                     is_hot: account.is_hot(),

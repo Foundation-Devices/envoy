@@ -37,7 +37,7 @@ class BluetoothManager {
     return _instance;
   }
 
-  get passportMessageStream => _passportMessageStream.stream;
+  Stream<api.PassportMessage> get passportMessageStream => _passportMessageStream.stream;
 
   String bleId = "";
 

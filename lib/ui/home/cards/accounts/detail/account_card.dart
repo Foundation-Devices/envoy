@@ -853,7 +853,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                       GoRouter.of(context).pop();
                       await Future.delayed(const Duration(milliseconds: 50));
                       //TODO: add delete account
-                      // AccountManager().deleteAccount(widget.account);
+                      NgAccountManager().deleteAccount(widget.account);
                     },
                   ));
             } else {
