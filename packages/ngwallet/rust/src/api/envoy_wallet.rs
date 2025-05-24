@@ -889,4 +889,11 @@ impl EnvoyAccountHandler {
             }
         }
     }
+
+
+    pub fn get_config_from_remote(
+        remote_update: Vec<u8>,
+    ) -> Result<NgAccountConfig> {
+        NgAccountConfig::from_remote(remote_update)
+    }
 }

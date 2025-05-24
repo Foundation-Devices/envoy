@@ -88,6 +88,12 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
           .crateApiEnvoyWalletEnvoyAccountHandlerGetConfigFromBackup(
               backupJson: backupJson);
 
+  static Future<NgAccountConfig> getConfigFromRemote(
+          {required List<int> remoteUpdate}) =>
+      RustLib.instance.api
+          .crateApiEnvoyWalletEnvoyAccountHandlerGetConfigFromRemote(
+              remoteUpdate: remoteUpdate);
+
   Future<TransactionFeeResult> getMaxBumpFeeRates(
       {required List<Output> selectedOutputs,
       required BitcoinTransaction bitcoinTransaction});

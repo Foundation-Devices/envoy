@@ -92,6 +92,11 @@ class NgAccountConfig {
   static Future<NgAccountConfig> deserialize({required String data}) =>
       RustLib.instance.api.ngwalletConfigNgAccountConfigDeserialize(data: data);
 
+  static Future<NgAccountConfig> fromRemote(
+          {required List<int> remoteUpdate}) =>
+      RustLib.instance.api
+          .ngwalletConfigNgAccountConfigFromRemote(remoteUpdate: remoteUpdate);
+
   Future<String> serialize() =>
       RustLib.instance.api.ngwalletConfigNgAccountConfigSerialize(
         that: this,
