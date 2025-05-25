@@ -58,8 +58,11 @@ class BluetoothManager {
   }
 
   _init() async {
+    await getPermissions();
+
     await api.RustLib.init();
     await bluart.RustLib.init();
+
     events = bluart.init().asBroadcastStream();
 
     await restorePrimeDevice();
@@ -73,18 +76,18 @@ class BluetoothManager {
       }
 
       if (event is bluart.Event_ScanResult) {
-        kPrint("Scan result received, _bleId = $_bleId");
+        //kPrint("Scan result received, _bleId = $_bleId");
         if (_bleId == null) {
           return;
         }
 
-        connect(id: _bleId!);
+        //connect(id: _bleId!);
 
         for (final device in event.field0) {
           kPrint("Paired device found: ${device.id}");
-          // if (device.id == _bleId) {
-          //   bluart.connect(id: device.id);
-          // }`
+          if (device.id == _bleId) {
+            bluart.connect(id: device.id);
+          }
         }
       }
     });
@@ -94,7 +97,7 @@ class BluetoothManager {
       EnvoyStorage().saveQuantumLinkIdentity(_qlIdentity!);
     }
 
-    scan();
+    await scan();
   }
 
   getPermissions() async {
@@ -105,8 +108,8 @@ class BluetoothManager {
     await Permission.bluetoothScan.request();
   }
 
-  scan() {
-    bluart.scan(filter: [""]);
+  scan() async {
+    await bluart.scan(filter: [""]);
   }
 
   Future<List<Uint8List>> encodeMessage(
