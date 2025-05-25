@@ -114,14 +114,32 @@ pub async fn init(sink: StreamSink<Event>) -> Result<()> {
 
             match msg {
                 Command::Scan { filter } => {
-                    tokio::spawn(async { inner_scan(filter).await.unwrap() });
+                    tokio::spawn(async {
+                        inner_scan(filter).await.inspect_err(|e| debug!("{}", e))
+                    });
                 }
-                Command::Connect { id } => inner_connect(id).await.unwrap(),
-                Command::Disconnect { id } => inner_disconnect(id).await.unwrap(),
-                Command::Benchmark { id, sink } => inner_benchmark(id, sink).await.unwrap(),
-                Command::Read { id, sink } => inner_read(id, sink).await.unwrap(),
-                Command::Write { id, data } => inner_write(id, data).await.unwrap(),
-                Command::WriteAll { id, data } => inner_write_all(id, data).await.unwrap(),
+                Command::Connect { id } => {
+                    inner_connect(id).await.inspect_err(|e| debug!("{}", e)).ok();
+                }
+                Command::Disconnect { id } => {
+                    inner_disconnect(id).await.inspect_err(|e| debug!("{}", e)).ok();
+                }
+                Command::Benchmark { id, sink } => {
+                    inner_benchmark(id, sink)
+                        .await
+                        .inspect_err(|e| debug!("{}", e)).ok();
+                }
+                Command::Read { id, sink } => {
+                    inner_read(id, sink).await.inspect_err(|e| debug!("{}", e)).ok();
+                }
+                Command::Write { id, data } => {
+                    inner_write(id, data).await.inspect_err(|e| debug!("{}", e)).ok();
+                }
+                Command::WriteAll { id, data } => {
+                    inner_write_all(id, data)
+                        .await
+                        .inspect_err(|e| debug!("{}", e)).ok();
+                }
             }
         }
     });
@@ -203,7 +221,6 @@ pub async fn init(sink: StreamSink<Event>) -> Result<()> {
             }
         }
         debug!("Exiting event task!");
-
     });
 
     debug!("Exiting init!");

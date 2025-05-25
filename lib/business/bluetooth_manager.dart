@@ -40,7 +40,8 @@ class BluetoothManager {
     return _instance;
   }
 
-  Stream<api.PassportMessage> get passportMessageStream => _passportMessageStream.stream;
+  Stream<api.PassportMessage> get passportMessageStream =>
+      _passportMessageStream.stream;
 
   String bleId = "";
 
@@ -64,19 +65,26 @@ class BluetoothManager {
     await restorePrimeDevice();
     await restoreQuantumLinkIdentity();
 
+    // TODO: ASK FOR BL PERMISSIONS
+
     events?.listen((bluart.Event event) {
       if (event is bluart.Event_DeviceConnected) {
         connected = true;
       }
 
       if (event is bluart.Event_ScanResult) {
+        kPrint("Scan result received, _bleId = $_bleId");
         if (_bleId == null) {
           return;
         }
+
+        connect(id: _bleId!);
+
         for (final device in event.field0) {
-          if (device.id == _bleId) {
-            bluart.connect(id: device.id);
-          }
+          kPrint("Paired device found: ${device.id}");
+          // if (device.id == _bleId) {
+          //   bluart.connect(id: device.id);
+          // }`
         }
       }
     });
@@ -85,6 +93,8 @@ class BluetoothManager {
       _generateQlIdentity();
       EnvoyStorage().saveQuantumLinkIdentity(_qlIdentity!);
     }
+
+    scan();
   }
 
   getPermissions() async {
@@ -281,7 +291,7 @@ class BluetoothManager {
     try {
       final exchangeRate = ExchangeRate();
 
-      // TODO: remove the randomness post-demo	
+      // TODO: remove the randomness post-demo
       final exchangeRateMessage = api.ExchangeRate(
         currencyCode: "USD",
         rate: exchangeRate.usdRate! + Random().nextDouble() * 10,
@@ -300,7 +310,7 @@ class BluetoothManager {
   void setupExchangeRateListener() {
     ExchangeRate().addListener(() async {
       if (connected) {
-        await sendExchangeRate();
+        //await sendExchangeRate();
       }
     });
   }
