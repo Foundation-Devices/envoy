@@ -126,7 +126,8 @@ class _TxReviewState extends ConsumerState<TxReview> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               EnvoyIcon(EnvoyIcons.prime,
-                  size: EnvoyIconSize.mediumLarge, color: EnvoyColors.solidWhite),
+                  size: EnvoyIconSize.mediumLarge,
+                  color: EnvoyColors.solidWhite),
               const SizedBox(height: 12),
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -141,18 +142,19 @@ class _TxReviewState extends ConsumerState<TxReview> {
           cardColor: Colors.transparent,
           useRootNavigator: true);
       try {
-
         await BluetoothManager().send(QuantumLinkMessage_SignPsbt(SignPsbt(
           accountId: account.id,
           psbt: psbt,
         )));
+        kPrint("Waiting for prime response...");
         //wait for response from prime. maybe show some dialog while waiting?
         _passportMessageSubscription = BluetoothManager()
             .passportMessageStream
             .listen((PassportMessage message) async {
-          if (message.message is QuantumLinkMessage_SignPsbt) {
+              kPrint("Got the Passport Message : ${message.message}");
+          if (message.message is QuantumLinkMessage_BroadcastTransaction) {
             final signedPsbt =
-                (message.message as QuantumLinkMessage_SignPsbt).field0;
+                (message.message as QuantumLinkMessage_BroadcastTransaction).field0;
             kPrint("Signed Psbt $signedPsbt");
             await ref
                 .read(spendTransactionProvider.notifier)
