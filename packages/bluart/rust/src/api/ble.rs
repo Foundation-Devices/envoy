@@ -273,7 +273,6 @@ pub fn scan(filter: Vec<String>) -> Result<()> {
 }
 
 pub fn connect(id: String) -> Result<()> {
-    debug!("{}", format!("Try to connect to: {id}"));
     command::send(Command::Connect { id })
 }
 
@@ -286,17 +285,14 @@ pub fn benchmark(id: String, sink: StreamSink<u64>) -> Result<()> {
 }
 
 pub fn write(id: String, data: Vec<u8>) -> Result<()> {
-    debug!("{}", format!("Writing to: {id}"));
     command::send(Command::Write { id, data })
 }
 
 pub fn write_all(id: String, data: Vec<Vec<u8>>) -> Result<()> {
-    debug!("{}", format!("Writing all to: {id}"));
     command::send(Command::WriteAll { id, data })
 }
 
 pub fn read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
-    debug!("{}", format!("Reading from: {id}"));
     command::send(Command::Read { id, sink })
 }
 
