@@ -111,11 +111,18 @@ where
     });
 }
 
+fn init_logging(level: log::LevelFilter) {
+    #[cfg(target_os = "android")]
+    let _ = android_logger::init_once(android_logger::Config::default().with_max_level(level));
+
+    #[cfg(any(target_os = "ios", target_os = "macos"))]
+    let _ = oslog::OsLogger::new("frb_user").level_filter(level).init();
+}
+
 /// The init() function must be called before anything else.
 /// At the moment the developer has to make sure it is only called once.
 pub async fn init(sink: StreamSink<Event>) -> Result<()> {
-    // Disabled for now -> way too chatty
-    // flutter_rust_bridge::setup_default_user_utils();
+    init_logging(log::LevelFilter::Debug);
 
     create_runtime()?;
     let runtime = RUNTIME
