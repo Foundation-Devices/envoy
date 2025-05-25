@@ -361,6 +361,7 @@ mod command {
     }
 
     async fn inner_scan(_filter: Vec<String>) -> Result<()> {
+        debug!("inner scan");
         let central = ble_state().central.lock().await;
         central.start_scan(ScanFilter::default()).await?;
         // tracing::debug!("Scan finished");
@@ -368,7 +369,7 @@ mod command {
     }
 
     async fn inner_connect(id: String) -> Result<()> {
-        debug!("{}", format!("Try to connect to: {id}"));
+        debug!("inner connect: {id}");
 
         let mut devices = ble_state().devices.lock().await;
         let device = match devices.get_mut(&id) {
@@ -399,7 +400,7 @@ mod command {
     }
 
     async fn inner_disconnect(id: String) -> Result<()> {
-        debug!("{}", format!("Try to disconnect from: {id}"));
+        debug!("inner disconnect: {id}");
         let devices = ble_state().devices.lock().await;
         let device = devices
             .get(&id)
@@ -408,7 +409,7 @@ mod command {
     }
 
     async fn inner_benchmark(id: String, sink: StreamSink<u64>) -> Result<()> {
-        debug!("{}", format!("Trying to benchmark: {id}"));
+        debug!("inner benchmark: {id}");
         let devices = ble_state().devices.lock().await;
         let device = devices
             .get(&id)
@@ -431,16 +432,15 @@ mod command {
     }
 
     async fn inner_read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
-        debug!("{}", format!("Reading from: {id}"));
+        debug!("inner read: {id}");
         let devices = ble_state().devices.lock().await;
         let device = devices
             .get(&id)
             .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
 
-        debug!("{}", format!("Reading from: {id}"));
         match device.read().await {
             Ok(mut stream) => {
-                debug!("{}", format!("Got stream from: {id}"));
+                debug!("Got stream from: {id}");
                 tokio::spawn(async move {
                     while let Some(data) = stream.next().await {
                         println!("Received data from [{:?}]: {:?}", data.uuid, data.value);
@@ -457,8 +457,7 @@ mod command {
     }
 
     async fn inner_write(id: String, data: Vec<u8>) -> Result<()> {
-        debug!("inner write");
-        debug!("{}", format!("Writing to: {id}"));
+        debug!("inner write: {id}");
         let devices = ble_state().devices.lock().await;
         let device = devices
             .get(&id)
@@ -467,7 +466,7 @@ mod command {
     }
 
     async fn inner_write_all(id: String, data: Vec<Vec<u8>>) -> Result<()> {
-        debug!("{}", format!("Writing all to: {id}"));
+        debug!("inner write all: {id}");
         let devices = ble_state().devices.lock().await;
         let device = devices
             .get(&id)
