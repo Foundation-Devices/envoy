@@ -68,20 +68,21 @@ class BluetoothManager {
     await restorePrimeDevice();
     await restoreQuantumLinkIdentity();
 
-    // TODO: ASK FOR BL PERMISSIONS
-
     events?.listen((bluart.Event event) {
+      kPrint("Got event $event");
       if (event is bluart.Event_DeviceConnected) {
         connected = true;
       }
 
+      if (event is bluart.Event_DeviceDisconnected) {
+
+      }
+
       if (event is bluart.Event_ScanResult) {
-        //kPrint("Scan result received, _bleId = $_bleId");
+        kPrint("Scan result received, _bleId = $_bleId");
         if (_bleId == null) {
           return;
         }
-
-        //connect(id: _bleId!);
 
         for (final device in event.field0) {
           kPrint("Paired device found: ${device.id}");
@@ -93,8 +94,7 @@ class BluetoothManager {
     });
 
     if (_qlIdentity == null) {
-      _generateQlIdentity();
-      EnvoyStorage().saveQuantumLinkIdentity(_qlIdentity!);
+      await _generateQlIdentity();
     }
 
     await scan();
@@ -164,12 +164,11 @@ class BluetoothManager {
     await bluart.writeAll(id: bleId, data: encoded);
   }
 
-  void _generateQlIdentity() async {
+  Future<void> _generateQlIdentity() async {
     try {
       kPrint("Generating ql identity...");
       _qlIdentity = await api.generateQlIdentity();
-      kPrint("boot quantum isDisposed = ${_qlIdentity!.isDisposed}");
-      // kPrint("Generated ql identity: $qlIdentity");
+      EnvoyStorage().saveQuantumLinkIdentity(_qlIdentity!);
     } catch (e, stack) {
       kPrint("Couldn't generate ql identity: $e", stackTrace: stack);
     }
