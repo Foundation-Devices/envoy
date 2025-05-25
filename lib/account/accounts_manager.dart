@@ -326,9 +326,16 @@ class NgAccountManager extends ChangeNotifier {
 
   Future deleteAccount(EnvoyAccount account) async {
     account.handler?.dispose();
+    final accountOrder = _ls.prefs.getString(ACCOUNT_ORDER);
+    List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
+    order.remove(account.id);
+    await _ls.prefs.setString(ACCOUNT_ORDER, jsonEncode(order));
+    _accountsOrder.sink.add(order);
     await Future.delayed(const Duration(milliseconds: 50));
     final dir = Directory(account.walletPath!);
     await dir.delete(recursive: true);
+    _accountsHandler.removeWhere((e) => e.$1.id == account.id);
+    notifyListeners();
   }
 
   Future deleteDeviceAccounts(Device device) async {

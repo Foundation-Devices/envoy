@@ -52,11 +52,11 @@ LocalStorage _ls = LocalStorage();
 class Fees {
   // All in BTC per kb
   double fastRate(Network network) {
-    return fees[network]!.mempoolFastestRate;
+    return fees[network]?.mempoolFastestRate ?? 1;
   }
 
   double slowRate(Network network) {
-    return fees[network]!.mempoolHourRate;
+    return fees[network]?.mempoolHourRate ?? 1;
   }
 
   static _defaultFees() {

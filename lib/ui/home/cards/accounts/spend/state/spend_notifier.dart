@@ -302,24 +302,25 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
   Future<bool> validate(ProviderContainer container,
       {bool settingFee = false}) async {
-    var (
-      account: account,
-      amount: amount,
-      feeRate: feeRate,
-      handler: handler,
-      sendTo: sendTo,
-      spendableBalance: spendableBalance,
-      utxos: utxos,
-      changeOutput: changeOutput,
-      note: note
-    ) = _getCommonDeps();
+
+    try {
+      var (
+            account: account,
+            amount: amount,
+            feeRate: feeRate,
+            handler: handler,
+            sendTo: sendTo,
+            spendableBalance: spendableBalance,
+            utxos: utxos,
+            changeOutput: changeOutput,
+            note: note
+          ) = _getCommonDeps();
 
     if (handler == null && account == null) {
       return false;
     }
     final network = account!.network;
     state = state.clone()..hotWallet = account.isHot;
-
     if (sendTo.isEmpty ||
         amount == 0 ||
         state.broadcastProgress == BroadcastProgress.inProgress) {
@@ -342,8 +343,12 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           tag: changeOutput,
           doNotSpendChange: false);
 
+      if(handler == null){
+        kPrint("Handler is null");
+        return false;
+      }
       //calculate max fee only if we are not setting fee
-      final feeCalcResult = await handler!.getMaxFee(transactionParams: params);
+      final feeCalcResult = await handler.getMaxFee(transactionParams: params);
       final preparedTransaction = feeCalcResult.draftTransaction;
 
       //update the fee rate
@@ -404,7 +409,11 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       }
       _setErrorState(errorMessage.toString());
     }
+    } catch (e,stack) {
+      debugPrintStack(stackTrace: stack);
+    }
     return false;
+
   }
 
   void reset() {
@@ -470,6 +479,31 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       final preparedTx = await EnvoyAccountHandler.decodePsbt(
           draftTransaction: state.draftTransaction!,
           psbtBase64: decoded.decoded);
+      kPrint(
+          "Decoded PSBT: ${preparedTx.transaction.txId} | isFinalized : ${preparedTx.isFinalized}");
+      _updateWithPreparedTransaction(preparedTx, state.transactionParams);
+      await Future.delayed(const Duration(milliseconds: 100));
+    } catch (e) {
+      state = state.clone()
+        ..loading = false
+        ..error = e.toString();
+      rethrow;
+    }
+  }
+
+  Future decodePrimePsbt(ProviderContainer ref, String psbt) async {
+    EnvoyAccount? account = ref.read(selectedAccountProvider);
+    EnvoyAccountHandler? handler = account?.handler;
+    if (account == null ||
+        handler == null ||
+        state.draftTransaction == null ||
+        state.broadcastProgress == BroadcastProgress.inProgress) {
+      return;
+    }
+    try {
+      final preparedTx = await EnvoyAccountHandler.decodePsbt(
+          draftTransaction: state.draftTransaction!,
+          psbtBase64: psbt);
       kPrint(
           "Decoded PSBT: ${preparedTx.transaction.txId} | isFinalized : ${preparedTx.isFinalized}");
       _updateWithPreparedTransaction(preparedTx, state.transactionParams);

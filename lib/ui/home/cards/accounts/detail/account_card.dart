@@ -315,8 +315,12 @@ class _AccountCardState extends ConsumerState<AccountCard>
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: EnvoyTextButton(
-                      onTap: () {
-                        context.go(ROUTE_ACCOUNT_SEND);
+                      onTap: () async {
+                        clearSpendState(ProviderScope.containerOf(context));
+                        await Future.delayed(const Duration(milliseconds: 50));
+                        if(context.mounted) {
+                          context.go(ROUTE_ACCOUNT_SEND);
+                        }
                         return;
                         // widget.navigator!.push(
                         //     SendCard(widget.account, navigator: widget.navigator));
@@ -853,7 +857,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                       GoRouter.of(context).pop();
                       await Future.delayed(const Duration(milliseconds: 50));
                       //TODO: add delete account
-                      // AccountManager().deleteAccount(widget.account);
+                      NgAccountManager().deleteAccount(widget.account);
                     },
                   ));
             } else {

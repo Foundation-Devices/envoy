@@ -24,12 +24,15 @@ class BluetoothManager {
   static final BluetoothManager _instance = BluetoothManager._internal();
   UuidValue rxCharacteristic =
       UuidValue.fromString("6E400002B5A3F393E0A9E50E24DCCA9E");
-  api.QuantumLinkIdentity? qlIdentity;
+
+  // Persist this across sessions
+  api.QuantumLinkIdentity? _qlIdentity;
   final StreamController<api.PassportMessage> _passportMessageStream =
       StreamController<api.PassportMessage>();
 
   api.Dechunker? _decoder;
   api.XidDocument? _recipientXid;
+  String? _bleId;
 
   bool connected = false;
 
@@ -37,7 +40,7 @@ class BluetoothManager {
     return _instance;
   }
 
-  get passportMessageStream => _passportMessageStream.stream;
+  Stream<api.PassportMessage> get passportMessageStream => _passportMessageStream.stream;
 
   String bleId = "";
 
@@ -59,15 +62,29 @@ class BluetoothManager {
     events = bluart.init().asBroadcastStream();
 
     await restorePrimeDevice();
+    await restoreQuantumLinkIdentity();
 
     events?.listen((bluart.Event event) {
       if (event is bluart.Event_DeviceConnected) {
         connected = true;
       }
+
+      if (event is bluart.Event_ScanResult) {
+        if (_bleId == null) {
+          return;
+        }
+        for (final device in event.field0) {
+          if (device.id == _bleId) {
+            bluart.connect(id: device.id);
+          }
+        }
+      }
     });
 
-    // TODO: serialize and store
-    _generateQlIdentity();
+    if (_qlIdentity == null) {
+      _generateQlIdentity();
+      EnvoyStorage().saveQuantumLinkIdentity(_qlIdentity!);
+    }
   }
 
   getPermissions() async {
@@ -92,7 +109,7 @@ class BluetoothManager {
 
     return await api.encode(
       message: envoyMessage,
-      sender: qlIdentity!,
+      sender: _qlIdentity!,
       recipient: _recipientXid!,
     );
   }
@@ -102,7 +119,7 @@ class BluetoothManager {
     kPrint("pair: $hashCode");
 
     kPrint("Pairing...");
-    final xid = await api.serializeXid(quantumLinkIdentity: qlIdentity!);
+    final xid = await api.serializeXid(quantumLinkIdentity: _qlIdentity!);
     api.PairingRequest request = api.PairingRequest(xidDocument: xid);
     kPrint("Encoding...");
 
@@ -137,8 +154,8 @@ class BluetoothManager {
   void _generateQlIdentity() async {
     try {
       kPrint("Generating ql identity...");
-      qlIdentity = await api.generateQlIdentity();
-      kPrint("boot quantum isDisposed = ${qlIdentity!.isDisposed}");
+      _qlIdentity = await api.generateQlIdentity();
+      kPrint("boot quantum isDisposed = ${_qlIdentity!.isDisposed}");
       // kPrint("Generated ql identity: $qlIdentity");
     } catch (e, stack) {
       kPrint("Couldn't generate ql identity: $e", stackTrace: stack);
@@ -171,7 +188,7 @@ class BluetoothManager {
     api.DecoderStatus decoderStatus = await api.decode(
         data: bleData.toList(),
         decoder: _decoder!,
-        quantumLinkIdentity: qlIdentity!);
+        quantumLinkIdentity: _qlIdentity!);
     if (decoderStatus.payload != null) {
       _decoder = await api.getDecoder();
       return decoderStatus.payload;
@@ -185,6 +202,13 @@ class BluetoothManager {
       message: api.QuantumLinkMessage.onboardingState(state),
     );
 
+    await bluart.writeAll(id: bleId, data: encoded);
+  }
+
+  Future<void> send(api.QuantumLinkMessage message) async {
+    final encoded = await encodeMessage(
+      message: message,
+    );
     await bluart.writeAll(id: bleId, data: encoded);
   }
 
@@ -229,7 +253,7 @@ class BluetoothManager {
         return;
       }
 
-      PrimeDevice prime = primes.first;
+      PrimeDevice prime = primes.last;
 
       // Convert the xidDocument to a List<int>
       final List<int> xidBytes = prime.xidDocument.toList();
@@ -239,8 +263,17 @@ class BluetoothManager {
       );
 
       _recipientXid = recipientXid;
+      _bleId = prime.bleId;
     } catch (e) {
       kPrint('Error deserializing XidDocument: $e');
+    }
+  }
+
+  Future<void> restoreQuantumLinkIdentity() async {
+    try {
+      _qlIdentity = await EnvoyStorage().getQuantumLinkIdentity();
+    } catch (e) {
+      kPrint('Error deserializing QL id: $e');
     }
   }
 

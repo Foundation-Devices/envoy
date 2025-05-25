@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:animations/animations.dart';
+import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
@@ -18,10 +19,10 @@ import 'package:envoy/ui/home/cards/accounts/spend/choose_coins_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_details.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/transaction_review_card.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/shield_path.dart';
@@ -37,6 +38,7 @@ import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart' as rive;
@@ -50,6 +52,8 @@ class TxReview extends ConsumerStatefulWidget {
 }
 
 class _TxReviewState extends ConsumerState<TxReview> {
+  StreamSubscription<PassportMessage>? _passportMessageSubscription;
+
   @override
   Widget build(BuildContext context) {
     EnvoyAccount? account = ref.watch(selectedAccountProvider);
@@ -99,18 +103,81 @@ class _TxReviewState extends ConsumerState<TxReview> {
     );
   }
 
+  @override
+  dispose() {
+    _passportMessageSubscription?.cancel();
+    super.dispose();
+  }
+
   _handleQRExchange(EnvoyAccount account, BuildContext rootContext,
       ProviderContainer providerScope) async {
     TransactionModel transactionModel = ref.read(spendTransactionProvider);
-    TransactionModeNotifier transactionModeNotifier =
-        ref.read(spendTransactionProvider.notifier);
-    bool received = false;
-    final cryptoPsbt = await GoRouter.of(rootContext).pushNamed(
-        ACCOUNT_SEND_SCAN_PSBT,
-        extra: transactionModel.draftTransaction);
-    if (cryptoPsbt is CryptoPsbt && received == false) {
-      transactionModeNotifier.decodePSBT(providerScope, cryptoPsbt);
-      received = true;
+    String? psbt = transactionModel.draftTransaction?.psbtBase64;
+    //if serial is prime, send psbt through ql
+    if (account.deviceSerial == "prime" && psbt != null) {
+      kPrint("Sending to prime $psbt");
+      showEnvoyDialog(
+          context: rootContext,
+          blur: 16,
+          blurColor: Colors.black,
+          linearGradient: true,
+          dialog: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              EnvoyIcon(EnvoyIcons.prime,
+                  size: EnvoyIconSize.mediumLarge, color: EnvoyColors.solidWhite),
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: EnvoySpacing.medium2,
+                ),
+                child: Text("Waiting for Prime to sign transaction...",
+                    style: EnvoyTypography.digitsMedium
+                        .copyWith(color: EnvoyColors.textPrimaryInverse)),
+              ),
+            ],
+          ),
+          cardColor: Colors.transparent,
+          useRootNavigator: true);
+      try {
+
+        await BluetoothManager().send(QuantumLinkMessage_SignPsbt(SignPsbt(
+          accountId: account.id,
+          psbt: psbt,
+        )));
+        //wait for response from prime. maybe show some dialog while waiting?
+        _passportMessageSubscription = BluetoothManager()
+            .passportMessageStream
+            .listen((PassportMessage message) async {
+          if (message.message is QuantumLinkMessage_SignPsbt) {
+            final signedPsbt =
+                (message.message as QuantumLinkMessage_SignPsbt).field0;
+            kPrint("Signed Psbt $signedPsbt");
+            await ref
+                .read(spendTransactionProvider.notifier)
+                .decodePrimePsbt(providerScope, signedPsbt.psbt);
+            //hide the dialog
+            if (rootContext.mounted) {
+              Navigator.pop(rootContext);
+            }
+          }
+        });
+      } catch (e, stack) {
+        debugPrintStack(stackTrace: stack);
+        kPrint("Error sending to prime: $e");
+      }
+    } else {
+      TransactionModeNotifier transactionModeNotifier =
+          ref.read(spendTransactionProvider.notifier);
+      bool received = false;
+      final cryptoPsbt = await GoRouter.of(rootContext).pushNamed(
+          ACCOUNT_SEND_SCAN_PSBT,
+          extra: transactionModel.draftTransaction);
+      if (cryptoPsbt is CryptoPsbt && received == false) {
+        transactionModeNotifier.decodePSBT(providerScope, cryptoPsbt);
+        received = true;
+      }
     }
     return;
   }

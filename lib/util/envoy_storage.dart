@@ -17,12 +17,15 @@ import 'package:envoy/business/video.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation_api/foundation_api.dart';
 import 'package:ngwallet/ngwallet.dart';
+
 // ignore: implementation_imports
 import 'package:ngwallet/src/wallet.dart' as wallet;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast_io.dart';
+
 // ignore: implementation_imports
 import 'package:sembast/src/type.dart';
 import 'package:sembast/utils/sembast_import_export.dart';
@@ -98,6 +101,7 @@ const String locationsStoreName = "locations";
 const String selectedCountryStoreName = "countries";
 const String apiKeysStoreName = "api_keys";
 const String primeDataStoreName = "prime";
+const String quantumLinkIdentityStoreName = "ql_identity";
 
 ///keeps track of the prime account full scan status, and migration,
 ///no backup for this store
@@ -158,6 +162,9 @@ class EnvoyStorage {
 
   StoreRef<String, Map<String, dynamic>> primeStore =
       StoreRef<String, Map<String, dynamic>>(primeDataStoreName);
+
+  StoreRef<int, List<int>> quantumLinkIdentityStore =
+      StoreRef<int, List<int>>(quantumLinkIdentityStoreName);
 
   StoreRef<String, bool> accountFullsScanStateStore =
       StoreRef<String, bool>(accountFullsScanStateStoreName);
@@ -927,6 +934,18 @@ class EnvoyStorage {
   Future<bool> deletePrimeByBleId(String bleId) async {
     final deletedKey = await primeStore.record(bleId).delete(_db);
     return deletedKey != null;
+  }
+
+  Future<bool> saveQuantumLinkIdentity(QuantumLinkIdentity identity) async {
+    final data = await serializeQlIdentity(quantumLinkIdentity: identity);
+    await quantumLinkIdentityStore.record(0).put(_db, data);
+    return true;
+  }
+
+  Future<QuantumLinkIdentity?> getQuantumLinkIdentity() async {
+    final data = await quantumLinkIdentityStore.record(0).get(_db);
+    final identity = await deserializeQlIdentity(data: data!);
+    return identity;
   }
 
   Future<bool> setAccountScanStatus(

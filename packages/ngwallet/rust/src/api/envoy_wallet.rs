@@ -330,7 +330,7 @@ impl EnvoyAccountHandler {
                     index: config.index,
                     descriptors: config.descriptors.clone(),
                     date_synced: config.date_synced.clone(),
-                    wallet_path: None,
+                    wallet_path: config.account_path.clone(),
                     network: config.network,
                     id: config.id.clone(),
                     is_hot: account.is_hot(),
@@ -888,5 +888,12 @@ impl EnvoyAccountHandler {
                 return Err(anyhow!("Failed to create account: {:?}", err));
             }
         }
+    }
+
+
+    pub fn get_config_from_remote(
+        remote_update: Vec<u8>,
+    ) -> Result<NgAccountConfig> {
+        NgAccountConfig::from_remote(remote_update)
     }
 }
