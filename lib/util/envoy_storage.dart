@@ -957,7 +957,7 @@ class EnvoyStorage {
   }
 
   Future<bool> removeAccountStatus(
-      String accountId, AddressType addressType, bool isFullScanDone) async {
+      String accountId, AddressType addressType) async {
     await accountFullsScanStateStore
         .record("${accountId}:${addressType.toString()}")
         .delete(_db);
