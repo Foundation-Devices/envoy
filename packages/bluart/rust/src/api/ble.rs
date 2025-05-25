@@ -69,6 +69,22 @@ impl Command {
     }
 }
 
+impl std::fmt::Debug for Command {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Command::Scan { filter } => f.debug_struct("Scan").field("filter", filter).finish(),
+            Command::Connect { id } => f.debug_struct("Connect").field("id", id).finish(),
+            Command::Disconnect { id } => f.debug_struct("Disconnect").field("id", id).finish(),
+            Command::Benchmark { id, sink: _ } => {
+                f.debug_struct("Benchmark").field("id", id).finish()
+            }
+            Command::Read { id, sink: _ } => f.debug_struct("Read").field("id", id).finish(),
+            Command::Write { id, .. } => f.debug_struct("Write").field("id", id).finish(),
+            Command::WriteAll { id, .. } => f.debug_struct("WriteAll").field("id", id).finish(),
+        }
+    }
+}
+
 #[derive(Clone)]
 pub enum Event {
     ScanResult(Vec<BleDevice>),
@@ -76,39 +92,17 @@ pub enum Event {
     DeviceConnected,
 }
 
-impl std::fmt::Debug for Command {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("Scan").finish()
-    }
+#[derive(Clone)]
+pub struct BleState {
+    devices: Arc<Mutex<HashMap<String, Device>>>,
+    tx: mpsc::UnboundedSender<Command>,
+    central: Arc<Mutex<Adapter>>,
 }
 
-static DEVICES: OnceLock<Arc<Mutex<HashMap<String, Device>>>> = OnceLock::new();
+static BLE_STATE: OnceLock<BleState> = OnceLock::new();
 
-static TX: OnceLock<mpsc::UnboundedSender<Command>> = OnceLock::new();
-
-static CENTRAL: OnceLock<Arc<Mutex<Adapter>>> = OnceLock::new();
-
-/// Internal send function to send [Command]s into the message loop.
-fn send(command: Command) -> Result<()> {
-    debug!("send: {:?}", command);
-    let tx = TX.get().ok_or(anyhow::anyhow!("TxNotInitialized"))?;
-    debug!("send: tx: {:?}", tx);
-    tx.send(command)?;
-    debug!("sent command");
-    Ok(())
-}
-
-/// Spawns a command future with consistent error handling
-fn spawn_command<F, T>(future: F, kind: &'static str)
-where
-    F: std::future::Future<Output = Result<T>> + Send + 'static,
-    T: Send + 'static,
-{
-    tokio::spawn(async move {
-        if let Err(e) = future.await {
-            error!("Command::{kind} failed: {e}");
-        }
-    });
+fn ble_state() -> &'static BleState {
+    BLE_STATE.get().expect("BleState not initialized")
 }
 
 fn init_logging(level: log::LevelFilter) {
@@ -129,50 +123,19 @@ pub async fn init(sink: StreamSink<Event>) -> Result<()> {
         .get()
         .ok_or(anyhow::anyhow!("RuntimeNotInitialized"))?;
 
-    let _ = DEVICES.set(Arc::new(Mutex::new(HashMap::new())));
-
+    let (tx, rx) = mpsc::unbounded_channel::<Command>();
     let manager = Manager::new().await?;
     let adapters = manager.adapters().await?;
     debug!("Number of adapters: {}", adapters.len());
     let central = adapters.into_iter().next().expect("cannot fail");
 
-    CENTRAL.set(Arc::new(Mutex::new(central.clone()))).unwrap();
-
-    runtime.spawn(async move {
-        let (tx, mut rx) = mpsc::unbounded_channel::<Command>();
-        TX.set(tx).unwrap();
-
-        while let Some(msg) = rx.recv().await {
-            let kind = msg.kind();
-            debug!("got message {}", kind);
-
-            match msg {
-                Command::Scan { filter } => {
-                    spawn_command(inner_scan(filter), kind);
-                }
-                Command::Connect { id } => {
-                    spawn_command(inner_connect(id), kind);
-                }
-                Command::Disconnect { id } => {
-                    spawn_command(inner_disconnect(id), kind);
-                }
-                Command::Benchmark { id, sink } => {
-                    spawn_command(inner_benchmark(id, sink), kind);
-                }
-                Command::Read { id, sink } => {
-                    spawn_command(inner_read(id, sink), kind);
-                }
-                Command::Write { id, data } => {
-                    spawn_command(inner_write(id, data), kind);
-                }
-                Command::WriteAll { id, data } => {
-                    spawn_command(inner_write_all(id, data), kind);
-                }
-            }
-        }
-
-        log::info!("Exiting command processing task!");
+    let _ = BLE_STATE.set(BleState {
+        devices: Arc::new(Mutex::new(HashMap::new())),
+        tx,
+        central: Arc::new(Mutex::new(central.clone())),
     });
+
+    command::init(runtime, rx);
 
     let sink_clone = sink.clone();
     runtime.spawn(async move {
@@ -199,18 +162,18 @@ pub async fn init(sink: StreamSink<Event>) -> Result<()> {
                     debug!("{}", format!("DeviceDiscovered: {:?}", &id));
                     let peripheral = central.peripheral(&id).await.unwrap();
                     let peripheral = Device::new(peripheral);
-                    let mut devices = DEVICES.get().unwrap().lock().await;
+                    let mut devices = ble_state().devices.lock().await;
                     devices.insert(id.to_string(), peripheral);
                 }
                 CentralEvent::DeviceUpdated(id) => {
-                    let mut devices = DEVICES.get().unwrap().lock().await;
+                    let mut devices = ble_state().devices.lock().await;
                     if let Some(device) = devices.get_mut(&id.to_string()) {
                         device.last_seen = time::Instant::now();
                     }
                 }
                 CentralEvent::DeviceConnected(id) => {
                     debug!("{}", format!("DeviceConnected: {:?}", id));
-                    let mut devices = DEVICES.get().unwrap().lock().await;
+                    let mut devices = ble_state().devices.lock().await;
                     if let Some(device) = devices.get_mut(&id.to_string()) {
                         device.is_connected = true;
                         sink.add(Event::DeviceConnected).unwrap();
@@ -218,7 +181,7 @@ pub async fn init(sink: StreamSink<Event>) -> Result<()> {
                 }
                 CentralEvent::DeviceDisconnected(id) => {
                     debug!("{}", format!("DeviceDisconnected: {:?}", id));
-                    let mut devices = DEVICES.get().unwrap().lock().await;
+                    let mut devices = ble_state().devices.lock().await;
                     if let Some(device) = devices.get_mut(&id.to_string()) {
                         device.is_connected = false;
                         sink.add(Event::DeviceDisconnected).unwrap();
@@ -272,7 +235,7 @@ pub async fn init(sink: StreamSink<Event>) -> Result<()> {
 /// async_fn::remove_stale_devices(10);
 /// ```
 async fn remove_stale_devices(timeout: u64) {
-    let mut devices = DEVICES.get().unwrap().lock().await;
+    let mut devices = ble_state().devices.lock().await;
     devices.retain(|_, d| d.is_connected() || d.last_seen.elapsed().as_secs() < timeout);
 }
 
@@ -287,7 +250,7 @@ async fn remove_stale_devices(timeout: u64) {
 ///
 /// Returns false if the stream is closed.
 async fn send_devices(sink: &StreamSink<Event>) -> Result<()> {
-    let devices = DEVICES.get().unwrap().lock().await;
+    let devices = ble_state().devices.lock().await;
     let mut d = vec![];
     for device in devices.values() {
         let dev = BleDevice::from_peripheral(device).await;
@@ -306,149 +269,214 @@ async fn send_devices(sink: &StreamSink<Event>) -> Result<()> {
 ///
 /// filter: Vec<String> - A vector of strings to filter the results with
 pub fn scan(filter: Vec<String>) -> Result<()> {
-    send(Command::Scan { filter })
-}
-
-async fn inner_scan(_filter: Vec<String>) -> Result<()> {
-    let central = CENTRAL.get().unwrap().lock().await;
-    central.start_scan(ScanFilter::default()).await?;
-    // tracing::debug!("Scan finished");
-    Ok(())
+    command::send(Command::Scan { filter })
 }
 
 pub fn connect(id: String) -> Result<()> {
     debug!("{}", format!("Try to connect to: {id}"));
-    send(Command::Connect { id })
-}
-
-async fn inner_connect(id: String) -> Result<()> {
-    debug!("{}", format!("Try to connect to: {id}"));
-
-    let mut devices = DEVICES.get().unwrap().lock().await;
-    let device = match devices.get_mut(&id) {
-        Some(device) => device,
-        None => {
-            return Err(anyhow::anyhow!("UnknownPeripheral(id)"));
-
-            // TODO: create peripheral and add to DEVICES IF NOT THERE
-            // let manager = Manager::new().await?;
-            // let adapters = manager.adapters().await?;
-            // let central = adapters.into_iter().next().expect("cannot fail");
-            //
-            // let address = BDAddr::from_str(&id)?;
-            //
-            // let peripheral_id = PeripheralId::from(address);
-            // let peripheral = central
-            //     .add_peripheral(&peripheral_id)
-            //     .await?;
-            //
-            // let mut devices = DEVICES.get().unwrap().lock().await;
-            // let device = Device::new(peripheral);
-            // devices.insert(id, device);
-            // &device.clone()
-        }
-    };
-
-    device.connect().await
+    command::send(Command::Connect { id })
 }
 
 pub fn disconnect(id: String) -> Result<()> {
-    send(Command::Disconnect { id })
-}
-
-async fn inner_disconnect(id: String) -> Result<()> {
-    debug!("{}", format!("Try to disconnect from: {id}"));
-    let devices = DEVICES.get().unwrap().lock().await;
-    let device = devices
-        .get(&id)
-        .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
-    device.disconnect().await
+    command::send(Command::Disconnect { id })
 }
 
 pub fn benchmark(id: String, sink: StreamSink<u64>) -> Result<()> {
-    send(Command::Benchmark { id, sink })
-}
-
-async fn inner_benchmark(id: String, sink: StreamSink<u64>) -> Result<()> {
-    debug!("{}", format!("Trying to benchmark: {id}"));
-    let devices = DEVICES.get().unwrap().lock().await;
-    let device = devices
-        .get(&id)
-        .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
-
-    loop {
-        tokio::time::sleep(time::Duration::from_millis(2000)).await;
-        match device.benchmark().await {
-            Ok(result) => {
-                sink.add(result as u64).unwrap();
-            }
-            Err(e) => {
-                error!("{}", format!("Benchmark failed: {e}"));
-                break;
-            }
-        }
-    }
-
-    Ok(())
+    command::send(Command::Benchmark { id, sink })
 }
 
 pub fn write(id: String, data: Vec<u8>) -> Result<()> {
     debug!("{}", format!("Writing to: {id}"));
-    send(Command::Write { id, data })
-}
-
-async fn inner_write(id: String, data: Vec<u8>) -> Result<()> {
-    debug!("inner write");
-    debug!("{}", format!("Writing to: {id}"));
-    let devices = DEVICES.get().unwrap().lock().await;
-    let device = devices
-        .get(&id)
-        .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
-    device.write(data).await
+    command::send(Command::Write { id, data })
 }
 
 pub fn write_all(id: String, data: Vec<Vec<u8>>) -> Result<()> {
     debug!("{}", format!("Writing all to: {id}"));
-    send(Command::WriteAll { id, data })
-}
-
-async fn inner_write_all(id: String, data: Vec<Vec<u8>>) -> Result<()> {
-    debug!("{}", format!("Writing all to: {id}"));
-    let devices = DEVICES.get().unwrap().lock().await;
-    let device = devices
-        .get(&id)
-        .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
-
-    device.write_all(data).await
+    command::send(Command::WriteAll { id, data })
 }
 
 pub fn read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
     debug!("{}", format!("Reading from: {id}"));
-    send(Command::Read { id, sink })
+    command::send(Command::Read { id, sink })
 }
 
-async fn inner_read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
-    debug!("{}", format!("Reading from: {id}"));
-    let devices = DEVICES.get().unwrap().lock().await;
-    let device = devices
-        .get(&id)
-        .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
+mod command {
+    use anyhow::Context;
 
-    debug!("{}", format!("Reading from: {id}"));
-    match device.read().await {
-        Ok(mut stream) => {
-            debug!("{}", format!("Got stream from: {id}"));
-            tokio::spawn(async move {
-                while let Some(data) = stream.next().await {
-                    println!("Received data from [{:?}]: {:?}", data.uuid, data.value);
-                    sink.add(data.value).unwrap();
+    use super::*;
+
+    pub fn init(runtime: &tokio::runtime::Runtime, mut rx: mpsc::UnboundedReceiver<Command>) {
+        runtime.spawn(async move {
+            log::info!("Starting command processing task");
+            while let Some(msg) = rx.recv().await {
+                debug!("got message {:?}", msg);
+                let kind = msg.kind();
+
+                match msg {
+                    Command::Scan { filter } => {
+                        spawn_command(inner_scan(filter), kind);
+                    }
+                    Command::Connect { id } => {
+                        spawn_command(inner_connect(id), kind);
+                    }
+                    Command::Disconnect { id } => {
+                        spawn_command(inner_disconnect(id), kind);
+                    }
+                    Command::Benchmark { id, sink } => {
+                        spawn_command(inner_benchmark(id, sink), kind);
+                    }
+                    Command::Read { id, sink } => {
+                        spawn_command(inner_read(id, sink), kind);
+                    }
+                    Command::Write { id, data } => {
+                        spawn_command(inner_write(id, data), kind);
+                    }
+                    Command::WriteAll { id, data } => {
+                        spawn_command(inner_write_all(id, data), kind);
+                    }
                 }
-            });
-        }
-        Err(e) => {
-            debug!("{}", format!("Got error: {:?}", e));
-        }
+            }
+
+            log::info!("Exiting command processing task");
+        });
     }
 
-    Ok(())
+    /// Internal send function to send [Command]s into the message loop.
+    pub fn send(command: Command) -> Result<()> {
+        debug!("send: {:?}", command);
+        let tx = &ble_state().tx;
+        debug!("send: tx: {:?}", tx);
+        tx.send(command).with_context(|| "Failed to send command")?;
+        debug!("sent command");
+        Ok(())
+    }
+
+    /// Spawns a command future with consistent error handling
+    fn spawn_command<F, T>(future: F, kind: &'static str)
+    where
+        F: std::future::Future<Output = Result<T>> + Send + 'static,
+        T: Send + 'static,
+    {
+        tokio::spawn(async move {
+            if let Err(e) = future.await {
+                error!("Command::{kind} failed: {e}");
+            }
+        });
+    }
+
+    async fn inner_scan(_filter: Vec<String>) -> Result<()> {
+        let central = ble_state().central.lock().await;
+        central.start_scan(ScanFilter::default()).await?;
+        // tracing::debug!("Scan finished");
+        Ok(())
+    }
+
+    async fn inner_connect(id: String) -> Result<()> {
+        debug!("{}", format!("Try to connect to: {id}"));
+
+        let mut devices = ble_state().devices.lock().await;
+        let device = match devices.get_mut(&id) {
+            Some(device) => device,
+            None => {
+                return Err(anyhow::anyhow!("UnknownPeripheral(id)"));
+
+                // TODO: create peripheral and add to DEVICES IF NOT THERE
+                // let manager = Manager::new().await?;
+                // let adapters = manager.adapters().await?;
+                // let central = adapters.into_iter().next().expect("cannot fail");
+                //
+                // let address = BDAddr::from_str(&id)?;
+                //
+                // let peripheral_id = PeripheralId::from(address);
+                // let peripheral = central
+                //     .add_peripheral(&peripheral_id)
+                //     .await?;
+                //
+                // let mut devices = DEVICES.get().unwrap().lock().await;
+                // let device = Device::new(peripheral);
+                // devices.insert(id, device);
+                // &device.clone()
+            }
+        };
+
+        device.connect().await
+    }
+
+    async fn inner_disconnect(id: String) -> Result<()> {
+        debug!("{}", format!("Try to disconnect from: {id}"));
+        let devices = ble_state().devices.lock().await;
+        let device = devices
+            .get(&id)
+            .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
+        device.disconnect().await
+    }
+
+    async fn inner_benchmark(id: String, sink: StreamSink<u64>) -> Result<()> {
+        debug!("{}", format!("Trying to benchmark: {id}"));
+        let devices = ble_state().devices.lock().await;
+        let device = devices
+            .get(&id)
+            .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
+
+        loop {
+            tokio::time::sleep(time::Duration::from_millis(2000)).await;
+            match device.benchmark().await {
+                Ok(result) => {
+                    sink.add(result as u64).unwrap();
+                }
+                Err(e) => {
+                    error!("{}", format!("Benchmark failed: {e}"));
+                    break;
+                }
+            }
+        }
+
+        Ok(())
+    }
+
+    async fn inner_read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
+        debug!("{}", format!("Reading from: {id}"));
+        let devices = ble_state().devices.lock().await;
+        let device = devices
+            .get(&id)
+            .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
+
+        debug!("{}", format!("Reading from: {id}"));
+        match device.read().await {
+            Ok(mut stream) => {
+                debug!("{}", format!("Got stream from: {id}"));
+                tokio::spawn(async move {
+                    while let Some(data) = stream.next().await {
+                        println!("Received data from [{:?}]: {:?}", data.uuid, data.value);
+                        sink.add(data.value).unwrap();
+                    }
+                });
+            }
+            Err(e) => {
+                debug!("{}", format!("Got error: {:?}", e));
+            }
+        }
+
+        Ok(())
+    }
+
+    async fn inner_write(id: String, data: Vec<u8>) -> Result<()> {
+        debug!("inner write");
+        debug!("{}", format!("Writing to: {id}"));
+        let devices = ble_state().devices.lock().await;
+        let device = devices
+            .get(&id)
+            .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
+        device.write(data).await
+    }
+
+    async fn inner_write_all(id: String, data: Vec<Vec<u8>>) -> Result<()> {
+        debug!("{}", format!("Writing all to: {id}"));
+        let devices = ble_state().devices.lock().await;
+        let device = devices
+            .get(&id)
+            .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
+
+        device.write_all(data).await
+    }
 }
