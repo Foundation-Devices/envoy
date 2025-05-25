@@ -3,12 +3,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use std::collections::HashMap;
-use std::str::FromStr;
 use std::sync::{Arc, OnceLock};
 
 use anyhow::Result;
-use btleplug::api::{bleuuid::BleUuid, BDAddr, Central, CentralEvent, Manager as _, ScanFilter};
-use btleplug::platform::{Adapter, Manager, PeripheralId};
+use btleplug::api::{bleuuid::BleUuid, Central, CentralEvent, Manager as _, ScanFilter};
+use btleplug::platform::{Adapter, Manager};
 use futures::stream::StreamExt;
 use tokio::{
     sync::{mpsc, Mutex},
@@ -27,7 +26,6 @@ pub use device::*;
 pub use peripheral::*;
 
 use log::{debug, error};
-use tokio::time::Instant;
 
 enum Command {
     Scan {
@@ -55,6 +53,20 @@ enum Command {
         id: String,
         data: Vec<Vec<u8>>,
     },
+}
+
+impl Command {
+    fn kind(&self) -> &'static str {
+        match self {
+            Command::Scan { .. } => "Scan",
+            Command::Connect { .. } => "Connect",
+            Command::Disconnect { .. } => "Disconnect",
+            Command::Benchmark { .. } => "Benchmark",
+            Command::Read { .. } => "Read",
+            Command::Write { .. } => "Write",
+            Command::WriteAll { .. } => "WriteAll",
+        }
+    }
 }
 
 #[derive(Clone)]
@@ -86,11 +98,32 @@ fn send(command: Command) -> Result<()> {
     Ok(())
 }
 
+/// Spawns a command future with consistent error handling
+fn spawn_command<F, T>(future: F, kind: &'static str)
+where
+    F: std::future::Future<Output = Result<T>> + Send + 'static,
+    T: Send + 'static,
+{
+    tokio::spawn(async move {
+        if let Err(e) = future.await {
+            error!("Command::{kind} failed: {e}");
+        }
+    });
+}
+
+fn init_logging(level: log::LevelFilter) {
+    #[cfg(target_os = "android")]
+    let _ = android_logger::init_once(android_logger::Config::default().with_max_level(level));
+
+    #[cfg(any(target_os = "ios", target_os = "macos"))]
+    let _ = oslog::OsLogger::new("frb_user").level_filter(level).init();
+}
+
 /// The init() function must be called before anything else.
 /// At the moment the developer has to make sure it is only called once.
 pub async fn init(sink: StreamSink<Event>) -> Result<()> {
-    // Disabled for now -> way too chatty
-    //flutter_rust_bridge::setup_default_user_utils();
+    init_logging(log::LevelFilter::Debug);
+
     create_runtime()?;
     let runtime = RUNTIME
         .get()
@@ -110,38 +143,35 @@ pub async fn init(sink: StreamSink<Event>) -> Result<()> {
         TX.set(tx).unwrap();
 
         while let Some(msg) = rx.recv().await {
-            debug!("got message");
+            let kind = msg.kind();
+            debug!("got message {}", kind);
 
             match msg {
                 Command::Scan { filter } => {
-                    tokio::spawn(async {
-                        inner_scan(filter).await.inspect_err(|e| debug!("{}", e))
-                    });
+                    spawn_command(inner_scan(filter), kind);
                 }
                 Command::Connect { id } => {
-                    inner_connect(id).await.inspect_err(|e| debug!("{}", e)).ok();
+                    spawn_command(inner_connect(id), kind);
                 }
                 Command::Disconnect { id } => {
-                    inner_disconnect(id).await.inspect_err(|e| debug!("{}", e)).ok();
+                    spawn_command(inner_disconnect(id), kind);
                 }
                 Command::Benchmark { id, sink } => {
-                    inner_benchmark(id, sink)
-                        .await
-                        .inspect_err(|e| debug!("{}", e)).ok();
+                    spawn_command(inner_benchmark(id, sink), kind);
                 }
                 Command::Read { id, sink } => {
-                    inner_read(id, sink).await.inspect_err(|e| debug!("{}", e)).ok();
+                    spawn_command(inner_read(id, sink), kind);
                 }
                 Command::Write { id, data } => {
-                    inner_write(id, data).await.inspect_err(|e| debug!("{}", e)).ok();
+                    spawn_command(inner_write(id, data), kind);
                 }
                 Command::WriteAll { id, data } => {
-                    inner_write_all(id, data)
-                        .await
-                        .inspect_err(|e| debug!("{}", e)).ok();
+                    spawn_command(inner_write_all(id, data), kind);
                 }
             }
         }
+
+        log::info!("Exiting command processing task!");
     });
 
     let sink_clone = sink.clone();
