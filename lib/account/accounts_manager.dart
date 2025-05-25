@@ -332,8 +332,10 @@ class NgAccountManager extends ChangeNotifier {
     List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
     order.remove(account.id);
     await _ls.prefs.setString(ACCOUNT_ORDER, jsonEncode(order));
-    await EnvoyStorage().setAccountScanStatus(account.id, false);
 
+    for (var descriptor in account.descriptors) {
+      await EnvoyStorage().removeAccountStatus(account.id, descriptor.addressType);
+    }
     _accountsOrder.sink.add(order);
     await Future.delayed(const Duration(milliseconds: 50));
     final dir = Directory(account.walletPath!);
