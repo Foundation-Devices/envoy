@@ -29,9 +29,9 @@ tracing-subscriber = "0.3.18"
 futures = "0.3.30"
 
 [target.'cfg(target_os = "android")'.dependencies]
-android_logger = "0.15.0"
+android_logger = "0.13"
 
 [target.'cfg(any(target_os = "ios", target_os = "macos"))'.dependencies]
-oslog = "0.2.0"
+oslog = "0.1"
 
 
