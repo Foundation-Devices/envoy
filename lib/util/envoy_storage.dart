@@ -16,6 +16,7 @@ import 'package:envoy/business/server.dart';
 import 'package:envoy/business/video.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:ngwallet/ngwallet.dart';
@@ -163,8 +164,8 @@ class EnvoyStorage {
   StoreRef<String, Map<String, dynamic>> primeStore =
       StoreRef<String, Map<String, dynamic>>(primeDataStoreName);
 
-  StoreRef<int, List<int>> quantumLinkIdentityStore =
-      StoreRef<int, List<int>>(quantumLinkIdentityStoreName);
+  StoreRef<int, String> quantumLinkIdentityStore =
+      StoreRef<int, String>(quantumLinkIdentityStoreName);
 
   StoreRef<String, bool> accountFullsScanStateStore =
       StoreRef<String, bool>(accountFullsScanStateStoreName);
@@ -938,13 +939,13 @@ class EnvoyStorage {
 
   Future<bool> saveQuantumLinkIdentity(QuantumLinkIdentity identity) async {
     final data = await serializeQlIdentity(quantumLinkIdentity: identity);
-    await quantumLinkIdentityStore.record(0).put(_db, data);
+    await quantumLinkIdentityStore.record(0).put(_db, base64Encode(data.toList()));
     return true;
   }
 
   Future<QuantumLinkIdentity?> getQuantumLinkIdentity() async {
     final data = await quantumLinkIdentityStore.record(0).get(_db);
-    final identity = await deserializeQlIdentity(data: data!);
+    final identity = await deserializeQlIdentity(data: base64Decode(data!));
     return identity;
   }
 

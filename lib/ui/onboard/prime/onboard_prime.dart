@@ -52,7 +52,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
       if (regex.hasMatch(bleId ?? "")) {
         await BluetoothManager().getPermissions();
         kPrint("Connecting to Prime with ID: $bleId");
-        //await BluetoothManager().scan();
+        await BluetoothManager().scan();
         await BluetoothManager().events?.any((bluart.Event event) {
           if (event is bluart.Event_ScanResult) {
             for (final device in event.field0) {

@@ -65,10 +65,15 @@ class BluetoothManager {
 
     events = bluart.init().asBroadcastStream();
 
+    kPrint("QL Identity: $_qlIdentity");
+
     await restorePrimeDevice();
     await restoreQuantumLinkIdentity();
 
-    events?.listen((bluart.Event event) {
+    kPrint("QL Identity: $_qlIdentity");
+
+
+    events?.listen((bluart.Event event) async {
       kPrint("Got event $event");
       if (event is bluart.Event_DeviceConnected) {
         connected = true;
@@ -84,12 +89,13 @@ class BluetoothManager {
           return;
         }
 
-        for (final device in event.field0) {
-          kPrint("Paired device found: ${device.id}");
-          if (device.id == _bleId) {
-            bluart.connect(id: device.id);
-          }
-        }
+        // for (final device in event.field0) {
+        //   kPrint("Paired device found: ${device.id}");
+        //   if (device.id == _bleId) {
+        //     await connect(id: device.id);
+        //     await listen(id: bleId);
+        //   }
+        // }
       }
     });
 
@@ -168,7 +174,7 @@ class BluetoothManager {
     try {
       kPrint("Generating ql identity...");
       _qlIdentity = await api.generateQlIdentity();
-      EnvoyStorage().saveQuantumLinkIdentity(_qlIdentity!);
+      await EnvoyStorage().saveQuantumLinkIdentity(_qlIdentity!);
     } catch (e, stack) {
       kPrint("Couldn't generate ql identity: $e", stackTrace: stack);
     }
@@ -181,7 +187,7 @@ class BluetoothManager {
     await bluart.connect(id: id);
   }
 
-  void listen({required String id}) async {
+  Future<void> listen({required String id}) async {
     _decoder = await api.getDecoder();
     _subscription = bluart.read(id: id).listen((bleData) {
       decode(bleData).then((value) {
