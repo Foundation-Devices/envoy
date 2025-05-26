@@ -44,8 +44,6 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
   void initState() {
     super.initState();
 
-    _showPersonalNodeTextField = _isCustomPersonalNode;
-
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       bool? value = LocalStorage().prefs.getBool("useLocalAuth");
       if (value != null) {
@@ -83,20 +81,6 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
     if (newOption.value == "luke") {
       Settings().setCustomElectrumAddress(PublicServer.luke.address);
     }
-  }
-
-  bool get _isCustomPersonalNode {
-    // only show Personal Node Text Field when the app is *not* using the default server
-    // and the selectedElectrumAddress does *not* match any of the public servers
-    final addr = Settings().selectedElectrumAddress;
-    final isDefault = Settings().usingDefaultElectrumServer;
-    final isPublic = [
-      PublicServer.blockStream.address,
-      PublicServer.diyNodes.address,
-      PublicServer.luke.address,
-    ].contains(addr);
-
-    return !isDefault && !isPublic;
   }
 
   @override

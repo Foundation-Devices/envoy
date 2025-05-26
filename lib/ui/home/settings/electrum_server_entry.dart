@@ -121,14 +121,16 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
                 _isError = false;
                 _textBelow = S().privacy_node_configure;
               }
-            },
-            onEditingComplete: () {
-              final raw = _controller.text;
-              if (raw.isNotEmpty) {
-                final parsed = parseNodeUrl(raw);
-                _onAddressChanged(parsed);
-                _controller.text = normalizeProtocol(raw);
+
+              if (_typingTimer != null) {
+                _typingTimer!.cancel();
               }
+              _typingTimer = Timer(const Duration(seconds: 2), () {
+                if (address.isNotEmpty) {
+                  _onAddressChanged(parseNodeUrl(address));
+                  _controller.text = normalizeProtocol(address);
+                }
+              });
             },
             isError: _isError,
             onQrScan: () {

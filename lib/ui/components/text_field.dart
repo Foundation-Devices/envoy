@@ -17,7 +17,6 @@ class EnvoyTextField extends StatefulWidget {
     this.additionalButtons = false,
     this.onQrScan,
     required this.onChanged,
-    this.onEditingComplete,
     this.errorText,
     this.isError = false,
     this.isLoading,
@@ -35,7 +34,6 @@ class EnvoyTextField extends StatefulWidget {
   final bool? isLoading;
   final TextEditingController controller;
   final String? infoContent;
-  final VoidCallback? onEditingComplete;
 
   @override
   State<EnvoyTextField> createState() => _EnvoyTextFieldState();
@@ -89,10 +87,6 @@ class _EnvoyTextFieldState extends State<EnvoyTextField> {
                 child: TextFormField(
                   onChanged: (text) {
                     widget.onChanged(text);
-                  },
-                  onEditingComplete: () {
-                    widget.onEditingComplete?.call();
-                    _focus.unfocus();
                   },
                   style: EnvoyTypography.body,
                   controller: widget.controller,
@@ -155,7 +149,6 @@ class _EnvoyTextFieldState extends State<EnvoyTextField> {
                           final text = cdata?.text;
                           if (text != null) {
                             widget.controller.text = text;
-                            widget.onChanged(text);
                           }
                         },
                       ),
