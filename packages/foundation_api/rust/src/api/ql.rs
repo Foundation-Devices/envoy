@@ -91,16 +91,14 @@ pub async fn decode(
 
     if decoder.is_complete() {
         debug!("We're complete!");
-        let message = decoder.data();
+        let message = decoder.data().clone();
+        decoder.clear();
+
         debug!("Trying to get envelope...");
         let envelope = match Envelope::try_from_cbor_data(message.to_owned()) {
-            Ok(env) => {
-                decoder.clear();
-                env
-            }
+            Ok(env) => env,
             Err(e) => {
                 debug!("Failed to decode CBOR: {:?}", e);
-                decoder.clear();
                 return Ok(DecoderStatus {
                     progress: 0.0,
                     payload: None,
@@ -108,11 +106,11 @@ pub async fn decode(
             }
         };
         debug!("Unsealing envelope...");
+
         let (passport_message, _) = PassportMessage::unseal_passport_message(
             &envelope,
             &quantum_link_identity.clone().private_keys.unwrap(),
-        )
-        .unwrap();
+        ).map_err(|e| {anyhow::anyhow!("Failed to unseal passport message: {:?}", e)})?;
 
         return Ok(DecoderStatus {
             progress: 1.0,
