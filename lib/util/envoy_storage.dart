@@ -85,6 +85,9 @@ final readBlogStreamProvider = StreamProvider.family<bool, String>(
 final watchedVideoStreamProvider = StreamProvider.family<bool, String>(
     (ref, url) => EnvoyStorage().isVideoWatched(url));
 
+final txNoteFromStorageProvider = StreamProvider.family<String, String>(
+    (ref, txId) => EnvoyStorage().getTxNotesStream(txId));
+
 const String txNotesStoreName = "tx_notes";
 const String videosStoreName = "videos";
 const String pendingTxStoreName = "pending_tx";
