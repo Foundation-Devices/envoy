@@ -129,7 +129,7 @@ class _SendCardState extends ConsumerState<SendCard>
     String addressText = ref.read(spendAddressProvider);
 
     return PopScope(
-      canPop: false,
+      canPop: true,
       onPopInvokedWithResult: (bool didPop, _) {
         Future.microtask(() {
           if (ref.read(coinSelectionStateProvider).isNotEmpty &&
