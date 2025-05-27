@@ -85,7 +85,7 @@ class BluetoothManager {
       }
 
       if (event is bluart.Event_DeviceDisconnected) {
-
+        connected = false;
       }
 
       if (event is bluart.Event_ScanResult) {
@@ -94,13 +94,13 @@ class BluetoothManager {
           return;
         }
 
-        // for (final device in event.field0) {
-        //   kPrint("Paired device found: ${device.id}");
-        //   if (device.id == _bleId) {
-        //     await connect(id: device.id);
-        //     await listen(id: bleId);
-        //   }
-        // }
+        for (final device in event.field0) {
+          kPrint("Paired device found: ${device.id}");
+          if (device.id == _bleId && !connected) {
+            await connect(id: device.id);
+            await listen(id: bleId);
+          }
+        }
       }
     });
 
@@ -190,6 +190,7 @@ class BluetoothManager {
 
     bleId = id;
     await bluart.connect(id: id);
+    connected = true;
   }
 
   Future<void> listen({required String id}) async {
