@@ -1046,7 +1046,6 @@ dependencies = [
 [[package]]
 name = "ngwallet"
 version = "0.7.0"
-source = "git+https://github.com/Foundation-Devices/ngwallet?tag=0.7.0#0fc66f1fe51e2d7eb7939480c05f22d6cc4109d6"
 dependencies = [
  "anyhow",
  "base64 0.22.1",

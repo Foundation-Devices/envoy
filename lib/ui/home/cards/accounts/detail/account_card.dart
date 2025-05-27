@@ -318,7 +318,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                       onTap: () async {
                         clearSpendState(ProviderScope.containerOf(context));
                         await Future.delayed(const Duration(milliseconds: 50));
-                        if(context.mounted) {
+                        if (context.mounted) {
                           context.go(ROUTE_ACCOUNT_SEND);
                         }
                         return;

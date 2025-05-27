@@ -30,6 +30,9 @@ class BluetoothManager {
   final StreamController<api.PassportMessage> _passportMessageStream =
       StreamController<api.PassportMessage>();
 
+  final StreamController<api.PassportMessage> _transactionStream =
+      StreamController<api.PassportMessage>();
+
   api.Dechunker? _decoder;
   api.XidDocument? _recipientXid;
   String? _bleId;
@@ -41,7 +44,10 @@ class BluetoothManager {
   }
 
   Stream<api.PassportMessage> get passportMessageStream =>
-      _passportMessageStream.stream;
+      _passportMessageStream.stream.asBroadcastStream();
+
+  Stream<api.PassportMessage> get transactionStream =>
+      _transactionStream.stream.asBroadcastStream();
 
   String bleId = "";
 
@@ -74,7 +80,6 @@ class BluetoothManager {
 
 
     events?.listen((bluart.Event event) async {
-      kPrint("Got event $event");
       if (event is bluart.Event_DeviceConnected) {
         connected = true;
       }
@@ -194,6 +199,8 @@ class BluetoothManager {
         //kPrint("Dechunked: {$value}");
         if (value != null) {
           _passportMessageStream.add(value);
+          kPrint("get passport message type:: ${value.message.runtimeType} ${value.message}");
+          _transactionStream.add(value);
         }
       }, onError: (e) {
         kPrint("Error decoding: $e");
@@ -317,8 +324,10 @@ class BluetoothManager {
 
   void setupExchangeRateListener() {
     ExchangeRate().addListener(() async {
+      print("Sending exchange rate");
       if (connected) {
-        //await sendExchangeRate();
+        print("Sending exchange rate");
+        await sendExchangeRate();
       }
     });
   }

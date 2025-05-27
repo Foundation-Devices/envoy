@@ -942,13 +942,17 @@ class EnvoyStorage {
 
   Future<bool> saveQuantumLinkIdentity(QuantumLinkIdentity identity) async {
     final data = await serializeQlIdentity(quantumLinkIdentity: identity);
+    kPrint("QLLog saveQuantumLinkIdentity ${data.take(6).toString()}");
     await quantumLinkIdentityStore.record(0).put(_db, base64Encode(data.toList()));
     return true;
   }
 
   Future<QuantumLinkIdentity?> getQuantumLinkIdentity() async {
     final data = await quantumLinkIdentityStore.record(0).get(_db);
+
     final identity = await deserializeQlIdentity(data: base64Decode(data!));
+    kPrint("QLLog getQuantumLinkIdentity ${base64Decode(data!).take(6).toString()}");
+
     return identity;
   }
 

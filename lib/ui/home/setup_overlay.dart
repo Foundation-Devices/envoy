@@ -226,33 +226,29 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
         onBackPressed: (context) {
           Navigator.pop(context);
         },
-        decoder: DeviceDecoder(
-            pairPayloadDecoder: PairPayloadDecoder(
-              onScan: (binary) {
-                addPassportAccount(binary, context);
-              },
-            ),
-            onScan: (String payload) {
-              Navigator.pop(context);
-              final uri = Uri.parse(payload);
-              context.pushNamed(ONBOARD_PRIME,
-                  queryParameters: uri.queryParameters);
-            }));
+        decoder: DeviceDecoder(pairPayloadDecoder: PairPayloadDecoder(
+          onScan: (binary) {
+            addPassportAccount(binary, context);
+          },
+        ), onScan: (String payload) {
+          Navigator.pop(context);
+          final uri = Uri.parse(payload);
+          context.pushNamed(ONBOARD_PRIME,
+              queryParameters: uri.queryParameters);
+        }));
   }
 
-  void addPassportAccount(Binary binary, BuildContext context) async{
+  void addPassportAccount(Binary binary, BuildContext context) async {
     final scaffold = ScaffoldMessenger.of(context);
     final goRouter = GoRouter.of(context);
     try {
-      final paringResult = await NgAccountManager()
-          .addPassportAccount(binary);
+      final paringResult = await NgAccountManager().addPassportAccount(binary);
       EnvoyAccount? account;
       switch (paringResult.$1) {
         case DeviceAccountResult.ADDED:
           account = paringResult.$2;
           break;
-        case DeviceAccountResult
-            .UPDATED_WITH_NEW_DESCRIPTOR:
+        case DeviceAccountResult.UPDATED_WITH_NEW_DESCRIPTOR:
           account = paringResult.$2;
           break;
         case DeviceAccountResult.ERROR:
@@ -263,22 +259,19 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
       } else {
         //TODO: let the user know if the account
         //was updated or added ?
-        goRouter.goNamed(ONBOARD_PASSPORT_SCV_SUCCESS,
-            extra: account);
+        goRouter.goNamed(ONBOARD_PASSPORT_SCV_SUCCESS, extra: account);
       }
     } on AccountAlreadyPaired catch (_) {
-       //pop scanner
+      //pop scanner
       goRouter.pop();
       //pop overlay
       goRouter.pop();
       scaffold.showSnackBar(const SnackBar(
-        content: Text(
-            "Account already connected"), // TODO: FIGMA
+        content: Text("Account already connected"), // TODO: FIGMA
       ));
       return;
     }
   }
-
 }
 
 class EnvoyCardButton extends StatefulWidget {
