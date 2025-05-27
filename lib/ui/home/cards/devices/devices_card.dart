@@ -107,10 +107,19 @@ class _DevicesListState extends ConsumerState<DevicesList> {
               ],
             )
           : Padding(
-              padding: const EdgeInsets.all(EnvoySpacing.medium2),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
               child: ScrollGradientMask(
+                start: 0.03,
+                topGradientValue: 0.075,
+                bottomGradientValue: 0.905,
+                end: 0.97,
                 child: CustomScrollView(
                   slivers: [
+                    const SliverToBoxAdapter(
+                        child: SizedBox(
+                      height: EnvoySpacing.medium2,
+                    )),
                     const SliverPadding(
                         padding: EdgeInsets.symmetric(
                             vertical: EnvoySpacing.xs / 2)),
@@ -152,6 +161,10 @@ class _DevicesListState extends ConsumerState<DevicesList> {
                     const SliverPadding(
                         padding: EdgeInsets.symmetric(
                             vertical: EnvoySpacing.medium2)),
+                    const SliverToBoxAdapter(
+                        child: SizedBox(
+                      height: EnvoySpacing.medium2,
+                    )),
                   ],
                 ),
               ),
