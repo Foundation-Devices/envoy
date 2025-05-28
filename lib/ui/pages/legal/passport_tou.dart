@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ui/home/setup_overlay.dart';
 import 'package:envoy/ui/pages/scv/scv_intro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

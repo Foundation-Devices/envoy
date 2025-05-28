@@ -302,118 +302,118 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
   Future<bool> validate(ProviderContainer container,
       {bool settingFee = false}) async {
-
     try {
       var (
-            account: account,
-            amount: amount,
-            feeRate: feeRate,
-            handler: handler,
-            sendTo: sendTo,
-            spendableBalance: spendableBalance,
-            utxos: utxos,
-            changeOutput: changeOutput,
-            note: note
-          ) = _getCommonDeps();
+        account: account,
+        amount: amount,
+        feeRate: feeRate,
+        handler: handler,
+        sendTo: sendTo,
+        spendableBalance: spendableBalance,
+        utxos: utxos,
+        changeOutput: changeOutput,
+        note: note
+      ) = _getCommonDeps();
 
-    if (handler == null && account == null) {
-      return false;
-    }
-    final network = account!.network;
-    state = state.clone()..hotWallet = account.isHot;
-    if (sendTo.isEmpty ||
-        amount == 0 ||
-        state.broadcastProgress == BroadcastProgress.inProgress) {
-      return false;
-    }
-
-    try {
-      state = state.clone()
-        ..error = null
-        ..broadcastProgress = BroadcastProgress.staging
-        ..loading = true;
-      //remove if there is any duplicates
-      bool sendMax = spendableBalance == amount;
-      final params = TransactionParams(
-          address: sendTo,
-          amount: BigInt.from(amount),
-          feeRate: BigInt.from(Fees().slowRate(network) * 100000),
-          selectedOutputs: utxos,
-          note: note,
-          tag: changeOutput,
-          doNotSpendChange: false);
-
-      if(handler == null){
-        kPrint("Handler is null");
+      if (handler == null && account == null) {
         return false;
       }
-      //calculate max fee only if we are not setting fee
-      final feeCalcResult = await handler.getMaxFee(transactionParams: params);
-      final preparedTransaction = feeCalcResult.draftTransaction;
+      final network = account!.network;
+      state = state.clone()..hotWallet = account.isHot;
+      if (sendTo.isEmpty ||
+          amount == 0 ||
+          state.broadcastProgress == BroadcastProgress.inProgress) {
+        return false;
+      }
 
-      //update the fee rate
-      container.read(feeChooserStateProvider.notifier).state = FeeChooserState(
-          standardFeeRate: Fees().slowRate(network) * 100000,
-          fasterFeeRate: Fees().fastRate(network) * 100000,
-          minFeeRate: feeCalcResult.minFeeRate.toInt(),
-          maxFeeRate: feeCalcResult.maxFeeRate.toInt().clamp(2, 5000));
-
-      _updateWithPreparedTransaction(preparedTransaction, params);
-
-      if (sendMax) {
-        int fee = state.draftTransaction?.transaction.fee.toInt() ?? 0;
+      try {
         state = state.clone()
-          ..mode = SpendMode.sendMax
-          ..uneconomicSpends =
-              (state.transactionParams?.amount.toInt() ?? 0 + fee) !=
-                  spendableBalance;
-      }
+          ..error = null
+          ..broadcastProgress = BroadcastProgress.staging
+          ..loading = true;
+        //remove if there is any duplicates
+        bool sendMax = spendableBalance == amount;
+        final params = TransactionParams(
+            address: sendTo,
+            amount: BigInt.from(amount),
+            feeRate: BigInt.from(Fees().slowRate(network) * 100000),
+            selectedOutputs: utxos,
+            note: note,
+            tag: changeOutput,
+            doNotSpendChange: false);
 
-      return true;
-    } catch (error, stackTrace) {
-      if (kDebugMode) {
-        debugPrintStack(stackTrace: stackTrace);
+        if (handler == null) {
+          kPrint("Handler is null");
+          return false;
+        }
+        //calculate max fee only if we are not setting fee
+        final feeCalcResult =
+            await handler.getMaxFee(transactionParams: params);
+        final preparedTransaction = feeCalcResult.draftTransaction;
+
+        //update the fee rate
+        container.read(feeChooserStateProvider.notifier).state =
+            FeeChooserState(
+                standardFeeRate: Fees().slowRate(network) * 100000,
+                fasterFeeRate: Fees().fastRate(network) * 100000,
+                minFeeRate: feeCalcResult.minFeeRate.toInt(),
+                maxFeeRate: feeCalcResult.maxFeeRate.toInt().clamp(2, 5000));
+
+        _updateWithPreparedTransaction(preparedTransaction, params);
+
+        if (sendMax) {
+          int fee = state.draftTransaction?.transaction.fee.toInt() ?? 0;
+          state = state.clone()
+            ..mode = SpendMode.sendMax
+            ..uneconomicSpends =
+                (state.transactionParams?.amount.toInt() ?? 0 + fee) !=
+                    spendableBalance;
+        }
+
+        return true;
+      } catch (error, stackTrace) {
+        if (kDebugMode) {
+          debugPrintStack(stackTrace: stackTrace);
+        }
+        String errorMessage = error.toString();
+        if (error is ComposeTxError) {
+          ComposeTxError composeTxError = error;
+          composeTxError.when(
+            coinSelectionError: (field0) {
+              // Handle coin selection error
+              errorMessage = S().send_keyboard_amount_insufficient_funds_info;
+            },
+            error: (err) {
+              // Handle generic error
+              debugPrint("Error: $err");
+              errorMessage = S().send_keyboard_amount_enter_valid_address;
+            },
+            insufficientFunds: (field0) {
+              // Handle insufficient funds
+              debugPrint("Insufficient funds: $field0");
+              errorMessage = S().send_keyboard_amount_insufficient_funds_info;
+            },
+            insufficientFees: (field0) {
+              // Handle insufficient fees
+              debugPrint("Insufficient fees: $field0");
+              errorMessage = S().send_keyboard_amount_too_low_info;
+            },
+            insufficientFeeRate: (field0) {
+              // Handle insufficient fee rate
+              debugPrint("Insufficient fee rate: $field0");
+              errorMessage = S().send_keyboard_amount_too_low_info;
+            },
+          );
+        } else {
+          container.read(spendValidationErrorProvider.notifier).state =
+              S().send_keyboard_amount_insufficient_funds_info;
+        }
+        _setErrorState(errorMessage.toString());
       }
-      String errorMessage = error.toString();
-      if (error is ComposeTxError) {
-        ComposeTxError composeTxError = error;
-        composeTxError.when(
-          coinSelectionError: (field0) {
-            // Handle coin selection error
-            errorMessage = S().send_keyboard_amount_insufficient_funds_info;
-          },
-          error: (err) {
-            // Handle generic error
-            debugPrint("Error: $err");
-            errorMessage = S().send_keyboard_amount_enter_valid_address;
-          },
-          insufficientFunds: (field0) {
-            // Handle insufficient funds
-            debugPrint("Insufficient funds: $field0");
-            errorMessage = S().send_keyboard_amount_insufficient_funds_info;
-          },
-          insufficientFees: (field0) {
-            // Handle insufficient fees
-            debugPrint("Insufficient fees: $field0");
-            errorMessage = S().send_keyboard_amount_too_low_info;
-          },
-          insufficientFeeRate: (field0) {
-            // Handle insufficient fee rate
-            debugPrint("Insufficient fee rate: $field0");
-            errorMessage = S().send_keyboard_amount_too_low_info;
-          },
-        );
-      } else {
-        container.read(spendValidationErrorProvider.notifier).state =
-            S().send_keyboard_amount_insufficient_funds_info;
-      }
-      _setErrorState(errorMessage.toString());
-    }
-    } catch (e,stack) {
+    } catch (e, stack) {
       debugPrintStack(stackTrace: stack);
     }
     return false;
-
   }
 
   void reset() {
@@ -502,8 +502,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     }
     try {
       final preparedTx = await EnvoyAccountHandler.decodePsbt(
-          draftTransaction: state.draftTransaction!,
-          psbtBase64: psbt);
+          draftTransaction: state.draftTransaction!, psbtBase64: psbt);
       kPrint(
           "Decoded PSBT: ${preparedTx.transaction.txId} | isFinalized : ${preparedTx.isFinalized}");
       _updateWithPreparedTransaction(preparedTx, state.transactionParams);

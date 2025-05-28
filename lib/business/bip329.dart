@@ -4,9 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:envoy/util/envoy_storage.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:ngwallet/src/wallet.dart';
 
 String getXpub(NgDescriptor ngDescriptor, EnvoyAccount account) {
   // Check if the wallet is hot
@@ -62,7 +60,7 @@ String extractDescriptor(String input) {
 //TODO: fix for unified wallet transactions
 Future<List<String>> getTxData(EnvoyAccount account) async {
   List<String> txDataList = [];
-  List<BitcoinTransaction> transactions = account.transactions;
+  // List<BitcoinTransaction> transactions = account.transactions;
   // for(NgDescriptor descriptor in account.descriptors) {
   //
   //   String origin = extractDescriptor(descriptor.external_ ?? "");

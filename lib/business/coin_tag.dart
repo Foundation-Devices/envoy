@@ -3,8 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/account/accounts_manager.dart';
-import 'package:envoy/business/account.dart';
-import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/coins.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';

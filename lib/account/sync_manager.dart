@@ -37,7 +37,7 @@ class SyncManager {
   Function(EnvoyAccount)? _onUpdateFinished;
   late Timer _syncTimer;
   bool _pauseSync = false;
-  bool _fullScanInProgress = false;
+  //bool _fullScanInProgress = false;
 
   final StreamController<WalletProgress> _currentLoading =
       StreamController<WalletProgress>.broadcast(sync: true);
@@ -178,7 +178,6 @@ class SyncManager {
   }
 
   Future _startFullScan() async {
-    _fullScanInProgress = true;
     for (final accountWithType in _fullScanRequest.keys) {
       final account = accountWithType.$1;
       final type = accountWithType.$2;
@@ -209,7 +208,6 @@ class SyncManager {
         },
       );
     }
-    _fullScanInProgress = false;
   }
 
   Future<void> performFullScan(EnvoyAccountHandler handler,

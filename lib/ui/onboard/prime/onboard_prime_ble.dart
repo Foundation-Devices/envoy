@@ -71,7 +71,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
       if (message.message is QuantumLinkMessage_PairingResponse) {
         kPrint("Found it!");
-        final response = message.message as QuantumLinkMessage_PairingResponse;
+        //  final response = message.message as QuantumLinkMessage_PairingResponse;
         // Create the thing that I'm gonna reveal later
         // await AccountNg().restore(response.field0.descriptor);
         //
@@ -90,7 +90,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         kPrint("Got payload! ${payload.length}");
         final config = await EnvoyAccountHandler.getConfigFromRemote(
             remoteUpdate: payload);
-        kPrint("Got config ${config.id} ${config.descriptors.map((e) => e.external_)}");
+        kPrint(
+            "Got config ${config.id} ${config.descriptors.map((e) => e.external_)}");
         final dir = NgAccountManager.getAccountDirectory(
             deviceSerial: config.deviceSerial ?? "prime",
             network: config.network.toString(),
@@ -99,7 +100,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         await dir.create();
         final accountHandler = await EnvoyAccountHandler.addAccountFromConfig(
             dbPath: dir.path, config: config);
-        await NgAccountManager().addAccount(await accountHandler.state(), accountHandler);
+        await NgAccountManager()
+            .addAccount(await accountHandler.state(), accountHandler);
         kPrint("Account added!");
       }
 

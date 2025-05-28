@@ -9,7 +9,6 @@ import 'package:bluart/bluart.dart' as bluart;
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/prime_device.dart';
 import 'package:envoy/business/scv_server.dart';
-import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/ntp.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
@@ -72,16 +71,13 @@ class BluetoothManager {
 
     kPrint("QL Identity: $_qlIdentity");
 
-
     events?.listen((bluart.Event event) async {
       kPrint("Got event $event");
       if (event is bluart.Event_DeviceConnected) {
         connected = true;
       }
 
-      if (event is bluart.Event_DeviceDisconnected) {
-
-      }
+      if (event is bluart.Event_DeviceDisconnected) {}
 
       if (event is bluart.Event_ScanResult) {
         kPrint("Scan result received, _bleId = $_bleId");
@@ -310,7 +306,7 @@ class BluetoothManager {
       );
 
       await bluart.writeAll(id: bleId, data: encoded);
-    } catch (e, stack) {
+    } catch (e) {
       kPrint('Failed to send exchange rate: $e');
     }
   }
