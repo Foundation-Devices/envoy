@@ -66,7 +66,8 @@ const _$TransactionTypeEnumMap = {
 
 Wallet _$WalletFromJson(Map<String, dynamic> json) => Wallet(
       json['name'] as String,
-      $enumDecodeNullable(_$NetworkEnumMap, json['network']) ?? Network.Mainnet,
+      $enumDecodeNullable(_$NetworkEnumMap, json['network']) ??
+          WalletNetwork.Mainnet,
       json['externalDescriptor'] as String?,
       json['internalDescriptor'] as String?,
       hot: json['hot'] as bool? ?? false,
@@ -107,10 +108,10 @@ Map<String, dynamic> _$WalletToJson(Wallet instance) => <String, dynamic>{
     };
 
 const _$NetworkEnumMap = {
-  Network.Mainnet: 'Mainnet',
-  Network.Testnet: 'Testnet',
-  Network.Signet: 'Signet',
-  Network.Regtest: 'Regtest',
+  WalletNetwork.Mainnet: 'Mainnet',
+  WalletNetwork.Testnet: 'Testnet',
+  WalletNetwork.Signet: 'Signet',
+  WalletNetwork.Regtest: 'Regtest',
 };
 
 const _$WalletTypeEnumMap = {

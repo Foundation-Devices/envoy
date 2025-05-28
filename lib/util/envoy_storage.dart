@@ -956,7 +956,7 @@ class EnvoyStorage {
   Future<bool> setAccountScanStatus(
       String accountId, AddressType addressType, bool isFullScanDone) async {
     await accountFullsScanStateStore
-        .record("${accountId}:${addressType.toString()}")
+        .record("$accountId:${addressType.toString()}")
         .put(_db, isFullScanDone);
     return true;
   }
@@ -964,7 +964,7 @@ class EnvoyStorage {
   Future<bool> removeAccountStatus(
       String accountId, AddressType addressType) async {
     await accountFullsScanStateStore
-        .record("${accountId}:${addressType.toString()}")
+        .record("$accountId:${addressType.toString()}")
         .delete(_db);
     return true;
   }
@@ -972,7 +972,7 @@ class EnvoyStorage {
   Future<bool> getAccountScanStatus(
       String accountId, AddressType addressType) async {
     return await (accountFullsScanStateStore
-            .record("${accountId}:${addressType.toString()}")
+            .record("$accountId:${addressType.toString()}")
             .get(_db)) ??
         false;
   }

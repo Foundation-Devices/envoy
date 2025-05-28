@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:envoy/util/console.dart';
 
 double cardButtonHeight = 125;
 
@@ -195,7 +196,7 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                                           try {
                                             _scanForDevice(context);
                                           } catch (e) {
-                                            print(e);
+                                            kPrint(e);
                                           }
                                         },
                                       ),

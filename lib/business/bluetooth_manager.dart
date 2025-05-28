@@ -16,7 +16,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/uuid_value.dart';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:foundation_api/src/rust/third_party/foundation_api/api/scv.dart';
 
 class BluetoothManager {
   StreamSubscription? _subscription;
@@ -244,7 +243,8 @@ class BluetoothManager {
   }
 
   Future<void> sendChallengeMessage() async {
-    SecurityChallengeMessage? challenge = await ScvServer().getPrimeChallenge();
+    api.SecurityChallengeMessage? challenge =
+        await ScvServer().getPrimeChallenge();
 
     if (challenge == null) {
       // TODO: SCV what now?

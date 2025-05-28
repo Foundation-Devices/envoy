@@ -10,7 +10,6 @@ import 'package:http_tor/http_tor.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/scheduler.dart';
-import 'package:ngwallet/src/wallet.dart';
 import 'dart:async';
 import 'package:envoy/util/envoy_storage.dart';
 

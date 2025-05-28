@@ -25,7 +25,7 @@ class WalletNullException implements Exception {
 
 const dustAmount = 546;
 
-enum Network { Mainnet, Testnet, Signet, Regtest }
+enum WalletNetwork { Mainnet, Testnet, Signet, Regtest }
 
 enum TransactionType { normal, azteco, pending, btcPay, ramp }
 
@@ -365,9 +365,9 @@ class RawTransactionInput {
 
 /// enum positions matters, this will be mapped to [OutputPath]
 enum TxOutputPath {
-  External,
-  Internal,
-  NotMine,
+  external,
+  internal,
+  notMine,
 }
 
 class RawTransactionOutput {
@@ -378,7 +378,7 @@ class RawTransactionOutput {
   RawTransactionOutput(
       {required this.amount,
       required this.address,
-      this.path = TxOutputPath.NotMine});
+      this.path = TxOutputPath.notMine});
 }
 
 @freezed
@@ -418,12 +418,13 @@ class ElectrumServerFeatures {
 
 // Dummy placeholder wallet for greying out
 class GhostWallet extends Wallet {
-  GhostWallet({bool hot = true}) : super("", Network.Mainnet, "", "", hot: hot);
+  GhostWallet({bool hot = true})
+      : super("", WalletNetwork.Mainnet, "", "", hot: hot);
 }
 
 @JsonSerializable()
 class Wallet {
-  static late String _libName = "wallet_ffi";
+  static final String _libName = "wallet_ffi";
   static late DynamicLibrary _lib;
 
   Pointer<Uint8> _self = nullptr;
@@ -452,8 +453,8 @@ class Wallet {
 
   @JsonKey(
       defaultValue:
-          Network.Mainnet) // Migration from binary main/testnet approach
-  final Network network;
+          WalletNetwork.Mainnet) // Migration from binary main/testnet approach
+  final WalletNetwork network;
 
   @JsonKey(
       defaultValue: false) // Migration from time when all the Wallets were cold
@@ -787,7 +788,7 @@ class Wallet {
 
   ///Decode raw transaction
   Future<RawTransaction> decodeWalletRawTx(
-      String rawTransaction, Network network) async {
+      String rawTransaction, WalletNetwork network) async {
     final walletAddress = getSelf().address;
 
     return Isolate.run(() {
@@ -858,7 +859,7 @@ class Wallet {
   }
 
   static Future<RawTransaction> decodeRawTx(
-      String rawTransaction, Network network) async {
+      String rawTransaction, WalletNetwork network) async {
     return Isolate.run(() {
       final dynlib = load(_libName);
       final lib = rust.NativeLibrary(dynlib);
@@ -1034,7 +1035,7 @@ class Wallet {
             psbt.toNativeUtf8().cast(),
             externalDescriptor.toNativeUtf8().cast(),
             internalDescriptor.toNativeUtf8().cast(),
-            testnet ? Network.Testnet.index : Network.Mainnet.index)
+            testnet ? WalletNetwork.Testnet.index : WalletNetwork.Mainnet.index)
         .raw_tx
         .cast<Utf8>()
         .toDartString();
@@ -1047,8 +1048,8 @@ class Wallet {
         .lookup<NativeFunction<WalletGenerateSeedRust>>('wallet_generate_seed');
     final dartFunction = rustFunction.asFunction<WalletGenerateSeedDart>();
 
-    NativeSeed seed =
-        dartFunction(testnet ? Network.Testnet.index : Network.Mainnet.index);
+    NativeSeed seed = dartFunction(
+        testnet ? WalletNetwork.Testnet.index : WalletNetwork.Mainnet.index);
 
     final words = seed.mnemonic.cast<Utf8>().toDartString();
     return words;
@@ -1060,7 +1061,7 @@ class Wallet {
   }
 
   static Wallet deriveWallet(
-      String seed, String path, String directory, Network network,
+      String seed, String path, String directory, WalletNetwork network,
       {String? passphrase,
       bool privateKey = false,
       bool initWallet = true,
