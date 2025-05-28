@@ -395,10 +395,7 @@ async fn get_challenge_async(server_url: &str, proxy_port: i32) -> Option<Challe
         .await;
 
     match response {
-        Ok(r) => match r.json::<ChallengeResponse>().await {
-            Ok(r) => Some(r),
-            Err(_) => None,
-        },
+        Ok(r) => r.json::<ChallengeResponse>().await.ok(),
         Err(_) => None,
     }
 }
