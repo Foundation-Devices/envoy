@@ -7,6 +7,7 @@ import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/main.dart';
+import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/big_tab.dart';
 import 'package:envoy/ui/components/select_dropdown.dart';
@@ -963,15 +964,45 @@ Future<void> findFirstTextButtonAndPress(
   await tester.pump(Durations.long2);
 }
 
-Future<void> findAndPressWidget<T extends Widget>(WidgetTester tester) async {
+Future<void> findAndPressWidget<T extends Widget>(
+  WidgetTester tester, {
+  bool findFirst = false,
+}) async {
   await tester.pump(Durations.long2);
 
-  // Find the widget of type T
-  final widgetFinder = find.byType(T);
-  expect(widgetFinder, findsOneWidget);
-  await tester.tap(widgetFinder);
+  final finder = find.byType(T);
+
+  if (findFirst) {
+    expect(finder, findsWidgets); // allows multiple widgets
+    await tester.tap(finder.first);
+  } else {
+    expect(finder, findsOneWidget); // only one widget expected
+    await tester.tap(finder);
+  }
 
   await tester.pump(Durations.long2);
+}
+
+Future<String> getAddressFromReceiveScreen(WidgetTester tester) async {
+  final addressFinder = find.byType(AddressWidget);
+
+  await tester.pumpUntilFound(addressFinder,
+      tries: 50, duration: Duration(milliseconds: 100));
+
+  // Find the RichText inside the AddressWidget
+  final richTextWidget = find
+      .descendant(
+        of: addressFinder,
+        matching: find.byType(RichText),
+      )
+      .evaluate()
+      .first
+      .widget as RichText;
+
+  final textSpan = richTextWidget.text as TextSpan;
+  final address = extractTextFromTextSpan(textSpan);
+
+  return address.trim();
 }
 
 Future<void> findLastTextButtonAndPress(

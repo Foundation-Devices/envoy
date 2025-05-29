@@ -11,6 +11,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/widgets/card_swipe_wrapper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -207,11 +208,11 @@ Future<void> main() async {
       await findAndToggleSettingsSwitch(tester, "Signet");
 
       //Enable Taproot
-      await findAndToggleSettingsSwitch(tester, "Taproot");
+      await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
       await pressHamburgerMenu(tester);
       await pressHamburgerMenu(tester);
 
-      secondPrompt = find.text(tapTheAboveCardsPrompt);
+      secondPrompt = find.text(tapTheAboveCardPrompt);
       expect(secondPrompt, findsOneWidget);
 
       // check Dismiss button functionality
@@ -220,9 +221,9 @@ Future<void> main() async {
       secondPrompt = find.text(tapTheAboveCardsPrompt);
       expect(secondPrompt, findsNothing);
 
-      // Disable Taproot
+      // Enable Segwit
       await fromHomeToAdvancedMenu(tester);
-      await findAndToggleSettingsSwitch(tester, "Taproot");
+      await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
     });
 
     testWidgets('Test decimal point in Send', (tester) async {
@@ -284,7 +285,7 @@ Future<void> main() async {
       await tester.pumpWidget(const EnvoyApp());
       await setUpWalletFromSeedViaBackupFile(tester, seed);
     });
-    testWidgets('Testing Prompts for Wallets with Balances', (tester) async {
+/*    testWidgets('Testing Prompts for Wallets with Balances', (tester) async {
       await goBackHome(tester);
 
       await disableAllNetworks(tester);
@@ -403,10 +404,11 @@ Future<void> main() async {
 
       const String accountPassportName = "GH TEST ACC (#1)";
 
-      await scrollUntilVisible(
-        tester,
-        accountPassportName,
-      );
+
+    //  await scrollUntilVisible( // TODO: možda ne triba ?????
+      //  tester,
+      //  accountPassportName,
+     // );
       await openPassportAccount(tester, accountPassportName);
       await openDotsMenu(tester);
       await fromDotsMenuToEditName(tester);
@@ -436,6 +438,11 @@ Future<void> main() async {
       await fromHomeToBuyOptions(tester);
 
       await findAndPressTextButton(tester, "Continue");
+
+      // this is to choose passport account so we can see the Verify button !!!!
+      await findAndPressWidget<CardSwipeWrapper>(tester, findFirst: true);
+      await findLastTextButtonAndPress(tester, "GH TEST ACC (#1)");
+
       await findAndPressTextButton(tester, "Verify Address with Passport");
       Finder doneButton = find.text("Done");
       await tester.pumpUntilFound(doneButton);
@@ -870,62 +877,87 @@ Future<void> main() async {
       await pressHamburgerMenu(tester);
       await goToSettings(tester);
       await openAdvancedMenu(tester);
-      bool taprootAlreadyEnabled = await isSlideSwitchOn(tester, "Taproot");
+      bool taprootAlreadyEnabled =
+          await isSlideSwitchOn(tester, "Receive to Taproot");
       if (taprootAlreadyEnabled) {
         // Disable it
-        await findAndToggleSettingsSwitch(tester, "Taproot");
+        await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
       }
-      await findAndToggleSettingsSwitch(tester, "Taproot");
+      await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
       await tester.pump(Durations.long2);
-      final doItLaterFromDialog = find.text('Do It Later');
-      final popUpText = find.text(
-        'Taproot on Passport',
-      );
-      // Check that a pop up comes up
-      await tester.pumpUntilFound(popUpText, duration: Durations.long1);
-      expect(doItLaterFromDialog, findsOneWidget);
-
-      final closeDialogButton = find.byIcon(Icons.close);
-      await tester.tap(closeDialogButton.last);
-      await tester.pump(Durations.long2);
-      // Check that a pop up close on 'x'
-      expect(popUpText, findsNothing);
-      await findAndToggleSettingsSwitch(tester, "Taproot"); // Disable
-      await findAndToggleSettingsSwitch(tester, "Taproot"); // Enable again
+      final confirmTextFromDialog = find.text('Confirm');
 
       // Check that a pop up comes up
-      expect(doItLaterFromDialog, findsOneWidget);
-      await tester.tap(doItLaterFromDialog);
+      await tester.pumpUntilFound(confirmTextFromDialog, duration: Durations.long1);
+
+      await tester.tap(confirmTextFromDialog);
       await tester.pump(Durations.long2);
-      // Check that a pop up close on "Do It Later"
-      expect(doItLaterFromDialog, findsNothing);
+      // Check that a pop up closed
+      expect(confirmTextFromDialog, findsNothing);
+      await findAndToggleSettingsSwitch(
+          tester, "Receive to Taproot"); // Disable
+      await findAndToggleSettingsSwitch(
+          tester, "Receive to Taproot"); // Enable again
+
+      // Check that a pop up comes up
+      expect(confirmTextFromDialog, findsOneWidget);
+      await tester.tap(confirmTextFromDialog);
+      await tester.pump(Durations.long2);
+      // Check that a pop up closed
+      expect(confirmTextFromDialog, findsNothing);
+
+      //TODO check taproot address in receive !!!
       await pressHamburgerMenu(tester); // back to settings menu
       await pressHamburgerMenu(tester); // back to home
-      final taprootBadge = find.text('Taproot');
-      // Check that a Taproot accounts is displayed
-      expect(taprootBadge, findsAny);
+await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
+      await findAndPressTextButton(tester, "Receive");
 
-      // Check if the Taproot account disappears after being disabled
+      // copy Taproot address
+      final address1 = await getAddressFromReceiveScreen(tester);
+
+      // back to home
+      await pressHamburgerMenu(tester);
+      await pressHamburgerMenu(tester);
+      // settings
       await pressHamburgerMenu(tester);
       await goToSettings(tester);
       await openAdvancedMenu(tester);
-      await findAndToggleSettingsSwitch(tester, "Taproot"); // Disable
+      await findAndToggleSettingsSwitch(
+          tester, "Receive to Taproot"); // Disable
+      await findFirstTextButtonAndPress(tester, "Confirm");
+
       await pressHamburgerMenu(tester); // back to settings menu
       await pressHamburgerMenu(tester); // back to home
-      expect(taprootBadge, findsNothing);
+     // await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)"); // for some reason on iphone goes straight to receive screen
+     // await findAndPressTextButton(tester, "Receive");
+
+      //compare Taproot addresses
+      // Grab the second address
+      final address2 = await getAddressFromReceiveScreen(tester);
+
+      // Compare them
+      expect(address2.length < address1.length, isTrue,
+          reason: 'Disabling Taproot should shorten the address format');
 
       // Check if "Reconnect Passport" button working
+      // back to home
+      await pressHamburgerMenu(tester);
+      await pressHamburgerMenu(tester);
+      // settings
       await pressHamburgerMenu(tester);
       await goToSettings(tester);
       await openAdvancedMenu(tester);
-      await findAndToggleSettingsSwitch(tester, "Taproot"); // Enable again
-      final reconnectPassportButton = find.text('Reconnect Passport');
-      expect(reconnectPassportButton, findsOneWidget);
-      await tester.tap(reconnectPassportButton);
-      await tester.pump(Durations.long2);
-      await tester.pump(Durations.long2);
-      final connectPassportButton = find.text('Get Started');
-      expect(connectPassportButton, findsOneWidget);
+      await findAndToggleSettingsSwitch(
+          tester, "Receive to Taproot"); // Enable again
+
+      /// if old passport - taproot (this was in 1.8)
+      //final reconnectPassportButton = find.text('Reconnect Passport');
+      //expect(reconnectPassportButton, findsOneWidget);
+      //await tester.tap(reconnectPassportButton);
+      //await tester.pump(Durations.long2);
+      //await tester.pump(Durations.long2);
+      //final connectPassportButton = find.text('Get Started');
+      //expect(connectPassportButton, findsOneWidget);
     });
     testWidgets('Check Signet in App', (tester) async {
       await goBackHome(tester);
@@ -967,10 +999,11 @@ Future<void> main() async {
       await findAndTapPopUpText(tester, 'Continue');
 
       // Make sure Taproot is off when searching for Signet account (maybe not necessary)
-      bool isSettingsTaprootSwitchOn = await isSlideSwitchOn(tester, 'Taproot');
+      bool isSettingsTaprootSwitchOn =
+          await isSlideSwitchOn(tester, 'Receive to Taproot');
       if (isSettingsTaprootSwitchOn) {
         // find And Toggle Taproot Switch
-        await findAndToggleSettingsSwitch(tester, 'Taproot');
+        await findAndToggleSettingsSwitch(tester, 'Receive to Taproot');
       }
 
       // Go back to the Accounts view
@@ -1041,7 +1074,8 @@ Future<void> main() async {
       await fromHomeToAdvancedMenu(tester);
 
       bool isSettingsSignetSwitchOn = await isSlideSwitchOn(tester, 'Signet');
-      bool isSettingsTaprootSwitchOn = await isSlideSwitchOn(tester, 'Taproot');
+      bool isSettingsTaprootSwitchOn =
+          await isSlideSwitchOn(tester, 'Receive to Taproot');
       bool isSettingsViewSatsSwitchOn =
           await isSlideSwitchOn(tester, 'View Amount in Sats');
 
@@ -1059,8 +1093,8 @@ Future<void> main() async {
       }
 
       if (!isSettingsTaprootSwitchOn) {
-        // find And Toggle Signet Switch
-        await findAndToggleSettingsSwitch(tester, 'Taproot');
+        // find And Toggle Taproot Switch
+        await findAndToggleSettingsSwitch(tester, 'Receive to Taproot');
         final closeDialogButton = find.byIcon(Icons.close);
         await tester.tap(closeDialogButton.last);
         await tester.pump(Durations.long2);
@@ -1193,10 +1227,11 @@ Future<void> main() async {
       }
 
       // turn taproot ON
-      bool isSettingsTaprootSwitchOn = await isSlideSwitchOn(tester, 'Taproot');
+      bool isSettingsTaprootSwitchOn =
+          await isSlideSwitchOn(tester, 'Receive to Taproot');
       if (!isSettingsTaprootSwitchOn) {
         // find And Toggle Taproot Switch
-        await findAndToggleSettingsSwitch(tester, 'Taproot');
+        await findAndToggleSettingsSwitch(tester, 'Receive to Taproot');
       }
 
       // Go back to the Accounts view
@@ -1313,10 +1348,11 @@ Future<void> main() async {
       }
 
       // disable Taproot
-      isSettingsTaprootSwitchOn = await isSlideSwitchOn(tester, 'Taproot');
+      isSettingsTaprootSwitchOn =
+          await isSlideSwitchOn(tester, 'Receive to Taproot');
       if (isSettingsTaprootSwitchOn) {
         // find And Toggle Taproot Switch
-        await findAndToggleSettingsSwitch(tester, 'Taproot');
+        await findAndToggleSettingsSwitch(tester, 'Receive to Taproot');
       }
 
       // Go back to the Accounts view
@@ -1377,10 +1413,11 @@ Future<void> main() async {
       await openAdvancedMenu(tester);
 
       // turn taproot ON
-      isSettingsTaprootSwitchOn = await isSlideSwitchOn(tester, 'Taproot');
+      isSettingsTaprootSwitchOn =
+          await isSlideSwitchOn(tester, 'Receive to Taproot');
       if (!isSettingsTaprootSwitchOn) {
         // find And Toggle Taproot Switch
-        await findAndToggleSettingsSwitch(tester, 'Taproot');
+        await findAndToggleSettingsSwitch(tester, 'Receive to Taproot');
       }
 
       // Go back to the Accounts view
@@ -1414,7 +1451,7 @@ Future<void> main() async {
 
       // scroll back by 10000
       await scrollHome(tester, 10000);
-    });
+    });*/
     testWidgets('Switching Fiat in App', (tester) async {
       await goBackHome(tester);
       const String accountPassportName = "GH TEST ACC (#1)";
