@@ -544,8 +544,8 @@ class Wallet {
       this.name, this.network, this.externalDescriptor, this.internalDescriptor,
       {this.hot = false,
       this.hasPassphrase = false,
-      this.publicExternalDescriptor = null,
-      this.publicInternalDescriptor = null,
+      this.publicExternalDescriptor,
+      this.publicInternalDescriptor,
       this.type = WalletType.witnessPublicKeyHash});
 
   init(String walletsDirectory) {
@@ -571,8 +571,8 @@ class Wallet {
       this.internalDescriptor, this._self,
       {this.hot = false,
       this.hasPassphrase = false,
-      this.publicExternalDescriptor = null,
-      this.publicInternalDescriptor = null,
+      this.publicExternalDescriptor,
+      this.publicInternalDescriptor,
       this.type = WalletType.witnessPublicKeyHash,
       required DynamicLibrary lib}) {
     _lib = lib;
@@ -612,7 +612,7 @@ class Wallet {
     _currentlySyncing = true;
 
     // Unfortunately we need to pass maps onto computes if there is more than one arg
-    Map map = Map();
+    Map map = {};
     map['wallet_pointer'] = getSelf().address;
     map['server_address'] = electrumAddress;
     map['tor_port'] = torPort;
@@ -832,13 +832,13 @@ class Wallet {
         // final dartFunction = rustFunction.asFunction<LastErrorMessageDart>();
         final error = "error";
         if (kDebugMode) {
-          print("BumpFee Rate Error: ${error}");
+          print("BumpFee Rate Error: $error");
         }
         if (error.contains("Insufficient funds")) {
           throw Exception(error);
         }
         if (feeRates.min_fee_rate == -1.1) {
-          throw Exception("Transaction cannot be boosted,Error: ${error}");
+          throw Exception("Transaction cannot be boosted,Error: $error");
         }
         if (feeRates.min_fee_rate == -1.6) {
           throw Exception("Unlock coin to boost transaction");
@@ -899,7 +899,7 @@ class Wallet {
 
   static Future<ElectrumServerFeatures> getServerFeatures(
       String electrumAddress, int torPort) async {
-    Map map = Map();
+    Map map = {};
     map['server_address'] = electrumAddress;
     map['tor_port'] = torPort;
 
@@ -994,17 +994,17 @@ class Wallet {
 
   Future<String> broadcastTx(
       String electrumAddress, int torPort, String tx) async {
-    Future<String> _broadcastTx(Map params) async {
+    Future<String> broadcastTx(Map params) async {
       DynamicLibrary lib = load(_libName);
 
-      int _torPort = params['port'];
-      String _tx = params['tx'];
+      int torPort0 = params['port'];
+      String tx0 = params['tx'];
 
       final rustFunction = lib
           .lookup<NativeFunction<WalletBroadcastTxRust>>('wallet_broadcast_tx');
       final dartFunction = rustFunction.asFunction<WalletBroadcastTxDart>();
       var txid = dartFunction(
-              electrumAddress.toNativeUtf8(), _torPort, _tx.toNativeUtf8())
+              electrumAddress.toNativeUtf8(), torPort0, tx0.toNativeUtf8())
           .cast<Utf8>()
           .toDartString();
 
@@ -1014,7 +1014,7 @@ class Wallet {
       return txid;
     }
 
-    return compute(_broadcastTx, {"tx": tx, "port": torPort});
+    return compute(broadcastTx, {"tx": tx, "port": torPort});
   }
 
   Future<bool> validateAddress(String address) {
