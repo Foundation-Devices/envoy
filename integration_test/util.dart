@@ -93,7 +93,7 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
 
   await disableTorOnboarding(tester);
 
-  final setUpButtonFinder = find.text('Create a\nMobile Wallet');
+  final setUpButtonFinder = find.text('Create a \nMobile Wallet');
   expect(setUpButtonFinder, findsOneWidget);
   await tester.tap(setUpButtonFinder);
   await tester.pump(const Duration(milliseconds: 500));
@@ -403,7 +403,7 @@ Future<void> goToEmail(WidgetTester tester) async {
 
 Future<void> fromHomeToHotWallet(WidgetTester tester) async {
   await tester.pump();
-  final hotWalletButton = find.text('Envoy');
+  final hotWalletButton = find.text('Envoy').first;
   expect(hotWalletButton, findsOneWidget);
 
   await tester.tap(hotWalletButton);
@@ -494,6 +494,19 @@ Future<void> setUpWalletFromSeedViaMagicRecover(
   await tester.tap(continueButtonFinder);
   await tester.pump(const Duration(milliseconds: 500));
 
+  // testnet4, signet, unified address - modals
+  if (find.text('Introducing testnet4').evaluate().isNotEmpty) {
+    await findAndTapPopUpText(tester, 'Confirm');
+  }
+
+  if (find.text('Global Signet').evaluate().isNotEmpty) {
+    await findAndTapPopUpText(tester, 'Confirm');
+  }
+
+  if (find.text('Unified Address Types').evaluate().isNotEmpty) {
+    await findAndTapPopUpText(tester, 'Confirm');
+  }
+
   // Scroll down by 600 pixels
   await scrollHome(tester, -600);
 
@@ -534,6 +547,19 @@ Future<void> setUpWalletFromSeedViaBackupFile(
   await tester.tap(continueButtonFinder);
   await tester.pump(Durations.long2);
   await tester.pump(Durations.long2);
+
+  // testnet4, signet, unified address - modals
+  if (find.text('Introducing testnet4').evaluate().isNotEmpty) {
+    await findAndTapPopUpText(tester, 'Confirm');
+  }
+
+  if (find.text('Global Signet').evaluate().isNotEmpty) {
+    await findAndTapPopUpText(tester, 'Confirm');
+  }
+
+  if (find.text('Unified Address Types').evaluate().isNotEmpty) {
+    await findAndTapPopUpText(tester, 'Confirm');
+  }
 
   // Scroll down by 600 pixels
   await scrollHome(tester, -600);
@@ -616,7 +642,7 @@ Future<void> onboardingAndEnterSeed(
 
   await disableTorOnboarding(tester);
 
-  final setUpButtonFinder = find.text('Create a\nMobile Wallet');
+  final setUpButtonFinder = find.text('Create a \nMobile Wallet');
   expect(setUpButtonFinder, findsOneWidget);
   await tester.tap(setUpButtonFinder);
   await tester.pump(const Duration(milliseconds: 500));
@@ -708,7 +734,7 @@ Future<void> setUpFromStartNoAccounts(WidgetTester tester) async {
   final setUpButtonFinder = find.byWidgetPredicate((widget) =>
       widget is Text &&
       widget.data != null &&
-      widget.data!.contains('Create a\nMobile Wallet'));
+      widget.data!.contains('Create a \nMobile Wallet'));
 
   expect(setUpButtonFinder, findsOneWidget);
   await tester.tap(setUpButtonFinder);
@@ -1415,10 +1441,11 @@ Future<void> disableAllNetworks(WidgetTester tester) async {
   }
 
   // Check if "Taproot" is already enabled
-  bool taprootAlreadyEnabled = await isSlideSwitchOn(tester, "Taproot");
+  bool taprootAlreadyEnabled =
+      await isSlideSwitchOn(tester, "Receive to Taproot");
   if (taprootAlreadyEnabled) {
     // Disable "Taproot"
-    await findAndToggleSettingsSwitch(tester, "Taproot");
+    await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
   }
 
   // Check if "Signet" is already enabled
