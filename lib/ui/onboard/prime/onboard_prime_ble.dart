@@ -594,44 +594,48 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     await BluetoothManager().pair(payload);
   }
 
-  showCommunicationModal(BuildContext context) async {
-    if (context.mounted) {
-      showEnvoyDialog(
-          context: context,
-          dismissible: false,
-          dialog: QuantumLinkCommunicationInfo(
-            onContinue: () async {
-              await showScannerDialog(
-                  showInfoDialog: true,
-                  context: context,
-                  onBackPressed: (context) {
-                    Navigator.pop(context);
-                  },
-                  decoder:
-                      //parse UR payload
-                      PrimeQlPayloadDecoder(
-                          decoder: await getQrDecoder(),
-                          onScan: (XidDocument payload) async {
-                            kPrint("XID payload: $payload");
-                            await pairWithPrime(payload);
+  Future<void> showCommunicationModal(BuildContext context) async {
+    if (!context.mounted) return;
 
-                            //TODO: process XidDocument for connection
+    showEnvoyDialog(
+      context: context,
+      dismissible: false,
+      dialog: QuantumLinkCommunicationInfo(
+        onContinue: () async {
+          final qrDecoder = await getQrDecoder();
 
-                            if (context.mounted) {
-                              // Close the scanner properly before moving forward
-                              if (Navigator.canPop(context)) {
-                                Navigator.pop(context);
-                              }
+          if (!context.mounted) return;
 
-                              await Future.delayed(Duration(milliseconds: 200));
-                              if (context.mounted) {
-                                context.goNamed(ONBOARD_PRIME_PAIR);
-                              }
-                            }
-                          }));
+          await showScannerDialog(
+            showInfoDialog: true,
+            context: context,
+            onBackPressed: (ctx) {
+              if (ctx.mounted) Navigator.pop(ctx);
             },
-          ));
-    }
+            decoder: PrimeQlPayloadDecoder(
+              decoder: qrDecoder,
+              onScan: (XidDocument payload) async {
+                kPrint("XID payload: $payload");
+                await pairWithPrime(payload);
+
+                // TODO: process XidDocument for connection
+
+                if (!context.mounted) return;
+
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                }
+
+                await Future.delayed(const Duration(milliseconds: 200));
+
+                if (!context.mounted) return;
+                context.goNamed(ONBOARD_PRIME_PAIR);
+              },
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 
