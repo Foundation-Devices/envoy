@@ -207,49 +207,59 @@ final combinedNotificationsProvider = Provider<List<EnvoyNotification>>((ref) {
   return combinedItems;
 });
 
-final transactionsProvider =
-    Provider.family<List<EnvoyTransaction>, String?>((ref, String? accountId) {
-  List<EnvoyTransaction> pendingTransactions =
-      ref.watch(pendingTransactionsProvider(accountId));
-  List<EnvoyTransaction> transactions = [];
-  List<EnvoyTransaction> walletTransactions =
-      ref.watch(walletTransactionsProvider(accountId));
-  transactions.addAll(walletTransactions);
-  //avoid duplicates
-  for (var pending in pendingTransactions) {
-    final tx = transactions
-        .firstWhereOrNull((element) => element.txId == pending.txId);
-    final recentRBFs = ref.watch(rbfBroadCastedTxProvider);
-    if (tx == null && !recentRBFs.contains(pending.txId)) {
-      transactions.add(pending);
-    }
-  }
+final transactionsProvider = NotifierProvider.family<TransactionsNotifier,
+    List<EnvoyTransaction>, String?>(
+  TransactionsNotifier.new,
+);
 
-  ref.watch(rbfBroadCastedTxProvider).forEach((txId) {
-    final tx = transactions.firstWhereOrNull((element) => element.txId == txId);
-    if (tx != null && !tx.isConfirmed) {
-      Notifications().deleteNotification(tx.txId,
-          accountId: accountId, delay: const Duration(seconds: 30));
-      transactions.remove(tx);
-    }
-  });
-  //listen to transactions changes, prune pending transactions if needed
-  //we use provider to retrieve all types of transactions,
-  //in this way less database calls are made,
-  //since provider will cache the result
-  ref.listenSelf((previous, next) {
+class TransactionsNotifier
+    extends FamilyNotifier<List<EnvoyTransaction>, String?> {
+  @override
+  List<EnvoyTransaction> build(String? arg) {
     List<EnvoyTransaction> pendingTransactions =
-        ref.read(pendingTransactionsProvider(accountId));
+        ref.watch(pendingTransactionsProvider(arg));
     List<EnvoyTransaction> walletTransactions =
-        ref.read(walletTransactionsProvider(accountId));
-    prunePendingTransactions(ref, [
-      ...pendingTransactions,
-      ...walletTransactions,
-    ]);
-  });
+        ref.watch(walletTransactionsProvider(arg));
+    List<EnvoyTransaction> transactions = [...walletTransactions];
 
-  return transactions;
-});
+    final recentRBFs = ref.watch(rbfBroadCastedTxProvider);
+
+    for (var pending in pendingTransactions) {
+      final tx = transactions
+          .firstWhereOrNull((element) => element.txId == pending.txId);
+      if (tx == null && !recentRBFs.contains(pending.txId)) {
+        transactions.add(pending);
+      }
+    }
+
+    for (var txId in recentRBFs) {
+      final tx =
+          transactions.firstWhereOrNull((element) => element.txId == txId);
+      if (tx != null && !tx.isConfirmed) {
+        Notifications().deleteNotification(
+          tx.txId,
+          accountId: arg,
+          delay: const Duration(seconds: 30),
+        );
+        transactions.remove(tx);
+      }
+    }
+
+    // ✅ Replaces ref.listenSelf
+    listenSelf((previous, next) {
+      List<EnvoyTransaction> pendingTransactions =
+          ref.read(pendingTransactionsProvider(arg));
+      List<EnvoyTransaction> walletTransactions =
+          ref.read(walletTransactionsProvider(arg));
+      prunePendingTransactions(ref, [
+        ...pendingTransactions,
+        ...walletTransactions,
+      ]);
+    });
+
+    return transactions;
+  }
+}
 
 final isThereAnyTransactionsProvider = Provider<bool>((ref) {
   var accounts = ref.watch(accountsProvider);

@@ -3,17 +3,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/account/accounts_manager.dart';
-import 'package:envoy/business/account.dart';
-import 'package:envoy/business/account_manager.dart';
 import 'package:envoy/business/coins.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:ngwallet/src/rust/api/envoy_account.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:uuid/uuid.dart';
 
 part 'coin_tag.g.dart';
 
-@Deprecated("Use Tag from ngwallet, this will be removed after 2.0 release")
+//@Deprecated("Use Tag from ngwallet, this will be removed after 2.0 release")
 @JsonSerializable(ignoreUnannotated: true)
 class CoinTag {
   @JsonKey(name: 'id', defaultValue: generateNewId)

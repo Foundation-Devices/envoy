@@ -12,7 +12,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/scheduler.dart';
-import 'package:foundation_api/src/rust/third_party/foundation_api/api/scv.dart';
+import 'package:foundation_api/foundation_api.dart';
 
 // Generated
 part 'scv_server.g.dart';

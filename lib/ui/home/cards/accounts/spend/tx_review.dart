@@ -151,10 +151,11 @@ class _TxReviewState extends ConsumerState<TxReview> {
         _passportMessageSubscription = BluetoothManager()
             .passportMessageStream
             .listen((PassportMessage message) async {
-              kPrint("Got the Passport Message : ${message.message}");
+          kPrint("Got the Passport Message : ${message.message}");
           if (message.message is QuantumLinkMessage_BroadcastTransaction) {
             final signedPsbt =
-                (message.message as QuantumLinkMessage_BroadcastTransaction).field0;
+                (message.message as QuantumLinkMessage_BroadcastTransaction)
+                    .field0;
             kPrint("Signed Psbt $signedPsbt");
             await ref
                 .read(spendTransactionProvider.notifier)
@@ -525,8 +526,6 @@ class _TransactionReviewScreenState
         child: Text("Unable to build transaction"), //TODO: figma
       );
     }
-
-    int amount = transaction.amount;
 
     String header = (account.isHot || transactionModel.isFinalized)
         ? S().coincontrol_tx_detail_heading

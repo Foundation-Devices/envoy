@@ -20,7 +20,6 @@ import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:flutter/material.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:rive/rive.dart';
 
 class SeedScreen extends StatefulWidget {
   final bool generate;
@@ -106,51 +105,51 @@ class _SeedScreenState extends State<SeedScreen> {
     );
   }
 
-  Widget _buildSeedGenerating(BuildContext context) {
-    return Column(
-      children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: const EdgeInsets.all(EnvoySpacing.medium1),
-            child: GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: const Icon(Icons.arrow_back_ios_rounded,
-                    size: EnvoySpacing.medium2)),
-          ),
-        ),
-        Expanded(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: 240,
-                height: 240,
-                child: RiveAnimation.asset(
-                  "assets/envoy_loader.riv",
-                  fit: BoxFit.contain,
-                  onInit: (artboard) {
-                    var stateMachineController =
-                        StateMachineController.fromArtboard(artboard, 'STM');
-                    artboard.addController(stateMachineController!);
-                    stateMachineController
-                        .findInput<bool>("indeterminate")
-                        ?.change(true);
-                  },
-                ),
-              ),
-              const Padding(padding: EdgeInsets.all(14)),
-              Text(S().manual_setup_generatingSeedLoadingInfo,
-                  style: EnvoyTypography.heading),
-            ],
-          ),
-        )
-      ],
-    );
-  }
+  // Widget _buildSeedGenerating(BuildContext context) {
+  //   return Column(
+  //     children: [
+  //       Align(
+  //         alignment: Alignment.centerLeft,
+  //         child: Padding(
+  //           padding: const EdgeInsets.all(EnvoySpacing.medium1),
+  //           child: GestureDetector(
+  //               onTap: () {
+  //                 Navigator.pop(context);
+  //               },
+  //               child: const Icon(Icons.arrow_back_ios_rounded,
+  //                   size: EnvoySpacing.medium2)),
+  //         ),
+  //       ),
+  //       Expanded(
+  //         child: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           mainAxisAlignment: MainAxisAlignment.start,
+  //           children: [
+  //             SizedBox(
+  //               width: 240,
+  //               height: 240,
+  //               child: RiveAnimation.asset(
+  //                 "assets/envoy_loader.riv",
+  //                 fit: BoxFit.contain,
+  //                 onInit: (artboard) {
+  //                   var stateMachineController =
+  //                       StateMachineController.fromArtboard(artboard, 'STM');
+  //                   artboard.addController(stateMachineController!);
+  //                   stateMachineController
+  //                       .findInput<bool>("indeterminate")
+  //                       ?.change(true);
+  //                 },
+  //               ),
+  //             ),
+  //             const Padding(padding: EdgeInsets.all(14)),
+  //             Text(S().manual_setup_generatingSeedLoadingInfo,
+  //                 style: EnvoyTypography.heading),
+  //           ],
+  //         ),
+  //       )
+  //     ],
+  //   );
+  // }
 
   Widget _buildMnemonicGrid(BuildContext context) {
     if (seedList.isEmpty) {

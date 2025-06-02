@@ -9,7 +9,6 @@ import 'package:bluart/bluart.dart' as bluart;
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/prime_device.dart';
 import 'package:envoy/business/scv_server.dart';
-import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/ntp.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
@@ -17,7 +16,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/uuid_value.dart';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:foundation_api/src/rust/third_party/foundation_api/api/scv.dart';
 
 class BluetoothManager {
   StreamSubscription? _subscription;
@@ -72,16 +70,13 @@ class BluetoothManager {
 
     kPrint("QL Identity: $_qlIdentity");
 
-
     events?.listen((bluart.Event event) async {
       kPrint("Got event $event");
       if (event is bluart.Event_DeviceConnected) {
         connected = true;
       }
 
-      if (event is bluart.Event_DeviceDisconnected) {
-
-      }
+      if (event is bluart.Event_DeviceDisconnected) {}
 
       if (event is bluart.Event_ScanResult) {
         kPrint("Scan result received, _bleId = $_bleId");
@@ -248,7 +243,8 @@ class BluetoothManager {
   }
 
   Future<void> sendChallengeMessage() async {
-    SecurityChallengeMessage? challenge = await ScvServer().getPrimeChallenge();
+    api.SecurityChallengeMessage? challenge =
+        await ScvServer().getPrimeChallenge();
 
     if (challenge == null) {
       // TODO: SCV what now?
@@ -310,7 +306,7 @@ class BluetoothManager {
       );
 
       await bluart.writeAll(id: bleId, data: encoded);
-    } catch (e, stack) {
+    } catch (e) {
       kPrint('Failed to send exchange rate: $e');
     }
   }
