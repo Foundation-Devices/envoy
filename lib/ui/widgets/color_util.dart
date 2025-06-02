@@ -33,9 +33,8 @@ Color fromHex(String hexColor) {
     final colorValue = int.parse(buffer.toString(), radix: 16);
     return Color(colorValue);
   } on Exception catch (_) {
-     return EnvoyColors.listAccountTileColors.first;
+    return EnvoyColors.listAccountTileColors.first;
   }
-
 }
 
 String toColorHex(Color color) {

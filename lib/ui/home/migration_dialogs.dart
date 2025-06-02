@@ -113,7 +113,7 @@ void notifyAboutNetworkMigrationDialog(BuildContext context) {
           blurColor: Colors.black,
           dialog: SizedBox(
             width: MediaQuery.of(context).size.width * 0.85,
-            height: MediaQuery.of(context).size.height * 0.44,
+            height: MediaQuery.of(context).size.height * 0.54,
             child: PageView(
               controller: controller,
               children: [...pages],

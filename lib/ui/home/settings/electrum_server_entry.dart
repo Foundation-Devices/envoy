@@ -18,8 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:tor/tor.dart';
-import 'package:ngwallet/src/exceptions.dart';
-import 'package:ngwallet/src/wallet.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 enum ElectrumServerEntryState { pending, valid, invalid }
 
@@ -121,14 +120,16 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
                 _isError = false;
                 _textBelow = S().privacy_node_configure;
               }
-            },
-            onEditingComplete: () {
-              final raw = _controller.text;
-              if (raw.isNotEmpty) {
-                final parsed = parseNodeUrl(raw);
-                _onAddressChanged(parsed);
-                _controller.text = normalizeProtocol(raw);
+
+              if (_typingTimer != null) {
+                _typingTimer!.cancel();
               }
+              _typingTimer = Timer(const Duration(seconds: 2), () {
+                if (address.isNotEmpty) {
+                  _onAddressChanged(parseNodeUrl(address));
+                  _controller.text = normalizeProtocol(address);
+                }
+              });
             },
             isError: _isError,
             onQrScan: () {

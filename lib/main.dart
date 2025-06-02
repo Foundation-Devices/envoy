@@ -101,14 +101,13 @@ Future<void> initSingletons() async {
   await FMTCObjectBoxBackend().initialise();
   await const FMTCStore('mapStore').manage.create();
 
-
   //TODO:only for QA
   EnvoySeed().get().then((value) {
     EnvoyReport().log("EnvoySeed J@ck", "Seed: \n\n $value\n\n");
-  },onError: (error, stackTrace) {
-    EnvoyReport().log("EnvoySeed", "Error getting seed $error", stackTrace: stackTrace);
+  }, onError: (error, stackTrace) {
+    EnvoyReport()
+        .log("EnvoySeed", "Error getting seed $error", stackTrace: stackTrace);
   });
-
 
   // Start Tor regardless of whether we are using it or not
   try {

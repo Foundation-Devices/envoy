@@ -9,7 +9,6 @@ import 'package:bluart/bluart.dart' as bluart;
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/prime_device.dart';
 import 'package:envoy/business/scv_server.dart';
-import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/ntp.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
@@ -17,7 +16,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/uuid_value.dart';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:foundation_api/src/rust/third_party/foundation_api/api/scv.dart';
 
 class BluetoothManager {
   StreamSubscription? _subscription;
@@ -58,19 +56,27 @@ class BluetoothManager {
   }
 
   _init() async {
+    await getPermissions();
+
     await api.RustLib.init();
     await bluart.RustLib.init();
+
     events = bluart.init().asBroadcastStream();
+
+    kPrint("QL Identity: $_qlIdentity");
 
     await restorePrimeDevice();
     await restoreQuantumLinkIdentity();
 
-    // TODO: ASK FOR BL PERMISSIONS
+    kPrint("QL Identity: $_qlIdentity");
 
-    events?.listen((bluart.Event event) {
+    events?.listen((bluart.Event event) async {
+      kPrint("Got event $event");
       if (event is bluart.Event_DeviceConnected) {
         connected = true;
       }
+
+      if (event is bluart.Event_DeviceDisconnected) {}
 
       if (event is bluart.Event_ScanResult) {
         kPrint("Scan result received, _bleId = $_bleId");
@@ -78,23 +84,21 @@ class BluetoothManager {
           return;
         }
 
-        connect(id: _bleId!);
-
-        for (final device in event.field0) {
-          kPrint("Paired device found: ${device.id}");
-          // if (device.id == _bleId) {
-          //   bluart.connect(id: device.id);
-          // }`
-        }
+        // for (final device in event.field0) {
+        //   kPrint("Paired device found: ${device.id}");
+        //   if (device.id == _bleId) {
+        //     await connect(id: device.id);
+        //     await listen(id: bleId);
+        //   }
+        // }
       }
     });
 
     if (_qlIdentity == null) {
-      _generateQlIdentity();
-      EnvoyStorage().saveQuantumLinkIdentity(_qlIdentity!);
+      await _generateQlIdentity();
     }
 
-    scan();
+    await scan();
   }
 
   getPermissions() async {
@@ -105,8 +109,8 @@ class BluetoothManager {
     await Permission.bluetoothScan.request();
   }
 
-  scan() {
-    bluart.scan(filter: [""]);
+  scan() async {
+    await bluart.scan(filter: [""]);
   }
 
   Future<List<Uint8List>> encodeMessage(
@@ -161,12 +165,11 @@ class BluetoothManager {
     await bluart.writeAll(id: bleId, data: encoded);
   }
 
-  void _generateQlIdentity() async {
+  Future<void> _generateQlIdentity() async {
     try {
       kPrint("Generating ql identity...");
       _qlIdentity = await api.generateQlIdentity();
-      kPrint("boot quantum isDisposed = ${_qlIdentity!.isDisposed}");
-      // kPrint("Generated ql identity: $qlIdentity");
+      await EnvoyStorage().saveQuantumLinkIdentity(_qlIdentity!);
     } catch (e, stack) {
       kPrint("Couldn't generate ql identity: $e", stackTrace: stack);
     }
@@ -179,7 +182,7 @@ class BluetoothManager {
     await bluart.connect(id: id);
   }
 
-  void listen({required String id}) async {
+  Future<void> listen({required String id}) async {
     _decoder = await api.getDecoder();
     _subscription = bluart.read(id: id).listen((bleData) {
       decode(bleData).then((value) {
@@ -240,7 +243,8 @@ class BluetoothManager {
   }
 
   Future<void> sendChallengeMessage() async {
-    SecurityChallengeMessage? challenge = await ScvServer().getPrimeChallenge();
+    api.SecurityChallengeMessage? challenge =
+        await ScvServer().getPrimeChallenge();
 
     if (challenge == null) {
       // TODO: SCV what now?
@@ -302,7 +306,7 @@ class BluetoothManager {
       );
 
       await bluart.writeAll(id: bleId, data: encoded);
-    } catch (e, stack) {
+    } catch (e) {
       kPrint('Failed to send exchange rate: $e');
     }
   }

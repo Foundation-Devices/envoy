@@ -85,6 +85,9 @@ final readBlogStreamProvider = StreamProvider.family<bool, String>(
 final watchedVideoStreamProvider = StreamProvider.family<bool, String>(
     (ref, url) => EnvoyStorage().isVideoWatched(url));
 
+final txNoteFromStorageProvider = StreamProvider.family<String, String>(
+    (ref, txId) => EnvoyStorage().getTxNotesStream(txId));
+
 const String txNotesStoreName = "tx_notes";
 const String videosStoreName = "videos";
 const String pendingTxStoreName = "pending_tx";
@@ -163,8 +166,8 @@ class EnvoyStorage {
   StoreRef<String, Map<String, dynamic>> primeStore =
       StoreRef<String, Map<String, dynamic>>(primeDataStoreName);
 
-  StoreRef<int, List<int>> quantumLinkIdentityStore =
-      StoreRef<int, List<int>>(quantumLinkIdentityStoreName);
+  StoreRef<int, String> quantumLinkIdentityStore =
+      StoreRef<int, String>(quantumLinkIdentityStoreName);
 
   StoreRef<String, bool> accountFullsScanStateStore =
       StoreRef<String, bool>(accountFullsScanStateStoreName);
@@ -938,28 +941,38 @@ class EnvoyStorage {
 
   Future<bool> saveQuantumLinkIdentity(QuantumLinkIdentity identity) async {
     final data = await serializeQlIdentity(quantumLinkIdentity: identity);
-    await quantumLinkIdentityStore.record(0).put(_db, data);
+    await quantumLinkIdentityStore
+        .record(0)
+        .put(_db, base64Encode(data.toList()));
     return true;
   }
 
   Future<QuantumLinkIdentity?> getQuantumLinkIdentity() async {
     final data = await quantumLinkIdentityStore.record(0).get(_db);
-    final identity = await deserializeQlIdentity(data: data!);
+    final identity = await deserializeQlIdentity(data: base64Decode(data!));
     return identity;
   }
 
   Future<bool> setAccountScanStatus(
       String accountId, AddressType addressType, bool isFullScanDone) async {
     await accountFullsScanStateStore
-        .record("${accountId}:${addressType.toString()}")
+        .record("$accountId:${addressType.toString()}")
         .put(_db, isFullScanDone);
+    return true;
+  }
+
+  Future<bool> removeAccountStatus(
+      String accountId, AddressType addressType) async {
+    await accountFullsScanStateStore
+        .record("$accountId:${addressType.toString()}")
+        .delete(_db);
     return true;
   }
 
   Future<bool> getAccountScanStatus(
       String accountId, AddressType addressType) async {
     return await (accountFullsScanStateStore
-            .record("${accountId}:${addressType.toString()}")
+            .record("$accountId:${addressType.toString()}")
             .get(_db)) ??
         false;
   }

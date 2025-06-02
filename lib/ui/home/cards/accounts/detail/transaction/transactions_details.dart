@@ -93,9 +93,19 @@ class _TransactionsDetailsWidgetState
     ///watch transaction changes to get real time updates
     final tx = ref.watch(getTransactionProvider(widget.tx.txId)) ?? widget.tx;
 
-    final note = ref.watch(getTransactionProvider(widget.tx.txId).select(
+    String note = ref.watch(getTransactionProvider(widget.tx.txId).select(
       (value) => value?.note ?? "",
     ));
+
+    if (!tx.isConfirmed) {
+      final noteFromStorage =
+          ref.watch(txNoteFromStorageProvider(widget.tx.txId));
+
+      note = noteFromStorage.maybeWhen(
+        data: (value) => value,
+        orElse: () => note,
+      );
+    }
 
     final hideBalance =
         ref.watch(balanceHideStateStatusProvider(widget.account.id));
@@ -448,12 +458,19 @@ class _TransactionsDetailsWidgetState
                             noteTitle: S().add_note_modal_heading,
                             noteHintText: S().add_note_modal_ie_text_field,
                             noteSubTitle: S().add_note_modal_subheading,
-                            onAdd: (note) {
-                              widget.account.handler?.setNote(
-                                note: note,
-                                txId: tx.txId,
-                              );
-                              Navigator.pop(context);
+                            onAdd: (note) async {
+                              if (!tx.isConfirmed) {
+                                await EnvoyStorage()
+                                    .addTxNote(key: tx.txId, note: note);
+                              } else {
+                                widget.account.handler?.setNote(
+                                  note: note,
+                                  txId: tx.txId,
+                                );
+                              }
+                              if (context.mounted) {
+                                Navigator.pop(context);
+                              }
                             },
                           ),
                           alignment: const Alignment(0.0, -0.8));

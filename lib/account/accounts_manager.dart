@@ -24,6 +24,8 @@ import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:ngwallet/ngwallet.dart';
 
+import '../util/envoy_storage.dart';
+
 class AccountAlreadyPaired implements Exception {}
 
 extension AccountExtension on EnvoyAccount {
@@ -330,6 +332,11 @@ class NgAccountManager extends ChangeNotifier {
     List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
     order.remove(account.id);
     await _ls.prefs.setString(ACCOUNT_ORDER, jsonEncode(order));
+
+    for (var descriptor in account.descriptors) {
+      await EnvoyStorage()
+          .removeAccountStatus(account.id, descriptor.addressType);
+    }
     _accountsOrder.sink.add(order);
     await Future.delayed(const Duration(milliseconds: 50));
     final dir = Directory(account.walletPath!);

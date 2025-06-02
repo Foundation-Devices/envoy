@@ -854,12 +854,13 @@ class _SpendSelectionCancelWarningState
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final isDismissed = ref.read(
+        arePromptsDismissedProvider(DismissiblePrompt.txDiscardWarning),
+      );
       setState(() {
-        dismissed = ref.read(
-            arePromptsDismissedProvider(DismissiblePrompt.txDiscardWarning));
+        dismissed = isDismissed;
       });
     });
   }
@@ -867,34 +868,33 @@ class _SpendSelectionCancelWarningState
   @override
   Widget build(BuildContext context) {
     return EnvoyPopUp(
-        icon: EnvoyIcons.alert,
-        typeOfMessage: PopUpState.warning,
-        showCloseButton: false,
-        content: S().manual_coin_preselection_dialog_description,
-        primaryButtonLabel: S().component_yes,
-        onPrimaryButtonTap: (context) {
-          txWarningExit(context);
-          Navigator.of(context).pop(true);
-        },
-        tertiaryButtonLabel: S().component_no,
-        onTertiaryButtonTap: (context) {
-          txWarningExit(context);
-          Navigator.of(context).pop(false);
-        },
-        checkBoxText: S().component_dontShowAgain,
-        checkedValue: false,
-        onCheckBoxChanged: (checkedValue) {
-          setState(() {
-            dismissed = !dismissed;
-          });
+      icon: EnvoyIcons.alert,
+      typeOfMessage: PopUpState.warning,
+      showCloseButton: false,
+      content: S().manual_coin_preselection_dialog_description,
+      primaryButtonLabel: S().component_yes,
+      onPrimaryButtonTap: (context) {
+        Navigator.of(context).pop(true);
+      },
+      tertiaryButtonLabel: S().component_no,
+      onTertiaryButtonTap: (context) {
+        Navigator.of(context).pop(false);
+      },
+      checkBoxText: S().component_dontShowAgain,
+      checkedValue: dismissed,
+      onCheckBoxChanged: (checkedValue) async {
+        setState(() {
+          dismissed = checkedValue;
         });
-  }
 
-  void txWarningExit(BuildContext context) {
-    if (dismissed) {
-      EnvoyStorage().addPromptState(DismissiblePrompt.txDiscardWarning);
-    } else {
-      EnvoyStorage().removePromptState(DismissiblePrompt.txDiscardWarning);
-    }
+        if (checkedValue) {
+          await EnvoyStorage()
+              .addPromptState(DismissiblePrompt.txDiscardWarning);
+        } else {
+          await EnvoyStorage()
+              .removePromptState(DismissiblePrompt.txDiscardWarning);
+        }
+      },
+    );
   }
 }
