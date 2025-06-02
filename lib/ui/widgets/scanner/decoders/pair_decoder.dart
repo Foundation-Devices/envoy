@@ -35,8 +35,8 @@ class PairPayloadDecoder extends ScannerDecoder {
       //show progress if the code is UR
       progressCallBack?.call(urDecoder.urDecoder.progress);
       if (payload is Binary) {
-        if (_validatePairData(payload) ) {
-          if(_scanFinished) return;
+        if (_validatePairData(payload)) {
+          if (_scanFinished) return;
           onScan(payload);
           _scanFinished = true;
         } else {

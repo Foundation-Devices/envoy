@@ -334,7 +334,8 @@ class NgAccountManager extends ChangeNotifier {
     await _ls.prefs.setString(ACCOUNT_ORDER, jsonEncode(order));
 
     for (var descriptor in account.descriptors) {
-      await EnvoyStorage().removeAccountStatus(account.id, descriptor.addressType);
+      await EnvoyStorage()
+          .removeAccountStatus(account.id, descriptor.addressType);
     }
     _accountsOrder.sink.add(order);
     await Future.delayed(const Duration(milliseconds: 50));

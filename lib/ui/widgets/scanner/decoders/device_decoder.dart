@@ -10,7 +10,7 @@ class DeviceDecoder extends ScannerDecoder {
   final Function(String code) onScan;
   PairPayloadDecoder pairPayloadDecoder;
 
-  DeviceDecoder( {required this.onScan,required this.pairPayloadDecoder});
+  DeviceDecoder({required this.onScan, required this.pairPayloadDecoder});
 
   @override
   Future<void> onDetectBarCode(Barcode barCode) async {
@@ -20,7 +20,7 @@ class DeviceDecoder extends ScannerDecoder {
     if (barCode.code?.toLowerCase().startsWith("ur:") == true) {
       pairPayloadDecoder.onDetectBarCode(barCode);
       progressCallBack?.call(pairPayloadDecoder.urDecoder.urDecoder.progress);
-    }else{
+    } else {
       onScan(barCode.code!);
     }
   }
