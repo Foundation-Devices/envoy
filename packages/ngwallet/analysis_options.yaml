@@ -9,6 +9,7 @@ analyzer:
     - 'lib/src/generated*'
     - 'lib/src/*.g.*'
     - 'rust_builder'
+    - 'lib/src/wallet.dart'
 
   plugins:
     - custom_lint

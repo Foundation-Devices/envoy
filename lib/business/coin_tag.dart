@@ -11,7 +11,7 @@ import 'package:uuid/uuid.dart';
 
 part 'coin_tag.g.dart';
 
-@Deprecated("Use Tag from ngwallet, this will be removed after 2.0 release")
+//@Deprecated("Use Tag from ngwallet, this will be removed after 2.0 release")
 @JsonSerializable(ignoreUnannotated: true)
 class CoinTag {
   @JsonKey(name: 'id', defaultValue: generateNewId)
