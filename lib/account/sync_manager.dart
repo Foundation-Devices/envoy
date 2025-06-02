@@ -57,7 +57,7 @@ class SyncManager {
       if (NgAccountManager().accounts.isEmpty || _pauseSync) {
         return;
       }
-      // _syncAll();
+      _syncAll();
     });
   }
 
