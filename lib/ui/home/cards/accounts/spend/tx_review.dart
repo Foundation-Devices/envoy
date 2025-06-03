@@ -150,16 +150,16 @@ class _TxReviewState extends ConsumerState<TxReview> {
           if (message.message is QuantumLinkMessage_BroadcastTransaction) {
             kPrint("Got the Broadcast Transaction");
             try {
-            final signedPsbt =
+              final signedPsbt =
                   (message.message as QuantumLinkMessage_BroadcastTransaction)
                       .field0;
-            kPrint("Signed Psbt $signedPsbt");
-            await ref
-                .read(spendTransactionProvider.notifier)
-                .decodePrimePsbt(providerScope, signedPsbt.psbt);
-            //hide the dialog
-            if (rootContext.mounted) {
-              Navigator.pop(rootContext);
+              kPrint("Signed Psbt $signedPsbt");
+              await ref
+                  .read(spendTransactionProvider.notifier)
+                  .decodePrimePsbt(providerScope, signedPsbt.psbt);
+              //hide the dialog
+              if (rootContext.mounted) {
+                Navigator.pop(rootContext);
               }
             } catch (e, stack) {
               debugPrintStack(stackTrace: stack);
