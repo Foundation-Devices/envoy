@@ -86,10 +86,10 @@ class ScrollGradientMaskState extends State<ScrollGradientMask> {
                     EnvoyColors.solidWhite,
                   ],
                   stops: [
-                    0.0,
+                    widget.start,
                     topGradientEnd,
                     bottomGradientStart,
-                    1.0,
+                    widget.end,
                   ],
                 ).createShader(rect);
               },
