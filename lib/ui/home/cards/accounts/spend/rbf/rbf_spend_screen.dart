@@ -561,13 +561,12 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       final txid = "";
 
       final server = SyncManager.getElectrumServer(account.network);
-      final syncManager = SyncManager();
       int? port = Settings().getPort(account.network);
       if (port == -1) {
         port = null;
       }
 
-      final rawTx = await EnvoyAccountHandler.broadcast(
+      await EnvoyAccountHandler.broadcast(
         draftTransaction: rbfState.draftTx,
         electrumServer: server,
         torPort: port,
@@ -633,7 +632,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         // }
         // tag = foundAnExistingChangeTag;
         // }
-        final tag = null;
+        // final tag = null;
 
         ///move new change output to tags based on user selection or from the original selection
         // if (rawTx != null && tag != null) {
@@ -661,9 +660,10 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         clearSpendState(ProviderScope.containerOf(context));
       }
 
-      String receiverAddress = rbfState.receiveAddress;
+      // String receiverAddress = rbfState.receiveAddress;
+      //
+      // final originalTx = rbfState.originalTx;
 
-      final originalTx = rbfState.originalTx;
       // await EnvoyStorage().addPendingTx(
       //   psbt.txid,
       //   accountId,
@@ -796,7 +796,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
   //if the user changed coin selection, recalculate the fee boundaries and rebuild the boosted tx
   _editCoins(BuildContext context) async {
     final selectedAccount = ref.read(selectedAccountProvider);
-    final accountId = selectedAccount?.id ?? "";
+    // final accountId = selectedAccount?.id ?? "";
     if (selectedAccount == null) {
       return;
     }
@@ -822,7 +822,8 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     if (ref.read(selectedAccountProvider) != null) {
       CoinSelectionOverlay.of(context)?.show(SpendOverlayContext.rbfSelection);
     }
-    dynamic refresh = await router.push(CupertinoPageRoute(
+    // dynamic refresh =
+    await router.push(CupertinoPageRoute(
         builder: (context) => const ChooseCoinsWidget(),
         fullscreenDialog: true));
 

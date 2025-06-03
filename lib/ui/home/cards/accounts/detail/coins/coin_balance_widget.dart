@@ -484,8 +484,10 @@ class CoinSubTitleText extends ConsumerWidget {
 String getMessage(Tag tag, WidgetRef ref) {
   final selections = ref.watch(coinSelectionStateProvider);
   //TODO: use the actual utxo objects in selection since new api will allow us to send objects to rust
-  final selectedCoins =
-      selections.where((element) => tag.utxo.contains(element));
+  final selectedCoins = tag.utxo.where((output) {
+    final id = '${output.txId}:${output.vout}';
+    return selections.contains(id);
+  }).toList();
   final lockedCoins = tag.utxo.where((element) => element.doNotSpend);
   final availableCoins = tag.utxo.length - lockedCoins.length;
   String selectionMessage =

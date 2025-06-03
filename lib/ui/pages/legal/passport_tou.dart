@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ui/home/setup_overlay.dart';
 import 'package:envoy/ui/pages/scv/scv_intro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +13,9 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 
 class TouPage extends StatefulWidget {
-  const TouPage({super.key});
+  final bool fromExternal;
+
+  const TouPage({super.key, this.fromExternal = false});
 
   @override
   State<TouPage> createState() => _TouPageState();
@@ -61,7 +62,11 @@ class _TouPageState extends State<TouPage> {
                             horizontal: EnvoySpacing.medium1),
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.pop(context);
+                            if (widget.fromExternal) {
+                              SystemNavigator.pop();
+                            } else {
+                              Navigator.pop(context);
+                            }
                           },
                           child: const Icon(Icons.arrow_back_ios_rounded,
                               size: 20),
@@ -73,7 +78,11 @@ class _TouPageState extends State<TouPage> {
                         child: IconButton(
                           icon: const Icon(Icons.close),
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            if (widget.fromExternal) {
+                              SystemNavigator.pop();
+                            } else {
+                              Navigator.of(context).pop();
+                            }
                           },
                         ),
                       ),

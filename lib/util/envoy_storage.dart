@@ -16,10 +16,10 @@ import 'package:envoy/business/server.dart';
 import 'package:envoy/business/video.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
-import 'package:envoy/util/console.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:envoy/util/console.dart';
 
 // ignore: implementation_imports
 import 'package:ngwallet/src/wallet.dart' as wallet;
@@ -954,7 +954,7 @@ class EnvoyStorage {
 
     final identity = await deserializeQlIdentity(data: base64Decode(data!));
     kPrint(
-        "QLLog getQuantumLinkIdentity ${base64Decode(data!).take(6).toString()}");
+        "QLLog getQuantumLinkIdentity ${base64Decode(data).take(6).toString()}");
 
     return identity;
   }
@@ -962,7 +962,7 @@ class EnvoyStorage {
   Future<bool> setAccountScanStatus(
       String accountId, AddressType addressType, bool isFullScanDone) async {
     await accountFullsScanStateStore
-        .record("${accountId}:${addressType.toString()}")
+        .record("$accountId:${addressType.toString()}")
         .put(_db, isFullScanDone);
     return true;
   }
@@ -970,7 +970,7 @@ class EnvoyStorage {
   Future<bool> removeAccountStatus(
       String accountId, AddressType addressType) async {
     await accountFullsScanStateStore
-        .record("${accountId}:${addressType.toString()}")
+        .record("$accountId:${addressType.toString()}")
         .delete(_db);
     return true;
   }
@@ -978,7 +978,7 @@ class EnvoyStorage {
   Future<bool> getAccountScanStatus(
       String accountId, AddressType addressType) async {
     return await (accountFullsScanStateStore
-            .record("${accountId}:${addressType.toString()}")
+            .record("$accountId:${addressType.toString()}")
             .get(_db)) ??
         false;
   }
