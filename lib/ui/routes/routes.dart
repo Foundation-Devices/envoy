@@ -47,6 +47,7 @@ final GoRouter mainRouter = GoRouter(
     try {
       final uri = GoRouter.of(context).state.uri;
       final bip21 = Bip21.decode(uri.toString());
+
       ///TODO handle account selection for spend, ENV-2024
       if (context.mounted) {
         router.go(ROUTE_ACCOUNTS_HOME, extra: bip21);
@@ -55,6 +56,7 @@ final GoRouter mainRouter = GoRouter(
       router.go(ROUTE_ACCOUNTS_HOME);
     }
   },
+
   /// this is a redirect to check if the user is onboarded or not
   /// null means no redirect
   redirect: (context, state) {

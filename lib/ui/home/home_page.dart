@@ -138,7 +138,6 @@ class HomePageState extends ConsumerState<HomePage>
     _resetServerDownWarningTimer();
     _resetBackupWarningTimer();
 
-
     final isNewExpiredBuyTxAvailableSub = isNewExpiredBuyTxAvailable.stream
         .listen((List<EnvoyTransaction> expiredBuyTx) {
       if (mounted && expiredBuyTx.isNotEmpty) {
