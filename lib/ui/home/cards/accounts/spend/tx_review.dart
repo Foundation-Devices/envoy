@@ -145,12 +145,14 @@ class _TxReviewState extends ConsumerState<TxReview> {
         _passportMessageSubscription = BluetoothManager()
             .transactionStream
             .listen((PassportMessage message) async {
-          kPrint("Got the Passport Message : ${message.message} :::  ${message.message.runtimeType}");
+          kPrint(
+              "Got the Passport Message : ${message.message} :::  ${message.message.runtimeType}");
           if (message.message is QuantumLinkMessage_BroadcastTransaction) {
             kPrint("Got the Broadcast Transaction");
             try {
               final signedPsbt =
-                  (message.message as QuantumLinkMessage_BroadcastTransaction).field0;
+                  (message.message as QuantumLinkMessage_BroadcastTransaction)
+                      .field0;
               kPrint("Signed Psbt $signedPsbt");
               await ref
                   .read(spendTransactionProvider.notifier)
@@ -172,7 +174,6 @@ class _TxReviewState extends ConsumerState<TxReview> {
         )));
         kPrint("Waiting for prime response...");
         //wait for response from prime. maybe show some dialog while waiting?
-
       } catch (e, stack) {
         debugPrintStack(stackTrace: stack);
         kPrint("Error sending to prime: $e");

@@ -78,7 +78,6 @@ class BluetoothManager {
 
     kPrint("QL Identity: $_qlIdentity");
 
-
     events?.listen((bluart.Event event) async {
       if (event is bluart.Event_DeviceConnected) {
         connected = true;
@@ -200,7 +199,8 @@ class BluetoothManager {
         //kPrint("Dechunked: {$value}");
         if (value != null) {
           _passportMessageStream.add(value);
-          kPrint("get passport message type:: ${value.message.runtimeType} ${value.message}");
+          kPrint(
+              "get passport message type:: ${value.message.runtimeType} ${value.message}");
           _transactionStream.add(value);
         }
       }, onError: (e) {
