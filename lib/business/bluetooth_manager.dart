@@ -28,6 +28,9 @@ class BluetoothManager {
   final StreamController<api.PassportMessage> _passportMessageStream =
       StreamController<api.PassportMessage>();
 
+  final StreamController<api.PassportMessage> _transactionStream =
+      StreamController<api.PassportMessage>();
+
   api.Dechunker? _decoder;
   api.XidDocument? _recipientXid;
   String? _bleId;
@@ -39,7 +42,10 @@ class BluetoothManager {
   }
 
   Stream<api.PassportMessage> get passportMessageStream =>
-      _passportMessageStream.stream;
+      _passportMessageStream.stream.asBroadcastStream();
+
+  Stream<api.PassportMessage> get transactionStream =>
+      _transactionStream.stream.asBroadcastStream();
 
   String bleId = "";
 
@@ -71,12 +77,13 @@ class BluetoothManager {
     kPrint("QL Identity: $_qlIdentity");
 
     events?.listen((bluart.Event event) async {
-      kPrint("Got event $event");
       if (event is bluart.Event_DeviceConnected) {
         connected = true;
       }
 
-      if (event is bluart.Event_DeviceDisconnected) {}
+      if (event is bluart.Event_DeviceDisconnected) {
+        connected = false;
+      }
 
       if (event is bluart.Event_ScanResult) {
         kPrint("Scan result received, _bleId = $_bleId");
@@ -84,13 +91,13 @@ class BluetoothManager {
           return;
         }
 
-        // for (final device in event.field0) {
-        //   kPrint("Paired device found: ${device.id}");
-        //   if (device.id == _bleId) {
-        //     await connect(id: device.id);
-        //     await listen(id: bleId);
-        //   }
-        // }
+        for (final device in event.field0) {
+          kPrint("Paired device found: ${device.id}");
+          if (device.id == _bleId && !connected) {
+            await connect(id: device.id);
+            await listen(id: bleId);
+          }
+        }
       }
     });
 
@@ -180,6 +187,7 @@ class BluetoothManager {
 
     bleId = id;
     await bluart.connect(id: id);
+    connected = true;
   }
 
   Future<void> listen({required String id}) async {
@@ -189,6 +197,9 @@ class BluetoothManager {
         //kPrint("Dechunked: {$value}");
         if (value != null) {
           _passportMessageStream.add(value);
+          kPrint(
+              "get passport message type:: ${value.message.runtimeType} ${value.message}");
+          _transactionStream.add(value);
         }
       }, onError: (e) {
         kPrint("Error decoding: $e");
@@ -314,7 +325,8 @@ class BluetoothManager {
   void setupExchangeRateListener() {
     ExchangeRate().addListener(() async {
       if (connected) {
-        //await sendExchangeRate();
+        kPrint("Sending exchange rate");
+        await sendExchangeRate();
       }
     });
   }

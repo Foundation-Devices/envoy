@@ -116,7 +116,7 @@ fn init_logging(level: log::LevelFilter) {
 /// The init() function must be called before anything else.
 /// At the moment the developer has to make sure it is only called once.
 pub async fn init(sink: StreamSink<Event>) -> Result<()> {
-    init_logging(log::LevelFilter::Debug);
+    init_logging(log::LevelFilter::Info);
 
     create_runtime()?;
     let runtime = RUNTIME

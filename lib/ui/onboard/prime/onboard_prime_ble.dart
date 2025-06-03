@@ -54,6 +54,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   bool scanForPayload = false;
 
   bool deniedBluetooth = false;
+  Completer<QuantumLinkMessage_BroadcastTransaction>? _completer;
+  get completer => _completer;
 
   @override
   void initState() {

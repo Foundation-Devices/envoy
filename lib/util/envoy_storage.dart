@@ -19,6 +19,7 @@ import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:envoy/util/console.dart';
 
 // ignore: implementation_imports
 import 'package:ngwallet/src/wallet.dart' as wallet;
@@ -941,6 +942,7 @@ class EnvoyStorage {
 
   Future<bool> saveQuantumLinkIdentity(QuantumLinkIdentity identity) async {
     final data = await serializeQlIdentity(quantumLinkIdentity: identity);
+    kPrint("QLLog saveQuantumLinkIdentity ${data.take(6).toString()}");
     await quantumLinkIdentityStore
         .record(0)
         .put(_db, base64Encode(data.toList()));
@@ -949,7 +951,11 @@ class EnvoyStorage {
 
   Future<QuantumLinkIdentity?> getQuantumLinkIdentity() async {
     final data = await quantumLinkIdentityStore.record(0).get(_db);
+
     final identity = await deserializeQlIdentity(data: base64Decode(data!));
+    kPrint(
+        "QLLog getQuantumLinkIdentity ${base64Decode(data).take(6).toString()}");
+
     return identity;
   }
 
