@@ -89,6 +89,7 @@ class HomePageState extends ConsumerState<HomePage>
   final Map<String, bool> transactionIdExpandedState = {};
   bool _backgroundShown = false;
   final bool _modalShown = false;
+  final List<StreamSubscription> _subscriptions = [];
 
   final _optionsKey = GlobalKey();
   final bool _optionsShown = false;
@@ -137,12 +138,13 @@ class HomePageState extends ConsumerState<HomePage>
     _resetServerDownWarningTimer();
     _resetBackupWarningTimer();
 
-    isNewExpiredBuyTxAvailable.stream
+    final isNewExpiredBuyTxAvailableSub = isNewExpiredBuyTxAvailable.stream
         .listen((List<EnvoyTransaction> expiredBuyTx) {
       if (mounted && expiredBuyTx.isNotEmpty) {
         _notifyAboutRemovedRampTx(expiredBuyTx, context);
       }
     });
+    _subscriptions.add(isNewExpiredBuyTxAvailableSub);
 
     Future.delayed(const Duration(milliseconds: 10), () {
       ///register for back button press
@@ -151,7 +153,7 @@ class HomePageState extends ConsumerState<HomePage>
     });
 
     // Home is there for the lifetime of the app so no need to dispose stream
-    ConnectivityManager().events.stream.listen((event) {
+    final connectivitySub = ConnectivityManager().events.stream.listen((event) {
       // If Tor is broken surface a warning
       if (event == ConnectivityManagerEvent.torConnectedDoesntWork) {
         if (_torWarningDisplayedMoreThan5minAgo &&
@@ -168,8 +170,9 @@ class HomePageState extends ConsumerState<HomePage>
         _serverDownWarningDisplayedMoreThan5minAgo = false;
       }
     });
+    _subscriptions.add(connectivitySub);
 
-    EnvoyStorage()
+    final secureWalletPromptSub = EnvoyStorage()
         .isPromptDismissed(DismissiblePrompt.secureWallet)
         .listen((dismissed) {
       // if is not dismissed listen balance
@@ -193,24 +196,31 @@ class HomePageState extends ConsumerState<HomePage>
         });
       }
     });
+    _subscriptions.add(secureWalletPromptSub);
 
-    EnvoySeed().backupCompletedStream.stream.listen((bool success) {
+    final backupCompletedSub =
+        EnvoySeed().backupCompletedStream.stream.listen((bool success) {
       if (_backupWarningDisplayedMoreThan2minAgo && mounted) {
         _displayBackupToast(success);
         _backupWarningDisplayedMoreThan2minAgo = false;
       }
     });
-    isNewAppVersionAvailable.stream.listen((String newVersion) {
+    _subscriptions.add(backupCompletedSub);
+    final newAppVersionAvailableSub =
+        isNewAppVersionAvailable.stream.listen((String newVersion) {
       if (mounted) {
         _notifyAboutNewAppVersion(newVersion);
       }
     });
+    _subscriptions.add(newAppVersionAvailableSub);
 
-    isCurrentVersionDeprecated.stream.listen((bool isDeprecated) {
+    final isCurrentVersionDeprecatedSub =
+        isCurrentVersionDeprecated.stream.listen((bool isDeprecated) {
       if (mounted && isDeprecated) {
         showForceUpdateDialog();
       }
     });
+    _subscriptions.add(isCurrentVersionDeprecatedSub);
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final router = Navigator.of(context);
@@ -389,6 +399,9 @@ class HomePageState extends ConsumerState<HomePage>
     _backupWarningTimer?.cancel();
     isNewExpiredBuyTxAvailable.close();
     backButtonDispatcher.removeCallback(_handleHomePageBackPress);
+    for (var subscription in _subscriptions) {
+      subscription.cancel();
+    }
     super.dispose();
   }
 

@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // ignore_for_file: constant_identifier_names
 
+import 'package:envoy/business/bip21.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
@@ -18,7 +19,6 @@ import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/routes/home_router.dart';
 import 'package:envoy/ui/shield.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
@@ -44,11 +44,29 @@ final GlobalKey<NavigatorState> mainNavigatorKey =
 final GoRouter mainRouter = GoRouter(
   navigatorKey: mainNavigatorKey,
   initialLocation: ROUTE_ACCOUNTS_HOME,
-  debugLogDiagnostics: kDebugMode,
+  debugLogDiagnostics: true,
+  onException: (context, state, router) {
+    try {
+      final uri = GoRouter.of(context).state.uri;
+      final bip21 = Bip21.decode(uri.toString());
+
+      ///TODO handle account selection for spend, ENV-2024
+      if (context.mounted) {
+        router.go(ROUTE_ACCOUNTS_HOME, extra: bip21);
+      }
+    } catch (e) {
+      router.go(ROUTE_ACCOUNTS_HOME);
+    }
+  },
 
   /// this is a redirect to check if the user is onboarded or not
   /// null means no redirect
   redirect: (context, state) {
+    final uri = state.uri;
+    // Check if this is a Bitcoin URI
+    if (uri.scheme == 'bitcoin') {
+      return null;
+    }
     if (state.fullPath == ROUTE_ACCOUNTS_HOME) {
       if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) != true) {
         return state.namedLocation(ROUTE_SPLASH);
