@@ -12,6 +12,7 @@ import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/pages/fw/fw_routes.dart';
+import 'package:envoy/ui/pages/legal/passport_tou.dart';
 import 'package:envoy/ui/pages/pp/pp_setup_intro.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
@@ -29,6 +30,7 @@ const WALLET_BACKUP_WARNING = "backup_warning";
 const PASSPORT_INTRO = "passport_intro";
 const PREFS_ONBOARDED = 'onboarded';
 const PSBT_QR_EXCHANGE_STANDALONE = '"psbt_qr_exchange';
+const TOU_EXTERNAL = 'tou_external';
 
 /// this key can be used in nested GoRoute to leverage main router
 /// for example:
@@ -68,8 +70,7 @@ final GoRouter mainRouter = GoRouter(
         }
 
         if (params.containsKey("t")) {
-          return state.namedLocation(ONBOARD_PASSPORT_TOU,
-              queryParameters: params);
+          return state.namedLocation(TOU_EXTERNAL, queryParameters: params);
         }
 
         if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) != true) {
@@ -80,6 +81,13 @@ final GoRouter mainRouter = GoRouter(
       },
     ),
     fwRoutes,
+    GoRoute(
+      path: "/tou_external",
+      name: TOU_EXTERNAL,
+      builder: (context, state) => const TouPage(
+        fromExternal: true,
+      ),
+    ),
     GoRoute(
       path: "/passport_intro",
       name: PASSPORT_INTRO,
