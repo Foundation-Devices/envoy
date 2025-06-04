@@ -8,126 +8,169 @@ import '../../frb_generated.dart';
 import '../../lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-
-            // These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `NgAccountBuilder`
+// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `NgAccountBuilder`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `assert_receiver_is_total_eq`, `clone`, `clone`, `clone`, `clone`, `cmp`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `hash`, `partial_cmp`
 // These functions are ignored (category: IgnoreBecauseOwnerTyShouldIgnore): `account_path`, `build_from_backend`, `build_from_file`, `build_in_memory`, `color`, `date_added`, `date_synced`, `default`, `descriptors`, `device_serial`, `id`, `index`, `name`, `network`, `preferred_address_type`, `seed_has_passphrase`
 
+enum AddressType {
+  /// Pay to pubkey hash.
+  p2Pkh,
 
-            
+  /// Pay to script hash.
+  p2Sh,
 
-            enum AddressType {
-                    /// Pay to pubkey hash.
-p2Pkh,
-/// Pay to script hash.
-p2Sh,
-/// Pay to witness pubkey hash.
-p2Wpkh,
-/// Pay to witness script hash.
-p2Wsh,
-/// Pay to taproot.
-p2Tr,
-p2ShWpkh,
-                    ;
-                    
-                }
+  /// Pay to witness pubkey hash.
+  p2Wpkh,
 
-class NgAccountBackup  {
-                final NgAccountConfig ngAccountConfig;
-final List<(AddressType,KeychainKind,int)> lastUsedIndex;
-final Map<String, String> notes;
-final Map<String, String> tags;
-final Map<String, bool> doNotSpend;
+  /// Pay to witness script hash.
+  p2Wsh,
 
-                const NgAccountBackup({required this.ngAccountConfig ,required this.lastUsedIndex ,required this.notes ,required this.tags ,required this.doNotSpend ,});
+  /// Pay to taproot.
+  p2Tr,
+  p2ShWpkh,
+  ;
+}
 
-                static Future<NgAccountBackup>  deserialize({required String data })=>RustLib.instance.api.ngwalletConfigNgAccountBackupDeserialize(data: data);
+class NgAccountBackup {
+  final NgAccountConfig ngAccountConfig;
+  final List<(AddressType, KeychainKind, int)> lastUsedIndex;
+  final Map<String, String> notes;
+  final Map<String, String> tags;
+  final Map<String, bool> doNotSpend;
 
+  const NgAccountBackup({
+    required this.ngAccountConfig,
+    required this.lastUsedIndex,
+    required this.notes,
+    required this.tags,
+    required this.doNotSpend,
+  });
 
- Future<String>  serialize()=>RustLib.instance.api.ngwalletConfigNgAccountBackupSerialize(that: this, );
+  static Future<NgAccountBackup> deserialize({required String data}) =>
+      RustLib.instance.api.ngwalletConfigNgAccountBackupDeserialize(data: data);
 
+  Future<String> serialize() =>
+      RustLib.instance.api.ngwalletConfigNgAccountBackupSerialize(
+        that: this,
+      );
 
-                
+  @override
+  int get hashCode =>
+      ngAccountConfig.hashCode ^
+      lastUsedIndex.hashCode ^
+      notes.hashCode ^
+      tags.hashCode ^
+      doNotSpend.hashCode;
 
-                
-        @override
-        int get hashCode => ngAccountConfig.hashCode^lastUsedIndex.hashCode^notes.hashCode^tags.hashCode^doNotSpend.hashCode;
-        
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is NgAccountBackup &&
+          runtimeType == other.runtimeType &&
+          ngAccountConfig == other.ngAccountConfig &&
+          lastUsedIndex == other.lastUsedIndex &&
+          notes == other.notes &&
+          tags == other.tags &&
+          doNotSpend == other.doNotSpend;
+}
 
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is NgAccountBackup &&
-                runtimeType == other.runtimeType
-                && ngAccountConfig == other.ngAccountConfig&& lastUsedIndex == other.lastUsedIndex&& notes == other.notes&& tags == other.tags&& doNotSpend == other.doNotSpend;
-        
-            }
+class NgAccountConfig {
+  final String name;
+  final String color;
+  final bool seedHasPassphrase;
+  final String? deviceSerial;
+  final String? dateAdded;
+  final AddressType preferredAddressType;
+  final int index;
+  final List<NgDescriptor> descriptors;
+  final String? dateSynced;
+  final String? accountPath;
+  final Network network;
+  final String id;
 
-class NgAccountConfig  {
-                final String name;
-final String color;
-final bool seedHasPassphrase;
-final String? deviceSerial;
-final String? dateAdded;
-final AddressType preferredAddressType;
-final int index;
-final List<NgDescriptor> descriptors;
-final String? dateSynced;
-final String? accountPath;
-final Network network;
-final String id;
+  const NgAccountConfig({
+    required this.name,
+    required this.color,
+    required this.seedHasPassphrase,
+    this.deviceSerial,
+    this.dateAdded,
+    required this.preferredAddressType,
+    required this.index,
+    required this.descriptors,
+    this.dateSynced,
+    this.accountPath,
+    required this.network,
+    required this.id,
+  });
 
-                const NgAccountConfig({required this.name ,required this.color ,required this.seedHasPassphrase ,this.deviceSerial ,this.dateAdded ,required this.preferredAddressType ,required this.index ,required this.descriptors ,this.dateSynced ,this.accountPath ,required this.network ,required this.id ,});
+  static Future<NgAccountConfig> deserialize({required String data}) =>
+      RustLib.instance.api.ngwalletConfigNgAccountConfigDeserialize(data: data);
 
-                static Future<NgAccountConfig>  deserialize({required String data })=>RustLib.instance.api.ngwalletConfigNgAccountConfigDeserialize(data: data);
+  static Future<NgAccountConfig> fromRemote(
+          {required List<int> remoteUpdate}) =>
+      RustLib.instance.api
+          .ngwalletConfigNgAccountConfigFromRemote(remoteUpdate: remoteUpdate);
 
+  Future<String> serialize() =>
+      RustLib.instance.api.ngwalletConfigNgAccountConfigSerialize(
+        that: this,
+      );
 
-static Future<NgAccountConfig>  fromRemote({required List<int> remoteUpdate })=>RustLib.instance.api.ngwalletConfigNgAccountConfigFromRemote(remoteUpdate: remoteUpdate);
+  @override
+  int get hashCode =>
+      name.hashCode ^
+      color.hashCode ^
+      seedHasPassphrase.hashCode ^
+      deviceSerial.hashCode ^
+      dateAdded.hashCode ^
+      preferredAddressType.hashCode ^
+      index.hashCode ^
+      descriptors.hashCode ^
+      dateSynced.hashCode ^
+      accountPath.hashCode ^
+      network.hashCode ^
+      id.hashCode;
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is NgAccountConfig &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          color == other.color &&
+          seedHasPassphrase == other.seedHasPassphrase &&
+          deviceSerial == other.deviceSerial &&
+          dateAdded == other.dateAdded &&
+          preferredAddressType == other.preferredAddressType &&
+          index == other.index &&
+          descriptors == other.descriptors &&
+          dateSynced == other.dateSynced &&
+          accountPath == other.accountPath &&
+          network == other.network &&
+          id == other.id;
+}
 
- Future<String>  serialize()=>RustLib.instance.api.ngwalletConfigNgAccountConfigSerialize(that: this, );
+class NgDescriptor {
+  final String internal;
+  final String? external_;
+  final AddressType addressType;
 
+  const NgDescriptor({
+    required this.internal,
+    this.external_,
+    required this.addressType,
+  });
 
-                
+  @override
+  int get hashCode =>
+      internal.hashCode ^ external_.hashCode ^ addressType.hashCode;
 
-                
-        @override
-        int get hashCode => name.hashCode^color.hashCode^seedHasPassphrase.hashCode^deviceSerial.hashCode^dateAdded.hashCode^preferredAddressType.hashCode^index.hashCode^descriptors.hashCode^dateSynced.hashCode^accountPath.hashCode^network.hashCode^id.hashCode;
-        
-
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is NgAccountConfig &&
-                runtimeType == other.runtimeType
-                && name == other.name&& color == other.color&& seedHasPassphrase == other.seedHasPassphrase&& deviceSerial == other.deviceSerial&& dateAdded == other.dateAdded&& preferredAddressType == other.preferredAddressType&& index == other.index&& descriptors == other.descriptors&& dateSynced == other.dateSynced&& accountPath == other.accountPath&& network == other.network&& id == other.id;
-        
-            }
-
-class NgDescriptor  {
-                final String internal;
-final String? external_;
-final AddressType addressType;
-
-                const NgDescriptor({required this.internal ,this.external_ ,required this.addressType ,});
-
-                
-                
-
-                
-        @override
-        int get hashCode => internal.hashCode^external_.hashCode^addressType.hashCode;
-        
-
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is NgDescriptor &&
-                runtimeType == other.runtimeType
-                && internal == other.internal&& external_ == other.external_&& addressType == other.addressType;
-        
-            }
-            
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is NgDescriptor &&
+          runtimeType == other.runtimeType &&
+          internal == other.internal &&
+          external_ == other.external_ &&
+          addressType == other.addressType;
+}

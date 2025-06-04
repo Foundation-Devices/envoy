@@ -8,68 +8,66 @@ import '../third_party/ngwallet/config.dart';
 import 'envoy_wallet.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-
-            // These functions are ignored because they are not marked as `pub`: `generate_mnemonic`, `get_address_type`
+// These functions are ignored because they are not marked as `pub`: `generate_mnemonic`, `get_address_type`
 // These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `Seed`
 
+class DerivedDescriptor {
+  final String externalDescriptor;
+  final String internalDescriptor;
+  final String externalPubDescriptor;
+  final String internalPubDescriptor;
+  final AddressType addressType;
 
-            
+  const DerivedDescriptor({
+    required this.externalDescriptor,
+    required this.internalDescriptor,
+    required this.externalPubDescriptor,
+    required this.internalPubDescriptor,
+    required this.addressType,
+  });
 
-            class DerivedDescriptor  {
-                final String externalDescriptor;
-final String internalDescriptor;
-final String externalPubDescriptor;
-final String internalPubDescriptor;
-final AddressType addressType;
+  @override
+  int get hashCode =>
+      externalDescriptor.hashCode ^
+      internalDescriptor.hashCode ^
+      externalPubDescriptor.hashCode ^
+      internalPubDescriptor.hashCode ^
+      addressType.hashCode;
 
-                const DerivedDescriptor({required this.externalDescriptor ,required this.internalDescriptor ,required this.externalPubDescriptor ,required this.internalPubDescriptor ,required this.addressType ,});
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DerivedDescriptor &&
+          runtimeType == other.runtimeType &&
+          externalDescriptor == other.externalDescriptor &&
+          internalDescriptor == other.internalDescriptor &&
+          externalPubDescriptor == other.externalPubDescriptor &&
+          internalPubDescriptor == other.internalPubDescriptor &&
+          addressType == other.addressType;
+}
 
-                
-                
+class EnvoyBip39 {
+  const EnvoyBip39();
 
-                
-        @override
-        int get hashCode => externalDescriptor.hashCode^internalDescriptor.hashCode^externalPubDescriptor.hashCode^internalPubDescriptor.hashCode^addressType.hashCode;
-        
+  static Future<List<DerivedDescriptor>> deriveDescriptorFromSeed(
+          {required String seedWords,
+          required Network network,
+          String? passphrase}) =>
+      RustLib.instance.api.crateApiBip39EnvoyBip39DeriveDescriptorFromSeed(
+          seedWords: seedWords, network: network, passphrase: passphrase);
 
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is DerivedDescriptor &&
-                runtimeType == other.runtimeType
-                && externalDescriptor == other.externalDescriptor&& internalDescriptor == other.internalDescriptor&& externalPubDescriptor == other.externalPubDescriptor&& internalPubDescriptor == other.internalPubDescriptor&& addressType == other.addressType;
-        
-            }
+  static Future<String> generateSeed() =>
+      RustLib.instance.api.crateApiBip39EnvoyBip39GenerateSeed();
 
-class EnvoyBip39  {
-                
+  static Future<bool> validateSeed({required String seedWords}) =>
+      RustLib.instance.api
+          .crateApiBip39EnvoyBip39ValidateSeed(seedWords: seedWords);
 
-                const EnvoyBip39();
+  @override
+  int get hashCode => 0;
 
-                static Future<List<DerivedDescriptor>>  deriveDescriptorFromSeed({required String seedWords , required Network network , String? passphrase })=>RustLib.instance.api.crateApiBip39EnvoyBip39DeriveDescriptorFromSeed(seedWords: seedWords, network: network, passphrase: passphrase);
-
-
-static Future<String>  generateSeed()=>RustLib.instance.api.crateApiBip39EnvoyBip39GenerateSeed();
-
-
-static Future<bool>  validateSeed({required String seedWords })=>RustLib.instance.api.crateApiBip39EnvoyBip39ValidateSeed(seedWords: seedWords);
-
-
-                
-
-                
-        @override
-        int get hashCode => 0;
-        
-
-                
-        @override
-        bool operator ==(Object other) =>
-            identical(this, other) ||
-            other is EnvoyBip39 &&
-                runtimeType == other.runtimeType
-                ;
-        
-            }
-            
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is EnvoyBip39 && runtimeType == other.runtimeType;
+}

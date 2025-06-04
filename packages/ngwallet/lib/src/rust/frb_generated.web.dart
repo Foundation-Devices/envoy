@@ -3,7 +3,6 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
-
 // Static analysis wrongly picks the IO variant, thus ignore this
 // ignore_for_file: argument_type_not_assignable
 
@@ -21,600 +20,1137 @@ import 'third_party/ngwallet/rbf.dart';
 import 'third_party/ngwallet/send.dart';
 import 'third_party/ngwallet/transaction.dart';
 
+abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
+  RustLibApiImplPlatform({
+    required super.handler,
+    required super.wire,
+    required super.generalizedFrbRustBinding,
+    required super.portManager,
+  });
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_ArcMutexNgAccountConnectionPtr => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_FullScanRequestPtr => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_SyncRequestPtr => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_WalletUpdatePtr => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_BumpFeeErrorPtr => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_CreateTxErrorPtr => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_EnvoyAccountHandlerPtr => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_KeychainKindPtr => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind;
+
+  @protected
+  AnyhowException dco_decode_AnyhowException(dynamic raw);
+
+  @protected
+  ArcMutexNgAccountConnection
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(
+          dynamic raw);
+
+  @protected
+  FullScanRequest
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(
+          dynamic raw);
+
+  @protected
+  SyncRequest
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(
+          dynamic raw);
+
+  @protected
+  WalletUpdate
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
+          dynamic raw);
+
+  @protected
+  BumpFeeError
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
+          dynamic raw);
+
+  @protected
+  CreateTxError
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
+          dynamic raw);
+
+  @protected
+  EnvoyAccountHandler
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+          dynamic raw);
+
+  @protected
+  KeychainKind
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+          dynamic raw);
+
+  @protected
+  EnvoyAccountHandler
+      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+          dynamic raw);
+
+  @protected
+  EnvoyAccountHandler
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+          dynamic raw);
+
+  @protected
+  Map<String, String> dco_decode_Map_String_String_None(dynamic raw);
+
+  @protected
+  Map<String, bool> dco_decode_Map_String_bool_None(dynamic raw);
+
+  @protected
+  ArcMutexNgAccountConnection
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(
+          dynamic raw);
 
+  @protected
+  FullScanRequest
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(
+          dynamic raw);
 
+  @protected
+  SyncRequest
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(
+          dynamic raw);
 
-                abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
-                  RustLibApiImplPlatform({
-                    required super.handler,
-                    required super.wire,
-                    required super.generalizedFrbRustBinding,
-                    required super.portManager,
-                  });
+  @protected
+  WalletUpdate
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
+          dynamic raw);
 
-                  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_ArcMutexNgAccountConnectionPtr => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection;
+  @protected
+  BumpFeeError
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
+          dynamic raw);
 
-CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_FullScanRequestPtr => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind;
+  @protected
+  CreateTxError
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
+          dynamic raw);
 
-CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_SyncRequestPtr => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32;
+  @protected
+  EnvoyAccountHandler
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+          dynamic raw);
 
-CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_WalletUpdatePtr => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate;
+  @protected
+  KeychainKind
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+          dynamic raw);
 
-CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_BumpFeeErrorPtr => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError;
+  @protected
+  RustStreamSink<EnvoyAccount> dco_decode_StreamSink_envoy_account_Sse(
+      dynamic raw);
 
-CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_CreateTxErrorPtr => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError;
+  @protected
+  String dco_decode_String(dynamic raw);
 
-CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_EnvoyAccountHandlerPtr => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler;
+  @protected
+  AddressType dco_decode_address_type(dynamic raw);
 
-CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_KeychainKindPtr => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind;
+  @protected
+  BitcoinTransaction dco_decode_bitcoin_transaction(dynamic raw);
 
+  @protected
+  bool dco_decode_bool(dynamic raw);
 
+  @protected
+  BitcoinTransaction dco_decode_box_autoadd_bitcoin_transaction(dynamic raw);
 
-                  @protected AnyhowException dco_decode_AnyhowException(dynamic raw);
+  @protected
+  DraftTransaction dco_decode_box_autoadd_draft_transaction(dynamic raw);
 
-@protected ArcMutexNgAccountConnection dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(dynamic raw);
+  @protected
+  KeyChain dco_decode_box_autoadd_key_chain(dynamic raw);
 
-@protected FullScanRequest dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(dynamic raw);
+  @protected
+  Network dco_decode_box_autoadd_network(dynamic raw);
 
-@protected SyncRequest dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(dynamic raw);
+  @protected
+  NgAccountBackup dco_decode_box_autoadd_ng_account_backup(dynamic raw);
 
-@protected WalletUpdate dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(dynamic raw);
+  @protected
+  NgAccountConfig dco_decode_box_autoadd_ng_account_config(dynamic raw);
 
-@protected BumpFeeError dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(dynamic raw);
+  @protected
+  NgDescriptor dco_decode_box_autoadd_ng_descriptor(dynamic raw);
 
-@protected CreateTxError dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(dynamic raw);
+  @protected
+  Output dco_decode_box_autoadd_output(dynamic raw);
 
-@protected EnvoyAccountHandler dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(dynamic raw);
+  @protected
+  TransactionParams dco_decode_box_autoadd_transaction_params(dynamic raw);
 
-@protected KeychainKind dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(dynamic raw);
+  @protected
+  int dco_decode_box_autoadd_u_16(dynamic raw);
 
-@protected EnvoyAccountHandler dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(dynamic raw);
+  @protected
+  BigInt dco_decode_box_autoadd_u_64(dynamic raw);
 
-@protected EnvoyAccountHandler dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(dynamic raw);
+  @protected
+  BroadcastError dco_decode_broadcast_error(dynamic raw);
 
-@protected Map<String, String> dco_decode_Map_String_String_None(dynamic raw);
+  @protected
+  ComposeTxError dco_decode_compose_tx_error(dynamic raw);
 
-@protected Map<String, bool> dco_decode_Map_String_bool_None(dynamic raw);
+  @protected
+  DerivedDescriptor dco_decode_derived_descriptor(dynamic raw);
 
-@protected ArcMutexNgAccountConnection dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(dynamic raw);
+  @protected
+  DraftTransaction dco_decode_draft_transaction(dynamic raw);
 
-@protected FullScanRequest dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(dynamic raw);
+  @protected
+  EnvoyAccount dco_decode_envoy_account(dynamic raw);
 
-@protected SyncRequest dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(dynamic raw);
+  @protected
+  EnvoyBip39 dco_decode_envoy_bip_39(dynamic raw);
 
-@protected WalletUpdate dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(dynamic raw);
+  @protected
+  int dco_decode_i_32(dynamic raw);
 
-@protected BumpFeeError dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(dynamic raw);
+  @protected
+  PlatformInt64 dco_decode_i_64(dynamic raw);
 
-@protected CreateTxError dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(dynamic raw);
+  @protected
+  Input dco_decode_input(dynamic raw);
 
-@protected EnvoyAccountHandler dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(dynamic raw);
+  @protected
+  KeyChain dco_decode_key_chain(dynamic raw);
 
-@protected KeychainKind dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(dynamic raw);
+  @protected
+  List<String> dco_decode_list_String(dynamic raw);
 
-@protected RustStreamSink<EnvoyAccount> dco_decode_StreamSink_envoy_account_Sse(dynamic raw);
+  @protected
+  List<BitcoinTransaction> dco_decode_list_bitcoin_transaction(dynamic raw);
 
-@protected String dco_decode_String(dynamic raw);
+  @protected
+  List<DerivedDescriptor> dco_decode_list_derived_descriptor(dynamic raw);
 
-@protected AddressType dco_decode_address_type(dynamic raw);
+  @protected
+  List<Input> dco_decode_list_input(dynamic raw);
 
-@protected BitcoinTransaction dco_decode_bitcoin_transaction(dynamic raw);
+  @protected
+  List<NgDescriptor> dco_decode_list_ng_descriptor(dynamic raw);
 
-@protected bool dco_decode_bool(dynamic raw);
+  @protected
+  List<Output> dco_decode_list_output(dynamic raw);
 
-@protected BitcoinTransaction dco_decode_box_autoadd_bitcoin_transaction(dynamic raw);
+  @protected
+  List<int> dco_decode_list_prim_u_8_loose(dynamic raw);
 
-@protected DraftTransaction dco_decode_box_autoadd_draft_transaction(dynamic raw);
+  @protected
+  Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
-@protected KeyChain dco_decode_box_autoadd_key_chain(dynamic raw);
+  @protected
+  List<(AddressType, KeychainKind, int)>
+      dco_decode_list_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
+          dynamic raw);
 
-@protected Network dco_decode_box_autoadd_network(dynamic raw);
+  @protected
+  List<(String, AddressType)> dco_decode_list_record_string_address_type(
+      dynamic raw);
 
-@protected NgAccountBackup dco_decode_box_autoadd_ng_account_backup(dynamic raw);
+  @protected
+  List<(String, bool)> dco_decode_list_record_string_bool(dynamic raw);
 
-@protected NgAccountConfig dco_decode_box_autoadd_ng_account_config(dynamic raw);
+  @protected
+  List<(String, String)> dco_decode_list_record_string_string(dynamic raw);
 
-@protected NgDescriptor dco_decode_box_autoadd_ng_descriptor(dynamic raw);
+  @protected
+  Network dco_decode_network(dynamic raw);
 
-@protected Output dco_decode_box_autoadd_output(dynamic raw);
+  @protected
+  NgAccountBackup dco_decode_ng_account_backup(dynamic raw);
 
-@protected TransactionParams dco_decode_box_autoadd_transaction_params(dynamic raw);
+  @protected
+  NgAccountConfig dco_decode_ng_account_config(dynamic raw);
 
-@protected int dco_decode_box_autoadd_u_16(dynamic raw);
+  @protected
+  NgDescriptor dco_decode_ng_descriptor(dynamic raw);
 
-@protected BigInt dco_decode_box_autoadd_u_64(dynamic raw);
+  @protected
+  RustStreamSink<EnvoyAccount>? dco_decode_opt_StreamSink_envoy_account_Sse(
+      dynamic raw);
 
-@protected BroadcastError dco_decode_broadcast_error(dynamic raw);
+  @protected
+  String? dco_decode_opt_String(dynamic raw);
 
-@protected ComposeTxError dco_decode_compose_tx_error(dynamic raw);
+  @protected
+  KeyChain? dco_decode_opt_box_autoadd_key_chain(dynamic raw);
 
-@protected DerivedDescriptor dco_decode_derived_descriptor(dynamic raw);
+  @protected
+  Network? dco_decode_opt_box_autoadd_network(dynamic raw);
 
-@protected DraftTransaction dco_decode_draft_transaction(dynamic raw);
+  @protected
+  int? dco_decode_opt_box_autoadd_u_16(dynamic raw);
 
-@protected EnvoyAccount dco_decode_envoy_account(dynamic raw);
+  @protected
+  BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw);
 
-@protected EnvoyBip39 dco_decode_envoy_bip_39(dynamic raw);
+  @protected
+  Output dco_decode_output(dynamic raw);
 
-@protected int dco_decode_i_32(dynamic raw);
+  @protected
+  (
+    AddressType,
+    KeychainKind,
+    int
+  ) dco_decode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
+      dynamic raw);
 
-@protected PlatformInt64 dco_decode_i_64(dynamic raw);
+  @protected
+  (String, AddressType) dco_decode_record_string_address_type(dynamic raw);
 
-@protected Input dco_decode_input(dynamic raw);
+  @protected
+  (String, bool) dco_decode_record_string_bool(dynamic raw);
 
-@protected KeyChain dco_decode_key_chain(dynamic raw);
+  @protected
+  (String, String) dco_decode_record_string_string(dynamic raw);
 
-@protected List<String> dco_decode_list_String(dynamic raw);
+  @protected
+  TransactionFeeResult dco_decode_transaction_fee_result(dynamic raw);
 
-@protected List<BitcoinTransaction> dco_decode_list_bitcoin_transaction(dynamic raw);
+  @protected
+  TransactionParams dco_decode_transaction_params(dynamic raw);
 
-@protected List<DerivedDescriptor> dco_decode_list_derived_descriptor(dynamic raw);
+  @protected
+  int dco_decode_u_16(dynamic raw);
 
-@protected List<Input> dco_decode_list_input(dynamic raw);
+  @protected
+  int dco_decode_u_32(dynamic raw);
 
-@protected List<NgDescriptor> dco_decode_list_ng_descriptor(dynamic raw);
+  @protected
+  BigInt dco_decode_u_64(dynamic raw);
 
-@protected List<Output> dco_decode_list_output(dynamic raw);
+  @protected
+  int dco_decode_u_8(dynamic raw);
 
-@protected List<int> dco_decode_list_prim_u_8_loose(dynamic raw);
+  @protected
+  void dco_decode_unit(dynamic raw);
 
-@protected Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
+  @protected
+  BigInt dco_decode_usize(dynamic raw);
 
-@protected List<(AddressType,KeychainKind,int)> dco_decode_list_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(dynamic raw);
+  @protected
+  AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
 
-@protected List<(String,AddressType)> dco_decode_list_record_string_address_type(dynamic raw);
+  @protected
+  ArcMutexNgAccountConnection
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(
+          SseDeserializer deserializer);
 
-@protected List<(String,bool)> dco_decode_list_record_string_bool(dynamic raw);
+  @protected
+  FullScanRequest
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(
+          SseDeserializer deserializer);
 
-@protected List<(String,String)> dco_decode_list_record_string_string(dynamic raw);
+  @protected
+  SyncRequest
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(
+          SseDeserializer deserializer);
 
-@protected Network dco_decode_network(dynamic raw);
+  @protected
+  WalletUpdate
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
+          SseDeserializer deserializer);
 
-@protected NgAccountBackup dco_decode_ng_account_backup(dynamic raw);
+  @protected
+  BumpFeeError
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
+          SseDeserializer deserializer);
 
-@protected NgAccountConfig dco_decode_ng_account_config(dynamic raw);
+  @protected
+  CreateTxError
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
+          SseDeserializer deserializer);
 
-@protected NgDescriptor dco_decode_ng_descriptor(dynamic raw);
+  @protected
+  EnvoyAccountHandler
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+          SseDeserializer deserializer);
 
-@protected RustStreamSink<EnvoyAccount>? dco_decode_opt_StreamSink_envoy_account_Sse(dynamic raw);
+  @protected
+  KeychainKind
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+          SseDeserializer deserializer);
 
-@protected String? dco_decode_opt_String(dynamic raw);
+  @protected
+  EnvoyAccountHandler
+      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+          SseDeserializer deserializer);
 
-@protected KeyChain? dco_decode_opt_box_autoadd_key_chain(dynamic raw);
+  @protected
+  EnvoyAccountHandler
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+          SseDeserializer deserializer);
 
-@protected Network? dco_decode_opt_box_autoadd_network(dynamic raw);
+  @protected
+  Map<String, String> sse_decode_Map_String_String_None(
+      SseDeserializer deserializer);
 
-@protected int? dco_decode_opt_box_autoadd_u_16(dynamic raw);
+  @protected
+  Map<String, bool> sse_decode_Map_String_bool_None(
+      SseDeserializer deserializer);
 
-@protected BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw);
+  @protected
+  ArcMutexNgAccountConnection
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(
+          SseDeserializer deserializer);
 
-@protected Output dco_decode_output(dynamic raw);
+  @protected
+  FullScanRequest
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(
+          SseDeserializer deserializer);
 
-@protected (AddressType,KeychainKind,int) dco_decode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(dynamic raw);
+  @protected
+  SyncRequest
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(
+          SseDeserializer deserializer);
 
-@protected (String,AddressType) dco_decode_record_string_address_type(dynamic raw);
+  @protected
+  WalletUpdate
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
+          SseDeserializer deserializer);
 
-@protected (String,bool) dco_decode_record_string_bool(dynamic raw);
+  @protected
+  BumpFeeError
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
+          SseDeserializer deserializer);
 
-@protected (String,String) dco_decode_record_string_string(dynamic raw);
+  @protected
+  CreateTxError
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
+          SseDeserializer deserializer);
 
-@protected TransactionFeeResult dco_decode_transaction_fee_result(dynamic raw);
+  @protected
+  EnvoyAccountHandler
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+          SseDeserializer deserializer);
 
-@protected TransactionParams dco_decode_transaction_params(dynamic raw);
+  @protected
+  KeychainKind
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+          SseDeserializer deserializer);
 
-@protected int dco_decode_u_16(dynamic raw);
+  @protected
+  RustStreamSink<EnvoyAccount> sse_decode_StreamSink_envoy_account_Sse(
+      SseDeserializer deserializer);
 
-@protected int dco_decode_u_32(dynamic raw);
+  @protected
+  String sse_decode_String(SseDeserializer deserializer);
 
-@protected BigInt dco_decode_u_64(dynamic raw);
+  @protected
+  AddressType sse_decode_address_type(SseDeserializer deserializer);
 
-@protected int dco_decode_u_8(dynamic raw);
+  @protected
+  BitcoinTransaction sse_decode_bitcoin_transaction(
+      SseDeserializer deserializer);
 
-@protected void dco_decode_unit(dynamic raw);
+  @protected
+  bool sse_decode_bool(SseDeserializer deserializer);
 
-@protected BigInt dco_decode_usize(dynamic raw);
+  @protected
+  BitcoinTransaction sse_decode_box_autoadd_bitcoin_transaction(
+      SseDeserializer deserializer);
 
-@protected AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
+  @protected
+  DraftTransaction sse_decode_box_autoadd_draft_transaction(
+      SseDeserializer deserializer);
 
-@protected ArcMutexNgAccountConnection sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(SseDeserializer deserializer);
+  @protected
+  KeyChain sse_decode_box_autoadd_key_chain(SseDeserializer deserializer);
 
-@protected FullScanRequest sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(SseDeserializer deserializer);
+  @protected
+  Network sse_decode_box_autoadd_network(SseDeserializer deserializer);
 
-@protected SyncRequest sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(SseDeserializer deserializer);
+  @protected
+  NgAccountBackup sse_decode_box_autoadd_ng_account_backup(
+      SseDeserializer deserializer);
 
-@protected WalletUpdate sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(SseDeserializer deserializer);
+  @protected
+  NgAccountConfig sse_decode_box_autoadd_ng_account_config(
+      SseDeserializer deserializer);
 
-@protected BumpFeeError sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(SseDeserializer deserializer);
+  @protected
+  NgDescriptor sse_decode_box_autoadd_ng_descriptor(
+      SseDeserializer deserializer);
 
-@protected CreateTxError sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(SseDeserializer deserializer);
+  @protected
+  Output sse_decode_box_autoadd_output(SseDeserializer deserializer);
 
-@protected EnvoyAccountHandler sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(SseDeserializer deserializer);
+  @protected
+  TransactionParams sse_decode_box_autoadd_transaction_params(
+      SseDeserializer deserializer);
 
-@protected KeychainKind sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(SseDeserializer deserializer);
+  @protected
+  int sse_decode_box_autoadd_u_16(SseDeserializer deserializer);
 
-@protected EnvoyAccountHandler sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(SseDeserializer deserializer);
+  @protected
+  BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
 
-@protected EnvoyAccountHandler sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(SseDeserializer deserializer);
+  @protected
+  BroadcastError sse_decode_broadcast_error(SseDeserializer deserializer);
 
-@protected Map<String, String> sse_decode_Map_String_String_None(SseDeserializer deserializer);
+  @protected
+  ComposeTxError sse_decode_compose_tx_error(SseDeserializer deserializer);
 
-@protected Map<String, bool> sse_decode_Map_String_bool_None(SseDeserializer deserializer);
+  @protected
+  DerivedDescriptor sse_decode_derived_descriptor(SseDeserializer deserializer);
 
-@protected ArcMutexNgAccountConnection sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(SseDeserializer deserializer);
+  @protected
+  DraftTransaction sse_decode_draft_transaction(SseDeserializer deserializer);
 
-@protected FullScanRequest sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(SseDeserializer deserializer);
+  @protected
+  EnvoyAccount sse_decode_envoy_account(SseDeserializer deserializer);
 
-@protected SyncRequest sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(SseDeserializer deserializer);
+  @protected
+  EnvoyBip39 sse_decode_envoy_bip_39(SseDeserializer deserializer);
 
-@protected WalletUpdate sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(SseDeserializer deserializer);
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer);
 
-@protected BumpFeeError sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(SseDeserializer deserializer);
+  @protected
+  PlatformInt64 sse_decode_i_64(SseDeserializer deserializer);
 
-@protected CreateTxError sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(SseDeserializer deserializer);
+  @protected
+  Input sse_decode_input(SseDeserializer deserializer);
 
-@protected EnvoyAccountHandler sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(SseDeserializer deserializer);
+  @protected
+  KeyChain sse_decode_key_chain(SseDeserializer deserializer);
 
-@protected KeychainKind sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(SseDeserializer deserializer);
+  @protected
+  List<String> sse_decode_list_String(SseDeserializer deserializer);
 
-@protected RustStreamSink<EnvoyAccount> sse_decode_StreamSink_envoy_account_Sse(SseDeserializer deserializer);
+  @protected
+  List<BitcoinTransaction> sse_decode_list_bitcoin_transaction(
+      SseDeserializer deserializer);
 
-@protected String sse_decode_String(SseDeserializer deserializer);
+  @protected
+  List<DerivedDescriptor> sse_decode_list_derived_descriptor(
+      SseDeserializer deserializer);
 
-@protected AddressType sse_decode_address_type(SseDeserializer deserializer);
+  @protected
+  List<Input> sse_decode_list_input(SseDeserializer deserializer);
 
-@protected BitcoinTransaction sse_decode_bitcoin_transaction(SseDeserializer deserializer);
+  @protected
+  List<NgDescriptor> sse_decode_list_ng_descriptor(
+      SseDeserializer deserializer);
 
-@protected bool sse_decode_bool(SseDeserializer deserializer);
+  @protected
+  List<Output> sse_decode_list_output(SseDeserializer deserializer);
 
-@protected BitcoinTransaction sse_decode_box_autoadd_bitcoin_transaction(SseDeserializer deserializer);
+  @protected
+  List<int> sse_decode_list_prim_u_8_loose(SseDeserializer deserializer);
 
-@protected DraftTransaction sse_decode_box_autoadd_draft_transaction(SseDeserializer deserializer);
+  @protected
+  Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
-@protected KeyChain sse_decode_box_autoadd_key_chain(SseDeserializer deserializer);
+  @protected
+  List<(AddressType, KeychainKind, int)>
+      sse_decode_list_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
+          SseDeserializer deserializer);
 
-@protected Network sse_decode_box_autoadd_network(SseDeserializer deserializer);
+  @protected
+  List<(String, AddressType)> sse_decode_list_record_string_address_type(
+      SseDeserializer deserializer);
 
-@protected NgAccountBackup sse_decode_box_autoadd_ng_account_backup(SseDeserializer deserializer);
+  @protected
+  List<(String, bool)> sse_decode_list_record_string_bool(
+      SseDeserializer deserializer);
 
-@protected NgAccountConfig sse_decode_box_autoadd_ng_account_config(SseDeserializer deserializer);
+  @protected
+  List<(String, String)> sse_decode_list_record_string_string(
+      SseDeserializer deserializer);
 
-@protected NgDescriptor sse_decode_box_autoadd_ng_descriptor(SseDeserializer deserializer);
+  @protected
+  Network sse_decode_network(SseDeserializer deserializer);
 
-@protected Output sse_decode_box_autoadd_output(SseDeserializer deserializer);
+  @protected
+  NgAccountBackup sse_decode_ng_account_backup(SseDeserializer deserializer);
 
-@protected TransactionParams sse_decode_box_autoadd_transaction_params(SseDeserializer deserializer);
+  @protected
+  NgAccountConfig sse_decode_ng_account_config(SseDeserializer deserializer);
 
-@protected int sse_decode_box_autoadd_u_16(SseDeserializer deserializer);
+  @protected
+  NgDescriptor sse_decode_ng_descriptor(SseDeserializer deserializer);
 
-@protected BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
+  @protected
+  RustStreamSink<EnvoyAccount>? sse_decode_opt_StreamSink_envoy_account_Sse(
+      SseDeserializer deserializer);
 
-@protected BroadcastError sse_decode_broadcast_error(SseDeserializer deserializer);
+  @protected
+  String? sse_decode_opt_String(SseDeserializer deserializer);
 
-@protected ComposeTxError sse_decode_compose_tx_error(SseDeserializer deserializer);
+  @protected
+  KeyChain? sse_decode_opt_box_autoadd_key_chain(SseDeserializer deserializer);
 
-@protected DerivedDescriptor sse_decode_derived_descriptor(SseDeserializer deserializer);
+  @protected
+  Network? sse_decode_opt_box_autoadd_network(SseDeserializer deserializer);
 
-@protected DraftTransaction sse_decode_draft_transaction(SseDeserializer deserializer);
+  @protected
+  int? sse_decode_opt_box_autoadd_u_16(SseDeserializer deserializer);
 
-@protected EnvoyAccount sse_decode_envoy_account(SseDeserializer deserializer);
+  @protected
+  BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer);
 
-@protected EnvoyBip39 sse_decode_envoy_bip_39(SseDeserializer deserializer);
+  @protected
+  Output sse_decode_output(SseDeserializer deserializer);
 
-@protected int sse_decode_i_32(SseDeserializer deserializer);
+  @protected
+  (
+    AddressType,
+    KeychainKind,
+    int
+  ) sse_decode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
+      SseDeserializer deserializer);
 
-@protected PlatformInt64 sse_decode_i_64(SseDeserializer deserializer);
+  @protected
+  (String, AddressType) sse_decode_record_string_address_type(
+      SseDeserializer deserializer);
 
-@protected Input sse_decode_input(SseDeserializer deserializer);
+  @protected
+  (String, bool) sse_decode_record_string_bool(SseDeserializer deserializer);
 
-@protected KeyChain sse_decode_key_chain(SseDeserializer deserializer);
+  @protected
+  (String, String) sse_decode_record_string_string(
+      SseDeserializer deserializer);
 
-@protected List<String> sse_decode_list_String(SseDeserializer deserializer);
+  @protected
+  TransactionFeeResult sse_decode_transaction_fee_result(
+      SseDeserializer deserializer);
 
-@protected List<BitcoinTransaction> sse_decode_list_bitcoin_transaction(SseDeserializer deserializer);
+  @protected
+  TransactionParams sse_decode_transaction_params(SseDeserializer deserializer);
 
-@protected List<DerivedDescriptor> sse_decode_list_derived_descriptor(SseDeserializer deserializer);
+  @protected
+  int sse_decode_u_16(SseDeserializer deserializer);
 
-@protected List<Input> sse_decode_list_input(SseDeserializer deserializer);
+  @protected
+  int sse_decode_u_32(SseDeserializer deserializer);
 
-@protected List<NgDescriptor> sse_decode_list_ng_descriptor(SseDeserializer deserializer);
+  @protected
+  BigInt sse_decode_u_64(SseDeserializer deserializer);
 
-@protected List<Output> sse_decode_list_output(SseDeserializer deserializer);
+  @protected
+  int sse_decode_u_8(SseDeserializer deserializer);
 
-@protected List<int> sse_decode_list_prim_u_8_loose(SseDeserializer deserializer);
+  @protected
+  void sse_decode_unit(SseDeserializer deserializer);
 
-@protected Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
+  @protected
+  BigInt sse_decode_usize(SseDeserializer deserializer);
 
-@protected List<(AddressType,KeychainKind,int)> sse_decode_list_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(SseDeserializer deserializer);
+  @protected
+  void sse_encode_AnyhowException(
+      AnyhowException self, SseSerializer serializer);
 
-@protected List<(String,AddressType)> sse_decode_list_record_string_address_type(SseDeserializer deserializer);
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(
+          ArcMutexNgAccountConnection self, SseSerializer serializer);
 
-@protected List<(String,bool)> sse_decode_list_record_string_bool(SseDeserializer deserializer);
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(
+          FullScanRequest self, SseSerializer serializer);
 
-@protected List<(String,String)> sse_decode_list_record_string_string(SseDeserializer deserializer);
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(
+          SyncRequest self, SseSerializer serializer);
 
-@protected Network sse_decode_network(SseDeserializer deserializer);
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
+          WalletUpdate self, SseSerializer serializer);
 
-@protected NgAccountBackup sse_decode_ng_account_backup(SseDeserializer deserializer);
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
+          BumpFeeError self, SseSerializer serializer);
 
-@protected NgAccountConfig sse_decode_ng_account_config(SseDeserializer deserializer);
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
+          CreateTxError self, SseSerializer serializer);
 
-@protected NgDescriptor sse_decode_ng_descriptor(SseDeserializer deserializer);
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+          EnvoyAccountHandler self, SseSerializer serializer);
 
-@protected RustStreamSink<EnvoyAccount>? sse_decode_opt_StreamSink_envoy_account_Sse(SseDeserializer deserializer);
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+          KeychainKind self, SseSerializer serializer);
 
-@protected String? sse_decode_opt_String(SseDeserializer deserializer);
+  @protected
+  void
+      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+          EnvoyAccountHandler self, SseSerializer serializer);
 
-@protected KeyChain? sse_decode_opt_box_autoadd_key_chain(SseDeserializer deserializer);
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+          EnvoyAccountHandler self, SseSerializer serializer);
 
-@protected Network? sse_decode_opt_box_autoadd_network(SseDeserializer deserializer);
+  @protected
+  void sse_encode_Map_String_String_None(
+      Map<String, String> self, SseSerializer serializer);
 
-@protected int? sse_decode_opt_box_autoadd_u_16(SseDeserializer deserializer);
+  @protected
+  void sse_encode_Map_String_bool_None(
+      Map<String, bool> self, SseSerializer serializer);
 
-@protected BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer);
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(
+          ArcMutexNgAccountConnection self, SseSerializer serializer);
 
-@protected Output sse_decode_output(SseDeserializer deserializer);
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(
+          FullScanRequest self, SseSerializer serializer);
 
-@protected (AddressType,KeychainKind,int) sse_decode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(SseDeserializer deserializer);
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(
+          SyncRequest self, SseSerializer serializer);
 
-@protected (String,AddressType) sse_decode_record_string_address_type(SseDeserializer deserializer);
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
+          WalletUpdate self, SseSerializer serializer);
 
-@protected (String,bool) sse_decode_record_string_bool(SseDeserializer deserializer);
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
+          BumpFeeError self, SseSerializer serializer);
 
-@protected (String,String) sse_decode_record_string_string(SseDeserializer deserializer);
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
+          CreateTxError self, SseSerializer serializer);
 
-@protected TransactionFeeResult sse_decode_transaction_fee_result(SseDeserializer deserializer);
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+          EnvoyAccountHandler self, SseSerializer serializer);
 
-@protected TransactionParams sse_decode_transaction_params(SseDeserializer deserializer);
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+          KeychainKind self, SseSerializer serializer);
 
-@protected int sse_decode_u_16(SseDeserializer deserializer);
+  @protected
+  void sse_encode_StreamSink_envoy_account_Sse(
+      RustStreamSink<EnvoyAccount> self, SseSerializer serializer);
 
-@protected int sse_decode_u_32(SseDeserializer deserializer);
+  @protected
+  void sse_encode_String(String self, SseSerializer serializer);
 
-@protected BigInt sse_decode_u_64(SseDeserializer deserializer);
+  @protected
+  void sse_encode_address_type(AddressType self, SseSerializer serializer);
 
-@protected int sse_decode_u_8(SseDeserializer deserializer);
+  @protected
+  void sse_encode_bitcoin_transaction(
+      BitcoinTransaction self, SseSerializer serializer);
 
-@protected void sse_decode_unit(SseDeserializer deserializer);
+  @protected
+  void sse_encode_bool(bool self, SseSerializer serializer);
 
-@protected BigInt sse_decode_usize(SseDeserializer deserializer);
+  @protected
+  void sse_encode_box_autoadd_bitcoin_transaction(
+      BitcoinTransaction self, SseSerializer serializer);
 
-@protected void sse_encode_AnyhowException(AnyhowException self, SseSerializer serializer);
+  @protected
+  void sse_encode_box_autoadd_draft_transaction(
+      DraftTransaction self, SseSerializer serializer);
 
-@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(ArcMutexNgAccountConnection self, SseSerializer serializer);
+  @protected
+  void sse_encode_box_autoadd_key_chain(
+      KeyChain self, SseSerializer serializer);
 
-@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(FullScanRequest self, SseSerializer serializer);
+  @protected
+  void sse_encode_box_autoadd_network(Network self, SseSerializer serializer);
 
-@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(SyncRequest self, SseSerializer serializer);
+  @protected
+  void sse_encode_box_autoadd_ng_account_backup(
+      NgAccountBackup self, SseSerializer serializer);
 
-@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(WalletUpdate self, SseSerializer serializer);
+  @protected
+  void sse_encode_box_autoadd_ng_account_config(
+      NgAccountConfig self, SseSerializer serializer);
 
-@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(BumpFeeError self, SseSerializer serializer);
+  @protected
+  void sse_encode_box_autoadd_ng_descriptor(
+      NgDescriptor self, SseSerializer serializer);
 
-@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(CreateTxError self, SseSerializer serializer);
+  @protected
+  void sse_encode_box_autoadd_output(Output self, SseSerializer serializer);
 
-@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(EnvoyAccountHandler self, SseSerializer serializer);
+  @protected
+  void sse_encode_box_autoadd_transaction_params(
+      TransactionParams self, SseSerializer serializer);
 
-@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(KeychainKind self, SseSerializer serializer);
+  @protected
+  void sse_encode_box_autoadd_u_16(int self, SseSerializer serializer);
 
-@protected void sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(EnvoyAccountHandler self, SseSerializer serializer);
+  @protected
+  void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
 
-@protected void sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(EnvoyAccountHandler self, SseSerializer serializer);
+  @protected
+  void sse_encode_broadcast_error(
+      BroadcastError self, SseSerializer serializer);
 
-@protected void sse_encode_Map_String_String_None(Map<String, String> self, SseSerializer serializer);
+  @protected
+  void sse_encode_compose_tx_error(
+      ComposeTxError self, SseSerializer serializer);
 
-@protected void sse_encode_Map_String_bool_None(Map<String, bool> self, SseSerializer serializer);
+  @protected
+  void sse_encode_derived_descriptor(
+      DerivedDescriptor self, SseSerializer serializer);
 
-@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(ArcMutexNgAccountConnection self, SseSerializer serializer);
+  @protected
+  void sse_encode_draft_transaction(
+      DraftTransaction self, SseSerializer serializer);
 
-@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(FullScanRequest self, SseSerializer serializer);
+  @protected
+  void sse_encode_envoy_account(EnvoyAccount self, SseSerializer serializer);
 
-@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(SyncRequest self, SseSerializer serializer);
+  @protected
+  void sse_encode_envoy_bip_39(EnvoyBip39 self, SseSerializer serializer);
 
-@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(WalletUpdate self, SseSerializer serializer);
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer);
 
-@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(BumpFeeError self, SseSerializer serializer);
+  @protected
+  void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer);
 
-@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(CreateTxError self, SseSerializer serializer);
+  @protected
+  void sse_encode_input(Input self, SseSerializer serializer);
 
-@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(EnvoyAccountHandler self, SseSerializer serializer);
+  @protected
+  void sse_encode_key_chain(KeyChain self, SseSerializer serializer);
 
-@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(KeychainKind self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_String(List<String> self, SseSerializer serializer);
 
-@protected void sse_encode_StreamSink_envoy_account_Sse(RustStreamSink<EnvoyAccount> self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_bitcoin_transaction(
+      List<BitcoinTransaction> self, SseSerializer serializer);
 
-@protected void sse_encode_String(String self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_derived_descriptor(
+      List<DerivedDescriptor> self, SseSerializer serializer);
 
-@protected void sse_encode_address_type(AddressType self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_input(List<Input> self, SseSerializer serializer);
 
-@protected void sse_encode_bitcoin_transaction(BitcoinTransaction self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_ng_descriptor(
+      List<NgDescriptor> self, SseSerializer serializer);
 
-@protected void sse_encode_bool(bool self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_output(List<Output> self, SseSerializer serializer);
 
-@protected void sse_encode_box_autoadd_bitcoin_transaction(BitcoinTransaction self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_prim_u_8_loose(List<int> self, SseSerializer serializer);
 
-@protected void sse_encode_box_autoadd_draft_transaction(DraftTransaction self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_prim_u_8_strict(
+      Uint8List self, SseSerializer serializer);
 
-@protected void sse_encode_box_autoadd_key_chain(KeyChain self, SseSerializer serializer);
+  @protected
+  void
+      sse_encode_list_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
+          List<(AddressType, KeychainKind, int)> self,
+          SseSerializer serializer);
 
-@protected void sse_encode_box_autoadd_network(Network self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_record_string_address_type(
+      List<(String, AddressType)> self, SseSerializer serializer);
 
-@protected void sse_encode_box_autoadd_ng_account_backup(NgAccountBackup self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_record_string_bool(
+      List<(String, bool)> self, SseSerializer serializer);
 
-@protected void sse_encode_box_autoadd_ng_account_config(NgAccountConfig self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_record_string_string(
+      List<(String, String)> self, SseSerializer serializer);
 
-@protected void sse_encode_box_autoadd_ng_descriptor(NgDescriptor self, SseSerializer serializer);
+  @protected
+  void sse_encode_network(Network self, SseSerializer serializer);
 
-@protected void sse_encode_box_autoadd_output(Output self, SseSerializer serializer);
+  @protected
+  void sse_encode_ng_account_backup(
+      NgAccountBackup self, SseSerializer serializer);
 
-@protected void sse_encode_box_autoadd_transaction_params(TransactionParams self, SseSerializer serializer);
+  @protected
+  void sse_encode_ng_account_config(
+      NgAccountConfig self, SseSerializer serializer);
 
-@protected void sse_encode_box_autoadd_u_16(int self, SseSerializer serializer);
+  @protected
+  void sse_encode_ng_descriptor(NgDescriptor self, SseSerializer serializer);
 
-@protected void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
+  @protected
+  void sse_encode_opt_StreamSink_envoy_account_Sse(
+      RustStreamSink<EnvoyAccount>? self, SseSerializer serializer);
 
-@protected void sse_encode_broadcast_error(BroadcastError self, SseSerializer serializer);
+  @protected
+  void sse_encode_opt_String(String? self, SseSerializer serializer);
 
-@protected void sse_encode_compose_tx_error(ComposeTxError self, SseSerializer serializer);
+  @protected
+  void sse_encode_opt_box_autoadd_key_chain(
+      KeyChain? self, SseSerializer serializer);
 
-@protected void sse_encode_derived_descriptor(DerivedDescriptor self, SseSerializer serializer);
+  @protected
+  void sse_encode_opt_box_autoadd_network(
+      Network? self, SseSerializer serializer);
 
-@protected void sse_encode_draft_transaction(DraftTransaction self, SseSerializer serializer);
+  @protected
+  void sse_encode_opt_box_autoadd_u_16(int? self, SseSerializer serializer);
 
-@protected void sse_encode_envoy_account(EnvoyAccount self, SseSerializer serializer);
+  @protected
+  void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer);
 
-@protected void sse_encode_envoy_bip_39(EnvoyBip39 self, SseSerializer serializer);
+  @protected
+  void sse_encode_output(Output self, SseSerializer serializer);
 
-@protected void sse_encode_i_32(int self, SseSerializer serializer);
+  @protected
+  void
+      sse_encode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
+          (AddressType, KeychainKind, int) self, SseSerializer serializer);
 
-@protected void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer);
+  @protected
+  void sse_encode_record_string_address_type(
+      (String, AddressType) self, SseSerializer serializer);
 
-@protected void sse_encode_input(Input self, SseSerializer serializer);
+  @protected
+  void sse_encode_record_string_bool(
+      (String, bool) self, SseSerializer serializer);
 
-@protected void sse_encode_key_chain(KeyChain self, SseSerializer serializer);
+  @protected
+  void sse_encode_record_string_string(
+      (String, String) self, SseSerializer serializer);
 
-@protected void sse_encode_list_String(List<String> self, SseSerializer serializer);
+  @protected
+  void sse_encode_transaction_fee_result(
+      TransactionFeeResult self, SseSerializer serializer);
 
-@protected void sse_encode_list_bitcoin_transaction(List<BitcoinTransaction> self, SseSerializer serializer);
+  @protected
+  void sse_encode_transaction_params(
+      TransactionParams self, SseSerializer serializer);
 
-@protected void sse_encode_list_derived_descriptor(List<DerivedDescriptor> self, SseSerializer serializer);
+  @protected
+  void sse_encode_u_16(int self, SseSerializer serializer);
 
-@protected void sse_encode_list_input(List<Input> self, SseSerializer serializer);
+  @protected
+  void sse_encode_u_32(int self, SseSerializer serializer);
 
-@protected void sse_encode_list_ng_descriptor(List<NgDescriptor> self, SseSerializer serializer);
+  @protected
+  void sse_encode_u_64(BigInt self, SseSerializer serializer);
 
-@protected void sse_encode_list_output(List<Output> self, SseSerializer serializer);
+  @protected
+  void sse_encode_u_8(int self, SseSerializer serializer);
 
-@protected void sse_encode_list_prim_u_8_loose(List<int> self, SseSerializer serializer);
+  @protected
+  void sse_encode_unit(void self, SseSerializer serializer);
 
-@protected void sse_encode_list_prim_u_8_strict(Uint8List self, SseSerializer serializer);
-
-@protected void sse_encode_list_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(List<(AddressType,KeychainKind,int)> self, SseSerializer serializer);
-
-@protected void sse_encode_list_record_string_address_type(List<(String,AddressType)> self, SseSerializer serializer);
-
-@protected void sse_encode_list_record_string_bool(List<(String,bool)> self, SseSerializer serializer);
-
-@protected void sse_encode_list_record_string_string(List<(String,String)> self, SseSerializer serializer);
-
-@protected void sse_encode_network(Network self, SseSerializer serializer);
-
-@protected void sse_encode_ng_account_backup(NgAccountBackup self, SseSerializer serializer);
-
-@protected void sse_encode_ng_account_config(NgAccountConfig self, SseSerializer serializer);
-
-@protected void sse_encode_ng_descriptor(NgDescriptor self, SseSerializer serializer);
-
-@protected void sse_encode_opt_StreamSink_envoy_account_Sse(RustStreamSink<EnvoyAccount>? self, SseSerializer serializer);
-
-@protected void sse_encode_opt_String(String? self, SseSerializer serializer);
-
-@protected void sse_encode_opt_box_autoadd_key_chain(KeyChain? self, SseSerializer serializer);
-
-@protected void sse_encode_opt_box_autoadd_network(Network? self, SseSerializer serializer);
-
-@protected void sse_encode_opt_box_autoadd_u_16(int? self, SseSerializer serializer);
-
-@protected void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer);
-
-@protected void sse_encode_output(Output self, SseSerializer serializer);
-
-@protected void sse_encode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32((AddressType,KeychainKind,int) self, SseSerializer serializer);
-
-@protected void sse_encode_record_string_address_type((String,AddressType) self, SseSerializer serializer);
-
-@protected void sse_encode_record_string_bool((String,bool) self, SseSerializer serializer);
-
-@protected void sse_encode_record_string_string((String,String) self, SseSerializer serializer);
-
-@protected void sse_encode_transaction_fee_result(TransactionFeeResult self, SseSerializer serializer);
-
-@protected void sse_encode_transaction_params(TransactionParams self, SseSerializer serializer);
-
-@protected void sse_encode_u_16(int self, SseSerializer serializer);
-
-@protected void sse_encode_u_32(int self, SseSerializer serializer);
-
-@protected void sse_encode_u_64(BigInt self, SseSerializer serializer);
-
-@protected void sse_encode_u_8(int self, SseSerializer serializer);
-
-@protected void sse_encode_unit(void self, SseSerializer serializer);
-
-@protected void sse_encode_usize(BigInt self, SseSerializer serializer);
-                }
-                
-
+  @protected
+  void sse_encode_usize(BigInt self, SseSerializer serializer);
+}
 
 // Section: wire_class
 
 class RustLibWire implements BaseWire {
-            RustLibWire.fromExternalLibrary(ExternalLibrary lib);
+  RustLibWire.fromExternalLibrary(ExternalLibrary lib);
 
-            void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(int ptr) => wasmModule.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(ptr);
+  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(
+          int ptr) =>
+      wasmModule
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(
+              ptr);
 
-void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(int ptr) => wasmModule.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(ptr);
+  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(
+          int ptr) =>
+      wasmModule
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(
+              ptr);
 
-void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(int ptr) => wasmModule.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(ptr);
+  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(
+          int ptr) =>
+      wasmModule
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(
+              ptr);
 
-void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(int ptr) => wasmModule.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(ptr);
+  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(
+          int ptr) =>
+      wasmModule
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(
+              ptr);
 
-void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(int ptr) => wasmModule.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(ptr);
+  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(
+          int ptr) =>
+      wasmModule
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(
+              ptr);
 
-void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(int ptr) => wasmModule.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(ptr);
+  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(
+          int ptr) =>
+      wasmModule
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(
+              ptr);
 
-void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(int ptr) => wasmModule.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(ptr);
+  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
+          int ptr) =>
+      wasmModule
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
+              ptr);
 
-void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(int ptr) => wasmModule.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(ptr);
+  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
+          int ptr) =>
+      wasmModule
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
+              ptr);
 
-void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(int ptr) => wasmModule.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(ptr);
+  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
+          int ptr) =>
+      wasmModule
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
+              ptr);
 
-void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(int ptr) => wasmModule.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(ptr);
+  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
+          int ptr) =>
+      wasmModule
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
+              ptr);
 
-void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(int ptr) => wasmModule.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(ptr);
+  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
+          int ptr) =>
+      wasmModule
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
+              ptr);
 
-void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(int ptr) => wasmModule.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(ptr);
+  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
+          int ptr) =>
+      wasmModule
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
+              ptr);
 
-void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(int ptr) => wasmModule.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(ptr);
+  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+          int ptr) =>
+      wasmModule
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+              ptr);
 
-void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(int ptr) => wasmModule.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(ptr);
+  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+          int ptr) =>
+      wasmModule
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+              ptr);
 
-void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(int ptr) => wasmModule.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(ptr);
+  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+          int ptr) =>
+      wasmModule
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+              ptr);
 
-void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(int ptr) => wasmModule.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(ptr);
-        }
-        @JS('wasm_bindgen') external RustLibWasmModule get wasmModule;
+  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+          int ptr) =>
+      wasmModule
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+              ptr);
+}
 
-        @JS() @anonymous extension type RustLibWasmModule._(JSObject _) implements JSObject {
-            external void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(int ptr);
+@JS('wasm_bindgen')
+external RustLibWasmModule get wasmModule;
 
-external void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(int ptr);
+@JS()
+@anonymous
+extension type RustLibWasmModule._(JSObject _) implements JSObject {
+  external void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(
+          int ptr);
 
-external void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(int ptr);
+  external void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(
+          int ptr);
 
-external void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(int ptr);
+  external void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(
+          int ptr);
 
-external void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(int ptr);
+  external void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionFullScanRequestKeychainKind(
+          int ptr);
 
-external void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(int ptr);
+  external void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(
+          int ptr);
 
-external void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(int ptr);
+  external void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexOptionSyncRequestKeychainKindu32(
+          int ptr);
 
-external void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(int ptr);
+  external void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
+          int ptr);
 
-external void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(int ptr);
+  external void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
+          int ptr);
 
-external void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(int ptr);
+  external void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
+          int ptr);
 
-external void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(int ptr);
+  external void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
+          int ptr);
 
-external void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(int ptr);
+  external void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
+          int ptr);
 
-external void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(int ptr);
+  external void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
+          int ptr);
 
-external void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(int ptr);
+  external void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+          int ptr);
 
-external void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(int ptr);
+  external void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+          int ptr);
 
-external void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(int ptr);
-        }
-        
+  external void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+          int ptr);
+
+  external void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+          int ptr);
+}
