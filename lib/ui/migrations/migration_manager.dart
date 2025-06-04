@@ -9,13 +9,11 @@ import 'dart:io';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/legacy/legacy_account.dart';
 import 'package:envoy/account/sync_manager.dart';
-import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/util/bug_report_helper.dart';
-import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:ngwallet/ngwallet.dart';
@@ -123,9 +121,8 @@ class MigrationManager {
 
       try {
         for (var account in accounts) {
-          await migrateDoNotSpend(account);
-          await migrateNotes(account);
-          await migrateTags(account);
+          final state = await account.state();
+          await migrateMeta(account, accountId: state.id);
         }
         await NgAccountManager().updateAccountOrder(walletOrder);
         for (var account in accounts) {
@@ -182,11 +179,13 @@ class MigrationManager {
       if (!newAccountDir.existsSync()) {
         await newAccountDir.create(recursive: true);
       }
+
       var network = Network.bitcoin;
       if (legacyAccount.wallet.network.toLowerCase() == "testnet") {
-        network = Network.testnet4;
-      } else if (legacyAccount.wallet.network.toLowerCase() == "signet") {
         LocalStorage().prefs.setBool(migratedToTestnet4, true);
+        network = Network.testnet;
+      } else if (legacyAccount.wallet.network.toLowerCase() == "signet") {
+        LocalStorage().prefs.setBool(migratedToSignetGlobal, true);
         network = Network.signet;
       }
 
@@ -292,82 +291,21 @@ class MigrationManager {
   }
 
   //migrate notes to new db.
-  //this will get all notes that try to set it to account,\
-  //ngwallet will only take notes that are associated with its transactions
-  Future migrateNotes(EnvoyAccountHandler envoyAccount) async {
-    kPrint("Migration: Migrating notes");
-    final storage = EnvoyStorage();
-    final notes = await storage.getAllNotes();
+  static Future migrateMeta(EnvoyAccountHandler handler,
+      {String? accountId}) async {
     try {
-      for (var entry in notes.entries) {
-        try {
-          EnvoyReport().log(
-            "Migration",
-            "Migrating note ${entry.key}  with ${entry.value} -> ${envoyAccount.config().name} ${envoyAccount.config().descriptors.map(
-                  (e) => " ${e.external_}\n",
-                )}\n",
-          );
-          await envoyAccount.setNote(note: entry.value, txId: entry.key);
-        } catch (_) {}
-      }
-    } catch (e) {
-      EnvoyReport().log(
-        "Migration",
-        "Error migrating notes for account ${envoyAccount.config().id} $e",
-      );
-    }
-  }
-
-  Future migrateTags(EnvoyAccountHandler account) async {
-    kPrint("Migration: Migrating tags");
-    List<CoinTag> tags =
-        await CoinRepository().getCoinTags(accountId: account.config().id);
-    try {
-      for (var tag in tags) {
-        kPrint(
-            "Migration: Migrating tag ${tag.name}  with ${tag.coins.length} coins");
-        EnvoyReport().log(
-          "Migration",
-          "Migrating tag ${tag.name}  with ${tag.coins.length}  to account -->  ${account.config().name}",
-        );
-        for (var id in tag.coinsId) {
-          final txId = id.split(":")[0];
-          final vout = int.parse(id.split(":")[1]);
-          await account.setTag(
-              utxo: Output(
-                  txId: txId,
-                  vout: vout,
-                  amount: BigInt.zero,
-                  isConfirmed: true,
-                  address: "",
-                  doNotSpend: false),
-              tag: tag.name);
-        }
-      }
-    } catch (e) {
-      EnvoyReport().log(
-        "Migration",
-        "Error migrating tags for account ${account.config().id} $e",
-      );
-    }
-  }
-
-  Future migrateDoNotSpend(EnvoyAccountHandler account) async {
-    kPrint("Migration: Migrating do not spend");
-    List<String> blockedCoins = await CoinRepository().getBlockedCoins();
-    List<Output> utxos = await account.utxo();
-    try {
+      List<String> blockedCoins = await CoinRepository().getBlockedCoins();
+      Map<String, String> tagsMap =
+          await CoinRepository().getTagMap();
+      Map<String, String> notes = await EnvoyStorage().getAllNotes();
+      Map<String, bool> doNotSpendMap = {};
       for (var blocked in blockedCoins) {
-        for (var element
-            in utxos.where((element) => element.getId() == blocked).toList()) {
-          await account.setDoNotSpend(utxo: element, doNotSpend: true);
-        }
+        doNotSpendMap[blocked] = true;
       }
+      await handler.migrateMeta(
+          notes: notes, tags: tagsMap, doNotSpend: doNotSpendMap);
     } catch (e) {
-      EnvoyReport().log(
-        "Migration",
-        "Error migrating DNSfor account ${account.config().id} $e",
-      );
+      EnvoyReport().log("Migration", "Error migrating meta: $e");
     }
   }
 }
