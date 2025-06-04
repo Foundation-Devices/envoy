@@ -183,7 +183,7 @@ class MigrationManager {
       var network = Network.bitcoin;
       if (legacyAccount.wallet.network.toLowerCase() == "testnet") {
         LocalStorage().prefs.setBool(migratedToTestnet4, true);
-        network = Network.testnet;
+        network = Network.testnet4;
       } else if (legacyAccount.wallet.network.toLowerCase() == "signet") {
         LocalStorage().prefs.setBool(migratedToSignetGlobal, true);
         network = Network.signet;
