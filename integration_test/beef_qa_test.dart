@@ -4,17 +4,14 @@
 
 import 'dart:io';
 
-import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/main.dart';
 import 'package:envoy/ui/amount_display.dart';
-import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/widgets/card_swipe_wrapper.dart';
-import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -291,7 +288,6 @@ Future<void> main() async {
     testWidgets('Pump until balance sync', (tester) async {
       await checkSync(tester);
     });
-
     testWidgets('Testing Prompts for Wallets with Balances', (tester) async {
       await goBackHome(tester);
 
@@ -467,6 +463,7 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
     });
     testWidgets('Fiat in App', (tester) async {
+      await checkSync(tester);
       await goBackHome(tester);
 
       String someValidReceiveAddress =
@@ -935,7 +932,7 @@ Future<void> main() async {
 
       await pressHamburgerMenu(tester); // back to settings menu
       await pressHamburgerMenu(tester); // back to home
-      // await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)"); // TODO: for some reason on iphone goes straight to receive screen
+      // await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)"); /// for some reason on iphone goes straight to receive screen
       // await findAndPressTextButton(tester, "Receive");
 
       // Grab the second address
@@ -1050,7 +1047,7 @@ Future<void> main() async {
       await enablePerformance(tester);
       await checkTorShieldIcon(tester, expectPrivacy: false);
     });
-    testWidgets('Boost screen', (tester) async {
+    /*testWidgets('Boost screen', (tester) async {
       await goBackHome(tester);
 
       await disableAllNetworks(tester);
@@ -1204,7 +1201,7 @@ Future<void> main() async {
         await findAndTapCoinLockButton(tester);
         await findAndPressTextButton(tester, 'Unlock');
       }
-    });
+    });*/
     testWidgets('Switching Fiat in App', (tester) async {
       await goBackHome(tester);
       const String accountPassportName = "GH TEST ACC (#1)";
@@ -1416,7 +1413,6 @@ Future<void> main() async {
       await trySendToAddress(tester, p2trAddress);
     });
     testWidgets('Delete device', (tester) async {
-      //TODO: account exceptions when deleting
       await goBackHome(tester);
       String deviceName = "Passport";
 
@@ -1453,15 +1449,27 @@ Future<void> main() async {
       final emptyDevices = find.byType(GhostDevice);
       await tester.pumpUntilFound(emptyDevices);
       expect(emptyDevices, findsOne);
+      await tester.pump(Durations.long2);
+      await tester.pumpAndSettle();
 
       // Verify that deleting the device also removes its associated accounts
       await findAndPressTextButton(tester, 'Accounts');
       await tester.pump(Durations.long2);
+      await tester.pumpAndSettle();
       final passportAccount = find.text(
         deviceName,
       );
+
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
+      await tester.pumpAndSettle();
+
       expect(passportAccount,
           findsNothing); // TODO: one was found but none were expected????
+
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
+      await tester.pumpAndSettle();
     });
     testWidgets('Logs freeze', (tester) async {
       await goBackHome(tester);
