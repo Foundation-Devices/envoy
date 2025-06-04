@@ -10,5 +10,6 @@ include: package:flutter_lints/flutter.yaml
 analyzer:
   exclude:
     - 'cargokit/**'
+    - 'lib/src/rust/api/ble.dart'
 
 

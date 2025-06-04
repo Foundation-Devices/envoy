@@ -9,8 +9,7 @@ import 'package:envoy/util/haptics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tor/tor.dart';
-import 'package:ngwallet/src/exceptions.dart';
-import 'package:ngwallet/src/wallet.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 final privacyOnboardSelectionProvider = StateProvider((ref) => true);
 final isNodeRequiredTorProvider = StateProvider((ref) => false);

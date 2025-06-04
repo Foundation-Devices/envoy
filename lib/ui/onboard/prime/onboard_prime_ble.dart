@@ -34,7 +34,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:foundation_api/foundation_api.dart';
-import 'package:foundation_api/src/rust/third_party/foundation_api/api/scv.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -55,6 +54,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   bool scanForPayload = false;
 
   bool deniedBluetooth = false;
+  Completer<QuantumLinkMessage_BroadcastTransaction>? _completer;
+  get completer => _completer;
 
   @override
   void initState() {
@@ -71,7 +72,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
       if (message.message is QuantumLinkMessage_PairingResponse) {
         kPrint("Found it!");
-        final response = message.message as QuantumLinkMessage_PairingResponse;
+        //  final response = message.message as QuantumLinkMessage_PairingResponse;
         // Create the thing that I'm gonna reveal later
         // await AccountNg().restore(response.field0.descriptor);
         //
@@ -90,7 +91,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         kPrint("Got payload! ${payload.length}");
         final config = await EnvoyAccountHandler.getConfigFromRemote(
             remoteUpdate: payload);
-        kPrint("Got config ${config.id} ${config.descriptors.map((e) => e.external_)}");
+        kPrint(
+            "Got config ${config.id} ${config.descriptors.map((e) => e.external_)}");
         final dir = NgAccountManager.getAccountDirectory(
             deviceSerial: config.deviceSerial ?? "prime",
             network: config.network.toString(),
@@ -99,7 +101,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         await dir.create();
         final accountHandler = await EnvoyAccountHandler.addAccountFromConfig(
             dbPath: dir.path, config: config);
-        await NgAccountManager().addAccount(await accountHandler.state(), accountHandler);
+        await NgAccountManager()
+            .addAccount(await accountHandler.state(), accountHandler);
         kPrint("Account added!");
       }
 
@@ -593,44 +596,48 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     await BluetoothManager().pair(payload);
   }
 
-  showCommunicationModal(BuildContext context) async {
-    if (context.mounted) {
-      showEnvoyDialog(
-          context: context,
-          dismissible: false,
-          dialog: QuantumLinkCommunicationInfo(
-            onContinue: () async {
-              await showScannerDialog(
-                  showInfoDialog: true,
-                  context: context,
-                  onBackPressed: (context) {
-                    Navigator.pop(context);
-                  },
-                  decoder:
-                      //parse UR payload
-                      PrimeQlPayloadDecoder(
-                          decoder: await getQrDecoder(),
-                          onScan: (XidDocument payload) async {
-                            kPrint("XID payload: $payload");
-                            await pairWithPrime(payload);
+  Future<void> showCommunicationModal(BuildContext context) async {
+    if (!context.mounted) return;
 
-                            //TODO: process XidDocument for connection
+    showEnvoyDialog(
+      context: context,
+      dismissible: false,
+      dialog: QuantumLinkCommunicationInfo(
+        onContinue: () async {
+          final qrDecoder = await getQrDecoder();
 
-                            if (context.mounted) {
-                              // Close the scanner properly before moving forward
-                              if (Navigator.canPop(context)) {
-                                Navigator.pop(context);
-                              }
+          if (!context.mounted) return;
 
-                              await Future.delayed(Duration(milliseconds: 200));
-                              if (context.mounted) {
-                                context.goNamed(ONBOARD_PRIME_PAIR);
-                              }
-                            }
-                          }));
+          await showScannerDialog(
+            showInfoDialog: true,
+            context: context,
+            onBackPressed: (ctx) {
+              if (ctx.mounted) Navigator.pop(ctx);
             },
-          ));
-    }
+            decoder: PrimeQlPayloadDecoder(
+              decoder: qrDecoder,
+              onScan: (XidDocument payload) async {
+                kPrint("XID payload: $payload");
+                await pairWithPrime(payload);
+
+                // TODO: process XidDocument for connection
+
+                if (!context.mounted) return;
+
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                }
+
+                await Future.delayed(const Duration(milliseconds: 200));
+
+                if (!context.mounted) return;
+                context.goNamed(ONBOARD_PRIME_PAIR);
+              },
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 

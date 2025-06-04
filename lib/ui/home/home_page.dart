@@ -10,7 +10,6 @@ import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
-import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -25,7 +24,6 @@ import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/home/migration_dialogs.dart';
 import 'package:envoy/ui/home/top_bar_home.dart';
 import 'package:envoy/ui/lock/session_manager.dart';
-import 'package:envoy/ui/migrations/migration_manager.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -42,7 +40,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ngwallet/src/wallet.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -91,6 +89,7 @@ class HomePageState extends ConsumerState<HomePage>
   final Map<String, bool> transactionIdExpandedState = {};
   bool _backgroundShown = false;
   final bool _modalShown = false;
+  final List<StreamSubscription> _subscriptions = [];
 
   final _optionsKey = GlobalKey();
   final bool _optionsShown = false;
@@ -139,12 +138,13 @@ class HomePageState extends ConsumerState<HomePage>
     _resetServerDownWarningTimer();
     _resetBackupWarningTimer();
 
-    isNewExpiredBuyTxAvailable.stream
+    final isNewExpiredBuyTxAvailableSub = isNewExpiredBuyTxAvailable.stream
         .listen((List<EnvoyTransaction> expiredBuyTx) {
       if (mounted && expiredBuyTx.isNotEmpty) {
         _notifyAboutRemovedRampTx(expiredBuyTx, context);
       }
     });
+    _subscriptions.add(isNewExpiredBuyTxAvailableSub);
 
     Future.delayed(const Duration(milliseconds: 10), () {
       ///register for back button press
@@ -153,7 +153,7 @@ class HomePageState extends ConsumerState<HomePage>
     });
 
     // Home is there for the lifetime of the app so no need to dispose stream
-    ConnectivityManager().events.stream.listen((event) {
+    final connectivitySub = ConnectivityManager().events.stream.listen((event) {
       // If Tor is broken surface a warning
       if (event == ConnectivityManagerEvent.torConnectedDoesntWork) {
         if (_torWarningDisplayedMoreThan5minAgo &&
@@ -170,8 +170,9 @@ class HomePageState extends ConsumerState<HomePage>
         _serverDownWarningDisplayedMoreThan5minAgo = false;
       }
     });
+    _subscriptions.add(connectivitySub);
 
-    EnvoyStorage()
+    final secureWalletPromptSub = EnvoyStorage()
         .isPromptDismissed(DismissiblePrompt.secureWallet)
         .listen((dismissed) {
       // if is not dismissed listen balance
@@ -189,30 +190,37 @@ class HomePageState extends ConsumerState<HomePage>
 
           if (currentAccount != null &&
               currentAccount.wallet.hot &&
-              currentAccount.wallet.network == Network.Mainnet) {
+              currentAccount.wallet.network == WalletNetwork.Mainnet) {
             _notifyAboutHighBalance();
           }
         });
       }
     });
+    _subscriptions.add(secureWalletPromptSub);
 
-    EnvoySeed().backupCompletedStream.stream.listen((bool success) {
+    final backupCompletedSub =
+        EnvoySeed().backupCompletedStream.stream.listen((bool success) {
       if (_backupWarningDisplayedMoreThan2minAgo && mounted) {
         _displayBackupToast(success);
         _backupWarningDisplayedMoreThan2minAgo = false;
       }
     });
-    isNewAppVersionAvailable.stream.listen((String newVersion) {
+    _subscriptions.add(backupCompletedSub);
+    final newAppVersionAvailableSub =
+        isNewAppVersionAvailable.stream.listen((String newVersion) {
       if (mounted) {
         _notifyAboutNewAppVersion(newVersion);
       }
     });
+    _subscriptions.add(newAppVersionAvailableSub);
 
-    isCurrentVersionDeprecated.stream.listen((bool isDeprecated) {
+    final isCurrentVersionDeprecatedSub =
+        isCurrentVersionDeprecated.stream.listen((bool isDeprecated) {
       if (mounted && isDeprecated) {
         showForceUpdateDialog();
       }
     });
+    _subscriptions.add(isCurrentVersionDeprecatedSub);
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final router = Navigator.of(context);
@@ -391,6 +399,9 @@ class HomePageState extends ConsumerState<HomePage>
     _backupWarningTimer?.cancel();
     isNewExpiredBuyTxAvailable.close();
     backButtonDispatcher.removeCallback(_handleHomePageBackPress);
+    for (var subscription in _subscriptions) {
+      subscription.cancel();
+    }
     super.dispose();
   }
 

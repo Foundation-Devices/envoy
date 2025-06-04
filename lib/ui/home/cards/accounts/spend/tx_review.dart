@@ -142,29 +142,38 @@ class _TxReviewState extends ConsumerState<TxReview> {
           cardColor: Colors.transparent,
           useRootNavigator: true);
       try {
+        _passportMessageSubscription = BluetoothManager()
+            .transactionStream
+            .listen((PassportMessage message) async {
+          kPrint(
+              "Got the Passport Message : ${message.message} :::  ${message.message.runtimeType}");
+          if (message.message is QuantumLinkMessage_BroadcastTransaction) {
+            kPrint("Got the Broadcast Transaction");
+            try {
+              final signedPsbt =
+                  (message.message as QuantumLinkMessage_BroadcastTransaction)
+                      .field0;
+              kPrint("Signed Psbt $signedPsbt");
+              await ref
+                  .read(spendTransactionProvider.notifier)
+                  .decodePrimePsbt(providerScope, signedPsbt.psbt);
+              //hide the dialog
+              if (rootContext.mounted) {
+                Navigator.pop(rootContext);
+              }
+            } catch (e, stack) {
+              debugPrintStack(stackTrace: stack);
+              kPrint(e);
+            }
+          }
+        });
+
         await BluetoothManager().send(QuantumLinkMessage_SignPsbt(SignPsbt(
           accountId: account.id,
           psbt: psbt,
         )));
         kPrint("Waiting for prime response...");
         //wait for response from prime. maybe show some dialog while waiting?
-        _passportMessageSubscription = BluetoothManager()
-            .passportMessageStream
-            .listen((PassportMessage message) async {
-              kPrint("Got the Passport Message : ${message.message}");
-          if (message.message is QuantumLinkMessage_BroadcastTransaction) {
-            final signedPsbt =
-                (message.message as QuantumLinkMessage_BroadcastTransaction).field0;
-            kPrint("Signed Psbt $signedPsbt");
-            await ref
-                .read(spendTransactionProvider.notifier)
-                .decodePrimePsbt(providerScope, signedPsbt.psbt);
-            //hide the dialog
-            if (rootContext.mounted) {
-              Navigator.pop(rootContext);
-            }
-          }
-        });
       } catch (e, stack) {
         debugPrintStack(stackTrace: stack);
         kPrint("Error sending to prime: $e");
@@ -525,8 +534,6 @@ class _TransactionReviewScreenState
         child: Text("Unable to build transaction"), //TODO: figma
       );
     }
-
-    int amount = transaction.amount;
 
     String header = (account.isHot || transactionModel.isFinalized)
         ? S().coincontrol_tx_detail_heading

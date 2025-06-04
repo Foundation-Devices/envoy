@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // ignore_for_file: constant_identifier_names
 
+import 'package:envoy/business/bip21.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
@@ -12,12 +13,12 @@ import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/pages/fw/fw_routes.dart';
+import 'package:envoy/ui/pages/legal/passport_tou.dart';
 import 'package:envoy/ui/pages/pp/pp_setup_intro.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/routes/home_router.dart';
 import 'package:envoy/ui/shield.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
@@ -29,6 +30,7 @@ const WALLET_BACKUP_WARNING = "backup_warning";
 const PASSPORT_INTRO = "passport_intro";
 const PREFS_ONBOARDED = 'onboarded';
 const PSBT_QR_EXCHANGE_STANDALONE = '"psbt_qr_exchange';
+const TOU_EXTERNAL = 'tou_external';
 
 /// this key can be used in nested GoRoute to leverage main router
 /// for example:
@@ -42,11 +44,29 @@ final GlobalKey<NavigatorState> mainNavigatorKey =
 final GoRouter mainRouter = GoRouter(
   navigatorKey: mainNavigatorKey,
   initialLocation: ROUTE_ACCOUNTS_HOME,
-  debugLogDiagnostics: kDebugMode,
+  debugLogDiagnostics: true,
+  onException: (context, state, router) {
+    try {
+      final uri = GoRouter.of(context).state.uri;
+      final bip21 = Bip21.decode(uri.toString());
+
+      ///TODO handle account selection for spend, ENV-2024
+      if (context.mounted) {
+        router.go(ROUTE_ACCOUNTS_HOME, extra: bip21);
+      }
+    } catch (e) {
+      router.go(ROUTE_ACCOUNTS_HOME);
+    }
+  },
 
   /// this is a redirect to check if the user is onboarded or not
   /// null means no redirect
   redirect: (context, state) {
+    final uri = state.uri;
+    // Check if this is a Bitcoin URI
+    if (uri.scheme == 'bitcoin') {
+      return null;
+    }
     if (state.fullPath == ROUTE_ACCOUNTS_HOME) {
       if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) != true) {
         return state.namedLocation(ROUTE_SPLASH);
@@ -68,8 +88,7 @@ final GoRouter mainRouter = GoRouter(
         }
 
         if (params.containsKey("t")) {
-          return state.namedLocation(ONBOARD_PASSPORT_TOU,
-              queryParameters: params);
+          return state.namedLocation(TOU_EXTERNAL, queryParameters: params);
         }
 
         if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) != true) {
@@ -80,6 +99,13 @@ final GoRouter mainRouter = GoRouter(
       },
     ),
     fwRoutes,
+    GoRoute(
+      path: "/tou_external",
+      name: TOU_EXTERNAL,
+      builder: (context, state) => const TouPage(
+        fromExternal: true,
+      ),
+    ),
     GoRoute(
       path: "/passport_intro",
       name: PASSPORT_INTRO,

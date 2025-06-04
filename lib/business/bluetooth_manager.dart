@@ -9,7 +9,6 @@ import 'package:bluart/bluart.dart' as bluart;
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/prime_device.dart';
 import 'package:envoy/business/scv_server.dart';
-import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/ntp.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
@@ -17,7 +16,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/uuid_value.dart';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:foundation_api/src/rust/third_party/foundation_api/api/scv.dart';
 
 class BluetoothManager {
   StreamSubscription? _subscription;
@@ -28,6 +26,9 @@ class BluetoothManager {
   // Persist this across sessions
   api.QuantumLinkIdentity? _qlIdentity;
   final StreamController<api.PassportMessage> _passportMessageStream =
+      StreamController<api.PassportMessage>();
+
+  final StreamController<api.PassportMessage> _transactionStream =
       StreamController<api.PassportMessage>();
 
   api.Dechunker? _decoder;
@@ -41,7 +42,10 @@ class BluetoothManager {
   }
 
   Stream<api.PassportMessage> get passportMessageStream =>
-      _passportMessageStream.stream;
+      _passportMessageStream.stream.asBroadcastStream();
+
+  Stream<api.PassportMessage> get transactionStream =>
+      _transactionStream.stream.asBroadcastStream();
 
   String bleId = "";
 
@@ -72,15 +76,13 @@ class BluetoothManager {
 
     kPrint("QL Identity: $_qlIdentity");
 
-
     events?.listen((bluart.Event event) async {
-      kPrint("Got event $event");
       if (event is bluart.Event_DeviceConnected) {
         connected = true;
       }
 
       if (event is bluart.Event_DeviceDisconnected) {
-
+        connected = false;
       }
 
       if (event is bluart.Event_ScanResult) {
@@ -89,13 +91,13 @@ class BluetoothManager {
           return;
         }
 
-        // for (final device in event.field0) {
-        //   kPrint("Paired device found: ${device.id}");
-        //   if (device.id == _bleId) {
-        //     await connect(id: device.id);
-        //     await listen(id: bleId);
-        //   }
-        // }
+        for (final device in event.field0) {
+          kPrint("Paired device found: ${device.id}");
+          if (device.id == _bleId && !connected) {
+            await connect(id: device.id);
+            await listen(id: bleId);
+          }
+        }
       }
     });
 
@@ -185,6 +187,7 @@ class BluetoothManager {
 
     bleId = id;
     await bluart.connect(id: id);
+    connected = true;
   }
 
   Future<void> listen({required String id}) async {
@@ -194,6 +197,9 @@ class BluetoothManager {
         //kPrint("Dechunked: {$value}");
         if (value != null) {
           _passportMessageStream.add(value);
+          kPrint(
+              "get passport message type:: ${value.message.runtimeType} ${value.message}");
+          _transactionStream.add(value);
         }
       }, onError: (e) {
         kPrint("Error decoding: $e");
@@ -248,7 +254,8 @@ class BluetoothManager {
   }
 
   Future<void> sendChallengeMessage() async {
-    SecurityChallengeMessage? challenge = await ScvServer().getPrimeChallenge();
+    api.SecurityChallengeMessage? challenge =
+        await ScvServer().getPrimeChallenge();
 
     if (challenge == null) {
       // TODO: SCV what now?
@@ -310,7 +317,7 @@ class BluetoothManager {
       );
 
       await bluart.writeAll(id: bleId, data: encoded);
-    } catch (e, stack) {
+    } catch (e) {
       kPrint('Failed to send exchange rate: $e');
     }
   }
@@ -318,7 +325,8 @@ class BluetoothManager {
   void setupExchangeRateListener() {
     ExchangeRate().addListener(() async {
       if (connected) {
-        //await sendExchangeRate();
+        kPrint("Sending exchange rate");
+        await sendExchangeRate();
       }
     });
   }

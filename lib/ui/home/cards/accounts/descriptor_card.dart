@@ -17,7 +17,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:envoy/ui/components/select_dropdown.dart';
 
 //ignore: must_be_immutable
 class DescriptorCard extends ConsumerStatefulWidget {

@@ -53,9 +53,7 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
     final mainNetAccounts = ref.watch(mainnetAccountsProvider(null));
     final allowBuyInEnvoy = ref.watch(allowBuyInEnvoyProvider);
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Stack(
       children: [
         const Flexible(child: AccountsList()),
         Padding(
@@ -81,34 +79,37 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
                           : ROUTE_SELECT_REGION,
                     );
                   },
-                  child: QrShield(
-                    arcSizeRatio: 15.0,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.large3,
-                          vertical: EnvoySpacing.small),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          EnvoyIcon(
-                            EnvoyIcons.btc,
-                            color: disabled
-                                ? EnvoyColors.textTertiary
-                                : EnvoyColors.accentPrimary,
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(bottom: EnvoySpacing.xs),
-                            child: Text(
-                              S().component_minishield_buy,
-                              style: EnvoyTypography.label.copyWith(
-                                color: disabled
-                                    ? EnvoyColors.textTertiary
-                                    : EnvoyColors.accentPrimary,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: QrShield(
+                      arcSizeRatio: 15.0,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: EnvoySpacing.large3,
+                            vertical: EnvoySpacing.small),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            EnvoyIcon(
+                              EnvoyIcons.btc,
+                              color: disabled
+                                  ? EnvoyColors.textTertiary
+                                  : EnvoyColors.accentPrimary,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: EnvoySpacing.xs),
+                              child: Text(
+                                S().component_minishield_buy,
+                                style: EnvoyTypography.label.copyWith(
+                                  color: disabled
+                                      ? EnvoyColors.textTertiary
+                                      : EnvoyColors.accentPrimary,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -227,13 +228,17 @@ class _AccountsListState extends ConsumerState<AccountsList> {
     });
 
     final scrollView = ScrollGradientMask(
+      start: 0.00,
+      topGradientValue: 0.045,
+      bottomGradientValue: 0.845,
+      end: 0.89,
       child: ReorderableListView(
         footer: Opacity(
           opacity: _onReOrderStart ? 0.0 : 1.0,
           child: const AccountPrompts(),
         ),
         shrinkWrap: true,
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         scrollController: _scrollController,
         //proxyDecorator is the widget that is shown when dragging
         proxyDecorator: (widget, index, animation) {
@@ -298,6 +303,11 @@ class _AccountsListState extends ConsumerState<AccountsList> {
         ? accounts.map((e) => e.id).toList()
         : accountsOrder;
 
+    items.add(const SizedBox(
+      key: ValueKey('__top_spacing__'),
+      height: 20,
+    ));
+
     for (final id in orderToUse) {
       final account = accounts.firstWhereOrNull((element) => element.id == id);
       if (account != null) {
@@ -318,6 +328,10 @@ class _AccountsListState extends ConsumerState<AccountsList> {
         );
       }
     }
+    items.add(const SizedBox(
+      key: ValueKey('__bottom_spacing__'),
+      height: 80,
+    ));
     return items;
   }
 }

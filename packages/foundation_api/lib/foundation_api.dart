@@ -19,3 +19,4 @@ export 'src/rust/third_party/foundation_api/api/firmware.dart';
 export 'src/rust/third_party/foundation_api/api/quantum_link.dart';
 export 'src/rust/third_party/bc_xid.dart';
 export 'src/rust/third_party/foundation_api/api/bitcoin.dart';
+export 'src/rust/third_party/foundation_api/api/scv.dart';
