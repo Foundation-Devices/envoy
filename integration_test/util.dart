@@ -3,10 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:io';
+import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/main.dart';
+import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/big_tab.dart';
 import 'package:envoy/ui/components/select_dropdown.dart';
@@ -20,6 +22,7 @@ import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
@@ -963,15 +966,76 @@ Future<void> findFirstTextButtonAndPress(
   await tester.pump(Durations.long2);
 }
 
-Future<void> findAndPressWidget<T extends Widget>(WidgetTester tester) async {
+Future<void> findAndPressWidget<T extends Widget>(
+  WidgetTester tester, {
+  bool findFirst = false,
+}) async {
   await tester.pump(Durations.long2);
 
-  // Find the widget of type T
-  final widgetFinder = find.byType(T);
-  expect(widgetFinder, findsOneWidget);
-  await tester.tap(widgetFinder);
+  final finder = find.byType(T);
+
+  if (findFirst) {
+    expect(finder, findsWidgets); // allows multiple widgets
+    await tester.tap(finder.first);
+  } else {
+    expect(finder, findsOneWidget); // only one widget expected
+    await tester.tap(finder);
+  }
 
   await tester.pump(Durations.long2);
+}
+
+Future<String> getAddressFromReceiveScreen(WidgetTester tester) async {
+  final addressFinder = find.byType(AddressWidget);
+
+  await tester.pumpUntilFound(addressFinder,
+      tries: 50, duration: Duration(milliseconds: 100));
+
+  // Find the RichText inside the AddressWidget
+  final richTextWidget = find
+      .descendant(
+        of: addressFinder,
+        matching: find.byType(RichText),
+      )
+      .evaluate()
+      .first
+      .widget as RichText;
+
+  final textSpan = richTextWidget.text as TextSpan;
+  final address = extractTextFromTextSpan(textSpan);
+
+  return address.trim();
+}
+
+Future<void> checkSync(WidgetTester tester) async {
+  await goBackHome(tester);
+  SyncManager().sync();
+
+  await tester.pumpUntilCondition(
+    tries: 30,
+    duration: Duration(seconds: 2),
+    condition: () {
+      final accountTile = find.ancestor(
+        of: find.text('GH TEST ACC (#1)').first,
+        matching: find.byType(AccountListTile),
+      );
+
+      if (accountTile.evaluate().isEmpty) return false;
+
+      final envoyAmountFinder = find.descendant(
+        of: accountTile,
+        matching: find.byType(EnvoyAmount),
+      );
+
+      if (envoyAmountFinder.evaluate().isEmpty) return false;
+
+      final envoyWidget = tester.widget<EnvoyAmount>(envoyAmountFinder);
+      return envoyWidget.amountSats != 0;
+    },
+  );
+
+  // If we get here, condition was met.
+  expect(true, isTrue);
 }
 
 Future<void> findLastTextButtonAndPress(
@@ -1358,6 +1422,26 @@ extension PumpUntilFound on WidgetTester {
       final isNotEmpty = finder.tryEvaluate();
 
       if (isNotEmpty) {
+        break;
+      }
+    }
+  }
+}
+
+extension PumpUntilCondition on WidgetTester {
+  /// Pumps the widget tree until [condition] returns true,
+  /// or until [tries] are exhausted.
+  ///
+  /// Pumps the widget tree with [duration] delay per try.
+  Future<void> pumpUntilCondition({
+    required bool Function() condition,
+    Duration duration = const Duration(milliseconds: 100),
+    int tries = 10,
+  }) async {
+    for (var i = 0; i < tries; i++) {
+      await pump(duration);
+
+      if (condition()) {
         break;
       }
     }

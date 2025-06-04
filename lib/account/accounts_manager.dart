@@ -66,6 +66,7 @@ class NgAccountManager extends ChangeNotifier {
 
   final List<(EnvoyAccount, EnvoyAccountHandler)> _accountsHandler = [];
   var s = Settings();
+  static late final bool isTesting;
 
   static const String accountsPrefKey = "ng_accounts";
   static const String v1AccountsPrefKey = "accounts";
@@ -93,6 +94,9 @@ class NgAccountManager extends ChangeNotifier {
 
   static Future<NgAccountManager> init() async {
     var singleton = NgAccountManager._instance;
+    // IS_TEST flag from run_integration_tests.sh
+    isTesting = const bool.fromEnvironment('IS_TEST', defaultValue: true);
+
     try {
       await RustLib.init();
     } catch (e, stack) {
@@ -175,9 +179,12 @@ class NgAccountManager extends ChangeNotifier {
     for (var subscription in _syncSubscription) {
       subscription?.cancel();
     }
-    SyncManager().dispose();
-    if (force == true) {
-      super.dispose();
+
+    if (!isTesting) {
+      SyncManager().dispose();
+      if (force == true) {
+        super.dispose();
+      }
     }
   }
 
@@ -334,7 +341,8 @@ class NgAccountManager extends ChangeNotifier {
     await _ls.prefs.setString(ACCOUNT_ORDER, jsonEncode(order));
 
     for (var descriptor in account.descriptors) {
-      await EnvoyStorage().removeAccountStatus(account.id, descriptor.addressType);
+      await EnvoyStorage()
+          .removeAccountStatus(account.id, descriptor.addressType);
     }
     _accountsOrder.sink.add(order);
     await Future.delayed(const Duration(milliseconds: 50));

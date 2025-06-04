@@ -61,12 +61,15 @@ Future<void> main() async {
   listenToRouteChanges();
 }
 
-Future<void> initSingletons() async {
+Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   await EnvoyStorage().init();
-  try {
-    await BluetoothManager.init();
-  } catch (e, stack) {
-    kPrint("Error initializing BluetoothManager: $e", stackTrace: stack);
+
+  if (!integrationTestsRunning) {
+    try {
+      await BluetoothManager.init();
+    } catch (e, stack) {
+      kPrint("Error initializing BluetoothManager: $e", stackTrace: stack);
+    }
   }
   // // This is notoriously low on iOS, causing 'too many open files errors'
   // kPrint("Process nofile_limit: ${getNofileLimit()}");
@@ -87,10 +90,13 @@ Future<void> initSingletons() async {
   await KeysManager.init();
   await Settings.restore();
   await ExchangeRate.init();
-  try {
-    BluetoothManager().setupExchangeRateListener();
-  } catch (e, stack) {
-    kPrint("Error setting up exchange rate listener: $e", stackTrace: stack);
+
+  if (!integrationTestsRunning) {
+    try {
+      BluetoothManager().setupExchangeRateListener();
+    } catch (e, stack) {
+      kPrint("Error setting up exchange rate listener: $e", stackTrace: stack);
+    }
   }
 
   EnvoyReport().init();
@@ -101,14 +107,13 @@ Future<void> initSingletons() async {
   await FMTCObjectBoxBackend().initialise();
   await const FMTCStore('mapStore').manage.create();
 
-
   //TODO:only for QA
   EnvoySeed().get().then((value) {
     EnvoyReport().log("EnvoySeed J@ck", "Seed: \n\n $value\n\n");
-  },onError: (error, stackTrace) {
-    EnvoyReport().log("EnvoySeed", "Error getting seed $error", stackTrace: stackTrace);
+  }, onError: (error, stackTrace) {
+    EnvoyReport()
+        .log("EnvoySeed", "Error getting seed $error", stackTrace: stackTrace);
   });
-
 
   // Start Tor regardless of whether we are using it or not
   try {
