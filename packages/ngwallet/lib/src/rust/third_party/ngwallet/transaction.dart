@@ -6,158 +6,109 @@
 import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-class BitcoinTransaction {
-  final String txId;
-  final int blockHeight;
-  final int confirmations;
-  final bool isConfirmed;
-  final BigInt fee;
-  final BigInt feeRate;
-  final PlatformInt64 amount;
-  final List<Input> inputs;
-  final String address;
-  final List<Output> outputs;
-  final String? note;
-  final BigInt? date;
-  final BigInt vsize;
 
-  const BitcoinTransaction({
-    required this.txId,
-    required this.blockHeight,
-    required this.confirmations,
-    required this.isConfirmed,
-    required this.fee,
-    required this.feeRate,
-    required this.amount,
-    required this.inputs,
-    required this.address,
-    required this.outputs,
-    this.note,
-    this.date,
-    required this.vsize,
-  });
+            
 
-  @override
-  int get hashCode =>
-      txId.hashCode ^
-      blockHeight.hashCode ^
-      confirmations.hashCode ^
-      isConfirmed.hashCode ^
-      fee.hashCode ^
-      feeRate.hashCode ^
-      amount.hashCode ^
-      inputs.hashCode ^
-      address.hashCode ^
-      outputs.hashCode ^
-      note.hashCode ^
-      date.hashCode ^
-      vsize.hashCode;
+            
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is BitcoinTransaction &&
-          runtimeType == other.runtimeType &&
-          txId == other.txId &&
-          blockHeight == other.blockHeight &&
-          confirmations == other.confirmations &&
-          isConfirmed == other.isConfirmed &&
-          fee == other.fee &&
-          feeRate == other.feeRate &&
-          amount == other.amount &&
-          inputs == other.inputs &&
-          address == other.address &&
-          outputs == other.outputs &&
-          note == other.note &&
-          date == other.date &&
-          vsize == other.vsize;
-}
+            class BitcoinTransaction  {
+                final String txId;
+final int blockHeight;
+final int confirmations;
+final bool isConfirmed;
+final BigInt fee;
+final BigInt feeRate;
+final PlatformInt64 amount;
+final List<Input> inputs;
+final String address;
+final List<Output> outputs;
+final String? note;
+final BigInt? date;
+final BigInt vsize;
 
-class Input {
-  final String txId;
-  final int vout;
-  final BigInt amount;
-  final String? tag;
+                const BitcoinTransaction({required this.txId ,required this.blockHeight ,required this.confirmations ,required this.isConfirmed ,required this.fee ,required this.feeRate ,required this.amount ,required this.inputs ,required this.address ,required this.outputs ,this.note ,this.date ,required this.vsize ,});
 
-  const Input({
-    required this.txId,
-    required this.vout,
-    required this.amount,
-    this.tag,
-  });
+                
+                
 
-  @override
-  int get hashCode =>
-      txId.hashCode ^ vout.hashCode ^ amount.hashCode ^ tag.hashCode;
+                
+        @override
+        int get hashCode => txId.hashCode^blockHeight.hashCode^confirmations.hashCode^isConfirmed.hashCode^fee.hashCode^feeRate.hashCode^amount.hashCode^inputs.hashCode^address.hashCode^outputs.hashCode^note.hashCode^date.hashCode^vsize.hashCode;
+        
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Input &&
-          runtimeType == other.runtimeType &&
-          txId == other.txId &&
-          vout == other.vout &&
-          amount == other.amount &&
-          tag == other.tag;
-}
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is BitcoinTransaction &&
+                runtimeType == other.runtimeType
+                && txId == other.txId&& blockHeight == other.blockHeight&& confirmations == other.confirmations&& isConfirmed == other.isConfirmed&& fee == other.fee&& feeRate == other.feeRate&& amount == other.amount&& inputs == other.inputs&& address == other.address&& outputs == other.outputs&& note == other.note&& date == other.date&& vsize == other.vsize;
+        
+            }
+
+class Input  {
+                final String txId;
+final int vout;
+final BigInt amount;
+final String? tag;
+
+                const Input({required this.txId ,required this.vout ,required this.amount ,this.tag ,});
+
+                
+                
+
+                
+        @override
+        int get hashCode => txId.hashCode^vout.hashCode^amount.hashCode^tag.hashCode;
+        
+
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is Input &&
+                runtimeType == other.runtimeType
+                && txId == other.txId&& vout == other.vout&& amount == other.amount&& tag == other.tag;
+        
+            }
 
 enum KeyChain {
-  external_,
-  internal,
-  ;
-}
+                    external_,
+internal,
+                    ;
+                    
+                }
 
-class Output {
-  final String txId;
-  final int vout;
-  final BigInt amount;
-  final String? tag;
-  final BigInt? date;
-  final bool isConfirmed;
-  final String address;
-  final bool doNotSpend;
-  final KeyChain? keychain;
+class Output  {
+                final String txId;
+final int vout;
+final BigInt amount;
+final String? tag;
+final BigInt? date;
+final bool isConfirmed;
+final String address;
+final bool doNotSpend;
+final KeyChain? keychain;
 
-  const Output({
-    required this.txId,
-    required this.vout,
-    required this.amount,
-    this.tag,
-    this.date,
-    required this.isConfirmed,
-    required this.address,
-    required this.doNotSpend,
-    this.keychain,
-  });
+                const Output({required this.txId ,required this.vout ,required this.amount ,this.tag ,this.date ,required this.isConfirmed ,required this.address ,required this.doNotSpend ,this.keychain ,});
 
-  String getId() => RustLib.instance.api.ngwalletTransactionOutputGetId(
-        that: this,
-      );
+                 String  getId()=>RustLib.instance.api.ngwalletTransactionOutputGetId(that: this, );
 
-  @override
-  int get hashCode =>
-      txId.hashCode ^
-      vout.hashCode ^
-      amount.hashCode ^
-      tag.hashCode ^
-      date.hashCode ^
-      isConfirmed.hashCode ^
-      address.hashCode ^
-      doNotSpend.hashCode ^
-      keychain.hashCode;
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Output &&
-          runtimeType == other.runtimeType &&
-          txId == other.txId &&
-          vout == other.vout &&
-          amount == other.amount &&
-          tag == other.tag &&
-          date == other.date &&
-          isConfirmed == other.isConfirmed &&
-          address == other.address &&
-          doNotSpend == other.doNotSpend &&
-          keychain == other.keychain;
-}
+                
+
+                
+        @override
+        int get hashCode => txId.hashCode^vout.hashCode^amount.hashCode^tag.hashCode^date.hashCode^isConfirmed.hashCode^address.hashCode^doNotSpend.hashCode^keychain.hashCode;
+        
+
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is Output &&
+                runtimeType == other.runtimeType
+                && txId == other.txId&& vout == other.vout&& amount == other.amount&& tag == other.tag&& date == other.date&& isConfirmed == other.isConfirmed&& address == other.address&& doNotSpend == other.doNotSpend&& keychain == other.keychain;
+        
+            }
+            

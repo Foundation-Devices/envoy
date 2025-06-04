@@ -9,45 +9,38 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'errors.freezed.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `from`
+            // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `from`
+
+
+            
+
+            @freezed
+                sealed class BroadcastError with _$BroadcastError implements FrbException {
+                    const BroadcastError._();
+
+                     const factory BroadcastError.networkError(  String field0,) = BroadcastError_NetworkError;
+ const factory BroadcastError.consensusError(  String field0,) = BroadcastError_ConsensusError;
+ const factory BroadcastError.message(  String field0,) = BroadcastError_Message;
+
+                    
+
+                    
+                }
 
 @freezed
-sealed class BroadcastError with _$BroadcastError implements FrbException {
-  const BroadcastError._();
+                sealed class ComposeTxError with _$ComposeTxError implements FrbException {
+                    const ComposeTxError._();
 
-  const factory BroadcastError.networkError(
-    String field0,
-  ) = BroadcastError_NetworkError;
-  const factory BroadcastError.consensusError(
-    String field0,
-  ) = BroadcastError_ConsensusError;
-  const factory BroadcastError.message(
-    String field0,
-  ) = BroadcastError_Message;
-}
+                     const factory ComposeTxError.coinSelectionError(  String field0,) = ComposeTxError_CoinSelectionError;
+ const factory ComposeTxError.error(  String field0,) = ComposeTxError_Error;
+ const factory ComposeTxError.insufficientFunds(  String field0,) = ComposeTxError_InsufficientFunds;
+ const factory ComposeTxError.insufficientFees(  BigInt field0,) = ComposeTxError_InsufficientFees;
+ const factory ComposeTxError.insufficientFeeRate(  BigInt field0,) = ComposeTxError_InsufficientFeeRate;
 
-@freezed
-sealed class ComposeTxError with _$ComposeTxError implements FrbException {
-  const ComposeTxError._();
+                    
 
-  const factory ComposeTxError.coinSelectionError(
-    String field0,
-  ) = ComposeTxError_CoinSelectionError;
-  const factory ComposeTxError.error(
-    String field0,
-  ) = ComposeTxError_Error;
-  const factory ComposeTxError.insufficientFunds(
-    String field0,
-  ) = ComposeTxError_InsufficientFunds;
-  const factory ComposeTxError.insufficientFees(
-    BigInt field0,
-  ) = ComposeTxError_InsufficientFees;
-  const factory ComposeTxError.insufficientFeeRate(
-    BigInt field0,
-  ) = ComposeTxError_InsufficientFeeRate;
+                    static Future<ComposeTxError>  mapErr({required CreateTxError createTxError })=>RustLib.instance.api.crateApiErrorsComposeTxErrorMapErr(createTxError: createTxError);
 
-  static Future<ComposeTxError> mapErr(
-          {required CreateTxError createTxError}) =>
-      RustLib.instance.api
-          .crateApiErrorsComposeTxErrorMapErr(createTxError: createTxError);
-}
+
+                }
+            

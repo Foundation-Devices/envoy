@@ -82,6 +82,24 @@ class CoinRepository {
     return records.map((record) => CoinTag.fromJson(record.value)).toList();
   }
 
+  //to utxo => tagname map for ngwallet
+  Future<Map<String, String>> getTagMap({String? accountId}) async {
+    // Run the query and get the list of results
+    final finder = accountId != null
+        ? Finder(filter: Filter.equals('account', accountId))
+        : Finder();
+    final records =
+        await storage.tagStore.query(finder: finder).getSnapshots(db);
+    final tags = records.map((record) => CoinTag.fromJson(record.value));
+    Map<String, String> tagMap = {};
+    for (var tag in tags) {
+      for (var id in tag.coinsId) {
+        tagMap[id] = tag.name;
+      }
+    }
+    return tagMap;
+  }
+
   Future addCoinTag(CoinTag tag) async {
     await storage.tagStore.record(tag.id).put(db, tag.toJson());
   }

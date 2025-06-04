@@ -34,7 +34,7 @@ use ngwallet::rbf::BumpFeeError;
 use ngwallet::redb::backends::FileBackend;
 use ngwallet::send::{DraftTransaction, TransactionFeeResult, TransactionParams};
 use ngwallet::transaction::{BitcoinTransaction, Output};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashMap};
 use std::env;
 use std::fmt::format;
 use std::fs::File;
@@ -44,6 +44,7 @@ use std::sync::{Arc, LockResult, Mutex};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use std::{fs, thread};
 use std::any::Any;
+use std::iter::Map;
 use bdk_wallet::serde_json::json;
 use crate::api::bip39::EnvoyBip39;
 
@@ -387,7 +388,7 @@ impl EnvoyAccountHandler {
             for output in tx.outputs.iter() {
                 if output.tag.is_some() {
                     account
-                        .set_tag(output, &output.tag.clone().unwrap())
+                        .set_tag(output.get_id().as_str(), &output.tag.clone().unwrap())
                         .unwrap();
                 }
             }
@@ -501,7 +502,7 @@ impl EnvoyAccountHandler {
             .unwrap()
     }
     pub fn set_tag(&mut self, utxo: &Output, tag: &str) -> Result<bool> {
-        let status = self.ng_account.lock().unwrap().set_tag(utxo, tag);
+        let status = self.ng_account.lock().unwrap().set_tag(utxo.get_id().as_str(), tag);
         self.send_update();
         status
     }
@@ -510,7 +511,7 @@ impl EnvoyAccountHandler {
             self.ng_account
                 .lock()
                 .unwrap()
-                .set_tag(utxo, tag)
+                .set_tag(utxo.get_id().as_str(), tag)
                 .unwrap();
         });
         self.send_update();
@@ -521,7 +522,7 @@ impl EnvoyAccountHandler {
             .ng_account
             .lock()
             .unwrap()
-            .set_do_not_spend(utxo, do_not_spend);
+            .set_do_not_spend(utxo.get_id().as_str(), do_not_spend);
         self.send_update();
         result
     }
@@ -539,7 +540,7 @@ impl EnvoyAccountHandler {
                 self.ng_account
                     .lock()
                     .unwrap()
-                    .set_do_not_spend(output, do_not_spend)
+                    .set_do_not_spend(output.get_id().as_str(), do_not_spend)
                     .unwrap();
             });
         self.send_update();
@@ -554,7 +555,7 @@ impl EnvoyAccountHandler {
                 self.ng_account
                     .lock()
                     .unwrap()
-                    .set_tag(output, tag)
+                    .set_tag(output.get_id().as_str(), tag)
                     .unwrap();
             });
         self.send_update();
@@ -814,12 +815,18 @@ impl EnvoyAccountHandler {
                                 }
                             }
                         }
-                        Ok(EnvoyAccountHandler {
+                        let mut handler = EnvoyAccountHandler {
                             stream_sink: None,
                             mempool_txs: vec![],
                             id: config.id.clone(),
                             ng_account: Arc::new(Mutex::new(account)),
-                        })
+                        };
+                        handler.migrate_meta(
+                            backup.notes,
+                            backup.tags,
+                            backup.do_not_spend,
+                        );
+                        Ok(handler)
                     }
                     Err(err) => {
                         return Err(anyhow!("Failed to create account: {:?}", err));
@@ -830,6 +837,24 @@ impl EnvoyAccountHandler {
                 return Err(anyhow!("Failed to deserialize backup"));
             }
         }
+    }
+
+    pub fn migrate_meta(
+        &mut self,
+        notes: HashMap<String, String>,
+        tags: HashMap<String, String>,
+        do_not_spend: HashMap<String, bool>,
+    ) {
+        notes.iter().for_each(|(tx_id, note)| {
+            info!("Setting note for tx_id: {} with note: {}", tx_id, note);
+            self.ng_account.lock().expect("couldnt lock ngaccount").set_note(tx_id, note).expect("Failed to set note ");
+        });
+        tags.iter().for_each(|(tx_id, tag)| {
+            self.ng_account.lock().expect("couldnt lock ngaccount").set_tag(tx_id, tag).expect("Failed to set note ");
+        });
+        do_not_spend.iter().for_each(|(tx_id, spend_state)| {
+            self.ng_account.lock().expect("couldnt lock ngaccount").set_do_not_spend(tx_id, spend_state.clone()).expect("Failed to set note ");
+        });
     }
 
     #[frb(sync)]
