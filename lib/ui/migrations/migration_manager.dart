@@ -295,8 +295,7 @@ class MigrationManager {
       {String? accountId}) async {
     try {
       List<String> blockedCoins = await CoinRepository().getBlockedCoins();
-      Map<String, String> tagsMap =
-          await CoinRepository().getTagMap();
+      Map<String, String> tagsMap = await CoinRepository().getTagMap();
       Map<String, String> notes = await EnvoyStorage().getAllNotes();
       Map<String, bool> doNotSpendMap = {};
       for (var blocked in blockedCoins) {
