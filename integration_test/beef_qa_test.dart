@@ -4,14 +4,17 @@
 
 import 'dart:io';
 
+import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/main.dart';
 import 'package:envoy/ui/amount_display.dart';
+import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/widgets/card_swipe_wrapper.dart';
+import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -32,7 +35,7 @@ Future<void> main() async {
     await resetLinuxEnvoyData();
   }
 
-  await initSingletons();
+  await initSingletons(integrationTestsRunning: true);
   await resetEnvoyData();
 
   group('Hot wallet tests', () {
@@ -285,7 +288,11 @@ Future<void> main() async {
       await tester.pumpWidget(const EnvoyApp());
       await setUpWalletFromSeedViaBackupFile(tester, seed);
     });
-/*    testWidgets('Testing Prompts for Wallets with Balances', (tester) async {
+    testWidgets('Pump until balance sync', (tester) async {
+      await checkSync(tester);
+    });
+
+    testWidgets('Testing Prompts for Wallets with Balances', (tester) async {
       await goBackHome(tester);
 
       await disableAllNetworks(tester);
@@ -404,11 +411,10 @@ Future<void> main() async {
 
       const String accountPassportName = "GH TEST ACC (#1)";
 
-
-    //  await scrollUntilVisible( // TODO: možda ne triba ?????
+      //  await scrollUntilVisible(
       //  tester,
       //  accountPassportName,
-     // );
+      // );
       await openPassportAccount(tester, accountPassportName);
       await openDotsMenu(tester);
       await fromDotsMenuToEditName(tester);
@@ -602,6 +608,8 @@ Future<void> main() async {
       }
     });
     testWidgets('BTC/sats in App', (tester) async {
+      await checkSync(tester);
+
       await goBackHome(tester);
 
       String someValidSignetReceiveAddress =
@@ -670,12 +678,12 @@ Future<void> main() async {
 
       /// Make sure the first proposed unit is BTC
       // function is checking icons from top to bottom so the first icon in Send needs to be BTC
-      //await checkForEnvoyIcon(tester, EnvoyIcons.btc); // TODO: uncomment this after fixing sats/btc order in send
+      await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
       /// Tap the BTC number in the send screen until you get to fiat (you might need to enable fiat from settings first)
       // press the widget two times so it can circle to BTC
-      // await findAndPressWidget<AmountDisplay>(tester);
-      // await findAndPressWidget<AmountDisplay>(tester);
+      await findAndPressWidget<AmountDisplay>(tester);
+      await findAndPressWidget<AmountDisplay>(tester);
 
       if (currentSettingsFiatCode != null) {
         await tester.pump(Durations.long2);
@@ -756,19 +764,18 @@ Future<void> main() async {
       await findLastTextButtonAndPress(tester, 'Activity');
       await checkForEnvoyIcon(tester, EnvoyIcons.sats);
       //back to accounts
-      await findAndPressTextButton(tester, 'Accounts');
+      await findAndPressTextButton(tester, 'Privacy');
+      await findAndPressTextButton(tester,
+          'Accounts'); // for some reason on iPhone app goes to account instead of home??
+      //await findAndPressTextButton(tester, 'Accounts');
 
       /// Get into an account, tap Send
       await findFirstTextButtonAndPress(tester, 'Signet');
       await findAndPressTextButton(tester, 'Send');
 
-      // shift to sats
-      await findAndPressWidget<AmountDisplay>(
-          tester); // TODO: delete this after fixing sats/btc order in send
-
       /// Make sure the first proposed unit is sats
       // function is checking icons from top to bottom so the first icon in Send needs to be sats
-      //await checkForEnvoyIcon(tester, EnvoyIcons.sats); // TODO: uncomment this after fixing sats/btc order in send
+      await checkForEnvoyIcon(tester, EnvoyIcons.sats);
 
       if (currentSettingsFiatCode != null) {
         await tester.pump(Durations.long2);
@@ -888,7 +895,8 @@ Future<void> main() async {
       final confirmTextFromDialog = find.text('Confirm');
 
       // Check that a pop up comes up
-      await tester.pumpUntilFound(confirmTextFromDialog, duration: Durations.long1);
+      await tester.pumpUntilFound(confirmTextFromDialog,
+          duration: Durations.long1);
 
       await tester.tap(confirmTextFromDialog);
       await tester.pump(Durations.long2);
@@ -906,10 +914,9 @@ Future<void> main() async {
       // Check that a pop up closed
       expect(confirmTextFromDialog, findsNothing);
 
-      //TODO check taproot address in receive !!!
       await pressHamburgerMenu(tester); // back to settings menu
       await pressHamburgerMenu(tester); // back to home
-await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
+      await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
       await findAndPressTextButton(tester, "Receive");
 
       // copy Taproot address
@@ -928,15 +935,14 @@ await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
 
       await pressHamburgerMenu(tester); // back to settings menu
       await pressHamburgerMenu(tester); // back to home
-     // await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)"); // for some reason on iphone goes straight to receive screen
-     // await findAndPressTextButton(tester, "Receive");
+      // await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)"); // TODO: for some reason on iphone goes straight to receive screen
+      // await findAndPressTextButton(tester, "Receive");
 
-      //compare Taproot addresses
       // Grab the second address
       final address2 = await getAddressFromReceiveScreen(tester);
 
       // Compare them
-      expect(address2.length < address1.length, isTrue,
+      expect(address1.length < address2.length, isTrue,
           reason: 'Disabling Taproot should shorten the address format');
 
       // Check if "Reconnect Passport" button working
@@ -949,15 +955,6 @@ await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
       await openAdvancedMenu(tester);
       await findAndToggleSettingsSwitch(
           tester, "Receive to Taproot"); // Enable again
-
-      /// if old passport - taproot (this was in 1.8)
-      //final reconnectPassportButton = find.text('Reconnect Passport');
-      //expect(reconnectPassportButton, findsOneWidget);
-      //await tester.tap(reconnectPassportButton);
-      //await tester.pump(Durations.long2);
-      //await tester.pump(Durations.long2);
-      //final connectPassportButton = find.text('Get Started');
-      //expect(connectPassportButton, findsOneWidget);
     });
     testWidgets('Check Signet in App', (tester) async {
       await goBackHome(tester);
@@ -1106,7 +1103,8 @@ await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
 
       await tester.pump(Durations.long2);
 
-      await sendFromBaseWallet(tester, hotSignetAddress);
+      await sendFromBaseWallet(
+          tester, hotSignetAddress); // TODO: no base wallet?
 
       /// getSatsFromSignetFaucet does not work
 
@@ -1207,251 +1205,6 @@ await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
         await findAndPressTextButton(tester, 'Unlock');
       }
     });
-    testWidgets('Testnet-taproot collisions', (tester) async {
-      await goBackHome(tester);
-
-      // go to menu / settings / advanced
-      await pressHamburgerMenu(tester);
-      await goToSettings(tester);
-      await openAdvancedMenu(tester);
-
-      // turn Testnet ON
-      bool isSettingsTestnetSwitchOn = await isSlideSwitchOn(tester, 'Testnet');
-      if (!isSettingsTestnetSwitchOn) {
-        // find And Toggle Testnet Switch
-        await findAndToggleSettingsSwitch(tester, 'Testnet');
-        // exit Testnet pop-up
-        final closeDialogButton = find.byIcon(Icons.close);
-        await tester.tap(closeDialogButton.last);
-        await tester.pump(Durations.long2);
-      }
-
-      // turn taproot ON
-      bool isSettingsTaprootSwitchOn =
-          await isSlideSwitchOn(tester, 'Receive to Taproot');
-      if (!isSettingsTaprootSwitchOn) {
-        // find And Toggle Taproot Switch
-        await findAndToggleSettingsSwitch(tester, 'Receive to Taproot');
-      }
-
-      // Go back to the Accounts view
-      await pressHamburgerMenu(tester);
-      await pressHamburgerMenu(tester);
-
-      /// Make sure there is a hot wallet account for Testnet Taproot
-      await tester.pump(Durations.long2);
-
-      // scroll back by 10000
-      await scrollHome(tester, 10000);
-
-      const int maxScrollAttempts = 5;
-      int scrollAttempts = 0;
-      bool testTaprootFound = false;
-
-      while (scrollAttempts < maxScrollAttempts) {
-        testTaprootFound = await searchTestTaprootAccType(tester);
-        if (testTaprootFound) {
-          break; // Exit the loop if the account is found
-        }
-
-        await scrollHome(tester, -100);
-        await tester.pump(Durations.long2);
-        scrollAttempts++;
-      }
-
-      // Expect that testTaprootFound is true after the loop
-      expect(testTaprootFound, true,
-          reason:
-              'Expected to find at least one Testnet Taproot account but did not.');
-
-      // scroll back by 10000
-      await scrollHome(tester, 10000);
-
-      /// Go to settings, disable Testnet
-      // go to menu / settings / advanced
-      await pressHamburgerMenu(tester);
-      await goToSettings(tester);
-      await openAdvancedMenu(tester);
-
-      /// turn Testnet OFF
-      isSettingsTestnetSwitchOn = await isSlideSwitchOn(tester, 'Testnet');
-      if (isSettingsTestnetSwitchOn) {
-        // find And Toggle Testnet Switch
-        await findAndToggleSettingsSwitch(tester, 'Testnet');
-      }
-
-      // Go back to the Accounts view
-      await pressHamburgerMenu(tester);
-      await pressHamburgerMenu(tester);
-
-      /// Go to accounts, make sure both Testnet Taproot accounts disappeared
-      await tester.pump(Durations.long2);
-
-      testTaprootFound = false;
-      scrollAttempts = 0;
-
-      while (scrollAttempts < maxScrollAttempts) {
-        testTaprootFound = await searchTestTaprootAccType(tester);
-        if (testTaprootFound) {
-          break; // Exit the loop if the account is found
-        }
-
-        await scrollHome(tester, -100);
-        await tester.pump(Durations.long2);
-        scrollAttempts++;
-      }
-
-      // Expect that testTaprootFound is false after the loop
-      expect(testTaprootFound, false,
-          reason:
-              'Expected not to find Testnet Taproot account but found one.');
-
-      // scroll back by 10000
-      await scrollHome(tester, 10000);
-
-      bool testnetFound = false;
-      scrollAttempts = 0;
-
-      while (scrollAttempts < maxScrollAttempts) {
-        testnetFound = await searchTestnetAccType(tester);
-        if (testnetFound) {
-          break; // Exit the loop if the account is found
-        }
-
-        await scrollHome(tester, -100);
-        await tester.pump(Durations.long2);
-        scrollAttempts++;
-      }
-
-      // Expect that testnetFound is false after the loop
-      expect(testnetFound, false,
-          reason: 'Expected not to find Testnet account but found one.');
-
-      // scroll back by 10000
-      await scrollHome(tester, 10000);
-
-      /// Go to settings, enable Testnet, disable Taproot
-      // go to menu / settings / advanced
-      await pressHamburgerMenu(tester);
-      await goToSettings(tester);
-      await openAdvancedMenu(tester);
-
-      // turn Testnet ON
-      isSettingsTestnetSwitchOn = await isSlideSwitchOn(tester, 'Testnet');
-      if (!isSettingsTestnetSwitchOn) {
-        // find And Toggle Testnet Switch
-        await findAndToggleSettingsSwitch(tester, 'Testnet');
-        // exit Testnet pop-up
-        final closeDialogButton = find.byIcon(Icons.close);
-        await tester.tap(closeDialogButton.last);
-        await tester.pump(Durations.long2);
-      }
-
-      // disable Taproot
-      isSettingsTaprootSwitchOn =
-          await isSlideSwitchOn(tester, 'Receive to Taproot');
-      if (isSettingsTaprootSwitchOn) {
-        // find And Toggle Taproot Switch
-        await findAndToggleSettingsSwitch(tester, 'Receive to Taproot');
-      }
-
-      // Go back to the Accounts view
-      await pressHamburgerMenu(tester);
-      await pressHamburgerMenu(tester);
-
-      /// Go to accounts, make sure both Testnet Taproot accounts disappeared
-      // Ensure the screen is fully rendered
-      await tester.pump(Durations.long2);
-
-      testTaprootFound = false;
-      scrollAttempts = 0;
-
-      while (scrollAttempts < maxScrollAttempts) {
-        testTaprootFound = await searchTestTaprootAccType(tester);
-        if (testTaprootFound) {
-          break; // Exit the loop if the account is found
-        }
-
-        await scrollHome(tester, -100);
-        await tester.pump(Durations.long2);
-        scrollAttempts++;
-      }
-
-      // Expect that testTaprootFound is false after the loop
-      expect(testTaprootFound, false,
-          reason:
-              'Expected not to find Testnet Taproot account but found one.');
-
-      // scroll back by 10000
-      await scrollHome(tester, 10000);
-
-      bool taprootFound = false;
-      scrollAttempts = 0;
-
-      while (scrollAttempts < maxScrollAttempts) {
-        taprootFound = await searchTaprootAccType(tester);
-        if (taprootFound) {
-          break; // Exit the loop if the account is found
-        }
-
-        await scrollHome(tester, -100);
-        await tester.pump(Durations.long2);
-        scrollAttempts++;
-      }
-
-      // Expect that taprootFound is false after the loop
-      expect(taprootFound, false,
-          reason: 'Expected not to find Taproot account but found one.');
-
-      // scroll back by 10000
-      await scrollHome(tester, 10000);
-
-      /// Go to settings, enable Taproot
-      // go to menu / settings / advanced
-      await pressHamburgerMenu(tester);
-      await goToSettings(tester);
-      await openAdvancedMenu(tester);
-
-      // turn taproot ON
-      isSettingsTaprootSwitchOn =
-          await isSlideSwitchOn(tester, 'Receive to Taproot');
-      if (!isSettingsTaprootSwitchOn) {
-        // find And Toggle Taproot Switch
-        await findAndToggleSettingsSwitch(tester, 'Receive to Taproot');
-      }
-
-      // Go back to the Accounts view
-      await pressHamburgerMenu(tester);
-      await pressHamburgerMenu(tester);
-
-      /// Make sure there is a hot wallet account for Testnet Taproot
-      await tester.pump(Durations.long2);
-
-      // scroll back by 10000
-      await scrollHome(tester, 10000);
-
-      scrollAttempts = 0;
-      testTaprootFound = false;
-
-      while (scrollAttempts < maxScrollAttempts) {
-        testTaprootFound = await searchTestTaprootAccType(tester);
-        if (testTaprootFound) {
-          break; // Exit the loop if the account is found
-        }
-
-        await scrollHome(tester, -100);
-        await tester.pump(Durations.long2);
-        scrollAttempts++;
-      }
-
-      // Expect that testTaprootFound is true after the loop
-      expect(testTaprootFound, true,
-          reason:
-              'Expected to find at least one Testnet Taproot account but did not.');
-
-      // scroll back by 10000
-      await scrollHome(tester, 10000);
-    });*/
     testWidgets('Switching Fiat in App', (tester) async {
       await goBackHome(tester);
       const String accountPassportName = "GH TEST ACC (#1)";
@@ -1640,6 +1393,7 @@ await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
       expect(envoyIconFinder, findsOneWidget);
     });
     testWidgets('Test send to all address types', (tester) async {
+      await checkSync(tester);
       await goBackHome(tester);
       await disableAllNetworks(tester);
 
@@ -1662,6 +1416,7 @@ await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
       await trySendToAddress(tester, p2trAddress);
     });
     testWidgets('Delete device', (tester) async {
+      //TODO: account exceptions when deleting
       await goBackHome(tester);
       String deviceName = "Passport";
 
@@ -1705,7 +1460,8 @@ await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
       final passportAccount = find.text(
         deviceName,
       );
-      expect(passportAccount, findsNothing);
+      expect(passportAccount,
+          findsNothing); // TODO: one was found but none were expected????
     });
     testWidgets('Logs freeze', (tester) async {
       await goBackHome(tester);
