@@ -66,9 +66,13 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
     ref.watch(settingsProvider);
     ref.watch(accountsProvider);
     final currentProgress = ref.watch(accountSync);
+    final requiredScan = ref.watch(isAccountRequiredScan(widget.account));
     bool isScanning = false;
     if (currentProgress is Scanning) {
       isScanning = currentProgress.id == widget.account.id;
+    }
+    if (requiredScan) {
+      isScanning = true;
     }
     EnvoyAccount? account = ref.watch(accountStateProvider(widget.account.id));
     if (widget.account.walletPath == "ghost") {
