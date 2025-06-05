@@ -18,8 +18,10 @@ class EnvoyDropdownOption {
   final String value;
   final EnvoyDropdownOptionType type;
 
-  EnvoyDropdownOption(this.label, this.value,
-      {this.type = EnvoyDropdownOptionType.normal});
+  EnvoyDropdownOption(
+      {required this.label,
+      required this.value,
+      this.type = EnvoyDropdownOptionType.normal});
 }
 
 class EnvoyDropdown extends StatefulWidget {

@@ -182,19 +182,23 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
                         initialIndex: getInitialElectrumDropdownIndex(),
                         options: [
                           EnvoyDropdownOption(
-                              S().privacy_node_nodeType_foundation,
-                              "foundation"),
+                              label: S().privacy_node_nodeType_foundation,
+                              value: "foundation"),
                           EnvoyDropdownOption(
-                              S().privacy_node_nodeType_personal,
-                              "personalNode"),
+                              label: S().privacy_node_nodeType_personal,
+                              value: "personalNode"),
                           EnvoyDropdownOption(
-                              S().privacy_node_nodeType_publicServers, "break",
+                              label: S().privacy_node_nodeType_publicServers,
+                              value: "break",
                               type: EnvoyDropdownOptionType.sectionBreak),
                           EnvoyDropdownOption(
-                              PublicServer.blockStream.label, "blockStream"),
+                              label: PublicServer.blockStream.label,
+                              value: "blockStream"),
                           EnvoyDropdownOption(
-                              PublicServer.diyNodes.label, "diyNodes"),
-                          EnvoyDropdownOption(PublicServer.luke.label, "luke"),
+                              label: PublicServer.diyNodes.label,
+                              value: "diyNodes"),
+                          EnvoyDropdownOption(
+                              label: PublicServer.luke.label, value: "luke"),
                         ],
                         onOptionChanged: (selectedOption) {
                           if (selectedOption != null) {

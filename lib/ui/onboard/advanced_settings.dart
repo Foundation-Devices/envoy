@@ -262,28 +262,32 @@ class _AdvancedSettingsOptionsState
                                                   getInitialElectrumDropdownIndex(),
                                               options: [
                                                 EnvoyDropdownOption(
-                                                    S().privacy_node_nodeType_foundation,
-                                                    "foundation"),
+                                                    label: S()
+                                                        .privacy_node_nodeType_foundation,
+                                                    value: "foundation"),
                                                 EnvoyDropdownOption(
-                                                    S().privacy_node_nodeType_personal,
-                                                    "personalNode"),
+                                                    label: S()
+                                                        .privacy_node_nodeType_personal,
+                                                    value: "personalNode"),
                                                 EnvoyDropdownOption(
-                                                    S()
+                                                    label: S()
                                                         .privacy_node_nodeType_publicServers,
-                                                    "break",
+                                                    value: "break",
                                                     type:
                                                         EnvoyDropdownOptionType
                                                             .sectionBreak),
                                                 EnvoyDropdownOption(
-                                                    PublicServer
+                                                    label: PublicServer
                                                         .blockStream.label,
-                                                    "blockStream"),
+                                                    value: "blockStream"),
                                                 EnvoyDropdownOption(
-                                                    PublicServer.diyNodes.label,
-                                                    "diyNodes"),
+                                                    label: PublicServer
+                                                        .diyNodes.label,
+                                                    value: "diyNodes"),
                                                 EnvoyDropdownOption(
-                                                    PublicServer.luke.label,
-                                                    "luke"),
+                                                    label:
+                                                        PublicServer.luke.label,
+                                                    value: "luke"),
                                               ],
                                               onOptionChanged:
                                                   (selectedOption) {
