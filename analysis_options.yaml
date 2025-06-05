@@ -6,8 +6,11 @@ include: package:flutter_lints/flutter.yaml
 
 analyzer:
   exclude:
-    - 'lib/generated'
+    - 'lib/generated*'
     - 'lib/business/*.freezed.*'
+    - 'packages/ngwallet/**'
+    - 'packages/bluart/**'
+    - 'packages/http_tor/**'
     - test/** # TODO: fix and enable tests after ngwallet.dart integration
   plugins:
     - custom_lint
