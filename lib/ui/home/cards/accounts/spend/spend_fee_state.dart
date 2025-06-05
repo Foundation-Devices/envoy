@@ -41,10 +41,10 @@ final feeChooserStateProvider = StateProvider<FeeChooserState>((ref) {
     return _defaultFeeChooserState;
   }
   return FeeChooserState(
-    standardFeeRate: Fees().slowRate(account.network) * 100000,
-    fasterFeeRate: Fees().fastRate(account.network) * 100000,
+    standardFeeRate: Fees().slowRate(account.network),
+    fasterFeeRate: Fees().fastRate(account.network),
     minFeeRate: 1,
-    maxFeeRate: (Fees().fastRate(account.network) * 100000).floor(),
+    maxFeeRate: (Fees().fastRate(account.network)).floor(),
   );
 });
 
@@ -57,7 +57,7 @@ final spendFeeRateProvider = StateProvider<num>((ref) {
   if (account == null) {
     return 1;
   }
-  return Fees().slowRate(account.network) * 100000;
+  return Fees().slowRate(account.network);
 });
 
 final spendFeeRateBlockEstimationProvider =

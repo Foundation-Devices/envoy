@@ -54,6 +54,7 @@ final emptyTransactionModel = TransactionModel(
   draftTransaction: null,
   valid: false,
   loading: false,
+  error: null
 );
 
 final spendTransactionProvider =

@@ -12,6 +12,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -103,6 +104,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       ..loading = false
       ..error = errorMessage
       ..canProceed = false;
+
   }
 
   ({
@@ -177,6 +179,9 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         ..broadcastProgress = BroadcastProgress.staging
         ..loading = true;
 
+      if(feeRate == 0 ){
+        feeRate = 1;
+      }
       bool sendMax = spendableBalance == amount;
       final params = TransactionParams(
         address: sendTo,
@@ -187,6 +192,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         doNotSpendChange: false,
       );
 
+      print("Setting fee ${params.feeRate}");
       final draftTx = await handler.composePsbt(transactionParams: params);
       kPrint(
           "composePSBT : ${draftTx.transaction.txId} | isFinalized : ${draftTx.isFinalized}");
@@ -203,7 +209,10 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       }
       return true;
     } catch (e) {
-      _setErrorState(e.toString());
+      //reset the fee rate to the one used in the transaction
+      ref.read(spendFeeRateProvider.notifier).state = (state.draftTransaction?.transaction.feeRate)?.toInt() ?? 1;
+      kPrint("setFee:Fallback fee rate: ${  ref.read(spendFeeRateProvider)}");
+      _handleComposeError(e);
     }
     return false;
   }
@@ -336,7 +345,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         final params = TransactionParams(
             address: sendTo,
             amount: BigInt.from(amount),
-            feeRate: BigInt.from(Fees().slowRate(network) * 100000),
+            feeRate: BigInt.from(Fees().slowRate(network)),
             selectedOutputs: utxos,
             note: note,
             tag: changeOutput,
@@ -354,8 +363,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         //update the fee rate
         container.read(feeChooserStateProvider.notifier).state =
             FeeChooserState(
-                standardFeeRate: Fees().slowRate(network) * 100000,
-                fasterFeeRate: Fees().fastRate(network) * 100000,
+                standardFeeRate: Fees().slowRate(network),
+                fasterFeeRate: Fees().fastRate(network),
                 minFeeRate: feeCalcResult.minFeeRate.toInt(),
                 maxFeeRate: feeCalcResult.maxFeeRate.toInt().clamp(2, 5000));
 
@@ -375,40 +384,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         if (kDebugMode) {
           debugPrintStack(stackTrace: stackTrace);
         }
-        String errorMessage = error.toString();
-        if (error is ComposeTxError) {
-          ComposeTxError composeTxError = error;
-          composeTxError.when(
-            coinSelectionError: (field0) {
-              // Handle coin selection error
-              errorMessage = S().send_keyboard_amount_insufficient_funds_info;
-            },
-            error: (err) {
-              // Handle generic error
-              debugPrint("Error: $err");
-              errorMessage = S().send_keyboard_amount_enter_valid_address;
-            },
-            insufficientFunds: (field0) {
-              // Handle insufficient funds
-              debugPrint("Insufficient funds: $field0");
-              errorMessage = S().send_keyboard_amount_insufficient_funds_info;
-            },
-            insufficientFees: (field0) {
-              // Handle insufficient fees
-              debugPrint("Insufficient fees: $field0");
-              errorMessage = S().send_keyboard_amount_too_low_info;
-            },
-            insufficientFeeRate: (field0) {
-              // Handle insufficient fee rate
-              debugPrint("Insufficient fee rate: $field0");
-              errorMessage = S().send_keyboard_amount_too_low_info;
-            },
-          );
-        } else {
-          container.read(spendValidationErrorProvider.notifier).state =
-              S().send_keyboard_amount_insufficient_funds_info;
-        }
-        _setErrorState(errorMessage.toString());
+        _handleComposeError(error);
       }
     } catch (e, stack) {
       debugPrintStack(stackTrace: stack);
@@ -418,6 +394,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
   void reset() {
     state = emptyTransactionModel.clone();
+    print("resets ${state}");
   }
 
   Future broadcast(ProviderContainer ref) async {
@@ -532,5 +509,47 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         draftTransaction.changeOutPutTag;
     ref.read(stagingTxNoteProvider.notifier).state =
         draftTransaction.transaction.note;
+  }
+
+  void _handleComposeError(Object error) {
+    String errorMessage = error.toString();
+    if (error is ComposeTxError) {
+      ComposeTxError composeTxError = error;
+
+      EnvoyReport().log("Spend", "Spend validation failed : ${composeTxError.field0.toString()}");
+
+      composeTxError.when(
+        coinSelectionError: (field0) {
+          // Handle coin selection error
+          errorMessage = S().send_keyboard_amount_insufficient_funds_info;
+        },
+        error: (err) {
+          // Handle generic error
+          if (err.contains("OutputBelowDustLimit")) {
+            errorMessage = S().send_keyboard_amount_too_low_info;
+          } else {
+            errorMessage = S().send_keyboard_amount_insufficient_funds_info;
+          }
+        },
+        insufficientFunds: (field0) {
+          // Handle insufficient funds
+          debugPrint("Insufficient funds: $field0");
+          errorMessage = S().send_keyboard_amount_insufficient_funds_info;
+        },
+        insufficientFees: (field0) {
+          // Handle insufficient fees
+          debugPrint("Insufficient fees: $field0");
+          errorMessage = S().send_keyboard_amount_too_low_info;
+        },
+        insufficientFeeRate: (field0) {
+          // Handle insufficient fee rate
+          debugPrint("Insufficient fee rate: $field0");
+          errorMessage = S().send_keyboard_amount_too_low_info;
+        },
+      );
+    } else {
+      errorMessage = S().send_keyboard_amount_insufficient_funds_info;
+    }
+    _setErrorState(errorMessage);
   }
 }

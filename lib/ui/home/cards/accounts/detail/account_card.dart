@@ -856,8 +856,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                       Navigator.pop(context);
                       GoRouter.of(context).pop();
                       await Future.delayed(const Duration(milliseconds: 50));
-                      //TODO: add delete account
-                      NgAccountManager().deleteAccount(widget.account);
+                      await NgAccountManager().deleteAccount(widget.account);
                     },
                   ));
             } else {

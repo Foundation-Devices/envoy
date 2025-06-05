@@ -482,21 +482,6 @@ class _TxReviewState extends ConsumerState<TxReview> {
   }
 }
 
-class TransactionDetailPreview extends ConsumerStatefulWidget {
-  const TransactionDetailPreview({super.key});
-
-  @override
-  ConsumerState createState() => _TransactionDetailPreviewState();
-}
-
-class _TransactionDetailPreviewState
-    extends ConsumerState<TransactionDetailPreview> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
-
 class TransactionReviewScreen extends ConsumerStatefulWidget {
   final Function onBroadcast;
 
