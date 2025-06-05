@@ -114,6 +114,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
+  Map<String, String> dco_decode_Map_String_String_None(dynamic raw);
+
+  @protected
+  Map<String, bool> dco_decode_Map_String_bool_None(dynamic raw);
+
+  @protected
   ArcMutexNgAccountConnection
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexNgAccountConnection(
           dynamic raw);
@@ -266,6 +272,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
+  List<(String, bool)> dco_decode_list_record_string_bool(dynamic raw);
+
+  @protected
+  List<(String, String)> dco_decode_list_record_string_string(dynamic raw);
+
+  @protected
   Network dco_decode_network(dynamic raw);
 
   @protected
@@ -309,6 +321,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   (String, AddressType) dco_decode_record_string_address_type(dynamic raw);
+
+  @protected
+  (String, bool) dco_decode_record_string_bool(dynamic raw);
+
+  @protected
+  (String, String) dco_decode_record_string_string(dynamic raw);
 
   @protected
   TransactionFeeResult dco_decode_transaction_fee_result(dynamic raw);
@@ -386,6 +404,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   EnvoyAccountHandler
       sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
           SseDeserializer deserializer);
+
+  @protected
+  Map<String, String> sse_decode_Map_String_String_None(
+      SseDeserializer deserializer);
+
+  @protected
+  Map<String, bool> sse_decode_Map_String_bool_None(
+      SseDeserializer deserializer);
 
   @protected
   ArcMutexNgAccountConnection
@@ -550,6 +576,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  List<(String, bool)> sse_decode_list_record_string_bool(
+      SseDeserializer deserializer);
+
+  @protected
+  List<(String, String)> sse_decode_list_record_string_string(
+      SseDeserializer deserializer);
+
+  @protected
   Network sse_decode_network(SseDeserializer deserializer);
 
   @protected
@@ -593,6 +627,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   (String, AddressType) sse_decode_record_string_address_type(
+      SseDeserializer deserializer);
+
+  @protected
+  (String, bool) sse_decode_record_string_bool(SseDeserializer deserializer);
+
+  @protected
+  (String, String) sse_decode_record_string_string(
       SseDeserializer deserializer);
 
   @protected
@@ -673,6 +714,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void
       sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
           EnvoyAccountHandler self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_Map_String_String_None(
+      Map<String, String> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_Map_String_bool_None(
+      Map<String, bool> self, SseSerializer serializer);
 
   @protected
   void
@@ -844,6 +893,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<(String, AddressType)> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_record_string_bool(
+      List<(String, bool)> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_record_string_string(
+      List<(String, String)> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_network(Network self, SseSerializer serializer);
 
   @protected
@@ -889,6 +946,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_record_string_address_type(
       (String, AddressType) self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_record_string_bool(
+      (String, bool) self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_record_string_string(
+      (String, String) self, SseSerializer serializer);
 
   @protected
   void sse_encode_transaction_fee_result(

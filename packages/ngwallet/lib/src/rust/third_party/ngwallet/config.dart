@@ -34,10 +34,16 @@ enum AddressType {
 class NgAccountBackup {
   final NgAccountConfig ngAccountConfig;
   final List<(AddressType, KeychainKind, int)> lastUsedIndex;
+  final Map<String, String> notes;
+  final Map<String, String> tags;
+  final Map<String, bool> doNotSpend;
 
   const NgAccountBackup({
     required this.ngAccountConfig,
     required this.lastUsedIndex,
+    required this.notes,
+    required this.tags,
+    required this.doNotSpend,
   });
 
   static Future<NgAccountBackup> deserialize({required String data}) =>
@@ -49,7 +55,12 @@ class NgAccountBackup {
       );
 
   @override
-  int get hashCode => ngAccountConfig.hashCode ^ lastUsedIndex.hashCode;
+  int get hashCode =>
+      ngAccountConfig.hashCode ^
+      lastUsedIndex.hashCode ^
+      notes.hashCode ^
+      tags.hashCode ^
+      doNotSpend.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -57,7 +68,10 @@ class NgAccountBackup {
       other is NgAccountBackup &&
           runtimeType == other.runtimeType &&
           ngAccountConfig == other.ngAccountConfig &&
-          lastUsedIndex == other.lastUsedIndex;
+          lastUsedIndex == other.lastUsedIndex &&
+          notes == other.notes &&
+          tags == other.tags &&
+          doNotSpend == other.doNotSpend;
 }
 
 class NgAccountConfig {

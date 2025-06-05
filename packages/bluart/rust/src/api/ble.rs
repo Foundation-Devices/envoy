@@ -106,12 +106,12 @@ fn ble_state() -> &'static BleState {
 }
 
 fn init_logging(level: log::LevelFilter) {
-    #[cfg(target_os = "android")]
-    let _ = android_logger::init_once(android_logger::Config::default().with_max_level(level));
+  //  #[cfg(target_os = "android")]
+//        let _ = android_logger::init_once(android_logger::Config::default().with_max_level(level));
 
-    #[cfg(any(target_os = "ios", target_os = "macos"))]
-    let _ = oslog::OsLogger::new("frb_user").level_filter(level).init();
-}
+  //      #[cfg(any(target_os = "ios", target_os = "macos"))]
+    //    let _ = oslog::OsLogger::new("frb_user").level_filter(level).init();
+ }
 
 /// The init() function must be called before anything else.
 /// At the moment the developer has to make sure it is only called once.
