@@ -30,6 +30,12 @@ pub async fn serialize_xid(quantum_link_identity:  &QuantumLinkIdentity) -> Vec<
    quantum_link_identity.clone().xid_document.unwrap().to_unsigned_envelope().to_cbor_data()
 }
 
+pub fn serialize_xid_document(xid_document: &XIDDocument) -> Result<Vec<u8>> {
+    let envelope = xid_document.to_unsigned_envelope();
+    let cbor_data = envelope.to_cbor_data();
+    Ok(cbor_data)
+}
+
 pub fn deserialize_xid(data: Vec<u8>) -> Result<XIDDocument> {
     match Envelope::try_from_cbor_data(data) {
         Ok(envelope) => {
@@ -171,6 +177,21 @@ mod tests {
     async fn test_generate_identity() -> Result<()> {
         let identity = generate_identity();
         println!("{:?}", identity);
+
+        Ok(())
+    }
+    #[tokio::test]
+    async fn test_serialize_and_deserialize_xid() -> Result<()> {
+        let identity = generate_ql_identity().await;
+        let original_xid = identity.clone().xid_document.unwrap();
+
+        let serialized = serialize_xid(&identity).await;
+        let deserialized = deserialize_xid(serialized)?;
+
+        let original_cbor = original_xid.to_unsigned_envelope().to_cbor_data();
+        let deserialized_cbor = deserialized.to_unsigned_envelope().to_cbor_data();
+
+        assert_eq!(original_cbor, deserialized_cbor, "CBOR mismatch after serialization/deserialization");
 
         Ok(())
     }

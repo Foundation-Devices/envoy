@@ -24,6 +24,10 @@ Future<Uint8List> serializeXid(
     RustLib.instance.api
         .crateApiQlSerializeXid(quantumLinkIdentity: quantumLinkIdentity);
 
+Future<Uint8List> serializeXidDocument({required XidDocument xidDocument}) =>
+    RustLib.instance.api
+        .crateApiQlSerializeXidDocument(xidDocument: xidDocument);
+
 Future<XidDocument> deserializeXid({required List<int> data}) =>
     RustLib.instance.api.crateApiQlDeserializeXid(data: data);
 
