@@ -567,7 +567,7 @@ class SpendRequirementOverlayState
       if (coinSelectionDiff.isNotEmpty) {
         ///reset fees if coin selection changed
         ref.read(spendFeeRateProvider.notifier).state =
-            Fees().slowRate(account!.network) * 100000;
+            Fees().slowRate(account!.network);
         ref.read(spendTransactionProvider.notifier).validate(scope);
       }
 

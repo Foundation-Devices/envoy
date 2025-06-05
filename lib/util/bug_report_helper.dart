@@ -21,7 +21,7 @@ class EnvoyReport extends ChangeNotifier {
   }
 
   // The maximum number of logs to keep in the database
-  static const int _logCapacity = 25;
+  static const int _logCapacity = 35;
   Database? _db;
   final StoreRef<int, Map<String, Object?>> _logsStore =
       intMapStoreFactory.store("logs");
@@ -57,7 +57,7 @@ class EnvoyReport extends ChangeNotifier {
       report["lib"] = details.library;
       if (details.stack != null) {
         report["stackTrace"] =
-            getStackTraceElements(details.stack!, 50).join("\n");
+            getStackTraceElements(details.stack!, 12).join("\n");
         report["buildId"] = getBuildId(details.stack!);
       } else {
         report["stackTrace"] =
