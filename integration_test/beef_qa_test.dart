@@ -601,6 +601,29 @@ Future<void> main() async {
         expect(fiatCheckResult, isTrue);
       }
     });
+    testWidgets('Test send to all address types', (tester) async {
+      await checkSync(tester);
+      await goBackHome(tester);
+      await disableAllNetworks(tester);
+
+      final walletWithBalance = find.text("GH TEST ACC (#1)");
+      expect(walletWithBalance, findsAny);
+      await tester.tap(walletWithBalance);
+      await tester.pump(Durations.long2);
+
+      String p2pkhAddress = "12rYgz414HBXdhhK72BkR9VHZSU23dqqG7";
+      await trySendToAddress(tester, p2pkhAddress);
+
+      String p2shAddress = "3BY19nUKCAkrnzrgRezJoekGv4AFzsTs2z";
+      await trySendToAddress(tester, p2shAddress);
+
+      String p2wpkhAddress = "bc1qhrnucvul769yld6q09m8skwkp6zrecxhc00jcw";
+      await trySendToAddress(tester, p2wpkhAddress);
+
+      String p2trAddress =
+          "bc1pgqnxzknhzyypgslhcevt96cnry4jkarv5gqp560a95uv6mzf4x7s0r67mm";
+      await trySendToAddress(tester, p2trAddress);
+    });
     testWidgets('BTC/sats in App', (tester) async {
       await checkSync(tester);
 
@@ -1385,29 +1408,6 @@ Future<void> main() async {
       );
 
       expect(envoyIconFinder, findsOneWidget);
-    });
-    testWidgets('Test send to all address types', (tester) async {
-      await checkSync(tester);
-      await goBackHome(tester);
-      await disableAllNetworks(tester);
-
-      final walletWithBalance = find.text("GH TEST ACC (#1)");
-      expect(walletWithBalance, findsAny);
-      await tester.tap(walletWithBalance);
-      await tester.pump(Durations.long2);
-
-      String p2pkhAddress = "12rYgz414HBXdhhK72BkR9VHZSU23dqqG7";
-      await trySendToAddress(tester, p2pkhAddress);
-
-      String p2shAddress = "3BY19nUKCAkrnzrgRezJoekGv4AFzsTs2z";
-      await trySendToAddress(tester, p2shAddress);
-
-      String p2wpkhAddress = "bc1qhrnucvul769yld6q09m8skwkp6zrecxhc00jcw";
-      await trySendToAddress(tester, p2wpkhAddress);
-
-      String p2trAddress =
-          "bc1pgqnxzknhzyypgslhcevt96cnry4jkarv5gqp560a95uv6mzf4x7s0r67mm";
-      await trySendToAddress(tester, p2trAddress);
     });
     testWidgets('Delete device', (tester) async {
       await goBackHome(tester);
