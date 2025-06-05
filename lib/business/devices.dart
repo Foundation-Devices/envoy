@@ -150,7 +150,8 @@ class Devices extends ChangeNotifier {
       return "Passport Prime";
     }
 
-    return devices.firstWhere((d) => d.serial == serialNumber).name;
+    final device = devices.firstWhereOrNull((d) => d.serial == serialNumber);
+    return device?.name ?? "";
   }
 
   String? getDeviceFirmwareVersion(String serialNumber) {
