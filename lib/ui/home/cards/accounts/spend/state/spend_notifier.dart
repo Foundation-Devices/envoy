@@ -104,7 +104,6 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       ..loading = false
       ..error = errorMessage
       ..canProceed = false;
-
   }
 
   ({
@@ -179,7 +178,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         ..broadcastProgress = BroadcastProgress.staging
         ..loading = true;
 
-      if(feeRate == 0 ){
+      if (feeRate == 0) {
         feeRate = 1;
       }
       bool sendMax = spendableBalance == amount;
@@ -192,7 +191,6 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         doNotSpendChange: false,
       );
 
-      print("Setting fee ${params.feeRate}");
       final draftTx = await handler.composePsbt(transactionParams: params);
       kPrint(
           "composePSBT : ${draftTx.transaction.txId} | isFinalized : ${draftTx.isFinalized}");
@@ -210,8 +208,9 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       return true;
     } catch (e) {
       //reset the fee rate to the one used in the transaction
-      ref.read(spendFeeRateProvider.notifier).state = (state.draftTransaction?.transaction.feeRate)?.toInt() ?? 1;
-      kPrint("setFee:Fallback fee rate: ${  ref.read(spendFeeRateProvider)}");
+      ref.read(spendFeeRateProvider.notifier).state =
+          (state.draftTransaction?.transaction.feeRate)?.toInt() ?? 1;
+      kPrint("setFee:Fallback fee rate: ${ref.read(spendFeeRateProvider)}");
       _handleComposeError(e);
     }
     return false;
@@ -394,7 +393,6 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
   void reset() {
     state = emptyTransactionModel.clone();
-    print("resets ${state}");
   }
 
   Future broadcast(ProviderContainer ref) async {
@@ -516,7 +514,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     if (error is ComposeTxError) {
       ComposeTxError composeTxError = error;
 
-      EnvoyReport().log("Spend", "Spend validation failed : ${composeTxError.field0.toString()}");
+      EnvoyReport().log("Spend",
+          "Spend validation failed : ${composeTxError.field0.toString()}");
 
       composeTxError.when(
         coinSelectionError: (field0) {

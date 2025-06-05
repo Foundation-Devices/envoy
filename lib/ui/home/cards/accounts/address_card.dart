@@ -127,7 +127,6 @@ class _AddressCardState extends ConsumerState<AddressCard> {
   }
 
   void _copyAddressToClipboard(BuildContext context, String address) async {
-    ClipboardData? cdata = await Clipboard.getData(Clipboard.kTextPlain);
     Clipboard.setData(ClipboardData(text: address));
     if (context.mounted) {
       EnvoyToast(

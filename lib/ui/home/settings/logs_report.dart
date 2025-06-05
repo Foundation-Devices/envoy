@@ -154,7 +154,7 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                           mainAxisSize: MainAxisSize.max,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                             Table(
+                            Table(
                               columnWidths: const {
                                 0: IntrinsicColumnWidth(),
                                 1: FlexColumnWidth(),
@@ -162,27 +162,37 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                               children: [
                                 TableRow(
                                   children: [
-                                    Text("Time :", style: labelStyle, textAlign: TextAlign.right),
+                                    Text("Time :",
+                                        style: labelStyle,
+                                        textAlign: TextAlign.right),
                                     Padding(
-                                      padding: const EdgeInsets.only(left: EnvoySpacing.small),
-                                      child: Text(time.trim(), style: valueStyle),
+                                      padding: const EdgeInsets.only(
+                                          left: EnvoySpacing.small),
+                                      child:
+                                          Text(time.trim(), style: valueStyle),
                                     ),
                                   ],
                                 ),
                                 TableRow(
                                   children: [
-                                    Text("Category   :", style: labelStyle, textAlign: TextAlign.right),
+                                    Text("Category   :",
+                                        style: labelStyle,
+                                        textAlign: TextAlign.right),
                                     Padding(
-                                      padding: const EdgeInsets.only(left: EnvoySpacing.small),
+                                      padding: const EdgeInsets.only(
+                                          left: EnvoySpacing.small),
                                       child: Text(category, style: valueStyle),
                                     ),
                                   ],
                                 ),
                                 TableRow(
                                   children: [
-                                    Text("Message :", style: labelStyle, textAlign: TextAlign.right),
+                                    Text("Message :",
+                                        style: labelStyle,
+                                        textAlign: TextAlign.right),
                                     Padding(
-                                      padding: EdgeInsets.only(left: EnvoySpacing.small),
+                                      padding: EdgeInsets.only(
+                                          left: EnvoySpacing.small),
                                       child: Text(message, style: valueStyle),
                                     ),
                                   ],
@@ -190,19 +200,26 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                                 if (occurrences != "1" && occurrences != "None")
                                   TableRow(
                                     children: [
-                                      Text("Occurrences  :", style: labelStyle, textAlign: TextAlign.right),
+                                      Text("Occurrences  :",
+                                          style: labelStyle,
+                                          textAlign: TextAlign.right),
                                       Padding(
-                                        padding: const EdgeInsets.only(left: EnvoySpacing.small),
-                                        child: Text(occurrences, style: valueStyle),
+                                        padding: const EdgeInsets.only(
+                                            left: EnvoySpacing.small),
+                                        child: Text(occurrences,
+                                            style: valueStyle),
                                       ),
                                     ],
                                   ),
                                 if (lib != "None")
                                   TableRow(
                                     children: [
-                                      Text("Library  :", style: labelStyle, textAlign: TextAlign.right),
+                                      Text("Library  :",
+                                          style: labelStyle,
+                                          textAlign: TextAlign.right),
                                       Padding(
-                                        padding: const EdgeInsets.only(left: EnvoySpacing.small),
+                                        padding: const EdgeInsets.only(
+                                            left: EnvoySpacing.small),
                                         child: Text(lib, style: valueStyle),
                                       ),
                                     ],
@@ -210,42 +227,48 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                                 if (exception != "None")
                                   TableRow(
                                     children: [
-                                      Text("Exception :", style: labelStyle, textAlign: TextAlign.right),
+                                      Text("Exception :",
+                                          style: labelStyle,
+                                          textAlign: TextAlign.right),
                                       Padding(
-                                        padding: const EdgeInsets.only(left: EnvoySpacing.small),
-                                        child:
-                                        SelectableText(exception, style: valueStyle),
+                                        padding: const EdgeInsets.only(
+                                            left: EnvoySpacing.small),
+                                        child: SelectableText(exception,
+                                            style: valueStyle),
                                       ),
                                     ],
                                   ),
                                 if (stackTrace != "None")
                                   TableRow(
                                     children: [
-                                      Text("StackTrace :", style: labelStyle, textAlign: TextAlign.right),
+                                      Text("StackTrace :",
+                                          style: labelStyle,
+                                          textAlign: TextAlign.right),
                                       Padding(
-                                        padding: const EdgeInsets.only(left: EnvoySpacing.small),
-                                        child:
-                                        SelectableText(stackTrace, style: valueStyle),
+                                        padding: const EdgeInsets.only(
+                                            left: EnvoySpacing.small),
+                                        child: SelectableText(stackTrace,
+                                            style: valueStyle),
                                       ),
                                     ],
                                   ),
-                                  TableRow(
-                                    children: [
-                                      const Divider(
-                                        color: Colors.white10,
-                                        thickness: 1,
-                                      ),
-                                      const Divider(
-                                        color: Colors.white10,
-                                        thickness: 1,
-                                      ),
-                                    ],
-                                  ),
+                                TableRow(
+                                  children: [
+                                    const Divider(
+                                      color: Colors.white10,
+                                      thickness: 1,
+                                    ),
+                                    const Divider(
+                                      color: Colors.white10,
+                                      thickness: 1,
+                                    ),
+                                  ],
+                                ),
                               ],
-                              defaultVerticalAlignment: TableCellVerticalAlignment.baseline,
+                              defaultVerticalAlignment:
+                                  TableCellVerticalAlignment.baseline,
                               textBaseline: TextBaseline.alphabetic,
                             ),
-
                           ],
                         );
                       },

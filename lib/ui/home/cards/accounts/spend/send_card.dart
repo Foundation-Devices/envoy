@@ -270,7 +270,7 @@ class _SendCardState extends ConsumerState<SendCard>
                     if (tx.loading) {
                       buttonText = S().send_keyboard_address_loading;
                     }
-                    if(tx.error != null){
+                    if (tx.error != null) {
                       valid = false;
                       buttonText = tx.error!;
                     }
@@ -316,7 +316,6 @@ class _SendCardState extends ConsumerState<SendCard>
                           });
                           return;
                         }
-
                       },
                       error: !valid,
                       label: buttonText,

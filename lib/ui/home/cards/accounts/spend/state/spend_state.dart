@@ -50,12 +50,11 @@ double convertToFeeRate(num feeRate) {
 }
 
 final emptyTransactionModel = TransactionModel(
-  transaction: null,
-  draftTransaction: null,
-  valid: false,
-  loading: false,
-  error: null
-);
+    transaction: null,
+    draftTransaction: null,
+    valid: false,
+    loading: false,
+    error: null);
 
 final spendTransactionProvider =
     StateNotifierProvider<TransactionModeNotifier, TransactionModel>((ref) {

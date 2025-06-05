@@ -22,7 +22,6 @@ import 'package:envoy/ui/home/cards/peer_to_peer_options.dart';
 import 'package:envoy/ui/home/cards/select_region.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
-import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -157,13 +156,10 @@ final accountsRouter = StatefulShellBranch(
                       //always clear the spend state when exiting the send screen
                       //coin reselection happens within the send screen,
                       //so no need to check for coin selection overlay
-                      final scope= ProviderScope.containerOf(context);
-                      scope
-                          .read(coinSelectionStateProvider.notifier)
-                          .reset();
-                      scope
-                          .read(accountToggleStateProvider.notifier)
-                          .state = AccountToggleState.tx;
+                      final scope = ProviderScope.containerOf(context);
+                      scope.read(coinSelectionStateProvider.notifier).reset();
+                      scope.read(accountToggleStateProvider.notifier).state =
+                          AccountToggleState.tx;
                       clearSpendState(ProviderScope.containerOf(context));
                       return true;
                     },
