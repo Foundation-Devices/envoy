@@ -1101,7 +1101,7 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
 
       await sendFromBaseWallet(
-          tester, hotSignetAddress); // TODO: no base wallet?
+          tester, hotSignetAddress);
 
       /// getSatsFromSignetFaucet does not work
 
@@ -1449,27 +1449,15 @@ Future<void> main() async {
       final emptyDevices = find.byType(GhostDevice);
       await tester.pumpUntilFound(emptyDevices);
       expect(emptyDevices, findsOne);
-      await tester.pump(Durations.long2);
-      await tester.pumpAndSettle();
 
       // Verify that deleting the device also removes its associated accounts
       await findAndPressTextButton(tester, 'Accounts');
       await tester.pump(Durations.long2);
-      await tester.pumpAndSettle();
       final passportAccount = find.text(
         deviceName,
       );
 
-      await tester.pump(Durations.long2);
-      await tester.pump(Durations.long2);
-      await tester.pumpAndSettle();
-
-      expect(passportAccount,
-          findsNothing); // TODO: one was found but none were expected????
-
-      await tester.pump(Durations.long2);
-      await tester.pump(Durations.long2);
-      await tester.pumpAndSettle();
+      expect(passportAccount, findsNothing);
     });
     testWidgets('Logs freeze', (tester) async {
       await goBackHome(tester);
