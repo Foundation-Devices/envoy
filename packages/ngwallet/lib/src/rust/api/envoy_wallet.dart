@@ -130,6 +130,11 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
           legacySledDbPath: legacySledDbPath,
           network: network);
 
+  Future<void> migrateMeta(
+      {required Map<String, String> notes,
+      required Map<String, String> tags,
+      required Map<String, bool> doNotSpend});
+
   static Future<EnvoyAccountHandler> newFromDescriptor(
           {required String name,
           String? deviceSerial,

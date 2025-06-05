@@ -42,7 +42,6 @@ import 'generated/l10n.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   try {
     await initSingletons();
   } catch (e, stack) {
@@ -58,6 +57,7 @@ Future<void> main() async {
         MigrationManager.migrationPrefs, MigrationManager.migrationVersion);
     runApp(const EnvoyApp());
   }
+
   listenToRouteChanges();
 }
 
@@ -106,14 +106,6 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   await EnvoySeed.init();
   await FMTCObjectBoxBackend().initialise();
   await const FMTCStore('mapStore').manage.create();
-
-  //TODO:only for QA
-  EnvoySeed().get().then((value) {
-    EnvoyReport().log("EnvoySeed J@ck", "Seed: \n\n $value\n\n");
-  }, onError: (error, stackTrace) {
-    EnvoyReport()
-        .log("EnvoySeed", "Error getting seed $error", stackTrace: stackTrace);
-  });
 
   // Start Tor regardless of whether we are using it or not
   try {

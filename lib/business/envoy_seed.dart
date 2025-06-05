@@ -428,18 +428,50 @@ class EnvoySeed {
     bool isLegacy = false;
     if (success) {
       migrateFromSharedPreferences(data);
+      try {
+        // Restore the database
+        if (data.containsKey(EnvoyStorage.dbName)) {
+          // get videos and blogs from current database before restore
+          List<Video?> videos = await EnvoyStorage().getAllVideos() ?? [];
+          List<BlogPost?> blogs = await EnvoyStorage().getAllBlogPosts() ?? [];
+
+          await EnvoyStorage().restore(data[EnvoyStorage.dbName]!);
+
+          await EnvoyStorage().insertMediaItems(videos);
+          await EnvoyStorage().insertMediaItems(blogs);
+
+          // This always happens after onboarding
+          await EnvoyStorage().setBool(PREFS_ONBOARDED, true);
+        }
+
+        _restoreSingletons();
+      } catch (e) {
+        EnvoyReport().log("EnvoySeed", "Error restoring database: $e");
+      }
+
       // if the data contains accountsPrefKey at root ,
       // data is from newer backup
       if (data.containsKey(EnvoyStorage.dbName) &&
           !data.containsKey(NgAccountManager.accountsPrefKey)) {
         await create(seed.split(" "), passphrase: passphrase);
         try {
+          await create(seed.split(" "),
+              passphrase: passphrase, requireScan: true);
           await restoreLegacyWallet(data, seed);
           isLegacy = true;
         } catch (e) {
           EnvoyReport().log("EnvoySeed",
               "Error restoring legacy wallet with magic backup: $e");
           rethrow;
+        } finally {
+          //try migrate meta (notes, tags, doNotSpend)
+          for (var account in NgAccountManager().accounts) {
+            //when restoring from magic backup, accounts are created with new id
+            if (account.handler != null) {
+              await MigrationManager.migrateMeta(account.handler!,
+                  accountId: account.id);
+            }
+          }
         }
       } else {
         // legacy accounts restore
@@ -449,23 +481,6 @@ class EnvoySeed {
           await restoreAccounts(data, seed, passphrase);
         }
       }
-
-      // Restore the database
-      if (data.containsKey(EnvoyStorage.dbName)) {
-        // get videos and blogs from current database before restore
-        List<Video?> videos = await EnvoyStorage().getAllVideos() ?? [];
-        List<BlogPost?> blogs = await EnvoyStorage().getAllBlogPosts() ?? [];
-
-        await EnvoyStorage().restore(data[EnvoyStorage.dbName]!);
-
-        await EnvoyStorage().insertMediaItems(videos);
-        await EnvoyStorage().insertMediaItems(blogs);
-
-        // This always happens after onboarding
-        await EnvoyStorage().setBool(PREFS_ONBOARDED, true);
-      }
-
-      _restoreSingletons();
 
       await Future.delayed(const Duration(milliseconds: 100));
       bool showTestnet = Settings().showTestnetAccounts();
@@ -547,11 +562,23 @@ class EnvoySeed {
     try {
       List<EnvoyAccountHandler> accountHandler =
           await MigrationManager().createAccounts(legacy, order);
+
       for (var handler in accountHandler) {
-        await NgAccountManager().addAccount(
-          await handler.state(),
-          handler,
-        );
+        final account = await handler.state();
+        for (var element in account.descriptors) {
+          await LocalStorage()
+              .prefs
+              .setAccountScanStatus(account.id, element.addressType, false);
+        }
+        await MigrationManager.migrateMeta(handler);
+        try {
+          await NgAccountManager().addAccount(
+            account,
+            handler,
+          );
+        } catch (e) {
+          EnvoyReport().log("EnvoySeed", "Error migrating Meta: $e");
+        }
       }
     } catch (e, stack) {
       EnvoyReport().log(
