@@ -33,9 +33,10 @@ class BluetoothManager {
 
   api.Dechunker? _decoder;
   api.XidDocument? _recipientXid;
-  String? _bleId;
 
   bool connected = false;
+
+  bool _sendingData = false;
 
   factory BluetoothManager() {
     return _instance;
@@ -86,14 +87,14 @@ class BluetoothManager {
       }
 
       if (event is bluart.Event_ScanResult) {
-        kPrint("Scan result received, _bleId = $_bleId");
-        if (_bleId == null) {
+        kPrint("Scan result received, bleId = $bleId");
+        if (bleId == "") {
           return;
         }
 
         for (final device in event.field0) {
           kPrint("Paired device found: ${device.id}");
-          if (device.id == _bleId && !connected) {
+          if (device.id == bleId && !connected) {
             await connect(id: device.id);
             await listen(id: bleId);
           }
@@ -136,11 +137,16 @@ class BluetoothManager {
   }
 
   Future<void> pair(api.XidDocument recipient) async {
+    _sendingData = true;
     _recipientXid = recipient;
     kPrint("pair: $hashCode");
 
     kPrint("Pairing...");
     final xid = await api.serializeXid(quantumLinkIdentity: _qlIdentity!);
+
+    final recipientXid =
+        await api.serializeXidDocument(xidDocument: _recipientXid!);
+
     api.PairingRequest request = api.PairingRequest(xidDocument: xid);
     kPrint("Encoding...");
 
@@ -158,18 +164,21 @@ class BluetoothManager {
     Future.delayed(Duration(seconds: 1));
 
     connected = true;
+    _sendingData = false;
 
-    PrimeDevice prime = PrimeDevice(bleId, xid);
+    PrimeDevice prime = PrimeDevice(bleId, recipientXid);
     await EnvoyStorage().savePrime(prime);
   }
 
   Future<void> sendPsbt(String accountId, String psbt) async {
+    _sendingData = true;
     final encoded = await encodeMessage(
         message: api.QuantumLinkMessage.signPsbt(
             api.SignPsbt(psbt: psbt, accountId: accountId)));
 
     kPrint("before sending psbt");
     await bluart.writeAll(id: bleId, data: encoded);
+    _sendingData = false;
   }
 
   Future<void> _generateQlIdentity() async {
@@ -222,21 +231,26 @@ class BluetoothManager {
   }
 
   Future<void> sendOnboardingState(api.OnboardingState state) async {
+    _sendingData = true;
     final encoded = await encodeMessage(
       message: api.QuantumLinkMessage.onboardingState(state),
     );
 
     await bluart.writeAll(id: bleId, data: encoded);
+    _sendingData = false;
   }
 
   Future<void> send(api.QuantumLinkMessage message) async {
+    _sendingData = true;
     final encoded = await encodeMessage(
       message: message,
     );
     await bluart.writeAll(id: bleId, data: encoded);
+    _sendingData = false;
   }
 
   Future<void> sendFirmwarePayload() async {
+    _sendingData = true;
     // Create 100 KB of random data
     final random = Random();
     final payloadSize = 100 * 1024; // 100 KB
@@ -251,6 +265,7 @@ class BluetoothManager {
     );
 
     await bluart.writeAll(id: bleId, data: encoded);
+    _sendingData = false;
   }
 
   Future<void> sendChallengeMessage() async {
@@ -262,12 +277,14 @@ class BluetoothManager {
       kPrint("No challenge available");
       return;
     }
+    _sendingData = true;
 
     final encoded = await encodeMessage(
       message: api.QuantumLinkMessage.securityChallengeMessage(challenge),
     );
 
     await bluart.writeAll(id: bleId, data: encoded);
+    _sendingData = false;
   }
 
   Future<void> restorePrimeDevice() async {
@@ -288,7 +305,7 @@ class BluetoothManager {
       );
 
       _recipientXid = recipientXid;
-      _bleId = prime.bleId;
+      bleId = prime.bleId;
     } catch (e) {
       kPrint('Error deserializing XidDocument: $e');
     }
@@ -303,6 +320,9 @@ class BluetoothManager {
   }
 
   Future<void> sendExchangeRate() async {
+    if (_sendingData) {
+      return;
+    }
     try {
       final exchangeRate = ExchangeRate();
 

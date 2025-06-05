@@ -80,7 +80,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.9.0';
 
   @override
-  int get rustContentHash => -1955051791;
+  int get rustContentHash => -846349618;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -126,6 +126,9 @@ abstract class RustLibApi extends BaseApi {
 
   Future<Uint8List> crateApiQlSerializeXid(
       {required QuantumLinkIdentity quantumLinkIdentity});
+
+  Future<Uint8List> crateApiQlSerializeXidDocument(
+      {required XidDocument xidDocument});
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_ArcMutexDecoder;
@@ -506,6 +509,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiQlSerializeXidConstMeta => const TaskConstMeta(
         debugName: "serialize_xid",
         argNames: ["quantumLinkIdentity"],
+      );
+
+  @override
+  Future<Uint8List> crateApiQlSerializeXidDocument(
+      {required XidDocument xidDocument}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+            xidDocument, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 14, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiQlSerializeXidDocumentConstMeta,
+      argValues: [xidDocument],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlSerializeXidDocumentConstMeta =>
+      const TaskConstMeta(
+        debugName: "serialize_xid_document",
+        argNames: ["xidDocument"],
       );
 
   RustArcIncrementStrongCountFnType
