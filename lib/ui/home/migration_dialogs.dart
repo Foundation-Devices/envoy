@@ -79,8 +79,8 @@ void notifyAboutNetworkMigrationDialog(BuildContext context) {
           if (context.mounted) Navigator.pop(context);
         } else {
           controller.nextPage(
-              duration: const Duration(milliseconds: 360),
-              curve: EnvoyEasing.easeInOut);
+              duration: const Duration(milliseconds: 230),
+              curve: EnvoyEasing.defaultEasing);
         }
       }
 
@@ -115,6 +115,7 @@ void notifyAboutNetworkMigrationDialog(BuildContext context) {
             width: MediaQuery.of(context).size.width * 0.85,
             height: MediaQuery.of(context).size.height * 0.54,
             child: PageView(
+              physics: NeverScrollableScrollPhysics(),
               controller: controller,
               children: [...pages],
             ),
