@@ -55,7 +55,7 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
 
     return Stack(
       children: [
-        const Flexible(child: AccountsList()),
+        const Positioned.fill(child: AccountsList()),
         Padding(
           padding: const EdgeInsets.only(bottom: 10),
           child: FutureBuilder(
@@ -233,9 +233,16 @@ class _AccountsListState extends ConsumerState<AccountsList> {
       bottomGradientValue: 0.845,
       end: 0.89,
       child: ReorderableListView(
+        header: const SizedBox(height: 20), // env-2000-line-through-shade
         footer: Opacity(
           opacity: _onReOrderStart ? 0.0 : 1.0,
-          child: const AccountPrompts(),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              AccountPrompts(),
+              SizedBox(height: 80), // env-2000-line-through-shade
+            ],
+          ),
         ),
         shrinkWrap: true,
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -303,11 +310,6 @@ class _AccountsListState extends ConsumerState<AccountsList> {
         ? accounts.map((e) => e.id).toList()
         : accountsOrder;
 
-    items.add(const SizedBox(
-      key: ValueKey('__top_spacing__'),
-      height: 20,
-    ));
-
     for (final id in orderToUse) {
       final account = accounts.firstWhereOrNull((element) => element.id == id);
       if (account != null) {
@@ -328,10 +330,6 @@ class _AccountsListState extends ConsumerState<AccountsList> {
         );
       }
     }
-    items.add(const SizedBox(
-      key: ValueKey('__bottom_spacing__'),
-      height: 80,
-    ));
     return items;
   }
 }
