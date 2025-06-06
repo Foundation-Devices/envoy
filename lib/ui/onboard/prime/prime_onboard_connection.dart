@@ -20,6 +20,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/components/button.dart';
+import 'package:envoy/business/bluetooth_manager.dart';
 
 class PrimeOnboardParing extends ConsumerStatefulWidget {
   const PrimeOnboardParing({super.key});
@@ -95,16 +96,11 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
 
       await Future.delayed(const Duration(milliseconds: 1000));
 
-      // TODO: revert this post-demo
-      if (mounted) {
-        context.go("/");
-      }
+      await ref.read(deviceSecurityProvider.notifier).updateStep(
+          S().onboarding_connectionIntro_checkingDeviceSecurity,
+          EnvoyStepState.LOADING);
 
-      // await ref.read(deviceSecurityProvider.notifier).updateStep(
-      //     S().onboarding_connectionIntro_checkingDeviceSecurity,
-      //     EnvoyStepState.LOADING);
-      //
-      // await BluetoothManager().sendChallengeMessage();
+      await BluetoothManager().sendChallengeMessage();
     } catch (e) {
       kPrint(e);
     }

@@ -109,7 +109,7 @@ mod tests {
         let ur_codes = get_test_array();
 
         for ur in ur_codes {
-            let result = decode_qr(ur, decoder.clone()).await?;
+            let result = decode_qr(ur, &decoder.clone()).await?;
 
             println!("Progress: {}", result.progress);
 

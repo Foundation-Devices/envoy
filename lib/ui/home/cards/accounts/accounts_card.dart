@@ -55,7 +55,7 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
 
     return Stack(
       children: [
-        const Positioned.fill(child: AccountsList()),
+        AccountsList(),
         Padding(
           padding: const EdgeInsets.only(bottom: 10),
           child: FutureBuilder(
@@ -118,33 +118,6 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
         )
       ],
     );
-    // final navigator = CardNavigator(push, pop, hideOptions);
-    //
-    // return WillPopScope(
-    //   onWillPop: () async {
-    //     if (cardStack.length > 1) {
-    //       pop();
-    //       return false;
-    //     }
-    //     return true;
-    //   },
-    //   child: IndexedTransitionSwitcher(
-    //     children: cardStack,
-    //     index: cardStack.length - 1,
-    //     transitionBuilder: (
-    //       Widget child,
-    //       Animation<double> primaryAnimation,
-    //       Animation<double> secondaryAnimation,
-    //     ) {
-    //       return FadeThroughTransition(
-    //         animation: primaryAnimation,
-    //         fillColor: Colors.transparent,
-    //         secondaryAnimation: secondaryAnimation,
-    //         child: child,
-    //       );
-    //     },
-    //   ),
-    // );
   }
 
   @override

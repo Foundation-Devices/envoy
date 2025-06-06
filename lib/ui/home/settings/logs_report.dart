@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/bug_report_helper.dart';
@@ -30,7 +31,6 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
         elevation: 0,
         backgroundColor: Colors.black,
         title: const Text("Logs"),
-        // TODO: FIGMA
         leading: const CupertinoNavigationBarBackButton(
           color: Colors.white,
         ),
@@ -39,7 +39,7 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
               tooltip: "Copy logs",
               onPressed: () async {
                 try {
-                  String logs = await EnvoyReport().getLogAsString(15);
+                  String logs = await EnvoyReport().getLogAsString(24);
                   await Clipboard.setData(ClipboardData(text: logs));
                   if (context.mounted) {
                     EnvoyToast(
@@ -99,7 +99,6 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
         ],
         centerTitle: true,
       ),
-      backgroundColor: EnvoyColors.white95,
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Consumer(
@@ -117,7 +116,7 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                   return Center(child: Text("Error: ${snapshot.error}"));
                 }
 
-                final logs = (snapshot.data ?? []).reversed.toList();
+                final logs = (snapshot.data ?? []).toList();
 
                 if (logs.isEmpty) {
                   return const Center(
@@ -137,119 +136,138 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                         String stackTrace = log["stackTrace"] ?? "None";
                         String lib = log["lib"] ?? "None";
                         String time = log["time"] ?? "";
+
+                        // Define reusable text styles
+                        final labelStyle = const TextStyle(
+                          fontSize: 8,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white70,
+                        );
+
+                        final valueStyle = const TextStyle(
+                          fontSize: 8,
+                          color: EnvoyColors.lightBlue,
+                          fontFamily: 'monospace',
+                        );
+
                         return Column(
                           mainAxisSize: MainAxisSize.max,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SelectableText.rich(
-                              TextSpan(children: [
-                                const TextSpan(
-                                    text: "Time : ", // TODO: FIGMA
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black,
-                                    )),
-                                TextSpan(
-                                    text: "$time\n",
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.black,
-                                    )),
-                                const TextSpan(
-                                    text: "Category : ", // TODO: FIGMA
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black,
-                                    )),
-                                TextSpan(
-                                    text: "$category\n",
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.black,
-                                    )),
-                                const TextSpan(
-                                    text: "Message : ", // TODO: FIGMA
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black,
-                                    )),
-                                TextSpan(
-                                    text: "$message\n",
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.black,
-                                    )),
-                                const TextSpan(
-                                    text: "Occurrences : ", // TODO: FIGMA
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black,
-                                    )),
-                                TextSpan(
-                                    text: "$occurrences\n",
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.black,
-                                    )),
-                                const TextSpan(
-                                    text: "Library : ", // TODO: FIGMA
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black,
-                                    )),
-                                TextSpan(
-                                    text: "$lib\n",
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.black,
-                                    )),
-                                const TextSpan(
-                                    text: "\nException\n\n", // TODO: FIGMA
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black,
-                                    )),
-                                TextSpan(
-                                    text: "$exception\n",
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.black,
-                                    )),
-                                const TextSpan(
-                                    text: "\nStack Trace\n\n", // TODO: FIGMA
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black,
-                                    )),
-                                TextSpan(
-                                    text: "$stackTrace \n",
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.black,
-                                    ))
-                              ]),
-                              scrollPhysics: const ClampingScrollPhysics(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(
-                                      fontWeight: FontWeight.w400,
-                                      height: 1.2,
-                                      color: Colors.grey[400],
-                                      fontSize: 11),
-                              // overflow: TextOverflow.ellipsis,
-                              // softWrap: true,
-                            ),
-                            const Divider(
-                              color: Colors.black,
-                              thickness: 1,
+                            Table(
+                              columnWidths: const {
+                                0: IntrinsicColumnWidth(),
+                                1: FlexColumnWidth(),
+                              },
+                              children: [
+                                TableRow(
+                                  children: [
+                                    Text("Time :",
+                                        style: labelStyle,
+                                        textAlign: TextAlign.right),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: EnvoySpacing.small),
+                                      child:
+                                          Text(time.trim(), style: valueStyle),
+                                    ),
+                                  ],
+                                ),
+                                TableRow(
+                                  children: [
+                                    Text("Category   :",
+                                        style: labelStyle,
+                                        textAlign: TextAlign.right),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: EnvoySpacing.small),
+                                      child: Text(category, style: valueStyle),
+                                    ),
+                                  ],
+                                ),
+                                TableRow(
+                                  children: [
+                                    Text("Message :",
+                                        style: labelStyle,
+                                        textAlign: TextAlign.right),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: EnvoySpacing.small),
+                                      child: Text(message, style: valueStyle),
+                                    ),
+                                  ],
+                                ),
+                                if (occurrences != "1" && occurrences != "None")
+                                  TableRow(
+                                    children: [
+                                      Text("Occurrences  :",
+                                          style: labelStyle,
+                                          textAlign: TextAlign.right),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: EnvoySpacing.small),
+                                        child: Text(occurrences,
+                                            style: valueStyle),
+                                      ),
+                                    ],
+                                  ),
+                                if (lib != "None")
+                                  TableRow(
+                                    children: [
+                                      Text("Library  :",
+                                          style: labelStyle,
+                                          textAlign: TextAlign.right),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: EnvoySpacing.small),
+                                        child: Text(lib, style: valueStyle),
+                                      ),
+                                    ],
+                                  ),
+                                if (exception != "None")
+                                  TableRow(
+                                    children: [
+                                      Text("Exception :",
+                                          style: labelStyle,
+                                          textAlign: TextAlign.right),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: EnvoySpacing.small),
+                                        child: SelectableText(exception,
+                                            style: valueStyle),
+                                      ),
+                                    ],
+                                  ),
+                                if (stackTrace != "None")
+                                  TableRow(
+                                    children: [
+                                      Text("StackTrace :",
+                                          style: labelStyle,
+                                          textAlign: TextAlign.right),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: EnvoySpacing.small),
+                                        child: SelectableText(stackTrace,
+                                            style: valueStyle),
+                                      ),
+                                    ],
+                                  ),
+                                TableRow(
+                                  children: [
+                                    const Divider(
+                                      color: Colors.white10,
+                                      thickness: 1,
+                                    ),
+                                    const Divider(
+                                      color: Colors.white10,
+                                      thickness: 1,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                              defaultVerticalAlignment:
+                                  TableCellVerticalAlignment.baseline,
+                              textBaseline: TextBaseline.alphabetic,
                             ),
                           ],
                         );

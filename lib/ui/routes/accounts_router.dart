@@ -22,7 +22,6 @@ import 'package:envoy/ui/home/cards/peer_to_peer_options.dart';
 import 'package:envoy/ui/home/cards/select_region.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
-import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -154,13 +153,14 @@ final accountsRouter = StatefulShellBranch(
                 GoRoute(
                     path: _ACCOUNT_SEND,
                     onExit: (context, GoRouterState state) {
-                      /// if we are exiting the send screen, we need to clear the spend state
-                      /// but only if we are not in edit mode
-                      if (ProviderScope.containerOf(context)
-                              .read(spendEditModeProvider) !=
-                          SpendOverlayContext.editCoins) {
-                        clearSpendState(ProviderScope.containerOf(context));
-                      }
+                      //always clear the spend state when exiting the send screen
+                      //coin reselection happens within the send screen,
+                      //so no need to check for coin selection overlay
+                      final scope = ProviderScope.containerOf(context);
+                      scope.read(coinSelectionStateProvider.notifier).reset();
+                      scope.read(accountToggleStateProvider.notifier).state =
+                          AccountToggleState.tx;
+                      clearSpendState(ProviderScope.containerOf(context));
                       return true;
                     },
                     pageBuilder: (context, state) {
@@ -186,22 +186,22 @@ final accountsRouter = StatefulShellBranch(
                             /// if the broadcast is in progress, do not allow the user to go back
                             return false;
                           } else {
-                            final exit = await showEnvoyDialog(
-                                context: context,
-                                dialog: const DiscardTransactionDialog());
-                            if (exit) {
-                              providerContainer
-                                  .read(coinSelectionStateProvider.notifier)
-                                  .reset();
-                              providerContainer
-                                  .read(spendEditModeProvider.notifier)
-                                  .state = SpendOverlayContext.hidden;
-                              providerContainer
-                                  .read(hideBottomNavProvider.notifier)
-                                  .state = false;
-                              clearSpendState(providerContainer);
-                            }
-                            return exit;
+                            // final exit = await showEnvoyDialog(
+                            //     context: context,
+                            //     dialog: const DiscardTransactionDialog());
+                            // if (exit) {
+                            //   providerContainer
+                            //       .read(coinSelectionStateProvider.notifier)
+                            //       .reset();
+                            //   providerContainer
+                            //       .read(spendEditModeProvider.notifier)
+                            //       .state = SpendOverlayContext.hidden;
+                            //   providerContainer
+                            //       .read(hideBottomNavProvider.notifier)
+                            //       .state = false;
+                            //   clearSpendState(providerContainer);
+                            // }
+                            return true;
                           }
                         },
                         path: _ACCOUNT_SEND_CONFIRM,

@@ -4,21 +4,22 @@
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:envoy/ui/components/address_widget.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:share_plus/share_plus.dart';
 
 class AddressCard extends ConsumerStatefulWidget {
   final EnvoyAccount account;
@@ -101,7 +102,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                     },
                     icon: const EnvoyIcon(
                       EnvoyIcons.copy,
-                      color: EnvoyColors.darkTeal,
+                      color: EnvoyColors.accentPrimary,
                     )),
                 EnvoyTextButton(
                   onTap: () {
@@ -115,7 +116,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                     },
                     icon: const EnvoyIcon(
                       EnvoyIcons.externalLink,
-                      color: EnvoyColors.darkTeal,
+                      color: EnvoyColors.accentPrimary,
                     )),
               ],
             ),
@@ -126,14 +127,18 @@ class _AddressCardState extends ConsumerState<AddressCard> {
   }
 
   void _copyAddressToClipboard(BuildContext context, String address) async {
-    final scaffold = ScaffoldMessenger.of(context);
-    ClipboardData? cdata = await Clipboard.getData(Clipboard.kTextPlain);
-    String? text = cdata?.text;
-    if (text != address) {
-      Clipboard.setData(ClipboardData(text: address));
-      scaffold.showSnackBar(const SnackBar(
-        content: Text("Address copied to clipboard!"), //TODO: FIGMA
-      ));
+    Clipboard.setData(ClipboardData(text: address));
+    if (context.mounted) {
+      EnvoyToast(
+        backgroundColor: Colors.lightBlue,
+        replaceExisting: true,
+        duration: Duration(seconds: 1),
+        message: "Address copied to clipboard",
+        icon: EnvoyIcon(
+          EnvoyIcons.info,
+          color: EnvoyColors.accentPrimary,
+        ),
+      ).show(context, rootNavigator: true);
     }
   }
 }

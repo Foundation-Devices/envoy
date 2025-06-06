@@ -281,7 +281,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
             double.parse(sanitizedFiatAmount);
       }
 
-      if (!addDot && !addZero) {
+      if (!addDot && !addZero && _amountSats != 0) {
         setState(() {
           // Format it nicely
           _enteredAmount = getDisplayAmount(_amountSats, unit);

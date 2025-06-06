@@ -7,6 +7,7 @@ import 'package:collection/collection.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
 
@@ -16,6 +17,7 @@ final _accountOrderStream = StreamProvider<List<String>>(((ref) {
 final _accountSync = StreamProvider<WalletProgress>(((ref) {
   return SyncManager().currentLoading;
 }));
+
 final accountOrderStream = Provider<List<String>>(((ref) {
   return ref.watch(_accountOrderStream).value ?? [];
 }));
@@ -23,6 +25,29 @@ final accountOrderStream = Provider<List<String>>(((ref) {
 final accountSync = Provider<WalletProgress>(((ref) {
   return ref.watch(_accountSync).value ?? None();
 }));
+
+final _accountSyncStatusStream =
+    StreamProvider.family<bool, (String, AddressType)>(((ref, params) {
+  return EnvoyStorage().getAccountScanStatusStream(
+    params.$1,
+    params.$2,
+  );
+}));
+final isAccountRequiredScan =
+    Provider.family<bool, EnvoyAccount>((ref, account) {
+  for (var descriptor in account.descriptors) {
+    //if there is false in the stream, it means the account is not scanned
+    bool isScanned = ref
+            .watch(
+                _accountSyncStatusStream((account.id, descriptor.addressType)))
+            .value ??
+        false;
+    if (isScanned == false) {
+      return true;
+    }
+  }
+  return false;
+});
 
 final accountManagerNotifier = ChangeNotifierProvider(
   (ref) {

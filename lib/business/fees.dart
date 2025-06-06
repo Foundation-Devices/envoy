@@ -97,6 +97,7 @@ class Fees {
       "https://testnet-mempool.foundation.xyz";
   static const _mempoolRecommendedFeesEndpoints = {
     Network.bitcoin: "$mempoolFoundationInstance/api/v1/fees/recommended",
+    //TODO: implement testnet4
     Network.testnet:
         "$testnetMempoolFoundationInstance/api/v1/fees/recommended",
     Network.signet:
@@ -107,6 +108,7 @@ class Fees {
 
   static const _mempoolBlocksFeesEndpoints = {
     Network.bitcoin: "$mempoolFoundationInstance/api/v1/fees/mempool-blocks",
+    //TODO: implement testnet4
     Network.testnet:
         "$testnetMempoolFoundationInstance/api/v1/fees/mempool-blocks",
     Network.signet:

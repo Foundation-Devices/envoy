@@ -2,7 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/select_dropdown.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
@@ -11,6 +13,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,11 +38,51 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
   @override
   void initState() {
     super.initState();
+    try {
+      if (Settings().taprootEnabled()) {
+        setState(() {
+          selectedIndex = descriptors
+              .indexWhere((element) => element.addressType == AddressType.p2Tr);
+        });
+      } else {
+        setState(() {
+          selectedIndex = descriptors.indexWhere(
+              (element) => element.addressType == AddressType.p2Wpkh);
+        });
+      }
+    } catch (e) {
+      kPrint("Error getting preferred address index $e");
+    }
     Future.delayed(const Duration(milliseconds: 10)).then((value) {
       ref.read(homePageTitleProvider.notifier).state =
           S().manage_account_address_heading;
     });
   }
+
+  String mapAddressTypeToName(AddressType addressType) {
+    switch (addressType) {
+      case AddressType.p2Pkh:
+        return S().accountDetails_descriptor_legacy;
+      case AddressType.p2Sh:
+        return "P2Sh";
+      case AddressType.p2Wpkh:
+        return S().accountDetails_descriptor_segwit;
+      case AddressType.p2Wsh:
+        return "P2Wsh";
+      case AddressType.p2Tr:
+        return S().accountDetails_descriptor_taproot;
+      case AddressType.p2ShWpkh:
+        return S().accountDetails_descriptor_wrappedSegwit;
+    }
+  }
+
+  late List<EnvoyDropdownOption> options = descriptors.map((descriptor) {
+    return EnvoyDropdownOption(
+      type: EnvoyDropdownOptionType.normal,
+      label: mapAddressTypeToName(descriptor.addressType),
+      value: descriptors.indexOf(descriptor).toString(),
+    );
+  }).toList();
 
   @override
   Widget build(BuildContext context) {
@@ -51,33 +94,39 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
           Flexible(
             child: Padding(
               padding: const EdgeInsets.all(EnvoySpacing.medium2),
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedIndex = (selectedIndex + 1) % descriptors.length;
-                  });
-                },
-                child: QrTab(
-                  title: widget.account.name,
-                  subtitle: S().manage_account_descriptor_subheading,
-                  account: widget.account,
-                  qr: EnvoyQR(
-                    data: descriptor,
+              child: Column(
+                children: [
+                  QrTab(
+                    title: widget.account.name,
+                    subtitle: S().manage_account_descriptor_subheading,
+                    account: widget.account,
+                    qr: EnvoyQR(
+                      data: descriptor,
+                    ),
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: EnvoySpacing.medium1,
+                      horizontal: EnvoySpacing.xs,
+                    ),
+                    child: EnvoyDropdown(
+                      options: options,
+                      initialIndex: selectedIndex,
+                      onOptionChanged: (selectedOption) {
+                        if (selectedOption != null) {
+                          setState(() {
+                            selectedIndex = int.parse(selectedOption.value);
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
           //TODO: add dropdown to switch between descriptors
-          // EnvoyDropdown(
-          //   options: [
-          //
-          //   ],
-          //   onOptionChanged: (selectedOption) {
-          //     if (selectedOption != null) {
-          //     }
-          //   },
-          // ),
+
           Padding(
             padding: const EdgeInsets.only(bottom: EnvoySpacing.xl),
             child: Row(
