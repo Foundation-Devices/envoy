@@ -215,7 +215,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                     Navigator.pop(context);
 
                     // Go back to devices list
-                    GoRouter.of(context).pop();
+                    context.go(ROUTE_DEVICES);
                   },
                 ));
           },

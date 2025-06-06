@@ -184,8 +184,8 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
           setState(() {
             if (index == _selectedIndex) {
               // if selected index is "Accounts"
-              if (index == 2 && GoRouter.of(context).canPop()) {
-                GoRouter.of(context).pop();
+              if (index == 2) {
+                context.go("/");
               } else {
                 return;
               }
