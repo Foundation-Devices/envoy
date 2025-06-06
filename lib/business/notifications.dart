@@ -81,7 +81,8 @@ EnvoyNotification transactionToEnvoyNotification(EnvoyTransaction transaction) {
   return EnvoyNotification(
     "Transaction Notification",
     transaction.isConfirmed
-        ? DateTime.fromMillisecondsSinceEpoch(transaction.date!.toInt())
+        ? DateTime.fromMillisecondsSinceEpoch(transaction.date!.toInt() * 1000,
+            isUtc: true)
         : null,
     EnvoyNotificationType.transaction,
     "Transaction details",
