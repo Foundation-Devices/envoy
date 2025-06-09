@@ -14,8 +14,8 @@ crate-type = ["cdylib", "staticlib"]
 flutter_rust_bridge = "=2.9.0"
 
 #ngwallet = { path = "../../../../ngwallet", features = ["envoy"] }
-#ngwallet = {  git = "https://github.com/Foundation-Devices/ngwallet", tag = "0.7.0", features = ["envoy"] }
-ngwallet = {  git = "https://github.com/Foundation-Devices/ngwallet", rev = "b80360a3b51170d7876a862fec8adb5864df1a54", features = ["envoy"] }
+ngwallet = {  git = "https://github.com/Foundation-Devices/ngwallet", tag = "0.9.0", features = ["envoy"] }
+#ngwallet = {  git = "https://github.com/Foundation-Devices/ngwallet", rev = "b80360a3b51170d7876a862fec8adb5864df1a54", features = ["envoy"] }
 
 bdk_wallet = { version =  "2.0.0-alpha.0" , features = ["rusqlite"] }
 bip39 = { version = "2.1.0", features = ["rand"] }
@@ -30,7 +30,7 @@ chrono = "0.4.40"
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
 
 [patch.crates-io]
-bdk_wallet = { git = "https://github.com/Foundation-Devices/bdk_wallet", rev = "19760ac3cc7fb12b21a9e6143220a870747ffdc0" }
-bdk_chain = { git = "https://github.com/Foundation-Devices/bdk-1", rev = "0a532f6bcb042edb192a2db2673e331e7189e00e" }
-bdk_core = { git = "https://github.com/Foundation-Devices/bdk-1", rev = "0a532f6bcb042edb192a2db2673e331e7189e00e" }
-bdk_electrum = { git = "https://github.com/Foundation-Devices/bdk-1", rev = "0a532f6bcb042edb192a2db2673e331e7189e00e" }
+bdk_wallet = { git = "https://github.com/Foundation-Devices/bdk_wallet", rev = "bb69c11920c762f751f967535228cc75bca58cef" }
+bdk_chain = { git = "https://github.com/Foundation-Devices/bdk-1", rev = "fd5b8152fdb49b3d457ec4c92591bdc45f00f43f" }
+bdk_core = { git = "https://github.com/Foundation-Devices/bdk-1", rev = "fd5b8152fdb49b3d457ec4c92591bdc45f00f43f" }
+bdk_electrum = { git = "https://github.com/Foundation-Devices/bdk-1", rev = "fd5b8152fdb49b3d457ec4c92591bdc45f00f43f" }
