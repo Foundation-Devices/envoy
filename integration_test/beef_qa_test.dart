@@ -752,12 +752,13 @@ Future<void> main() async {
       /// Cancel the transaction and go back to settings, now toggle Sats
       await findAndPressFirstEnvoyIcon(tester, EnvoyIcons.chevron_left);
 
-      await findAndTapPopUpText(tester, 'Cancel Transaction');
-      await tester.pumpAndSettle(); // Ensure the dialog is closed completely
+      await tester.pumpAndSettle();
 
       // go to home
-      await findAndPressTextButton(tester, 'Accounts');
       await pressHamburgerMenu(tester);
+
+      //  await findAndPressTextButton(tester, 'Accounts');
+      //  await pressHamburgerMenu(tester);
       await goToSettings(tester);
 
       // turn SATS view ON
@@ -835,8 +836,9 @@ Future<void> main() async {
 
       /// Cancel the transaction and go back to home
       await findAndPressFirstEnvoyIcon(tester, EnvoyIcons.chevron_left);
-      await findAndTapPopUpText(tester, 'Cancel Transaction');
-      await tester.pumpAndSettle(); // Ensure the dialog is closed completely
+      await tester.pumpAndSettle();
+      await pressHamburgerMenu(tester);
+      await pressHamburgerMenu(tester);
       await findAndPressTextButton(tester, 'Accounts');
     });
     testWidgets('Enable testnet', (tester) async {
