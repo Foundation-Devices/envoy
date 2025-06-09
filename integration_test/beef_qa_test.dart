@@ -610,6 +610,12 @@ Future<void> main() async {
       expect(walletWithBalance, findsAny);
       await tester.tap(walletWithBalance);
       await tester.pump(Durations.long2);
+      await tester.pumpAndSettle();
+
+      final sendButtonFinder = find.text("Send");
+      expect(sendButtonFinder, findsWidgets);
+      await tester.tap(sendButtonFinder.first);
+      await tester.pump(Durations.long2);
 
       String p2pkhAddress = "12rYgz414HBXdhhK72BkR9VHZSU23dqqG7";
       await trySendToAddress(tester, p2pkhAddress);
