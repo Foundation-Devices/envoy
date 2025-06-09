@@ -175,6 +175,9 @@ class SyncManager {
                 "✨Finished Syncing account ${account.name} | ${account.network} | $server  |Tor : $port");
           } catch (e) {
             kPrint("Error syncing account ${account.name}: $e");
+            EnvoyReport().log(
+                "Error syncing account ${account.name} | ${account.network} | $server  |Tor : $port",
+                e.toString());
           } finally {
             _synRequests.remove(accountWithType);
           }
