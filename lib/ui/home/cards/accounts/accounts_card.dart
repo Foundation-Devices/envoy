@@ -171,13 +171,21 @@ class _AccountsListState extends ConsumerState<AccountsList> {
 
     ref.listen(accountsProvider,
         (List<EnvoyAccount>? previous, List<EnvoyAccount> next) {
-      //update order if and only if new accounts are added
-      for (var account in accounts) {
-        if (!_accountsOrder.contains(account.id)) {
-          _accountsOrder.add(account.id);
-          NgAccountManager().updateAccountOrder(List.from(_accountsOrder));
+      final nextIds = next.map((e) => e.id).toSet();
+
+      setState(() {
+        _accountsOrder =
+            _accountsOrder.where((id) => nextIds.contains(id)).toList();
+
+        //update order if and only if new accounts are added
+        for (var account in next) {
+          if (!_accountsOrder.contains(account.id)) {
+            _accountsOrder.add(account.id);
+          }
         }
-      }
+      });
+
+      NgAccountManager().updateAccountOrder(_accountsOrder);
 
       if (previous!.length < next.length) {
         if (_scrollController.hasClients) {
@@ -206,7 +214,8 @@ class _AccountsListState extends ConsumerState<AccountsList> {
       bottomGradientValue: 0.845,
       end: 0.89,
       child: ReorderableListView(
-        header: const SizedBox(height: 20), // env-2000-line-through-shade
+        // env-2000-line-through-shade
+        header: const SizedBox(height: 20),
         footer: Opacity(
           opacity: _onReOrderStart ? 0.0 : 1.0,
           child: Column(

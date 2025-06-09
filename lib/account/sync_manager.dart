@@ -61,7 +61,13 @@ class SyncManager {
     });
   }
 
-  //sync a single account,other syncs will be paused
+  // Expose sync for integration tests
+  Future<void> sync() async {
+    kPrint("SyncManager: Manual sync() called");
+    await _syncAll();
+  }
+
+  //sync a single account, other syncs will be paused
   void syncAccount(EnvoyAccount account) async {
     final server = SyncManager.getElectrumServer(account.network);
     int? port = Settings().getPort(account.network);
@@ -84,7 +90,7 @@ class SyncManager {
     _onUpdateFinished = onUpdateFinished;
   }
 
-  void _syncAll() async {
+  Future<void> _syncAll() async {
     bool synTestnet = Settings().showTestnetAccounts();
     bool syncSignet = Settings().showSignetAccounts();
     final accounts = NgAccountManager().accounts;
@@ -107,7 +113,7 @@ class SyncManager {
           //only sync accounts that are passed full scans
           if (!isScanned) {
             kPrint(
-                "Account ${account.name} | ${account.network} is not scanned");
+                "SyncManager: Account ${account.name} | ${account.network} is not scanned");
           }
           if (isScanned == true) {
             final request = await account.handler!
@@ -121,7 +127,7 @@ class SyncManager {
         }
       }
     }
-    _startSync();
+    await _startSync();
   }
 
   //initiate full scan for all non scanned accounts
@@ -144,7 +150,7 @@ class SyncManager {
     await _startFullScan();
   }
 
-  void _startSync() async {
+  Future<void> _startSync() async {
     final iterator = _synRequests.keys.iterator;
     while (iterator.moveNext()) {
       final accountWithType = iterator.current;
@@ -302,14 +308,17 @@ class SyncManager {
   }
 
   dispose() {
+    kPrint("SyncManager: Disposing and cancelling timer");
     _syncTimer.cancel();
   }
 
   void pauseSync() {
+    kPrint("SyncManager: Pausing sync");
     _pauseSync = true;
   }
 
   void resumeSync() {
+    kPrint("SyncManager: Resuming sync");
     _pauseSync = false;
   }
 }

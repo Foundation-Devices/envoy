@@ -3,10 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:io';
+import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/main.dart';
+import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/big_tab.dart';
 import 'package:envoy/ui/components/select_dropdown.dart';
@@ -20,6 +22,7 @@ import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
@@ -93,7 +96,7 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
 
   await disableTorOnboarding(tester);
 
-  final setUpButtonFinder = find.text('Create a\nMobile Wallet');
+  final setUpButtonFinder = find.text('Create a \nMobile Wallet');
   expect(setUpButtonFinder, findsOneWidget);
   await tester.tap(setUpButtonFinder);
   await tester.pump(const Duration(milliseconds: 500));
@@ -403,7 +406,7 @@ Future<void> goToEmail(WidgetTester tester) async {
 
 Future<void> fromHomeToHotWallet(WidgetTester tester) async {
   await tester.pump();
-  final hotWalletButton = find.text('Envoy');
+  final hotWalletButton = find.text('Envoy').first;
   expect(hotWalletButton, findsOneWidget);
 
   await tester.tap(hotWalletButton);
@@ -494,6 +497,19 @@ Future<void> setUpWalletFromSeedViaMagicRecover(
   await tester.tap(continueButtonFinder);
   await tester.pump(const Duration(milliseconds: 500));
 
+  // testnet4, signet, unified address - modals
+  if (find.text('Introducing testnet4').evaluate().isNotEmpty) {
+    await findAndTapPopUpText(tester, 'Confirm');
+  }
+
+  if (find.text('Global Signet').evaluate().isNotEmpty) {
+    await findAndTapPopUpText(tester, 'Confirm');
+  }
+
+  if (find.text('Unified Address Types').evaluate().isNotEmpty) {
+    await findAndTapPopUpText(tester, 'Confirm');
+  }
+
   // Scroll down by 600 pixels
   await scrollHome(tester, -600);
 
@@ -534,6 +550,19 @@ Future<void> setUpWalletFromSeedViaBackupFile(
   await tester.tap(continueButtonFinder);
   await tester.pump(Durations.long2);
   await tester.pump(Durations.long2);
+
+  // testnet4, signet, unified address - modals
+  if (find.text('Introducing testnet4').evaluate().isNotEmpty) {
+    await findAndTapPopUpText(tester, 'Confirm');
+  }
+
+  if (find.text('Global Signet').evaluate().isNotEmpty) {
+    await findAndTapPopUpText(tester, 'Confirm');
+  }
+
+  if (find.text('Unified Address Types').evaluate().isNotEmpty) {
+    await findAndTapPopUpText(tester, 'Confirm');
+  }
 
   // Scroll down by 600 pixels
   await scrollHome(tester, -600);
@@ -616,7 +645,7 @@ Future<void> onboardingAndEnterSeed(
 
   await disableTorOnboarding(tester);
 
-  final setUpButtonFinder = find.text('Create a\nMobile Wallet');
+  final setUpButtonFinder = find.text('Create a \nMobile Wallet');
   expect(setUpButtonFinder, findsOneWidget);
   await tester.tap(setUpButtonFinder);
   await tester.pump(const Duration(milliseconds: 500));
@@ -708,7 +737,7 @@ Future<void> setUpFromStartNoAccounts(WidgetTester tester) async {
   final setUpButtonFinder = find.byWidgetPredicate((widget) =>
       widget is Text &&
       widget.data != null &&
-      widget.data!.contains('Create a\nMobile Wallet'));
+      widget.data!.contains('Create a \nMobile Wallet'));
 
   expect(setUpButtonFinder, findsOneWidget);
   await tester.tap(setUpButtonFinder);
@@ -885,11 +914,18 @@ Future<bool> findTextOnScreen(WidgetTester tester, String text) async {
 }
 
 Future<void> findAndPressEnvoyIcon(
-    WidgetTester tester, EnvoyIcons expectedIcon) async {
-  // Use the existing function to find the EnvoyIcon
+  WidgetTester tester,
+  EnvoyIcons expectedIcon, {
+  bool onLongPress = false,
+}) async {
   final iconFinder = await checkForEnvoyIcon(tester, expectedIcon);
 
-  await tester.tap(iconFinder.first);
+  if (onLongPress) {
+    await tester.longPress(iconFinder.first);
+  } else {
+    await tester.tap(iconFinder.first);
+  }
+
   await tester.pump(Durations.long2);
 }
 
@@ -937,15 +973,76 @@ Future<void> findFirstTextButtonAndPress(
   await tester.pump(Durations.long2);
 }
 
-Future<void> findAndPressWidget<T extends Widget>(WidgetTester tester) async {
+Future<void> findAndPressWidget<T extends Widget>(
+  WidgetTester tester, {
+  bool findFirst = false,
+}) async {
   await tester.pump(Durations.long2);
 
-  // Find the widget of type T
-  final widgetFinder = find.byType(T);
-  expect(widgetFinder, findsOneWidget);
-  await tester.tap(widgetFinder);
+  final finder = find.byType(T);
+
+  if (findFirst) {
+    expect(finder, findsWidgets); // allows multiple widgets
+    await tester.tap(finder.first);
+  } else {
+    expect(finder, findsOneWidget); // only one widget expected
+    await tester.tap(finder);
+  }
 
   await tester.pump(Durations.long2);
+}
+
+Future<String> getAddressFromReceiveScreen(WidgetTester tester) async {
+  final addressFinder = find.byType(AddressWidget);
+
+  await tester.pumpUntilFound(addressFinder,
+      tries: 50, duration: Duration(milliseconds: 100));
+
+  // Find the RichText inside the AddressWidget
+  final richTextWidget = find
+      .descendant(
+        of: addressFinder,
+        matching: find.byType(RichText),
+      )
+      .evaluate()
+      .first
+      .widget as RichText;
+
+  final textSpan = richTextWidget.text as TextSpan;
+  final address = extractTextFromTextSpan(textSpan);
+
+  return address.trim();
+}
+
+Future<void> checkSync(WidgetTester tester) async {
+  await goBackHome(tester);
+  SyncManager().sync();
+
+  await tester.pumpUntilCondition(
+    tries: 30,
+    duration: Duration(seconds: 2),
+    condition: () {
+      final accountTile = find.ancestor(
+        of: find.text('GH TEST ACC (#1)').first,
+        matching: find.byType(AccountListTile),
+      );
+
+      if (accountTile.evaluate().isEmpty) return false;
+
+      final envoyAmountFinder = find.descendant(
+        of: accountTile,
+        matching: find.byType(EnvoyAmount),
+      );
+
+      if (envoyAmountFinder.evaluate().isEmpty) return false;
+
+      final envoyWidget = tester.widget<EnvoyAmount>(envoyAmountFinder);
+      return envoyWidget.amountSats != 0;
+    },
+  );
+
+  // If we get here, condition was met.
+  expect(true, isTrue);
 }
 
 Future<void> findLastTextButtonAndPress(
@@ -1338,6 +1435,26 @@ extension PumpUntilFound on WidgetTester {
   }
 }
 
+extension PumpUntilCondition on WidgetTester {
+  /// Pumps the widget tree until [condition] returns true,
+  /// or until [tries] are exhausted.
+  ///
+  /// Pumps the widget tree with [duration] delay per try.
+  Future<void> pumpUntilCondition({
+    required bool Function() condition,
+    Duration duration = const Duration(milliseconds: 100),
+    int tries = 10,
+  }) async {
+    for (var i = 0; i < tries; i++) {
+      await pump(duration);
+
+      if (condition()) {
+        break;
+      }
+    }
+  }
+}
+
 Future<bool> searchTaprootAccType(WidgetTester tester) async {
 // Find all AccountListTile widgets
   var accountListTileFinder = find.byType(AccountListTile);
@@ -1415,10 +1532,11 @@ Future<void> disableAllNetworks(WidgetTester tester) async {
   }
 
   // Check if "Taproot" is already enabled
-  bool taprootAlreadyEnabled = await isSlideSwitchOn(tester, "Taproot");
+  bool taprootAlreadyEnabled =
+      await isSlideSwitchOn(tester, "Receive to Taproot");
   if (taprootAlreadyEnabled) {
     // Disable "Taproot"
-    await findAndToggleSettingsSwitch(tester, "Taproot");
+    await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
   }
 
   // Check if "Signet" is already enabled
@@ -1465,11 +1583,6 @@ Future<void> findAndPressIcon(WidgetTester tester, IconData iconData) async {
 }
 
 Future<void> trySendToAddress(WidgetTester tester, String address) async {
-  final sendButtonFinder = find.text("Send");
-  expect(sendButtonFinder, findsWidgets);
-  await tester.tap(sendButtonFinder.first);
-  await tester.pump(Durations.long2);
-
   await enterTextInField(tester, find.byType(TextFormField), address);
 
   // enter amount
@@ -1485,11 +1598,13 @@ Future<void> trySendToAddress(WidgetTester tester, String address) async {
   final textFeeFinder = find.text("Fee");
   await tester.pumpUntilFound(textFeeFinder,
       tries: 100, duration: Durations.long2);
-  await findAndPressEnvoyIcon(tester, EnvoyIcons.chevron_left);
-  final cancelTransactionFinder = find.text("Cancel Transaction");
-  await tester.pumpUntilFound(cancelTransactionFinder,
-      tries: 100, duration: Durations.long2);
-  await tester.tap(cancelTransactionFinder);
+  await findAndPressEnvoyIcon(
+      tester, EnvoyIcons.chevron_left); // go back to Send
   await tester.pump(Durations.long2);
+  await enterTextInField(
+      tester, find.byType(TextFormField), ""); // delete address
+  await tester.pump(Durations.long2);
+  await findAndPressEnvoyIcon(tester, EnvoyIcons.delete,
+      onLongPress: true); // reset amount
   await tester.pump(Durations.long2);
 }

@@ -36,7 +36,17 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
   @override
   void initState() {
     super.initState();
-    _selectedIndex = widget.initialIndex;
+
+    final routeList = ref.read(routeMatchListProvider);
+    final currentRoute = routeList.lastOrNull;
+
+    final index = homeTabRoutes.indexWhere((route) => route == currentRoute);
+
+    if (index != -1) {
+      _selectedIndex = index;
+    } else {
+      _selectedIndex = widget.initialIndex;
+    }
   }
 
   List<PersistentBottomNavBarItem> _navBarItems() {
@@ -144,50 +154,48 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
     final double additionalBottomPadding =
         MediaQuery.viewPaddingOf(context).bottom;
 
-    // listen to route changes and update selected index
-    ref.listen<List<String>>(routeMatchListProvider, (previous, next) {
-      // Iterate through the next routes. If it contains homeTabRoutes,
-      // update the selected bottom navigation index.
-      // homeTabRoutes are defined in the same order as the bottom navigation bar.
-      for (var nextRoute in next) {
-        for (var homeRoute in homeTabRoutes) {
-          if (nextRoute.startsWith(homeRoute) && homeRoute != "/") {
-            if (homeTabRoutes.indexOf(homeRoute) != _selectedIndex) {
-              setState(() {
-                _selectedIndex = homeTabRoutes.indexOf(homeRoute);
-              });
-            }
-          }
+// homeTabRoutes are defined in the same order as the bottom navigation bar.
+    // Get only the FIRST route in the list (e.g. "/devices")
+    final routeList = ref.watch(routeMatchListProvider);
+    final rootRoute = routeList.firstOrNull ?? '';
+
+    final index =
+        homeTabRoutes.indexWhere((route) => rootRoute.startsWith(route));
+    if (index != -1 && index != _selectedIndex) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          setState(() {
+            _selectedIndex = index;
+          });
         }
-      }
-    });
+      });
+    }
 
     return Padding(
-        padding: EdgeInsets.only(
-            bottom:
-                (Platform.isAndroid ? EnvoySpacing.xs : EnvoySpacing.small) +
-                    additionalBottomPadding),
-        child: EnvoyBottomNavBar(
-          _navBarItems(),
-          selectedIndex: _selectedIndex,
-          labelStyle: labelStyle,
-          onItemSelected: (int index) {
-            setState(() {
-              if (index == _selectedIndex) {
-                // if selected index is "Accounts"
-                if (index == 1 && GoRouter.of(context).canPop()) {
-                  GoRouter.of(context).pop();
-                } else {
-                  return;
-                }
+      padding: EdgeInsets.only(
+        bottom: (Platform.isAndroid ? EnvoySpacing.xs : EnvoySpacing.small) +
+            additionalBottomPadding,
+      ),
+      child: EnvoyBottomNavBar(
+        _navBarItems(),
+        selectedIndex: _selectedIndex,
+        labelStyle: labelStyle,
+        onItemSelected: (int index) {
+          setState(() {
+            if (index == _selectedIndex) {
+              // if selected index is "Accounts"
+              if (index == 2) {
+                context.go("/");
+              } else {
+                return;
               }
-              _selectedIndex = index;
-              if (widget.onIndexChanged != null) {
-                widget.onIndexChanged!(_selectedIndex);
-              }
-            });
-          },
-        ));
+            }
+            _selectedIndex = index;
+            widget.onIndexChanged?.call(_selectedIndex);
+          });
+        },
+      ),
+    );
   }
 }
 
