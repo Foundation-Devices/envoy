@@ -12,10 +12,12 @@ import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/ntp.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
+import 'package:ngwallet/ngwallet.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/uuid_value.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/account/accounts_manager.dart';
 
 class BluetoothManager {
   StreamSubscription? _subscription;
@@ -42,8 +44,11 @@ class BluetoothManager {
     return _instance;
   }
 
-  Stream<api.PassportMessage> get passportMessageStream =>
+  late final Stream<api.PassportMessage> _broadcastPassportStream =
       _passportMessageStream.stream.asBroadcastStream();
+
+  Stream<api.PassportMessage> get passportMessageStream =>
+      _broadcastPassportStream;
 
   Stream<api.PassportMessage> get transactionStream =>
       _transactionStream.stream.asBroadcastStream();
@@ -107,6 +112,34 @@ class BluetoothManager {
     }
 
     await scan();
+    _listenForAccountUpdate();
+  }
+
+  void _listenForAccountUpdate() {
+    passportMessageStream.listen((api.PassportMessage message) async {
+      if (message.message is api.QuantumLinkMessage_AccountUpdate) {
+        kPrint("Got account update!");
+        final accountUpdate =
+            message.message as api.QuantumLinkMessage_AccountUpdate;
+        final payload = accountUpdate.field0.update;
+        kPrint("Got payload! ${payload.length}");
+        final config = await EnvoyAccountHandler.getConfigFromRemote(
+            remoteUpdate: payload);
+        kPrint(
+            "Got config ${config.id} ${config.descriptors.map((e) => e.external_)}");
+        final dir = NgAccountManager.getAccountDirectory(
+            deviceSerial: config.deviceSerial ?? "prime",
+            network: config.network.toString(),
+            number: config.index);
+        kPrint("Account path! ${dir.path}");
+        await dir.create();
+        final accountHandler = await EnvoyAccountHandler.addAccountFromConfig(
+            dbPath: dir.path, config: config);
+        await NgAccountManager()
+            .addAccount(await accountHandler.state(), accountHandler);
+        kPrint("Account added!");
+      }
+    });
   }
 
   getPermissions() async {
