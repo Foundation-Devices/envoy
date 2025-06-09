@@ -6,7 +6,6 @@ import 'dart:async';
 
 import 'package:animations/animations.dart';
 import 'package:bluart/bluart.dart';
-import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/business/settings.dart';
@@ -35,7 +34,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ngwallet/ngwallet.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'firmware_update/prime_fw_update_state.dart';
@@ -84,26 +82,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
       }
 
       if (message.message is QuantumLinkMessage_AccountUpdate) {
-        kPrint("Got account update!");
-        final accountUpdate =
-            message.message as QuantumLinkMessage_AccountUpdate;
-        final payload = accountUpdate.field0.update;
-        kPrint("Got payload! ${payload.length}");
-        final config = await EnvoyAccountHandler.getConfigFromRemote(
-            remoteUpdate: payload);
-        kPrint(
-            "Got config ${config.id} ${config.descriptors.map((e) => e.external_)}");
-        final dir = NgAccountManager.getAccountDirectory(
-            deviceSerial: config.deviceSerial ?? "prime",
-            network: config.network.toString(),
-            number: config.index);
-        kPrint("Account path! ${dir.path}");
-        await dir.create();
-        final accountHandler = await EnvoyAccountHandler.addAccountFromConfig(
-            dbPath: dir.path, config: config);
-        await NgAccountManager()
-            .addAccount(await accountHandler.state(), accountHandler);
-        kPrint("Account added!");
+        // AccountUpdate is handled in BluetoothManager; no action needed here
       }
 
       if (message.message is QuantumLinkMessage_OnboardingState) {
