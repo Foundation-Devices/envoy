@@ -1082,7 +1082,7 @@ Future<void> main() async {
       /// Should wait a few minutes for another test
 
       // pull some money for the next test
-      // await getSatsFromSignetFaucet(5000, hotSignetAddress); //TODO: not used because of page limits
+      // await getSatsFromSignetFaucet(5000, hotSignetAddress); //TODO: not used because page limits
       // await tester.pump(Durations.long2);
 
       await tester.pump(Durations.long2);
