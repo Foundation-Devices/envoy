@@ -428,7 +428,8 @@ impl EnvoyAccountHandler {
         return if let Some(sync_request) = scan_request_guard.take() {
             // Use take() to move
             let update =
-                NgWallet::<Connection>::sync(sync_request, electrum_server, socks_proxy).unwrap();
+                NgWallet::<Connection>::sync(sync_request, electrum_server, socks_proxy).
+                    expect("Electrum sync failed");
             Ok(Arc::new(Mutex::new(Update::from(update))))
         } else {
             Err(anyhow!("No sync request found"))
