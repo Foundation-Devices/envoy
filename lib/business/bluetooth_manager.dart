@@ -92,7 +92,7 @@ class BluetoothManager {
       }
 
       if (event is bluart.Event_ScanResult) {
-        kPrint("Scan result received, bleId = $bleId");
+        //kPrint("Scan result received, bleId = $bleId");
         if (bleId == "") {
           return;
         }

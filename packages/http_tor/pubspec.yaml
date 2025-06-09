@@ -23,7 +23,7 @@ dependencies:
   tor:
     git:
       url: https://github.com/Foundation-Devices/tor.git
-      ref: 66c62b1f3b332b2e2fd506e07786a70fc53ab7f4
+      ref: ad792276a963ff0aacdb50037465729054131def
 dev_dependencies:
   ffigen: ^6.0.0
   flutter_test:
