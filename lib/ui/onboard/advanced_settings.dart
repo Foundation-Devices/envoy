@@ -38,7 +38,6 @@ class _AdvancedSettingsOptionsState
   final ScrollController _scrollController = ScrollController();
   bool _betterPerformance = !Settings().torEnabled();
   bool _showPersonalNodeTextField = false;
-  bool enableMagicBackup = false;
 
   @override
   Widget build(BuildContext context) {
@@ -135,12 +134,12 @@ class _AdvancedSettingsOptionsState
                                                 padding: const EdgeInsets.only(
                                                     bottom: 2),
                                                 child: EnvoyToggle(
-                                                  value: enableMagicBackup,
+                                                  value: Settings().syncToCloud,
                                                   onChanged:
                                                       (bool value) async {
                                                     setState(() {
-                                                      enableMagicBackup =
-                                                          !enableMagicBackup;
+                                                      Settings().setSyncToCloud(
+                                                          value);
                                                     });
                                                   },
                                                 ),
