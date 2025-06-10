@@ -168,8 +168,8 @@ checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
 
 [[package]]
 name = "bdk_chain"
-version = "0.22.0"
-source = "git+https://github.com/Foundation-Devices/bdk-1?rev=0a532f6bcb042edb192a2db2673e331e7189e00e#0a532f6bcb042edb192a2db2673e331e7189e00e"
+version = "0.23.0"
+source = "git+https://github.com/Foundation-Devices/bdk-1?rev=fd5b8152fdb49b3d457ec4c92591bdc45f00f43f#fd5b8152fdb49b3d457ec4c92591bdc45f00f43f"
 dependencies = [
  "bdk_core",
  "bitcoin",
@@ -180,8 +180,8 @@ dependencies = [
 
 [[package]]
 name = "bdk_core"
-version = "0.5.0"
-source = "git+https://github.com/Foundation-Devices/bdk-1?rev=0a532f6bcb042edb192a2db2673e331e7189e00e#0a532f6bcb042edb192a2db2673e331e7189e00e"
+version = "0.6.0"
+source = "git+https://github.com/Foundation-Devices/bdk-1?rev=fd5b8152fdb49b3d457ec4c92591bdc45f00f43f#fd5b8152fdb49b3d457ec4c92591bdc45f00f43f"
 dependencies = [
  "bitcoin",
  "hashbrown",
@@ -190,8 +190,8 @@ dependencies = [
 
 [[package]]
 name = "bdk_electrum"
-version = "0.22.0"
-source = "git+https://github.com/Foundation-Devices/bdk-1?rev=0a532f6bcb042edb192a2db2673e331e7189e00e#0a532f6bcb042edb192a2db2673e331e7189e00e"
+version = "0.23.0"
+source = "git+https://github.com/Foundation-Devices/bdk-1?rev=fd5b8152fdb49b3d457ec4c92591bdc45f00f43f#fd5b8152fdb49b3d457ec4c92591bdc45f00f43f"
 dependencies = [
  "bdk_core",
  "electrum-client",
@@ -199,8 +199,8 @@ dependencies = [
 
 [[package]]
 name = "bdk_wallet"
-version = "2.0.0-alpha.0"
-source = "git+https://github.com/Foundation-Devices/bdk_wallet?rev=19760ac3cc7fb12b21a9e6143220a870747ffdc0#19760ac3cc7fb12b21a9e6143220a870747ffdc0"
+version = "2.0.0"
+source = "git+https://github.com/Foundation-Devices/bdk_wallet?rev=bb69c11920c762f751f967535228cc75bca58cef#bb69c11920c762f751f967535228cc75bca58cef"
 dependencies = [
  "bdk_chain",
  "bip39",
@@ -1045,8 +1045,8 @@ dependencies = [
 
 [[package]]
 name = "ngwallet"
-version = "0.7.0"
-source = "git+https://github.com/Foundation-Devices/ngwallet?rev=b80360a3b51170d7876a862fec8adb5864df1a54#b80360a3b51170d7876a862fec8adb5864df1a54"
+version = "0.9.0"
+source = "git+https://github.com/Foundation-Devices/ngwallet?tag=0.9.0#ea4e6d0d31690a0e9203e428d61e6caf9084884b"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
