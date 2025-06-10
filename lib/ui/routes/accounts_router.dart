@@ -22,6 +22,7 @@ import 'package:envoy/ui/home/cards/peer_to_peer_options.dart';
 import 'package:envoy/ui/home/cards/select_region.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -161,6 +162,9 @@ final accountsRouter = StatefulShellBranch(
                       scope.read(accountToggleStateProvider.notifier).state =
                           AccountToggleState.tx;
                       clearSpendState(ProviderScope.containerOf(context));
+                      scope.read(spendEditModeProvider.notifier).state =
+                          SpendOverlayContext.hidden;
+                      scope.read(hideBottomNavProvider.notifier).state = false;
                       return true;
                     },
                     pageBuilder: (context, state) {
@@ -172,6 +176,8 @@ final accountsRouter = StatefulShellBranch(
                         onExit: (context, GoRouterState state) async {
                           ProviderContainer providerContainer =
                               ProviderScope.containerOf(context);
+                          final isCancellable = providerContainer
+                              .read(isTransactionCancellableProvider);
 
                           /// show a dialog to confirm the user wants to discard the transaction
                           if (providerContainer
@@ -186,21 +192,14 @@ final accountsRouter = StatefulShellBranch(
                             /// if the broadcast is in progress, do not allow the user to go back
                             return false;
                           } else {
-                            // final exit = await showEnvoyDialog(
-                            //     context: context,
-                            //     dialog: const DiscardTransactionDialog());
-                            // if (exit) {
-                            //   providerContainer
-                            //       .read(coinSelectionStateProvider.notifier)
-                            //       .reset();
-                            //   providerContainer
-                            //       .read(spendEditModeProvider.notifier)
-                            //       .state = SpendOverlayContext.hidden;
-                            //   providerContainer
-                            //       .read(hideBottomNavProvider.notifier)
-                            //       .state = false;
-                            //   clearSpendState(providerContainer);
-                            // }
+                            if (!isCancellable) {
+                              final exit = await showEnvoyDialog(
+                                  context: context,
+                                  dialog: const DiscardTransactionDialog());
+                              if (!exit) {
+                                return false;
+                              }
+                            }
                             return true;
                           }
                         },
