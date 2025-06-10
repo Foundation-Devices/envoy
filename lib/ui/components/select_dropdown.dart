@@ -9,8 +9,6 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/business/connectivity_manager.dart';
-import 'package:envoy/business/settings.dart';
 
 enum EnvoyDropdownOptionType { normal, sectionBreak }
 
