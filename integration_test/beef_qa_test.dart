@@ -612,11 +612,6 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
       await tester.pumpAndSettle();
 
-      final sendButtonFinder = find.text("Send");
-      expect(sendButtonFinder, findsWidgets);
-      await tester.tap(sendButtonFinder.first);
-      await tester.pump(Durations.long2);
-
       String p2pkhAddress = "12rYgz414HBXdhhK72BkR9VHZSU23dqqG7";
       await trySendToAddress(tester, p2pkhAddress);
 
@@ -758,13 +753,12 @@ Future<void> main() async {
       /// Cancel the transaction and go back to settings, now toggle Sats
       await findAndPressFirstEnvoyIcon(tester, EnvoyIcons.chevron_left);
 
-      await tester.pumpAndSettle();
+      await findAndTapPopUpText(tester, 'Cancel Transaction');
+      await tester.pumpAndSettle(); // Ensure the dialog is closed completely
 
       // go to home
+      await findAndPressTextButton(tester, 'Accounts');
       await pressHamburgerMenu(tester);
-
-      //  await findAndPressTextButton(tester, 'Accounts');
-      //  await pressHamburgerMenu(tester);
       await goToSettings(tester);
 
       // turn SATS view ON
@@ -787,11 +781,7 @@ Future<void> main() async {
       // Go to Activity and check for sats
       await findLastTextButtonAndPress(tester, 'Activity');
       await checkForEnvoyIcon(tester, EnvoyIcons.sats);
-      //back to accounts
-      await findAndPressTextButton(tester, 'Privacy');
-      await findAndPressTextButton(tester,
-          'Accounts'); // for some reason on iPhone app goes to account instead of home??
-      //await findAndPressTextButton(tester, 'Accounts');
+      await findAndPressTextButton(tester, 'Accounts');
 
       /// Get into an account, tap Send
       await findFirstTextButtonAndPress(tester, 'Signet');
@@ -842,9 +832,8 @@ Future<void> main() async {
 
       /// Cancel the transaction and go back to home
       await findAndPressFirstEnvoyIcon(tester, EnvoyIcons.chevron_left);
-      await tester.pumpAndSettle();
-      await pressHamburgerMenu(tester);
-      await pressHamburgerMenu(tester);
+      await findAndTapPopUpText(tester, 'Cancel Transaction');
+      await tester.pumpAndSettle(); // Ensure the dialog is closed completely
       await findAndPressTextButton(tester, 'Accounts');
     });
     testWidgets('Enable testnet', (tester) async {
@@ -960,7 +949,7 @@ Future<void> main() async {
 
       await pressHamburgerMenu(tester); // back to settings menu
       await pressHamburgerMenu(tester); // back to home
-      // await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)"); /// for some reason on iphone goes straight to receive screen
+      // await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)"); /// for some reason on iphone goes straight to receive screen (only in tests)
       // await findAndPressTextButton(tester, "Receive");
 
       // Grab the second address
