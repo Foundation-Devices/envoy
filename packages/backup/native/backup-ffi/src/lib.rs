@@ -330,10 +330,7 @@ pub unsafe extern "C" fn backup_delete(
             async move { delete_backup_async(server_url, proxy_port, hash.to_hex()).await }
         ),
         {
-            error::update_last_error(std::io::Error::new(
-                std::io::ErrorKind::Other,
-                "Async delete backup failed",
-            ));
+            error::update_last_error(std::io::Error::other("Async delete backup failed"));
             0
         }
     );
