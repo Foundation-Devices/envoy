@@ -80,10 +80,14 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
     // send amount is passed as a prop to the widget, use that if available
 
     BitcoinTransaction transaction = widget.transaction;
-    int amount = transaction.amount;
+    //transaction amount will be negative since it is a spend transaction,
+    //but for display purposes we want to show the absolute value
+    int amount = transaction.amount.abs();
+    if (widget.amountToSend != null) {
+      amount = widget.amountToSend!;
+    }
     // total amount to spend including fee
-    int totalSpendAmount =
-        transaction.amount.toInt() + transaction.feeRate.toInt();
+    int totalSpendAmount = amount + transaction.fee.toInt();
 
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
 
@@ -102,8 +106,8 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
             ExchangeRate().convertSatsToFiat(transaction.fee.toInt());
         displayFiatSendAmount = displayFiatTotalAmount - displayFiatFeeAmount;
       } else {
-        displayFiatSendAmount = ref.watch(displayFiatSendAmountProvider)!;
-        displayFiatFeeAmount = displayFiatTotalAmount - displayFiatSendAmount;
+        displayFiatFeeAmount =
+            displayFiatTotalAmount - ExchangeRate().convertSatsToFiat(amount);
       }
     }
 
