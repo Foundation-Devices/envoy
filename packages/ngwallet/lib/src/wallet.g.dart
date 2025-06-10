@@ -66,16 +66,14 @@ const _$TransactionTypeEnumMap = {
 
 Wallet _$WalletFromJson(Map<String, dynamic> json) => Wallet(
       json['name'] as String,
-      $enumDecodeNullable(_$NetworkEnumMap, json['network']) ??
+      $enumDecodeNullable(_$WalletNetworkEnumMap, json['network']) ??
           WalletNetwork.Mainnet,
       json['externalDescriptor'] as String?,
       json['internalDescriptor'] as String?,
       hot: json['hot'] as bool? ?? false,
       hasPassphrase: json['hasPassphrase'] as bool? ?? false,
-      publicExternalDescriptor:
-          json['publicExternalDescriptor'] as String? ?? null,
-      publicInternalDescriptor:
-          json['publicInternalDescriptor'] as String? ?? null,
+      publicExternalDescriptor: json['publicExternalDescriptor'] as String?,
+      publicInternalDescriptor: json['publicInternalDescriptor'] as String?,
       type: $enumDecodeNullable(_$WalletTypeEnumMap, json['type']) ??
           WalletType.witnessPublicKeyHash,
     )
@@ -97,7 +95,7 @@ Map<String, dynamic> _$WalletToJson(Wallet instance) => <String, dynamic>{
       'publicExternalDescriptor': instance.publicExternalDescriptor,
       'publicInternalDescriptor': instance.publicInternalDescriptor,
       'type': _$WalletTypeEnumMap[instance.type]!,
-      'network': _$NetworkEnumMap[instance.network]!,
+      'network': _$WalletNetworkEnumMap[instance.network]!,
       'hot': instance.hot,
       'hasPassphrase': instance.hasPassphrase,
       'transactions': instance.transactions,
@@ -107,7 +105,7 @@ Map<String, dynamic> _$WalletToJson(Wallet instance) => <String, dynamic>{
       'feeRateSlow': instance.feeRateSlow,
     };
 
-const _$NetworkEnumMap = {
+const _$WalletNetworkEnumMap = {
   WalletNetwork.Mainnet: 'Mainnet',
   WalletNetwork.Testnet: 'Testnet',
   WalletNetwork.Signet: 'Signet',

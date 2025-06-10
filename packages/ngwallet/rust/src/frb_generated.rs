@@ -48,7 +48,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.9.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1942140762;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1913559774;
 
 // Section: executor
 
@@ -2595,6 +2595,42 @@ fn wire__crate__api__bip39__envoy_bip_39_validate_seed_impl(
         },
     )
 }
+fn wire__crate__api__envoy_wallet__get_server_features_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "get_server_features",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_server = <String>::sse_decode(&mut deserializer);
+            let api_proxy = <Option<String>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok = Result::<_, ()>::Ok(
+                        crate::api::envoy_wallet::get_server_features(api_server, api_proxy),
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
 fn wire__crate__api__envoy_wallet__init_app_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -3688,6 +3724,17 @@ impl SseDecode for Option<String> {
     }
 }
 
+impl SseDecode for Option<i64> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<i64>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for Option<ngwallet::transaction::KeyChain> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -3728,6 +3775,17 @@ impl SseDecode for Option<u64> {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
             return Some(<u64>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<Vec<u8>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<Vec<u8>>::sse_decode(deserializer));
         } else {
             return None;
         }
@@ -3794,6 +3852,26 @@ impl SseDecode for (String, String) {
         let mut var_field0 = <String>::sse_decode(deserializer);
         let mut var_field1 = <String>::sse_decode(deserializer);
         return (var_field0, var_field1);
+    }
+}
+
+impl SseDecode for crate::api::envoy_wallet::ServerFeatures {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_serverVersion = <Option<String>>::sse_decode(deserializer);
+        let mut var_genesisHash = <Option<Vec<u8>>>::sse_decode(deserializer);
+        let mut var_protocolMin = <Option<String>>::sse_decode(deserializer);
+        let mut var_protocolMax = <Option<String>>::sse_decode(deserializer);
+        let mut var_hashFunction = <Option<String>>::sse_decode(deserializer);
+        let mut var_pruning = <Option<i64>>::sse_decode(deserializer);
+        return crate::api::envoy_wallet::ServerFeatures {
+            server_version: var_serverVersion,
+            genesis_hash: var_genesisHash,
+            protocol_min: var_protocolMin,
+            protocol_max: var_protocolMax,
+            hash_function: var_hashFunction,
+            pruning: var_pruning,
+        };
     }
 }
 
@@ -4141,32 +4219,38 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        53 => wire__crate__api__envoy_wallet__init_app_impl(port, ptr, rust_vec_len, data_len),
-        54 => wire__ngwallet__config__ng_account_backup_deserialize_impl(
+        53 => wire__crate__api__envoy_wallet__get_server_features_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        55 => wire__ngwallet__config__ng_account_backup_serialize_impl(
+        54 => wire__crate__api__envoy_wallet__init_app_impl(port, ptr, rust_vec_len, data_len),
+        55 => wire__ngwallet__config__ng_account_backup_deserialize_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        56 => wire__ngwallet__config__ng_account_config_deserialize_impl(
+        56 => wire__ngwallet__config__ng_account_backup_serialize_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        57 => wire__ngwallet__config__ng_account_config_from_remote_impl(
+        57 => wire__ngwallet__config__ng_account_config_deserialize_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        58 => wire__ngwallet__config__ng_account_config_serialize_impl(
+        58 => wire__ngwallet__config__ng_account_config_from_remote_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        59 => wire__ngwallet__config__ng_account_config_serialize_impl(
             port,
             ptr,
             rust_vec_len,
@@ -4231,7 +4315,7 @@ fn pde_ffi_dispatcher_sync_impl(
             rust_vec_len,
             data_len,
         ),
-        59 => wire__ngwallet__transaction__output_get_id_impl(ptr, rust_vec_len, data_len),
+        60 => wire__ngwallet__transaction__output_get_id_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -4780,6 +4864,31 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<ngwallet::transaction::Output>
 {
     fn into_into_dart(self) -> FrbWrapper<ngwallet::transaction::Output> {
         self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::envoy_wallet::ServerFeatures {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.server_version.into_into_dart().into_dart(),
+            self.genesis_hash.into_into_dart().into_dart(),
+            self.protocol_min.into_into_dart().into_dart(),
+            self.protocol_max.into_into_dart().into_dart(),
+            self.hash_function.into_into_dart().into_dart(),
+            self.pruning.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::envoy_wallet::ServerFeatures
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::envoy_wallet::ServerFeatures>
+    for crate::api::envoy_wallet::ServerFeatures
+{
+    fn into_into_dart(self) -> crate::api::envoy_wallet::ServerFeatures {
+        self
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -5438,6 +5547,16 @@ impl SseEncode for Option<String> {
     }
 }
 
+impl SseEncode for Option<i64> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <i64>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for Option<ngwallet::transaction::KeyChain> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -5474,6 +5593,16 @@ impl SseEncode for Option<u64> {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <u64>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<Vec<u8>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <Vec<u8>>::sse_encode(value, serializer);
         }
     }
 }
@@ -5523,6 +5652,18 @@ impl SseEncode for (String, String) {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.0, serializer);
         <String>::sse_encode(self.1, serializer);
+    }
+}
+
+impl SseEncode for crate::api::envoy_wallet::ServerFeatures {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<String>>::sse_encode(self.server_version, serializer);
+        <Option<Vec<u8>>>::sse_encode(self.genesis_hash, serializer);
+        <Option<String>>::sse_encode(self.protocol_min, serializer);
+        <Option<String>>::sse_encode(self.protocol_max, serializer);
+        <Option<String>>::sse_encode(self.hash_function, serializer);
+        <Option<i64>>::sse_encode(self.pruning, serializer);
     }
 }
 

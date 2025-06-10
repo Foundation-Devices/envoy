@@ -14,7 +14,12 @@ import 'errors.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These functions are ignored because they are not marked as `pub`: `bdk_db_path`, `get_descriptor`, `get_descriptors`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `fmt`
+
+Future<ServerFeatures> getServerFeatures(
+        {required String server, String? proxy}) =>
+    RustLib.instance.api
+        .crateApiEnvoyWalletGetServerFeatures(server: server, proxy: proxy);
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < Option < FullScanRequest < KeychainKind > > > >>>
 abstract class FullScanRequest implements RustOpaqueInterface {}
@@ -257,4 +262,43 @@ enum Network {
   /// Bitcoin's regtest network.
   regtest,
   ;
+}
+
+class ServerFeatures {
+  final String? serverVersion;
+  final Uint8List? genesisHash;
+  final String? protocolMin;
+  final String? protocolMax;
+  final String? hashFunction;
+  final PlatformInt64? pruning;
+
+  const ServerFeatures({
+    this.serverVersion,
+    this.genesisHash,
+    this.protocolMin,
+    this.protocolMax,
+    this.hashFunction,
+    this.pruning,
+  });
+
+  @override
+  int get hashCode =>
+      serverVersion.hashCode ^
+      genesisHash.hashCode ^
+      protocolMin.hashCode ^
+      protocolMax.hashCode ^
+      hashFunction.hashCode ^
+      pruning.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ServerFeatures &&
+          runtimeType == other.runtimeType &&
+          serverVersion == other.serverVersion &&
+          genesisHash == other.genesisHash &&
+          protocolMin == other.protocolMin &&
+          protocolMax == other.protocolMax &&
+          hashFunction == other.hashFunction &&
+          pruning == other.pruning;
 }

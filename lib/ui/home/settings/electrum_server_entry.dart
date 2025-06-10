@@ -192,7 +192,21 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
       return;
     }
 
-    Wallet.getServerFeatures(address, port).then((features) {
+    getServerFeatures(
+            server: address,
+            proxy: useTor ? "127.0.0.1:${Tor.instance.port}" : null)
+        .then((features) {
+      // If required fields are missing, treat it as a failure.
+      if (features.serverVersion == null || features.genesisHash == null) {
+        setState(() {
+          _state = ElectrumServerEntryState.invalid;
+          _isError = true;
+          _textBelow = S().privacy_node_connection_couldNotReach;
+        });
+        ConnectivityManager().electrumFailure();
+        return;
+      }
+
       ConnectivityManager().electrumSuccess();
       if (mounted) {
         setState(() {
