@@ -813,7 +813,6 @@ void editTransaction(BuildContext context, WidgetRef ref) async {
   await ref.read(spendTransactionProvider.notifier).validate(scope);
 }
 
-// ignore: unused_element
 class DiscardTransactionDialog extends ConsumerStatefulWidget {
   const DiscardTransactionDialog({super.key});
 

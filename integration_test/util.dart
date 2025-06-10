@@ -1583,6 +1583,11 @@ Future<void> findAndPressIcon(WidgetTester tester, IconData iconData) async {
 }
 
 Future<void> trySendToAddress(WidgetTester tester, String address) async {
+  final sendButtonFinder = find.text("Send");
+  expect(sendButtonFinder, findsWidgets);
+  await tester.tap(sendButtonFinder.first);
+  await tester.pump(Durations.long2);
+
   await enterTextInField(tester, find.byType(TextFormField), address);
 
   // enter amount
@@ -1598,13 +1603,11 @@ Future<void> trySendToAddress(WidgetTester tester, String address) async {
   final textFeeFinder = find.text("Fee");
   await tester.pumpUntilFound(textFeeFinder,
       tries: 100, duration: Durations.long2);
-  await findAndPressEnvoyIcon(
-      tester, EnvoyIcons.chevron_left); // go back to Send
+  await findAndPressEnvoyIcon(tester, EnvoyIcons.chevron_left);
+  final cancelTransactionFinder = find.text("Cancel Transaction");
+  await tester.pumpUntilFound(cancelTransactionFinder,
+      tries: 100, duration: Durations.long2);
+  await tester.tap(cancelTransactionFinder);
   await tester.pump(Durations.long2);
-  await enterTextInField(
-      tester, find.byType(TextFormField), ""); // delete address
-  await tester.pump(Durations.long2);
-  await findAndPressEnvoyIcon(tester, EnvoyIcons.delete,
-      onLongPress: true); // reset amount
   await tester.pump(Durations.long2);
 }
