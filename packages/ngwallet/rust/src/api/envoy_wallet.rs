@@ -47,6 +47,8 @@ use std::any::Any;
 use std::iter::Map;
 use bdk_wallet::serde_json::json;
 use crate::api::bip39::EnvoyBip39;
+use ngwallet::bdk_electrum::electrum_client::{Client, ConfigBuilder, ElectrumApi, Socks5Config};
+
 
 #[frb(init)]
 pub fn init_app() {
@@ -922,3 +924,99 @@ impl EnvoyAccountHandler {
         NgAccountConfig::from_remote(remote_update)
     }
 }
+
+#[derive(Clone, Debug)]
+#[frb]
+pub struct ServerFeatures {
+    pub server_version: Option<String>,
+    pub genesis_hash: Option<Vec<u8>>,
+    pub protocol_min: Option<String>,
+    pub protocol_max: Option<String>,
+    pub hash_function: Option<String>,
+    pub pruning: Option<i64>,
+}
+#[frb]
+pub fn get_server_features(server: String, proxy: Option<String>) -> ServerFeatures {
+    let config = match proxy {
+        Some(proxy_addr) => {
+            let socks = Socks5Config::new(&proxy_addr);
+            ConfigBuilder::new().socks5(Some(socks)).build()
+        }
+        None => ConfigBuilder::new().build(),
+    };
+
+    let client = match Client::from_config(&server, config) {
+        Ok(c) => c,
+        Err(e) => {
+            eprintln!("Failed to connect: {}", e);
+            return ServerFeatures {
+                server_version: None,
+                genesis_hash: None,
+                protocol_min: None,
+                protocol_max: None,
+                hash_function: None,
+                pruning: None,
+            };
+        }
+    };
+
+    match client.server_features() {
+        Ok(f) => ServerFeatures {
+            server_version: Some(f.server_version),
+            genesis_hash: Some(f.genesis_hash.to_vec()),
+            protocol_min: Some(f.protocol_min),
+            protocol_max: Some(f.protocol_max),
+            hash_function: f.hash_function,
+            pruning: f.pruning,
+        },
+        Err(e) => {
+            eprintln!("Failed to get server features: {}", e);
+            ServerFeatures {
+                server_version: None,
+                genesis_hash: None,
+                protocol_min: None,
+                protocol_max: None,
+                hash_function: None,
+                pruning: None,
+            }
+        }
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn test_get_server_features_without_proxy() {
+        let server = "tcp://electrum.blockstream.info:50001".to_string();
+        let proxy = None;
+
+        let features = get_server_features(server, proxy);
+
+        // Since this is a live server call, we only check for some basic expected structure
+        assert!(features.server_version.is_some());
+        assert!(features.genesis_hash.is_some());
+        assert!(features.protocol_min.is_some());
+        assert!(features.protocol_max.is_some());
+    }
+
+    #[test]
+    fn test_get_server_features_invalid_server() {
+        let server = "tcp://invalid.server:50001".to_string();
+        let proxy = None;
+
+        let features = get_server_features(server, proxy);
+
+        // Should all be None due to failure
+        assert!(features.server_version.is_none());
+        assert!(features.genesis_hash.is_none());
+        assert!(features.protocol_min.is_none());
+        assert!(features.protocol_max.is_none());
+        assert!(features.hash_function.is_none());
+        assert!(features.pruning.is_none());
+    }
+}
+
+
