@@ -126,6 +126,13 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
     await tester.pump(const Duration(milliseconds: 500));
   }
 
+  final walletCreatedMessage = find.text('Your Wallet Is Ready');
+  await tester.pumpUntilFound(walletCreatedMessage,
+      tries: 500, duration: Durations.long2);
+  await tester.pump(const Duration(milliseconds: 500));
+  expect(continueButtonFinder, findsOneWidget);
+  await tester.tap(continueButtonFinder);
+
   final buyButtonFinder = find.text('Buy');
   await tester.pumpUntilFound(buyButtonFinder,
       tries: 500, duration: Durations.long2);
