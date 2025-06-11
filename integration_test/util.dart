@@ -99,7 +99,7 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
 
   final setUpButtonFinder = find.text('Create a \nMobile Wallet');
   expect(setUpButtonFinder, findsOneWidget);
-  await tester.tap(setUpButtonFinder);
+  await tester.tap(setUpButtonFinder, warnIfMissed: false);
   await tester.pump(const Duration(milliseconds: 500));
 
   final continueButtonFinder = find.text('Continue');
@@ -125,6 +125,10 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
     await tester.pump(const Duration(milliseconds: 500));
     await tester.pump(const Duration(milliseconds: 500));
   }
+
+  final buyButtonFinder = find.text('Buy');
+  await tester.pumpUntilFound(buyButtonFinder,
+      tries: 500, duration: Durations.long2);
 }
 
 /// Send Signet money back to test Account
