@@ -341,10 +341,11 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           ..loading = true;
         //remove if there is any duplicates
         bool sendMax = spendableBalance == amount;
+        final feeRate = Fees().slowRate(network);
         final params = TransactionParams(
             address: sendTo,
             amount: BigInt.from(amount),
-            feeRate: BigInt.from(Fees().slowRate(network)),
+            feeRate: BigInt.from(feeRate < 1 ? 1 : feeRate),
             selectedOutputs: utxos,
             note: note,
             tag: changeOutput,

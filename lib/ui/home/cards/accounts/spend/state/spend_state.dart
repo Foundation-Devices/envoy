@@ -45,10 +45,6 @@ final draftTransactionProvider = Provider<DraftTransaction?>((ref) {
   return ref.watch(spendTransactionProvider).draftTransaction;
 });
 
-double convertToFeeRate(num feeRate) {
-  return (feeRate / 100000);
-}
-
 // If the user performed coin selection or finalized a non-hot wallet transaction,
 // they should see a confirmation dialog before exiting the review screen.
 final isTransactionCancellableProvider = Provider<bool>((ref) {
