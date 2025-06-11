@@ -310,7 +310,7 @@ class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
               }
             },
           ),
-          const SizedBox(height: EnvoySpacing.medium1),
+          const SizedBox(height: EnvoySpacing.large3), // medium3 + bottom bar
         ],
       ),
     );
