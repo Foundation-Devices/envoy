@@ -19,6 +19,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OnboardEnvoyWelcomeScreen extends ConsumerStatefulWidget {
   const OnboardEnvoyWelcomeScreen({super.key});
@@ -169,7 +170,13 @@ class _OnboardEnvoyWelcomeScreenState
                             S().onboarding_magicUserMobileIntro_learnMoreMagicBackups,
                             type: EnvoyButtonTypes.tertiary,
                             onTap: () {
-                              // TODO
+                              if (_magicBackUpEnabled) {
+                                launchUrl(Uri.parse(
+                                    "https://docs.foundation.xyz/backups/envoy/#magic-backup"));
+                              } else {
+                                launchUrl(Uri.parse(
+                                    "https://docs.foundation.xyz/backups/envoy/#manual-backup"));
+                              }
                             },
                           ),
                           const SizedBox(height: EnvoySpacing.medium1),

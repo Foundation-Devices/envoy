@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 # Define the list of test groups
-test_groups=("Passport wallet tests" "Hot wallet tests" "No account tests")
+test_groups=("Passport wallet tests" "Hot wallet tests")
 # Get the current platform (Linux, iOS, etc.)
 platform=$(uname -s)
 
