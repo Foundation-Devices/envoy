@@ -490,11 +490,13 @@ class EnvoySeed {
         await LocalStorage()
             .prefs
             .setBool(MigrationManager.migratedToTestnet4, true);
+        await Settings().setShowTestnetAccounts(false);
       }
       if (showSignet && isLegacy) {
         LocalStorage()
             .prefs
             .setBool(MigrationManager.migratedToSignetGlobal, true);
+        await Settings().setShowSignetAccounts(false);
       }
 
       await EnvoyStorage().setNoBackUpPreference(

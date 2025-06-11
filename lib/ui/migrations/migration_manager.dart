@@ -183,9 +183,11 @@ class MigrationManager {
       var network = Network.bitcoin;
       if (legacyAccount.wallet.network.toLowerCase() == "testnet") {
         LocalStorage().prefs.setBool(migratedToTestnet4, true);
+        await Settings().setShowTestnetAccounts(false);
         network = Network.testnet4;
       } else if (legacyAccount.wallet.network.toLowerCase() == "signet") {
         LocalStorage().prefs.setBool(migratedToSignetGlobal, true);
+        await Settings().setShowSignetAccounts(false);
         network = Network.signet;
       }
 
@@ -242,9 +244,11 @@ class MigrationManager {
         element.accounts.first.wallet.network.toLowerCase() == "signet");
     if (showTestnet && hasTestnet) {
       await _ls.prefs.setBool(migratedToTestnet4, true);
+      await Settings().setShowTestnetAccounts(false);
     }
     if (showSignet && hasSignet) {
       _ls.prefs.setBool(migratedToSignetGlobal, true);
+      await Settings().setShowSignetAccounts(false);
     }
 
     await _ls.prefs
