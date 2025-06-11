@@ -192,11 +192,11 @@ final accountsRouter = StatefulShellBranch(
                             /// if the broadcast is in progress, do not allow the user to go back
                             return false;
                           } else {
-                            if (isCancellable) {
+                            if (!isCancellable) {
                               final exit = await showEnvoyDialog(
                                   context: context,
                                   dialog: const DiscardTransactionDialog());
-                              if (!exit) {
+                              if (exit == false) {
                                 return false;
                               }
                             }
