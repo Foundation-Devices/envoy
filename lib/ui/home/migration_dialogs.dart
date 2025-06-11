@@ -44,10 +44,17 @@ void notifyAboutNetworkMigrationDialog(BuildContext context) {
           ),
           Padding(
             padding: EdgeInsets.only(bottom: EnvoySpacing.medium3),
-            child: Text(
-              subtitle,
-              style: EnvoyTypography.info,
-              textAlign: TextAlign.center,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 120,
+              ),
+              child: SingleChildScrollView(
+                child: Text(
+                  subtitle,
+                  style: EnvoyTypography.info,
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ),
           ),
           EnvoyButton(
@@ -112,8 +119,8 @@ void notifyAboutNetworkMigrationDialog(BuildContext context) {
           linearGradient: true,
           blurColor: Colors.black,
           dialog: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.85,
-            height: MediaQuery.of(context).size.height * 0.54,
+            width: MediaQuery.of(context).size.width * 0.75,
+            height: 400,
             child: PageView(
               physics: NeverScrollableScrollPhysics(),
               controller: controller,
