@@ -51,6 +51,16 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
           _useLocalAuth = value;
         });
       }
+
+      // Retrieve the saved persisted Electrum server type
+      String? savedElectrumServerType =
+          LocalStorage().prefs.getString("electrumServerType");
+      if (savedElectrumServerType != null) {
+        setState(() {
+          _showPersonalNodeTextField =
+              savedElectrumServerType == "personalNode";
+        });
+      }
     });
   }
 
@@ -58,6 +68,8 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
     setState(() {
       _showPersonalNodeTextField = newOption.value == "personalNode";
     });
+
+    LocalStorage().prefs.setString("electrumServerType", newOption.value);
 
     if (newOption.value == "break") {
       return;
@@ -72,14 +84,17 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
     }
     if (newOption.value == "blockStream") {
       Settings().setCustomElectrumAddress(PublicServer.blockStream.address);
+      Settings().useDefaultElectrumServer(false);
       return;
     }
     if (newOption.value == "diyNodes") {
       Settings().setCustomElectrumAddress(PublicServer.diyNodes.address);
+      Settings().useDefaultElectrumServer(false);
       return;
     }
     if (newOption.value == "luke") {
       Settings().setCustomElectrumAddress(PublicServer.luke.address);
+      Settings().useDefaultElectrumServer(false);
     }
   }
 

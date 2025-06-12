@@ -241,8 +241,8 @@ class Settings extends ChangeNotifier {
   @JsonKey(includeFromJson: false, includeToJson: false)
   String nguServerAddress = "https://ngu.foundation.xyz";
 
-  @JsonKey(defaultValue: false)
-  bool syncToCloudSetting = false;
+  @JsonKey(defaultValue: true)
+  bool syncToCloudSetting = true;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get syncToCloud => syncToCloudSetting;
