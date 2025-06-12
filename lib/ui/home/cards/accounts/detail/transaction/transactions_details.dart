@@ -609,14 +609,19 @@ class _TransactionsDetailsWidgetState
 }
 
 String getTransactionDateAndTimeString(int? date, bool isConfirmed) {
-  if (!isConfirmed || date == null) {
+  if (date == null) {
     return S().activity_pending;
+  } else {
+    if (!isConfirmed) {
+      return S().receive_tx_list_awaitingConfirmation;
+    }
+    final timeStamp = date.toInt() * 1000;
+    final String transactionDateInfo =
+        "${DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(timeStamp, isUtc: true))} ${S().coindetails_overlay_at} ${DateFormat.Hm(currentLocale).format(
+      DateTime.fromMillisecondsSinceEpoch(timeStamp, isUtc: true),
+    )}";
+    return transactionDateInfo;
   }
-  final String transactionDateInfo =
-      "${DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(date, isUtc: true))} ${S().coindetails_overlay_at} ${DateFormat.Hm(currentLocale).format(
-    DateTime.fromMillisecondsSinceEpoch(date, isUtc: true),
-  )}";
-  return transactionDateInfo;
 }
 
 String getTransactionStatusString(EnvoyTransaction tx) {
@@ -678,9 +683,9 @@ String? getBaseUrlForNetwork(Network network) {
     case Network.bitcoin:
       return Fees.mempoolFoundationInstance;
     case Network.signet:
-      return Fees.mutinynetMempoolFoundationInstance;
+      return Fees.signetMempoolFoundationInstance;
     case Network.testnet4:
-      return Fees.testnetMempoolFoundationInstance;
+      return Fees.testnet4MempoolFoundationInstance;
     case Network.testnet:
       return Fees.testnetMempoolFoundationInstance;
     case Network.regtest:
