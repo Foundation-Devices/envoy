@@ -3,14 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/envoy_seed.dart';
-import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
-import 'package:envoy/ui/routes/routes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -209,7 +207,6 @@ class _OnboardEnvoyWelcomeScreenState
 
   @override
   void initState() {
-    LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
     if (mounted) {
       Future.delayed(const Duration(milliseconds: 100)).then((value) async {
         //while pop back to home, welcome screen will init again, so we need to check if we already tried automatic recovery

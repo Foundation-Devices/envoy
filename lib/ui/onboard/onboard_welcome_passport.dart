@@ -2,13 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/account/accounts_manager.dart';
-import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
-import 'package:envoy/ui/routes/routes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -30,15 +27,7 @@ class OnboardPassportWelcomeScreen extends StatefulWidget {
 class _OnboardPassportWelcomeScreenState
     extends State<OnboardPassportWelcomeScreen> {
   @override
-  void initState() {
-    super.initState();
-    LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final bool onboardingComplete =
-        LocalStorage().prefs.getBool(PREFS_ONBOARDED) ?? false;
     return EnvoyPatternScaffold(
       // shield: Container(
       //   margin: const EdgeInsets.all(EnvoySpacing.medium1),
@@ -127,12 +116,7 @@ class _OnboardPassportWelcomeScreenState
         leading: CupertinoNavigationBarBackButton(
           color: Colors.white,
           onPressed: () {
-            if (NgAccountManager().getHotWalletAccount() != null ||
-                onboardingComplete) {
-              context.go("/");
-            } else {
-              Navigator.pop(context);
-            }
+            Navigator.pop(context);
           },
         ),
         automaticallyImplyLeading: false,
