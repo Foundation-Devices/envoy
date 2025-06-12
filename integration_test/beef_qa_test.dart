@@ -82,6 +82,33 @@ Future<void> main() async {
       expect(atmName, findsAny);
     });
 
+    testWidgets('Buy button', (tester) async {
+      await goBackHome(tester);
+
+      await findAndPressBuyOptions(tester);
+      await checkBuyOptionAndTitle(tester);
+    });
+    testWidgets('Buy button - enable from Settings', (tester) async {
+      await goBackHome(tester);
+
+      // Find the Buy button (enabled in Settings by default)
+      final buyButtonFinder = find.descendant(
+        of: find.byType(GestureDetector),
+        matching: find.text('Buy'),
+      );
+      expect(buyButtonFinder, findsOneWidget);
+
+      // now turn it off from settings
+      await fromHomeToAdvancedMenu(tester);
+      await findAndToggleSettingsSwitch(tester, "Buy in Envoy");
+
+      // back to Accounts
+      await pressHamburgerMenu(tester);
+      await pressHamburgerMenu(tester);
+
+      expect(buyButtonFinder, findsNothing);
+    });
+
     testWidgets('About', (tester) async {
       await goBackHome(tester);
 
@@ -1474,39 +1501,6 @@ Future<void> main() async {
 
       await tester.pumpUntilFound(newElementFinder,
           duration: Durations.long1, tries: 100);
-    });
-  });
-
-  group('No account tests', () {
-    // These tests don't need a Passport account
-    testWidgets('Buy button', (tester) async {
-      await goBackHome(tester);
-
-      // start setup but without accounts
-      await setUpFromStartNoAccounts(tester);
-
-      await findAndPressBuyOptions(tester);
-      await checkBuyOptionAndTitle(tester);
-    });
-    testWidgets('Buy button - enable from Settings', (tester) async {
-      await goBackHome(tester);
-
-      // Find the Buy button (enabled in Settings by default)
-      final buyButtonFinder = find.descendant(
-        of: find.byType(GestureDetector),
-        matching: find.text('Buy'),
-      );
-      expect(buyButtonFinder, findsOneWidget);
-
-      // now turn it off from settings
-      await fromHomeToAdvancedMenu(tester);
-      await findAndToggleSettingsSwitch(tester, "Buy in Envoy");
-
-      // back to Accounts
-      await pressHamburgerMenu(tester);
-      await pressHamburgerMenu(tester);
-
-      expect(buyButtonFinder, findsNothing);
     });
   });
 }

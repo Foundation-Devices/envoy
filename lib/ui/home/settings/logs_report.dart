@@ -27,6 +27,7 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.black,
@@ -104,25 +105,17 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
         child: Consumer(
           builder: (context, ref, child) {
             final envoyReport = ref.watch(envoyReportProvider);
-
             return FutureBuilder<List<Map<String, Object?>>>(
               future: envoyReport.getAllLogs(),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
                 if (snapshot.hasError) {
                   return Center(child: Text("Error: ${snapshot.error}"));
                 }
-
                 final logs = (snapshot.data ?? []).toList();
-
                 if (logs.isEmpty) {
                   return const Center(
                       child: Text("No logs found")); // TODO: FIGMA
                 }
-
                 return CustomScrollView(
                   slivers: [
                     SliverList.builder(

@@ -4,11 +4,11 @@
 
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,6 +19,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OnboardEnvoyWelcomeScreen extends ConsumerStatefulWidget {
   const OnboardEnvoyWelcomeScreen({super.key});
@@ -33,6 +34,7 @@ bool _checkedMagicBackUpInWelcomeScreen = false;
 
 class _OnboardEnvoyWelcomeScreenState
     extends ConsumerState<OnboardEnvoyWelcomeScreen> {
+  final bool _magicBackUpEnabled = Settings().syncToCloud;
   @override
   Widget build(BuildContext context) {
     return EnvoyPatternScaffold(
@@ -46,17 +48,25 @@ class _OnboardEnvoyWelcomeScreenState
         ),
         actions: [
           Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
+            padding: const EdgeInsets.only(
+                right: EnvoySpacing.medium1, top: EnvoySpacing.small),
             child: EnvoyButton(
-              S().component_skip,
-              textStyle: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: Colors.white),
+              S().component_recover,
+              textStyle: EnvoyTypography.body,
               type: EnvoyButtonTypes.tertiary,
               onTap: () {
-                context.go("/");
+                // TODO: implement real path
+
+                if (_magicBackUpEnabled) {
+                  //reset flags since the user manually trying to recover
+                  ref.read(triedAutomaticRecovery.notifier).state = false;
+                  ref.read(successfulManualRecovery.notifier).state = false;
+                  ref.read(successfulSetupWallet.notifier).state = false;
+                  context.pushNamed(ONBOARD_ENVOY_MAGIC_RECOVER_SETUP);
+                } else {
+                  //context.goNamed(ONBOARD_ENVOY_MANUAL_SETUP);
+                  context.goNamed(ONBOARD_ENVOY_MANUAL_IMPORT);
+                }
               },
             ),
           )
@@ -65,7 +75,7 @@ class _OnboardEnvoyWelcomeScreenState
       header: Transform.translate(
         offset: const Offset(-8, 68),
         child: Image.asset(
-          "assets/envoy_on_device.png",
+          "assets/foundation_envoy_accounts.png",
           alignment: Alignment.bottomCenter,
           width: MediaQuery.of(context).size.width * 0.55,
           height: MediaQuery.of(context).size.height * 0.55,
@@ -103,24 +113,36 @@ class _OnboardEnvoyWelcomeScreenState
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      Text(S().envoy_welcome_screen_heading,
+                                      Text(
+                                          _magicBackUpEnabled
+                                              ? S()
+                                                  .onboarding_magicUserMobileIntro_header
+                                              : S()
+                                                  .onboarding_sovereignUserMobileIntro_header,
                                           textAlign: TextAlign.center,
                                           style: EnvoyTypography.heading),
                                       const SizedBox(
                                           height: EnvoySpacing.small),
-                                      LinkText(
-                                        text:
-                                            S().envoy_welcome_screen_subheading,
-                                        textStyle:
-                                            EnvoyTypography.body.copyWith(
-                                          color: EnvoyColors.inactiveDark,
-                                        ),
-                                        linkStyle:
-                                            EnvoyTypography.body.copyWith(
-                                          color: EnvoyColors.inactiveDark,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
+                                      Text(
+                                          _magicBackUpEnabled
+                                              ? S()
+                                                  .onboarding_magicUserMobileIntro_content1
+                                              : S()
+                                                  .onboarding_sovereignUserMobileIntro_content1,
+                                          textAlign: TextAlign.center,
+                                          style: EnvoyTypography.body.copyWith(
+                                              color: EnvoyColors.textTertiary)),
+                                      const SizedBox(
+                                          height: EnvoySpacing.small),
+                                      Text(
+                                          _magicBackUpEnabled
+                                              ? S()
+                                                  .onboarding_magicUserMobileIntro_content2
+                                              : S()
+                                                  .onboarding_sovereignUserMobileIntro_content2,
+                                          textAlign: TextAlign.center,
+                                          style: EnvoyTypography.body.copyWith(
+                                              color: EnvoyColors.textTertiary)),
                                     ],
                                   ),
                                 ),
@@ -145,17 +167,30 @@ class _OnboardEnvoyWelcomeScreenState
                         children: [
                           const SizedBox(height: EnvoySpacing.medium1),
                           EnvoyButton(
-                            S().envoy_welcome_screen_cta2,
-                            type: EnvoyButtonTypes.secondary,
+                            S().onboarding_magicUserMobileIntro_learnMoreMagicBackups,
+                            type: EnvoyButtonTypes.tertiary,
                             onTap: () {
-                              context.pushNamed(ONBOARD_ENVOY_MANUAL_SETUP);
+                              if (_magicBackUpEnabled) {
+                                launchUrl(Uri.parse(
+                                    "https://docs.foundation.xyz/backups/envoy/#magic-backup"));
+                              } else {
+                                launchUrl(Uri.parse(
+                                    "https://docs.foundation.xyz/backups/envoy/#manual-backup"));
+                              }
                             },
                           ),
                           const SizedBox(height: EnvoySpacing.medium1),
                           EnvoyButton(
-                            S().envoy_welcome_screen_cta1,
+                            S().component_continue,
+                            borderRadius: const BorderRadius.all(
+                                Radius.circular(EnvoySpacing.small)),
                             onTap: () {
-                              context.pushNamed(ONBOARD_ENVOY_MAGIC_SETUP);
+                              if (_magicBackUpEnabled) {
+                                context.pushNamed(
+                                    ONBOARD_ENVOY_MAGIC_GENERATE_SETUP);
+                              } else {
+                                context.goNamed(ONBOARD_ENVOY_MANUAL_GENERATE);
+                              }
                             },
                           ),
                           const SizedBox(height: EnvoySpacing.small),
