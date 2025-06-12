@@ -489,6 +489,7 @@ class EnvoySeed {
       await Future.delayed(const Duration(milliseconds: 100));
       bool showTestnet = Settings().showTestnetAccounts();
       bool showSignet = Settings().showSignetAccounts();
+      bool showTaproot = Settings().taprootEnabled();
 
       if (showTestnet && isLegacy) {
         await LocalStorage()
@@ -501,6 +502,11 @@ class EnvoySeed {
             .prefs
             .setBool(MigrationManager.migratedToSignetGlobal, true);
         await Settings().setShowSignetAccounts(false);
+      }
+      if (showTaproot && isLegacy) {
+        LocalStorage()
+            .prefs
+            .setBool(MigrationManager.migratedToUnifiedAccounts, true);
       }
 
       await EnvoyStorage().setNoBackUpPreference(

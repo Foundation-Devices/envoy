@@ -169,6 +169,7 @@ class MigrationManager {
     bool taprootEnabled = Settings().taprootEnabled();
     bool showTestnet = Settings().showTestnetAccounts();
     bool showSignet = Settings().showSignetAccounts();
+    bool isTaprootEnabled = Settings().taprootEnabled();
 
     for (LegacyUnifiedAccounts unified in unifiedLegacyAccounts) {
       //use externalDescriptor and internalDescriptor
@@ -185,13 +186,20 @@ class MigrationManager {
 
       var network = Network.bitcoin;
       if (legacyAccount.wallet.network.toLowerCase() == "testnet") {
-        LocalStorage().prefs.setBool(migratedToTestnet4, true);
-        await Settings().setShowTestnetAccounts(false);
+        if(showTestnet){
+          LocalStorage().prefs.setBool(migratedToTestnet4, true);
+          await Settings().setShowTestnetAccounts(false);
+        }
         network = Network.testnet4;
       } else if (legacyAccount.wallet.network.toLowerCase() == "signet") {
-        LocalStorage().prefs.setBool(migratedToSignetGlobal, true);
-        await Settings().setShowSignetAccounts(false);
+        if(showSignet) {
+          LocalStorage().prefs.setBool(migratedToSignetGlobal, true);
+          await Settings().setShowSignetAccounts(false);
+        }
         network = Network.signet;
+      }
+      if(isTaprootEnabled){
+        LocalStorage().prefs.setBool(migratedToUnifiedAccounts, true);
       }
 
       List<Directory> oldWalletDirPaths = [];
@@ -241,18 +249,6 @@ class MigrationManager {
       walletOrder.add(newId);
     }
 
-    bool hasTestnet = unifiedLegacyAccounts.any((element) =>
-        element.accounts.first.wallet.network.toLowerCase() == "testnet");
-    bool hasSignet = unifiedLegacyAccounts.any((element) =>
-        element.accounts.first.wallet.network.toLowerCase() == "signet");
-    if (showTestnet && hasTestnet) {
-      await _ls.prefs.setBool(migratedToTestnet4, true);
-      await Settings().setShowTestnetAccounts(false);
-    }
-    if (showSignet && hasSignet) {
-      _ls.prefs.setBool(migratedToSignetGlobal, true);
-      await Settings().setShowSignetAccounts(false);
-    }
 
     await _ls.prefs
         .setString(NgAccountManager.ACCOUNT_ORDER, jsonEncode(walletOrder));
@@ -275,9 +271,6 @@ class MigrationManager {
         );
         unifiedWallets.add(LegacyUnifiedAccounts(
             accounts: accounts, network: accounts.first.wallet.network));
-        LocalStorage()
-            .prefs
-            .setBool(MigrationManager.migratedToUnifiedAccounts, true);
       } else {
         EnvoyReport().log(
           "Migration",
