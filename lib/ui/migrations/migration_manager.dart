@@ -186,19 +186,19 @@ class MigrationManager {
 
       var network = Network.bitcoin;
       if (legacyAccount.wallet.network.toLowerCase() == "testnet") {
-        if(showTestnet){
+        if (showTestnet) {
           LocalStorage().prefs.setBool(migratedToTestnet4, true);
           await Settings().setShowTestnetAccounts(false);
         }
         network = Network.testnet4;
       } else if (legacyAccount.wallet.network.toLowerCase() == "signet") {
-        if(showSignet) {
+        if (showSignet) {
           LocalStorage().prefs.setBool(migratedToSignetGlobal, true);
           await Settings().setShowSignetAccounts(false);
         }
         network = Network.signet;
       }
-      if(isTaprootEnabled){
+      if (isTaprootEnabled) {
         LocalStorage().prefs.setBool(migratedToUnifiedAccounts, true);
       }
 
@@ -248,7 +248,6 @@ class MigrationManager {
       handlers.add(envoyAccount);
       walletOrder.add(newId);
     }
-
 
     await _ls.prefs
         .setString(NgAccountManager.ACCOUNT_ORDER, jsonEncode(walletOrder));
