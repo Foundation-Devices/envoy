@@ -136,23 +136,6 @@ class _OnboardPassportWelcomeScreenState
           },
         ),
         automaticallyImplyLeading: false,
-        actions: [
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
-            child: EnvoyButton(
-              S().component_skip,
-              textStyle: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: Colors.white),
-              type: EnvoyButtonTypes.tertiary,
-              onTap: () {
-                context.go("/");
-              },
-            ),
-          )
-        ],
       ),
       header: Transform.translate(
         offset: const Offset(0, 90),
