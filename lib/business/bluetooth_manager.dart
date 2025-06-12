@@ -68,8 +68,6 @@ class BluetoothManager {
   }
 
   _init() async {
-    await getPermissions();
-
     await api.RustLib.init();
     await bluart.RustLib.init();
 
@@ -81,6 +79,12 @@ class BluetoothManager {
     await restoreQuantumLinkIdentity();
 
     kPrint("QL Identity: $_qlIdentity");
+
+    if (bleId != "" &&
+        _qlIdentity != null &&
+        await Permission.bluetoothScan.isDenied) {
+      await getPermissions();
+    }
 
     events?.listen((bluart.Event event) async {
       if (event is bluart.Event_DeviceConnected) {
@@ -151,7 +155,9 @@ class BluetoothManager {
   }
 
   scan() async {
-    await bluart.scan(filter: [""]);
+    if (await Permission.bluetoothScan.isGranted) {
+      await bluart.scan(filter: [""]);
+    }
   }
 
   Future<List<Uint8List>> encodeMessage(
