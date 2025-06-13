@@ -445,8 +445,7 @@ class HomePageState extends ConsumerState<HomePage>
     double screenWidth = MediaQuery.of(context).size.width;
 
     double topOffset = MediaQuery.of(context).padding.top;
-    double bottomOffset = MediaQuery.of(context).padding.bottom -
-        15; // Adjust the bottom shield offset here
+    double bottomOffset = 32; // Adjust the bottom shield offset
     //double _totalOffset = _topOffset + _bottomOffset;
 
     double appBarHeight = AppBar().preferredSize.height;
