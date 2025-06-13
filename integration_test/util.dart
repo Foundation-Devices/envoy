@@ -126,7 +126,7 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
     await tester.pump(const Duration(milliseconds: 500));
   }
 
-  final walletCreatedMessage = find.text('Your Wallet Is Ready');
+  final walletCreatedMessage = find.text('Your Mobile Wallet Is Ready');
   await tester.pumpUntilFound(walletCreatedMessage,
       tries: 500, duration: Durations.long2);
   await tester.pump(const Duration(milliseconds: 500));
@@ -493,7 +493,7 @@ Future<void> setUpWalletFromSeedViaMagicRecover(
   await tester.pump(Durations.long2);
   await tester.pumpAndSettle();
 
-  final successMessage = find.text("Your Wallet Is Ready");
+  final successMessage = find.text("Your Mobile Wallet Is Ready");
   final continueButtonFinder = find.text('Continue');
   expect(successMessage, findsOneWidget);
   expect(continueButtonFinder, findsOneWidget);
@@ -543,7 +543,7 @@ Future<void> setUpWalletFromSeedViaBackupFile(
 
   await tester.longPress(imageFinder);
 
-  final successMessage = find.text("Your Wallet Is Ready");
+  final successMessage = find.text("Your Mobile Wallet Is Ready");
   await tester.pumpUntilFound(successMessage,
       tries: 100, duration: Durations.long2);
   final continueButtonFinder = find.text('Continue');
