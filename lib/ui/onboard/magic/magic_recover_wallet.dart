@@ -25,7 +25,6 @@ import 'package:envoy/ui/widgets/scanner/decoders/seed_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/util/build_context_extension.dart';
 import 'package:envoy/util/console.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -180,22 +179,6 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CupertinoNavigationBarBackButton(
-                          color: Colors.black,
-                          onPressed: () {
-                            _handleBackPress().then((proceed) {
-                              if (proceed && context.mounted) {
-                                context.pop();
-                              }
-                            });
-                          },
-                        ),
-                      ],
-                    ),
                     Container(
                       constraints:
                           BoxConstraints.tight(const Size.fromHeight(240)),
