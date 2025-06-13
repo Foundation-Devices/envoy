@@ -416,6 +416,9 @@ class NgAccountManager extends ChangeNotifier {
 
     final List<NgDescriptor> missingDescriptors = [];
     if (alreadyPairedAccount != null) {
+      if (alreadyPairedAccount.name != config.name) {
+        await alreadyPairedAccount.handler?.renameAccount(name: config.name);
+      }
       for (var descriptor in config.descriptors) {
         final found = alreadyPairedAccount.descriptors.firstWhereOrNull(
           (accountDescriptor) =>
