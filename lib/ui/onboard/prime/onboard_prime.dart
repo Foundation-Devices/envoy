@@ -39,6 +39,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
   void initState() {
     super.initState();
     LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
+    BluetoothManager().getPermissions();
   }
 
   _connectToPrime() async {
