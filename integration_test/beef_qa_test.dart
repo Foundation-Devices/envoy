@@ -275,6 +275,8 @@ Future<void> main() async {
           tries: 10, duration: Durations.long1);
       await tester.tap(sendButtonText.last);
       await tester.pump(Durations.long2);
+      await tester.pumpAndSettle();
+      await tester.pump(Durations.long2);
 
       await tester.drag(find.byType(Scrollable).first, const Offset(0, -200));
       await tester.pump();
