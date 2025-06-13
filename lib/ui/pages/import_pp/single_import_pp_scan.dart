@@ -21,6 +21,7 @@ class SingleImportPpScanPage extends OnboardingPage {
       child: OnboardingPage(
         key: const Key("single_import_pp_scan"),
         clipArt: Image.asset("assets/pair_new_device_scan.png"),
+        rightFunction: null,
         text: [
           OnboardingText(
               header: S().pair_new_device_scan_heading,

@@ -92,171 +92,112 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
   Widget build(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.85,
-      height: MediaQuery.of(context).size.height * 0.7,
-      child: Scrollbar(
-        child: SingleChildScrollView(
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.85,
-            height: MediaQuery.of(context).size.height * 0.7,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      height: 600,
+      child: Column(
+        children: [
+          // Top close button
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  right: EnvoySpacing.medium3, top: EnvoySpacing.medium3),
+              child: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ),
+          ),
+
+          // Scrollable content (flexible height)
+          Flexible(
+            child: PageView(
+              controller: _pageController,
               children: [
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        right: EnvoySpacing.medium3, top: EnvoySpacing.medium3),
-                    child: IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: PageView(
-                          controller: _pageController,
-                          children: [
-                            ...stepHeadings.mapIndexed((i, e) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: EnvoySpacing.medium1),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Flexible(
-                                      child: SingleChildScrollView(
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            SizedBox(
-                                              height: 180,
-                                              child: stepIllustration[i],
-                                            ),
-                                            const Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical:
-                                                        EnvoySpacing.small)),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal:
-                                                          EnvoySpacing.medium1),
-                                              child: Text(stepHeadings[i],
-                                                  textAlign: TextAlign.center,
-                                                  style:
-                                                      EnvoyTypography.heading),
-                                            ),
-                                            const Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical:
-                                                        EnvoySpacing.small)),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal:
-                                                          EnvoySpacing.medium1),
-                                              child: AnimatedSwitcher(
-                                                duration: const Duration(
-                                                    milliseconds: 400),
-                                                child: LinkText(
-                                                  text: stepSubHeadings[i],
-                                                  linkStyle: EnvoyTypography
-                                                      .button
-                                                      .copyWith(
-                                                          color: EnvoyColors
-                                                              .accentPrimary),
-                                                  onTap: () {
-                                                    launchUrl(Uri.parse(Platform
-                                                            .isAndroid
-                                                        ? "https://developer.android.com/guide/topics/data/autobackup"
-                                                        : "https://support.apple.com/en-us/HT202303"));
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Column(
-                                      children: [
-                                        DotsIndicator(
-                                          totalPages: stepHeadings.length,
-                                          pageController: _pageController,
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: EnvoySpacing.medium1,
-                                              vertical: EnvoySpacing.medium2),
-                                          child: Column(
-                                            children: [
-                                              AnimatedCrossFade(
-                                                  firstChild: EnvoyButton(
-                                                    (_pageController.hasClients
-                                                                ? _pageController
-                                                                    .page
-                                                                    ?.toInt()
-                                                                : 0) ==
-                                                            stepHeadings.length
-                                                        ? S()
-                                                            .manual_setup_create_and_store_backup_modal_CTA
-                                                        : S()
-                                                            .component_continue,
-                                                    type: EnvoyButtonTypes
-                                                        .primaryModal,
-                                                    onTap: () {
-                                                      int currentPage =
-                                                          _pageController.page
-                                                                  ?.toInt() ??
-                                                              0;
-                                                      if (stepHeadings.length ==
-                                                          currentPage + 1) {
-                                                        widget.onLastStep();
-                                                      } else {
-                                                        _pageController.nextPage(
-                                                            duration:
-                                                                const Duration(
-                                                                    milliseconds:
-                                                                        600),
-                                                            curve: Curves
-                                                                .easeInOut);
-                                                      }
-                                                    },
-                                                  ),
-                                                  secondChild: const SizedBox(),
-                                                  crossFadeState:
-                                                      CrossFadeState.showFirst,
-                                                  duration: const Duration(
-                                                      milliseconds: 400))
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              );
-                            })
-                          ],
-                        ),
+                ...stepHeadings.mapIndexed((i, _) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.medium3),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Center(
+                              child: SizedBox(
+                            height: 150,
+                            child: stepIllustration[i],
+                          )),
+                          const SizedBox(height: EnvoySpacing.medium2),
+                          Text(stepHeadings[i],
+                              textAlign: TextAlign.center,
+                              style: EnvoyTypography.heading),
+                          const SizedBox(height: EnvoySpacing.medium2),
+                          LinkText(
+                            text: stepSubHeadings[i],
+                            linkStyle: EnvoyTypography.button.copyWith(
+                              color: EnvoyColors.accentPrimary,
+                            ),
+                            onTap: () => launchUrl(
+                              Uri.parse(
+                                Platform.isAndroid
+                                    ? "https://developer.android.com/guide/topics/data/autobackup"
+                                    : "https://support.apple.com/en-us/HT202303",
+                              ),
+                            ),
+                          ),
+                          // const SizedBox(height: EnvoySpacing.medium2),
+                          // spacing above fixed area
+                        ],
                       ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                }),
               ],
             ),
           ),
-        ),
+
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium3),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: EnvoySpacing.medium2),
+                DotsIndicator(
+                  totalPages: stepHeadings.length,
+                  pageController: _pageController,
+                ),
+                const SizedBox(height: EnvoySpacing.medium2),
+                AnimatedCrossFade(
+                  firstChild: EnvoyButton(
+                    (_pageController.hasClients
+                                ? _pageController.page?.toInt()
+                                : 0) ==
+                            stepHeadings.length
+                        ? S().manual_setup_create_and_store_backup_modal_CTA
+                        : S().component_continue,
+                    type: EnvoyButtonTypes.primaryModal,
+                    onTap: () {
+                      int currentPage = _pageController.page?.toInt() ?? 0;
+                      if (stepHeadings.length == currentPage + 1) {
+                        widget.onLastStep();
+                      } else {
+                        _pageController.nextPage(
+                          duration: const Duration(milliseconds: 600),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    },
+                  ),
+                  secondChild: const SizedBox(),
+                  crossFadeState: CrossFadeState.showFirst,
+                  duration: const Duration(milliseconds: 400),
+                ),
+                const SizedBox(height: EnvoySpacing.medium3),
+              ],
+            ),
+          ),
+          // Fixed bottom area
+        ],
       ),
     );
   }

@@ -16,7 +16,6 @@ import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
-import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -193,29 +192,6 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                                 context.pop();
                               }
                             });
-                          },
-                        ),
-                        Consumer(
-                          builder: (context, ref, child) {
-                            return Material(
-                              color: Colors.transparent,
-                              child: IconButton(
-                                  onPressed: () async {
-                                    ref
-                                        .read(homePageTabProvider.notifier)
-                                        .state = HomePageTabState.accounts;
-                                    ref
-                                        .read(
-                                            homePageBackgroundProvider.notifier)
-                                        .state = HomePageBackgroundState.hidden;
-                                    await Future.delayed(
-                                        const Duration(milliseconds: 200));
-                                    if (context.mounted) {
-                                      context.go("/");
-                                    }
-                                  },
-                                  icon: const Icon(Icons.close)),
-                            );
                           },
                         ),
                       ],
