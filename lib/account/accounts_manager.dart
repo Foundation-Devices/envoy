@@ -214,10 +214,10 @@ class NgAccountManager extends ChangeNotifier {
   bool hotWalletAccountsEmpty() {
     for (var account in accounts) {
       if (account.isHot && account.balance != BigInt.zero) {
-        return true;
+        return false;
       }
     }
-    return false;
+    return true;
   }
 
   Future<bool> checkIfWalletFromSeedExists(String seed,
@@ -416,6 +416,9 @@ class NgAccountManager extends ChangeNotifier {
 
     final List<NgDescriptor> missingDescriptors = [];
     if (alreadyPairedAccount != null) {
+      if (alreadyPairedAccount.name != config.name) {
+        await alreadyPairedAccount.handler?.renameAccount(name: config.name);
+      }
       for (var descriptor in config.descriptors) {
         final found = alreadyPairedAccount.descriptors.firstWhereOrNull(
           (accountDescriptor) =>

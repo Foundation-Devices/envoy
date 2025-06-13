@@ -14,6 +14,7 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/storage/coins_repository.dart';
 import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:ngwallet/ngwallet.dart';
@@ -113,16 +114,18 @@ class MigrationManager {
       );
 
       List<LegacyUnifiedAccounts> unifiedLegacyAccounts = unify(legacyAccounts);
-
       addMigrationEvent(
           MigrationProgress(total: unifiedLegacyAccounts.length, completed: 0));
 
       final accounts = await createAccounts(unifiedLegacyAccounts, walletOrder);
 
       try {
-        for (var account in accounts) {
-          final state = await account.state();
-          await migrateMeta(account, accountId: state.id);
+        try {
+          for (var account in accounts) {
+            migrateMeta(account, legacyAccounts);
+          }
+        } catch (e) {
+          EnvoyReport().log("Migration", "Error migrating meta: $e");
         }
         await NgAccountManager().updateAccountOrder(walletOrder);
         for (var account in accounts) {
@@ -166,6 +169,7 @@ class MigrationManager {
     bool taprootEnabled = Settings().taprootEnabled();
     bool showTestnet = Settings().showTestnetAccounts();
     bool showSignet = Settings().showSignetAccounts();
+    bool isTaprootEnabled = Settings().taprootEnabled();
 
     for (LegacyUnifiedAccounts unified in unifiedLegacyAccounts) {
       //use externalDescriptor and internalDescriptor
@@ -182,11 +186,20 @@ class MigrationManager {
 
       var network = Network.bitcoin;
       if (legacyAccount.wallet.network.toLowerCase() == "testnet") {
-        LocalStorage().prefs.setBool(migratedToTestnet4, true);
+        if (showTestnet) {
+          LocalStorage().prefs.setBool(migratedToTestnet4, true);
+          await Settings().setShowTestnetAccounts(false);
+        }
         network = Network.testnet4;
       } else if (legacyAccount.wallet.network.toLowerCase() == "signet") {
-        LocalStorage().prefs.setBool(migratedToSignetGlobal, true);
+        if (showSignet) {
+          LocalStorage().prefs.setBool(migratedToSignetGlobal, true);
+          await Settings().setShowSignetAccounts(false);
+        }
         network = Network.signet;
+      }
+      if (isTaprootEnabled) {
+        LocalStorage().prefs.setBool(migratedToUnifiedAccounts, true);
       }
 
       List<Directory> oldWalletDirPaths = [];
@@ -236,17 +249,6 @@ class MigrationManager {
       walletOrder.add(newId);
     }
 
-    bool hasTestnet = unifiedLegacyAccounts.any((element) =>
-        element.accounts.first.wallet.network.toLowerCase() == "testnet");
-    bool hasSignet = unifiedLegacyAccounts.any((element) =>
-        element.accounts.first.wallet.network.toLowerCase() == "signet");
-    if (showTestnet && hasTestnet) {
-      await _ls.prefs.setBool(migratedToTestnet4, true);
-    }
-    if (showSignet && hasSignet) {
-      _ls.prefs.setBool(migratedToSignetGlobal, true);
-    }
-
     await _ls.prefs
         .setString(NgAccountManager.ACCOUNT_ORDER, jsonEncode(walletOrder));
     return handlers;
@@ -268,9 +270,6 @@ class MigrationManager {
         );
         unifiedWallets.add(LegacyUnifiedAccounts(
             accounts: accounts, network: accounts.first.wallet.network));
-        LocalStorage()
-            .prefs
-            .setBool(MigrationManager.migratedToUnifiedAccounts, true);
       } else {
         EnvoyReport().log(
           "Migration",
@@ -291,18 +290,40 @@ class MigrationManager {
   }
 
   //migrate notes to new db.
-  static Future migrateMeta(EnvoyAccountHandler handler,
-      {String? accountId}) async {
+  static Future migrateMeta(
+      EnvoyAccountHandler handler, List<LegacyAccount> legacyAccounts) async {
     try {
-      List<String> blockedCoins = await CoinRepository().getBlockedCoins();
-      Map<String, String> tagsMap = await CoinRepository().getTagMap();
-      Map<String, String> notes = await EnvoyStorage().getAllNotes();
-      Map<String, bool> doNotSpendMap = {};
-      for (var blocked in blockedCoins) {
-        doNotSpendMap[blocked] = true;
+      final state = await handler.state();
+      for (var legacyAccount in legacyAccounts) {
+        bool matchWithHotWallet = (state.isHot &&
+            legacyAccount.wallet.hot &&
+            state.network
+                .toString()
+                .toLowerCase()
+                .contains(legacyAccount.wallet.network.toLowerCase()));
+
+        kPrint(
+            "Migrating meta for ${legacyAccount.name} ${legacyAccount.wallet.network}");
+        for (var descriptor in state.descriptors) {
+          bool matchWithDescriptor =
+              descriptor.internal == legacyAccount.wallet.internalDescriptor;
+          if (matchWithDescriptor || matchWithHotWallet) {
+            kPrint(
+                "Found descriptor ${legacyAccount.name} ${descriptor.addressType}");
+            List<String> blockedCoins =
+                await CoinRepository().getBlockedCoins();
+            Map<String, String> tagsMap =
+                await CoinRepository().getTagMap(accountId: legacyAccount.id);
+            Map<String, String> notes = await EnvoyStorage().getAllNotes();
+            Map<String, bool> doNotSpendMap = {};
+            for (var blocked in blockedCoins) {
+              doNotSpendMap[blocked] = true;
+            }
+            await handler.migrateMeta(
+                notes: notes, tags: tagsMap, doNotSpend: doNotSpendMap);
+          }
+        }
       }
-      await handler.migrateMeta(
-          notes: notes, tags: tagsMap, doNotSpend: doNotSpendMap);
     } catch (e) {
       EnvoyReport().log("Migration", "Error migrating meta: $e");
     }

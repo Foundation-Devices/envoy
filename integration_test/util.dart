@@ -12,6 +12,7 @@ import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/big_tab.dart';
 import 'package:envoy/ui/components/select_dropdown.dart';
+import 'package:envoy/ui/components/toggle.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
@@ -98,30 +99,20 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
 
   final setUpButtonFinder = find.text('Create a \nMobile Wallet');
   expect(setUpButtonFinder, findsOneWidget);
-  await tester.tap(setUpButtonFinder);
+  await tester.tap(setUpButtonFinder, warnIfMissed: false);
   await tester.pump(const Duration(milliseconds: 500));
-
-  final enableMagicButtonFinder = find.text('Enable Magic Backups');
-  expect(enableMagicButtonFinder, findsOneWidget);
-  await tester.tap(enableMagicButtonFinder);
-  await tester.pump(const Duration(milliseconds: 500));
-
-  // video
-  final createMagicButtonFinder = find.text('Create Magic Backup');
-  expect(createMagicButtonFinder, findsOneWidget);
-  await tester.tap(createMagicButtonFinder);
-  await tester.pump(const Duration(milliseconds: 1500));
 
   final continueButtonFinder = find.text('Continue');
   await tester.pump(Durations.long2);
 
   await tester.pumpUntilFound(continueButtonFinder,
-      tries: 50, duration: Durations.long2);
+      tries: 500, duration: Durations.long2);
 
   // animations
   expect(continueButtonFinder, findsOneWidget);
   await tester.tap(continueButtonFinder);
-  await tester.pump(const Duration(milliseconds: 500));
+  await tester.pumpUntilFound(continueButtonFinder,
+      tries: 500, duration: Durations.long2);
 
   expect(continueButtonFinder, findsOneWidget);
   await tester.tap(continueButtonFinder);
@@ -132,7 +123,19 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
     expect(continueButtonFinder, findsOneWidget);
     await tester.tap(continueButtonFinder);
     await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump(const Duration(milliseconds: 500));
   }
+
+  final walletCreatedMessage = find.text('Your Mobile Wallet Is Ready');
+  await tester.pumpUntilFound(walletCreatedMessage,
+      tries: 500, duration: Durations.long2);
+  await tester.pump(const Duration(milliseconds: 500));
+  expect(continueButtonFinder, findsOneWidget);
+  await tester.tap(continueButtonFinder);
+
+  final buyButtonFinder = find.text('Buy');
+  await tester.pumpUntilFound(buyButtonFinder,
+      tries: 500, duration: Durations.long2);
 }
 
 /// Send Signet money back to test Account
@@ -490,7 +493,7 @@ Future<void> setUpWalletFromSeedViaMagicRecover(
   await tester.pump(Durations.long2);
   await tester.pumpAndSettle();
 
-  final successMessage = find.text("Your Wallet Is Ready");
+  final successMessage = find.text("Your Mobile Wallet Is Ready");
   final continueButtonFinder = find.text('Continue');
   expect(successMessage, findsOneWidget);
   expect(continueButtonFinder, findsOneWidget);
@@ -540,7 +543,7 @@ Future<void> setUpWalletFromSeedViaBackupFile(
 
   await tester.longPress(imageFinder);
 
-  final successMessage = find.text("Your Wallet Is Ready");
+  final successMessage = find.text("Your Mobile Wallet Is Ready");
   await tester.pumpUntilFound(successMessage,
       tries: 100, duration: Durations.long2);
   final continueButtonFinder = find.text('Continue');
@@ -643,22 +646,17 @@ Future<void> onboardingAndEnterSeed(
     WidgetTester tester, List<String> seed) async {
   await tester.pump(Durations.long2);
 
-  await disableTorOnboarding(tester);
+  await disableTorOnboarding(tester, disableMagicBackup: true);
 
   final setUpButtonFinder = find.text('Create a \nMobile Wallet');
   expect(setUpButtonFinder, findsOneWidget);
   await tester.tap(setUpButtonFinder);
   await tester.pump(const Duration(milliseconds: 500));
 
-  final manuallyConfigureSeedWords = find.text('Manually Configure Seed Words');
+  final manuallyConfigureSeedWords = find.text('Recover');
   expect(manuallyConfigureSeedWords, findsOneWidget);
   await tester.tap(manuallyConfigureSeedWords);
   await tester.pump(const Duration(milliseconds: 1000));
-
-  final importSeedButton = find.text('Import Seed');
-  expect(importSeedButton, findsOneWidget);
-  await tester.tap(importSeedButton);
-  await tester.pump(const Duration(milliseconds: 1500));
 
   final import12SeedButton = find.text('12 Word Seed');
   expect(import12SeedButton, findsOneWidget);
@@ -682,9 +680,16 @@ Future<void> onboardingAndEnterSeed(
   await tester.pump(const Duration(milliseconds: 500));
 }
 
-Future<void> disableTorOnboarding(WidgetTester tester) async {
+Future<void> disableTorOnboarding(WidgetTester tester,
+    {bool disableMagicBackup = false}) async {
   await findAndPressTextButton(tester, "Advanced");
   await enablePerformance(tester);
+
+  if (disableMagicBackup) {
+    await findAndToggleEnvoySwitch(
+        tester, "Simple, secure backup and recovery");
+  }
+
   Finder backButtonFinder = find.byType(CupertinoNavigationBarBackButton);
   expect(backButtonFinder, findsOne);
   await tester.tap(backButtonFinder);
@@ -729,26 +734,6 @@ Future<void> checkBuyOptionAndTitle(WidgetTester tester) async {
   // double check if we entered in BUY
   final accountsTitleFinder = find.text('ACCOUNTS');
   expect(accountsTitleFinder, findsOneWidget);
-}
-
-Future<void> setUpFromStartNoAccounts(WidgetTester tester) async {
-  await tester.pump();
-
-  final setUpButtonFinder = find.byWidgetPredicate((widget) =>
-      widget is Text &&
-      widget.data != null &&
-      widget.data!.contains('Create a \nMobile Wallet'));
-
-  expect(setUpButtonFinder, findsOneWidget);
-  await tester.tap(setUpButtonFinder);
-  await tester.pump(Durations.long2);
-
-  // go to home w no accounts
-  final skipButtonFinder = find.text('Skip');
-  await tester.pumpUntilFound(skipButtonFinder);
-  expect(skipButtonFinder, findsOneWidget);
-  await tester.tap(skipButtonFinder);
-  await tester.pump(Durations.long2);
 }
 
 Future<void> checkForToast(WidgetTester tester) async {
@@ -1609,5 +1594,24 @@ Future<void> trySendToAddress(WidgetTester tester, String address) async {
       tries: 100, duration: Durations.long2);
   await tester.tap(cancelTransactionFinder);
   await tester.pump(Durations.long2);
+  await tester.pump(Durations.long2);
+}
+
+Future<void> findAndToggleEnvoySwitch(
+    WidgetTester tester, String listTileText) async {
+  await tester.pump();
+
+  // Find the ListTile widget containing the text "Display Fiat Values"
+  final listTileFinder = find.ancestor(
+      of: find.text(listTileText), matching: find.byType(ListTile));
+  expect(listTileFinder, findsOneWidget);
+
+  // Find the SettingToggle widget within the ListTile
+  final switchFinder =
+      find.descendant(of: listTileFinder, matching: find.byType(EnvoyToggle));
+  expect(switchFinder, findsOneWidget);
+
+  // Tap the switch to toggle it
+  await tester.tap(switchFinder);
   await tester.pump(Durations.long2);
 }

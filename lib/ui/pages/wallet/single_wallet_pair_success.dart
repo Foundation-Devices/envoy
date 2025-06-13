@@ -29,6 +29,8 @@ class SingleWalletPairSuccessPage extends StatelessWidget {
           height: 150,
         ),
       ),
+      leftFunction: null,
+      rightFunction: null,
       text: [
         Align(
           alignment: Alignment.center,

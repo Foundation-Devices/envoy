@@ -59,58 +59,66 @@ class PassportScannerScreen extends ConsumerWidget {
                   ).show(context);
                 }
               }),
-              child: GestureDetector(
-                onVerticalDragUpdate: (_) {},
-                onVerticalDragStart: (_) {},
-                onVerticalDragEnd: (_) {},
-                behavior: HitTestBehavior.opaque,
-                child: SafeArea(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: EnvoySpacing.medium3),
-                        alignment: Alignment.center,
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: EnvoySpacing.medium3),
-                              child: Text(
-                                S().onboarding_passpportSelectCamera_sub235VersionAlert,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      color: EnvoyColors.textPrimaryInverse,
-                                    ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            TextButton(
-                              child: Text(
-                                S().onboarding_passpportSelectCamera_tapHere,
-                                style: EnvoyTypography.button.copyWith(
-                                  color: EnvoyColors.textPrimaryInverse,
-                                ),
-                              ),
-                              onPressed: () async {
-                                context.goNamed(ONBOARD_PASSPORT_SETUP);
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              child: LegacyFirmwareAlert(),
             ),
           )
         : Container();
+  }
+}
+
+class LegacyFirmwareAlert extends StatelessWidget {
+  const LegacyFirmwareAlert({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onVerticalDragUpdate: (_) {},
+      onVerticalDragStart: (_) {},
+      onVerticalDragEnd: (_) {},
+      behavior: HitTestBehavior.opaque,
+      child: SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              padding:
+                  const EdgeInsets.symmetric(vertical: EnvoySpacing.medium3),
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.medium3),
+                    child: Text(
+                      S().onboarding_passpportSelectCamera_sub235VersionAlert,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: EnvoyColors.textPrimaryInverse,
+                          ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  TextButton(
+                    child: Text(
+                      S().onboarding_passpportSelectCamera_tapHere,
+                      style: EnvoyTypography.button.copyWith(
+                        color: EnvoyColors.textPrimaryInverse,
+                      ),
+                    ),
+                    onPressed: () async {
+                      context.goNamed(ONBOARD_PASSPORT_SETUP);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -449,15 +449,18 @@ class EnvoySeed {
         EnvoyReport().log("EnvoySeed", "Error restoring database: $e");
       }
 
-      // if the data contains accountsPrefKey at root ,
-      // data is from newer backup
+      // if the data does not contains NgAccountManager.accountsPrefKey at root,
+      // data is from older backup,so we need to restore legacy wallets
       if (data.containsKey(EnvoyStorage.dbName) &&
           !data.containsKey(NgAccountManager.accountsPrefKey)) {
-        await create(seed.split(" "), passphrase: passphrase);
+        List<LegacyAccount> legacyWallets = getLegacyAccountsFromMBJson(data);
         try {
+          kPrint("Restoring from v1 magic backups ${legacyWallets.map(
+            (e) => "${e.name} -> ${e.deviceSerial}",
+          )}");
           await create(seed.split(" "),
               passphrase: passphrase, requireScan: true);
-          await restoreLegacyWallet(data, seed);
+          await restoreLegacyWallet(legacyWallets, seed);
           isLegacy = true;
         } catch (e) {
           EnvoyReport().log("EnvoySeed",
@@ -468,8 +471,9 @@ class EnvoySeed {
           for (var account in NgAccountManager().accounts) {
             //when restoring from magic backup, accounts are created with new id
             if (account.handler != null) {
-              await MigrationManager.migrateMeta(account.handler!,
-                  accountId: account.id);
+              kPrint("Migrating legacy wallet meta..");
+              await MigrationManager.migrateMeta(
+                  account.handler!, legacyWallets);
             }
           }
         }
@@ -485,16 +489,24 @@ class EnvoySeed {
       await Future.delayed(const Duration(milliseconds: 100));
       bool showTestnet = Settings().showTestnetAccounts();
       bool showSignet = Settings().showSignetAccounts();
+      bool showTaproot = Settings().taprootEnabled();
 
       if (showTestnet && isLegacy) {
         await LocalStorage()
             .prefs
             .setBool(MigrationManager.migratedToTestnet4, true);
+        await Settings().setShowTestnetAccounts(false);
       }
       if (showSignet && isLegacy) {
         LocalStorage()
             .prefs
             .setBool(MigrationManager.migratedToSignetGlobal, true);
+        await Settings().setShowSignetAccounts(false);
+      }
+      if (showTaproot && isLegacy) {
+        LocalStorage()
+            .prefs
+            .setBool(MigrationManager.migratedToUnifiedAccounts, true);
       }
 
       await EnvoyStorage().setNoBackUpPreference(
@@ -531,30 +543,10 @@ class EnvoySeed {
     data[EnvoyStorage.dbName] = jsonEncode(db);
   }
 
-  Future<Map<String, String>> restoreLegacyWallet(
-      Map<String, String> data, String seed) async {
-    var json = jsonDecode(data[EnvoyStorage.dbName]!) as Map;
-
-    List<dynamic> stores = json["stores"];
-    var preferences = stores
-        .singleWhere((element) => element["name"] == preferencesStoreName);
-    List<String> keys = List<String>.from(preferences["keys"]);
-    List<dynamic> values = preferences["values"];
-
-    var accounts = values[keys.indexOf(NgAccountManager.v1AccountsPrefKey)];
-    var jsonAccounts = jsonDecode(accounts);
-    List<LegacyAccount> legacyWallets = [];
-    for (var e in jsonAccounts) {
-      try {
-        final account = LegacyAccount.fromJson(e);
-        if (!account.wallet.hot) {
-          legacyWallets.add(account);
-        }
-      } catch (e, stack) {
-        debugPrintStack(stackTrace: stack);
-      }
-    }
-    List<LegacyUnifiedAccounts> legacy = MigrationManager.unify(legacyWallets);
+  Future restoreLegacyWallet(
+      List<LegacyAccount> legacyWallets, String seed) async {
+    List<LegacyUnifiedAccounts> legacy = MigrationManager.unify(
+        legacyWallets.where((wallet) => !wallet.wallet.hot).toList());
 
     final accountOrder =
         LocalStorage().prefs.getString(NgAccountManager.ACCOUNT_ORDER);
@@ -570,7 +562,7 @@ class EnvoySeed {
               .prefs
               .setAccountScanStatus(account.id, element.addressType, false);
         }
-        await MigrationManager.migrateMeta(handler);
+        await MigrationManager.migrateMeta(handler, legacyWallets);
         try {
           await NgAccountManager().addAccount(
             account,
@@ -581,14 +573,13 @@ class EnvoySeed {
         }
       }
     } catch (e, stack) {
+      debugPrintStack(stackTrace: stack);
       EnvoyReport().log(
         "EnvoySeed",
         "Error creating accounts from legacy wallets: ${e.toString()}",
         stackTrace: stack,
       );
     }
-    data[EnvoyStorage.dbName] = jsonEncode(json);
-    return data;
   }
 
   _restoreSingletons() {
@@ -597,6 +588,30 @@ class EnvoySeed {
     Devices().restore();
     ExchangeRate().restore();
     Notifications().restoreNotifications();
+  }
+
+  List<LegacyAccount> getLegacyAccountsFromMBJson(Map<String, String> data) {
+    var json = jsonDecode(data[EnvoyStorage.dbName]!) as Map;
+
+    List<dynamic> stores = json["stores"];
+    var preferences = stores
+        .singleWhere((element) => element["name"] == preferencesStoreName);
+
+    List<String> keys = List<String>.from(preferences["keys"]);
+    List<dynamic> values = preferences["values"];
+
+    var accounts = values[keys.indexOf(NgAccountManager.v1AccountsPrefKey)];
+    var jsonAccounts = jsonDecode(accounts);
+    List<LegacyAccount> legacyWallets = [];
+    for (var e in jsonAccounts) {
+      try {
+        final account = LegacyAccount.fromJson(e);
+        legacyWallets.add(account);
+      } catch (e, stack) {
+        debugPrintStack(stackTrace: stack);
+      }
+    }
+    return legacyWallets;
   }
 
   DateTime? getLastBackupTime() {

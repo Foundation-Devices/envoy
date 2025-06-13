@@ -106,52 +106,45 @@ final onboardRoutes = GoRoute(
       name: ONBOARD_ENVOY_SETUP,
       routes: [
         GoRoute(
-          path: "manual",
-          name: ONBOARD_ENVOY_MANUAL_SETUP,
+          path: "generate",
+          name: ONBOARD_ENVOY_MANUAL_GENERATE,
+          builder: (context, state) =>
+              const SeedIntroScreen(mode: SeedIntroScreenType.generate),
+        ),
+        GoRoute(
+          path: "import",
+          name: ONBOARD_ENVOY_MANUAL_IMPORT,
           routes: [
             GoRoute(
-              path: "generate",
-              name: ONBOARD_ENVOY_MANUAL_GENERATE,
-              builder: (context, state) =>
-                  const SeedIntroScreen(mode: SeedIntroScreenType.generate),
+              path: "12",
+              name: ONBOARD_ENVOY_MANUAL_IMPORT_12,
+              builder: (context, state) {
+                return const ManualSetupImportSeed(
+                  seedLength: SeedLength.mnemonic_12,
+                );
+              },
             ),
             GoRoute(
-              path: "import",
-              name: ONBOARD_ENVOY_MANUAL_IMPORT,
-              routes: [
-                GoRoute(
-                  path: "12",
-                  name: ONBOARD_ENVOY_MANUAL_IMPORT_12,
-                  builder: (context, state) {
-                    return const ManualSetupImportSeed(
-                      seedLength: SeedLength.mnemonic_12,
-                    );
-                  },
-                ),
-                GoRoute(
-                  path: "24",
-                  name: ONBOARD_ENVOY_MANUAL_IMPORT_24,
-                  builder: (context, state) {
-                    return const ManualSetupImportSeed(
-                      seedLength: SeedLength.mnemonic_24,
-                    );
-                  },
-                ),
-                GoRoute(
-                  path: "seed",
-                  name: ONBOARD_ENVOY_MANUAL_IMPORT_SEED,
-                  builder: (context, state) {
-                    return RecoverFromSeedLoader(
-                      seed: state.extra as String,
-                    );
-                  },
-                ),
-              ],
-              builder: (context, state) =>
-                  const SeedIntroScreen(mode: SeedIntroScreenType.import),
+              path: "24",
+              name: ONBOARD_ENVOY_MANUAL_IMPORT_24,
+              builder: (context, state) {
+                return const ManualSetupImportSeed(
+                  seedLength: SeedLength.mnemonic_24,
+                );
+              },
+            ),
+            GoRoute(
+              path: "seed",
+              name: ONBOARD_ENVOY_MANUAL_IMPORT_SEED,
+              builder: (context, state) {
+                return RecoverFromSeedLoader(
+                  seed: state.extra as String,
+                );
+              },
             ),
           ],
-          builder: (context, state) => const ManualSetup(),
+          builder: (context, state) =>
+              const SeedIntroScreen(mode: SeedIntroScreenType.import),
         ),
         GoRoute(
           path: "magic",

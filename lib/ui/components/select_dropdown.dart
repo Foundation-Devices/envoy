@@ -2,14 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/business/connectivity_manager.dart';
-import 'package:envoy/business/settings.dart';
 
 enum EnvoyDropdownOptionType { normal, sectionBreak }
 
@@ -218,17 +217,21 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
 }
 
 int getInitialElectrumDropdownIndex() {
-  if (ConnectivityManager().usingDefaultServer) {
+  final String? savedElectrumServerType =
+      LocalStorage().prefs.getString("electrumServerType");
+
+  if (savedElectrumServerType == null ||
+      savedElectrumServerType == "foundation") {
     return 0;
+  } else if (savedElectrumServerType == "personalNode") {
+    return 1;
+  } else if (savedElectrumServerType == "blockStream") {
+    return 3;
+  } else if (savedElectrumServerType == "diyNodes") {
+    return 4;
+  } else if (savedElectrumServerType == "luke") {
+    return 5;
   }
 
-  final customAddress = Settings().selectedElectrumAddress;
-  final matchedServer = PublicServer.fromAddress(customAddress);
-
-  if (matchedServer != null) {
-    return PublicServer.values.indexOf(matchedServer) +
-        3; // Offset for section break and personal nodes
-  }
-
-  return 1; // Default to personal node
+  return 0; // Default to foundation as a safe fallback
 }
