@@ -29,22 +29,6 @@ class SingleImportPpIntroPage extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         automaticallyImplyLeading: false,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18),
-            child: EnvoyButton(
-              S().component_skip,
-              textStyle: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: Colors.white),
-              type: EnvoyButtonTypes.tertiary,
-              onTap: () {
-                context.go("/");
-              },
-            ),
-          )
-        ],
       ),
       header: Transform.translate(
         offset: const Offset(0, 110),
