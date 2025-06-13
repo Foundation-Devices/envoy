@@ -25,6 +25,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/ui/onboard/passport_scanner_screen.dart';
 
 double cardButtonHeight = 125;
 
@@ -236,7 +237,8 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
           final uri = Uri.parse(payload);
           context.pushNamed(ONBOARD_PRIME,
               queryParameters: uri.queryParameters);
-        }));
+        }),
+        child: LegacyFirmwareAlert());
   }
 
   void addPassportAccount(Binary binary, BuildContext context) async {
