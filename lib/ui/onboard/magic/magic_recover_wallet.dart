@@ -6,7 +6,6 @@ import 'dart:io';
 
 import 'package:backup/backup.dart';
 import 'package:envoy/business/envoy_seed.dart';
-import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
@@ -17,7 +16,6 @@ import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
-import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -86,7 +84,6 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           if (success) {
             Settings().updateAccountsViewSettings();
             _magicRecoverWalletState = MagicRecoveryWalletState.success;
-            LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
           } else {
             _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
           }

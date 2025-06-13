@@ -30,6 +30,12 @@ class OnboardPassportWelcomeScreen extends StatefulWidget {
 class _OnboardPassportWelcomeScreenState
     extends State<OnboardPassportWelcomeScreen> {
   @override
+  void initState() {
+    super.initState();
+    LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final bool onboardingComplete =
         LocalStorage().prefs.getBool(PREFS_ONBOARDED) ?? false;

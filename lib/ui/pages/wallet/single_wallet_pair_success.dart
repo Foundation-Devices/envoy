@@ -2,11 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/pages/wallet/single_wallet_address_verify.dart';
-import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -54,7 +52,6 @@ class SingleWalletPairSuccessPage extends StatelessWidget {
               ProviderScope.containerOf(context)
                   .read(homePageTitleProvider.notifier)
                   .state = "";
-              LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
               context.go("/");
             }),
         OnboardingButton(
