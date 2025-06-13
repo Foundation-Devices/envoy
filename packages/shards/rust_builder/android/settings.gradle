@@ -1,1 +1,5 @@
+// SPDX-FileCopyrightText: 2025 Foundation Devices Inc
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 rootProject.name = 'rust_lib_shards'
