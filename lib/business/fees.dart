@@ -95,17 +95,17 @@ class Fees {
   static const mempoolFoundationInstance = "https://mempool.foundation.xyz";
   static const testnetMempoolFoundationInstance =
       "https://testnet-mempool.foundation.xyz";
+  static const testnet4MempoolFoundationInstance =
+      "https://mempool.space/testnet4";
   static const _mempoolRecommendedFeesEndpoints = {
     Network.bitcoin: "$mempoolFoundationInstance/api/v1/fees/recommended",
     //TODO: implement testnet4
     Network.testnet:
         "$testnetMempoolFoundationInstance/api/v1/fees/recommended",
-    Network.signet:
-        "$mutinynetMempoolFoundationInstance/api/v1/fees/recommended"
+    Network.signet: "$signetMempoolFoundationInstance/api/v1/fees/recommended"
   };
-  //TODO: use signet global
-  static const mutinynetMempoolFoundationInstance =
-      "https://mutiny.foundation.xyz";
+  //TODO: use foundation instance
+  static const signetMempoolFoundationInstance = "https://mempool.space/signet";
 
   static const _mempoolBlocksFeesEndpoints = {
     Network.bitcoin: "$mempoolFoundationInstance/api/v1/fees/mempool-blocks",
@@ -113,7 +113,7 @@ class Fees {
     Network.testnet:
         "$testnetMempoolFoundationInstance/api/v1/fees/mempool-blocks",
     Network.signet:
-        "$mutinynetMempoolFoundationInstance/api/v1/fees/mempool-blocks"
+        "$signetMempoolFoundationInstance/api/v1/fees/mempool-blocks"
   };
 
   factory Fees() {
