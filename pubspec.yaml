@@ -47,6 +47,8 @@ dependencies:
     path: packages/foundation_api
   ngwallet:
     path: packages/ngwallet
+  shards:
+    path: packages/shards
 
 
   # qr_code_scanner fork
@@ -125,6 +127,7 @@ dependencies:
   in_app_purchase: ^3.2.0
   archive: ^3.6.1
   async: ^2.11.0
+
 dependency_overrides:
   watcher: ^1.1.0
 

@@ -12,6 +12,7 @@ import 'package:envoy/business/keys_manager.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/map_data.dart';
 import 'package:envoy/business/notifications.dart';
+import 'package:envoy/business/prime_shard.dart';
 import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/updates_manager.dart';
@@ -104,9 +105,15 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   UpdatesManager.init();
   ScvServer.init();
   await EnvoySeed.init();
+  await PrimeShard.init();
   await FMTCObjectBoxBackend().initialise();
   await const FMTCStore('mapStore').manage.create();
 
+  //TODO:Remove,
+  // Shards testing...
+  // await PrimeShard().addShard(
+  //     shard: [1, 234, 3, 4, 4], shardIdentifier: "xnc", deviceSerial: "test");
+  // print("all ${await PrimeShard().getAllShards()}");
   // Start Tor regardless of whether we are using it or not
   try {
     Tor.instance.start();

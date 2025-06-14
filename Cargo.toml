@@ -8,7 +8,7 @@ members = [
     "packages/ur/native/*",
     "packages/backup/native/*"
 ]
-exclude = ["passport2/extmod/foundation-rust", "packages/bluart/rust", "packages/foundation_api/rust", "packages/ngwallet/rust"]
+exclude = ["passport2/extmod/foundation-rust", "packages/bluart/rust", "packages/shards/rust", "packages/foundation_api/rust", "packages/ngwallet/rust"]
 
 [profile.release]
 lto = true

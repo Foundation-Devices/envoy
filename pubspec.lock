@@ -1398,6 +1398,13 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
+  rust_lib_shards:
+    dependency: transitive
+    description:
+      path: "packages/shards/rust_builder"
+      relative: true
+    source: path
+    version: "0.0.1"
   rxdart:
     dependency: transitive
     description:
@@ -1431,6 +1438,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.8.3"
+  shards:
+    dependency: "direct main"
+    description:
+      path: "packages/shards"
+      relative: true
+    source: path
+    version: "1.0.0+1"
   share_plus:
     dependency: "direct main"
     description:

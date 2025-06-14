@@ -30,7 +30,7 @@
 		78FFD8D129B3D023006D1730 /* libbackup_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78FFD8CC29B3D022006D1730 /* libbackup_ffi.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		78FFD8D229B3D023006D1730 /* libhttp_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78FFD8CD29B3D022006D1730 /* libhttp_ffi.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		78FFD8D329B3D023006D1730 /* libwallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78FFD8CE29B3D022006D1730 /* libwallet_ffi.a */; settings = {ATTRIBUTES = (Required, ); }; };
-		C49E014A737DDF8CAF4E437E /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4A03813E38DEED7AB21F245 /* Pods_Runner.framework */; };
+		9B0BC9982750D51426BFAF97 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FF34093C83CB520AB13BAFA /* Pods_Runner.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,7 +57,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		2125192E80E02AACAACD7642 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
+		038512D4F9A2E5115B5C9298 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
+		0FF34093C83CB520AB13BAFA /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		333000ED22D3DE5D00554162 /* Warnings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Warnings.xcconfig; sourceTree = "<group>"; };
 		335BBD1A22A9A15E00E9071D /* GeneratedPluginRegistrant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneratedPluginRegistrant.swift; sourceTree = "<group>"; };
 		33CC10ED2044A3C60003C045 /* envoy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = envoy.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -72,15 +73,14 @@
 		33E51913231747F40026EE4D /* DebugProfile.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DebugProfile.entitlements; sourceTree = "<group>"; };
 		33E51914231749380026EE4D /* Release.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = Release.entitlements; sourceTree = "<group>"; };
 		33E5194F232828860026EE4D /* AppInfo.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppInfo.xcconfig; sourceTree = "<group>"; };
-		738E4991500F4372A16A3087 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
+		35D273B445AF6FCD6995C6FA /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		78FFD8CB29B3D022006D1730 /* libur_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libur_ffi.a; path = "../target/aarch64-apple-darwin/debug/libur_ffi.a"; sourceTree = "<group>"; };
 		78FFD8CC29B3D022006D1730 /* libbackup_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbackup_ffi.a; path = "../target/aarch64-apple-darwin/debug/libbackup_ffi.a"; sourceTree = "<group>"; };
 		78FFD8CD29B3D022006D1730 /* libhttp_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libhttp_ffi.a; path = "../target/aarch64-apple-darwin/debug/libhttp_ffi.a"; sourceTree = "<group>"; };
 		78FFD8CE29B3D022006D1730 /* libwallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwallet_ffi.a; path = "../target/aarch64-apple-darwin/debug/libwallet_ffi.a"; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
-		A4A03813E38DEED7AB21F245 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		F4659C073E447A7910851DF6 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
+		D08DEA6C302F342FBCE7F7CA /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,9 +90,9 @@
 			files = (
 				78FFD8D329B3D023006D1730 /* libwallet_ffi.a in Frameworks */,
 				78FFD8D029B3D023006D1730 /* libur_ffi.a in Frameworks */,
-				C49E014A737DDF8CAF4E437E /* Pods_Runner.framework in Frameworks */,
 				78FFD8D129B3D023006D1730 /* libbackup_ffi.a in Frameworks */,
 				78FFD8D229B3D023006D1730 /* libhttp_ffi.a in Frameworks */,
+				9B0BC9982750D51426BFAF97 /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -167,9 +167,9 @@
 		C1B95B1C056D5DE558A11D63 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				F4659C073E447A7910851DF6 /* Pods-Runner.debug.xcconfig */,
-				2125192E80E02AACAACD7642 /* Pods-Runner.release.xcconfig */,
-				738E4991500F4372A16A3087 /* Pods-Runner.profile.xcconfig */,
+				D08DEA6C302F342FBCE7F7CA /* Pods-Runner.debug.xcconfig */,
+				35D273B445AF6FCD6995C6FA /* Pods-Runner.release.xcconfig */,
+				038512D4F9A2E5115B5C9298 /* Pods-Runner.profile.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -181,7 +181,7 @@
 				78FFD8CD29B3D022006D1730 /* libhttp_ffi.a */,
 				78FFD8CB29B3D022006D1730 /* libur_ffi.a */,
 				78FFD8CE29B3D022006D1730 /* libwallet_ffi.a */,
-				A4A03813E38DEED7AB21F245 /* Pods_Runner.framework */,
+				0FF34093C83CB520AB13BAFA /* Pods_Runner.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -193,13 +193,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 33CC10FB2044A3C60003C045 /* Build configuration list for PBXNativeTarget "Runner" */;
 			buildPhases = (
-				65FD6265D9CFE2511B336C6C /* [CP] Check Pods Manifest.lock */,
+				F2942AB88D86ED532EBC299A /* [CP] Check Pods Manifest.lock */,
 				33CC10E92044A3C60003C045 /* Sources */,
 				33CC10EA2044A3C60003C045 /* Frameworks */,
 				33CC10EB2044A3C60003C045 /* Resources */,
 				33CC110E2044A8840003C045 /* Bundle Framework */,
 				3399D490228B24CF009A79C7 /* ShellScript */,
-				92017579AE5CDEDD3DE5C644 /* [CP] Embed Pods Frameworks */,
+				F376E70FCA6D21D96BEA9D8B /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -307,7 +307,7 @@
 			shellPath = /bin/sh;
 			shellScript = "\"$FLUTTER_ROOT\"/packages/flutter_tools/bin/macos_assemble.sh && touch Flutter/ephemeral/tripwire";
 		};
-		65FD6265D9CFE2511B336C6C /* [CP] Check Pods Manifest.lock */ = {
+		F2942AB88D86ED532EBC299A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -329,7 +329,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		92017579AE5CDEDD3DE5C644 /* [CP] Embed Pods Frameworks */ = {
+		F376E70FCA6D21D96BEA9D8B /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (

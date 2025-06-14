@@ -11,6 +11,9 @@ private var eventSink: FlutterEventSink? = nil
 private let localSecretCloudStorageKey = "localSecret"
 private let localSecretFileName = "local.secret";
 
+private let primeSecretCloudStorageKey = "prime"
+private let primeSecretsFileName = "prime.secrets";
+
 private var folderAccessResult: FlutterResult? = nil
 
 func getSdCardBookmark() -> URL {
@@ -82,8 +85,15 @@ func getSdCardBookmark() -> URL {
                     let localSecretURL = URL.init(fileURLWithPath: paths[0].path + "/" + localSecretFileName)
                     let localSecret = try String(contentsOf: localSecretURL)
 
+                    
+                    let primeSecretsURL = URL.init(fileURLWithPath: paths[0].path + "/" + primeSecretsFileName)
+                    let primeSecret = try String(contentsOf: primeSecretsURL)
+
+                    NSUbiquitousKeyValueStore.default.set(primeSecret, forKey: primeSecretCloudStorageKey)
                     NSUbiquitousKeyValueStore.default.set(localSecret, forKey: localSecretCloudStorageKey)
+    
                     NSUbiquitousKeyValueStore.default.synchronize()
+                    
                     return result(true)
                 } catch {
                     return result(false)
@@ -164,10 +174,13 @@ func getSdCardBookmark() -> URL {
         case NSUbiquitousKeyValueStoreInitialSyncChange:
             // Envoy is installed on a new (possibly replacement) device
             let localSecret = NSUbiquitousKeyValueStore.default.string(forKey: localSecretCloudStorageKey)
+            let primeSecret = NSUbiquitousKeyValueStore.default.string(forKey: primeSecretCloudStorageKey)
 
             do {
                 //let path = try FileManager.default.url(for: .applicationSupportDirectory, in: .allDomainsMask, appropriateFor: nil, create: true)
                 let localSecretURL = path.appendingPathComponent(localSecretFileName)
+                let localPrimeSecretURL = path.appendingPathComponent(primeSecretsFileName)
+                try primeSecret?.write(to: localPrimeSecretURL, atomically: true, encoding: String.Encoding.ascii)
                 try localSecret?.write(to: localSecretURL, atomically: true, encoding: String.Encoding.ascii)
             } catch let error {
                 print(error)

@@ -14,6 +14,7 @@ list(APPEND FLUTTER_FFI_PLUGIN_LIST
   bluart
   rust_lib_foundation_api
   rust_lib_ngwallet
+  rust_lib_shards
   tor
 )
 
