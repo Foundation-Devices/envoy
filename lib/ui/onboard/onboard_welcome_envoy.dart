@@ -9,7 +9,6 @@ import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
-import 'package:envoy/ui/routes/routes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,7 +18,6 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:envoy/business/local_storage.dart';
 
 class OnboardEnvoyWelcomeScreen extends ConsumerStatefulWidget {
   const OnboardEnvoyWelcomeScreen({super.key});
@@ -209,7 +207,6 @@ class _OnboardEnvoyWelcomeScreenState
 
   @override
   void initState() {
-    LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
     if (mounted) {
       Future.delayed(const Duration(milliseconds: 100)).then((value) async {
         //while pop back to home, welcome screen will init again, so we need to check if we already tried automatic recovery
