@@ -1588,8 +1588,11 @@ Future<void> trySendToAddress(WidgetTester tester, String address) async {
   final textFeeFinder = find.text("Fee");
   await tester.pumpUntilFound(textFeeFinder,
       tries: 100, duration: Durations.long2);
+  //exit staging
   await findAndPressEnvoyIcon(tester, EnvoyIcons.chevron_left);
   await tester.pump(Durations.long2);
+  //exit send form
+  await findAndPressEnvoyIcon(tester, EnvoyIcons.chevron_left);
   await tester.pump(Durations.long2);
 }
 
