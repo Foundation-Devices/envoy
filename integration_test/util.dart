@@ -1589,10 +1589,6 @@ Future<void> trySendToAddress(WidgetTester tester, String address) async {
   await tester.pumpUntilFound(textFeeFinder,
       tries: 100, duration: Durations.long2);
   await findAndPressEnvoyIcon(tester, EnvoyIcons.chevron_left);
-  final cancelTransactionFinder = find.text("Cancel Transaction");
-  await tester.pumpUntilFound(cancelTransactionFinder,
-      tries: 100, duration: Durations.long2);
-  await tester.tap(cancelTransactionFinder);
   await tester.pump(Durations.long2);
   await tester.pump(Durations.long2);
 }
