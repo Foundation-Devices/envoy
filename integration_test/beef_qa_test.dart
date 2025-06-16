@@ -779,12 +779,12 @@ Future<void> main() async {
       }
       await tester.pump(Durations.long2);
 
-      /// Cancel the transaction and go back to settings, now toggle Sats
+      /// exit from staging
       await findAndPressFirstEnvoyIcon(tester, EnvoyIcons.chevron_left);
+      await tester.pump(Durations.long1);
 
-      await findAndTapPopUpText(tester, 'Cancel Transaction');
-      await tester.pumpAndSettle(); // Ensure the dialog is closed completely
-
+      /// exit from send
+      await pressHamburgerMenu(tester); //
       // go to home
       await findAndPressTextButton(tester, 'Accounts');
       await pressHamburgerMenu(tester);
@@ -861,7 +861,8 @@ Future<void> main() async {
 
       /// Cancel the transaction and go back to home
       await findAndPressFirstEnvoyIcon(tester, EnvoyIcons.chevron_left);
-      await findAndTapPopUpText(tester, 'Cancel Transaction');
+      await tester.pump(Durations.long2);
+      await pressHamburgerMenu(tester); // back to home
       await tester.pumpAndSettle(); // Ensure the dialog is closed completely
       await findAndPressTextButton(tester, 'Accounts');
     });
