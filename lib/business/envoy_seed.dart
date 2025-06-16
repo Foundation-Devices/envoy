@@ -21,7 +21,6 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/video.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/migrations/migration_manager.dart';
-import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
@@ -439,9 +438,6 @@ class EnvoySeed {
 
           await EnvoyStorage().insertMediaItems(videos);
           await EnvoyStorage().insertMediaItems(blogs);
-
-          // This always happens after onboarding
-          await EnvoyStorage().setBool(PREFS_ONBOARDED, true);
         }
 
         _restoreSingletons();

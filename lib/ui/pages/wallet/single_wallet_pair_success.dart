@@ -12,6 +12,8 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/ui/routes/routes.dart';
 
 class SingleWalletPairSuccessPage extends StatelessWidget {
   final EnvoyAccount pairedWallet;
@@ -20,6 +22,7 @@ class SingleWalletPairSuccessPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    EnvoyStorage().setBool(PREFS_ONBOARDED, true);
     return OnboardingPage(
       key: const Key("single_wallet_pair_success"),
       clipArt: Padding(

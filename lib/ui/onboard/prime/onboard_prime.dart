@@ -11,7 +11,6 @@ import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/home/settings/bluetooth_diag.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
-import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -38,7 +37,6 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
   @override
   void initState() {
     super.initState();
-    LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
     BluetoothManager().getPermissions();
   }
 
