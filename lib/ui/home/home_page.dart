@@ -564,8 +564,15 @@ class HomePageState extends ConsumerState<HomePage>
                         ignoring: _backgroundShown || modalShown || fullScreen,
                         child: EnvoyBottomNavigation(
                           onIndexChanged: (selectedIndex) {
-                            widget.mainNavigationShell
-                                .goBranch(selectedIndex, initialLocation: true);
+                            // ENV-2064: Prevents clunky animation when switching tabs from nested routes.
+                            widget.mainNavigationShell.goBranch(
+                                widget.mainNavigationShell.currentIndex,
+                                initialLocation: true);
+
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              widget.mainNavigationShell.goBranch(selectedIndex,
+                                  initialLocation: true);
+                            });
                           },
                         ),
                       ),
