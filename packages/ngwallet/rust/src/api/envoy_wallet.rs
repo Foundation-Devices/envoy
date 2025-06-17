@@ -941,7 +941,7 @@ pub fn get_server_features(server: String, proxy: Option<String>) -> ServerFeatu
     let config = match proxy {
         Some(proxy_addr) => {
             let socks = Socks5Config::new(&proxy_addr);
-            ConfigBuilder::new().socks5(Some(socks)).build()
+            ConfigBuilder::new().timeout(Some(10)).socks5(Some(socks)).build()
         }
         None => ConfigBuilder::new().build(),
     };

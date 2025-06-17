@@ -315,8 +315,6 @@ const int WCHAR_WIDTH = 32;
 
 const int WINT_WIDTH = 32;
 
-const int NULL = 0;
-
 const int WNOHANG = 1;
 
 const int WUNTRACED = 2;

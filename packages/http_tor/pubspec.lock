@@ -316,11 +316,12 @@ packages:
   tor:
     dependency: "direct main"
     description:
-      name: tor
-      sha256: eeed80e5c912a1806c2f81825c12e84f4dc5a0b50aebedea59e3a8ba53df3142
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.8"
+      path: "."
+      ref: ad792276a963ff0aacdb50037465729054131def
+      resolved-ref: ad792276a963ff0aacdb50037465729054131def
+      url: "https://github.com/Foundation-Devices/tor.git"
+    source: git
+    version: "0.0.9"
   vector_math:
     dependency: transitive
     description:
