@@ -187,16 +187,20 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        CupertinoNavigationBarBackButton(
-                          color: Colors.black,
-                          onPressed: () {
-                            _handleBackPress().then((proceed) {
-                              if (proceed && context.mounted) {
-                                context.pop();
-                              }
-                            });
-                          },
-                        ),
+                        if (_magicRecoverWalletState !=
+                                MagicRecoveryWalletState.success &&
+                            _magicRecoverWalletState !=
+                                MagicRecoveryWalletState.recovering)
+                          CupertinoNavigationBarBackButton(
+                            color: Colors.black,
+                            onPressed: () {
+                              _handleBackPress().then((proceed) {
+                                if (proceed && context.mounted) {
+                                  context.pop();
+                                }
+                              });
+                            },
+                          ),
                       ],
                     ),
                     Container(
@@ -519,7 +523,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           DefaultTextStyle(
             style: EnvoyTypography.heading,
             child: Text(
-              S().onboarding_magicUserMobileSuccess_header,
+              S().magic_setup_recovery_retry_header,
               textAlign: TextAlign.center,
               style: EnvoyTypography.heading,
             ),
@@ -540,7 +544,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           mainAxisSize: MainAxisSize.max,
           children: [
             Text(
-              S().wallet_setup_success_heading,
+              S().onboarding_magicUserMobileSuccess_header,
               style: EnvoyTypography.heading,
             ),
             Padding(
