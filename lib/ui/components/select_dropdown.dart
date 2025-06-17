@@ -9,6 +9,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
+import 'package:envoy/business/settings.dart';
 
 enum EnvoyDropdownOptionType { normal, sectionBreak }
 
@@ -220,10 +221,14 @@ int getInitialElectrumDropdownIndex() {
   final String? savedElectrumServerType =
       LocalStorage().prefs.getString("electrumServerType");
 
+  bool isPersonalNode = savedElectrumServerType == "personalNode" ||
+      (savedElectrumServerType == null &&
+          !Settings().usingDefaultElectrumServer);
+
   if (savedElectrumServerType == null ||
       savedElectrumServerType == "foundation") {
     return 0;
-  } else if (savedElectrumServerType == "personalNode") {
+  } else if (isPersonalNode) {
     return 1;
   } else if (savedElectrumServerType == "blockStream") {
     return 3;

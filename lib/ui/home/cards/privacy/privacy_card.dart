@@ -55,6 +55,13 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
       // Retrieve the saved persisted Electrum server type
       String? savedElectrumServerType =
           LocalStorage().prefs.getString("electrumServerType");
+
+      if (savedElectrumServerType == null &&
+          !Settings().usingDefaultElectrumServer) {
+        _showPersonalNodeTextField = true;
+        LocalStorage().prefs.setString("electrumServerType", "personalNode");
+      }
+
       if (savedElectrumServerType != null) {
         setState(() {
           _showPersonalNodeTextField =
@@ -69,11 +76,11 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
       _showPersonalNodeTextField = newOption.value == "personalNode";
     });
 
-    LocalStorage().prefs.setString("electrumServerType", newOption.value);
-
     if (newOption.value == "break") {
       return;
     }
+    LocalStorage().prefs.setString("electrumServerType", newOption.value);
+
     if (newOption.value == "foundation") {
       Settings().useDefaultElectrumServer(true);
       return;
