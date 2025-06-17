@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/connectivity_manager.dart';
+import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
@@ -335,6 +336,7 @@ class _AdvancedSettingsOptionsState
     if (newOption.value == "break") {
       return;
     }
+    LocalStorage().prefs.setString("electrumServerType", newOption.value);
     if (newOption.value == "foundation") {
       Settings().useDefaultElectrumServer(true);
       return;
