@@ -4,7 +4,6 @@
 
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
 
@@ -75,13 +74,13 @@ final spendEstimatedBlockTimeProvider = Provider<String>((ref) {
   Network network = account.network;
 
   //with in 10 minutes
-  double feeRateFast = Fees().fees[network]?.mempoolFastestRate ?? 2;
+  int feeRateFast = Fees().fees[network]?.mempoolFastestRate ?? 2;
   //with in 30 minutes
-  double feeHalfHourRate = Fees().fees[network]?.mempoolHalfHourRate ?? 1;
+  int feeHalfHourRate = Fees().fees[network]?.mempoolHalfHourRate ?? 1;
 
-  double feeHourRate = Fees().fees[network]?.mempoolHourRate ?? 1;
+  int feeHourRate = Fees().fees[network]?.mempoolHourRate ?? 1;
 
-  double selectedFeeRate = convertToFeeRate(feeRate);
+  int selectedFeeRate = feeRate.toInt();
 
   if (feeRateFast <= selectedFeeRate) {
     return "~10";

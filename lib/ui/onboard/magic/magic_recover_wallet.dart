@@ -16,6 +16,7 @@ import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -25,6 +26,8 @@ import 'package:envoy/ui/widgets/scanner/decoders/seed_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/util/build_context_extension.dart';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/util/envoy_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -116,6 +119,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
       }
     } finally {
       if (success) {
+        EnvoyStorage().setBool(PREFS_ONBOARDED, true);
         _setHappyState();
       } else {
         _setUnhappyState();
@@ -179,6 +183,26 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        if (_magicRecoverWalletState !=
+                                MagicRecoveryWalletState.success &&
+                            _magicRecoverWalletState !=
+                                MagicRecoveryWalletState.recovering)
+                          CupertinoNavigationBarBackButton(
+                            color: Colors.black,
+                            onPressed: () {
+                              _handleBackPress().then((proceed) {
+                                if (proceed && context.mounted) {
+                                  context.pop();
+                                }
+                              });
+                            },
+                          ),
+                      ],
+                    ),
                     Container(
                       constraints:
                           BoxConstraints.tight(const Size.fromHeight(240)),
@@ -520,7 +544,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           mainAxisSize: MainAxisSize.max,
           children: [
             Text(
-              S().wallet_setup_success_heading,
+              S().onboarding_magicUserMobileSuccess_header,
               style: EnvoyTypography.heading,
             ),
             Padding(

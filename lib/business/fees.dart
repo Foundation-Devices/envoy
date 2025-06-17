@@ -51,11 +51,11 @@ LocalStorage _ls = LocalStorage();
 @JsonSerializable()
 class Fees {
   // All in BTC per kb
-  double fastRate(Network network) {
+  int fastRate(Network network) {
     return fees[network]?.mempoolFastestRate ?? 1;
   }
 
-  double slowRate(Network network) {
+  int slowRate(Network network) {
     return fees[network]?.mempoolHourRate ?? 1;
   }
 
@@ -168,16 +168,11 @@ class Fees {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
 
-        fees[network]!.mempoolFastestRate =
-            json["fastestFee"].toDouble() / 100000.0;
-        fees[network]!.mempoolHalfHourRate =
-            json["halfHourFee"].toDouble() / 100000.0;
-        fees[network]!.mempoolHourRate = json["hourFee"].toDouble() / 100000.0;
-        fees[network]!.mempoolEconomyRate =
-            json["economyFee"].toDouble() / 100000.0;
-        fees[network]!.mempoolMinimumRate =
-            json["minimumFee"].toDouble() / 100000.0;
-
+        fees[network]!.mempoolFastestRate = json["fastestFee"];
+        fees[network]!.mempoolHalfHourRate = json["halfHourFee"];
+        fees[network]!.mempoolHourRate = json["hourFee"];
+        fees[network]!.mempoolEconomyRate = json["economyFee"];
+        fees[network]!.mempoolMinimumRate = json["minimumFee"];
         _storeRates();
       } else {
         throw Exception("Couldn't get mempool.space fees");
