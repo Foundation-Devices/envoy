@@ -52,12 +52,10 @@ final isTransactionCancellableProvider = Provider<bool>((ref) {
   if (account == null) {
     return false;
   }
-  TransactionModel transactionModel = ref.watch(spendTransactionProvider);
   bool userChangedCoins = ref.watch(userSelectedCoinsThisSessionProvider);
-  final finalizedTx = transactionModel.draftTransaction?.isFinalized ?? false;
   bool cancellable = true;
 
-  cancellable = !finalizedTx && !userChangedCoins;
+  cancellable = !userChangedCoins;
 
   return cancellable;
 });

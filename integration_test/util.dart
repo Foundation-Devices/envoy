@@ -999,7 +999,8 @@ Future<String> getAddressFromReceiveScreen(WidgetTester tester) async {
   return address.trim();
 }
 
-Future<void> checkSync(WidgetTester tester) async {
+Future<void> checkSync(WidgetTester tester,
+    {String waitAccSync = 'GH TEST ACC (#1)'}) async {
   await goBackHome(tester);
   SyncManager().sync();
 
@@ -1008,7 +1009,7 @@ Future<void> checkSync(WidgetTester tester) async {
     duration: Duration(seconds: 2),
     condition: () {
       final accountTile = find.ancestor(
-        of: find.text('GH TEST ACC (#1)').first,
+        of: find.text(waitAccSync).first,
         matching: find.byType(AccountListTile),
       );
 
@@ -1570,7 +1571,7 @@ Future<void> findAndPressIcon(WidgetTester tester, IconData iconData) async {
 Future<void> trySendToAddress(WidgetTester tester, String address) async {
   final sendButtonFinder = find.text("Send");
   expect(sendButtonFinder, findsWidgets);
-  await tester.tap(sendButtonFinder.first);
+  await tester.tap(sendButtonFinder.last);
   await tester.pump(Durations.long2);
 
   await enterTextInField(tester, find.byType(TextFormField), address);
@@ -1588,11 +1589,14 @@ Future<void> trySendToAddress(WidgetTester tester, String address) async {
   final textFeeFinder = find.text("Fee");
   await tester.pumpUntilFound(textFeeFinder,
       tries: 100, duration: Durations.long2);
-  //exit staging
   await findAndPressEnvoyIcon(tester, EnvoyIcons.chevron_left);
   await tester.pump(Durations.long2);
-  //exit send form
-  await findAndPressEnvoyIcon(tester, EnvoyIcons.chevron_left);
+
+  final cancelTransactionFinder = find.text("Cancel Transaction");
+  await tester.pumpUntilFound(cancelTransactionFinder,
+      tries: 100, duration: Durations.long2);
+  await tester.tap(cancelTransactionFinder);
+  await tester.pump(Durations.long2);
   await tester.pump(Durations.long2);
 }
 

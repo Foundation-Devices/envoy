@@ -783,8 +783,13 @@ Future<void> main() async {
       await findAndPressFirstEnvoyIcon(tester, EnvoyIcons.chevron_left);
       await tester.pump(Durations.long1);
 
-      /// exit from send
-      await pressHamburgerMenu(tester); //
+      final cancelTransactionFinder = find.text("Cancel Transaction");
+      await tester.pumpUntilFound(cancelTransactionFinder,
+          tries: 100, duration: Durations.long2);
+      await tester.tap(cancelTransactionFinder);
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
+
       // go to home
       await findAndPressTextButton(tester, 'Accounts');
       await pressHamburgerMenu(tester);
@@ -802,6 +807,9 @@ Future<void> main() async {
       // return to home
       await pressHamburgerMenu(tester);
       await pressHamburgerMenu(tester);
+
+      await checkSync(tester,
+          waitAccSync: "Signet"); // Wait for the Signet acc to sync
 
       /// Check that all values are in BTC in the accounts menu, (and in the activity menu)
       // I am looking only one icon, because all of them are set with the same widget
@@ -859,10 +867,15 @@ Future<void> main() async {
         expect(fiatCheckResult, isTrue);
       }
 
-      /// Cancel the transaction and go back to home
+      /// exit from staging
       await findAndPressFirstEnvoyIcon(tester, EnvoyIcons.chevron_left);
+      await tester.pump(Durations.long1);
+
+      await tester.pumpUntilFound(cancelTransactionFinder,
+          tries: 100, duration: Durations.long2);
+      await tester.tap(cancelTransactionFinder);
       await tester.pump(Durations.long2);
-      await pressHamburgerMenu(tester); // back to home
+      await tester.pump(Durations.long2);
       await tester.pumpAndSettle(); // Ensure the dialog is closed completely
       await findAndPressTextButton(tester, 'Accounts');
     });
