@@ -196,7 +196,7 @@ final accountsRouter = StatefulShellBranch(
                               final exit = await showEnvoyDialog(
                                   context: context,
                                   dialog: const DiscardTransactionDialog());
-                              if (!exit) {
+                              if (exit == false) {
                                 return false;
                               }
                             }

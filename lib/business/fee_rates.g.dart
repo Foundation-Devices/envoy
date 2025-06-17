@@ -7,13 +7,13 @@ part of 'fee_rates.dart';
 // **************************************************************************
 
 FeeRates _$FeeRatesFromJson(Map<String, dynamic> json) => FeeRates()
-  ..mempoolFastestRate = (json['mempoolFastestRate'] as num).toDouble()
-  ..mempoolHalfHourRate = (json['mempoolHalfHourRate'] as num).toDouble()
-  ..mempoolHourRate = (json['mempoolHourRate'] as num).toDouble()
-  ..mempoolEconomyRate = (json['mempoolEconomyRate'] as num).toDouble()
-  ..mempoolMinimumRate = (json['mempoolMinimumRate'] as num).toDouble()
-  ..electrumFastRate = (json['electrumFastRate'] as num).toDouble()
-  ..electrumSlowRate = (json['electrumSlowRate'] as num).toDouble()
+  ..mempoolFastestRate = (json['mempoolFastestRate'] as num).toInt()
+  ..mempoolHalfHourRate = (json['mempoolHalfHourRate'] as num).toInt()
+  ..mempoolHourRate = (json['mempoolHourRate'] as num).toInt()
+  ..mempoolEconomyRate = (json['mempoolEconomyRate'] as num).toInt()
+  ..mempoolMinimumRate = (json['mempoolMinimumRate'] as num).toInt()
+  ..electrumFastRate = (json['electrumFastRate'] as num).toInt()
+  ..electrumSlowRate = (json['electrumSlowRate'] as num).toInt()
   ..mempoolBlocksMedianFeeRate =
       (json['mempoolBlocksMedianFeeRate'] as List<dynamic>?)
               ?.map((e) => (e as num).toDouble())

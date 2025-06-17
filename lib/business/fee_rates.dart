@@ -12,15 +12,14 @@ class FeeRates {
   FeeRates();
 
   // Fee rate cannot be lower than 1 sat/byte
-  // Expressed here in BTC/kb because we used to depend on Electrum for this
-  double mempoolFastestRate = 0.00001;
-  double mempoolHalfHourRate = 0.00001;
-  double mempoolHourRate = 0.00001;
-  double mempoolEconomyRate = 0.00001;
-  double mempoolMinimumRate = 0.00001;
+  int mempoolFastestRate = 2;
+  int mempoolHalfHourRate = 1;
+  int mempoolHourRate = 1;
+  int mempoolEconomyRate = 1;
+  int mempoolMinimumRate = 1;
 
-  double electrumFastRate = 0.00001;
-  double electrumSlowRate = 0.00001;
+  int electrumFastRate = 2;
+  int electrumSlowRate = 1;
 
   @JsonKey(defaultValue: [])
   List<double> mempoolBlocksMedianFeeRate = [];
