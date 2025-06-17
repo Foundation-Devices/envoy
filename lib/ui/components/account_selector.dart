@@ -453,8 +453,14 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
                                 top: EnvoySpacing.medium1),
                             itemBuilder: (context, index) {
                               final account = widget.accounts[index];
+                              final isLast =
+                                  index == widget.accounts.length - 1;
                               return Padding(
-                                padding: const EdgeInsets.all(12),
+                                padding: EdgeInsets.fromLTRB(
+                                    EnvoySpacing.medium2 / 2,
+                                    EnvoySpacing.medium2 / 2,
+                                    EnvoySpacing.medium2 / 2,
+                                    isLast ? 200 : EnvoySpacing.medium2 / 2),
                                 child: AccountListTile(
                                   key: _shuttleCardKeys[account.id],
                                   account,

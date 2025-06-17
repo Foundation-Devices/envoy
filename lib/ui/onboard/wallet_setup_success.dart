@@ -13,6 +13,8 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/ui/routes/routes.dart';
 
 class WalletSetupSuccess extends ConsumerStatefulWidget {
   final bool isPrimeWallet;
@@ -29,6 +31,8 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
     Future.delayed(const Duration(milliseconds: 100)).then((_) {
       ref.read(successfulSetupWallet.notifier).state = true;
     });
+    EnvoyStorage().setBool(PREFS_ONBOARDED, true);
+
     super.initState();
   }
 

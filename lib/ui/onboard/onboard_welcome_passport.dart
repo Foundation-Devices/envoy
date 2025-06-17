@@ -32,7 +32,6 @@ class _OnboardPassportWelcomeScreenState
   @override
   void initState() {
     super.initState();
-    LocalStorage().prefs.setBool(PREFS_ONBOARDED, true);
   }
 
   @override
