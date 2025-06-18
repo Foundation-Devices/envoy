@@ -445,8 +445,8 @@ class EnvoySeed {
         EnvoyReport().log("EnvoySeed", "Error restoring database: $e");
       }
 
-      // if the data does not contains NgAccountManager.accountsPrefKey at root,
-      // data is from older backup,so we need to restore legacy wallets
+      // if the data does not contains v2 backup at root (NgAccountManager.accountsPrefKey) at root,
+      // Data is from older backups,so we need to restore legacy wallets
       if (data.containsKey(EnvoyStorage.dbName) &&
           !data.containsKey(NgAccountManager.accountsPrefKey)) {
         List<LegacyAccount> legacyWallets = getLegacyAccountsFromMBJson(data);
@@ -456,7 +456,7 @@ class EnvoySeed {
           )}");
           await create(seed.split(" "),
               passphrase: passphrase, requireScan: true);
-          await restoreLegacyWallet(legacyWallets, seed);
+          await restoreLegacyWallet(legacyWallets);
           isLegacy = true;
         } catch (e) {
           EnvoyReport().log("EnvoySeed",
@@ -539,8 +539,7 @@ class EnvoySeed {
     data[EnvoyStorage.dbName] = jsonEncode(db);
   }
 
-  Future restoreLegacyWallet(
-      List<LegacyAccount> legacyWallets, String seed) async {
+  Future restoreLegacyWallet(List<LegacyAccount> legacyWallets) async {
     List<LegacyUnifiedAccounts> legacy = MigrationManager.unify(
         legacyWallets.where((wallet) => !wallet.wallet.hot).toList());
 
@@ -767,8 +766,14 @@ class EnvoySeed {
               number: config.index,
               accountId: config.id);
         }
+
         if (await dir.exists()) {
-          await dir.delete(recursive: true);
+          bool existInAccountManager = NgAccountManager()
+              .accounts
+              .any((element) => element.walletPath == dir.path);
+          if (existInAccountManager) {
+            continue;
+          }
         }
         await dir.create(recursive: true);
 
