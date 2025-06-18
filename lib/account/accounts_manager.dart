@@ -134,6 +134,16 @@ class NgAccountManager extends ChangeNotifier {
         }
       }
     }
+
+    _accountsHandler.sort((a, b) {
+      int aIndex = order.indexOf(a.$1.id);
+      int bIndex = order.indexOf(b.$1.id);
+      if (aIndex == -1 && bIndex == -1) return 0;
+      if (aIndex == -1) return 1;
+      if (bIndex == -1) return -1;
+      return aIndex.compareTo(bIndex);
+    });
+
     SyncManager().startSync();
     _accountsOrder.sink.add(order);
     notifyListeners();
