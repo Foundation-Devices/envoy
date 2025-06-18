@@ -484,7 +484,7 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
         .pushNamed(PSBT_QR_EXCHANGE_STANDALONE, extra: widget.cancelTx);
     if (cryptoPsbt is CryptoPsbt && received == false) {
       final preparedTx = await EnvoyAccountHandler.decodePsbt(
-          draftTransaction: draftTransaction, psbtBase64: cryptoPsbt.decoded);
+          draftTransaction: draftTransaction, psbt: cryptoPsbt.payload);
       draftTransaction = preparedTx;
       await Future.delayed(const Duration(milliseconds: 50));
       //pop dialog
