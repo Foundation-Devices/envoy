@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:convert';
+import 'dart:developer';
 import 'dart:typed_data';
 import 'package:cbor/cbor.dart' as cbor;
 import 'package:envoy/business/scv_server.dart';
@@ -400,7 +400,7 @@ class Binary {
 }
 
 class CryptoPsbt {
-  String decoded = "";
+  dynamic decoded;
   Uint8List payload;
 
   CryptoPsbt.fromPayload(this.payload) {
@@ -415,6 +415,7 @@ class CryptoPsbt {
     inst.decodeFromBuffer(payloadBuffer);
 
     var psbt = inst.getDecodedData()![0];
-    decoded = base64Encode(psbt);
+    decoded = psbt;
+    log("payload buffer ${inst.getDecodedData()![0]}");
   }
 }

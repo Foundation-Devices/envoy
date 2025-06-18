@@ -112,7 +112,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
   _handleQRExchange(EnvoyAccount account, BuildContext rootContext,
       ProviderContainer providerScope) async {
     TransactionModel transactionModel = ref.read(spendTransactionProvider);
-    String? psbt = transactionModel.draftTransaction?.psbtBase64;
+    Uint8List? psbt = transactionModel.draftTransaction?.psbt;
     //if serial is prime, send psbt through ql
     if (account.deviceSerial == "prime" && psbt != null) {
       kPrint("Sending to prime $psbt");
@@ -154,9 +154,11 @@ class _TxReviewState extends ConsumerState<TxReview> {
                   (message.message as QuantumLinkMessage_BroadcastTransaction)
                       .field0;
               kPrint("Signed Psbt $signedPsbt");
-              await ref
-                  .read(spendTransactionProvider.notifier)
-                  .decodePrimePsbt(providerScope, signedPsbt.psbt);
+              kPrint("Signed Psbt $signedPsbt");
+              //TODO: fix quantum link with Uint8List psbt
+              // await ref
+              //     .read(spendTransactionProvider.notifier)
+              //     .decodePrimePsbt(providerScope, signedPsbt.psbt);
               //hide the dialog
               if (rootContext.mounted) {
                 Navigator.pop(rootContext);
@@ -168,10 +170,11 @@ class _TxReviewState extends ConsumerState<TxReview> {
           }
         });
 
-        await BluetoothManager().send(QuantumLinkMessage_SignPsbt(SignPsbt(
-          accountId: account.id,
-          psbt: psbt,
-        )));
+        // TODO: fix quantum link with Uint8List psbt
+        // await BluetoothManager().send(QuantumLinkMessage_SignPsbt(SignPsbt(
+        //   accountId: account.id,
+        //   psbt: psbt,
+        // )));
         kPrint("Waiting for prime response...");
         //wait for response from prime. maybe show some dialog while waiting?
       } catch (e, stack) {

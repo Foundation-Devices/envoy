@@ -206,7 +206,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
                   spendableBalance;
       }
       return true;
-    } catch (e) {
+    } catch (e, stack) {
+      debugPrintStack(stackTrace: stack);
       //reset the fee rate to the one used in the transaction
       ref.read(spendFeeRateProvider.notifier).state =
           (state.draftTransaction?.transaction.feeRate)?.toInt() ?? 1;
@@ -247,7 +248,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     DraftTransaction updatedTx = DraftTransaction(
         changeOutPutTag: state.changeOutPutTag,
         transaction: tx.transaction.copyWith(note: note),
-        psbtBase64: tx.psbtBase64,
+        psbt: tx.psbt,
         inputTags: tx.inputTags,
         isFinalized: tx.isFinalized);
 
@@ -300,7 +301,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
             return output;
           }).toList(),
         ),
-        psbtBase64: tx.psbtBase64,
+        psbt: tx.psbt,
         changeOutPutTag: tag,
         inputTags: tx.inputTags,
         isFinalized: tx.isFinalized);
@@ -453,8 +454,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     }
     try {
       final preparedTx = await EnvoyAccountHandler.decodePsbt(
-          draftTransaction: state.draftTransaction!,
-          psbtBase64: decoded.decoded);
+          draftTransaction: state.draftTransaction!, psbt: decoded.decoded);
       kPrint(
           "Decoded PSBT: ${preparedTx.transaction.txId} | isFinalized : ${preparedTx.isFinalized}");
       _updateWithPreparedTransaction(preparedTx, state.transactionParams);
@@ -467,7 +467,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     }
   }
 
-  Future decodePrimePsbt(ProviderContainer ref, String psbt) async {
+  Future decodePrimePsbt(ProviderContainer ref, Uint8List psbt) async {
     EnvoyAccount? account = ref.read(selectedAccountProvider);
     EnvoyAccountHandler? handler = account?.handler;
     if (account == null ||
@@ -478,7 +478,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     }
     try {
       final preparedTx = await EnvoyAccountHandler.decodePsbt(
-          draftTransaction: state.draftTransaction!, psbtBase64: psbt);
+          draftTransaction: state.draftTransaction!, psbt: psbt);
       kPrint(
           "Decoded PSBT: ${preparedTx.transaction.txId} | isFinalized : ${preparedTx.isFinalized}");
       _updateWithPreparedTransaction(preparedTx, state.transactionParams);
@@ -512,8 +512,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
   void _handleComposeError(Object error) {
     String errorMessage = error.toString();
-    if (error is ComposeTxError) {
-      ComposeTxError composeTxError = error;
+    if (error is TxComposeError) {
+      TxComposeError composeTxError = error;
 
       EnvoyReport().log("Spend",
           "Spend validation failed : ${composeTxError.field0.toString()}");

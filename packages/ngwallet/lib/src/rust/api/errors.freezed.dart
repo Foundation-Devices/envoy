@@ -579,7 +579,7 @@ abstract class BroadcastError_Message extends BroadcastError {
 }
 
 /// @nodoc
-mixin _$ComposeTxError {
+mixin _$TxComposeError {
   Object get field0 => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
@@ -611,37 +611,37 @@ mixin _$ComposeTxError {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(ComposeTxError_CoinSelectionError value)
+    required TResult Function(TxComposeError_CoinSelectionError value)
         coinSelectionError,
-    required TResult Function(ComposeTxError_Error value) error,
-    required TResult Function(ComposeTxError_InsufficientFunds value)
+    required TResult Function(TxComposeError_Error value) error,
+    required TResult Function(TxComposeError_InsufficientFunds value)
         insufficientFunds,
-    required TResult Function(ComposeTxError_InsufficientFees value)
+    required TResult Function(TxComposeError_InsufficientFees value)
         insufficientFees,
-    required TResult Function(ComposeTxError_InsufficientFeeRate value)
+    required TResult Function(TxComposeError_InsufficientFeeRate value)
         insufficientFeeRate,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ComposeTxError_CoinSelectionError value)?
+    TResult? Function(TxComposeError_CoinSelectionError value)?
         coinSelectionError,
-    TResult? Function(ComposeTxError_Error value)? error,
-    TResult? Function(ComposeTxError_InsufficientFunds value)?
+    TResult? Function(TxComposeError_Error value)? error,
+    TResult? Function(TxComposeError_InsufficientFunds value)?
         insufficientFunds,
-    TResult? Function(ComposeTxError_InsufficientFees value)? insufficientFees,
-    TResult? Function(ComposeTxError_InsufficientFeeRate value)?
+    TResult? Function(TxComposeError_InsufficientFees value)? insufficientFees,
+    TResult? Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(ComposeTxError_CoinSelectionError value)?
+    TResult Function(TxComposeError_CoinSelectionError value)?
         coinSelectionError,
-    TResult Function(ComposeTxError_Error value)? error,
-    TResult Function(ComposeTxError_InsufficientFunds value)? insufficientFunds,
-    TResult Function(ComposeTxError_InsufficientFees value)? insufficientFees,
-    TResult Function(ComposeTxError_InsufficientFeeRate value)?
+    TResult Function(TxComposeError_Error value)? error,
+    TResult Function(TxComposeError_InsufficientFunds value)? insufficientFunds,
+    TResult Function(TxComposeError_InsufficientFees value)? insufficientFees,
+    TResult Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
     required TResult orElse(),
   }) =>
@@ -649,54 +649,54 @@ mixin _$ComposeTxError {
 }
 
 /// @nodoc
-abstract class $ComposeTxErrorCopyWith<$Res> {
-  factory $ComposeTxErrorCopyWith(
-          ComposeTxError value, $Res Function(ComposeTxError) then) =
-      _$ComposeTxErrorCopyWithImpl<$Res, ComposeTxError>;
+abstract class $TxComposeErrorCopyWith<$Res> {
+  factory $TxComposeErrorCopyWith(
+          TxComposeError value, $Res Function(TxComposeError) then) =
+      _$TxComposeErrorCopyWithImpl<$Res, TxComposeError>;
 }
 
 /// @nodoc
-class _$ComposeTxErrorCopyWithImpl<$Res, $Val extends ComposeTxError>
-    implements $ComposeTxErrorCopyWith<$Res> {
-  _$ComposeTxErrorCopyWithImpl(this._value, this._then);
+class _$TxComposeErrorCopyWithImpl<$Res, $Val extends TxComposeError>
+    implements $TxComposeErrorCopyWith<$Res> {
+  _$TxComposeErrorCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of ComposeTxError
+  /// Create a copy of TxComposeError
   /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
-abstract class _$$ComposeTxError_CoinSelectionErrorImplCopyWith<$Res> {
-  factory _$$ComposeTxError_CoinSelectionErrorImplCopyWith(
-          _$ComposeTxError_CoinSelectionErrorImpl value,
-          $Res Function(_$ComposeTxError_CoinSelectionErrorImpl) then) =
-      __$$ComposeTxError_CoinSelectionErrorImplCopyWithImpl<$Res>;
+abstract class _$$TxComposeError_CoinSelectionErrorImplCopyWith<$Res> {
+  factory _$$TxComposeError_CoinSelectionErrorImplCopyWith(
+          _$TxComposeError_CoinSelectionErrorImpl value,
+          $Res Function(_$TxComposeError_CoinSelectionErrorImpl) then) =
+      __$$TxComposeError_CoinSelectionErrorImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String field0});
 }
 
 /// @nodoc
-class __$$ComposeTxError_CoinSelectionErrorImplCopyWithImpl<$Res>
-    extends _$ComposeTxErrorCopyWithImpl<$Res,
-        _$ComposeTxError_CoinSelectionErrorImpl>
-    implements _$$ComposeTxError_CoinSelectionErrorImplCopyWith<$Res> {
-  __$$ComposeTxError_CoinSelectionErrorImplCopyWithImpl(
-      _$ComposeTxError_CoinSelectionErrorImpl _value,
-      $Res Function(_$ComposeTxError_CoinSelectionErrorImpl) _then)
+class __$$TxComposeError_CoinSelectionErrorImplCopyWithImpl<$Res>
+    extends _$TxComposeErrorCopyWithImpl<$Res,
+        _$TxComposeError_CoinSelectionErrorImpl>
+    implements _$$TxComposeError_CoinSelectionErrorImplCopyWith<$Res> {
+  __$$TxComposeError_CoinSelectionErrorImplCopyWithImpl(
+      _$TxComposeError_CoinSelectionErrorImpl _value,
+      $Res Function(_$TxComposeError_CoinSelectionErrorImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of ComposeTxError
+  /// Create a copy of TxComposeError
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$ComposeTxError_CoinSelectionErrorImpl(
+    return _then(_$TxComposeError_CoinSelectionErrorImpl(
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
@@ -707,38 +707,38 @@ class __$$ComposeTxError_CoinSelectionErrorImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$ComposeTxError_CoinSelectionErrorImpl
-    extends ComposeTxError_CoinSelectionError {
-  const _$ComposeTxError_CoinSelectionErrorImpl(this.field0) : super._();
+class _$TxComposeError_CoinSelectionErrorImpl
+    extends TxComposeError_CoinSelectionError {
+  const _$TxComposeError_CoinSelectionErrorImpl(this.field0) : super._();
 
   @override
   final String field0;
 
   @override
   String toString() {
-    return 'ComposeTxError.coinSelectionError(field0: $field0)';
+    return 'TxComposeError.coinSelectionError(field0: $field0)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ComposeTxError_CoinSelectionErrorImpl &&
+            other is _$TxComposeError_CoinSelectionErrorImpl &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, field0);
 
-  /// Create a copy of ComposeTxError
+  /// Create a copy of TxComposeError
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$ComposeTxError_CoinSelectionErrorImplCopyWith<
-          _$ComposeTxError_CoinSelectionErrorImpl>
-      get copyWith => __$$ComposeTxError_CoinSelectionErrorImplCopyWithImpl<
-          _$ComposeTxError_CoinSelectionErrorImpl>(this, _$identity);
+  _$$TxComposeError_CoinSelectionErrorImplCopyWith<
+          _$TxComposeError_CoinSelectionErrorImpl>
+      get copyWith => __$$TxComposeError_CoinSelectionErrorImplCopyWithImpl<
+          _$TxComposeError_CoinSelectionErrorImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -783,14 +783,14 @@ class _$ComposeTxError_CoinSelectionErrorImpl
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(ComposeTxError_CoinSelectionError value)
+    required TResult Function(TxComposeError_CoinSelectionError value)
         coinSelectionError,
-    required TResult Function(ComposeTxError_Error value) error,
-    required TResult Function(ComposeTxError_InsufficientFunds value)
+    required TResult Function(TxComposeError_Error value) error,
+    required TResult Function(TxComposeError_InsufficientFunds value)
         insufficientFunds,
-    required TResult Function(ComposeTxError_InsufficientFees value)
+    required TResult Function(TxComposeError_InsufficientFees value)
         insufficientFees,
-    required TResult Function(ComposeTxError_InsufficientFeeRate value)
+    required TResult Function(TxComposeError_InsufficientFeeRate value)
         insufficientFeeRate,
   }) {
     return coinSelectionError(this);
@@ -799,13 +799,13 @@ class _$ComposeTxError_CoinSelectionErrorImpl
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ComposeTxError_CoinSelectionError value)?
+    TResult? Function(TxComposeError_CoinSelectionError value)?
         coinSelectionError,
-    TResult? Function(ComposeTxError_Error value)? error,
-    TResult? Function(ComposeTxError_InsufficientFunds value)?
+    TResult? Function(TxComposeError_Error value)? error,
+    TResult? Function(TxComposeError_InsufficientFunds value)?
         insufficientFunds,
-    TResult? Function(ComposeTxError_InsufficientFees value)? insufficientFees,
-    TResult? Function(ComposeTxError_InsufficientFeeRate value)?
+    TResult? Function(TxComposeError_InsufficientFees value)? insufficientFees,
+    TResult? Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
   }) {
     return coinSelectionError?.call(this);
@@ -814,12 +814,12 @@ class _$ComposeTxError_CoinSelectionErrorImpl
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(ComposeTxError_CoinSelectionError value)?
+    TResult Function(TxComposeError_CoinSelectionError value)?
         coinSelectionError,
-    TResult Function(ComposeTxError_Error value)? error,
-    TResult Function(ComposeTxError_InsufficientFunds value)? insufficientFunds,
-    TResult Function(ComposeTxError_InsufficientFees value)? insufficientFees,
-    TResult Function(ComposeTxError_InsufficientFeeRate value)?
+    TResult Function(TxComposeError_Error value)? error,
+    TResult Function(TxComposeError_InsufficientFunds value)? insufficientFunds,
+    TResult Function(TxComposeError_InsufficientFees value)? insufficientFees,
+    TResult Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
     required TResult orElse(),
   }) {
@@ -830,47 +830,47 @@ class _$ComposeTxError_CoinSelectionErrorImpl
   }
 }
 
-abstract class ComposeTxError_CoinSelectionError extends ComposeTxError {
-  const factory ComposeTxError_CoinSelectionError(final String field0) =
-      _$ComposeTxError_CoinSelectionErrorImpl;
-  const ComposeTxError_CoinSelectionError._() : super._();
+abstract class TxComposeError_CoinSelectionError extends TxComposeError {
+  const factory TxComposeError_CoinSelectionError(final String field0) =
+      _$TxComposeError_CoinSelectionErrorImpl;
+  const TxComposeError_CoinSelectionError._() : super._();
 
   @override
   String get field0;
 
-  /// Create a copy of ComposeTxError
+  /// Create a copy of TxComposeError
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ComposeTxError_CoinSelectionErrorImplCopyWith<
-          _$ComposeTxError_CoinSelectionErrorImpl>
+  _$$TxComposeError_CoinSelectionErrorImplCopyWith<
+          _$TxComposeError_CoinSelectionErrorImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$ComposeTxError_ErrorImplCopyWith<$Res> {
-  factory _$$ComposeTxError_ErrorImplCopyWith(_$ComposeTxError_ErrorImpl value,
-          $Res Function(_$ComposeTxError_ErrorImpl) then) =
-      __$$ComposeTxError_ErrorImplCopyWithImpl<$Res>;
+abstract class _$$TxComposeError_ErrorImplCopyWith<$Res> {
+  factory _$$TxComposeError_ErrorImplCopyWith(_$TxComposeError_ErrorImpl value,
+          $Res Function(_$TxComposeError_ErrorImpl) then) =
+      __$$TxComposeError_ErrorImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String field0});
 }
 
 /// @nodoc
-class __$$ComposeTxError_ErrorImplCopyWithImpl<$Res>
-    extends _$ComposeTxErrorCopyWithImpl<$Res, _$ComposeTxError_ErrorImpl>
-    implements _$$ComposeTxError_ErrorImplCopyWith<$Res> {
-  __$$ComposeTxError_ErrorImplCopyWithImpl(_$ComposeTxError_ErrorImpl _value,
-      $Res Function(_$ComposeTxError_ErrorImpl) _then)
+class __$$TxComposeError_ErrorImplCopyWithImpl<$Res>
+    extends _$TxComposeErrorCopyWithImpl<$Res, _$TxComposeError_ErrorImpl>
+    implements _$$TxComposeError_ErrorImplCopyWith<$Res> {
+  __$$TxComposeError_ErrorImplCopyWithImpl(_$TxComposeError_ErrorImpl _value,
+      $Res Function(_$TxComposeError_ErrorImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of ComposeTxError
+  /// Create a copy of TxComposeError
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$ComposeTxError_ErrorImpl(
+    return _then(_$TxComposeError_ErrorImpl(
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
@@ -881,36 +881,36 @@ class __$$ComposeTxError_ErrorImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$ComposeTxError_ErrorImpl extends ComposeTxError_Error {
-  const _$ComposeTxError_ErrorImpl(this.field0) : super._();
+class _$TxComposeError_ErrorImpl extends TxComposeError_Error {
+  const _$TxComposeError_ErrorImpl(this.field0) : super._();
 
   @override
   final String field0;
 
   @override
   String toString() {
-    return 'ComposeTxError.error(field0: $field0)';
+    return 'TxComposeError.error(field0: $field0)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ComposeTxError_ErrorImpl &&
+            other is _$TxComposeError_ErrorImpl &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, field0);
 
-  /// Create a copy of ComposeTxError
+  /// Create a copy of TxComposeError
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$ComposeTxError_ErrorImplCopyWith<_$ComposeTxError_ErrorImpl>
+  _$$TxComposeError_ErrorImplCopyWith<_$TxComposeError_ErrorImpl>
       get copyWith =>
-          __$$ComposeTxError_ErrorImplCopyWithImpl<_$ComposeTxError_ErrorImpl>(
+          __$$TxComposeError_ErrorImplCopyWithImpl<_$TxComposeError_ErrorImpl>(
               this, _$identity);
 
   @override
@@ -956,14 +956,14 @@ class _$ComposeTxError_ErrorImpl extends ComposeTxError_Error {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(ComposeTxError_CoinSelectionError value)
+    required TResult Function(TxComposeError_CoinSelectionError value)
         coinSelectionError,
-    required TResult Function(ComposeTxError_Error value) error,
-    required TResult Function(ComposeTxError_InsufficientFunds value)
+    required TResult Function(TxComposeError_Error value) error,
+    required TResult Function(TxComposeError_InsufficientFunds value)
         insufficientFunds,
-    required TResult Function(ComposeTxError_InsufficientFees value)
+    required TResult Function(TxComposeError_InsufficientFees value)
         insufficientFees,
-    required TResult Function(ComposeTxError_InsufficientFeeRate value)
+    required TResult Function(TxComposeError_InsufficientFeeRate value)
         insufficientFeeRate,
   }) {
     return error(this);
@@ -972,13 +972,13 @@ class _$ComposeTxError_ErrorImpl extends ComposeTxError_Error {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ComposeTxError_CoinSelectionError value)?
+    TResult? Function(TxComposeError_CoinSelectionError value)?
         coinSelectionError,
-    TResult? Function(ComposeTxError_Error value)? error,
-    TResult? Function(ComposeTxError_InsufficientFunds value)?
+    TResult? Function(TxComposeError_Error value)? error,
+    TResult? Function(TxComposeError_InsufficientFunds value)?
         insufficientFunds,
-    TResult? Function(ComposeTxError_InsufficientFees value)? insufficientFees,
-    TResult? Function(ComposeTxError_InsufficientFeeRate value)?
+    TResult? Function(TxComposeError_InsufficientFees value)? insufficientFees,
+    TResult? Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
   }) {
     return error?.call(this);
@@ -987,12 +987,12 @@ class _$ComposeTxError_ErrorImpl extends ComposeTxError_Error {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(ComposeTxError_CoinSelectionError value)?
+    TResult Function(TxComposeError_CoinSelectionError value)?
         coinSelectionError,
-    TResult Function(ComposeTxError_Error value)? error,
-    TResult Function(ComposeTxError_InsufficientFunds value)? insufficientFunds,
-    TResult Function(ComposeTxError_InsufficientFees value)? insufficientFees,
-    TResult Function(ComposeTxError_InsufficientFeeRate value)?
+    TResult Function(TxComposeError_Error value)? error,
+    TResult Function(TxComposeError_InsufficientFunds value)? insufficientFunds,
+    TResult Function(TxComposeError_InsufficientFees value)? insufficientFees,
+    TResult Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
     required TResult orElse(),
   }) {
@@ -1003,49 +1003,49 @@ class _$ComposeTxError_ErrorImpl extends ComposeTxError_Error {
   }
 }
 
-abstract class ComposeTxError_Error extends ComposeTxError {
-  const factory ComposeTxError_Error(final String field0) =
-      _$ComposeTxError_ErrorImpl;
-  const ComposeTxError_Error._() : super._();
+abstract class TxComposeError_Error extends TxComposeError {
+  const factory TxComposeError_Error(final String field0) =
+      _$TxComposeError_ErrorImpl;
+  const TxComposeError_Error._() : super._();
 
   @override
   String get field0;
 
-  /// Create a copy of ComposeTxError
+  /// Create a copy of TxComposeError
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ComposeTxError_ErrorImplCopyWith<_$ComposeTxError_ErrorImpl>
+  _$$TxComposeError_ErrorImplCopyWith<_$TxComposeError_ErrorImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$ComposeTxError_InsufficientFundsImplCopyWith<$Res> {
-  factory _$$ComposeTxError_InsufficientFundsImplCopyWith(
-          _$ComposeTxError_InsufficientFundsImpl value,
-          $Res Function(_$ComposeTxError_InsufficientFundsImpl) then) =
-      __$$ComposeTxError_InsufficientFundsImplCopyWithImpl<$Res>;
+abstract class _$$TxComposeError_InsufficientFundsImplCopyWith<$Res> {
+  factory _$$TxComposeError_InsufficientFundsImplCopyWith(
+          _$TxComposeError_InsufficientFundsImpl value,
+          $Res Function(_$TxComposeError_InsufficientFundsImpl) then) =
+      __$$TxComposeError_InsufficientFundsImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String field0});
 }
 
 /// @nodoc
-class __$$ComposeTxError_InsufficientFundsImplCopyWithImpl<$Res>
-    extends _$ComposeTxErrorCopyWithImpl<$Res,
-        _$ComposeTxError_InsufficientFundsImpl>
-    implements _$$ComposeTxError_InsufficientFundsImplCopyWith<$Res> {
-  __$$ComposeTxError_InsufficientFundsImplCopyWithImpl(
-      _$ComposeTxError_InsufficientFundsImpl _value,
-      $Res Function(_$ComposeTxError_InsufficientFundsImpl) _then)
+class __$$TxComposeError_InsufficientFundsImplCopyWithImpl<$Res>
+    extends _$TxComposeErrorCopyWithImpl<$Res,
+        _$TxComposeError_InsufficientFundsImpl>
+    implements _$$TxComposeError_InsufficientFundsImplCopyWith<$Res> {
+  __$$TxComposeError_InsufficientFundsImplCopyWithImpl(
+      _$TxComposeError_InsufficientFundsImpl _value,
+      $Res Function(_$TxComposeError_InsufficientFundsImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of ComposeTxError
+  /// Create a copy of TxComposeError
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$ComposeTxError_InsufficientFundsImpl(
+    return _then(_$TxComposeError_InsufficientFundsImpl(
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
@@ -1056,38 +1056,38 @@ class __$$ComposeTxError_InsufficientFundsImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$ComposeTxError_InsufficientFundsImpl
-    extends ComposeTxError_InsufficientFunds {
-  const _$ComposeTxError_InsufficientFundsImpl(this.field0) : super._();
+class _$TxComposeError_InsufficientFundsImpl
+    extends TxComposeError_InsufficientFunds {
+  const _$TxComposeError_InsufficientFundsImpl(this.field0) : super._();
 
   @override
   final String field0;
 
   @override
   String toString() {
-    return 'ComposeTxError.insufficientFunds(field0: $field0)';
+    return 'TxComposeError.insufficientFunds(field0: $field0)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ComposeTxError_InsufficientFundsImpl &&
+            other is _$TxComposeError_InsufficientFundsImpl &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, field0);
 
-  /// Create a copy of ComposeTxError
+  /// Create a copy of TxComposeError
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$ComposeTxError_InsufficientFundsImplCopyWith<
-          _$ComposeTxError_InsufficientFundsImpl>
-      get copyWith => __$$ComposeTxError_InsufficientFundsImplCopyWithImpl<
-          _$ComposeTxError_InsufficientFundsImpl>(this, _$identity);
+  _$$TxComposeError_InsufficientFundsImplCopyWith<
+          _$TxComposeError_InsufficientFundsImpl>
+      get copyWith => __$$TxComposeError_InsufficientFundsImplCopyWithImpl<
+          _$TxComposeError_InsufficientFundsImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1132,14 +1132,14 @@ class _$ComposeTxError_InsufficientFundsImpl
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(ComposeTxError_CoinSelectionError value)
+    required TResult Function(TxComposeError_CoinSelectionError value)
         coinSelectionError,
-    required TResult Function(ComposeTxError_Error value) error,
-    required TResult Function(ComposeTxError_InsufficientFunds value)
+    required TResult Function(TxComposeError_Error value) error,
+    required TResult Function(TxComposeError_InsufficientFunds value)
         insufficientFunds,
-    required TResult Function(ComposeTxError_InsufficientFees value)
+    required TResult Function(TxComposeError_InsufficientFees value)
         insufficientFees,
-    required TResult Function(ComposeTxError_InsufficientFeeRate value)
+    required TResult Function(TxComposeError_InsufficientFeeRate value)
         insufficientFeeRate,
   }) {
     return insufficientFunds(this);
@@ -1148,13 +1148,13 @@ class _$ComposeTxError_InsufficientFundsImpl
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ComposeTxError_CoinSelectionError value)?
+    TResult? Function(TxComposeError_CoinSelectionError value)?
         coinSelectionError,
-    TResult? Function(ComposeTxError_Error value)? error,
-    TResult? Function(ComposeTxError_InsufficientFunds value)?
+    TResult? Function(TxComposeError_Error value)? error,
+    TResult? Function(TxComposeError_InsufficientFunds value)?
         insufficientFunds,
-    TResult? Function(ComposeTxError_InsufficientFees value)? insufficientFees,
-    TResult? Function(ComposeTxError_InsufficientFeeRate value)?
+    TResult? Function(TxComposeError_InsufficientFees value)? insufficientFees,
+    TResult? Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
   }) {
     return insufficientFunds?.call(this);
@@ -1163,12 +1163,12 @@ class _$ComposeTxError_InsufficientFundsImpl
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(ComposeTxError_CoinSelectionError value)?
+    TResult Function(TxComposeError_CoinSelectionError value)?
         coinSelectionError,
-    TResult Function(ComposeTxError_Error value)? error,
-    TResult Function(ComposeTxError_InsufficientFunds value)? insufficientFunds,
-    TResult Function(ComposeTxError_InsufficientFees value)? insufficientFees,
-    TResult Function(ComposeTxError_InsufficientFeeRate value)?
+    TResult Function(TxComposeError_Error value)? error,
+    TResult Function(TxComposeError_InsufficientFunds value)? insufficientFunds,
+    TResult Function(TxComposeError_InsufficientFees value)? insufficientFees,
+    TResult Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
     required TResult orElse(),
   }) {
@@ -1179,50 +1179,50 @@ class _$ComposeTxError_InsufficientFundsImpl
   }
 }
 
-abstract class ComposeTxError_InsufficientFunds extends ComposeTxError {
-  const factory ComposeTxError_InsufficientFunds(final String field0) =
-      _$ComposeTxError_InsufficientFundsImpl;
-  const ComposeTxError_InsufficientFunds._() : super._();
+abstract class TxComposeError_InsufficientFunds extends TxComposeError {
+  const factory TxComposeError_InsufficientFunds(final String field0) =
+      _$TxComposeError_InsufficientFundsImpl;
+  const TxComposeError_InsufficientFunds._() : super._();
 
   @override
   String get field0;
 
-  /// Create a copy of ComposeTxError
+  /// Create a copy of TxComposeError
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ComposeTxError_InsufficientFundsImplCopyWith<
-          _$ComposeTxError_InsufficientFundsImpl>
+  _$$TxComposeError_InsufficientFundsImplCopyWith<
+          _$TxComposeError_InsufficientFundsImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$ComposeTxError_InsufficientFeesImplCopyWith<$Res> {
-  factory _$$ComposeTxError_InsufficientFeesImplCopyWith(
-          _$ComposeTxError_InsufficientFeesImpl value,
-          $Res Function(_$ComposeTxError_InsufficientFeesImpl) then) =
-      __$$ComposeTxError_InsufficientFeesImplCopyWithImpl<$Res>;
+abstract class _$$TxComposeError_InsufficientFeesImplCopyWith<$Res> {
+  factory _$$TxComposeError_InsufficientFeesImplCopyWith(
+          _$TxComposeError_InsufficientFeesImpl value,
+          $Res Function(_$TxComposeError_InsufficientFeesImpl) then) =
+      __$$TxComposeError_InsufficientFeesImplCopyWithImpl<$Res>;
   @useResult
   $Res call({BigInt field0});
 }
 
 /// @nodoc
-class __$$ComposeTxError_InsufficientFeesImplCopyWithImpl<$Res>
-    extends _$ComposeTxErrorCopyWithImpl<$Res,
-        _$ComposeTxError_InsufficientFeesImpl>
-    implements _$$ComposeTxError_InsufficientFeesImplCopyWith<$Res> {
-  __$$ComposeTxError_InsufficientFeesImplCopyWithImpl(
-      _$ComposeTxError_InsufficientFeesImpl _value,
-      $Res Function(_$ComposeTxError_InsufficientFeesImpl) _then)
+class __$$TxComposeError_InsufficientFeesImplCopyWithImpl<$Res>
+    extends _$TxComposeErrorCopyWithImpl<$Res,
+        _$TxComposeError_InsufficientFeesImpl>
+    implements _$$TxComposeError_InsufficientFeesImplCopyWith<$Res> {
+  __$$TxComposeError_InsufficientFeesImplCopyWithImpl(
+      _$TxComposeError_InsufficientFeesImpl _value,
+      $Res Function(_$TxComposeError_InsufficientFeesImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of ComposeTxError
+  /// Create a copy of TxComposeError
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$ComposeTxError_InsufficientFeesImpl(
+    return _then(_$TxComposeError_InsufficientFeesImpl(
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
@@ -1233,38 +1233,38 @@ class __$$ComposeTxError_InsufficientFeesImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$ComposeTxError_InsufficientFeesImpl
-    extends ComposeTxError_InsufficientFees {
-  const _$ComposeTxError_InsufficientFeesImpl(this.field0) : super._();
+class _$TxComposeError_InsufficientFeesImpl
+    extends TxComposeError_InsufficientFees {
+  const _$TxComposeError_InsufficientFeesImpl(this.field0) : super._();
 
   @override
   final BigInt field0;
 
   @override
   String toString() {
-    return 'ComposeTxError.insufficientFees(field0: $field0)';
+    return 'TxComposeError.insufficientFees(field0: $field0)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ComposeTxError_InsufficientFeesImpl &&
+            other is _$TxComposeError_InsufficientFeesImpl &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, field0);
 
-  /// Create a copy of ComposeTxError
+  /// Create a copy of TxComposeError
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$ComposeTxError_InsufficientFeesImplCopyWith<
-          _$ComposeTxError_InsufficientFeesImpl>
-      get copyWith => __$$ComposeTxError_InsufficientFeesImplCopyWithImpl<
-          _$ComposeTxError_InsufficientFeesImpl>(this, _$identity);
+  _$$TxComposeError_InsufficientFeesImplCopyWith<
+          _$TxComposeError_InsufficientFeesImpl>
+      get copyWith => __$$TxComposeError_InsufficientFeesImplCopyWithImpl<
+          _$TxComposeError_InsufficientFeesImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1309,14 +1309,14 @@ class _$ComposeTxError_InsufficientFeesImpl
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(ComposeTxError_CoinSelectionError value)
+    required TResult Function(TxComposeError_CoinSelectionError value)
         coinSelectionError,
-    required TResult Function(ComposeTxError_Error value) error,
-    required TResult Function(ComposeTxError_InsufficientFunds value)
+    required TResult Function(TxComposeError_Error value) error,
+    required TResult Function(TxComposeError_InsufficientFunds value)
         insufficientFunds,
-    required TResult Function(ComposeTxError_InsufficientFees value)
+    required TResult Function(TxComposeError_InsufficientFees value)
         insufficientFees,
-    required TResult Function(ComposeTxError_InsufficientFeeRate value)
+    required TResult Function(TxComposeError_InsufficientFeeRate value)
         insufficientFeeRate,
   }) {
     return insufficientFees(this);
@@ -1325,13 +1325,13 @@ class _$ComposeTxError_InsufficientFeesImpl
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ComposeTxError_CoinSelectionError value)?
+    TResult? Function(TxComposeError_CoinSelectionError value)?
         coinSelectionError,
-    TResult? Function(ComposeTxError_Error value)? error,
-    TResult? Function(ComposeTxError_InsufficientFunds value)?
+    TResult? Function(TxComposeError_Error value)? error,
+    TResult? Function(TxComposeError_InsufficientFunds value)?
         insufficientFunds,
-    TResult? Function(ComposeTxError_InsufficientFees value)? insufficientFees,
-    TResult? Function(ComposeTxError_InsufficientFeeRate value)?
+    TResult? Function(TxComposeError_InsufficientFees value)? insufficientFees,
+    TResult? Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
   }) {
     return insufficientFees?.call(this);
@@ -1340,12 +1340,12 @@ class _$ComposeTxError_InsufficientFeesImpl
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(ComposeTxError_CoinSelectionError value)?
+    TResult Function(TxComposeError_CoinSelectionError value)?
         coinSelectionError,
-    TResult Function(ComposeTxError_Error value)? error,
-    TResult Function(ComposeTxError_InsufficientFunds value)? insufficientFunds,
-    TResult Function(ComposeTxError_InsufficientFees value)? insufficientFees,
-    TResult Function(ComposeTxError_InsufficientFeeRate value)?
+    TResult Function(TxComposeError_Error value)? error,
+    TResult Function(TxComposeError_InsufficientFunds value)? insufficientFunds,
+    TResult Function(TxComposeError_InsufficientFees value)? insufficientFees,
+    TResult Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
     required TResult orElse(),
   }) {
@@ -1356,50 +1356,50 @@ class _$ComposeTxError_InsufficientFeesImpl
   }
 }
 
-abstract class ComposeTxError_InsufficientFees extends ComposeTxError {
-  const factory ComposeTxError_InsufficientFees(final BigInt field0) =
-      _$ComposeTxError_InsufficientFeesImpl;
-  const ComposeTxError_InsufficientFees._() : super._();
+abstract class TxComposeError_InsufficientFees extends TxComposeError {
+  const factory TxComposeError_InsufficientFees(final BigInt field0) =
+      _$TxComposeError_InsufficientFeesImpl;
+  const TxComposeError_InsufficientFees._() : super._();
 
   @override
   BigInt get field0;
 
-  /// Create a copy of ComposeTxError
+  /// Create a copy of TxComposeError
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ComposeTxError_InsufficientFeesImplCopyWith<
-          _$ComposeTxError_InsufficientFeesImpl>
+  _$$TxComposeError_InsufficientFeesImplCopyWith<
+          _$TxComposeError_InsufficientFeesImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$ComposeTxError_InsufficientFeeRateImplCopyWith<$Res> {
-  factory _$$ComposeTxError_InsufficientFeeRateImplCopyWith(
-          _$ComposeTxError_InsufficientFeeRateImpl value,
-          $Res Function(_$ComposeTxError_InsufficientFeeRateImpl) then) =
-      __$$ComposeTxError_InsufficientFeeRateImplCopyWithImpl<$Res>;
+abstract class _$$TxComposeError_InsufficientFeeRateImplCopyWith<$Res> {
+  factory _$$TxComposeError_InsufficientFeeRateImplCopyWith(
+          _$TxComposeError_InsufficientFeeRateImpl value,
+          $Res Function(_$TxComposeError_InsufficientFeeRateImpl) then) =
+      __$$TxComposeError_InsufficientFeeRateImplCopyWithImpl<$Res>;
   @useResult
   $Res call({BigInt field0});
 }
 
 /// @nodoc
-class __$$ComposeTxError_InsufficientFeeRateImplCopyWithImpl<$Res>
-    extends _$ComposeTxErrorCopyWithImpl<$Res,
-        _$ComposeTxError_InsufficientFeeRateImpl>
-    implements _$$ComposeTxError_InsufficientFeeRateImplCopyWith<$Res> {
-  __$$ComposeTxError_InsufficientFeeRateImplCopyWithImpl(
-      _$ComposeTxError_InsufficientFeeRateImpl _value,
-      $Res Function(_$ComposeTxError_InsufficientFeeRateImpl) _then)
+class __$$TxComposeError_InsufficientFeeRateImplCopyWithImpl<$Res>
+    extends _$TxComposeErrorCopyWithImpl<$Res,
+        _$TxComposeError_InsufficientFeeRateImpl>
+    implements _$$TxComposeError_InsufficientFeeRateImplCopyWith<$Res> {
+  __$$TxComposeError_InsufficientFeeRateImplCopyWithImpl(
+      _$TxComposeError_InsufficientFeeRateImpl _value,
+      $Res Function(_$TxComposeError_InsufficientFeeRateImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of ComposeTxError
+  /// Create a copy of TxComposeError
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$ComposeTxError_InsufficientFeeRateImpl(
+    return _then(_$TxComposeError_InsufficientFeeRateImpl(
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
@@ -1410,38 +1410,38 @@ class __$$ComposeTxError_InsufficientFeeRateImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$ComposeTxError_InsufficientFeeRateImpl
-    extends ComposeTxError_InsufficientFeeRate {
-  const _$ComposeTxError_InsufficientFeeRateImpl(this.field0) : super._();
+class _$TxComposeError_InsufficientFeeRateImpl
+    extends TxComposeError_InsufficientFeeRate {
+  const _$TxComposeError_InsufficientFeeRateImpl(this.field0) : super._();
 
   @override
   final BigInt field0;
 
   @override
   String toString() {
-    return 'ComposeTxError.insufficientFeeRate(field0: $field0)';
+    return 'TxComposeError.insufficientFeeRate(field0: $field0)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ComposeTxError_InsufficientFeeRateImpl &&
+            other is _$TxComposeError_InsufficientFeeRateImpl &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, field0);
 
-  /// Create a copy of ComposeTxError
+  /// Create a copy of TxComposeError
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$ComposeTxError_InsufficientFeeRateImplCopyWith<
-          _$ComposeTxError_InsufficientFeeRateImpl>
-      get copyWith => __$$ComposeTxError_InsufficientFeeRateImplCopyWithImpl<
-          _$ComposeTxError_InsufficientFeeRateImpl>(this, _$identity);
+  _$$TxComposeError_InsufficientFeeRateImplCopyWith<
+          _$TxComposeError_InsufficientFeeRateImpl>
+      get copyWith => __$$TxComposeError_InsufficientFeeRateImplCopyWithImpl<
+          _$TxComposeError_InsufficientFeeRateImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1486,14 +1486,14 @@ class _$ComposeTxError_InsufficientFeeRateImpl
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(ComposeTxError_CoinSelectionError value)
+    required TResult Function(TxComposeError_CoinSelectionError value)
         coinSelectionError,
-    required TResult Function(ComposeTxError_Error value) error,
-    required TResult Function(ComposeTxError_InsufficientFunds value)
+    required TResult Function(TxComposeError_Error value) error,
+    required TResult Function(TxComposeError_InsufficientFunds value)
         insufficientFunds,
-    required TResult Function(ComposeTxError_InsufficientFees value)
+    required TResult Function(TxComposeError_InsufficientFees value)
         insufficientFees,
-    required TResult Function(ComposeTxError_InsufficientFeeRate value)
+    required TResult Function(TxComposeError_InsufficientFeeRate value)
         insufficientFeeRate,
   }) {
     return insufficientFeeRate(this);
@@ -1502,13 +1502,13 @@ class _$ComposeTxError_InsufficientFeeRateImpl
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ComposeTxError_CoinSelectionError value)?
+    TResult? Function(TxComposeError_CoinSelectionError value)?
         coinSelectionError,
-    TResult? Function(ComposeTxError_Error value)? error,
-    TResult? Function(ComposeTxError_InsufficientFunds value)?
+    TResult? Function(TxComposeError_Error value)? error,
+    TResult? Function(TxComposeError_InsufficientFunds value)?
         insufficientFunds,
-    TResult? Function(ComposeTxError_InsufficientFees value)? insufficientFees,
-    TResult? Function(ComposeTxError_InsufficientFeeRate value)?
+    TResult? Function(TxComposeError_InsufficientFees value)? insufficientFees,
+    TResult? Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
   }) {
     return insufficientFeeRate?.call(this);
@@ -1517,12 +1517,12 @@ class _$ComposeTxError_InsufficientFeeRateImpl
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(ComposeTxError_CoinSelectionError value)?
+    TResult Function(TxComposeError_CoinSelectionError value)?
         coinSelectionError,
-    TResult Function(ComposeTxError_Error value)? error,
-    TResult Function(ComposeTxError_InsufficientFunds value)? insufficientFunds,
-    TResult Function(ComposeTxError_InsufficientFees value)? insufficientFees,
-    TResult Function(ComposeTxError_InsufficientFeeRate value)?
+    TResult Function(TxComposeError_Error value)? error,
+    TResult Function(TxComposeError_InsufficientFunds value)? insufficientFunds,
+    TResult Function(TxComposeError_InsufficientFees value)? insufficientFees,
+    TResult Function(TxComposeError_InsufficientFeeRate value)?
         insufficientFeeRate,
     required TResult orElse(),
   }) {
@@ -1533,18 +1533,18 @@ class _$ComposeTxError_InsufficientFeeRateImpl
   }
 }
 
-abstract class ComposeTxError_InsufficientFeeRate extends ComposeTxError {
-  const factory ComposeTxError_InsufficientFeeRate(final BigInt field0) =
-      _$ComposeTxError_InsufficientFeeRateImpl;
-  const ComposeTxError_InsufficientFeeRate._() : super._();
+abstract class TxComposeError_InsufficientFeeRate extends TxComposeError {
+  const factory TxComposeError_InsufficientFeeRate(final BigInt field0) =
+      _$TxComposeError_InsufficientFeeRateImpl;
+  const TxComposeError_InsufficientFeeRate._() : super._();
 
   @override
   BigInt get field0;
 
-  /// Create a copy of ComposeTxError
+  /// Create a copy of TxComposeError
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ComposeTxError_InsufficientFeeRateImplCopyWith<
-          _$ComposeTxError_InsufficientFeeRateImpl>
+  _$$TxComposeError_InsufficientFeeRateImplCopyWith<
+          _$TxComposeError_InsufficientFeeRateImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
