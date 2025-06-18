@@ -224,30 +224,27 @@ class NgAccountManager extends ChangeNotifier {
       {String? passphrase,
       required AddressType type,
       required Network network}) async {
-    final derivations = await EnvoyBip39.deriveDescriptorFromSeed(
-        seedWords: seed, network: network, passphrase: passphrase);
-    final descriptor = derivations.firstWhereOrNull(
-      (element) => element.addressType == type,
-    );
-    if (descriptor != null) {
-      for (var account in accounts) {
-        for (var desc in account.descriptors) {
-          if (desc.external_ == descriptor.externalPubDescriptor ||
-              desc.external_ == descriptor.externalDescriptor) {
-            return true;
-          }
-        }
+    var dir = NgAccountManager.getAccountDirectory(
+        deviceSerial: "envoy", network: network.toString(), number: 0);
+    if (await dir.exists()) {
+      if (dir.listSync().isNotEmpty) {
+        return true;
       }
     }
     return false;
   }
 
   addAccount(EnvoyAccount state, EnvoyAccountHandler handler) async {
+    if (_accountsHandler.any((element) => element.$1.id == state.id)) {
+      return;
+    }
     final accountOrder = _ls.prefs.getString(ACCOUNT_ORDER);
-    List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
+    Set<String> order =
+        List<String>.from(jsonDecode(accountOrder ?? "[]")).toSet();
     order.add(state.id);
+
     _accountsHandler.add((state, handler));
-    await updateAccountOrder(order);
+    await updateAccountOrder(order.toList());
     notifyListeners();
     //wait for the stream to propagate
     await Future.delayed(const Duration(milliseconds: 100));

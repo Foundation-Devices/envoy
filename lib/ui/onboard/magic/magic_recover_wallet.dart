@@ -385,7 +385,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
               label: S().manual_setup_import_backup_CTA2,
               type: EnvoyButtonTypes.secondary,
               onTap: () {
-                openBackupFile(context);
+                _openExternalBackUpFile(context);
               },
             ),
             OnboardingButton(
@@ -485,7 +485,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                   label: S().manual_setup_import_backup_CTA2,
                   type: EnvoyButtonTypes.secondary,
                   onTap: () {
-                    openBackupFile(context);
+                    _openExternalBackUpFile(context);
                   },
                 );
               },
@@ -649,6 +649,26 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
     _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
     _stateMachineController?.findInput<bool>("happy")?.change(false);
     _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+  }
+
+  Future<void> _openExternalBackUpFile(BuildContext context) async {
+    try {
+      final navigator = Navigator.of(context);
+      bool success = await openBackupFile(context);
+      if (success) {
+        await navigator.push(MaterialPageRoute(builder: (context) {
+          return const WalletSetupSuccess();
+        }));
+      } else {
+        if (context.mounted) {
+          await showRestoreFailedDialog(context);
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        await showRestoreFailedDialog(context);
+      }
+    }
   }
 
   void showContinueWarningDialog(BuildContext context) {

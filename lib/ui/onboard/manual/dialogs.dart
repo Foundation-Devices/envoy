@@ -4,18 +4,20 @@
 
 import 'dart:io';
 
-import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/onboard/wallet_setup_success.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/business/envoy_seed.dart';
-import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
-void showRestoreFailedDialog(BuildContext context) {
-  showEnvoyPopUp(context, S().manual_setup_import_backup_fails_modal_subheading,
+Future showRestoreFailedDialog(BuildContext context) async {
+  await showEnvoyPopUp(
+      context,
+      S().manual_setup_import_backup_fails_modal_subheading,
       S().component_continue, (context) {
     Navigator.pop(context);
   },
@@ -26,34 +28,18 @@ void showRestoreFailedDialog(BuildContext context) {
       icon: EnvoyIcons.alert);
 }
 
-Future<void> openBackupFile(BuildContext buildContext) async {
-  final navigator = Navigator.of(buildContext);
-  final context = buildContext;
+Future<bool> openBackupFile(BuildContext buildContext) async {
+  var success = false;
   var result = await FilePicker.platform.pickFiles();
-
   if (result != null) {
-    var success = false;
-
     try {
       success =
           await EnvoySeed().restoreData(filePath: result.files.single.path!);
     } catch (e) {
       success = false;
     }
-    if (success) {
-      navigator.push(MaterialPageRoute(builder: (context) {
-        return const WalletSetupSuccess();
-      }));
-    } else {
-      if (context.mounted) {
-        showRestoreFailedDialog(context);
-      }
-    }
-  } else {
-    if (context.mounted) {
-      showRestoreFailedDialog(context);
-    }
   }
+  return success;
 }
 
 Future<void> openBeefQABackupFile(BuildContext buildContext) async {

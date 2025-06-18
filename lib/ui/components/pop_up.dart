@@ -19,7 +19,7 @@ enum PopUpState {
   danger,
 }
 
-void showEnvoyPopUp(
+Future showEnvoyPopUp(
   BuildContext context,
   String? content,
   String primaryButtonLabel,
