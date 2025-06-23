@@ -1569,18 +1569,7 @@ Future<void> findAndPressIcon(WidgetTester tester, IconData iconData) async {
 }
 
 Future<void> trySendToAddress(WidgetTester tester, String address) async {
-  final sendButtonFinder = find.text("Send");
-  expect(sendButtonFinder, findsWidgets);
-  await tester.tap(sendButtonFinder.last);
-  await tester.pump(Durations.long2);
-
   await enterTextInField(tester, find.byType(TextFormField), address);
-
-  // enter amount
-  await findAndPressTextButton(tester, '1');
-  await findAndPressTextButton(tester, '2');
-  await findAndPressTextButton(tester, '3');
-  await findAndPressTextButton(tester, '4');
 
   // go to staging
   await waitForTealTextAndTap(tester, 'Confirm');
@@ -1592,12 +1581,8 @@ Future<void> trySendToAddress(WidgetTester tester, String address) async {
   await findAndPressEnvoyIcon(tester, EnvoyIcons.chevron_left);
   await tester.pump(Durations.long2);
 
-  final cancelTransactionFinder = find.text("Cancel Transaction");
-  await tester.pumpUntilFound(cancelTransactionFinder,
-      tries: 100, duration: Durations.long2);
-  await tester.tap(cancelTransactionFinder);
-  await tester.pump(Durations.long2);
-  await tester.pump(Durations.long2);
+  await enterTextInField(
+      tester, find.byType(TextFormField), ""); // delete address
 }
 
 Future<void> findAndToggleEnvoySwitch(
