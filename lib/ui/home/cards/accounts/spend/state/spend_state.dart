@@ -58,12 +58,9 @@ final isTransactionCancellableProvider = Provider<bool>((ref) {
   bool cancellable = true;
 
   if (account.isHot) {
-    cancellable = false;
-    if (userChangedCoins) {
-      cancellable = true;
-    }
+    cancellable = userChangedCoins;
   } else {
-    cancellable = finalizedTx && !userChangedCoins;
+    cancellable = finalizedTx || userChangedCoins;
   }
 
   return cancellable;

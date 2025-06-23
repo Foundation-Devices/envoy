@@ -641,6 +641,17 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
       await tester.pumpAndSettle();
 
+      final sendButtonFinder = find.text("Send");
+      expect(sendButtonFinder, findsWidgets);
+      await tester.tap(sendButtonFinder.last);
+      await tester.pump(Durations.long2);
+
+      // enter amount
+      await findAndPressTextButton(tester, '1');
+      await findAndPressTextButton(tester, '2');
+      await findAndPressTextButton(tester, '3');
+      await findAndPressTextButton(tester, '4');
+
       String p2pkhAddress = "12rYgz414HBXdhhK72BkR9VHZSU23dqqG7";
       await trySendToAddress(tester, p2pkhAddress);
 
@@ -1097,6 +1108,7 @@ Future<void> main() async {
       await checkTorShieldIcon(tester, expectPrivacy: false);
     });
     /*testWidgets('Boost screen', (tester) async {
+      await checkSync(tester);
       await goBackHome(tester);
 
       await disableAllNetworks(tester);
