@@ -23,8 +23,7 @@ import 'package:envoy/util/list_utils.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:ngwallet/ngwallet.dart';
-
-import '../util/envoy_storage.dart';
+import 'package:envoy/util/envoy_storage.dart';
 
 class AccountAlreadyPaired implements Exception {}
 

@@ -115,10 +115,20 @@ final mainnetAccountsProvider =
     Provider.family<List<EnvoyAccount>, EnvoyAccount?>(
         (ref, selectedEnvoyAccount) {
   final accounts = ref.watch(accountsProvider);
+  final order = ref.watch(accountOrderStream);
 
-  // We filter everything but mainnet
+// We filter everything but mainnet
   final filteredEnvoyAccounts =
       accounts.where((account) => account.network == Network.bitcoin).toList();
+
+  filteredEnvoyAccounts.sort((a, b) {
+    int aIndex = order.indexOf(a.id);
+    int bIndex = order.indexOf(b.id);
+    if (aIndex == -1 && bIndex == -1) return 0;
+    if (aIndex == -1) return 1;
+    if (bIndex == -1) return -1;
+    return aIndex.compareTo(bIndex);
+  });
 
   return filteredEnvoyAccounts;
 });
