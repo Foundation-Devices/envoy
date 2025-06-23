@@ -212,6 +212,8 @@ class SpendRequirementOverlayState
   bool _hideOverlay = false;
   bool _isInMinimizedState = false;
 
+  bool _isDialogShown = false;
+
   @override
   void dispose() {
     _animationController?.dispose();
@@ -280,7 +282,9 @@ class SpendRequirementOverlayState
     return BackButtonListener(
       onBackButtonPressed: () async {
         if (inTagSelectionMode && !ref.read(coinDetailsActiveProvider)) {
-          await cancel(context); // Make sure to await the async call
+          if (!_isDialogShown) {
+            await cancel(context); // Make sure to await the async call
+          }
         }
         if (inTagSelectionMode && ref.read(coinDetailsActiveProvider)) {
           if (context.mounted) {
@@ -664,11 +668,15 @@ class SpendRequirementOverlayState
       _hideOverlay = true;
     });
     if (context.mounted) {
+      _isDialogShown = true;
       bool discard = await showEnvoyDialog(
           dismissible: false,
           context: context,
           useRootNavigator: true,
-          dialog: const SpendSelectionCancelWarning());
+          dialog: const SpendSelectionCancelWarning(),
+          onDispose: () {
+            _isDialogShown = false;
+          });
       await Future.delayed(const Duration(milliseconds: 130));
       setState(() {
         _hideOverlay = false;
@@ -850,23 +858,15 @@ class SpendSelectionCancelWarning extends ConsumerStatefulWidget {
 
 class _SpendSelectionCancelWarningState
     extends ConsumerState<SpendSelectionCancelWarning> {
-  bool dismissed = false;
-
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final isDismissed = ref.read(
-        arePromptsDismissedProvider(DismissiblePrompt.txDiscardWarning),
-      );
-      setState(() {
-        dismissed = isDismissed;
-      });
-    });
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isDismissed = ref
+        .watch(arePromptsDismissedProvider(DismissiblePrompt.txDiscardWarning));
     return EnvoyPopUp(
       icon: EnvoyIcons.alert,
       typeOfMessage: PopUpState.warning,
@@ -881,13 +881,9 @@ class _SpendSelectionCancelWarningState
         Navigator.of(context).pop(false);
       },
       checkBoxText: S().component_dontShowAgain,
-      checkedValue: dismissed,
+      checkedValue: isDismissed,
       onCheckBoxChanged: (checkedValue) async {
-        setState(() {
-          dismissed = checkedValue;
-        });
-
-        if (checkedValue) {
+        if (!checkedValue) {
           await EnvoyStorage()
               .addPromptState(DismissiblePrompt.txDiscardWarning);
         } else {
