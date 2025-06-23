@@ -4,7 +4,7 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
-import '../lib.dart';
+import '../third_party/ngwallet/send.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'errors.freezed.dart';
@@ -27,27 +27,27 @@ sealed class BroadcastError with _$BroadcastError implements FrbException {
 }
 
 @freezed
-sealed class ComposeTxError with _$ComposeTxError implements FrbException {
-  const ComposeTxError._();
+sealed class TxComposeError with _$TxComposeError implements FrbException {
+  const TxComposeError._();
 
-  const factory ComposeTxError.coinSelectionError(
+  const factory TxComposeError.coinSelectionError(
     String field0,
-  ) = ComposeTxError_CoinSelectionError;
-  const factory ComposeTxError.error(
+  ) = TxComposeError_CoinSelectionError;
+  const factory TxComposeError.error(
     String field0,
-  ) = ComposeTxError_Error;
-  const factory ComposeTxError.insufficientFunds(
+  ) = TxComposeError_Error;
+  const factory TxComposeError.insufficientFunds(
     String field0,
-  ) = ComposeTxError_InsufficientFunds;
-  const factory ComposeTxError.insufficientFees(
+  ) = TxComposeError_InsufficientFunds;
+  const factory TxComposeError.insufficientFees(
     BigInt field0,
-  ) = ComposeTxError_InsufficientFees;
-  const factory ComposeTxError.insufficientFeeRate(
+  ) = TxComposeError_InsufficientFees;
+  const factory TxComposeError.insufficientFeeRate(
     BigInt field0,
-  ) = ComposeTxError_InsufficientFeeRate;
+  ) = TxComposeError_InsufficientFeeRate;
 
-  static Future<ComposeTxError> mapErr(
-          {required CreateTxError createTxError}) =>
-      RustLib.instance.api
-          .crateApiErrorsComposeTxErrorMapErr(createTxError: createTxError);
+  static Future<TxComposeError> mapErr(
+          {required TransactionComposeError transactionComposeError}) =>
+      RustLib.instance.api.crateApiErrorsTxComposeErrorMapErr(
+          transactionComposeError: transactionComposeError);
 }

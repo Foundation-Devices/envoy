@@ -3,25 +3,25 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:backup/backup.dart';
+import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/onboard/manual/dialogs.dart';
+import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup_create_and_store_backup.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/ui/onboard/manual/dialogs.dart';
 import 'package:rive/rive.dart';
 import 'package:tor/tor.dart';
-import 'package:envoy/business/envoy_seed.dart';
-import 'package:envoy/business/settings.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
-import 'package:envoy/ui/components/pop_up.dart';
-import 'package:envoy/ui/onboard/manual/manual_setup.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class ManualSetupImportBackup extends StatefulWidget {
   const ManualSetupImportBackup({super.key});
@@ -174,17 +174,10 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                       type: EnvoyButtonTypes.secondary,
                       label: S().manual_setup_import_backup_CTA2,
                       onTap: () {
-                        Future.delayed(const Duration(seconds: 2), () {
-                          setState(() {
-                            _isRecoveryInProgress = true;
-                          });
+                        setState(() {
+                          _isRecoveryInProgress = true;
                         });
-
-                        openBackupFile(context).then((value) {
-                          setState(() {
-                            _isRecoveryInProgress = false;
-                          });
-                        });
+                        openExternalBackUpFile(context);
                       }),
                   OnboardingButton(
                       type: EnvoyButtonTypes.primary,
@@ -202,6 +195,32 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
         ),
       )),
     );
+  }
+
+  Future<void> openExternalBackUpFile(BuildContext context) async {
+    try {
+      final navigator = Navigator.of(context);
+      bool success = await openBackupFile(context);
+      if (success) {
+        await navigator.push(MaterialPageRoute(builder: (context) {
+          return const WalletSetupSuccess();
+        }));
+      } else {
+        setState(() {
+          _isRecoveryInProgress = false;
+        });
+        if (context.mounted) {
+          await showRestoreFailedDialog(context);
+        }
+      }
+    } catch (e) {
+      setState(() {
+        _isRecoveryInProgress = false;
+      });
+      if (context.mounted) {
+        await showRestoreFailedDialog(context);
+      }
+    }
   }
 }
 
@@ -238,6 +257,7 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
                 recoverManually(seedList, context);
                 Navigator.pop(context);
               },
+              showCloseButton: false,
               dismissible: false);
         } else {
           if (mounted) {

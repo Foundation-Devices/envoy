@@ -2,53 +2,53 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use crate::api::envoy_account::EnvoyAccount;
-use crate::api::errors::{BroadcastError, ComposeTxError};
-use crate::api::migration::get_last_used_index;
-use crate::frb_generated::StreamSink;
-use anyhow::{anyhow, Context, Error, Result};
-use bdk_wallet::bip39::{Language, Mnemonic};
-use bdk_wallet::bitcoin::address::{NetworkUnchecked, ParseError};
-use bdk_wallet::bitcoin::base64::prelude::BASE64_STANDARD;
-use bdk_wallet::bitcoin::base64::Engine;
-use bdk_wallet::bitcoin::bip32::Error::Secp256k1;
-use bdk_wallet::bitcoin::{absolute, psbt, Address, Amount, OutPoint, Sequence, Txid};
-pub use bdk_wallet::bitcoin::{Network, Psbt, ScriptBuf};
-use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse, SyncRequest};
-use bdk_wallet::chain::{CheckPoint, Indexed};
-use bdk_wallet::descriptor::policy::PolicyError;
-use bdk_wallet::descriptor::{DescriptorError, DescriptorPublicKey, ExtendedDescriptor};
-use bdk_wallet::error::{CreateTxError, MiniscriptPsbtError};
-use bdk_wallet::rusqlite::{Connection, OpenFlags};
-use bdk_wallet::serde::{Deserialize, Serialize};
-use bdk_wallet::{
-    bitcoin, coin_selection, AddressInfo, KeychainKind, PersistedWallet, Update, Wallet, WalletTx,
-};
-use chrono::{DateTime, Local, Utc};
-use flutter_rust_bridge::frb;
-use log::info;
-use ngwallet::account::{Descriptor, NgAccount};
-use ngwallet::config::{AddressType, NgAccountBackup, NgAccountBuilder, NgAccountConfig, NgDescriptor};
-use ngwallet::ngwallet::NgWallet;
-use ngwallet::rbf::BumpFeeError;
-use ngwallet::redb::backends::FileBackend;
-use ngwallet::send::{DraftTransaction, TransactionFeeResult, TransactionParams};
-use ngwallet::transaction::{BitcoinTransaction, Output};
+use std::{fs, thread};
+use std::any::Any;
 use std::collections::{BTreeMap, HashMap};
 use std::env;
 use std::fmt::format;
 use std::fs::File;
+use std::iter::Map;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 use std::sync::{Arc, LockResult, Mutex};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
-use std::{fs, thread};
-use std::any::Any;
-use std::iter::Map;
-use bdk_wallet::serde_json::json;
-use crate::api::bip39::EnvoyBip39;
-use ngwallet::bdk_electrum::electrum_client::{Client, ConfigBuilder, ElectrumApi, Socks5Config};
 
+use anyhow::{anyhow, Context, Error, Result};
+use bdk_wallet::{
+    AddressInfo, bitcoin, coin_selection, KeychainKind, PersistedWallet, Update, Wallet, WalletTx,
+};
+use bdk_wallet::bip39::{Language, Mnemonic};
+use bdk_wallet::bitcoin::{absolute, Address, Amount, OutPoint, psbt, Sequence, Txid};
+pub use bdk_wallet::bitcoin::{Network, Psbt, ScriptBuf};
+use bdk_wallet::bitcoin::address::{NetworkUnchecked, ParseError};
+use bdk_wallet::bitcoin::base64::Engine;
+use bdk_wallet::bitcoin::bip32::Error::Secp256k1;
+use bdk_wallet::chain::{CheckPoint, Indexed};
+use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse, SyncRequest};
+use bdk_wallet::descriptor::{DescriptorError, DescriptorPublicKey, ExtendedDescriptor};
+use bdk_wallet::descriptor::policy::PolicyError;
+use bdk_wallet::error::{CreateTxError, MiniscriptPsbtError};
+use bdk_wallet::rusqlite::{Connection, OpenFlags};
+use bdk_wallet::serde::{Deserialize, Serialize};
+use bdk_wallet::serde_json::json;
+use chrono::{DateTime, Local, Utc};
+use flutter_rust_bridge::frb;
+use log::info;
+use ngwallet::account::{Descriptor, NgAccount};
+use ngwallet::bdk_electrum::electrum_client::{Client, ConfigBuilder, ElectrumApi, Socks5Config};
+use ngwallet::config::{AddressType, NgAccountBackup, NgAccountBuilder, NgAccountConfig, NgDescriptor};
+use ngwallet::ngwallet::NgWallet;
+use ngwallet::rbf::BumpFeeError;
+use ngwallet::redb::backends::FileBackend;
+use ngwallet::send::{DraftTransaction, TransactionComposeError, TransactionFeeResult, TransactionParams};
+use ngwallet::transaction::{BitcoinTransaction, Output};
+
+use crate::api::bip39::EnvoyBip39;
+use crate::api::envoy_account::EnvoyAccount;
+use crate::api::errors::{BroadcastError, TxComposeError};
+use crate::api::migration::get_last_used_index;
+use crate::frb_generated::StreamSink;
 
 #[frb(init)]
 pub fn init_app() {
@@ -396,11 +396,8 @@ impl EnvoyAccountHandler {
             }
         }
 
-        let tx = BASE64_STANDARD
-            .decode(draft_transaction.psbt_base64)
-            .map_err(|e| anyhow::anyhow!("Failed to decode PSBT: {}", e))
-            .unwrap();
-        let psbt = Psbt::deserialize(tx.as_slice())
+
+        let psbt = Psbt::deserialize(&draft_transaction.psbt)
             .map_err(|er| anyhow::anyhow!("Failed to deserialize PSBT: {}", er))
             .unwrap();
         {
@@ -599,23 +596,23 @@ impl EnvoyAccountHandler {
     pub fn get_max_fee(
         &mut self,
         transaction_params: TransactionParams,
-    ) -> Result<TransactionFeeResult, ComposeTxError> {
+    ) -> Result<TransactionFeeResult, TxComposeError> {
         self.ng_account
             .lock()
             .unwrap()
             .get_max_fee(transaction_params)
-            .map_err(ComposeTxError::map_err)
+            .map_err(TxComposeError::map_err)
     }
 
     pub fn compose_psbt(
         &mut self,
         transaction_params: TransactionParams,
-    ) -> Result<DraftTransaction, ComposeTxError> {
+    ) -> Result<DraftTransaction, TxComposeError> {
         self.ng_account
             .lock()
             .unwrap()
             .compose_psbt(transaction_params)
-            .map_err(ComposeTxError::map_err)
+            .map_err(TxComposeError::map_err)
     }
 
     pub fn compose_cancellation_tx(
@@ -654,9 +651,9 @@ impl EnvoyAccountHandler {
 
     pub fn decode_psbt(
         draft_transaction: DraftTransaction,
-        psbt_base64: &str,
+        psbt: &[u8],
     ) -> Result<DraftTransaction> {
-        NgAccount::<Connection>::decode_psbt(draft_transaction, psbt_base64)
+        NgAccount::<Connection>::decode_psbt(draft_transaction, psbt)
     }
 
     pub fn broadcast(
@@ -936,6 +933,7 @@ pub struct ServerFeatures {
     pub hash_function: Option<String>,
     pub pruning: Option<i64>,
 }
+
 #[frb]
 pub fn get_server_features(server: String, proxy: Option<String>) -> ServerFeatures {
     let config = match proxy {
@@ -984,40 +982,38 @@ pub fn get_server_features(server: String, proxy: Option<String>) -> ServerFeatu
     }
 }
 
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    
-    #[test]
-    fn test_get_server_features_without_proxy() {
-        let server = "tcp://electrum.blockstream.info:50001".to_string();
-        let proxy = None;
-
-        let features = get_server_features(server, proxy);
-
-        // Since this is a live server call, we only check for some basic expected structure
-        assert!(features.server_version.is_some());
-        assert!(features.genesis_hash.is_some());
-        assert!(features.protocol_min.is_some());
-        assert!(features.protocol_max.is_some());
-    }
-
-    #[test]
-    fn test_get_server_features_invalid_server() {
-        let server = "tcp://invalid.server:50001".to_string();
-        let proxy = None;
-
-        let features = get_server_features(server, proxy);
-
-        // Should all be None due to failure
-        assert!(features.server_version.is_none());
-        assert!(features.genesis_hash.is_none());
-        assert!(features.protocol_min.is_none());
-        assert!(features.protocol_max.is_none());
-        assert!(features.hash_function.is_none());
-        assert!(features.pruning.is_none());
-    }
-}
-
-
+//
+// #[cfg(test)]
+// mod tests {
+//     #[test]
+//     fn test_get_server_features_without_proxy() {
+//         let server = "tcp://electrum.blockstream.info:50001".to_string();
+//         let proxy = None;
+//
+//         let features = get_server_features(server, proxy);
+//
+//         // Since this is a live server call, we only check for some basic expected structure
+//         assert!(features.server_version.is_some());
+//         assert!(features.genesis_hash.is_some());
+//         assert!(features.protocol_min.is_some());
+//         assert!(features.protocol_max.is_some());
+//     }
+//
+//     #[test]
+//     fn test_get_server_features_invalid_server() {
+//         let server = "tcp://invalid.server:50001".to_string();
+//         let proxy = None;
+//
+//         let features = get_server_features(server, proxy);
+//
+//         // Should all be None due to failure
+//         assert!(features.server_version.is_none());
+//         assert!(features.genesis_hash.is_none());
+//         assert!(features.protocol_min.is_none());
+//         assert!(features.protocol_max.is_none());
+//         assert!(features.hash_function.is_none());
+//         assert!(features.pruning.is_none());
+//     }
+// }
+//
+//

@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:convert';
+
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/animated_qr_image.dart';
@@ -79,7 +80,7 @@ class PsbtCard extends ConsumerWidget {
                         subtitle: S().send_qr_code_card_subheading,
                         account: account,
                         qr: AnimatedQrImage(
-                          base64Decode(transaction.psbtBase64),
+                          transaction.psbt,
                           urType: "crypto-psbt",
                           binaryCborTag: true,
                         ),
@@ -105,8 +106,8 @@ class PsbtCard extends ConsumerWidget {
                     children: [
                       IconButton(
                           onPressed: () {
-                            Clipboard.setData(
-                                ClipboardData(text: transaction.psbtBase64));
+                            Clipboard.setData(ClipboardData(
+                                text: base64Encode(transaction.psbt)));
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(const SnackBar(
                               content: Text(
@@ -153,7 +154,7 @@ class PsbtCard extends ConsumerWidget {
                               ))),
                       IconButton(
                           onPressed: () {
-                            Share.share(transaction.psbtBase64);
+                            Share.share(base64Encode(transaction.psbt));
                           },
                           icon: const EnvoyIcon(
                             EnvoyIcons.externalLink,

@@ -77,9 +77,9 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
 
   static Future<DraftTransaction> decodePsbt(
           {required DraftTransaction draftTransaction,
-          required String psbtBase64}) =>
+          required List<int> psbt}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerDecodePsbt(
-          draftTransaction: draftTransaction, psbtBase64: psbtBase64);
+          draftTransaction: draftTransaction, psbt: psbt);
 
   static Future<EnvoyAccountHandler> fromConfig(
           {required String dbPath, required NgAccountConfig config}) =>

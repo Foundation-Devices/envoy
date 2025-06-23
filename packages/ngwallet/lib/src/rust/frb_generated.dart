@@ -76,7 +76,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.9.0';
 
   @override
-  int get rustContentHash => 1913559774;
+  int get rustContentHash => 1302212347;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -142,7 +142,7 @@ abstract class RustLibApi extends BaseApi {
       {required EnvoyAccountHandler that});
 
   Future<DraftTransaction> crateApiEnvoyWalletEnvoyAccountHandlerDecodePsbt(
-      {required DraftTransaction draftTransaction, required String psbtBase64});
+      {required DraftTransaction draftTransaction, required List<int> psbt});
 
   Future<EnvoyAccountHandler> crateApiEnvoyWalletEnvoyAccountHandlerFromConfig(
       {required String dbPath, required NgAccountConfig config});
@@ -299,9 +299,6 @@ abstract class RustLibApi extends BaseApi {
   Future<bool> crateApiEnvoyWalletEnvoyAccountHandlerValidateAddress(
       {required String address, Network? network});
 
-  Future<ComposeTxError> crateApiErrorsComposeTxErrorMapErr(
-      {required CreateTxError createTxError});
-
   Future<List<DerivedDescriptor>>
       crateApiBip39EnvoyBip39DeriveDescriptorFromSeed(
           {required String seedWords,
@@ -333,6 +330,9 @@ abstract class RustLibApi extends BaseApi {
       {required NgAccountConfig that});
 
   String ngwalletTransactionOutputGetId({required Output that});
+
+  Future<TxComposeError> crateApiErrorsTxComposeErrorMapErr(
+      {required TransactionComposeError transactionComposeError});
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_ArcMutexNgAccountConnection;
@@ -377,15 +377,6 @@ abstract class RustLibApi extends BaseApi {
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_BumpFeeErrorPtr;
 
   RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_CreateTxError;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_CreateTxError;
-
-  CrossPlatformFinalizerArg
-      get rust_arc_decrement_strong_count_CreateTxErrorPtr;
-
-  RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_EnvoyAccountHandler;
 
   RustArcDecrementStrongCountFnType
@@ -401,6 +392,15 @@ abstract class RustLibApi extends BaseApi {
       get rust_arc_decrement_strong_count_KeychainKind;
 
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_KeychainKindPtr;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_TransactionComposeError;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_TransactionComposeError;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_TransactionComposeErrorPtr;
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -730,7 +730,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_draft_transaction,
-        decodeErrorData: sse_decode_compose_tx_error,
+        decodeErrorData: sse_decode_tx_compose_error,
       ),
       constMeta: kCrateApiEnvoyWalletEnvoyAccountHandlerComposePsbtConstMeta,
       argValues: [that, transactionParams],
@@ -814,13 +814,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<DraftTransaction> crateApiEnvoyWalletEnvoyAccountHandlerDecodePsbt(
-      {required DraftTransaction draftTransaction,
-      required String psbtBase64}) {
+      {required DraftTransaction draftTransaction, required List<int> psbt}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_draft_transaction(draftTransaction, serializer);
-        sse_encode_String(psbtBase64, serializer);
+        sse_encode_list_prim_u_8_loose(psbt, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 14, port: port_);
       },
@@ -829,7 +828,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiEnvoyWalletEnvoyAccountHandlerDecodePsbtConstMeta,
-      argValues: [draftTransaction, psbtBase64],
+      argValues: [draftTransaction, psbt],
       apiImpl: this,
     ));
   }
@@ -838,7 +837,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       get kCrateApiEnvoyWalletEnvoyAccountHandlerDecodePsbtConstMeta =>
           const TaskConstMeta(
             debugName: "EnvoyAccountHandler_decode_psbt",
-            argNames: ["draftTransaction", "psbtBase64"],
+            argNames: ["draftTransaction", "psbt"],
           );
 
   @override
@@ -1007,7 +1006,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_transaction_fee_result,
-        decodeErrorData: sse_decode_compose_tx_error,
+        decodeErrorData: sse_decode_tx_compose_error,
       ),
       constMeta: kCrateApiEnvoyWalletEnvoyAccountHandlerGetMaxFeeConstMeta,
       argValues: [that, transactionParams],
@@ -1950,33 +1949,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
 
   @override
-  Future<ComposeTxError> crateApiErrorsComposeTxErrorMapErr(
-      {required CreateTxError createTxError}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
-            createTxError, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 49, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_compose_tx_error,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiErrorsComposeTxErrorMapErrConstMeta,
-      argValues: [createTxError],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiErrorsComposeTxErrorMapErrConstMeta =>
-      const TaskConstMeta(
-        debugName: "compose_tx_error_map_err",
-        argNames: ["createTxError"],
-      );
-
-  @override
   Future<List<DerivedDescriptor>>
       crateApiBip39EnvoyBip39DeriveDescriptorFromSeed(
           {required String seedWords,
@@ -1989,7 +1961,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_network(network, serializer);
         sse_encode_opt_String(passphrase, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 50, port: port_);
+            funcId: 49, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_derived_descriptor,
@@ -2013,7 +1985,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 51, port: port_);
+            funcId: 50, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -2039,7 +2011,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(seedWords, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 52, port: port_);
+            funcId: 51, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_bool,
@@ -2066,7 +2038,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(server, serializer);
         sse_encode_opt_String(proxy, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 53, port: port_);
+            funcId: 52, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_server_features,
@@ -2090,7 +2062,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 54, port: port_);
+            funcId: 53, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -2115,7 +2087,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(data, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 55, port: port_);
+            funcId: 54, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_ng_account_backup,
@@ -2141,7 +2113,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_ng_account_backup(that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 56, port: port_);
+            funcId: 55, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -2167,7 +2139,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(data, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 57, port: port_);
+            funcId: 56, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_ng_account_config,
@@ -2193,7 +2165,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_list_prim_u_8_loose(remoteUpdate, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 58, port: port_);
+            funcId: 57, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_ng_account_config,
@@ -2219,7 +2191,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_ng_account_config(that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 59, port: port_);
+            funcId: 58, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -2243,7 +2215,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_output(that, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 60)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 59)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -2259,6 +2231,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(
         debugName: "output_get_id",
         argNames: ["that"],
+      );
+
+  @override
+  Future<TxComposeError> crateApiErrorsTxComposeErrorMapErr(
+      {required TransactionComposeError transactionComposeError}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTransactionComposeError(
+            transactionComposeError, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 60, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_tx_compose_error,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiErrorsTxComposeErrorMapErrConstMeta,
+      argValues: [transactionComposeError],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiErrorsTxComposeErrorMapErrConstMeta =>
+      const TaskConstMeta(
+        debugName: "tx_compose_error_map_err",
+        argNames: ["transactionComposeError"],
       );
 
   RustArcIncrementStrongCountFnType
@@ -2302,14 +2301,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError;
 
   RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_CreateTxError => wire
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_CreateTxError => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError;
-
-  RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_EnvoyAccountHandler => wire
           .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler;
 
@@ -2324,6 +2315,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   RustArcDecrementStrongCountFnType
       get rust_arc_decrement_strong_count_KeychainKind => wire
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_TransactionComposeError => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTransactionComposeError;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_TransactionComposeError => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTransactionComposeError;
 
   @protected
   AnyhowException dco_decode_AnyhowException(dynamic raw) {
@@ -2373,14 +2372,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  CreateTxError
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return CreateTxErrorImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
   EnvoyAccountHandler
       dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
           dynamic raw) {
@@ -2394,6 +2385,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return KeychainKindImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  TransactionComposeError
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTransactionComposeError(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return TransactionComposeErrorImpl.frbInternalDcoDecode(
+        raw as List<dynamic>);
   }
 
   @protected
@@ -2468,14 +2468,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  CreateTxError
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return CreateTxErrorImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
   EnvoyAccountHandler
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
           dynamic raw) {
@@ -2489,6 +2481,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return KeychainKindImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  TransactionComposeError
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTransactionComposeError(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return TransactionComposeErrorImpl.frbInternalDcoDecode(
+        raw as List<dynamic>);
   }
 
   @protected
@@ -2633,35 +2634,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  ComposeTxError dco_decode_compose_tx_error(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    switch (raw[0]) {
-      case 0:
-        return ComposeTxError_CoinSelectionError(
-          dco_decode_String(raw[1]),
-        );
-      case 1:
-        return ComposeTxError_Error(
-          dco_decode_String(raw[1]),
-        );
-      case 2:
-        return ComposeTxError_InsufficientFunds(
-          dco_decode_String(raw[1]),
-        );
-      case 3:
-        return ComposeTxError_InsufficientFees(
-          dco_decode_u_64(raw[1]),
-        );
-      case 4:
-        return ComposeTxError_InsufficientFeeRate(
-          dco_decode_u_64(raw[1]),
-        );
-      default:
-        throw Exception("unreachable");
-    }
-  }
-
-  @protected
   DerivedDescriptor dco_decode_derived_descriptor(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -2684,7 +2656,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
     return DraftTransaction(
       transaction: dco_decode_bitcoin_transaction(arr[0]),
-      psbtBase64: dco_decode_String(arr[1]),
+      psbt: dco_decode_list_prim_u_8_strict(arr[1]),
       changeOutPutTag: dco_decode_opt_String(arr[2]),
       inputTags: dco_decode_list_String(arr[3]),
       isFinalized: dco_decode_bool(arr[4]),
@@ -2724,7 +2696,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   EnvoyBip39 dco_decode_envoy_bip_39(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.isNotEmpty)
+    if (arr.length != 0)
       throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
     return EnvoyBip39();
   }
@@ -3073,6 +3045,35 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TxComposeError dco_decode_tx_compose_error(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return TxComposeError_CoinSelectionError(
+          dco_decode_String(raw[1]),
+        );
+      case 1:
+        return TxComposeError_Error(
+          dco_decode_String(raw[1]),
+        );
+      case 2:
+        return TxComposeError_InsufficientFunds(
+          dco_decode_String(raw[1]),
+        );
+      case 3:
+        return TxComposeError_InsufficientFees(
+          dco_decode_u_64(raw[1]),
+        );
+      case 4:
+        return TxComposeError_InsufficientFeeRate(
+          dco_decode_u_64(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
   int dco_decode_u_16(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
@@ -3161,15 +3162,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  CreateTxError
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return CreateTxErrorImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
   EnvoyAccountHandler
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
           SseDeserializer deserializer) {
@@ -3184,6 +3176,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return KeychainKindImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  TransactionComposeError
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTransactionComposeError(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return TransactionComposeErrorImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -3267,15 +3268,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  CreateTxError
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return CreateTxErrorImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
   EnvoyAccountHandler
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
           SseDeserializer deserializer) {
@@ -3290,6 +3282,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return KeychainKindImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  TransactionComposeError
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTransactionComposeError(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return TransactionComposeErrorImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -3452,32 +3453,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  ComposeTxError sse_decode_compose_tx_error(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    var tag_ = sse_decode_i_32(deserializer);
-    switch (tag_) {
-      case 0:
-        var var_field0 = sse_decode_String(deserializer);
-        return ComposeTxError_CoinSelectionError(var_field0);
-      case 1:
-        var var_field0 = sse_decode_String(deserializer);
-        return ComposeTxError_Error(var_field0);
-      case 2:
-        var var_field0 = sse_decode_String(deserializer);
-        return ComposeTxError_InsufficientFunds(var_field0);
-      case 3:
-        var var_field0 = sse_decode_u_64(deserializer);
-        return ComposeTxError_InsufficientFees(var_field0);
-      case 4:
-        var var_field0 = sse_decode_u_64(deserializer);
-        return ComposeTxError_InsufficientFeeRate(var_field0);
-      default:
-        throw UnimplementedError('');
-    }
-  }
-
-  @protected
   DerivedDescriptor sse_decode_derived_descriptor(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3498,13 +3473,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   DraftTransaction sse_decode_draft_transaction(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_transaction = sse_decode_bitcoin_transaction(deserializer);
-    var var_psbtBase64 = sse_decode_String(deserializer);
+    var var_psbt = sse_decode_list_prim_u_8_strict(deserializer);
     var var_changeOutPutTag = sse_decode_opt_String(deserializer);
     var var_inputTags = sse_decode_list_String(deserializer);
     var var_isFinalized = sse_decode_bool(deserializer);
     return DraftTransaction(
         transaction: var_transaction,
-        psbtBase64: var_psbtBase64,
+        psbt: var_psbt,
         changeOutPutTag: var_changeOutPutTag,
         inputTags: var_inputTags,
         isFinalized: var_isFinalized);
@@ -4010,6 +3985,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TxComposeError sse_decode_tx_compose_error(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_field0 = sse_decode_String(deserializer);
+        return TxComposeError_CoinSelectionError(var_field0);
+      case 1:
+        var var_field0 = sse_decode_String(deserializer);
+        return TxComposeError_Error(var_field0);
+      case 2:
+        var var_field0 = sse_decode_String(deserializer);
+        return TxComposeError_InsufficientFunds(var_field0);
+      case 3:
+        var var_field0 = sse_decode_u_64(deserializer);
+        return TxComposeError_InsufficientFees(var_field0);
+      case 4:
+        var var_field0 = sse_decode_u_64(deserializer);
+        return TxComposeError_InsufficientFeeRate(var_field0);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
   int sse_decode_u_16(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint16();
@@ -4103,16 +4104,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
-          CreateTxError self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as CreateTxErrorImpl).frbInternalSseEncode(move: true),
-        serializer);
-  }
-
-  @protected
-  void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
           EnvoyAccountHandler self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4128,6 +4119,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
         (self as KeychainKindImpl).frbInternalSseEncode(move: true),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTransactionComposeError(
+          TransactionComposeError self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as TransactionComposeErrorImpl).frbInternalSseEncode(move: true),
         serializer);
   }
 
@@ -4219,16 +4220,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCreateTxError(
-          CreateTxError self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as CreateTxErrorImpl).frbInternalSseEncode(move: null),
-        serializer);
-  }
-
-  @protected
-  void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
           EnvoyAccountHandler self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4244,6 +4235,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
         (self as KeychainKindImpl).frbInternalSseEncode(move: null),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTransactionComposeError(
+          TransactionComposeError self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as TransactionComposeErrorImpl).frbInternalSseEncode(move: null),
         serializer);
   }
 
@@ -4395,29 +4396,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_compose_tx_error(
-      ComposeTxError self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    switch (self) {
-      case ComposeTxError_CoinSelectionError(field0: final field0):
-        sse_encode_i_32(0, serializer);
-        sse_encode_String(field0, serializer);
-      case ComposeTxError_Error(field0: final field0):
-        sse_encode_i_32(1, serializer);
-        sse_encode_String(field0, serializer);
-      case ComposeTxError_InsufficientFunds(field0: final field0):
-        sse_encode_i_32(2, serializer);
-        sse_encode_String(field0, serializer);
-      case ComposeTxError_InsufficientFees(field0: final field0):
-        sse_encode_i_32(3, serializer);
-        sse_encode_u_64(field0, serializer);
-      case ComposeTxError_InsufficientFeeRate(field0: final field0):
-        sse_encode_i_32(4, serializer);
-        sse_encode_u_64(field0, serializer);
-    }
-  }
-
-  @protected
   void sse_encode_derived_descriptor(
       DerivedDescriptor self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4433,7 +4411,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       DraftTransaction self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_bitcoin_transaction(self.transaction, serializer);
-    sse_encode_String(self.psbtBase64, serializer);
+    sse_encode_list_prim_u_8_strict(self.psbt, serializer);
     sse_encode_opt_String(self.changeOutPutTag, serializer);
     sse_encode_list_String(self.inputTags, serializer);
     sse_encode_bool(self.isFinalized, serializer);
@@ -4825,6 +4803,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_tx_compose_error(
+      TxComposeError self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case TxComposeError_CoinSelectionError(field0: final field0):
+        sse_encode_i_32(0, serializer);
+        sse_encode_String(field0, serializer);
+      case TxComposeError_Error(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_String(field0, serializer);
+      case TxComposeError_InsufficientFunds(field0: final field0):
+        sse_encode_i_32(2, serializer);
+        sse_encode_String(field0, serializer);
+      case TxComposeError_InsufficientFees(field0: final field0):
+        sse_encode_i_32(3, serializer);
+        sse_encode_u_64(field0, serializer);
+      case TxComposeError_InsufficientFeeRate(field0: final field0):
+        sse_encode_i_32(4, serializer);
+        sse_encode_u_64(field0, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_u_16(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint16(self);
@@ -4899,26 +4900,6 @@ class BumpFeeErrorImpl extends RustOpaque implements BumpFeeError {
         RustLib.instance.api.rust_arc_decrement_strong_count_BumpFeeError,
     rustArcDecrementStrongCountPtr:
         RustLib.instance.api.rust_arc_decrement_strong_count_BumpFeeErrorPtr,
-  );
-}
-
-@sealed
-class CreateTxErrorImpl extends RustOpaque implements CreateTxError {
-  // Not to be used by end users
-  CreateTxErrorImpl.frbInternalDcoDecode(List<dynamic> wire)
-      : super.frbInternalDcoDecode(wire, _kStaticData);
-
-  // Not to be used by end users
-  CreateTxErrorImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
-      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-  static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_CreateTxError,
-    rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_CreateTxError,
-    rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_CreateTxErrorPtr,
   );
 }
 
@@ -5181,6 +5162,28 @@ class SyncRequestImpl extends RustOpaque implements SyncRequest {
         RustLib.instance.api.rust_arc_decrement_strong_count_SyncRequest,
     rustArcDecrementStrongCountPtr:
         RustLib.instance.api.rust_arc_decrement_strong_count_SyncRequestPtr,
+  );
+}
+
+@sealed
+class TransactionComposeErrorImpl extends RustOpaque
+    implements TransactionComposeError {
+  // Not to be used by end users
+  TransactionComposeErrorImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  TransactionComposeErrorImpl.frbInternalSseDecode(
+      BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount: RustLib
+        .instance.api.rust_arc_increment_strong_count_TransactionComposeError,
+    rustArcDecrementStrongCount: RustLib
+        .instance.api.rust_arc_decrement_strong_count_TransactionComposeError,
+    rustArcDecrementStrongCountPtr: RustLib.instance.api
+        .rust_arc_decrement_strong_count_TransactionComposeErrorPtr,
   );
 }
 

@@ -7,16 +7,19 @@ import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'transaction.dart';
 
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<TransactionComposeError>>
+abstract class TransactionComposeError implements RustOpaqueInterface {}
+
 class DraftTransaction {
   final BitcoinTransaction transaction;
-  final String psbtBase64;
+  final Uint8List psbt;
   final String? changeOutPutTag;
   final List<String> inputTags;
   final bool isFinalized;
 
   const DraftTransaction({
     required this.transaction,
-    required this.psbtBase64,
+    required this.psbt,
     this.changeOutPutTag,
     required this.inputTags,
     required this.isFinalized,
@@ -25,7 +28,7 @@ class DraftTransaction {
   @override
   int get hashCode =>
       transaction.hashCode ^
-      psbtBase64.hashCode ^
+      psbt.hashCode ^
       changeOutPutTag.hashCode ^
       inputTags.hashCode ^
       isFinalized.hashCode;
@@ -36,7 +39,7 @@ class DraftTransaction {
       other is DraftTransaction &&
           runtimeType == other.runtimeType &&
           transaction == other.transaction &&
-          psbtBase64 == other.psbtBase64 &&
+          psbt == other.psbt &&
           changeOutPutTag == other.changeOutPutTag &&
           inputTags == other.inputTags &&
           isFinalized == other.isFinalized;
