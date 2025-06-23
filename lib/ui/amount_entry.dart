@@ -332,8 +332,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
                 if (unit == AmountDisplayUnit.btc) {
                   enteredAmount = getDisplayAmount(
                       _amountSats, AmountDisplayUnit.btc,
-                      trailingZeros:
-                          widget.onPaste != null || _amountSats != 0);
+                      trailingZeros: _amountSats != 0);
                 }
                 _enteredAmount = enteredAmount;
               },
