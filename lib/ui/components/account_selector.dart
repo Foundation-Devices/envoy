@@ -262,7 +262,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
 
   // return spring properties, defines how bouncy the stacked accounts are
   final SpringDescription _reverseSpring = const SpringDescription(
-    mass: 1.6,
+    mass: 5.6,
     stiffness: 180.0,
     damping: 12.0,
   );

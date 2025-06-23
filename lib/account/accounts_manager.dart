@@ -23,8 +23,7 @@ import 'package:envoy/util/list_utils.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:ngwallet/ngwallet.dart';
-
-import '../util/envoy_storage.dart';
+import 'package:envoy/util/envoy_storage.dart';
 
 class AccountAlreadyPaired implements Exception {}
 
@@ -134,6 +133,9 @@ class NgAccountManager extends ChangeNotifier {
         }
       }
     }
+
+    sortByAccountOrder(_accountsHandler, order, (e) => e.$1.id);
+
     SyncManager().startSync();
     _accountsOrder.sink.add(order);
     notifyListeners();
@@ -503,4 +505,20 @@ class NgAccountManager extends ChangeNotifier {
       return (DeviceAccountResult.ERROR, null);
     }
   }
+}
+
+List<EnvoyAccount> sortByAccountOrder<EnvoyAccount>(
+  List<EnvoyAccount> list,
+  List<String> order,
+  String Function(EnvoyAccount item) getId,
+) {
+  list.sort((a, b) {
+    final aIndex = order.indexOf(getId(a));
+    final bIndex = order.indexOf(getId(b));
+    if (aIndex == -1 && bIndex == -1) return 0;
+    if (aIndex == -1) return 1;
+    if (bIndex == -1) return -1;
+    return aIndex.compareTo(bIndex);
+  });
+  return list;
 }
