@@ -409,8 +409,9 @@ class NgAccountManager extends ChangeNotifier {
     final alreadyPairedAccount = accounts.firstWhereOrNull((account) {
       final existingAccountDescriptor = account.descriptors.firstOrNull;
       final newAccountDescriptor = config.descriptors.firstOrNull;
-      if (existingAccountDescriptor == null || newAccountDescriptor == null)
+      if (existingAccountDescriptor == null || newAccountDescriptor == null) {
         return false;
+      }
 
       String getOrigin(String descriptor) =>
           RegExp(r'\[(.*?)\]').firstMatch(descriptor)?.group(1) ?? '';
