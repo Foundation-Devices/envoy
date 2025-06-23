@@ -134,14 +134,7 @@ class NgAccountManager extends ChangeNotifier {
       }
     }
 
-    _accountsHandler.sort((a, b) {
-      int aIndex = order.indexOf(a.$1.id);
-      int bIndex = order.indexOf(b.$1.id);
-      if (aIndex == -1 && bIndex == -1) return 0;
-      if (aIndex == -1) return 1;
-      if (bIndex == -1) return -1;
-      return aIndex.compareTo(bIndex);
-    });
+    sortByAccountOrder(_accountsHandler, order, (e) => e.$1.id);
 
     SyncManager().startSync();
     _accountsOrder.sink.add(order);
@@ -512,4 +505,20 @@ class NgAccountManager extends ChangeNotifier {
       return (DeviceAccountResult.ERROR, null);
     }
   }
+}
+
+List<EnvoyAccount> sortByAccountOrder<EnvoyAccount>(
+  List<EnvoyAccount> list,
+  List<String> order,
+  String Function(EnvoyAccount item) getId,
+) {
+  list.sort((a, b) {
+    final aIndex = order.indexOf(getId(a));
+    final bIndex = order.indexOf(getId(b));
+    if (aIndex == -1 && bIndex == -1) return 0;
+    if (aIndex == -1) return 1;
+    if (bIndex == -1) return -1;
+    return aIndex.compareTo(bIndex);
+  });
+  return list;
 }

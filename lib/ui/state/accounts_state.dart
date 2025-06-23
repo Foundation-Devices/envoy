@@ -121,14 +121,7 @@ final mainnetAccountsProvider =
   final filteredEnvoyAccounts =
       accounts.where((account) => account.network == Network.bitcoin).toList();
 
-  filteredEnvoyAccounts.sort((a, b) {
-    int aIndex = order.indexOf(a.id);
-    int bIndex = order.indexOf(b.id);
-    if (aIndex == -1 && bIndex == -1) return 0;
-    if (aIndex == -1) return 1;
-    if (bIndex == -1) return -1;
-    return aIndex.compareTo(bIndex);
-  });
+  sortByAccountOrder(filteredEnvoyAccounts, order, (account) => account.id);
 
   return filteredEnvoyAccounts;
 });
