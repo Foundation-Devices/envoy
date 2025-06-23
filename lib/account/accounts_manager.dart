@@ -412,16 +412,32 @@ class NgAccountManager extends ChangeNotifier {
 
     NgAccountConfig config = await getPassportAccountFromJson(json);
 
-    final alreadyPairedAccount = accounts.firstWhereOrNull(
-      (account) {
-        return account.index == config.index &&
-            account.network == config.network &&
-            account.deviceSerial == config.deviceSerial;
-      },
-    );
+    final alreadyPairedAccount = accounts.firstWhereOrNull((account) {
+      final existingAccountDescriptor = account.descriptors.firstOrNull;
+      final newAccountDescriptor = config.descriptors.firstOrNull;
+      if (existingAccountDescriptor == null || newAccountDescriptor == null) {
+        return false;
+      }
+
+      String getOrigin(String descriptor) =>
+          RegExp(r'\[(.*?)\]').firstMatch(descriptor)?.group(1) ?? '';
+
+      return account.index == config.index &&
+          account.network == config.network &&
+          getOrigin(existingAccountDescriptor.internal) ==
+              getOrigin(newAccountDescriptor.internal);
+    });
+
+    // If the account exists but is from a different device, delete it
+    bool existingAccountFromDifferentDevice = false;
+    if (alreadyPairedAccount != null &&
+        alreadyPairedAccount.deviceSerial != config.deviceSerial) {
+      await NgAccountManager().deleteAccount(alreadyPairedAccount);
+      existingAccountFromDifferentDevice = true;
+    }
 
     final List<NgDescriptor> missingDescriptors = [];
-    if (alreadyPairedAccount != null) {
+    if (alreadyPairedAccount != null && !existingAccountFromDifferentDevice) {
       if (alreadyPairedAccount.name != config.name) {
         await alreadyPairedAccount.handler?.renameAccount(name: config.name);
       }
