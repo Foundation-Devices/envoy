@@ -11,7 +11,7 @@ import 'dart:math';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 
-const _defaultLookup = 'time.google.com';
+const _defaultLookup = 'pool.ntp.org';
 const _defaultInterval = Duration(minutes: 2);
 
 class NTPUtil {
