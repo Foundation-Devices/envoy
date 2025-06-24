@@ -243,7 +243,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               ),
               child: Container(
                 constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.78,
+                  // ENV-2079: Prevent overlap with CoinSelectionOverlay, which has a fixed height
+                  maxHeight: MediaQuery.of(context).size.height - 350,
                 ),
                 decoration: BoxDecoration(
                     borderRadius:
