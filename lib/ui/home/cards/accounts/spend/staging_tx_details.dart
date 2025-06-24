@@ -193,7 +193,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                           unit: formatUnit,
                           account: account,
                           displayFiatAmount: displayFiatSendAmount,
-                          amountSats: totalReceiveAmount,
+                          amountSats: totalReceiveAmount.abs(),
                           millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine),
                       bottomWidgets: [
