@@ -812,9 +812,11 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
                         context: context,
                         useRootNavigator: true,
                         onDispose: () {
-                          setState(() {
-                            dialogOpen = false;
-                          });
+                          if (mounted) {
+                            setState(() {
+                              dialogOpen = false;
+                            });
+                          }
                         },
                         builder: Builder(
                           builder: (context) => CreateCoinTag(

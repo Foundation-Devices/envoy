@@ -263,6 +263,7 @@ void clearSpendState(ProviderContainer ref) {
             ? AmountDisplayUnit.btc
             : AmountDisplayUnit.sat;
     ref.read(displayFiatSendAmountProvider.notifier).state = 0;
+    ref.read(coinSelectionStateProvider.notifier).reset();
   } catch (e) {
     kPrint("Error clearing spend state: $e");
   }
