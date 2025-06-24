@@ -375,7 +375,6 @@ class _TxReviewState extends ConsumerState<TxReview> {
           S().component_tryAgain,
           type: EnvoyButtonTypes.secondary,
           onTap: () {
-            ref.read(spendTransactionProvider.notifier).resetBroadcastState();
             _broadcastToNetwork(context);
           },
         ),
