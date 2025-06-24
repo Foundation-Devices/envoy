@@ -8,11 +8,13 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/address_entry.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/build_context_extension.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,10 +22,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/routes/accounts_router.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
 import 'package:ngwallet/ngwallet.dart';
 
 //ignore: must_be_immutable
@@ -131,20 +129,6 @@ class _SendCardState extends ConsumerState<SendCard>
 
     return PopScope(
       canPop: true,
-      onPopInvokedWithResult: (bool didPop, _) {
-        Future.microtask(() {
-          if (ref.read(coinSelectionStateProvider).isNotEmpty &&
-              ref.read(showSpendRequirementOverlayProvider)) {
-            final account = ref.read(selectedAccountProvider);
-            if (account != null) {
-              show(SpendOverlayContext.preselectCoins);
-            }
-            if (context.mounted) {
-              context.go(ROUTE_ACCOUNT_DETAIL);
-            }
-          }
-        });
-      },
       child: LayoutBuilder(
         builder: (context, constraints) {
           final width = MediaQuery.sizeOf(context).width;
