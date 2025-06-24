@@ -217,7 +217,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     return false;
   }
 
-  void setNote(String? stagingNote) async {
+  Future setNote(String? stagingNote) async {
     var (
       account: account,
       amount: amount,
@@ -247,11 +247,10 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     DraftTransaction tx = state.draftTransaction!;
     DraftTransaction updatedTx = DraftTransaction(
         changeOutPutTag: state.changeOutPutTag,
-        transaction: tx.transaction.copyWith(note: note),
+        transaction: tx.transaction.copyWith(note: stagingNote),
         psbt: tx.psbt,
         inputTags: tx.inputTags,
         isFinalized: tx.isFinalized);
-
     kPrint("NoteUpdated : ${updatedTx.transaction.note}");
     _updateWithPreparedTransaction(updatedTx, params);
   }

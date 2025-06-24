@@ -53,6 +53,24 @@ class TxReview extends ConsumerStatefulWidget {
 
 class _TxReviewState extends ConsumerState<TxReview> {
   StreamSubscription<PassportMessage>? _passportMessageSubscription;
+  late final rive.Artboard _artBoard;
+  rive.StateMachineController? _stateMachineController;
+
+  @override
+  void initState() {
+    super.initState();
+    //load rive animation for better performance
+    rootBundle.load('assets/envoy_loader.riv').then((data) {
+      final file = rive.RiveFile.import(data);
+      final artboard = file.mainArtboard;
+      _stateMachineController =
+          rive.StateMachineController.fromArtboard(artboard, 'STM');
+      if (_stateMachineController != null) {
+        artboard.addController(_stateMachineController!);
+      }
+      setState(() => _artBoard = artboard);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -232,21 +250,23 @@ class _TxReviewState extends ConsumerState<TxReview> {
           if (context.mounted) {
             await _showNotesDialog(context);
           }
-          await Future.delayed(const Duration(milliseconds: 100));
           ref
               .read(spendTransactionProvider.notifier)
               .setProgressState(BroadcastProgress.inProgress);
+          await Future.delayed(const Duration(milliseconds: 200));
+          if (context.mounted) _broadcastToNetwork(context);
         } else {
           if (transactionModel.isFinalized) {
             if (context.mounted) {
               await _showNotesDialog(context);
             }
-            await Future.delayed(const Duration(milliseconds: 100));
             //start the broadcast,by setting the progress state to in progress
             //rive onInit will start the broadcast
             ref
                 .read(spendTransactionProvider.notifier)
                 .setProgressState(BroadcastProgress.inProgress);
+            await Future.delayed(const Duration(milliseconds: 200));
+            if (context.mounted) _broadcastToNetwork(context);
           } else {
             if (context.mounted) {
               _handleQRExchange(account, rootContext, providerScope);
@@ -256,8 +276,6 @@ class _TxReviewState extends ConsumerState<TxReview> {
       }
     }
   }
-
-  rive.StateMachineController? _stateMachineController;
 
   Widget _buildBroadcastProgress() {
     final spendState = ref.watch(spendTransactionProvider);
@@ -271,20 +289,9 @@ class _TxReviewState extends ConsumerState<TxReview> {
             SliverToBoxAdapter(
               child: SizedBox(
                 height: 260,
-                child: rive.RiveAnimation.asset(
-                  "assets/envoy_loader.riv",
+                child: rive.Rive(
+                  artboard: _artBoard,
                   fit: BoxFit.contain,
-                  onInit: (artboard) {
-                    _stateMachineController =
-                        rive.StateMachineController.fromArtboard(
-                            artboard, 'STM');
-                    artboard.addController(_stateMachineController!);
-                    _stateMachineController
-                        ?.findInput<bool>("indeterminate")
-                        ?.change(true);
-                    //start broadcast immediately after the animation is loaded
-                    _broadcastToNetwork(context);
-                  },
                 ),
               ),
             ),
@@ -428,9 +435,11 @@ class _TxReviewState extends ConsumerState<TxReview> {
           context: context,
           useRootNavigator: true,
           dialog: TxReviewNoteDialog(
-            onAdd: (note) {
-              ref.read(spendTransactionProvider.notifier).setNote(note);
-              completer.complete();
+            onAdd: (note) async {
+              await ref.read(spendTransactionProvider.notifier).setNote(note);
+              if (!completer.isCompleted) {
+                completer.complete();
+              }
             },
             noteSubTitle:
                 S().stalls_before_sending_tx_add_note_modal_subheading,
@@ -452,24 +461,31 @@ class _TxReviewState extends ConsumerState<TxReview> {
     }
     await Future.delayed(const Duration(milliseconds: 300));
     try {
-      _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
-      _stateMachineController?.findInput<bool>("happy")?.change(false);
-      _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+      _setAnimState(BroadcastProgress.inProgress);
       await Future.delayed(const Duration(milliseconds: 600));
       await ref
           .read(spendTransactionProvider.notifier)
           .broadcast(providerContainer);
-      _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
-      _stateMachineController?.findInput<bool>("happy")?.change(true);
-      _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+      TransactionModel transactionModel = ref.read(spendTransactionProvider);
+      _setAnimState(transactionModel.broadcastProgress);
+      await Future.delayed(const Duration(milliseconds: 100));
       addHapticFeedback();
     } catch (e, s) {
       kPrint(e, stackTrace: s);
-      _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
-      _stateMachineController?.findInput<bool>("happy")?.change(false);
-      _stateMachineController?.findInput<bool>("unhappy")?.change(true);
+      _setAnimState(BroadcastProgress.failed);
       await Future.delayed(const Duration(milliseconds: 800));
     }
+  }
+
+  _setAnimState(BroadcastProgress progress) {
+    bool happy = progress == BroadcastProgress.success;
+    bool unhappy = progress == BroadcastProgress.failed;
+    bool indeterminate = progress == BroadcastProgress.inProgress;
+    _stateMachineController
+        ?.findInput<bool>("indeterminate")
+        ?.change(indeterminate);
+    _stateMachineController?.findInput<bool>("happy")?.change(happy);
+    _stateMachineController?.findInput<bool>("unhappy")?.change(unhappy);
   }
 
   bool hapticCalled = false;
