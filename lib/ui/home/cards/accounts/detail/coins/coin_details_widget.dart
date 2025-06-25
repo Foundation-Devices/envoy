@@ -19,7 +19,6 @@ import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_w
 import 'package:envoy/ui/state/transactions_note_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
@@ -27,7 +26,6 @@ import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ngwallet/ngwallet.dart';
 
 class CoinDetailsWidget extends ConsumerStatefulWidget {
@@ -194,30 +192,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
                 size: EnvoyIconSize.small,
                 color: EnvoyColors.textPrimary,
               ),
-              trailing: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(note,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      style: EnvoyTypography.body
-                          .copyWith(color: EnvoyColors.textPrimary),
-                      textAlign: TextAlign.end),
-                  const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                  note.trim().isNotEmpty
-                      ? SvgPicture.asset(
-                          note.trim().isNotEmpty
-                              ? "assets/icons/ic_edit_note.svg"
-                              : "assets/icons/ic_notes.svg",
-                          color: Theme.of(context).primaryColor,
-                          height: 14,
-                        )
-                      : const Icon(Icons.add_circle_rounded,
-                          color: EnvoyColors.accentPrimary, size: 24),
-                ],
-              ),
+              trailing: NoteDisplay(note: note),
             ),
           ),
         ]);
