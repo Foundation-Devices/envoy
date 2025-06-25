@@ -27,7 +27,7 @@ void notifyAboutNetworkMigrationDialog(BuildContext context) {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
+            padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
             child: EnvoyIcon(
               EnvoyIcons.info,
               size: EnvoyIconSize.big,
@@ -35,7 +35,7 @@ void notifyAboutNetworkMigrationDialog(BuildContext context) {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+            padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
             child: Text(
               title,
               textAlign: TextAlign.center,
@@ -43,10 +43,10 @@ void notifyAboutNetworkMigrationDialog(BuildContext context) {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(bottom: EnvoySpacing.medium3),
+            padding: EdgeInsets.only(bottom: EnvoySpacing.xs),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: 120,
+                maxHeight: 150,
               ),
               child: SingleChildScrollView(
                 child: Text(
@@ -119,8 +119,8 @@ void notifyAboutNetworkMigrationDialog(BuildContext context) {
           linearGradient: true,
           blurColor: Colors.black,
           dialog: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.75,
-            height: 400,
+            width: MediaQuery.of(context).size.width * 0.90,
+            height: MediaQuery.of(context).size.height * 0.50,
             child: PageView(
               physics: NeverScrollableScrollPhysics(),
               controller: controller,
