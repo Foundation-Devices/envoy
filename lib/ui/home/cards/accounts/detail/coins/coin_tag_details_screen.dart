@@ -30,6 +30,7 @@ import 'package:envoy/util/console.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
 
@@ -49,6 +50,9 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
   final double _menuHeight = 80;
   Output? _selectedCoin;
   final GlobalKey _detailWidgetKey = GlobalKey();
+
+  final scrollController = ScrollController();
+  bool isScrollable = false;
 
   @override
   Widget build(BuildContext context) {
@@ -194,7 +198,6 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
   }
 
   Widget coinTagDetails(BuildContext context) {
-    final scrollController = ScrollController();
     final selectedAccount = ref.read(selectedAccountProvider);
     final tag = ref.watch(tagProvider(widget.coinTag.name)) ?? widget.coinTag;
     final accountAccent = selectedAccount?.color != null
@@ -204,6 +207,13 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     Color cardBackground =
         tag.untagged ? const Color(0xff808080) : accountAccent;
     const cardRadius = EnvoySpacing.medium2;
+
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        isScrollable = scrollController.position.maxScrollExtent > 0;
+      });
+    });
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -241,18 +251,23 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                       Colors.black,
                     ]),
               ),
-              child: Container(
+              child: AnimatedContainer(
                 constraints: BoxConstraints(
-                  // ENV-2079: Prevent overlap with CoinSelectionOverlay, which has a fixed height
-                  maxHeight: MediaQuery.of(context).size.height - 350,
+                  // Fixed maxHeight to ensure consistent layout and prevent coin tags from being cut off across different mobile screen sizes (ENV-2079)
+                  maxHeight: (ref.watch(spendEditModeProvider) !=
+                          SpendOverlayContext.hidden
+                      ? 420
+                      : 510),
                 ),
                 decoration: BoxDecoration(
                     borderRadius:
                         const BorderRadius.all(Radius.circular(cardRadius - 3)),
                     border: Border.all(
                         color: border, width: 2, style: BorderStyle.solid)),
+                duration: const Duration(milliseconds: 300),
                 child: RawScrollbar(
                   controller: scrollController,
+                  thumbVisibility: isScrollable,
                   padding: const EdgeInsets.only(
                       right: -EnvoySpacing.medium1, top: 100, bottom: -100),
                   shape: RoundedRectangleBorder(
@@ -295,13 +310,12 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                               child: ListView(
                                                   controller: scrollController,
                                                   padding: EdgeInsets.only(
-                                                    bottom: (tag.utxo.length >
-                                                                12 &&
-                                                            ref.read(
+                                                    bottom: (isScrollable &&
+                                                            ref.watch(
                                                                     spendEditModeProvider) !=
                                                                 SpendOverlayContext
                                                                     .hidden)
-                                                        ? 120
+                                                        ? 200
                                                         : 0,
                                                   ),
                                                   shrinkWrap: true,
