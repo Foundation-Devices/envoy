@@ -85,7 +85,7 @@ class _EnvoyInfoCardListItemState extends State<EnvoyInfoCardListItem> {
         EnvoyInfoCardListItem.titleTextStyle(widget.textColor);
     return Padding(
       padding: const EdgeInsets.symmetric(
-          horizontal: EnvoySpacing.xs, vertical: EnvoySpacing.small),
+          horizontal: EnvoySpacing.xs, vertical: EnvoySpacing.xs),
       child: widget.spacingPriority == FlexPriority.trailing
           ? WidgetSize(
               onChange: _onTrailingSizeChanged,

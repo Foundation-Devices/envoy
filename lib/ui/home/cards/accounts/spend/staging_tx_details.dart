@@ -212,7 +212,6 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                               millionaireMode: false,
                               amountWidgetStyle: AmountWidgetStyle.normal),
                         ),
-                        const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                         Padding(
                           padding:
                               const EdgeInsets.only(left: EnvoySpacing.small),
@@ -317,8 +316,9 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          height: EnvoySpacing.medium2,
+                        SizedBox(
+                          height:
+                              totalChangeAmount != 0 ? EnvoySpacing.medium2 : 0,
                         ),
                         EnvoyInfoCardListItem(
                           title: S().coincontrol_tx_history_tx_detail_note,
