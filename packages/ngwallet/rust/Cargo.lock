@@ -1040,7 +1040,7 @@ dependencies = [
 [[package]]
 name = "ngwallet"
 version = "1.0.1"
-source = "git+https://github.com/Foundation-Devices/ngwallet?rev=b9179e038dd80d9edcf40162cc6632d173e8cfda#b9179e038dd80d9edcf40162cc6632d173e8cfda"
+source = "git+https://github.com/Foundation-Devices/ngwallet?rev=07b262dfbad12cfd8213b26c2181c8a92021f95e#07b262dfbad12cfd8213b26c2181c8a92021f95e"
 dependencies = [
  "anyhow",
  "bdk_electrum",
