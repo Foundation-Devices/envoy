@@ -482,32 +482,8 @@ class _TransactionsDetailsWidgetState
                         size: EnvoyIconSize.small,
                         color: EnvoyColors.textPrimary,
                       ),
-                      trailing: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Flexible(
-                            child: Text(note,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                style: EnvoyTypography.body
-                                    .copyWith(color: EnvoyColors.textPrimary),
-                                textAlign: TextAlign.end),
-                          ),
-                          const Padding(
-                              padding: EdgeInsets.all(EnvoySpacing.xs)),
-                          note.trim().isNotEmpty
-                              ? SvgPicture.asset(
-                                  note.trim().isNotEmpty
-                                      ? "assets/icons/ic_edit_note.svg"
-                                      : "assets/icons/ic_notes.svg",
-                                  color: Theme.of(context).primaryColor,
-                                  height: 14,
-                                )
-                              : const Icon(Icons.add_circle_rounded,
-                                  color: EnvoyColors.accentPrimary, size: 24),
-                        ],
+                      trailing: NoteDisplay(
+                        note: note,
                       ),
                     ),
                   ),
@@ -690,5 +666,53 @@ String? getBaseUrlForNetwork(Network network) {
       return Fees.testnetMempoolFoundationInstance;
     case Network.regtest:
       return null;
+  }
+}
+
+class NoteDisplay extends StatelessWidget {
+  final String note;
+
+  const NoteDisplay({
+    super.key,
+    required this.note,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      textAlign: TextAlign.end,
+      text: TextSpan(
+        style: EnvoyTypography.body.copyWith(
+          color: EnvoyColors.textPrimary,
+        ),
+        children: [
+          TextSpan(text: note.trim()),
+          if (note.trim().isNotEmpty)
+            WidgetSpan(
+              alignment: PlaceholderAlignment.middle,
+              child: Padding(
+                padding: const EdgeInsets.only(left: EnvoySpacing.xs),
+                child: SvgPicture.asset(
+                  "assets/icons/ic_edit_note.svg",
+                  color: Theme.of(context).primaryColor,
+                  height: 14,
+                ),
+              ),
+            )
+          else
+            WidgetSpan(
+              alignment: PlaceholderAlignment.middle,
+              child: Padding(
+                padding: const EdgeInsets.only(left: EnvoySpacing.xs),
+                child: Icon(
+                  Icons.add_circle_rounded,
+                  color: EnvoyColors.accentPrimary,
+                  size: 24,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
   }
 }
