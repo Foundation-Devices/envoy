@@ -27,7 +27,7 @@ pub use peripheral::*;
 
 use log::{debug, error};
 
-enum Command {
+pub enum Command {
     Scan {
         filter: Vec<String>,
     },
@@ -52,6 +52,7 @@ enum Command {
     WriteAll {
         id: String,
         data: Vec<Vec<u8>>,
+        sink: StreamSink<f64>,
     },
 }
 
@@ -80,7 +81,7 @@ impl std::fmt::Debug for Command {
             }
             Command::Read { id, sink: _ } => f.debug_struct("Read").field("id", id).finish(),
             Command::Write { id, .. } => f.debug_struct("Write").field("id", id).finish(),
-            Command::WriteAll { id, .. } => f.debug_struct("WriteAll").field("id", id).finish(),
+            Command::WriteAll { id, sink: _ ,.. } => f.debug_struct("WriteAll").field("id", id).finish(),
         }
     }
 }
@@ -288,8 +289,8 @@ pub fn write(id: String, data: Vec<u8>) -> Result<()> {
     command::send(Command::Write { id, data })
 }
 
-pub fn write_all(id: String, data: Vec<Vec<u8>>) -> Result<()> {
-    command::send(Command::WriteAll { id, data })
+pub fn write_all(id: String, data: Vec<Vec<u8>>, sink: StreamSink<f64>) -> Result<()> {
+    command::send(Command::WriteAll { id, data, sink })
 }
 
 pub fn read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
@@ -327,8 +328,8 @@ mod command {
                     Command::Write { id, data } => {
                         spawn_command(inner_write(id, data), kind);
                     }
-                    Command::WriteAll { id, data } => {
-                        spawn_command(inner_write_all(id, data), kind);
+                    Command::WriteAll { id, data, sink } => {
+                        spawn_command(inner_write_all(id, data, sink), kind);
                     }
                 }
             }
@@ -465,13 +466,22 @@ mod command {
         device.write(data).await
     }
 
-    async fn inner_write_all(id: String, data: Vec<Vec<u8>>) -> Result<()> {
-        debug!("inner write all: {id}");
-        let devices = ble_state().devices.lock().await;
-        let device = devices
-            .get(&id)
-            .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
+async fn inner_write_all(id: String, data: Vec<Vec<u8>>, sink: StreamSink<f64>) -> Result<()> {
+    debug!("inner write all: {id}");
 
-        device.write_all(data).await
+    let devices = ble_state().devices.lock().await;
+    let device = devices
+        .get(&id)
+        .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
+
+    let total = data.len();
+    for (i, chunk) in data.into_iter().enumerate() {
+        device.write(chunk).await?; // Call simple `write` method
+
+        let progress = (i + 1) as f64 / total as f64;
+        sink.add(progress).unwrap();
     }
+
+    Ok(())
+}
 }
