@@ -209,9 +209,11 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     const cardRadius = EnvoySpacing.medium2;
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        isScrollable = scrollController.position.maxScrollExtent > 0;
-      });
+      if (scrollController.hasClients) {
+        setState(() {
+          isScrollable = scrollController.position.maxScrollExtent > 0;
+        });
+      }
     });
 
     return Column(
