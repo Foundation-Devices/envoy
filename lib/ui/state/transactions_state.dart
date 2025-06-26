@@ -48,8 +48,23 @@ final filteredTransactionsProvider =
   final txFilterState = ref.watch(txFilterStateProvider);
   final txSortState = ref.watch(txSortStateProvider);
 
-  List<EnvoyTransaction> transactions =
+  List<EnvoyTransaction> walletTransactions =
       ref.watch(transactionsProvider(accountId));
+
+  List<EnvoyTransaction> pendingTransactions = walletTransactions
+      .where((element) => element.isConfirmed == false)
+      .toList();
+  List<EnvoyTransaction> confirmedTransactions = walletTransactions
+      .where((element) => element.isConfirmed != false)
+      .toList();
+  pendingTransactions.sort((a, b) => (b.date ??
+          BigInt.from(DateTime.now().millisecondsSinceEpoch))
+      .toInt()
+      .compareTo((a.date ?? BigInt.from(DateTime.now().millisecondsSinceEpoch))
+          .toInt()));
+  List<EnvoyTransaction> transactions = [];
+  transactions.addAll(confirmedTransactions);
+  transactions.addAll(pendingTransactions.toList());
 
   if (txFilterState.contains(TransactionFilters.sent) &&
       txFilterState.contains(TransactionFilters.received)) {

@@ -52,7 +52,7 @@ use crate::frb_generated::StreamSink;
 
 #[frb(init)]
 pub fn init_app() {
-    flutter_rust_bridge::setup_default_user_utils();
+   flutter_rust_bridge::setup_default_user_utils();
 }
 
 #[derive(Clone)]
@@ -373,13 +373,8 @@ impl EnvoyAccountHandler {
     }
 
     pub fn update_broadcast_state(&mut self, draft_transaction: DraftTransaction) {
-        let mut tx = draft_transaction.transaction;
+        let  tx = draft_transaction.transaction.clone();
         let now = Utc::now();
-        //transaction list will show fee+amount
-        tx.amount = -(((tx.amount.abs() as u64) + tx.fee) as i64);
-        //use current timestamp. this will be used for sorting
-        tx.date = Some(now.timestamp() as u64);
-        self.mempool_txs.push(tx.clone());
         {
             let mut account = self.ng_account.lock().unwrap();
             if tx.note.is_some() {
@@ -403,6 +398,12 @@ impl EnvoyAccountHandler {
         {
             let account = self.ng_account.lock().unwrap();
             account.mark_utxo_as_used(psbt.unsigned_tx.clone());
+            let (received,sent) = account.sent_and_received(&psbt.unsigned_tx.clone());
+            let amount: i64 = (received.to_sat() as i64) - (sent.to_sat() as i64);
+            let mut tx = draft_transaction.transaction.clone();
+            tx.date = Some(now.timestamp() as u64);
+            tx.amount = -amount;
+            self.mempool_txs.push(tx);
         }
         self.send_update();
     }
