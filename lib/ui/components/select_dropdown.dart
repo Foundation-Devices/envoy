@@ -225,7 +225,7 @@ int getInitialElectrumDropdownIndex() {
       (savedElectrumServerType == null &&
           !Settings().usingDefaultElectrumServer);
 
-  if (savedElectrumServerType == null ||
+  if (Settings().usingDefaultElectrumServer ||
       savedElectrumServerType == "foundation") {
     return 0;
   } else if (isPersonalNode) {

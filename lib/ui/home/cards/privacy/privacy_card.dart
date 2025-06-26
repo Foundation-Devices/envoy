@@ -58,7 +58,10 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
 
       if (savedElectrumServerType == null &&
           !Settings().usingDefaultElectrumServer) {
-        _showPersonalNodeTextField = true;
+        setState(() {
+          _showPersonalNodeTextField = true;
+        });
+
         LocalStorage().prefs.setString("electrumServerType", "personalNode");
       }
 
