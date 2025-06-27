@@ -65,6 +65,9 @@ String getTransactionSubtitleText(EnvoyTransaction transaction, Locale locale) {
 
 EnvoyIcons? getTransactionIcon(
     EnvoyTransaction transaction, RBFState? cancelState, bool? isBoosted) {
+  if (isBoosted == true) {
+    return EnvoyIcons.rbf_boost;
+  }
   if (cancelState == null) {
     return transaction.amount < 0 ? EnvoyIcons.spend : EnvoyIcons.receive;
   }

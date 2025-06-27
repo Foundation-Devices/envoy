@@ -15,7 +15,6 @@ import 'frb_generated.io.dart'
 import 'lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'third_party/ngwallet/config.dart';
-import 'third_party/ngwallet/rbf.dart';
 import 'third_party/ngwallet/send.dart';
 import 'third_party/ngwallet/transaction.dart';
 
@@ -136,7 +135,9 @@ abstract class RustLibApi extends BaseApi {
       {required EnvoyAccountHandler that,
       required List<Output> selectedOutputs,
       required BigInt feeRate,
-      required BitcoinTransaction bitcoinTransaction});
+      required BitcoinTransaction bitcoinTransaction,
+      String? note,
+      String? tag});
 
   NgAccountConfig crateApiEnvoyWalletEnvoyAccountHandlerConfig(
       {required EnvoyAccountHandler that});
@@ -367,14 +368,6 @@ abstract class RustLibApi extends BaseApi {
       get rust_arc_decrement_strong_count_WalletUpdate;
 
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_WalletUpdatePtr;
-
-  RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_BumpFeeError;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_BumpFeeError;
-
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_BumpFeeErrorPtr;
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_EnvoyAccountHandler;
@@ -697,8 +690,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_draft_transaction,
-        decodeErrorData:
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError,
+        decodeErrorData: sse_decode_rbf_bump_fee_error,
       ),
       constMeta:
           kCrateApiEnvoyWalletEnvoyAccountHandlerComposeCancellationTxConstMeta,
@@ -750,7 +742,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       {required EnvoyAccountHandler that,
       required List<Output> selectedOutputs,
       required BigInt feeRate,
-      required BitcoinTransaction bitcoinTransaction}) {
+      required BitcoinTransaction bitcoinTransaction,
+      String? note,
+      String? tag}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
@@ -760,16 +754,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_u_64(feeRate, serializer);
         sse_encode_box_autoadd_bitcoin_transaction(
             bitcoinTransaction, serializer);
+        sse_encode_opt_String(note, serializer);
+        sse_encode_opt_String(tag, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 12, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_draft_transaction,
-        decodeErrorData:
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError,
+        decodeErrorData: sse_decode_rbf_bump_fee_error,
       ),
       constMeta: kCrateApiEnvoyWalletEnvoyAccountHandlerComposeRbfPsbtConstMeta,
-      argValues: [that, selectedOutputs, feeRate, bitcoinTransaction],
+      argValues: [
+        that,
+        selectedOutputs,
+        feeRate,
+        bitcoinTransaction,
+        note,
+        tag
+      ],
       apiImpl: this,
     ));
   }
@@ -782,7 +784,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
               "that",
               "selectedOutputs",
               "feeRate",
-              "bitcoinTransaction"
+              "bitcoinTransaction",
+              "note",
+              "tag"
             ],
           );
 
@@ -973,8 +977,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_transaction_fee_result,
-        decodeErrorData:
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError,
+        decodeErrorData: sse_decode_rbf_bump_fee_error,
       ),
       constMeta:
           kCrateApiEnvoyWalletEnvoyAccountHandlerGetMaxBumpFeeRatesConstMeta,
@@ -2293,14 +2296,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate;
 
   RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_BumpFeeError => wire
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_BumpFeeError => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError;
-
-  RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_EnvoyAccountHandler => wire
           .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler;
 
@@ -2361,14 +2356,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return WalletUpdateImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  BumpFeeError
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return BumpFeeErrorImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -2457,14 +2444,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return WalletUpdateImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  BumpFeeError
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return BumpFeeErrorImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -2940,6 +2919,51 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RBFBumpFeeError dco_decode_rbf_bump_fee_error(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return RBFBumpFeeError_InsufficientFunds();
+      case 1:
+        return RBFBumpFeeError_ComposeBumpTxError(
+          dco_decode_String(raw[1]),
+        );
+      case 2:
+        return RBFBumpFeeError_ComposeTxError(
+          dco_decode_String(raw[1]),
+        );
+      case 3:
+        return RBFBumpFeeError_ChangeOutputLocked();
+      case 4:
+        return RBFBumpFeeError_UnknownUtxo(
+          dco_decode_String(raw[1]),
+        );
+      case 5:
+        return RBFBumpFeeError_TransactionNotFound();
+      case 6:
+        return RBFBumpFeeError_TransactionConfirmed(
+          dco_decode_String(raw[1]),
+        );
+      case 7:
+        return RBFBumpFeeError_IrreplaceableTransaction(
+          dco_decode_String(raw[1]),
+        );
+      case 8:
+        return RBFBumpFeeError_FeeRateUnavailable();
+      case 9:
+        return RBFBumpFeeError_UnableToAccessWallet();
+      case 10:
+        return RBFBumpFeeError_UnableToAddForeignUtxo(
+          dco_decode_String(raw[1]),
+        );
+      case 11:
+        return RBFBumpFeeError_WalletNotAvailable();
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
   (
     AddressType,
     KeychainKind,
@@ -3153,15 +3177,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  BumpFeeError
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return BumpFeeErrorImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
   EnvoyAccountHandler
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
           SseDeserializer deserializer) {
@@ -3255,15 +3270,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return WalletUpdateImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  BumpFeeError
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return BumpFeeErrorImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -3891,6 +3897,47 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RBFBumpFeeError sse_decode_rbf_bump_fee_error(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        return RBFBumpFeeError_InsufficientFunds();
+      case 1:
+        var var_field0 = sse_decode_String(deserializer);
+        return RBFBumpFeeError_ComposeBumpTxError(var_field0);
+      case 2:
+        var var_field0 = sse_decode_String(deserializer);
+        return RBFBumpFeeError_ComposeTxError(var_field0);
+      case 3:
+        return RBFBumpFeeError_ChangeOutputLocked();
+      case 4:
+        var var_field0 = sse_decode_String(deserializer);
+        return RBFBumpFeeError_UnknownUtxo(var_field0);
+      case 5:
+        return RBFBumpFeeError_TransactionNotFound();
+      case 6:
+        var var_field0 = sse_decode_String(deserializer);
+        return RBFBumpFeeError_TransactionConfirmed(var_field0);
+      case 7:
+        var var_field0 = sse_decode_String(deserializer);
+        return RBFBumpFeeError_IrreplaceableTransaction(var_field0);
+      case 8:
+        return RBFBumpFeeError_FeeRateUnavailable();
+      case 9:
+        return RBFBumpFeeError_UnableToAccessWallet();
+      case 10:
+        var var_field0 = sse_decode_String(deserializer);
+        return RBFBumpFeeError_UnableToAddForeignUtxo(var_field0);
+      case 11:
+        return RBFBumpFeeError_WalletNotAvailable();
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
   (
     AddressType,
     KeychainKind,
@@ -4094,16 +4141,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
-          BumpFeeError self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as BumpFeeErrorImpl).frbInternalSseEncode(move: true),
-        serializer);
-  }
-
-  @protected
-  void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
           EnvoyAccountHandler self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4205,16 +4242,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
         (self as WalletUpdateImpl).frbInternalSseEncode(move: null),
-        serializer);
-  }
-
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
-          BumpFeeError self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as BumpFeeErrorImpl).frbInternalSseEncode(move: null),
         serializer);
   }
 
@@ -4734,6 +4761,44 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_rbf_bump_fee_error(
+      RBFBumpFeeError self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case RBFBumpFeeError_InsufficientFunds():
+        sse_encode_i_32(0, serializer);
+      case RBFBumpFeeError_ComposeBumpTxError(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_String(field0, serializer);
+      case RBFBumpFeeError_ComposeTxError(field0: final field0):
+        sse_encode_i_32(2, serializer);
+        sse_encode_String(field0, serializer);
+      case RBFBumpFeeError_ChangeOutputLocked():
+        sse_encode_i_32(3, serializer);
+      case RBFBumpFeeError_UnknownUtxo(field0: final field0):
+        sse_encode_i_32(4, serializer);
+        sse_encode_String(field0, serializer);
+      case RBFBumpFeeError_TransactionNotFound():
+        sse_encode_i_32(5, serializer);
+      case RBFBumpFeeError_TransactionConfirmed(field0: final field0):
+        sse_encode_i_32(6, serializer);
+        sse_encode_String(field0, serializer);
+      case RBFBumpFeeError_IrreplaceableTransaction(field0: final field0):
+        sse_encode_i_32(7, serializer);
+        sse_encode_String(field0, serializer);
+      case RBFBumpFeeError_FeeRateUnavailable():
+        sse_encode_i_32(8, serializer);
+      case RBFBumpFeeError_UnableToAccessWallet():
+        sse_encode_i_32(9, serializer);
+      case RBFBumpFeeError_UnableToAddForeignUtxo(field0: final field0):
+        sse_encode_i_32(10, serializer);
+        sse_encode_String(field0, serializer);
+      case RBFBumpFeeError_WalletNotAvailable():
+        sse_encode_i_32(11, serializer);
+    }
+  }
+
+  @protected
   void
       sse_encode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
           (AddressType, KeychainKind, int) self, SseSerializer serializer) {
@@ -4884,26 +4949,6 @@ class ArcMutexNgAccountConnectionImpl extends RustOpaque
 }
 
 @sealed
-class BumpFeeErrorImpl extends RustOpaque implements BumpFeeError {
-  // Not to be used by end users
-  BumpFeeErrorImpl.frbInternalDcoDecode(List<dynamic> wire)
-      : super.frbInternalDcoDecode(wire, _kStaticData);
-
-  // Not to be used by end users
-  BumpFeeErrorImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
-      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-  static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_BumpFeeError,
-    rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_BumpFeeError,
-    rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_BumpFeeErrorPtr,
-  );
-}
-
-@sealed
 class EnvoyAccountHandlerImpl extends RustOpaque
     implements EnvoyAccountHandler {
   // Not to be used by end users
@@ -4971,12 +5016,16 @@ class EnvoyAccountHandlerImpl extends RustOpaque
   Future<DraftTransaction> composeRbfPsbt(
           {required List<Output> selectedOutputs,
           required BigInt feeRate,
-          required BitcoinTransaction bitcoinTransaction}) =>
+          required BitcoinTransaction bitcoinTransaction,
+          String? note,
+          String? tag}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerComposeRbfPsbt(
           that: this,
           selectedOutputs: selectedOutputs,
           feeRate: feeRate,
-          bitcoinTransaction: bitcoinTransaction);
+          bitcoinTransaction: bitcoinTransaction,
+          note: note,
+          tag: tag);
 
   NgAccountConfig config() =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerConfig(

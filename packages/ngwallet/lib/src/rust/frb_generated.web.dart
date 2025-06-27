@@ -16,7 +16,6 @@ import 'frb_generated.dart';
 import 'lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_web.dart';
 import 'third_party/ngwallet/config.dart';
-import 'third_party/ngwallet/rbf.dart';
 import 'third_party/ngwallet/send.dart';
 import 'third_party/ngwallet/transaction.dart';
 
@@ -43,10 +42,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CrossPlatformFinalizerArg
       get rust_arc_decrement_strong_count_WalletUpdatePtr => wire
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate;
-
-  CrossPlatformFinalizerArg
-      get rust_arc_decrement_strong_count_BumpFeeErrorPtr => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError;
 
   CrossPlatformFinalizerArg
       get rust_arc_decrement_strong_count_EnvoyAccountHandlerPtr => wire
@@ -81,11 +76,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   WalletUpdate
       dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
-          dynamic raw);
-
-  @protected
-  BumpFeeError
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
           dynamic raw);
 
   @protected
@@ -137,11 +127,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   WalletUpdate
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
-          dynamic raw);
-
-  @protected
-  BumpFeeError
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
           dynamic raw);
 
   @protected
@@ -318,6 +303,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Output dco_decode_output(dynamic raw);
 
   @protected
+  RBFBumpFeeError dco_decode_rbf_bump_fee_error(dynamic raw);
+
+  @protected
   (
     AddressType,
     KeychainKind,
@@ -388,11 +376,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
-  BumpFeeError
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
-          SseDeserializer deserializer);
-
-  @protected
   EnvoyAccountHandler
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
           SseDeserializer deserializer);
@@ -443,11 +426,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   WalletUpdate
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
-          SseDeserializer deserializer);
-
-  @protected
-  BumpFeeError
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
           SseDeserializer deserializer);
 
   @protected
@@ -636,6 +614,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Output sse_decode_output(SseDeserializer deserializer);
 
   @protected
+  RBFBumpFeeError sse_decode_rbf_bump_fee_error(SseDeserializer deserializer);
+
+  @protected
   (
     AddressType,
     KeychainKind,
@@ -711,11 +692,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
-          BumpFeeError self, SseSerializer serializer);
-
-  @protected
-  void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
           EnvoyAccountHandler self, SseSerializer serializer);
 
@@ -766,11 +742,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
           WalletUpdate self, SseSerializer serializer);
-
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
-          BumpFeeError self, SseSerializer serializer);
 
   @protected
   void
@@ -971,6 +942,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_output(Output self, SseSerializer serializer);
 
   @protected
+  void sse_encode_rbf_bump_fee_error(
+      RBFBumpFeeError self, SseSerializer serializer);
+
+  @protected
   void
       sse_encode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
           (AddressType, KeychainKind, int) self, SseSerializer serializer);
@@ -1075,18 +1050,6 @@ class RustLibWire implements BaseWire {
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
               ptr);
 
-  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
-          int ptr) =>
-      wasmModule
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
-              ptr);
-
-  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
-          int ptr) =>
-      wasmModule
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
-              ptr);
-
   void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
           int ptr) =>
       wasmModule
@@ -1160,14 +1123,6 @@ extension type RustLibWasmModule._(JSObject _) implements JSObject {
 
   external void
       rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexUpdate(
-          int ptr);
-
-  external void
-      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
-          int ptr);
-
-  external void
-      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
           int ptr);
 
   external void

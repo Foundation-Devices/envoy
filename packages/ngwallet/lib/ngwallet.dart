@@ -13,6 +13,7 @@ export 'src/rust/api/bip39.dart' show EnvoyBip39;
 export 'src/rust/api/envoy_wallet.dart' show Network;
 export 'src/rust/api/errors.dart' show TxComposeError;
 export 'src/rust/api/errors.dart' show BroadcastError;
+export 'src/rust/api/errors.dart' show RBFBumpFeeError;
 export 'src/rust/api/envoy_wallet.dart' show SyncRequest;
 export 'src/rust/api/envoy_wallet.dart' show WalletUpdate;
 export 'src/rust/api/envoy_wallet.dart' show ServerFeatures;

@@ -89,7 +89,8 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
 
     final totalReceiveAmount = (stagedTransaction.amount.toInt());
 
-    final inputs = stagedTransaction.inputs;
+    final inputs = stagedTransaction.inputs.map((e) => "${e.txId}:${e.vout}");
+    final inputTags = stagedTransaction.inputs.map((e) => e.tag);
 
     final totalChangeAmount = (stagedTransaction.outputs.firstWhereOrNull(
           (outPut) => outPut.keychain == KeyChain.internal,
@@ -200,7 +201,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                         EnvoyInfoCardListItem(
                           spacingPriority: FlexPriority.trailing,
                           title:
-                              "${S().coincontrol_tx_detail_expand_spentFrom} ${inputs.length} ${inputs.length == 1 ? S().coincontrol_tx_detail_expand_coin : S().coincontrol_tx_detail_expand_coins}",
+                              "${S().coincontrol_tx_detail_expand_spentFrom} ${inputs.toSet().length} ${inputs.toSet().length == 1 ? S().coincontrol_tx_detail_expand_coin : S().coincontrol_tx_detail_expand_coins}",
                           icon: const EnvoyIcon(EnvoyIcons.utxo,
                               color: EnvoyColors.textPrimary,
                               size: EnvoyIconSize.small),
@@ -223,8 +224,8 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                               child: Wrap(
                                 spacing: EnvoySpacing.small,
                                 runSpacing: EnvoySpacing.small,
-                                children: inputs
-                                    .map((e) => e.tag ?? "")
+                                children: inputTags
+                                    .map((e) => e ?? "")
                                     .map((e) => (e.isEmpty)
                                         ? S().account_details_untagged_card
                                         : e)
