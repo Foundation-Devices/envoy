@@ -79,7 +79,7 @@ void notifyAboutNetworkMigrationDialog(BuildContext context) {
           linearGradient: true,
           blurColor: Colors.black,
           dialog: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.90,
+            width: MediaQuery.of(context).size.width * 0.80,
             child: ExpandablePageView(
               physics: NeverScrollableScrollPhysics(),
               controller: controller,
@@ -92,12 +92,12 @@ void notifyAboutNetworkMigrationDialog(BuildContext context) {
 
   final prefs = LocalStorage().prefs;
 
-  final bool showT4Dialog = true;
-  // prefs.getBool(MigrationManager.migratedToTestnet4) ?? false;
-  final bool showSignetDialog = true;
-  // prefs.getBool(MigrationManager.migratedToSignetGlobal) ?? false;
-  final bool accountUnified = true;
-  // prefs.getBool(MigrationManager.migratedToUnifiedAccounts) ?? false;
+  final bool showT4Dialog =
+      prefs.getBool(MigrationManager.migratedToTestnet4) ?? false;
+  final bool showSignetDialog =
+      prefs.getBool(MigrationManager.migratedToSignetGlobal) ?? false;
+  final bool accountUnified =
+      prefs.getBool(MigrationManager.migratedToUnifiedAccounts) ?? false;
 
   if (showT4Dialog || showSignetDialog || accountUnified) {
     notifyAboutNetworkMigration(
