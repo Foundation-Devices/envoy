@@ -63,7 +63,7 @@ class SingleImportPpIntroPage extends StatelessWidget {
                 child: EnvoyButton(
                   S().accounts_empty_text_learn_more,
                   onTap: () {
-                    context.goNamed(ONBOARD_PASSPORT_EXISTING_SCAN);
+                    context.pushNamed(ONBOARD_PASSPORT_EXISTING_SCAN);
                   },
                 ),
               ),

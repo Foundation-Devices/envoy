@@ -126,12 +126,7 @@ class _OnboardPassportWelcomeScreenState
         leading: CupertinoNavigationBarBackButton(
           color: Colors.white,
           onPressed: () {
-            if (NgAccountManager().getHotWalletAccount() != null ||
-                onboardingComplete) {
-              context.go("/");
-            } else {
-              Navigator.pop(context);
-            }
+            Navigator.pop(context);
           },
         ),
         automaticallyImplyLeading: false,
@@ -223,7 +218,7 @@ class _OnboardPassportWelcomeScreenState
                 S().passport_welcome_screen_cta2,
                 type: EnvoyButtonTypes.secondary,
                 onTap: () {
-                  context.goNamed(ONBOARD_PASSPORT_EXISTING);
+                  context.pushNamed(ONBOARD_PASSPORT_EXISTING);
                 },
               ),
               const SizedBox(height: EnvoySpacing.medium1),
