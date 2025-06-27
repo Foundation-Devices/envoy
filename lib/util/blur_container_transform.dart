@@ -10,6 +10,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 
 /// Signature for `action` callback function provided to [BlurContainerTransform.openBuilder].
 ///
@@ -293,10 +294,20 @@ class _BlurContainerTransformState<T>
   // same widget included in the [_OpenContainerRoute] where it fades out.
   final GlobalKey _closedBuilderKey = GlobalKey();
 
+  // Add state for visual feedback
+  bool _isPressed = false;
+
   Future<void> openContainer() async {
+    widget.onTap?.call();
+
+    // Set pressed state for visual feedback
+    setState(() => _isPressed = true);
+
+    // Add haptic feedback for immediate response
+    HapticFeedback.lightImpact();
+
     final Color middleColor =
         widget.middleColor ?? Theme.of(context).canvasColor;
-    widget.onTap?.call();
     final T? data = await Navigator.of(
       context,
       rootNavigator: widget.useRootNavigator,
@@ -317,6 +328,12 @@ class _BlurContainerTransformState<T>
       useRootNavigator: widget.useRootNavigator,
       routeSettings: widget.routeSettings,
     ));
+
+    // Reset pressed state when returned
+    if (mounted) {
+      setState(() => _isPressed = false);
+    }
+
     if (widget.onClosed != null) {
       widget.onClosed!(data);
     }
@@ -328,18 +345,21 @@ class _BlurContainerTransformState<T>
       key: _hideableKey,
       child: GestureDetector(
         onTap: widget.tappable ? openContainer : null,
-        onDoubleTap: () {},
-        // Avoids unintended behavior, prevents list item disappearance
-        child: Material(
-          clipBehavior: widget.clipBehavior,
-          color: Colors.transparent,
-          elevation: 0,
-          shape: widget.closedShape,
-          child: Builder(
-            key: _closedBuilderKey,
-            builder: (BuildContext context) {
-              return widget.closedBuilder(context, openContainer);
-            },
+        onTapCancel: () => setState(() => _isPressed = false),
+        child: AnimatedScale(
+          scale: _isPressed ? 0.95 : 1.0,
+          duration: const Duration(milliseconds: 100),
+          child: Material(
+            clipBehavior: widget.clipBehavior,
+            color: Colors.transparent,
+            elevation: 0,
+            shape: widget.closedShape,
+            child: Builder(
+              key: _closedBuilderKey,
+              builder: (BuildContext context) {
+                return widget.closedBuilder(context, openContainer);
+              },
+            ),
           ),
         ),
       ),
@@ -842,21 +862,23 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
           assert(closedOpacityTween != null);
           assert(openOpacityTween != null);
           // assert(scrimTween != null);
-
           final Rect rect = _rectTween.evaluate(curvedAnimation)!;
           return SizedBox.expand(
             child: BackdropFilter(
               filter: ImageFilter.blur(
-                  sigmaX:
-                      Tween(begin: 0.0, end: 10.0).evaluate(curvedAnimation),
-                  sigmaY:
-                      Tween(begin: 0.0, end: 10.0).evaluate(curvedAnimation),
+                  sigmaX: Tween(begin: 0.0, end: 10.0).evaluate(animation),
+                  sigmaY: Tween(begin: 0.0, end: 10.0).evaluate(animation),
                   tileMode: TileMode.mirror),
               child: Container(
-                color: ColorTween(
-                  begin: Colors.transparent,
-                  end: scrimBlackColor,
-                ).evaluate(curvedAnimation),
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                      ColorTween(begin: Colors.transparent, end: Colors.black)
+                          .evaluate(animation)!,
+                      Colors.transparent,
+                    ])),
                 child: Align(
                   alignment: Alignment.topLeft,
                   child: Transform.translate(

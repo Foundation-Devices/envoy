@@ -38,6 +38,7 @@ class _CoinsListState extends ConsumerState<CoinsList> {
   @override
   Widget build(BuildContext context) {
     List<Tag> tags = ref.watch(tagsProvider(widget.account.id));
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
       child: FadingEdgeScrollView.fromScrollView(
@@ -51,6 +52,8 @@ class _CoinsListState extends ConsumerState<CoinsList> {
               controller: _scrollController,
               itemCount: tags.length,
               itemBuilder: (BuildContext context, int index) {
+                final coinTagDetailsScreen =
+                    CoinTagDetailsScreen(showCoins: true, coinTag: tags[index]);
                 return BlurContainerTransform(
                   useRootNavigator: true,
                   onTap: () {
@@ -67,8 +70,7 @@ class _CoinsListState extends ConsumerState<CoinsList> {
                     ref.read(coinDetailsActiveProvider.notifier).state = false;
                   },
                   openBuilder: (context, action) {
-                    return CoinTagDetailsScreen(
-                        showCoins: true, coinTag: tags[index]);
+                    return coinTagDetailsScreen;
                   },
                 );
               },
