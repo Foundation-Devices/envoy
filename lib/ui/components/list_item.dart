@@ -180,6 +180,10 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
             if (isTransactionHidden) break;
           }
 
+          if (transactionAccount == null) {
+            return const SizedBox();
+          }
+
           if (isTransactionHidden) {
             return const Column(
               crossAxisAlignment: CrossAxisAlignment.end,
