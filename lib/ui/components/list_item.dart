@@ -207,12 +207,12 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
                 padding: EdgeInsets.only(
                     bottom: s.displayFiat() == null ||
                             (kDebugMode &&
-                                transactionAccount?.network != Network.bitcoin)
+                                transactionAccount.network != Network.bitcoin)
                         ? EnvoySpacing.medium2
                         : 0),
                 child: FittedBox(
                   child: EnvoyAmount(
-                    account: transactionAccount!,
+                    account: transactionAccount,
                     amountSats: transaction.amount,
                     amountWidgetStyle: AmountWidgetStyle.normal,
                     alignToEnd: true,
