@@ -93,40 +93,39 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.85,
       height: 600,
-      child: Column(
+      child: PageView(
+        controller: _pageController,
         children: [
-          // Top close button
-          Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
+          ...stepHeadings.mapIndexed((i, _) {
+            return Padding(
               padding: const EdgeInsets.only(
-                  right: EnvoySpacing.medium3, top: EnvoySpacing.medium3),
-              child: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ),
-          ),
-
-          // Scrollable content (flexible height)
-          Flexible(
-            child: PageView(
-              controller: _pageController,
-              children: [
-                ...stepHeadings.mapIndexed((i, _) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.medium3),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                  left: EnvoySpacing.medium3,
+                  right: EnvoySpacing.medium3,
+                  top: EnvoySpacing.medium3,
+                  bottom: EnvoySpacing.medium2),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ),
+                  Center(
+                      child: SizedBox(
+                    height: 150,
+                    child: stepIllustration[i],
+                  )),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Center(
-                              child: SizedBox(
-                            height: 150,
-                            child: stepIllustration[i],
-                          )),
-                          const SizedBox(height: EnvoySpacing.medium2),
                           Text(stepHeadings[i],
                               textAlign: TextAlign.center,
                               style: EnvoyTypography.heading),
@@ -144,59 +143,47 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                               ),
                             ),
                           ),
-                          // const SizedBox(height: EnvoySpacing.medium2),
-                          // spacing above fixed area
+                          const SizedBox(height: EnvoySpacing.medium2),
+                          DotsIndicator(
+                            totalPages: stepHeadings.length,
+                            pageController: _pageController,
+                          ),
+                          const SizedBox(height: EnvoySpacing.medium2),
+                          AnimatedCrossFade(
+                            firstChild: EnvoyButton(
+                              (_pageController.hasClients
+                                          ? _pageController.page?.toInt()
+                                          : 0) ==
+                                      stepHeadings.length
+                                  ? S()
+                                      .manual_setup_create_and_store_backup_modal_CTA
+                                  : S().component_continue,
+                              type: EnvoyButtonTypes.primaryModal,
+                              onTap: () {
+                                int currentPage =
+                                    _pageController.page?.toInt() ?? 0;
+                                if (stepHeadings.length == currentPage + 1) {
+                                  widget.onLastStep();
+                                } else {
+                                  _pageController.nextPage(
+                                    duration: const Duration(milliseconds: 600),
+                                    curve: Curves.easeInOut,
+                                  );
+                                }
+                              },
+                            ),
+                            secondChild: const SizedBox(),
+                            crossFadeState: CrossFadeState.showFirst,
+                            duration: const Duration(milliseconds: 400),
+                          ),
                         ],
                       ),
-                    ),
-                  );
-                }),
-              ],
-            ),
-          ),
-
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium3),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(height: EnvoySpacing.medium2),
-                DotsIndicator(
-                  totalPages: stepHeadings.length,
-                  pageController: _pageController,
-                ),
-                const SizedBox(height: EnvoySpacing.medium2),
-                AnimatedCrossFade(
-                  firstChild: EnvoyButton(
-                    (_pageController.hasClients
-                                ? _pageController.page?.toInt()
-                                : 0) ==
-                            stepHeadings.length
-                        ? S().manual_setup_create_and_store_backup_modal_CTA
-                        : S().component_continue,
-                    type: EnvoyButtonTypes.primaryModal,
-                    onTap: () {
-                      int currentPage = _pageController.page?.toInt() ?? 0;
-                      if (stepHeadings.length == currentPage + 1) {
-                        widget.onLastStep();
-                      } else {
-                        _pageController.nextPage(
-                          duration: const Duration(milliseconds: 600),
-                          curve: Curves.easeInOut,
-                        );
-                      }
-                    },
-                  ),
-                  secondChild: const SizedBox(),
-                  crossFadeState: CrossFadeState.showFirst,
-                  duration: const Duration(milliseconds: 400),
-                ),
-                const SizedBox(height: EnvoySpacing.medium3),
-              ],
-            ),
-          ),
-          // Fixed bottom area
+                    ],
+                  )
+                ],
+              ),
+            );
+          }),
         ],
       ),
     );
