@@ -373,9 +373,9 @@ class _TxReviewState extends ConsumerState<TxReview> {
             S().component_continue,
             onTap: () async {
               final providerScope = ProviderScope.containerOf(context);
-              clearSpendState(providerScope);
               providerScope.read(coinSelectionStateProvider.notifier).reset();
               GoRouter.of(context).go(ROUTE_ACCOUNT_DETAIL);
+              clearSpendState(providerScope);
             },
           ),
         ],
