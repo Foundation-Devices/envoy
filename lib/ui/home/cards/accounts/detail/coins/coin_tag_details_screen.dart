@@ -222,6 +222,35 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
       }
     });
 
+    void animateToIndex(int index) {
+      if (!scrollController.hasClients) return;
+      if (ref.watch(spendEditModeProvider) == SpendOverlayContext.hidden) {
+        return;
+      }
+
+      final isLast = index == tag.utxo.length - 1;
+
+      if (isLast) {
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent + 50,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeIn,
+        );
+        return;
+      }
+
+      final maxScroll = scrollController.position.maxScrollExtent;
+      final target = (index * itemHeight - 50).clamp(0, maxScroll).toDouble();
+
+      if (index > 6 && (scrollController.offset - target).abs() > 50) {
+        scrollController.animateTo(
+          target,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeIn,
+        );
+      }
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -331,17 +360,29 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                         onTap: () {
                                                           selectCoin(
                                                               context, coin);
-                                                          // TODO: on selected scroll to be visible
                                                         },
                                                         child: Container(
                                                             alignment: Alignment
                                                                 .center,
                                                             child:
-                                                                CoinBalanceWidget(
-                                                                    output:
-                                                                        coin,
-                                                                    coinTag:
-                                                                        tag)),
+                                                                GestureDetector(
+                                                              onTap: () {},
+                                                              child:
+                                                                  CoinBalanceWidget(
+                                                                output: coin,
+                                                                coinTag: tag,
+                                                                onEnable: () {
+                                                                  Future.delayed(
+                                                                      const Duration(
+                                                                          milliseconds:
+                                                                              300),
+                                                                      () {
+                                                                    animateToIndex(
+                                                                        index);
+                                                                  });
+                                                                },
+                                                              ),
+                                                            )),
                                                       );
                                                     },
                                                   )),
