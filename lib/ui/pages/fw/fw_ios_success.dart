@@ -20,6 +20,7 @@ class FwIosSuccessPage extends StatelessWidget {
       leftFunction: (context) {
         Navigator.of(context).pop();
       },
+      rightFunction: null,
       key: const Key("fw_ios_success"),
       text: [
         Column(

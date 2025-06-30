@@ -17,6 +17,7 @@ class ScvResultFailPage extends StatelessWidget {
     return OnboardingPage(
       key: const Key("scv_result_fail"),
       clipArt: Image.asset("assets/shield_bad.png"),
+      rightFunction: null,
       text: [
         OnboardingText(
             header: S().envoy_scv_result_fail_heading,
