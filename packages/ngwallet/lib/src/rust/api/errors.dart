@@ -3,13 +3,15 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
-import '../frb_generated.dart';
-import '../third_party/ngwallet/send.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
+
+import '../frb_generated.dart';
+import '../third_party/ngwallet/send.dart';
+
 part 'errors.freezed.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `from`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `from`, `from`
 
 @freezed
 sealed class BroadcastError with _$BroadcastError implements FrbException {
@@ -18,12 +20,66 @@ sealed class BroadcastError with _$BroadcastError implements FrbException {
   const factory BroadcastError.networkError(
     String field0,
   ) = BroadcastError_NetworkError;
+
   const factory BroadcastError.consensusError(
     String field0,
   ) = BroadcastError_ConsensusError;
+
   const factory BroadcastError.message(
     String field0,
   ) = BroadcastError_Message;
+}
+
+@freezed
+sealed class RBFBumpFeeError with _$RBFBumpFeeError implements FrbException {
+  const RBFBumpFeeError._();
+
+  const factory RBFBumpFeeError.insufficientFunds() =
+      RBFBumpFeeError_InsufficientFunds;
+
+  const factory RBFBumpFeeError.composeBumpTxError(
+    String field0,
+  ) = RBFBumpFeeError_ComposeBumpTxError;
+
+  const factory RBFBumpFeeError.composeTxError(
+    String field0,
+  ) = RBFBumpFeeError_ComposeTxError;
+
+  const factory RBFBumpFeeError.changeOutputLocked() =
+      RBFBumpFeeError_ChangeOutputLocked;
+
+  /// Happens when trying to spend an UTXO that is not in the internal database
+  const factory RBFBumpFeeError.unknownUtxo(
+    String field0,
+  ) = RBFBumpFeeError_UnknownUtxo;
+
+  /// Thrown when a tx is not found in the internal database
+  const factory RBFBumpFeeError.transactionNotFound() =
+      RBFBumpFeeError_TransactionNotFound;
+
+  /// Happens when trying to bump a transaction that is already confirmed
+  const factory RBFBumpFeeError.transactionConfirmed(
+    String field0,
+  ) = RBFBumpFeeError_TransactionConfirmed;
+
+  /// Trying to replace a tx that has a sequence >= `0xFFFFFFFE`
+  const factory RBFBumpFeeError.irreplaceableTransaction(
+    String field0,
+  ) = RBFBumpFeeError_IrreplaceableTransaction;
+
+  /// Node doesn't have data to estimate a fee rate
+  const factory RBFBumpFeeError.feeRateUnavailable() =
+      RBFBumpFeeError_FeeRateUnavailable;
+
+  const factory RBFBumpFeeError.unableToAccessWallet() =
+      RBFBumpFeeError_UnableToAccessWallet;
+
+  const factory RBFBumpFeeError.unableToAddForeignUtxo(
+    String field0,
+  ) = RBFBumpFeeError_UnableToAddForeignUtxo;
+
+  const factory RBFBumpFeeError.walletNotAvailable() =
+      RBFBumpFeeError_WalletNotAvailable;
 }
 
 @freezed
@@ -33,15 +89,19 @@ sealed class TxComposeError with _$TxComposeError implements FrbException {
   const factory TxComposeError.coinSelectionError(
     String field0,
   ) = TxComposeError_CoinSelectionError;
+
   const factory TxComposeError.error(
     String field0,
   ) = TxComposeError_Error;
+
   const factory TxComposeError.insufficientFunds(
     String field0,
   ) = TxComposeError_InsufficientFunds;
+
   const factory TxComposeError.insufficientFees(
     BigInt field0,
   ) = TxComposeError_InsufficientFees;
+
   const factory TxComposeError.insufficientFeeRate(
     BigInt field0,
   ) = TxComposeError_InsufficientFeeRate;

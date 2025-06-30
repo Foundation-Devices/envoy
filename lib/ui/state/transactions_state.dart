@@ -308,10 +308,12 @@ final rbfTxStateProvider = FutureProvider.family<RBFState?, String>(
 
 final isTxBoostedProvider = Provider.family<bool?, String>(
   (ref, txId) {
+    final selectedAccount = ref.watch(selectedAccountProvider);
     return ref.watch(rbfTxStateProvider(txId)).when(
           data: (data) {
             if (data != null) {
-              if (data.newTxId == txId) {
+              if (data.newTxId == txId &&
+                  data.accountId == selectedAccount?.id) {
                 return true;
               } else {
                 return false;

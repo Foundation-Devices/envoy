@@ -151,9 +151,11 @@ class SyncManager {
   }
 
   Future<void> _startSync() async {
-    final iterator = _synRequests.keys.iterator;
-    while (iterator.moveNext()) {
-      final accountWithType = iterator.current;
+    // Create a list of futures to track all sync operations
+    final List<Future<void>> syncFutures = [];
+
+    // Schedule all sync operations in parallel
+    for (final accountWithType in _synRequests.keys) {
       final account = accountWithType.$1;
       final type = accountWithType.$2;
       final server = SyncManager.getElectrumServer(account.network);
@@ -161,7 +163,8 @@ class SyncManager {
       if (port == -1) {
         port = null;
       }
-      _syncScheduler.run(
+
+      final syncFuture = _syncScheduler.run(
         () async {
           try {
             kPrint(
@@ -182,8 +185,13 @@ class SyncManager {
             _synRequests.remove(accountWithType);
           }
         },
-      );
+      ).result;
+      syncFutures.add(syncFuture);
     }
+
+    kPrint(
+        "SyncManager: Waiting for all sync tasks to complete,${syncFutures.length} , scheduler max: ${_syncScheduler.max}");
+    await Future.wait(syncFutures);
   }
 
   Future _startFullScan() async {
