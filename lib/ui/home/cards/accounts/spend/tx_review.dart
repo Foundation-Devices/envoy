@@ -99,6 +99,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
             )),
       );
     }
+
     return PageTransitionSwitcher(
       reverse: transactionModel.broadcastProgress == BroadcastProgress.staging,
       transitionBuilder: (child, animation, secondaryAnimation) {
@@ -279,73 +280,80 @@ class _TxReviewState extends ConsumerState<TxReview> {
 
   Widget _buildBroadcastProgress() {
     final spendState = ref.watch(spendTransactionProvider);
-    return Padding(
-      key: const Key("progress"),
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 260,
-                child: rive.Rive(
-                  artboard: _artBoard,
-                  fit: BoxFit.contain,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        return;
+      },
+      child: Padding(
+        key: const Key("progress"),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 260,
+                  child: rive.Rive(
+                    artboard: _artBoard,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
-            ),
-            const SliverPadding(padding: EdgeInsets.all(28)),
-            SliverToBoxAdapter(
-              child: Builder(
-                builder: (context) {
-                  String title = S().stalls_before_sending_tx_scanning_heading;
-                  String subTitle =
-                      S().stalls_before_sending_tx_scanning_subheading;
-                  if (spendState.broadcastProgress !=
-                      BroadcastProgress.inProgress) {
-                    if (spendState.broadcastProgress ==
-                        BroadcastProgress.success) {
-                      title = S()
-                          .stalls_before_sending_tx_scanning_broadcasting_success_heading;
-                      subTitle = S()
-                          .stalls_before_sending_tx_scanning_broadcasting_success_subheading;
-                    } else {
-                      title = S()
-                          .stalls_before_sending_tx_scanning_broadcasting_fail_heading;
-                      subTitle = S()
-                          .stalls_before_sending_tx_scanning_broadcasting_fail_subheading;
+              const SliverPadding(padding: EdgeInsets.all(28)),
+              SliverToBoxAdapter(
+                child: Builder(
+                  builder: (context) {
+                    String title =
+                        S().stalls_before_sending_tx_scanning_heading;
+                    String subTitle =
+                        S().stalls_before_sending_tx_scanning_subheading;
+                    if (spendState.broadcastProgress !=
+                        BroadcastProgress.inProgress) {
+                      if (spendState.broadcastProgress ==
+                          BroadcastProgress.success) {
+                        title = S()
+                            .stalls_before_sending_tx_scanning_broadcasting_success_heading;
+                        subTitle = S()
+                            .stalls_before_sending_tx_scanning_broadcasting_success_subheading;
+                      } else {
+                        title = S()
+                            .stalls_before_sending_tx_scanning_broadcasting_fail_heading;
+                        subTitle = S()
+                            .stalls_before_sending_tx_scanning_broadcasting_fail_subheading;
+                      }
                     }
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(title,
-                            textAlign: TextAlign.center,
-                            style: EnvoyTypography.heading),
-                        const Padding(padding: EdgeInsets.all(18)),
-                        Text(subTitle,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(fontWeight: FontWeight.w500)),
-                      ],
-                    ),
-                  );
-                },
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(title,
+                              textAlign: TextAlign.center,
+                              style: EnvoyTypography.heading),
+                          const Padding(padding: EdgeInsets.all(18)),
+                          Text(subTitle,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(fontWeight: FontWeight.w500)),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-            SliverFillRemaining(
-                hasScrollBody: false,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 18, vertical: 44),
-                  child: _ctaButtons(context),
-                ))
-          ],
+              SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 18, vertical: 44),
+                    child: _ctaButtons(context),
+                  ))
+            ],
+          ),
         ),
       ),
     );

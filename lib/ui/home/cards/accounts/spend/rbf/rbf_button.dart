@@ -23,6 +23,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -131,7 +132,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         draftTx: result.draftTransaction,
       );
     } catch (e) {
-      //TODO: handle rbf error
+      EnvoyReport().log("RBF", "RBF check failed : $e");
     } finally {
       if (mounted) {
         setState(() {

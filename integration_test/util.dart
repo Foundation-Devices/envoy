@@ -1002,7 +1002,7 @@ Future<String> getAddressFromReceiveScreen(WidgetTester tester) async {
 Future<void> checkSync(WidgetTester tester,
     {String waitAccSync = 'GH TEST ACC (#1)'}) async {
   await goBackHome(tester);
-  SyncManager().sync();
+  await SyncManager().sync();
 
   await tester.pumpUntilCondition(
     tries: 30,

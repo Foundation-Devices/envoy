@@ -6,7 +6,6 @@
 import '../frb_generated.dart';
 import '../lib.dart';
 import '../third_party/ngwallet/config.dart';
-import '../third_party/ngwallet/rbf.dart';
 import '../third_party/ngwallet/send.dart';
 import '../third_party/ngwallet/transaction.dart';
 import 'envoy_account.dart';
@@ -71,7 +70,9 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
   Future<DraftTransaction> composeRbfPsbt(
       {required List<Output> selectedOutputs,
       required BigInt feeRate,
-      required BitcoinTransaction bitcoinTransaction});
+      required BitcoinTransaction bitcoinTransaction,
+      String? note,
+      String? tag});
 
   NgAccountConfig config();
 
