@@ -27,6 +27,7 @@ class FwIosInstructionsPage extends ConsumerWidget {
     return OnboardingPage(
       key: const Key("fw_ios_instructions"),
       clipArt: Image.asset("assets/fw_ios_instructions.png"),
+      rightFunction: null,
       text: [
         Column(
           mainAxisSize: MainAxisSize.min,

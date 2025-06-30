@@ -28,6 +28,7 @@ class ScvShowQrPage extends StatelessWidget {
     return OnboardingPage(
       key: const Key("scv_show_qr"),
       qrCodeUrCryptoRequest: cryptoRequest,
+      rightFunction: null,
       text: [
         Align(
           alignment: Alignment.center,
