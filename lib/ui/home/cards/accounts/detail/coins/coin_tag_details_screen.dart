@@ -14,6 +14,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_details_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/indicator_shield.dart';
@@ -207,6 +208,11 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     Color cardBackground =
         tag.untagged ? const Color(0xff808080) : accountAccent;
     const cardRadius = EnvoySpacing.medium2;
+    final maxAvailableHeight = MediaQuery.of(context).size.height * 0.8;
+    final baseHeight = 145.0;
+    final itemHeight = 45.0;
+    final maxItems = ((maxAvailableHeight - baseHeight) / itemHeight).floor();
+    final calculatedMaxHeight = baseHeight + itemHeight * maxItems;
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       if (scrollController.hasClients) {
@@ -215,6 +221,35 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
         });
       }
     });
+
+    void animateToIndex(int index) {
+      if (!scrollController.hasClients) return;
+      if (ref.watch(spendEditModeProvider) == SpendOverlayContext.hidden) {
+        return;
+      }
+
+      final isLast = index == tag.utxo.length - 1;
+
+      if (isLast) {
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent + 50,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeIn,
+        );
+        return;
+      }
+
+      final maxScroll = scrollController.position.maxScrollExtent;
+      final target = (index * itemHeight - 50).clamp(0, maxScroll).toDouble();
+
+      if (index > 6 && (scrollController.offset - target).abs() > 50) {
+        scrollController.animateTo(
+          target,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeIn,
+        );
+      }
+    }
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -258,8 +293,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                   // Fixed maxHeight to ensure consistent layout and prevent coin tags from being cut off across different mobile screen sizes (ENV-2079)
                   maxHeight: (ref.watch(spendEditModeProvider) !=
                           SpendOverlayContext.hidden
-                      ? 420
-                      : 510),
+                      ? (ref.watch(coinSelectionOverlayMinimized) ? 510 : 420)
+                      : calculatedMaxHeight),
                 ),
                 decoration: BoxDecoration(
                     borderRadius:
@@ -311,15 +346,6 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                   .copyWith(scrollbars: false),
                                               child: ListView(
                                                   controller: scrollController,
-                                                  padding: EdgeInsets.only(
-                                                    bottom: (isScrollable &&
-                                                            ref.watch(
-                                                                    spendEditModeProvider) !=
-                                                                SpendOverlayContext
-                                                                    .hidden)
-                                                        ? 200
-                                                        : 0,
-                                                  ),
                                                   shrinkWrap: true,
                                                   physics:
                                                       const BouncingScrollPhysics(),
@@ -339,11 +365,24 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                             alignment: Alignment
                                                                 .center,
                                                             child:
-                                                                CoinBalanceWidget(
-                                                                    output:
-                                                                        coin,
-                                                                    coinTag:
-                                                                        tag)),
+                                                                GestureDetector(
+                                                              onTap: () {},
+                                                              child:
+                                                                  CoinBalanceWidget(
+                                                                output: coin,
+                                                                coinTag: tag,
+                                                                onEnable: () {
+                                                                  Future.delayed(
+                                                                      const Duration(
+                                                                          milliseconds:
+                                                                              300),
+                                                                      () {
+                                                                    animateToIndex(
+                                                                        index);
+                                                                  });
+                                                                },
+                                                              ),
+                                                            )),
                                                       );
                                                     },
                                                   )),
