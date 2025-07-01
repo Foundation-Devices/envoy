@@ -258,7 +258,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              EnvoyButton(S().coincontrol_tx_detail_cta2,
+              EnvoyButton(S().replaceByFee_boost_reviewCoinSelection,
                   enabled: true,
                   type: EnvoyButtonTypes.tertiary, onTap: () async {
                 widget.onEditTransaction();
