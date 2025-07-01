@@ -90,6 +90,7 @@ class HomePageState extends ConsumerState<HomePage>
   bool _backgroundShown = false;
   final bool _modalShown = false;
   final List<StreamSubscription> _subscriptions = [];
+  double? phoneBottomOffset;
 
   final _optionsKey = GlobalKey();
   final bool _optionsShown = false;
@@ -129,6 +130,14 @@ class HomePageState extends ConsumerState<HomePage>
     _backupWarningTimer = Timer.periodic(const Duration(minutes: 2), (_) {
       _backupWarningDisplayedMoreThan2minAgo = true;
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Only calculate once
+    phoneBottomOffset ??= MediaQuery.of(context).padding.bottom;
   }
 
   @override
@@ -445,7 +454,8 @@ class HomePageState extends ConsumerState<HomePage>
     double screenWidth = MediaQuery.of(context).size.width;
 
     double topOffset = MediaQuery.of(context).padding.top;
-    double bottomOffset = 32; // Adjust the bottom shield offset
+    double bottomOffset =
+        phoneBottomOffset! + 32; // Adjust the bottom shield offset
     //double _totalOffset = _topOffset + _bottomOffset;
 
     double appBarHeight = AppBar().preferredSize.height;
