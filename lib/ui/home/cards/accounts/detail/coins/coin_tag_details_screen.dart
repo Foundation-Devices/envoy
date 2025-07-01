@@ -55,6 +55,18 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
   bool isScrollable = false;
 
   @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (scrollController.hasClients) {
+        setState(() {
+          isScrollable = scrollController.position.maxScrollExtent > 0;
+        });
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: _selectedCoin == null,
@@ -207,15 +219,6 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     Color cardBackground =
         tag.untagged ? const Color(0xff808080) : accountAccent;
     const cardRadius = EnvoySpacing.medium2;
-
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      if (scrollController.hasClients) {
-        setState(() {
-          isScrollable = scrollController.position.maxScrollExtent > 0;
-        });
-      }
-    });
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [

@@ -225,7 +225,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
     }
     final providerScope = ProviderScope.containerOf(context);
     final transaction = transactionModel.transaction!;
-    final userChosenTag = transactionModel.changeOutPutTag ?? "";
+    final userChosenTag = ref.read(stagingTxChangeOutPutTagProvider);
     final inputTags = transaction.inputs
         .map((e) => e.tag ?? "Untagged")
         .map((e) => e.isEmpty ? "Untagged" : e)
@@ -236,7 +236,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
         null;
     //then show the tag selection dialog
     //spending from multiple tags and no tag is selected for change
-    if (userChosenTag.isEmpty && inputTags.length > 1 && hasChange) {
+    if (userChosenTag == null && inputTags.length > 1 && hasChange) {
       if (context.mounted) {
         final continueBroadcast = await _showTagDialog(
             context, account, rootContext, transactionModel);
@@ -581,7 +581,7 @@ class _TransactionReviewScreenState
                 if (transactionModel.canModify)
                   EnvoyButton(
                     enabled: !transactionModel.loading,
-                    S().coincontrol_tx_detail_cta2,
+                    S().replaceByFee_boost_reviewCoinSelection,
                     type: EnvoyButtonTypes.secondary,
                     onTap: () {
                       ref.read(userHasChangedFeesProvider.notifier).state =
