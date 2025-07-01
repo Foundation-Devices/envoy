@@ -53,6 +53,8 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     bool modalShown = ref.watch(hideBottomNavProvider);
     bool optionsShown = ref.watch(homePageOptionsVisibilityProvider);
     bool buyBTCRightAction = ref.watch(buyBTCPageProvider);
+    bool backupRightAction = ref.watch(backupPageProvider);
+
     bool inEditMode =
         ref.watch(spendEditModeProvider) != SpendOverlayContext.hidden;
 
@@ -102,6 +104,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
           ref.read(fullscreenHomePageProvider.notifier).state = false;
         }
         if (nextPath == ROUTE_ACCOUNTS_HOME) {
+          ref.read(backupPageProvider.notifier).state = false;
           ref.read(coinSelectionStateProvider.notifier).reset();
           ref.read(spendEditModeProvider.notifier).state =
               SpendOverlayContext.hidden;
@@ -139,6 +142,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
               if (homePageDropState != HomePageBackgroundState.menu) {
                 ref.read(homePageBackgroundProvider.notifier).state =
                     HomePageBackgroundState.menu;
+                ref.read(backupPageProvider.notifier).state = false;
               } else {
                 ref.read(homePageBackgroundProvider.notifier).state =
                     HomePageBackgroundState.hidden;
@@ -193,51 +197,68 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       ]),
       actions: [
         // Right action
-        Opacity(
-          opacity: (inEditMode || backDropEnabled) ? 0.0 : 1.0,
-          child: AnimatedSwitcher(
-              duration: _animationsDuration,
-              child: AbsorbPointer(
-                  absorbing:
-                      (backDropEnabled || modalShown) && !buyBTCRightAction,
-                  child: AnimatedOpacity(
-                      opacity:
-                          (backDropEnabled || modalShown) && !buyBTCRightAction
-                              ? 0.0
-                              : 1.0,
+        backupRightAction
+            ? Opacity(
+                opacity: 1.0,
+                child: AnimatedSwitcher(
+                  duration: _animationsDuration,
+                  child: AbsorbPointer(
+                    absorbing: false,
+                    child: AnimatedOpacity(
+                      opacity: 1.0,
                       duration: _animationsDuration,
                       child: AnimatedSwitcher(
-                          duration: _animationsDuration,
-                          child: backDropEnabled || optionsShown
-                              ? GestureDetector(
-                                  behavior: HitTestBehavior.opaque,
-                                  onTap: () {
-                                    if (optionsShown) {
-                                      ref
-                                          .read(
-                                              homePageOptionsVisibilityProvider
-                                                  .notifier)
-                                          .state = false;
-                                    } else {
-                                      if (backDropEnabled) {
-                                        ref
-                                            .read(homePageBackdropModeProvider
-                                                .notifier)
-                                            .state = false;
-                                      }
-                                    }
-                                  },
-                                  child: Container(
-                                    height: 55,
-                                    width: 55,
-                                    color: Colors.transparent,
-                                    child: const Icon(
-                                      Icons.close,
-                                    ),
-                                  ),
-                                )
-                              : rightAction)))),
-        )
+                          duration: _animationsDuration, child: rightAction),
+                    ),
+                  ),
+                ),
+              )
+            : Opacity(
+                opacity: (inEditMode || backDropEnabled) ? 0.0 : 1.0,
+                child: AnimatedSwitcher(
+                    duration: _animationsDuration,
+                    child: AbsorbPointer(
+                        absorbing: (backDropEnabled || modalShown) &&
+                            !buyBTCRightAction,
+                        child: AnimatedOpacity(
+                            opacity: (backDropEnabled || modalShown) &&
+                                    !buyBTCRightAction
+                                ? 0.0
+                                : 1.0,
+                            duration: _animationsDuration,
+                            child: AnimatedSwitcher(
+                                duration: _animationsDuration,
+                                child: backDropEnabled || optionsShown
+                                    ? GestureDetector(
+                                        behavior: HitTestBehavior.opaque,
+                                        onTap: () {
+                                          if (optionsShown) {
+                                            ref
+                                                .read(
+                                                    homePageOptionsVisibilityProvider
+                                                        .notifier)
+                                                .state = false;
+                                          } else {
+                                            if (backDropEnabled) {
+                                              ref
+                                                  .read(
+                                                      homePageBackdropModeProvider
+                                                          .notifier)
+                                                  .state = false;
+                                            }
+                                          }
+                                        },
+                                        child: Container(
+                                          height: 55,
+                                          width: 55,
+                                          color: Colors.transparent,
+                                          child: const Icon(
+                                            Icons.close,
+                                          ),
+                                        ),
+                                      )
+                                    : rightAction)))),
+              )
       ],
     );
   }
