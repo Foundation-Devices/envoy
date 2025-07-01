@@ -224,7 +224,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
 
     void animateToIndex(int index) {
       if (!scrollController.hasClients) return;
-      if (ref.watch(spendEditModeProvider) == SpendOverlayContext.hidden) {
+      if (ref.watch(spendEditModeProvider) == SpendOverlayContext.hidden ||
+          !isScrollable) {
         return;
       }
 
@@ -349,6 +350,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                   shrinkWrap: true,
                                                   physics:
                                                       const BouncingScrollPhysics(),
+                                                  padding: EdgeInsets.zero,
                                                   children: List.generate(
                                                     tag.utxo.length,
                                                     (index) {
