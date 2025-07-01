@@ -74,6 +74,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "android_logger"
+version = "0.15.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dbb4e440d04be07da1f1bf44fb4495ebd58669372fe0cffa6e48595ac5bd88a3"
+dependencies = [
+ "android_log-sys",
+ "env_filter",
+ "log",
+]
+
+[[package]]
 name = "android_system_properties"
 version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -543,6 +554,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "env_filter"
+version = "0.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "186e05a59d4c50738528153b83b0b0194d3a29507dfec16eccd4b342903397d0"
+dependencies = [
+ "log",
+ "regex",
+]
+
+[[package]]
 name = "env_logger"
 version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -581,7 +602,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2f8c0dee6249225e815dcff3f3a39b98d9f66fdb3c392a432715b646bfa4da02"
 dependencies = [
  "allo-isolate",
- "android_logger",
+ "android_logger 0.13.3",
  "anyhow",
  "build-target",
  "bytemuck",
@@ -1040,7 +1061,7 @@ dependencies = [
 [[package]]
 name = "ngwallet"
 version = "1.0.1"
-source = "git+https://github.com/Foundation-Devices/ngwallet?rev=5f08da724e1a7c27c2ce5982941212e11f6c1ae4#5f08da724e1a7c27c2ce5982941212e11f6c1ae4"
+source = "git+https://github.com/Foundation-Devices/ngwallet?rev=d3f46d6fca7aa0fa8bf0c70e8b8c0b8e04fc5c3e#d3f46d6fca7aa0fa8bf0c70e8b8c0b8e04fc5c3e"
 dependencies = [
  "anyhow",
  "bdk_electrum",
@@ -1309,6 +1330,7 @@ dependencies = [
 name = "rust_lib_ngwallet"
 version = "0.1.0"
 dependencies = [
+ "android_logger 0.15.1",
  "anyhow",
  "bdk_wallet",
  "bip39",
