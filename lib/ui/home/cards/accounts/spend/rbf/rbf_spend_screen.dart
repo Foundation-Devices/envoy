@@ -458,7 +458,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                 S().replaceByFee_warning_extraUTXO_overlay_modal_subheading,
             onLearnMore: () {
               launchUrl(Uri.parse(
-                  "https://docs.foundation.xyz/en/troubleshooting#why-is-envoy-adding-more-coins-to-my-boost-or-cancel-transaction"));
+                  "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions"));
             },
             primaryButtonLabel: S().component_continue,
             onPrimaryButtonTap: (context) {

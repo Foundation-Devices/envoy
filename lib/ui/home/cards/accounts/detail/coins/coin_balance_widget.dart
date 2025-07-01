@@ -123,12 +123,14 @@ class CoinBalanceWidget extends ConsumerStatefulWidget {
   final Output output;
   final bool showLock;
   final Tag coinTag;
+  final Function? onEnable;
 
   const CoinBalanceWidget(
       {super.key,
       required this.output,
       this.showLock = true,
-      required this.coinTag});
+      required this.coinTag,
+      this.onEnable});
 
   @override
   ConsumerState<CoinBalanceWidget> createState() => _CoinBalanceWidgetState();
@@ -224,6 +226,9 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
                       ? CoinTagSwitchState.on
                       : CoinTagSwitchState.off,
                   onChanged: (value) {
+                    if (widget.onEnable != null && !isSelected) {
+                      widget.onEnable!();
+                    }
                     final selectionState =
                         ref.read(coinSelectionStateProvider.notifier);
                     if (value == CoinTagSwitchState.on) {

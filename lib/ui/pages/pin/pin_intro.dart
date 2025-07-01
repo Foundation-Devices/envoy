@@ -20,6 +20,7 @@ class PinIntroPage extends StatelessWidget {
     return OnboardingPage(
       key: const Key("pin_intro"),
       clipArt: Image.asset("assets/pin_intro.png"),
+      rightFunction: null,
       text: [
         OnboardingText(
             header: S().envoy_pin_intro_heading,

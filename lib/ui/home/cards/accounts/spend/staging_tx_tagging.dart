@@ -58,7 +58,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
   Widget build(BuildContext context) {
     return Container(
       width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
-      padding: const EdgeInsets.all(EnvoySpacing.small),
+      padding: const EdgeInsets.all(EnvoySpacing.medium2),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -67,23 +67,24 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
             alignment: const Alignment(1.0, -1.0),
             child: IconButton(
               icon: const Icon(Icons.close),
+              padding: const EdgeInsets.all(EnvoySpacing.small),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
           ),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const SizedBox(height: EnvoySpacing.small),
           Image.asset(
             "assets/exclamation_icon.png",
             height: 68,
             width: 68,
           ),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const SizedBox(height: EnvoySpacing.medium1),
           Text(
             S().change_output_from_multiple_tags_modal_heading,
             style: EnvoyTypography.heading,
           ),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          const SizedBox(height: EnvoySpacing.medium1),
           PageTransitionSwitcher(
             duration: const Duration(milliseconds: 300),
             transitionBuilder: (child, animation, secondaryAnimation) {
@@ -106,135 +107,130 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
   String value = '';
 
   _tagWidget(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
-      child: Consumer(
-        builder: (context, ref, child) {
-          final tags = ref.watch(tagsProvider(widget.accountId)).toList()
-            ..sort((a, b) => b.utxo.length.compareTo(a.utxo.length))
-            ..removeWhere((element) => element.untagged)
-            ..take(6);
+    return Consumer(
+      builder: (context, ref, child) {
+        final tags = ref.watch(tagsProvider(widget.accountId)).toList()
+          ..sort((a, b) => b.utxo.length.compareTo(a.utxo.length))
+          ..removeWhere((element) => element.untagged)
+          ..take(6);
 
-          List<String> suggestions =
-              tags.isEmpty ? tagSuggestions : tags.map((e) => e.name).toList();
+        List<String> suggestions =
+            tags.isEmpty ? tagSuggestions : tags.map((e) => e.name).toList();
 
-          suggestions = suggestions.toSet().toList();
-          List<String> firstRowContent = List.generate(3, (index) => "");
-          List<String> secondRowContent = List.generate(3, (index) => "");
+        suggestions = suggestions.toSet().toList();
+        List<String> firstRowContent = List.generate(3, (index) => "");
+        List<String> secondRowContent = List.generate(3, (index) => "");
 
-          for (var suggestion in suggestions) {
-            int index = suggestions.indexOf(suggestion);
-            if (index < 3) {
-              firstRowContent[index] = suggestion;
-            } else {
-              secondRowContent[index - 3] = suggestion;
-            }
+        for (var suggestion in suggestions) {
+          int index = suggestions.indexOf(suggestion);
+          if (index < 3) {
+            firstRowContent[index] = suggestion;
+          } else {
+            secondRowContent[index - 3] = suggestion;
           }
-          firstRowContent =
-              firstRowContent.where((element) => element.isNotEmpty).toList();
-          secondRowContent =
-              secondRowContent.where((element) => element.isNotEmpty).toList();
+        }
+        firstRowContent =
+            firstRowContent.where((element) => element.isNotEmpty).toList();
+        secondRowContent =
+            secondRowContent.where((element) => element.isNotEmpty).toList();
 
-          List<Widget> firsRowWidget = firstRowContent.map(
-            (e) {
-              return tagItem(context, e, () {
-                _tagController.text = e;
-                setState(() {});
-              });
-            },
-          ).toList();
+        List<Widget> firsRowWidget = firstRowContent.map(
+          (e) {
+            return tagItem(context, e, () {
+              _tagController.text = e;
+              setState(() {});
+            });
+          },
+        ).toList();
 
-          List<Widget> secondRowWidget = secondRowContent.map(
-            (e) {
-              return tagItem(context, e, () {
-                _tagController.text = e;
-                setState(() {});
-              });
-            },
-          ).toList();
+        List<Widget> secondRowWidget = secondRowContent.map(
+          (e) {
+            return tagItem(context, e, () {
+              _tagController.text = e;
+              setState(() {});
+            });
+          },
+        ).toList();
 
-          return Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                margin: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.medium1),
-                decoration: BoxDecoration(
-                    color: EnvoyColors.surface4,
-                    borderRadius: BorderRadius.circular(8)),
-                child: TextFormField(
-                    maxLength: 30,
-                    style: const TextStyle(
-                        fontSize: 14,
-                        overflow: TextOverflow.fade,
-                        fontWeight: FontWeight.w500),
-                    onChanged: (value) {
-                      setState(() {
-                        value = value;
-                      });
-                    },
-                    controller: _tagController,
-                    textAlign: TextAlign.center,
-                    decoration: const InputDecoration(
-                      // Disable the borders
-                      border: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      errorBorder: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                      isDense: true,
-                      contentPadding: EdgeInsets.symmetric(
-                          vertical: 16.0, horizontal: 16.0),
-                    )),
+        return Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                  color: EnvoyColors.surface4,
+                  borderRadius: BorderRadius.circular(8)),
+              child: TextFormField(
+                  maxLength: 30,
+                  style: const TextStyle(
+                      fontSize: 14,
+                      overflow: TextOverflow.fade,
+                      fontWeight: FontWeight.w500),
+                  onChanged: (value) {
+                    setState(() {
+                      value = value;
+                    });
+                  },
+                  controller: _tagController,
+                  textAlign: TextAlign.center,
+                  decoration: const InputDecoration(
+                    // Disable the borders
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    isDense: true,
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+                  )),
+            ),
+            const Padding(padding: EdgeInsets.all(8)),
+            tags.isNotEmpty
+                ? const Text("Most Used")
+                : const Text("Suggestions"), // TODO: FIGMA
+            Container(
+              margin:
+                  const EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
+              constraints: const BoxConstraints(maxHeight: 64),
+              child: Column(
+                children: [
+                  Flexible(
+                      child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [...firsRowWidget],
+                  )),
+                  const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                  Flexible(
+                      child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [...secondRowWidget],
+                  )),
+                ],
               ),
-              const Padding(padding: EdgeInsets.all(8)),
-              tags.isNotEmpty
-                  ? const Text("Most Used")
-                  : const Text("Suggestions"), // TODO: FIGMA
-              Container(
-                margin:
-                    const EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
-                constraints: const BoxConstraints(maxHeight: 64),
-                child: Column(
-                  children: [
-                    Flexible(
-                        child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [...firsRowWidget],
-                    )),
-                    const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                    Flexible(
-                        child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [...secondRowWidget],
-                    )),
-                  ],
-                ),
-              ),
-              EnvoyButton(S().component_continue,
-                  enabled: _tagController.text.isNotEmpty,
-                  textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: _tagController.text.isNotEmpty
-                            ? Colors.white
-                            : EnvoyColors.textTertiary,
-                      ),
-                  type: _tagController.text.isNotEmpty
-                      ? EnvoyButtonTypes.primaryModal
-                      : EnvoyButtonTypes.tertiary, onTap: () async {
-                ref.read(stagingTxChangeOutPutTagProvider.notifier).state =
-                    _tagController.text.isNotEmpty ? _tagController.text : null;
-                widget.onTagUpdate();
-              }),
-            ],
-          );
-        },
-      ),
+            ),
+            EnvoyButton(S().component_continue,
+                enabled: _tagController.text.isNotEmpty,
+                textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: _tagController.text.isNotEmpty
+                          ? Colors.white
+                          : EnvoyColors.textTertiary,
+                    ),
+                type: _tagController.text.isNotEmpty
+                    ? EnvoyButtonTypes.primaryModal
+                    : EnvoyButtonTypes.tertiary, onTap: () async {
+              ref.read(stagingTxChangeOutPutTagProvider.notifier).state =
+                  _tagController.text.isNotEmpty ? _tagController.text : null;
+              widget.onTagUpdate();
+            }),
+          ],
+        );
+      },
     );
   }
 

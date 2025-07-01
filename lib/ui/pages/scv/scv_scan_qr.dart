@@ -23,6 +23,7 @@ class ScvScanQrPage extends StatelessWidget {
     return OnboardingPage(
       key: const Key("scv_scan_qr"),
       clipArt: Image.asset("assets/scv_scan_qr.png"),
+      rightFunction: null,
       text: [
         Padding(
           padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
