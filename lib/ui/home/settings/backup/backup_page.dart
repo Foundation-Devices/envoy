@@ -59,29 +59,25 @@ class _BackupPageState extends ConsumerState<BackupPage>
       setState(() {});
     });
 
-    Future.delayed(const Duration()).then((value) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (!mounted) return;
       ref.read(backupPageProvider.notifier).state = true;
 
       ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
-        optionsWidget: null,
-        rightAction: Consumer(
-          builder: (context, ref, child) {
-            return GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                showEnablingBackup(context);
-              },
-              child: Container(
-                height: 55,
-                width: 55,
-                color: Colors.transparent,
-                child: const Icon(
-                  Icons.info_outline_rounded,
-                ),
-              ),
-            );
+        rightAction: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            if (!mounted) return;
+            showEnablingBackup(context);
           },
+          child: Container(
+            height: 55,
+            width: 55,
+            color: Colors.transparent,
+            child: const Icon(
+              Icons.info_outline_rounded,
+            ),
+          ),
         ),
       );
     });

@@ -73,6 +73,15 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     ref.listen(
       homePageBackgroundProvider,
       (previous, next) {
+        if (context.mounted) {
+          _setOptionWidgetsForTabWidgets(
+              // ignore: use_build_context_synchronously
+              GoRouter.of(context)
+                  .routerDelegate
+                  .currentConfiguration
+                  .fullPath);
+        }
+
         if (previous != HomePageBackgroundState.hidden &&
             next == HomePageBackgroundState.hidden) {
           final paths = mainRouter.routerDelegate.currentConfiguration.fullPath;
@@ -198,20 +207,10 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       actions: [
         // Right action
         backupRightAction
-            ? Opacity(
-                opacity: 1.0,
+            ? AbsorbPointer(
+                absorbing: false,
                 child: AnimatedSwitcher(
-                  duration: _animationsDuration,
-                  child: AbsorbPointer(
-                    absorbing: false,
-                    child: AnimatedOpacity(
-                      opacity: 1.0,
-                      duration: _animationsDuration,
-                      child: AnimatedSwitcher(
-                          duration: _animationsDuration, child: rightAction),
-                    ),
-                  ),
-                ),
+                    duration: _animationsDuration, child: rightAction),
               )
             : Opacity(
                 opacity: (inEditMode || backDropEnabled) ? 0.0 : 1.0,
