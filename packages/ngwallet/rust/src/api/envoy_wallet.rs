@@ -33,7 +33,7 @@ use bdk_wallet::{
     bitcoin, coin_selection, AddressInfo, KeychainKind, PersistedWallet, Update, Wallet, WalletTx,
 };
 use chrono::{DateTime, Local, Utc};
-use flutter_rust_bridge::frb;
+use flutter_rust_bridge::{frb, PanicBacktrace};
 use log::info;
 use ngwallet::account::{Descriptor, NgAccount};
 use ngwallet::bdk_electrum::electrum_client::{Client, ConfigBuilder, ElectrumApi, Socks5Config};
@@ -404,12 +404,16 @@ impl EnvoyAccountHandler {
         {
             let account = self.ng_account.lock().unwrap();
             account.mark_utxo_as_used(psbt.unsigned_tx.clone());
-            let (received, sent) = account.sent_and_received(&psbt.unsigned_tx.clone());
-            let amount: i64 = (received.to_sat() as i64) - (sent.to_sat() as i64);
-            let mut tx = draft_transaction.transaction.clone();
-            tx.date = Some(now.timestamp() as u64);
-            tx.amount = -amount;
-            self.mempool_txs.push(tx);
+            let transactions = account.transactions().unwrap_or_default();
+            //get the last transaction date or current time if no transactions exist,
+            //transactions are sorted by date in descending order,so we need to get the first transaction
+            let last_tx = transactions.first();
+            let last_date = last_tx
+                .and_then(|tx| tx.date)
+                .unwrap_or_else(|| now.timestamp() as u64);
+            account
+                .get_coordinator_wallet()
+                .insert_tx(psbt.unsigned_tx.clone(), last_date + 15000);
         }
         self.send_update();
     }
@@ -425,12 +429,16 @@ impl EnvoyAccountHandler {
         }
     }
 
-    //cannot use sync since it is used by flutter_rust_bridge
-    pub fn sync_wallet(
+    pub async fn sync_wallet(
         sync_request: Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>,
         electrum_server: &str,
         tor_port: Option<u16>,
     ) -> Result<Arc<Mutex<Update>>, Error> {
+        info!(
+            "Current Thread request: {:?}, {:?}",
+            std::thread::current().name(),
+            std::thread::current().id()
+        );
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
         let socks_proxy = socks_proxy.as_ref().map(|s| s.as_str());
         let mut scan_request_guard = sync_request.lock().unwrap();
@@ -444,7 +452,7 @@ impl EnvoyAccountHandler {
         };
     }
 
-    pub fn scan_wallet(
+    pub async fn scan_wallet(
         scan_request: Arc<Mutex<Option<FullScanRequest<KeychainKind>>>>,
         electrum_server: &str,
         tor_port: Option<u16>,

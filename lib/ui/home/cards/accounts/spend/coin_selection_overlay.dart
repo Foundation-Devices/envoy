@@ -34,6 +34,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:ngwallet/ngwallet.dart';
 
+final coinSelectionOverlayMinimized = StateProvider<bool>((ref) => false);
+
 OverlayEntry? overlayEntry;
 final GlobalKey<CoinSelectionOverlayState> coinSelectionOverlayKey =
     GlobalKey<CoinSelectionOverlayState>();
@@ -317,6 +319,7 @@ class SpendRequirementOverlayState
           },
           onPanEnd: (details) {
             _isInMinimizedState = false;
+            ref.read(coinSelectionOverlayMinimized.notifier).state = false;
 
             double currentY = _dragAlignment.y;
             if (currentY < 1.5) {
@@ -337,6 +340,7 @@ class SpendRequirementOverlayState
             //threshold to show dismiss dialog
             if (currentY >= 1.2) {
               _isInMinimizedState = true;
+              ref.read(coinSelectionOverlayMinimized.notifier).state = true;
               _runSpringSimulation(
                   details.velocity.pixelsPerSecond, _minimizedAlignment, size);
             }
@@ -344,9 +348,11 @@ class SpendRequirementOverlayState
           onTap: () {
             if (_isInMinimizedState) {
               _isInMinimizedState = false;
+              ref.read(coinSelectionOverlayMinimized.notifier).state = false;
               _runSpringSimulation(const Offset(0, 0), _endAlignment, size);
             } else {
               _isInMinimizedState = true;
+              ref.read(coinSelectionOverlayMinimized.notifier).state = true;
               _runSpringSimulation(
                   const Offset(0, 0), _minimizedAlignment, size);
             }

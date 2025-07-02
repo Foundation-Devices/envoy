@@ -24,6 +24,7 @@ class FwPassportPage extends StatelessWidget {
       leftFunction: (context) {
         context.go("/");
       },
+      rightFunction: null,
       clipArt: Image.asset("assets/fw_passport.png"),
       text: [
         Padding(

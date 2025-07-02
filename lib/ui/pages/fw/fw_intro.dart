@@ -32,9 +32,7 @@ class _FwIntroPageState extends State<FwIntroPage> {
       onPopInvokedWithResult: (didPop, result) => context.go("/"),
       child: OnboardingPage(
         key: const Key("fw_intro"),
-        rightFunction: (_) {
-          context.go("/");
-        },
+        rightFunction: null,
         clipArt: Transform.translate(
             offset: const Offset(0, 75),
             child: _downloading

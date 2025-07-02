@@ -29,6 +29,7 @@ class FwMicrosdPage extends ConsumerWidget {
     return OnboardingPage(
       key: const Key("fw_microsd"),
       clipArt: Image.asset("assets/fw_microsd.png", height: 312, width: 129),
+      rightFunction: null,
       text: [
         Column(
           mainAxisSize: MainAxisSize.min,

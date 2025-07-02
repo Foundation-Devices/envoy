@@ -66,8 +66,9 @@ class RBFSpendState {
 
 class TxRBFButton extends ConsumerStatefulWidget {
   final EnvoyTransaction tx;
+  final Function(bool isRBFReady) onRBFReady;
 
-  const TxRBFButton({super.key, required this.tx});
+  const TxRBFButton({super.key, required this.tx, required this.onRBFReady});
 
   @override
   ConsumerState<TxRBFButton> createState() => _TxRBFButtonState();
@@ -109,7 +110,6 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
       int minRate = result.minFeeRate.toInt();
       int maxRate = result.maxFeeRate.toInt();
       int fasterFeeRate = minRate + 1;
-
       if (minRate == maxRate) {
         fasterFeeRate = maxRate;
       } else {
@@ -131,7 +131,9 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         originalAmount: originalTx.amount,
         draftTx: result.draftTransaction,
       );
+      widget.onRBFReady(true);
     } catch (e) {
+      widget.onRBFReady(false);
       EnvoyReport().log("RBF", "RBF check failed : $e");
     } finally {
       if (mounted) {
@@ -338,7 +340,7 @@ class _RBFWarningState extends State<RBFWarning> {
           ),
           onTap: () {
             launchUrl(Uri.parse(
-                "https://docs.foundation.xyz/en/envoy/accounts#boost-or-cancel-a-transaction"));
+                "https://docs.foundation.xyz/envoy/envoy-menu/account/#boost-or-cancel-a-transaction"));
           },
         ),
         const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),

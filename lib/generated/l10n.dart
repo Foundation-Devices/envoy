@@ -52,10 +52,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `Skip`
+  /// `Done`
   String get _ {
     return Intl.message(
-      'Skip',
+      'Done',
       name: '_',
       desc: '',
       args: [],
@@ -937,6 +937,16 @@ class S {
     return Intl.message(
       'Privacy',
       name: 'bottomNav_privacy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transfer`
+  String get bottomNav_transfer {
+    return Intl.message(
+      'Transfer',
+      name: 'bottomNav_transfer',
       desc: '',
       args: [],
     );
@@ -1874,18 +1884,6 @@ class S {
     );
   }
 
-  // skipped getter for the 'coincontrol_tx_detail_custom_fee_insufficients_funds_-_25_prompt' key
-
-  /// `Over 25%`
-  String get coincontrol_tx_detail_custom_fee_insufficients_funds_25_cta {
-    return Intl.message(
-      'Over 25%',
-      name: 'coincontrol_tx_detail_custom_fee_insufficients_funds_25_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Over 25%`
   String get coincontrol_tx_detail_custom_fee_insufficients_funds_25_prompt {
     return Intl.message(
@@ -1976,13 +1974,23 @@ class S {
     );
   }
 
-  /// ` Updating your fee may have changed\nyour coin selection. Please review.`
+  /// `Updating your fee may have changed\nyour coin selection. Please review.`
   String get coincontrol_tx_detail_feeChange_information {
     return Intl.message(
-      ' Updating your fee may have changed\nyour coin selection. Please review.',
+      'Updating your fee may have changed\nyour coin selection. Please review.',
       name: 'coincontrol_tx_detail_feeChange_information',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Fee is {number}% of total amount`
+  String coincontrol_tx_detail_fee_alert(Object number) {
+    return Intl.message(
+      'Fee is $number% of total amount',
+      name: 'coincontrol_tx_detail_fee_alert',
+      desc: '',
+      args: [number],
     );
   }
 
@@ -2156,6 +2164,16 @@ class S {
     );
   }
 
+  /// `Block`
+  String get coindetails_overlay_block {
+    return Intl.message(
+      'Block',
+      name: 'coindetails_overlay_block',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Boosted Fee`
   String get coindetails_overlay_boostedFees {
     return Intl.message(
@@ -2241,6 +2259,16 @@ class S {
     return Intl.message(
       'Boost',
       name: 'coindetails_overlay_confirmation_boost',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirmations`
+  String get coindetails_overlay_confirmations {
+    return Intl.message(
+      'Confirmations',
+      name: 'coindetails_overlay_confirmations',
       desc: '',
       args: [],
     );
@@ -2456,6 +2484,16 @@ class S {
     );
   }
 
+  /// `Apply`
+  String get component_apply {
+    return Intl.message(
+      'Apply',
+      name: 'component_apply',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Back`
   String get component_back {
     return Intl.message(
@@ -2666,6 +2704,26 @@ class S {
     );
   }
 
+  /// `Reset filter`
+  String get component_resetFilter {
+    return Intl.message(
+      'Reset filter',
+      name: 'component_resetFilter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset sorting`
+  String get component_resetSorting {
+    return Intl.message(
+      'Reset sorting',
+      name: 'component_resetSorting',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Retry`
   String get component_retry {
     return Intl.message(
@@ -2681,6 +2739,16 @@ class S {
     return Intl.message(
       'Save',
       name: 'component_save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Searching`
+  String get component_searching {
+    return Intl.message(
+      'Searching',
+      name: 'component_searching',
       desc: '',
       args: [],
     );
@@ -4128,6 +4196,156 @@ class S {
     );
   }
 
+  /// `Unused`
+  String get exploreAddresses_listFilter_unused {
+    return Intl.message(
+      'Unused',
+      name: 'exploreAddresses_listFilter_unused',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Used`
+  String get exploreAddresses_listFilter_used {
+    return Intl.message(
+      'Used',
+      name: 'exploreAddresses_listFilter_used',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `0 Balance`
+  String get exploreAddresses_listFilter_zeroBalance {
+    return Intl.message(
+      '0 Balance',
+      name: 'exploreAddresses_listFilter_zeroBalance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back to List`
+  String get exploreAddresses_listModal_backToList {
+    return Intl.message(
+      'Back to List',
+      name: 'exploreAddresses_listModal_backToList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This address has been used at least once. When receiving Bitcoin it is a privacy best practice to use a new address.`
+  String get exploreAddresses_listModal_content {
+    return Intl.message(
+      'This address has been used at least once. When receiving Bitcoin it is a privacy best practice to use a new address.',
+      name: 'exploreAddresses_listModal_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show Address`
+  String get exploreAddresses_listModal_showAddress {
+    return Intl.message(
+      'Show Address',
+      name: 'exploreAddresses_listModal_showAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Explore addresses`
+  String get exploreAddresses_list_header {
+    return Intl.message(
+      'Explore addresses',
+      name: 'exploreAddresses_list_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Derivation Path`
+  String get exploreAddresses_qr_derivationPath {
+    return Intl.message(
+      'Derivation Path',
+      name: 'exploreAddresses_qr_derivationPath',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ADDRESS #{number}`
+  String exploreAddresses_qr_header(Object number) {
+    return Intl.message(
+      'ADDRESS #$number',
+      name: 'exploreAddresses_qr_header',
+      desc: '',
+      args: [number],
+    );
+  }
+
+  /// `This address has already been used. Avoid address reuse to preserve your privacy. `
+  String get exploreAddresses_qr_warningReused {
+    return Intl.message(
+      'This address has already been used. Avoid address reuse to preserve your privacy. ',
+      name: 'exploreAddresses_qr_warningReused',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Account`
+  String get exploreAdresses_activityOptions_deleteAccount {
+    return Intl.message(
+      'Delete Account',
+      name: 'exploreAdresses_activityOptions_deleteAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Account Name`
+  String get exploreAdresses_activityOptions_editAccountName {
+    return Intl.message(
+      'Edit Account Name',
+      name: 'exploreAdresses_activityOptions_editAccountName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Explore Addresses`
+  String get exploreAdresses_activityOptions_exploreAddresses {
+    return Intl.message(
+      'Explore Addresses',
+      name: 'exploreAdresses_activityOptions_exploreAddresses',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show Descriptor`
+  String get exploreAdresses_activityOptions_showDescriptor {
+    return Intl.message(
+      'Show Descriptor',
+      name: 'exploreAdresses_activityOptions_showDescriptor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign Message`
+  String get exploreAdresses_activityOptions_signMessage {
+    return Intl.message(
+      'Sign Message',
+      name: 'exploreAdresses_activityOptions_signMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `This encrypted file contains useful wallet data such as labels, accounts, and settings.\n\nThis file is encrypted with your Envoy Seed. Ensure your seed is backed up securely. `
   String get export_backup_modal_subheading {
     return Intl.message(
@@ -5330,10 +5548,10 @@ class S {
     );
   }
 
-  /// `Your Magic backup is about to be permanently erased. Ensure your seed is securely backed up and that you download your Envoy backup file.\n\nThis action will permanently delete your Envoy seed from your Apple or Google account, and your encrypted Envoy data from Foundation Servers.`
+  /// `Your Magic backup is about to be permanently erased. Ensure your seed is securely backed up and that you download your Envoy backup file.\n\nThis action will permanently delete your Envoy seed from your Apple or Google account, and your encrypted Envoy data from Foundation servers after a 24h waiting period.`
   String get manual_setup_change_from_magic_modal_subheader {
     return Intl.message(
-      'Your Magic backup is about to be permanently erased. Ensure your seed is securely backed up and that you download your Envoy backup file.\n\nThis action will permanently delete your Envoy seed from your Apple or Google account, and your encrypted Envoy data from Foundation Servers.',
+      'Your Magic backup is about to be permanently erased. Ensure your seed is securely backed up and that you download your Envoy backup file.\n\nThis action will permanently delete your Envoy seed from your Apple or Google account, and your encrypted Envoy data from Foundation servers after a 24h waiting period.',
       name: 'manual_setup_change_from_magic_modal_subheader',
       desc: '',
       args: [],
@@ -7000,6 +7218,46 @@ class S {
     );
   }
 
+  /// `Improve your privacy by connecting to your own block explorer. Tap learn more above.`
+  String get privacy_explorer_configure {
+    return Intl.message(
+      'Improve your privacy by connecting to your own block explorer. Tap learn more above.',
+      name: 'privacy_explorer_configure',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your explorer address`
+  String get privacy_explorer_explorerAddress {
+    return Intl.message(
+      'Enter your explorer address',
+      name: 'privacy_explorer_explorerAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Personal Block Explorer`
+  String get privacy_explorer_explorerType_personal {
+    return Intl.message(
+      'Personal Block Explorer',
+      name: 'privacy_explorer_explorerType_personal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Block Explorer`
+  String get privacy_explorer_title {
+    return Intl.message(
+      'Block Explorer',
+      name: 'privacy_explorer_title',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Improve your privacy by running your own node. Tap learn more above. `
   String get privacy_node_configure {
     return Intl.message(
@@ -7310,11 +7568,51 @@ class S {
     );
   }
 
+  /// `Copy`
+  String get receive_qr_copy {
+    return Intl.message(
+      'Copy',
+      name: 'receive_qr_copy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share`
+  String get receive_qr_share {
+    return Intl.message(
+      'Share',
+      name: 'receive_qr_share',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign Message`
+  String get receive_qr_signMessage {
+    return Intl.message(
+      'Sign Message',
+      name: 'receive_qr_signMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Awaiting confirmation`
   String get receive_tx_list_awaitingConfirmation {
     return Intl.message(
       'Awaiting confirmation',
       name: 'receive_tx_list_awaitingConfirmation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change`
+  String get receive_tx_list_change {
+    return Intl.message(
+      'Change',
+      name: 'receive_tx_list_change',
       desc: '',
       args: [],
     );
@@ -7330,11 +7628,31 @@ class S {
     );
   }
 
+  /// `Scan`
+  String get receive_tx_list_scan {
+    return Intl.message(
+      'Scan',
+      name: 'receive_tx_list_scan',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Send`
   String get receive_tx_list_send {
     return Intl.message(
       'Send',
       name: 'receive_tx_list_send',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transfer`
+  String get receive_tx_list_transfer {
+    return Intl.message(
+      'Transfer',
+      name: 'receive_tx_list_transfer',
       desc: '',
       args: [],
     );
@@ -7750,6 +8068,16 @@ class S {
     );
   }
 
+  /// `Enter address`
+  String get send_keyboard_enterAddress {
+    return Intl.message(
+      'Enter address',
+      name: 'send_keyboard_enterAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Send Max`
   String get send_keyboard_send_max {
     return Intl.message(
@@ -8010,6 +8338,156 @@ class S {
     );
   }
 
+  /// `Sign Message`
+  String get signMessage_mainHot_signMessage {
+    return Intl.message(
+      'Sign Message',
+      name: 'signMessage_mainHot_signMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scan the QR`
+  String get signMessage_mainSignedQr_scanQr {
+    return Intl.message(
+      'Scan the QR',
+      name: 'signMessage_mainSignedQr_scanQr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `It contains the signed message.`
+  String get signMessage_mainSignedQr_scanQrSubheader {
+    return Intl.message(
+      'It contains the signed message.',
+      name: 'signMessage_mainSignedQr_scanQrSubheader',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copy Signature`
+  String get signMessage_mainSigned_copySignature {
+    return Intl.message(
+      'Copy Signature',
+      name: 'signMessage_mainSigned_copySignature',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Message Signed`
+  String get signMessage_mainSigned_header {
+    return Intl.message(
+      'Message Signed',
+      name: 'signMessage_mainSigned_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save Signature to File`
+  String get signMessage_mainSigned_saveSignatureToFile {
+    return Intl.message(
+      'Save Signature to File',
+      name: 'signMessage_mainSigned_saveSignatureToFile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Address does not belong to this account.\nPlease enter another address.`
+  String get signMessage_main_addressDoesNotBelong {
+    return Intl.message(
+      'Address does not belong to this account.\nPlease enter another address.',
+      name: 'signMessage_main_addressDoesNotBelong',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter or paste the message`
+  String get signMessage_main_enterPasteMessage {
+    return Intl.message(
+      'Enter or paste the message',
+      name: 'signMessage_main_enterPasteMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign Message`
+  String get signMessage_main_header {
+    return Intl.message(
+      'Sign Message',
+      name: 'signMessage_main_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Message`
+  String get signMessage_main_messageHeader {
+    return Intl.message(
+      'Message',
+      name: 'signMessage_main_messageHeader',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Signature`
+  String get signMessage_main_signatureHeader {
+    return Intl.message(
+      'Signature',
+      name: 'signMessage_main_signatureHeader',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scan the QR with your Passport`
+  String get signMessage_qr_header {
+    return Intl.message(
+      'Scan the QR with your Passport',
+      name: 'signMessage_qr_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save to File`
+  String get signMessage_qr_saveToFile {
+    return Intl.message(
+      'Save to File',
+      name: 'signMessage_qr_saveToFile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scanned and signed by Passport`
+  String get signMessage_qr_scannedSignedByPassport {
+    return Intl.message(
+      'Scanned and signed by Passport',
+      name: 'signMessage_qr_scannedSignedByPassport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `It contains the message for your Passport to sign.`
+  String get signMessage_qr_subheader {
+    return Intl.message(
+      'It contains the message for your Passport to sign.',
+      name: 'signMessage_qr_subheader',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `No thanks`
   String get stalls_before_sending_tx_add_note_modal_cta2 {
     return Intl.message(
@@ -8210,6 +8688,16 @@ class S {
     );
   }
 
+  /// `Transfer Selected`
+  String get tagged_tagDetails_sheet_transferSelected {
+    return Intl.message(
+      'Transfer Selected',
+      name: 'tagged_tagDetails_sheet_transferSelected',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Hold to drag and reorder your accounts.`
   String get tap_and_drag_first_time_text {
     return Intl.message(
@@ -8315,6 +8803,26 @@ class S {
     return Intl.message(
       'Issue establishing Tor connectivity',
       name: 'tor_connectivity_toast_warning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transfer from`
+  String get transfer_fromTo_transferFrom {
+    return Intl.message(
+      'Transfer from',
+      name: 'transfer_fromTo_transferFrom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transfer to`
+  String get transfer_fromTo_transferTo {
+    return Intl.message(
+      'Transfer to',
+      name: 'transfer_fromTo_transferTo',
       desc: '',
       args: [],
     );

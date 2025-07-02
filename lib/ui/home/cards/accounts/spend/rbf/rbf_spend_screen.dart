@@ -39,6 +39,7 @@ import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -61,7 +62,6 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
   bool _rebuildingTx = false;
   BroadcastProgress _broadcastProgress = BroadcastProgress.staging;
   bool _warningShown = false;
-  bool _inputsChanged = false;
 
   @override
   void initState() {
@@ -72,8 +72,6 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         return;
       }
       _checkInputsChanged();
-      //Since the BDK will give the spend amount as a negative value,
-      //we need to show the amount in the transaction review card with the absolute value.
     });
   }
 
@@ -88,7 +86,6 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         _broadcastProgress == BroadcastProgress.success ||
         _broadcastProgress == BroadcastProgress.failed;
 
-    final draftTransaction = rbfState.draftTx;
     EnvoyAccount? account = ref.watch(selectedAccountProvider);
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
 
@@ -100,12 +97,6 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         !(_broadcastProgress == BroadcastProgress.inProgress) && !_rebuildingTx;
     ProviderContainer scope = ProviderScope.containerOf(context);
 
-    bool canEdit = _inputsChanged;
-    if (account.isHot) {
-      canEdit = _inputsChanged;
-    } else {
-      canEdit = _inputsChanged && !draftTransaction.isFinalized;
-    }
     return CoinSelectionOverlay(
       child: Builder(builder: (context) {
         return PopScope(
@@ -162,16 +153,12 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      Opacity(
-                                        opacity: canEdit ? 1 : 0,
-                                        child: EnvoyButton(
-                                          label: S().coincontrol_tx_detail_cta2,
-                                          state: ButtonState.defaultState,
-                                          onTap: canEdit
-                                              ? () => _editCoins(context)
-                                              : null,
-                                          type: ButtonType.secondary,
-                                        ),
+                                      EnvoyButton(
+                                        label: S()
+                                            .replaceByFee_boost_reviewCoinSelection,
+                                        state: ButtonState.defaultState,
+                                        onTap: () => _editCoins(context),
+                                        type: ButtonType.secondary,
                                       ),
                                       const Padding(
                                           padding: EdgeInsets.symmetric(
@@ -450,9 +437,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     BitcoinTransaction draftRbfTx = rbfSpendState.draftTx.transaction;
     List<Input> originalInputs = originalTx.inputs;
     List<Input> draftInputs = draftRbfTx.inputs;
+    ref.read(stagingTxNoteProvider.notifier).state = originalTx.note;
     if (originalInputs.length != draftInputs.length) {
       setState(() {
-        _inputsChanged = true;
         _rebuildingTx = false;
       });
     }
@@ -471,7 +458,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                 S().replaceByFee_warning_extraUTXO_overlay_modal_subheading,
             onLearnMore: () {
               launchUrl(Uri.parse(
-                  "https://docs.foundation.xyz/en/troubleshooting#why-is-envoy-adding-more-coins-to-my-boost-or-cancel-transaction"));
+                  "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions"));
             },
             primaryButtonLabel: S().component_continue,
             onPrimaryButtonTap: (context) {
@@ -564,37 +551,34 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         port = null;
       }
 
-      try {
-        /// get the raw transaction from the database
-        await EnvoyAccountHandler.broadcast(
-          draftTransaction: rbfState.draftTx,
-          electrumServer: server,
-          torPort: port,
-        );
-        await handler.updateBroadcastState(draftTransaction: rbfState.draftTx);
+      /// get the raw transaction from the database
+      await EnvoyAccountHandler.broadcast(
+        draftTransaction: rbfState.draftTx,
+        electrumServer: server,
+        torPort: port,
+      );
+      await handler.updateBroadcastState(draftTransaction: rbfState.draftTx);
 
-        BitcoinTransaction originalTx = rbfState.originalTx;
-        BitcoinTransaction bumpedTx = rbfState.getBumpedTransaction;
-
-        await EnvoyStorage().addRBFBoost(
-          bumpedTx.txId,
-          RBFState(
-            originalTxId: originalTx.txId,
-            newTxId: bumpedTx.txId,
-            accountId: account.id,
-            newFee: bumpedTx.fee.toInt(),
-            oldFee: originalTx.fee.toInt(),
-            previousTxTimeStamp: originalTx.date?.toInt() ?? 0,
-            rbfTimeStamp: DateTime.now().millisecondsSinceEpoch,
-          ),
-        );
-        ref.read(rbfBroadCastedTxProvider.notifier).state = [
-          ...ref.read(rbfBroadCastedTxProvider),
-          originalTx.txId
-        ];
-      } catch (e) {
-        kPrint(e);
-      }
+      BitcoinTransaction originalTx = rbfState.originalTx;
+      BitcoinTransaction bumpedTx = rbfState.getBumpedTransaction;
+      await EnvoyStorage().addRBFBoost(
+        bumpedTx.txId,
+        RBFState(
+          originalTxId: originalTx.txId,
+          newTxId: bumpedTx.txId,
+          accountId: account.id,
+          newFee: bumpedTx.fee.toInt(),
+          oldFee: originalTx.fee.toInt(),
+          previousTxTimeStamp: originalTx.date?.toInt() ?? 0,
+          rbfTimeStamp: DateTime.now().millisecondsSinceEpoch,
+        ),
+      );
+      ref.read(rbfBroadCastedTxProvider.notifier).state = [
+        ...ref.read(rbfBroadCastedTxProvider),
+        originalTx.txId
+      ];
+      await Future.delayed(const Duration(milliseconds: 200));
+      final _ = ref.refresh(isTxBoostedProvider(bumpedTx.txId));
       if (context.mounted) {
         clearSpendState(ProviderScope.containerOf(context));
       }
@@ -688,10 +672,12 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       }
       EnvoyReport().log("RBF", "Rbf set-fee failed : ${stack.toString()}");
     } finally {
-      setState(() {
-        _rebuildingTx = false;
-      });
-      ref.read(spendFeeProcessing.notifier).state = false;
+      if (context.mounted) {
+        setState(() {
+          _rebuildingTx = false;
+        });
+        ref.read(spendFeeProcessing.notifier).state = false;
+      }
     }
   }
 
@@ -763,9 +749,6 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     if (account == null || handler == null) {
       return;
     }
-    final selectedOutputs =
-        ref.read(getSelectedCoinsProvider(account.id)).toList();
-
     if (selectedAccount == null) {
       return;
     }
@@ -781,6 +764,12 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         .map((e) => "${e.txId}:${e.vout}")
         .toList();
 
+    //any output that are part of original tx will not be available RBF selection
+    Output? changeOutput = rbfState.originalTx.outputs.firstWhereOrNull(
+      (element) => element.keychain == KeyChain.internal,
+    );
+
+    ref.read(rbfChangeOutputTagProvider.notifier).state = changeOutput;
     ref.read(coinSelectionStateProvider.notifier).reset();
     ref.read(coinSelectionStateProvider.notifier).addAll(inputs);
 
@@ -794,11 +783,14 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     if (ref.read(selectedAccountProvider) != null) {
       CoinSelectionOverlay.of(context)?.show(SpendOverlayContext.rbfSelection);
     }
-    dynamic refresh = await router.push(CupertinoPageRoute(
+    dynamic newSelection = await router.push(CupertinoPageRoute(
         builder: (context) => const ChooseCoinsWidget(),
         fullscreenDialog: true));
 
-    if (refresh == true) {
+    ref.read(rbfChangeOutputTagProvider.notifier).state = null;
+    ref.read(coinSelectionStateProvider.notifier).reset();
+
+    if (newSelection != null && newSelection is Set<String>) {
       final account = ref.read(selectedAccountProvider);
       if (account == null) {
         return;
@@ -806,6 +798,11 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       setState(() {
         _rebuildingTx = true;
       });
+
+      List<Output> outputs = ref.read(outputsProvider(selectedAccount.id));
+      final selectedOutputs = outputs
+          .where((element) => newSelection.contains(element.getId()))
+          .toList();
 
       if (selectedOutputs.isNotEmpty) {
         try {
@@ -819,7 +816,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
           int minRate = result.minFeeRate.toInt();
           int maxRate = result.maxFeeRate.toInt();
           int fasterFeeRate = minRate + 1;
-
+          kPrint("RBF: minRate: $minRate, maxRate: $maxRate");
           if (minRate == maxRate) {
             fasterFeeRate = maxRate;
           } else {

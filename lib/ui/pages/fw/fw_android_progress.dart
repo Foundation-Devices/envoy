@@ -77,6 +77,7 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
       leftFunction: (context) {
         context.pop();
       },
+      rightFunction: null,
       key: const Key("fw_progress"),
       text: [
         ExpandablePageView(

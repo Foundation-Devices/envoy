@@ -74,6 +74,10 @@ class _TransactionsDetailsWidgetState
   bool showPaymentId = false;
   final GlobalKey _detailWidgetKey = GlobalKey();
 
+  // Wait for Boost tx to be calculated first before calculating cancellation tx,
+  // this is to prevent ngwallet mutex being locked by two different calculations
+  bool rbfTxCalculated = false;
+
   String _getConfirmationTimeString(int minutes) {
     String confirmationTime = "";
 
@@ -97,7 +101,7 @@ class _TransactionsDetailsWidgetState
       (value) => value?.note ?? "",
     ));
 
-    if (!tx.isConfirmed) {
+    if (!tx.isConfirmed && tx is RampTransaction) {
       final noteFromStorage =
           ref.watch(txNoteFromStorageProvider(widget.tx.txId));
 
@@ -444,6 +448,13 @@ class _TransactionsDetailsWidgetState
                           ),
                           trailing: TxRBFButton(
                             tx: tx,
+                            onRBFReady: (isRBFReady) {
+                              if (mounted) {
+                                setState(() {
+                                  rbfTxCalculated = isRBFReady;
+                                });
+                              }
+                            },
                           ),
                         )
                       : Container(),
@@ -459,7 +470,7 @@ class _TransactionsDetailsWidgetState
                             noteHintText: S().add_note_modal_ie_text_field,
                             noteSubTitle: S().add_note_modal_subheading,
                             onAdd: (note) async {
-                              if (!tx.isConfirmed) {
+                              if (!tx.isConfirmed && tx is RampTransaction) {
                                 await EnvoyStorage()
                                     .addTxNote(key: tx.txId, note: note);
                               } else {
@@ -487,7 +498,7 @@ class _TransactionsDetailsWidgetState
                       ),
                     ),
                   ),
-                  rbfPossible && tx.vsize != BigInt.zero
+                  rbfPossible && tx.vsize != BigInt.zero && rbfTxCalculated
                       ? CancelTxButton(
                           transaction: tx,
                         )
