@@ -49,6 +49,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
   bool _isBackupInProgress = false;
   Timer? _timer;
   bool _advancedVisible = false;
+  double? bottomPhoneOffset;
 
   @override
   void initState() {
@@ -117,6 +118,14 @@ class _BackupPageState extends ConsumerState<BackupPage>
         setState(() {});
       }
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Only calculate once
+    bottomPhoneOffset ??= MediaQuery.of(context).padding.bottom;
   }
 
   @override
@@ -370,9 +379,11 @@ class _BackupPageState extends ConsumerState<BackupPage>
                             showEraseWalletsAndBackupsWarning(context);
                           },
                         ),
+                        SizedBox(
+                            height: bottomPhoneOffset! + EnvoySpacing.small),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ))),
     );
