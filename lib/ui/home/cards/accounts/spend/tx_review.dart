@@ -554,10 +554,10 @@ class _TransactionReviewScreenState
         ? S().coincontrol_tx_detail_subheading
         : S().coincontrol_txDetail_subheading_passport;
 
-    // int feePercentage =
-    // ((transaction.fee.toInt() / (transaction.fee.toInt() + amount)) * 100)
-    //     .round();
-    int feePercentage = 10;
+    int feePercentage = ((transaction.fee.toInt() /
+                (transaction.fee.toInt() + transaction.amount.abs())) *
+            100)
+        .round();
 
     return EnvoyScaffold(
       backgroundColor: Colors.transparent,
@@ -733,7 +733,7 @@ class _TransactionReviewScreenState
           child: EnvoyIcon(EnvoyIcons.alert,
               size: EnvoyIconSize.extraSmall, color: EnvoyColors.copper500),
         ),
-        Text("Fee is $feePercentage% of total amount", // TODO: Figma
+        Text(S().coincontrol_tx_detail_fee_alert(feePercentage),
             style:
                 EnvoyTypography.button.copyWith(color: EnvoyColors.copper500)),
       ],
