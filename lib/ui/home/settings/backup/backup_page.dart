@@ -33,6 +33,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as new_colors;
 import 'package:envoy/ui/onboard/magic/wallet_security/wallet_security_modal.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BackupPage extends ConsumerStatefulWidget {
   const BackupPage({super.key});
@@ -552,6 +553,11 @@ class _BackupPageState extends ConsumerState<BackupPage>
         displaySeedBeforeNuke(context);
       },
       title: S().component_warning,
+      learnMoreText: S().component_learnMore,
+      onLearnMore: () {
+        launchUrl(Uri.parse(
+            "https://docs.foundation.xyz/backups/envoy/#magic-backup"));
+      },
       secondaryButtonLabel: S().component_back,
       onSecondaryButtonTap: (_) {
         Navigator.of(context).pop();
