@@ -5,9 +5,9 @@
 import 'package:animations/animations.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';
-import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
@@ -54,6 +54,18 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
 
   final scrollController = ScrollController();
   bool isScrollable = false;
+
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (scrollController.hasClients) {
+        setState(() {
+          isScrollable = scrollController.position.maxScrollExtent > 0;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -213,14 +225,6 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     final itemHeight = 45.0;
     final maxItems = ((maxAvailableHeight - baseHeight) / itemHeight).floor();
     final calculatedMaxHeight = baseHeight + itemHeight * maxItems;
-
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      if (scrollController.hasClients) {
-        setState(() {
-          isScrollable = scrollController.position.maxScrollExtent > 0;
-        });
-      }
-    });
 
     void animateToIndex(int index) {
       if (!scrollController.hasClients) return;

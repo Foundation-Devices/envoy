@@ -9,6 +9,7 @@ import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/warning_dialogs.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
@@ -33,6 +34,7 @@ class BalanceWidget extends ConsumerWidget {
   final int amount;
   final bool showLock;
   final bool locked;
+  final bool rbfChangeOutput;
   final String accountId;
   final GestureTapCallback? onLockTap;
   final Widget? switchWidget;
@@ -43,6 +45,7 @@ class BalanceWidget extends ConsumerWidget {
       required this.locked,
       required this.showLock,
       required this.accountId,
+      this.rbfChangeOutput = false,
       required this.onLockTap,
       this.switchWidget});
 
@@ -73,38 +76,44 @@ class BalanceWidget extends ConsumerWidget {
               child: switchWidget ?? const SizedBox.shrink())));
     }
 
-    return Container(
-      alignment: Alignment.center,
-      margin: const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
-      padding: const EdgeInsets.symmetric(horizontal: 2),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-              child: Container(
-            child: hide
-                ? LayoutBuilder(
-                    builder: (context, constraints) {
-                      return LoaderGhost(
-                          animate: false,
-                          width: constraints.maxWidth,
-                          height: 20);
-                    },
-                  )
-                : EnvoyAmount(
-                    account: account!,
-                    amountSats: amount,
-                    amountWidgetStyle: AmountWidgetStyle.singleLine),
-          )),
-          if (rowItems.isNotEmpty)
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: rowItems,
-            )
-        ],
+    return IgnorePointer(
+      ignoring: rbfChangeOutput,
+      child: Opacity(
+        opacity: rbfChangeOutput ? 0.5 : 1,
+        child: Container(
+          alignment: Alignment.center,
+          margin: const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
+          padding: const EdgeInsets.symmetric(horizontal: 2),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                  child: Container(
+                child: hide
+                    ? LayoutBuilder(
+                        builder: (context, constraints) {
+                          return LoaderGhost(
+                              animate: false,
+                              width: constraints.maxWidth,
+                              height: 20);
+                        },
+                      )
+                    : EnvoyAmount(
+                        account: account!,
+                        amountSats: amount,
+                        amountWidgetStyle: AmountWidgetStyle.singleLine),
+              )),
+              if (rowItems.isNotEmpty)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: rowItems,
+                )
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -133,11 +142,18 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
     final output =
         ref.watch(outputProvider(widget.output.getId())) ?? widget.output;
     final accountId = ref.read(selectedAccountProvider)?.id ?? "";
-
+    bool isRbfChangeOutput = false;
+    final rbfChangeOutput = ref.watch(rbfChangeOutputTagProvider);
+    if (rbfChangeOutput != null &&
+        rbfChangeOutput.getId() == output.getId() &&
+        ref.read(spendEditModeProvider) == SpendOverlayContext.rbfSelection) {
+      isRbfChangeOutput = true;
+    }
     return BalanceWidget(
       locked: output.doNotSpend,
       amount: output.amount.toInt(),
       accountId: accountId,
+      rbfChangeOutput: isRbfChangeOutput,
       showLock: widget.showLock,
       onLockTap: () async {
         if (!output.doNotSpend) {
@@ -197,7 +213,10 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
       },
       switchWidget: Consumer(
         builder: (context, ref, child) {
-          final isSelected = ref.watch(isCoinSelectedProvider(output.getId()));
+          bool isSelected = ref.watch(isCoinSelectedProvider(output.getId()));
+          if (isRbfChangeOutput) {
+            isSelected = isRbfChangeOutput;
+          }
           final tag =
               ref.watch(tagProvider(widget.coinTag.name)) ?? widget.coinTag;
           return tag.isAllCoinsLocked
@@ -248,6 +267,13 @@ class CoinTagBalanceWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tag = ref.watch(tagProvider(coinTag.name)) ?? coinTag;
+    bool isRbfChangeOutput = false;
+    final rbfChangeOutput = ref.watch(rbfChangeOutputTagProvider);
+    if (ref.read(spendEditModeProvider) == SpendOverlayContext.rbfSelection &&
+        tag.utxo.length == 1) {
+      isRbfChangeOutput = rbfChangeOutput != null &&
+          rbfChangeOutput.getId() == tag.utxo.first.getId();
+    }
 
     /// hide switch if the tag is empty or all coins are locked
     bool hideSwitch = tag.utxo.isEmpty || tag.isAllCoinsLocked;
@@ -264,6 +290,7 @@ class CoinTagBalanceWidget extends ConsumerWidget {
         locked: isAllCoinsLocked,
         amount: tag.totalAmount,
         accountId: accountId,
+        rbfChangeOutput: isRbfChangeOutput,
         showLock: tag.totalAmount != 0,
         onLockTap: () async {
           if (!isAllCoinsLocked) {
@@ -348,6 +375,9 @@ class CoinTagBalanceWidget extends ConsumerWidget {
                   }
                   if (coinTag.utxo.isEmpty) {
                     coinTagSwitchState = CoinTagSwitchState.off;
+                  }
+                  if (isRbfChangeOutput) {
+                    coinTagSwitchState = CoinTagSwitchState.on;
                   }
                   return CoinTagSwitch(
                       triState: true,

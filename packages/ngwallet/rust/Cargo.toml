@@ -15,7 +15,7 @@ flutter_rust_bridge = "=2.9.0"
 
 #ngwallet = { path = "../../../../ngwallet", features = ["envoy"] }
 #ngwallet = {  git = "https://github.com/Foundation-Devices/ngwallet", tag = "0.9.0", features = ["envoy"] }
-ngwallet = {  git = "https://github.com/Foundation-Devices/ngwallet", rev = "5f08da724e1a7c27c2ce5982941212e11f6c1ae4", features = ["envoy"] }
+ngwallet = {  git = "https://github.com/Foundation-Devices/ngwallet", rev = "d3f46d6fca7aa0fa8bf0c70e8b8c0b8e04fc5c3e", features = ["envoy"] }
 
 bdk_wallet = { git = "https://github.com/Foundation-Devices/bdk_wallet", rev = "c35b0fd03fa3b858b97208cf663974da019995fd", features = ["keys-bip39","test-utils","rusqlite"] }
 bip39 = { version = "2.1.0", features = ["rand"] }
@@ -25,6 +25,7 @@ anyhow = "1.0.97"
 log = "0.4.26"
 sled = { version = "0.34" }
 chrono = "0.4.40"
+android_logger = "0.15.1"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
