@@ -143,7 +143,7 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
         ref.watch(outputProvider(widget.output.getId())) ?? widget.output;
     final accountId = ref.read(selectedAccountProvider)?.id ?? "";
     bool isRbfChangeOutput = false;
-    final rbfChangeOutput = ref.watch(rbfChangeOutputTagProvider);
+    final rbfChangeOutput = ref.watch(rbfChangeOutputProvider);
     if (rbfChangeOutput != null &&
         rbfChangeOutput.getId() == output.getId() &&
         ref.read(spendEditModeProvider) == SpendOverlayContext.rbfSelection) {
@@ -268,7 +268,7 @@ class CoinTagBalanceWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tag = ref.watch(tagProvider(coinTag.name)) ?? coinTag;
     bool isRbfChangeOutput = false;
-    final rbfChangeOutput = ref.watch(rbfChangeOutputTagProvider);
+    final rbfChangeOutput = ref.watch(rbfChangeOutputProvider);
     if (ref.read(spendEditModeProvider) == SpendOverlayContext.rbfSelection &&
         tag.utxo.length == 1) {
       isRbfChangeOutput = rbfChangeOutput != null &&

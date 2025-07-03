@@ -105,7 +105,7 @@ final coinSelectionFromWallet =
   (ref) => CoinStateNotifier({}),
 );
 
-final rbfChangeOutputTagProvider = StateProvider<Output?>((ref) => null);
+final rbfChangeOutputProvider = StateProvider<Output?>((ref) => null);
 
 final isCoinSelectedProvider = Provider.family<bool, String>(
     (ref, coinId) => ref.watch(coinSelectionStateProvider).contains(coinId));
