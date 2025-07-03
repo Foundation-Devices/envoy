@@ -390,6 +390,34 @@ class BluetoothManager {
     });
   }
 
+  Future<void> sendFirmwareUpdateInfo() async {
+    _sendingData = true;
+
+    // TODO: replace with actual firmware update info
+    // Create dummy firmware update metadata
+    final dummyUpdate = api.FirmwareUpdate(
+      version: 'v1.2.3-test',
+      timestamp: DateTime.now().millisecondsSinceEpoch,
+      changelog:
+          '• Fixed minor bugs\n• Improved performance\n• Added test logging',
+    );
+
+    // Create the firmware update message
+    final message = api.QuantumLinkMessage.firmwareUpdate(
+      api.FirmwareUpdate(
+        version: dummyUpdate.version,
+        timestamp: dummyUpdate.timestamp,
+        changelog: dummyUpdate.changelog,
+      ),
+    );
+
+    // Encode and send
+    final encoded = await encodeMessage(message: message);
+    await bluart.writeAll(id: bleId, data: encoded);
+
+    _sendingData = false;
+  }
+
   dispose() {
     _subscription?.cancel();
   }
