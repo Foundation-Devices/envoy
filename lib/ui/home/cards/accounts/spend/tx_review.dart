@@ -669,7 +669,7 @@ class _TransactionReviewScreenState
                           if (feePercentage >= 25)
                             Padding(
                               padding: const EdgeInsets.only(
-                                  top: EnvoySpacing.small),
+                                  top: EnvoySpacing.medium1),
                               child: feeOverSpendWarning(feePercentage),
                             ),
                         ]),
