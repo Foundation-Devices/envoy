@@ -416,6 +416,14 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
             type: ButtonType.secondary,
             state: ButtonState.defaultState,
           ),
+          const Padding(padding: EdgeInsets.all(6)),
+          EnvoyButton(
+            label: S().component_tryAgain,
+            type: ButtonType.primary,
+            onTap: () {
+              _boostTx(context);
+            },
+          ),
         ],
       );
     }
@@ -578,7 +586,8 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         originalTx.txId
       ];
       await Future.delayed(const Duration(milliseconds: 200));
-      final _ = ref.refresh(isTxBoostedProvider(bumpedTx.txId));
+      final _ = ref.refresh(rbfTxStateProvider(bumpedTx.txId));
+      await Future.delayed(const Duration(milliseconds: 100));
       if (context.mounted) {
         clearSpendState(ProviderScope.containerOf(context));
       }
