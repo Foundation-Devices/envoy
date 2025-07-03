@@ -603,10 +603,12 @@ String getTransactionDateAndTimeString(int? date, bool isConfirmed) {
       return S().receive_tx_list_awaitingConfirmation;
     }
     final timeStamp = date.toInt() * 1000;
+    final dateTimeUtc =
+        DateTime.fromMillisecondsSinceEpoch(timeStamp, isUtc: true);
+    final dateTimeLocal = dateTimeUtc.toLocal();
+
     final String transactionDateInfo =
-        "${DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(timeStamp, isUtc: true))} ${S().coindetails_overlay_at} ${DateFormat.Hm(currentLocale).format(
-      DateTime.fromMillisecondsSinceEpoch(timeStamp, isUtc: true),
-    )}";
+        "${DateFormat.yMd().format(dateTimeLocal)} ${S().coindetails_overlay_at} ${DateFormat.Hm(currentLocale).format(dateTimeLocal)}";
     return transactionDateInfo;
   }
 }
