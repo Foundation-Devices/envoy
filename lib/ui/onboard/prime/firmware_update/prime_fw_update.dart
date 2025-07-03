@@ -15,6 +15,7 @@ import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
+import 'package:envoy/ui/onboard/prime/onboard_prime_ble.dart';
 
 class OnboardPrimeFwUpdate extends ConsumerStatefulWidget {
   const OnboardPrimeFwUpdate({super.key});
@@ -254,7 +255,7 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
               child: Text(
                 // TODO: Note to devs: {0} in firmware.updateAvailable.whatsNew should be programmatically replaced by the new keyOS version found
                 S().firmware_updateAvailable_content2(
-                    "current_keyOS_version"), // TODO
+                    ref.read(primeDeviceVersionProvider)), // TODO
                 textAlign: TextAlign.center,
                 style: EnvoyTypography.explainer.copyWith(fontSize: 14),
               ),
