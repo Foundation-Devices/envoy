@@ -440,6 +440,7 @@ class EnvoyStorage {
             feeRate: BigInt.zero,
             isConfirmed: false,
             note: null,
+            accountId: e["account"] as String,
             date: BigInt.zero);
       },
     ).toList();

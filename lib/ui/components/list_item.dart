@@ -255,17 +255,12 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
                       final tx = notification.transaction;
                       if (tx == null) return;
 
-                      final accountId =
-                          getAccountIdFromNotification(widget.notification);
+                      final accountId = widget.notification.accountId;
                       if (accountId == null) return;
 
                       final isHidden =
                           ref.read(balanceHideStateStatusProvider(accountId));
-                      final account =
-                          NgAccountManager().getAccountById(accountId);
-
                       if (!isHidden &&
-                          account != null &&
                           !ref.read(transactionDetailsOpen.notifier).state) {
                         ref.read(transactionDetailsOpen.notifier).state = true;
                         action();
@@ -301,27 +296,9 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
     });
   }
 
-  String? getAccountIdFromNotification(EnvoyNotification notification) {
-    final tx = notification.transaction;
-    if (tx == null) return null;
-
-    // Try getting accountId from NgAccountManager
-    String? accountId = NgAccountManager().getAccountIdByTransaction(tx.txId);
-
-    // Fallbacks by transaction type
-    if (accountId == null &&
-        (tx is RampTransaction ||
-            tx is BtcPayTransaction ||
-            tx is AztecoTransaction)) {
-      accountId = (tx as dynamic).accountId;
-    }
-
-    return accountId;
-  }
-
   Widget openTransactionDetails(
       BuildContext context, EnvoyTransaction transaction) {
-    final accountId = getAccountIdFromNotification(widget.notification);
+    final accountId = widget.notification.accountId;
     final account = NgAccountManager().getAccountById(accountId!);
 
     return TransactionsDetailsWidget(
