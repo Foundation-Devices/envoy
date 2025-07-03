@@ -20,6 +20,7 @@ class BitcoinTransaction {
   final String? note;
   final BigInt? date;
   final BigInt vsize;
+  final String accountId;
 
   const BitcoinTransaction({
     required this.txId,
@@ -35,6 +36,7 @@ class BitcoinTransaction {
     this.note,
     this.date,
     required this.vsize,
+    required this.accountId,
   });
 
   @override
@@ -51,7 +53,8 @@ class BitcoinTransaction {
       outputs.hashCode ^
       note.hashCode ^
       date.hashCode ^
-      vsize.hashCode;
+      vsize.hashCode ^
+      accountId.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -70,7 +73,8 @@ class BitcoinTransaction {
           outputs == other.outputs &&
           note == other.note &&
           date == other.date &&
-          vsize == other.vsize;
+          vsize == other.vsize &&
+          accountId == other.accountId;
 }
 
 class Input {

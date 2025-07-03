@@ -413,7 +413,7 @@ impl EnvoyAccountHandler {
                 .unwrap_or_else(|| now.timestamp() as u64);
             account
                 .get_coordinator_wallet()
-                .insert_tx(psbt.unsigned_tx.clone(), last_date + 15000);
+                .insert_tx(psbt.unsigned_tx.clone(), last_date + 125000);
         }
         self.send_update();
     }

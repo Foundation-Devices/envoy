@@ -2901,6 +2901,7 @@ const _: fn() = || {
         let _: Option<String> = BitcoinTransaction.note;
         let _: Option<u64> = BitcoinTransaction.date;
         let _: usize = BitcoinTransaction.vsize;
+        let _: String = BitcoinTransaction.account_id;
     }
     {
         let DraftTransaction = None::<ngwallet::send::DraftTransaction>.unwrap();
@@ -3242,6 +3243,7 @@ impl SseDecode for ngwallet::transaction::BitcoinTransaction {
         let mut var_note = <Option<String>>::sse_decode(deserializer);
         let mut var_date = <Option<u64>>::sse_decode(deserializer);
         let mut var_vsize = <usize>::sse_decode(deserializer);
+        let mut var_accountId = <String>::sse_decode(deserializer);
         return ngwallet::transaction::BitcoinTransaction {
             tx_id: var_txId,
             block_height: var_blockHeight,
@@ -3256,6 +3258,7 @@ impl SseDecode for ngwallet::transaction::BitcoinTransaction {
             note: var_note,
             date: var_date,
             vsize: var_vsize,
+            account_id: var_accountId,
         };
     }
 }
@@ -4544,6 +4547,7 @@ impl flutter_rust_bridge::IntoDart for FrbWrapper<ngwallet::transaction::Bitcoin
             self.0.note.into_into_dart().into_dart(),
             self.0.date.into_into_dart().into_dart(),
             self.0.vsize.into_into_dart().into_dart(),
+            self.0.account_id.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -5259,6 +5263,7 @@ impl SseEncode for ngwallet::transaction::BitcoinTransaction {
         <Option<String>>::sse_encode(self.note, serializer);
         <Option<u64>>::sse_encode(self.date, serializer);
         <usize>::sse_encode(self.vsize, serializer);
+        <String>::sse_encode(self.account_id, serializer);
     }
 }
 

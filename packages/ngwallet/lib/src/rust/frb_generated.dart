@@ -2494,8 +2494,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   BitcoinTransaction dco_decode_bitcoin_transaction(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 13)
-      throw Exception('unexpected arr length: expect 13 but see ${arr.length}');
+    if (arr.length != 14)
+      throw Exception('unexpected arr length: expect 14 but see ${arr.length}');
     return BitcoinTransaction(
       txId: dco_decode_String(arr[0]),
       blockHeight: dco_decode_u_32(arr[1]),
@@ -2510,6 +2510,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       note: dco_decode_opt_String(arr[10]),
       date: dco_decode_opt_box_autoadd_u_64(arr[11]),
       vsize: dco_decode_usize(arr[12]),
+      accountId: dco_decode_String(arr[13]),
     );
   }
 
@@ -3338,6 +3339,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_note = sse_decode_opt_String(deserializer);
     var var_date = sse_decode_opt_box_autoadd_u_64(deserializer);
     var var_vsize = sse_decode_usize(deserializer);
+    var var_accountId = sse_decode_String(deserializer);
     return BitcoinTransaction(
         txId: var_txId,
         blockHeight: var_blockHeight,
@@ -3351,7 +3353,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         outputs: var_outputs,
         note: var_note,
         date: var_date,
-        vsize: var_vsize);
+        vsize: var_vsize,
+        accountId: var_accountId);
   }
 
   @protected
@@ -4317,6 +4320,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_String(self.note, serializer);
     sse_encode_opt_box_autoadd_u_64(self.date, serializer);
     sse_encode_usize(self.vsize, serializer);
+    sse_encode_String(self.accountId, serializer);
   }
 
   @protected
