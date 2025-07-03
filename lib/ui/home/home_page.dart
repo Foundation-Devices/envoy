@@ -90,7 +90,9 @@ class HomePageState extends ConsumerState<HomePage>
   bool _backgroundShown = false;
   final bool _modalShown = false;
   final List<StreamSubscription> _subscriptions = [];
-  double? phoneBottomOffset;
+  double _cachedBottomInset = 0;
+  int _bottomInsetRetries = 0;
+  final int _maxBottomInsetRetries = 3;
 
   final _optionsKey = GlobalKey();
   final bool _optionsShown = false;
@@ -136,8 +138,26 @@ class HomePageState extends ConsumerState<HomePage>
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // Only calculate once
-    phoneBottomOffset ??= MediaQuery.of(context).padding.bottom;
+    /// env-2049-shield-does-not-return-to-original-place
+
+    // If already cached, do nothing
+    if (_cachedBottomInset > 0) return;
+
+    final bottomInset = MediaQuery.of(context).viewPadding.bottom;
+
+    if (bottomInset > 0) {
+      _cachedBottomInset = bottomInset; // 3-button nav
+    } else if (_bottomInsetRetries < _maxBottomInsetRetries) {
+      _bottomInsetRetries++;
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          setState(() {}); // trigger another didChangeDependencies
+        }
+      });
+    } else {
+      _cachedBottomInset = 12; // Gesture-based nav bar
+    }
   }
 
   @override
@@ -454,8 +474,7 @@ class HomePageState extends ConsumerState<HomePage>
     double screenWidth = MediaQuery.of(context).size.width;
 
     double topOffset = MediaQuery.of(context).padding.top;
-    double bottomOffset =
-        phoneBottomOffset! + 32; // Adjust the bottom shield offset
+    double bottomOffset = _cachedBottomInset - 12; // Bottom shield offset
     //double _totalOffset = _topOffset + _bottomOffset;
 
     double appBarHeight = AppBar().preferredSize.height;
