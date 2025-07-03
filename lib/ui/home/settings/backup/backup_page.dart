@@ -267,21 +267,16 @@ class _BackupPageState extends ConsumerState<BackupPage>
                                 ),
                               ),
                             ),
-                          AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            height: !s.syncToCloud ? 0 : 16,
-                            child: const Padding(padding: EdgeInsets.all(8)),
-                          ),
                           if (s.syncToCloud && primeDevices.isNotEmpty)
-                            ...primeDevices.map((device) {
-                              return primeBackupSection(
-                                device,
-                                lastCloudBackup,
-                                lastEnvoyServerBackup,
-                                activeLocale,
-                              );
-                            }),
-                          const Divider(),
+                            const SizedBox(height: EnvoySpacing.medium1),
+                          ...primeDevices.map((device) {
+                            return primeBackupSection(
+                              device,
+                              lastCloudBackup,
+                              lastEnvoyServerBackup,
+                              activeLocale,
+                            );
+                          }),
                           ExpansionTile(
                             tilePadding: const EdgeInsets.all(0),
                             onExpansionChanged: (value) {
