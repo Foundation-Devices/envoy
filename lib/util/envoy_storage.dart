@@ -20,11 +20,13 @@ import 'package:envoy/util/console.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:ngwallet/ngwallet.dart';
+
 // ignore: implementation_imports
 import 'package:ngwallet/src/wallet.dart' as wallet;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast_io.dart';
+
 // ignore: implementation_imports
 import 'package:sembast/src/type.dart';
 import 'package:sembast/utils/sembast_import_export.dart';
@@ -438,6 +440,7 @@ class EnvoyStorage {
             feeRate: BigInt.zero,
             isConfirmed: false,
             note: null,
+            accountId: e["account"] as String,
             date: BigInt.zero);
       },
     ).toList();
@@ -844,27 +847,30 @@ class EnvoyStorage {
         record.map((e) => InputCoinHistory.fromJson(e.value)).toList());
   }
 
-  Future<RBFState?> getRBFBoostState(String txId) async {
-    RecordSnapshot? data =
-        await rbfBoostStore.findFirst(_db, finder: Finder(filter: Filter.custom(
-      (record) {
-        final data = record.value;
-        if (data != null && data is Map) {
-          if (data["originalTxId"] == txId) {
-            return true;
-          }
-          if (data["newTxId"] == txId) {
-            return true;
-          }
-        }
-        return false;
-      },
-    )));
-
-    if (data == null) return null;
-
-    RBFState rbf = RBFState.fromJson(data.value as Map<String, Object?>);
-    return rbf;
+  Stream<RBFState?> getRBFBoostState(String txId) {
+    return rbfBoostStore
+        .findFirst(_db, finder: Finder(filter: Filter.custom(
+          (record) {
+            final data = record.value;
+            if (data != null && data is Map) {
+              if (data["originalTxId"] == txId) {
+                return true;
+              }
+              if (data["newTxId"] == txId) {
+                return true;
+              }
+            }
+            return false;
+          },
+        )))
+        .asStream()
+        .skipWhile((data) => data?.value == null)
+        .map(
+          (data) {
+            return RBFState.fromJson((data?.value as Map<String, Object?>));
+          },
+        )
+        .asBroadcastStream();
   }
 
   Future addCancelState(Map<String, dynamic> payload) async {

@@ -7,7 +7,7 @@ use bdk_wallet::bitcoin::Network;
 use bdk_wallet::miniscript::descriptor::DescriptorType;
 use bip39::{Language, Mnemonic};
 use log::info;
-use ngwallet::bip39::{Descriptors, get_descriptors, get_random_seed};
+use ngwallet::bip39::{get_descriptors, get_random_seed, Descriptors};
 use ngwallet::config::AddressType;
 
 pub struct Seed {
@@ -45,11 +45,7 @@ impl EnvoyBip39 {
         network: Network,
         passphrase: Option<String>,
     ) -> Result<Vec<DerivedDescriptor>> {
-        match  get_descriptors(
-            seed_words.to_string(),
-            network,
-            passphrase,
-        ) {
+        match get_descriptors(seed_words.to_string(), network, passphrase) {
             Ok(descriptors) => {
                 let mut derived_descriptors = Vec::new();
                 info!("Descriptors Size: {:?}", descriptors.len());
@@ -84,9 +80,7 @@ impl EnvoyBip39 {
             DescriptorType::Wsh => Some(AddressType::P2wsh),
             DescriptorType::Tr => Some(AddressType::P2tr),
             DescriptorType::ShWpkh => Some(AddressType::P2ShWpkh),
-            _ => {
-                None
-            }
+            _ => None,
         }
     }
 }

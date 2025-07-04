@@ -21,6 +21,7 @@ class EnvoyTransaction extends BitcoinTransaction
       required super.vsize,
       required super.feeRate,
       required super.note,
+      required super.accountId,
       required super.isConfirmed});
 
   static EnvoyTransaction copyFrom(BitcoinTransaction tx) {
@@ -37,6 +38,7 @@ class EnvoyTransaction extends BitcoinTransaction
       date: tx.date,
       feeRate: tx.feeRate,
       vsize: tx.vsize,
+      accountId: tx.accountId,
       note: tx.note,
     );
   }
@@ -55,12 +57,11 @@ class RampTransaction extends EnvoyTransaction {
   final String? purchaseViewToken;
   final String? rampId;
   final int? rampFee;
-  final String accountId;
   final DateTime timestamp;
 
   RampTransaction(
       {required super.txId,
-      required this.accountId,
+      required super.accountId,
       required this.timestamp,
       required super.amount,
       required super.fee,
@@ -85,12 +86,10 @@ class BtcPayTransaction extends EnvoyTransaction {
   final String? currency;
   final String? payoutId;
   final String? btcPayVoucherUri;
-  final String accountId;
   final DateTime timestamp;
 
   BtcPayTransaction({
     required super.txId,
-    required this.accountId,
     required this.timestamp,
     required super.amount,
     required super.fee,
@@ -109,6 +108,7 @@ class BtcPayTransaction extends EnvoyTransaction {
     super.note,
     super.date,
     required super.vsize,
+    required super.accountId,
   });
 
   void setPullPaymentId(String? pullPaymentId) {
@@ -117,7 +117,6 @@ class BtcPayTransaction extends EnvoyTransaction {
 }
 
 class AztecoTransaction extends EnvoyTransaction {
-  final String accountId;
   final DateTime timestamp;
 
   AztecoTransaction({
@@ -125,8 +124,8 @@ class AztecoTransaction extends EnvoyTransaction {
     required super.amount,
     required super.fee,
     required super.address,
-    required this.accountId,
     required this.timestamp,
+    required super.accountId,
     super.blockHeight = 0,
     super.confirmations = 0,
     super.inputs = const [],
@@ -151,6 +150,7 @@ class PendingTransaction extends BitcoinTransaction {
     required super.outputs,
     required super.isConfirmed,
     required super.feeRate,
+    required super.accountId,
     super.date,
     required super.vsize,
   });
@@ -170,6 +170,7 @@ class PendingTransaction extends BitcoinTransaction {
       vsize: tx.vsize,
       feeRate: tx.feeRate,
       note: tx.note,
+      accountId: tx.accountId,
     );
   }
 }
@@ -198,6 +199,7 @@ extension CopyWithExtenstion on BitcoinTransaction {
       vsize: vsize,
       feeRate: feeRate,
       date: this.date,
+      accountId: accountId,
     );
   }
 }

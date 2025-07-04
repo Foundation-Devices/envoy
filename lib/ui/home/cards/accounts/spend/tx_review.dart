@@ -53,6 +53,24 @@ class TxReview extends ConsumerStatefulWidget {
 
 class _TxReviewState extends ConsumerState<TxReview> {
   StreamSubscription<PassportMessage>? _passportMessageSubscription;
+  late final rive.Artboard _artBoard;
+  rive.StateMachineController? _stateMachineController;
+
+  @override
+  void initState() {
+    super.initState();
+    //load rive animation for better performance
+    rootBundle.load('assets/envoy_loader.riv').then((data) {
+      final file = rive.RiveFile.import(data);
+      final artboard = file.mainArtboard;
+      _stateMachineController =
+          rive.StateMachineController.fromArtboard(artboard, 'STM');
+      if (_stateMachineController != null) {
+        artboard.addController(_stateMachineController!);
+      }
+      setState(() => _artBoard = artboard);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +99,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
             )),
       );
     }
+
     return PageTransitionSwitcher(
       reverse: transactionModel.broadcastProgress == BroadcastProgress.staging,
       transitionBuilder: (child, animation, secondaryAnimation) {
@@ -207,7 +226,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
     }
     final providerScope = ProviderScope.containerOf(context);
     final transaction = transactionModel.transaction!;
-    final userChosenTag = transactionModel.changeOutPutTag ?? "";
+    final userChosenTag = ref.read(stagingTxChangeOutPutTagProvider);
     final inputTags = transaction.inputs
         .map((e) => e.tag ?? "Untagged")
         .map((e) => e.isEmpty ? "Untagged" : e)
@@ -218,13 +237,18 @@ class _TxReviewState extends ConsumerState<TxReview> {
         null;
     //then show the tag selection dialog
     //spending from multiple tags and no tag is selected for change
-    if (userChosenTag.isEmpty && inputTags.length > 1 && hasChange) {
+    if (userChosenTag == null && inputTags.length > 1 && hasChange) {
       if (context.mounted) {
         final continueBroadcast = await _showTagDialog(
             context, account, rootContext, transactionModel);
         if (!continueBroadcast) {
           return;
         }
+        ref
+            .read(spendTransactionProvider.notifier)
+            .setProgressState(BroadcastProgress.inProgress);
+        await Future.delayed(const Duration(milliseconds: 200));
+        if (context.mounted) _broadcastToNetwork(context);
       }
     } else {
       if (context.mounted) {
@@ -232,21 +256,23 @@ class _TxReviewState extends ConsumerState<TxReview> {
           if (context.mounted) {
             await _showNotesDialog(context);
           }
-          await Future.delayed(const Duration(milliseconds: 100));
           ref
               .read(spendTransactionProvider.notifier)
               .setProgressState(BroadcastProgress.inProgress);
+          await Future.delayed(const Duration(milliseconds: 200));
+          if (context.mounted) _broadcastToNetwork(context);
         } else {
           if (transactionModel.isFinalized) {
             if (context.mounted) {
               await _showNotesDialog(context);
             }
-            await Future.delayed(const Duration(milliseconds: 100));
             //start the broadcast,by setting the progress state to in progress
             //rive onInit will start the broadcast
             ref
                 .read(spendTransactionProvider.notifier)
                 .setProgressState(BroadcastProgress.inProgress);
+            await Future.delayed(const Duration(milliseconds: 200));
+            if (context.mounted) _broadcastToNetwork(context);
           } else {
             if (context.mounted) {
               _handleQRExchange(account, rootContext, providerScope);
@@ -257,88 +283,82 @@ class _TxReviewState extends ConsumerState<TxReview> {
     }
   }
 
-  rive.StateMachineController? _stateMachineController;
-
   Widget _buildBroadcastProgress() {
     final spendState = ref.watch(spendTransactionProvider);
-    return Padding(
-      key: const Key("progress"),
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 260,
-                child: rive.RiveAnimation.asset(
-                  "assets/envoy_loader.riv",
-                  fit: BoxFit.contain,
-                  onInit: (artboard) {
-                    _stateMachineController =
-                        rive.StateMachineController.fromArtboard(
-                            artboard, 'STM');
-                    artboard.addController(_stateMachineController!);
-                    _stateMachineController
-                        ?.findInput<bool>("indeterminate")
-                        ?.change(true);
-                    //start broadcast immediately after the animation is loaded
-                    _broadcastToNetwork(context);
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        return;
+      },
+      child: Padding(
+        key: const Key("progress"),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 260,
+                  child: rive.Rive(
+                    artboard: _artBoard,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+              const SliverPadding(padding: EdgeInsets.all(28)),
+              SliverToBoxAdapter(
+                child: Builder(
+                  builder: (context) {
+                    String title =
+                        S().stalls_before_sending_tx_scanning_heading;
+                    String subTitle =
+                        S().stalls_before_sending_tx_scanning_subheading;
+                    if (spendState.broadcastProgress !=
+                        BroadcastProgress.inProgress) {
+                      if (spendState.broadcastProgress ==
+                          BroadcastProgress.success) {
+                        title = S()
+                            .stalls_before_sending_tx_scanning_broadcasting_success_heading;
+                        subTitle = S()
+                            .stalls_before_sending_tx_scanning_broadcasting_success_subheading;
+                      } else {
+                        title = S()
+                            .stalls_before_sending_tx_scanning_broadcasting_fail_heading;
+                        subTitle = S()
+                            .stalls_before_sending_tx_scanning_broadcasting_fail_subheading;
+                      }
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(title,
+                              textAlign: TextAlign.center,
+                              style: EnvoyTypography.heading),
+                          const Padding(padding: EdgeInsets.all(18)),
+                          Text(subTitle,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(fontWeight: FontWeight.w500)),
+                        ],
+                      ),
+                    );
                   },
                 ),
               ),
-            ),
-            const SliverPadding(padding: EdgeInsets.all(28)),
-            SliverToBoxAdapter(
-              child: Builder(
-                builder: (context) {
-                  String title = S().stalls_before_sending_tx_scanning_heading;
-                  String subTitle =
-                      S().stalls_before_sending_tx_scanning_subheading;
-                  if (spendState.broadcastProgress !=
-                      BroadcastProgress.inProgress) {
-                    if (spendState.broadcastProgress ==
-                        BroadcastProgress.success) {
-                      title = S()
-                          .stalls_before_sending_tx_scanning_broadcasting_success_heading;
-                      subTitle = S()
-                          .stalls_before_sending_tx_scanning_broadcasting_success_subheading;
-                    } else {
-                      title = S()
-                          .stalls_before_sending_tx_scanning_broadcasting_fail_heading;
-                      subTitle = S()
-                          .stalls_before_sending_tx_scanning_broadcasting_fail_subheading;
-                    }
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(title,
-                            textAlign: TextAlign.center,
-                            style: EnvoyTypography.heading),
-                        const Padding(padding: EdgeInsets.all(18)),
-                        Text(subTitle,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(fontWeight: FontWeight.w500)),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-            SliverFillRemaining(
-                hasScrollBody: false,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 18, vertical: 44),
-                  child: _ctaButtons(context),
-                ))
-          ],
+              SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 18, vertical: 44),
+                    child: _ctaButtons(context),
+                  ))
+            ],
+          ),
         ),
       ),
     );
@@ -358,9 +378,9 @@ class _TxReviewState extends ConsumerState<TxReview> {
             S().component_continue,
             onTap: () async {
               final providerScope = ProviderScope.containerOf(context);
-              clearSpendState(providerScope);
               providerScope.read(coinSelectionStateProvider.notifier).reset();
               GoRouter.of(context).go(ROUTE_ACCOUNT_DETAIL);
+              clearSpendState(providerScope);
             },
           ),
         ],
@@ -407,6 +427,9 @@ class _TxReviewState extends ConsumerState<TxReview> {
             hasMultipleTagsInput: true,
             onTagUpdate: () async {
               Navigator.pop(context);
+              ref
+                  .read(spendTransactionProvider.notifier)
+                  .setTag(ref.read(stagingTxChangeOutPutTagProvider));
               completer.complete(true);
             },
           ),
@@ -428,9 +451,11 @@ class _TxReviewState extends ConsumerState<TxReview> {
           context: context,
           useRootNavigator: true,
           dialog: TxReviewNoteDialog(
-            onAdd: (note) {
-              ref.read(spendTransactionProvider.notifier).setNote(note);
-              completer.complete();
+            onAdd: (note) async {
+              await ref.read(spendTransactionProvider.notifier).setNote(note);
+              if (!completer.isCompleted) {
+                completer.complete();
+              }
             },
             noteSubTitle:
                 S().stalls_before_sending_tx_add_note_modal_subheading,
@@ -452,24 +477,31 @@ class _TxReviewState extends ConsumerState<TxReview> {
     }
     await Future.delayed(const Duration(milliseconds: 300));
     try {
-      _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
-      _stateMachineController?.findInput<bool>("happy")?.change(false);
-      _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+      _setAnimState(BroadcastProgress.inProgress);
       await Future.delayed(const Duration(milliseconds: 600));
       await ref
           .read(spendTransactionProvider.notifier)
           .broadcast(providerContainer);
-      _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
-      _stateMachineController?.findInput<bool>("happy")?.change(true);
-      _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+      TransactionModel transactionModel = ref.read(spendTransactionProvider);
+      _setAnimState(transactionModel.broadcastProgress);
+      await Future.delayed(const Duration(milliseconds: 100));
       addHapticFeedback();
     } catch (e, s) {
       kPrint(e, stackTrace: s);
-      _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
-      _stateMachineController?.findInput<bool>("happy")?.change(false);
-      _stateMachineController?.findInput<bool>("unhappy")?.change(true);
+      _setAnimState(BroadcastProgress.failed);
       await Future.delayed(const Duration(milliseconds: 800));
     }
+  }
+
+  _setAnimState(BroadcastProgress progress) {
+    bool happy = progress == BroadcastProgress.success;
+    bool unhappy = progress == BroadcastProgress.failed;
+    bool indeterminate = progress == BroadcastProgress.inProgress;
+    _stateMachineController
+        ?.findInput<bool>("indeterminate")
+        ?.change(indeterminate);
+    _stateMachineController?.findInput<bool>("happy")?.change(happy);
+    _stateMachineController?.findInput<bool>("unhappy")?.change(unhappy);
   }
 
   bool hapticCalled = false;
@@ -530,10 +562,10 @@ class _TransactionReviewScreenState
         ? S().coincontrol_tx_detail_subheading
         : S().coincontrol_txDetail_subheading_passport;
 
-    // int feePercentage =
-    // ((transaction.fee.toInt() / (transaction.fee.toInt() + amount)) * 100)
-    //     .round();
-    int feePercentage = 10;
+    int feePercentage = ((transaction.fee.toInt() /
+                (transaction.fee.toInt() + transaction.amount.abs())) *
+            100)
+        .round();
 
     return EnvoyScaffold(
       backgroundColor: Colors.transparent,
@@ -565,7 +597,7 @@ class _TransactionReviewScreenState
                 if (transactionModel.canModify)
                   EnvoyButton(
                     enabled: !transactionModel.loading,
-                    S().coincontrol_tx_detail_cta2,
+                    S().replaceByFee_boost_reviewCoinSelection,
                     type: EnvoyButtonTypes.secondary,
                     onTap: () {
                       ref.read(userHasChangedFeesProvider.notifier).state =
@@ -645,7 +677,7 @@ class _TransactionReviewScreenState
                           if (feePercentage >= 25)
                             Padding(
                               padding: const EdgeInsets.only(
-                                  top: EnvoySpacing.small),
+                                  top: EnvoySpacing.medium1),
                               child: feeOverSpendWarning(feePercentage),
                             ),
                         ]),
@@ -709,7 +741,7 @@ class _TransactionReviewScreenState
           child: EnvoyIcon(EnvoyIcons.alert,
               size: EnvoyIconSize.extraSmall, color: EnvoyColors.copper500),
         ),
-        Text("Fee is $feePercentage% of total amount", // TODO: Figma
+        Text(S().coincontrol_tx_detail_fee_alert(feePercentage),
             style:
                 EnvoyTypography.button.copyWith(color: EnvoyColors.copper500)),
       ],

@@ -6,66 +6,26 @@
 
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/components/button.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/migrations/migration_manager.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
-import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:flutter/material.dart';
 
 //shows migration related dialogs
 void notifyAboutNetworkMigrationDialog(BuildContext context) {
   Widget buildContent(String title, String subtitle, Function onTap) {
-    Color accentColor = EnvoyColors.accentPrimary;
-    return Padding(
-      padding: const EdgeInsets.all(EnvoySpacing.medium2),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
-            child: EnvoyIcon(
-              EnvoyIcons.info,
-              size: EnvoyIconSize.big,
-              color: accentColor,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-            child: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: EnvoyTypography.heading,
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(bottom: EnvoySpacing.medium3),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxHeight: 120,
-              ),
-              child: SingleChildScrollView(
-                child: Text(
-                  subtitle,
-                  style: EnvoyTypography.info,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ),
-          EnvoyButton(
-              label: S().component_confirm,
-              type: ButtonType.primary,
-              state: ButtonState.defaultState,
-              onTap: () {
-                onTap();
-              }),
-        ],
-      ),
+    return EnvoyPopUp(
+      icon: EnvoyIcons.info,
+      showCloseButton: false,
+      title: title,
+      content: subtitle,
+      primaryButtonLabel: S().component_confirm,
+      onPrimaryButtonTap: (context) {
+        onTap();
+      },
     );
   }
 
@@ -119,9 +79,8 @@ void notifyAboutNetworkMigrationDialog(BuildContext context) {
           linearGradient: true,
           blurColor: Colors.black,
           dialog: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.75,
-            height: 400,
-            child: PageView(
+            width: MediaQuery.of(context).size.width * 0.80,
+            child: ExpandablePageView(
               physics: NeverScrollableScrollPhysics(),
               controller: controller,
               children: [...pages],

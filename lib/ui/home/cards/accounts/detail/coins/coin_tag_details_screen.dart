@@ -5,15 +5,16 @@
 import 'package:animations/animations.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';
-import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_details_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/indicator_shield.dart';
@@ -30,6 +31,7 @@ import 'package:envoy/util/console.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
 
@@ -49,6 +51,21 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
   final double _menuHeight = 80;
   Output? _selectedCoin;
   final GlobalKey _detailWidgetKey = GlobalKey();
+
+  final scrollController = ScrollController();
+  bool isScrollable = false;
+
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (scrollController.hasClients) {
+        setState(() {
+          isScrollable = scrollController.position.maxScrollExtent > 0;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -194,7 +211,6 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
   }
 
   Widget coinTagDetails(BuildContext context) {
-    final scrollController = ScrollController();
     final selectedAccount = ref.read(selectedAccountProvider);
     final tag = ref.watch(tagProvider(widget.coinTag.name)) ?? widget.coinTag;
     final accountAccent = selectedAccount?.color != null
@@ -204,6 +220,60 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     Color cardBackground =
         tag.untagged ? const Color(0xff808080) : accountAccent;
     const cardRadius = EnvoySpacing.medium2;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final baseHeight = 145.0;
+    final itemHeight = 45.0;
+    final padding = EnvoySpacing.medium2;
+
+    // 1. Original maxAvailableHeight
+    final maxAvailableHeight = screenHeight * 0.8;
+    final maxItems1 = ((maxAvailableHeight - baseHeight) / itemHeight).floor();
+    final calculatedMaxHeight = baseHeight + itemHeight * maxItems1;
+
+    // 2. With extended overlay
+    final maxAvailableHeightWithExtendedOverlay = screenHeight - 350 - padding;
+
+    // 3. With minimized overlay
+    final maxAvailableHeightWithMinimizedOverlay = screenHeight - 250 - padding;
+
+    final spendEditMode = ref.watch(spendEditModeProvider);
+    final isMinimized = ref.watch(coinSelectionOverlayMinimized);
+
+    final selectedMaxHeight = spendEditMode != SpendOverlayContext.hidden
+        ? (isMinimized
+            ? maxAvailableHeightWithMinimizedOverlay
+            : maxAvailableHeightWithExtendedOverlay)
+        : calculatedMaxHeight;
+
+    void animateToIndex(int index) {
+      if (!scrollController.hasClients) return;
+      if (ref.watch(spendEditModeProvider) == SpendOverlayContext.hidden ||
+          !isScrollable) {
+        return;
+      }
+
+      final isLast = index == tag.utxo.length - 1;
+      final maxScroll = scrollController.position.maxScrollExtent;
+      final target = (index * itemHeight - 45).clamp(0, maxScroll).toDouble();
+
+      if (isLast && (scrollController.offset - target).abs() > 50) {
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent + 45,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeIn,
+        );
+        return;
+      }
+
+      if (index > 6 && (scrollController.offset - target).abs() > 50) {
+        scrollController.animateTo(
+          target,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeIn,
+        );
+      }
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -241,18 +311,20 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                       Colors.black,
                     ]),
               ),
-              child: Container(
+              child: AnimatedContainer(
                 constraints: BoxConstraints(
-                  // ENV-2079: Prevent overlap with CoinSelectionOverlay, which has a fixed height
-                  maxHeight: MediaQuery.of(context).size.height - 350,
+                  // Fixed maxHeight to ensure consistent layout and prevent coin tags from being cut off across different mobile screen sizes (ENV-2079)
+                  maxHeight: selectedMaxHeight,
                 ),
                 decoration: BoxDecoration(
                     borderRadius:
                         const BorderRadius.all(Radius.circular(cardRadius - 3)),
                     border: Border.all(
                         color: border, width: 2, style: BorderStyle.solid)),
+                duration: const Duration(milliseconds: 300),
                 child: RawScrollbar(
                   controller: scrollController,
+                  thumbVisibility: isScrollable,
                   padding: const EdgeInsets.only(
                       right: -EnvoySpacing.medium1, top: 100, bottom: -100),
                   shape: RoundedRectangleBorder(
@@ -294,19 +366,10 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                   .copyWith(scrollbars: false),
                                               child: ListView(
                                                   controller: scrollController,
-                                                  padding: EdgeInsets.only(
-                                                    bottom: (tag.utxo.length >
-                                                                12 &&
-                                                            ref.read(
-                                                                    spendEditModeProvider) !=
-                                                                SpendOverlayContext
-                                                                    .hidden)
-                                                        ? 120
-                                                        : 0,
-                                                  ),
                                                   shrinkWrap: true,
                                                   physics:
                                                       const BouncingScrollPhysics(),
+                                                  padding: EdgeInsets.zero,
                                                   children: List.generate(
                                                     tag.utxo.length,
                                                     (index) {
@@ -323,11 +386,24 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                             alignment: Alignment
                                                                 .center,
                                                             child:
-                                                                CoinBalanceWidget(
-                                                                    output:
-                                                                        coin,
-                                                                    coinTag:
-                                                                        tag)),
+                                                                GestureDetector(
+                                                              onTap: () {},
+                                                              child:
+                                                                  CoinBalanceWidget(
+                                                                output: coin,
+                                                                coinTag: tag,
+                                                                onEnable: () {
+                                                                  Future.delayed(
+                                                                      const Duration(
+                                                                          milliseconds:
+                                                                              300),
+                                                                      () {
+                                                                    animateToIndex(
+                                                                        index);
+                                                                  });
+                                                                },
+                                                              ),
+                                                            )),
                                                       );
                                                     },
                                                   )),

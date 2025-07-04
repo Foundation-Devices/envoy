@@ -113,6 +113,7 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
               },
             ),
           ),
+          const SizedBox(height: EnvoySpacing.small),
           Image.asset(
             "assets/exclamation_icon.png",
             height: 68,

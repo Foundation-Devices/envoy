@@ -48,8 +48,18 @@ final filteredTransactionsProvider =
   final txFilterState = ref.watch(txFilterStateProvider);
   final txSortState = ref.watch(txSortStateProvider);
 
-  List<EnvoyTransaction> transactions =
+  List<EnvoyTransaction> walletTransactions =
       ref.watch(transactionsProvider(accountId));
+
+  List<EnvoyTransaction> pendingTransactions = walletTransactions
+      .where((element) => element.confirmations == 0)
+      .toList();
+  List<EnvoyTransaction> confirmedTransactions =
+      walletTransactions.where((element) => element.confirmations > 0).toList();
+
+  List<EnvoyTransaction> transactions = [];
+  transactions.addAll(confirmedTransactions);
+  transactions.addAll(pendingTransactions.toList());
 
   if (txFilterState.contains(TransactionFilters.sent) &&
       txFilterState.contains(TransactionFilters.received)) {
@@ -142,45 +152,6 @@ final walletTransactionsProvider =
     Provider.family<List<EnvoyTransaction>, String?>((ref, String? accountId) {
   final transactions =
       ref.watch(accountStateProvider(accountId))?.transactions ?? [];
-  //TODO: implement envoyAccount
-  // return ref
-  //         .watch(accountStateProvider(accountId).select(
-  //             (account) => Equal(account?.wallet.transactions, (one, other) {
-  //                   if (other is Equal) {
-  //                     final transactionListEqual =
-  //                         other as Equal<List<Transaction>?>;
-  //                     final otherList = transactionListEqual.value;
-  //                     if (one == null && otherList == null) {
-  //                       return true;
-  //                     }
-  //
-  //                     if (one == null && otherList != null) {
-  //                       return false;
-  //                     }
-  //
-  //                     if (one != null && otherList == null) {
-  //                       return false;
-  //                     }
-  //
-  //                     if (one!.length != otherList!.length) {
-  //                       return false;
-  //                     }
-  //
-  //                     // Beyond this point they're the same length
-  //                     // So let's naively compare the txids
-  //                     for (int i = 0; i < one.length; i++) {
-  //                       if (one[i].txId != otherList[i].txId ||
-  //                           one[i].isConfirmed != otherList[i].isConfirmed) {
-  //                         return false;
-  //                       }
-  //                     }
-  //                   }
-  //
-  //                   return true;
-  //                 })))
-  //         .value ??
-  //     [];
-
   return transactions.map((tx) => EnvoyTransaction.copyFrom(tx)).toList();
 });
 
@@ -245,7 +216,6 @@ class TransactionsNotifier
       }
     }
 
-    // ✅ Replaces ref.listenSelf
     listenSelf((previous, next) {
       List<EnvoyTransaction> pendingTransactions =
           ref.read(pendingTransactionsProvider(arg));
@@ -285,7 +255,7 @@ final getTransactionProvider = Provider.family<EnvoyTransaction?, String>(
   },
 );
 
-final rbfTxStateProvider = FutureProvider.family<RBFState?, String>(
+final rbfTxStateProvider = StreamProvider.family<RBFState?, String>(
   (ref, txId) {
     return EnvoyStorage().getRBFBoostState(txId);
   },
@@ -293,10 +263,11 @@ final rbfTxStateProvider = FutureProvider.family<RBFState?, String>(
 
 final isTxBoostedProvider = Provider.family<bool?, String>(
   (ref, txId) {
+    final selectedAccount = ref.watch(selectedAccountProvider);
     return ref.watch(rbfTxStateProvider(txId)).when(
           data: (data) {
-            if (data != null) {
-              if (data.newTxId == txId) {
+            if (data != null && data.accountId == selectedAccount?.id) {
+              if (data.newTxId == txId || data.originalTxId == txId) {
                 return true;
               } else {
                 return false;

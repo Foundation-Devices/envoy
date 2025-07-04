@@ -22,7 +22,7 @@ pub struct EnvoyAccount {
     pub wallet_path: Option<String>,
     pub network: Network,
     pub id: String,
-    pub next_address: Vec<(String,AddressType)>,
+    pub next_address: Vec<(String, AddressType)>,
     pub balance: u64,
     pub unlocked_balance: u64,
     pub is_hot: bool,

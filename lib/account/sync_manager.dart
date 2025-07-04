@@ -6,7 +6,6 @@ import 'dart:async';
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/local_storage.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
@@ -31,13 +30,21 @@ class Syncing extends WalletProgress {
 class None extends WalletProgress {}
 
 class SyncManager {
-  final _syncScheduler = EnvoyScheduler().parallel;
-  final Map<(EnvoyAccount, AddressType), SyncRequest> _synRequests = {};
-  final Map<(EnvoyAccount, AddressType), FullScanRequest> _fullScanRequest = {};
+  // Track sync and scan requests
+  final Map<(EnvoyAccount, AddressType), SyncRequest> _syncRequests = {};
+  final Map<(EnvoyAccount, AddressType), FullScanRequest> _fullScanRequests =
+      {};
+
+  // Track active operations to prevent duplicates
+  final Set<(String, AddressType)> _activeSyncOperations = {};
+  final Set<(String, AddressType)> _activeFullScanOperations = {};
+
+  // Batch size for parallel sync/scan
+  static const int _syncBatchSize = 6;
+
   Function(EnvoyAccount)? _onUpdateFinished;
   late Timer _syncTimer;
   bool _pauseSync = false;
-  //bool _fullScanInProgress = false;
 
   final StreamController<WalletProgress> _currentLoading =
       StreamController<WalletProgress>.broadcast(sync: true);
@@ -67,22 +74,30 @@ class SyncManager {
     await _syncAll();
   }
 
-  //sync a single account, other syncs will be paused
+  //sync a single account
   void syncAccount(EnvoyAccount account) async {
     final server = SyncManager.getElectrumServer(account.network);
     int? port = Settings().getPort(account.network);
     if (port == -1) {
       port = null;
     }
-    if (account.handler != null) {
-      pauseSync();
-      for (var descriptor in account.descriptors) {
-        final request = await account.handler!
-            .syncRequest(addressType: descriptor.addressType);
-        _synRequests[(account, descriptor.addressType)] = request;
-        await _performWalletSync(account, server, port, descriptor.addressType);
+    try {
+      if (account.handler != null) {
+        kPrint("SyncManager: Syncing single account ${account.name}");
+        final futures = <Future>[];
+        for (var descriptor in account.descriptors) {
+          final request = await account.handler!
+              .syncRequest(addressType: descriptor.addressType);
+          futures.add(_performWalletSync(
+              account, server, request, port, descriptor.addressType));
+          kPrint(
+              "SyncManager: added sync future for ${descriptor.addressType}");
+        }
+        await Future.wait(futures);
+        kPrint("SyncManager: Single Account Sync Finished ${account.name}");
       }
-      resumeSync();
+    } catch (e) {
+      kPrint("SyncManager: single error $e");
     }
   }
 
@@ -91,131 +106,161 @@ class SyncManager {
   }
 
   Future<void> _syncAll() async {
-    bool synTestnet = Settings().showTestnetAccounts();
+    bool syncTestnet = Settings().showTestnetAccounts();
     bool syncSignet = Settings().showSignetAccounts();
     final accounts = NgAccountManager().accounts;
+
     for (var account in accounts) {
-      //skip testnet accounts if not enabled
-      if (!synTestnet && account.network == Network.testnet4 ||
-          !syncSignet && account.network == Network.testnet) {
+      // Skip accounts based on network settings
+      if ((!syncTestnet && account.network == Network.testnet4) ||
+          (!syncTestnet && account.network == Network.testnet) ||
+          (!syncSignet && account.network == Network.signet)) {
         kPrint("Skipping account ${account.name} | ${account.network}");
         continue;
       }
-      //skip signet accounts if not enabled
-      if (!syncSignet && account.network == Network.signet) {
-        continue;
-      }
+
       if (account.handler != null) {
         for (var descriptor in account.descriptors) {
-          //only sync accounts that are passed full scans
+          final accountKey = (account.id, descriptor.addressType);
+
+          // Skip if already being processed
+          if (_activeSyncOperations.contains(accountKey) ||
+              _activeFullScanOperations.contains(accountKey)) {
+            continue;
+          }
+
+          // Check if account is scanned
           bool isScanned = await EnvoyStorage()
               .getAccountScanStatus(account.id, descriptor.addressType);
-          //only sync accounts that are passed full scans
-          if (!isScanned) {
-            kPrint(
-                "SyncManager: Account ${account.name} | ${account.network} is not scanned");
-          }
-          if (isScanned == true) {
+
+          if (isScanned) {
             final request = await account.handler!
                 .syncRequest(addressType: descriptor.addressType);
-            _synRequests[(account, descriptor.addressType)] = request;
-          } else {
-            if (_fullScanRequest[(account, descriptor.addressType)] == null) {
-              initiateFullScan();
-            }
+            _syncRequests[(account, descriptor.addressType)] = request;
+          } else if (_fullScanRequests[(account, descriptor.addressType)] ==
+              null) {
+            FullScanRequest request = await account.handler!
+                .requestFullScan(addressType: descriptor.addressType);
+            _fullScanRequests[(account, descriptor.addressType)] = request;
           }
         }
       }
     }
-    await _startSync();
+
+    // Start sync and scan operations in parallel
+    await Future.wait([_startSync(), _startFullScan()]);
   }
 
-  //initiate full scan for all non scanned accounts
   Future<void> initiateFullScan() async {
     final accounts = NgAccountManager().accounts;
-    _fullScanRequest.clear();
+    _fullScanRequests.clear();
+
     for (var account in accounts) {
-      //skip testnet accounts if not enabled
       for (var descriptor in account.descriptors) {
         bool isScanned = await LocalStorage()
             .prefs
             .getAccountScanStatus(account.id, descriptor.addressType);
+
         if (!isScanned) {
+          final accountKey = (account.id, descriptor.addressType);
+          if (_activeFullScanOperations.contains(accountKey)) {
+            continue;
+          }
+
           FullScanRequest request = await account.handler!
               .requestFullScan(addressType: descriptor.addressType);
-          _fullScanRequest[(account, descriptor.addressType)] = request;
+          _fullScanRequests[(account, descriptor.addressType)] = request;
         }
       }
     }
+
     await _startFullScan();
   }
 
   Future<void> _startSync() async {
-    final iterator = _synRequests.keys.iterator;
-    while (iterator.moveNext()) {
-      final accountWithType = iterator.current;
-      final account = accountWithType.$1;
-      final type = accountWithType.$2;
-      final server = SyncManager.getElectrumServer(account.network);
-      int? port = Settings().getPort(account.network);
-      if (port == -1) {
-        port = null;
+    // Process sync requests in batches
+    final entries = _syncRequests.entries.toList();
+    for (int i = 0; i < entries.length; i += _syncBatchSize) {
+      final batch = entries.skip(i).take(_syncBatchSize);
+      final futures = <Future>[];
+
+      for (final entry in batch) {
+        final account = entry.key.$1;
+        final type = entry.key.$2;
+        final accountKey = (account.id, type);
+
+        // Skip if already being processed
+        if (_activeSyncOperations.contains(accountKey)) {
+          continue;
+        }
+
+        _activeSyncOperations.add(accountKey);
+
+        final server = SyncManager.getElectrumServer(account.network);
+        int? port = Settings().getPort(account.network);
+        if (port == -1) {
+          port = null;
+        }
+
+        final request = _syncRequests[entry.key];
+        if (request == null || account.handler == null) {
+          continue;
+        }
+        futures.add(_performWalletSync(account, server, request, port, type)
+            .whenComplete(() {
+          _activeSyncOperations.remove(accountKey);
+          _syncRequests.remove(entry.key);
+          _onUpdateFinished?.call(account);
+        }));
       }
-      _syncScheduler.run(
-        () async {
-          try {
-            kPrint(
-                "⏳Syncing account ${account.name} | ${account.network} | $server  |Tor : $port");
-            while (_pauseSync) {
-              //wait until resume
-              await Future.delayed(const Duration(milliseconds: 100));
-            }
-            await _performWalletSync(account, server, port, type);
-            kPrint(
-                "✨Finished Syncing account ${account.name} | ${account.network} | $server  |Tor : $port");
-          } catch (e) {
-            kPrint("Error syncing account ${account.name}: $e");
-            EnvoyReport().log(
-                "Error syncing account ${account.name} | ${account.network} | $server  |Tor : $port",
-                e.toString());
-          } finally {
-            _synRequests.remove(accountWithType);
-          }
-        },
-      );
+
+      await Future.wait(futures);
     }
   }
 
-  Future _startFullScan() async {
-    for (final accountWithType in _fullScanRequest.keys) {
-      final account = accountWithType.$1;
-      final type = accountWithType.$2;
-      bool isScanned =
-          await LocalStorage().prefs.getAccountScanStatus(account.id, type);
-      if (isScanned) {
-        return;
-      }
-      _syncScheduler.run(
-        () async {
+  Future<void> _startFullScan() async {
+    final entries = _fullScanRequests.entries.toList();
+    for (int i = 0; i < entries.length; i += _syncBatchSize) {
+      final batch = entries.skip(i).take(_syncBatchSize);
+      final futures = <Future>[];
+
+      for (final entry in batch) {
+        final account = entry.key.$1;
+        final type = entry.key.$2;
+        final accountKey = (account.id, type);
+
+        // Skip if already being processed
+        if (_activeFullScanOperations.contains(accountKey)) {
+          continue;
+        }
+
+        _activeFullScanOperations.add(accountKey);
+        Future sync() async {
           try {
-            final fullScanRequest = _fullScanRequest[(account, type)];
-            if (fullScanRequest == null) {
+            final fullScanRequest = _fullScanRequests[entry.key];
+            if (fullScanRequest == null || account.handler == null) {
               return;
             }
-            if (account.handler == null) {
-              kPrint("Handler is null for ${account.name} ${account.network}");
-              return;
-            }
+
             await performFullScan(account.handler!, type, fullScanRequest);
           } catch (e, stack) {
             debugPrintStack(stackTrace: stack);
-            kPrint("Error fullScan account ${account.name} | ${account.network}"
-                ": $e");
+            kPrint(
+                "Error fullScan account ${account.name} | ${account.network}: $e");
+            EnvoyReport().log(
+                "Error fullScan account ${account.name} | ${account.network}",
+                e.toString());
           } finally {
+            _activeFullScanOperations.remove(accountKey);
+            _fullScanRequests.remove(entry.key);
             _onUpdateFinished?.call(account);
           }
-        },
-      );
+        }
+
+        futures.add(sync());
+      }
+
+      await Future.wait(futures);
     }
   }
 
@@ -227,54 +272,67 @@ class SyncManager {
     if (port == -1) {
       port = null;
     }
+
     kPrint(
-        "🔍 PerformFullScan ${account.name} | ${account.network} | $server  |Tor : ${port != null} | request_disposed:${fullScanRequest.isDisposed}");
+        "🔍 PerformFullScan $addressType - ${account.name} | ${account.network} | $server | Tor: ${port != null} | request_disposed:${fullScanRequest.isDisposed}");
     _currentLoading.sink.add(Scanning(account.id));
+
     if (fullScanRequest.isDisposed) {
       kPrint("FullScanRequest is disposed");
       return;
     }
+
     try {
+      // Use the scheduler to run this task in the background
       WalletUpdate update = await EnvoyAccountHandler.scanWallet(
-        scanRequest: fullScanRequest,
-        electrumServer: server,
-        torPort: port,
-      );
-      await handler.applyUpdate(update: update, addressType: addressType);
-      await EnvoyStorage().setAccountScanStatus(account.id, addressType, true);
+          scanRequest: fullScanRequest, electrumServer: server, torPort: port);
+
+      if (account.handler != null) {
+        await account.handler!
+            .applyUpdate(update: update, addressType: addressType);
+        await EnvoyStorage()
+            .setAccountScanStatus(account.id, addressType, true);
+      }
+
       kPrint(
-          "✨Finished FullScan account ${account.name} | ${account.network} | $server  |Tor : ${port != null}");
-    } catch (e) {
+          "✨Finished FullScan $addressType - ${account.name} | ${account.network} | $server | Tor: ${port != null}");
+    } catch (e, stack) {
+      debugPrintStack(stackTrace: stack);
       kPrint(
-          "Error fullScan: for ${account.name} | ${account.network} | $server  |Tor : $port $e");
+          "Error fullScan: $addressType - ${account.name} | ${account.network} | $server | Tor: $port $e");
       EnvoyReport().log(
-          "Error fullScan: for ${account.name} | ${account.network} | $server  |Tor : $port",
+          "Error fullScan: $addressType - ${account.name} | ${account.network} | $server | Tor: $port",
           e.toString());
     } finally {
-      _fullScanRequest
-          .removeWhere((k, v) => k.$1.id == account.id && k.$2 == addressType);
       _currentLoading.sink.add(None());
     }
   }
 
   Future<void> _performWalletSync(EnvoyAccount account, String server,
-      int? port, AddressType addressType) async {
-    final syncRequest = _synRequests[(account, addressType)];
-    if (syncRequest == null) {
-      return;
-    }
-    WalletUpdate update = await EnvoyAccountHandler.syncWallet(
-      syncRequest: syncRequest,
-      electrumServer: server,
-      torPort: port,
-    );
+      SyncRequest syncRequest, int? port, AddressType addressType) async {
     try {
       _currentLoading.sink.add(Syncing(account.id));
-      await account.handler!
-          .applyUpdate(update: update, addressType: addressType);
-    } catch (e) {
+      kPrint(
+          "⏳Syncing account $addressType - ${account.name}| ${account.network} | $server  |Tor : $port");
+      // Use the scheduler to run this task in the background
+      final WalletUpdate update = await EnvoyAccountHandler.syncWallet(
+        syncRequest: syncRequest,
+        electrumServer: server,
+        torPort: port,
+      );
+
+      if (account.handler != null) {
+        await account.handler!
+            .applyUpdate(update: update, addressType: addressType);
+      }
+      kPrint(
+          "✨Finished Sync $addressType - ${account.name} | ${account.network} | $server | Tor: ${port != null}");
+    } catch (e, stack) {
+      debugPrintStack(stackTrace: stack);
+      kPrint(
+          "Error syncing $addressType - ${account.name} | ${account.network} | $server | Tor: $port $e");
       EnvoyReport().log(
-          "Error applying sync for ${account.name} | ${account.network} | $server  |Tor : $port",
+          "Error applying sync $addressType - ${account.name} | ${account.network} | $server | Tor: $port",
           e.toString());
     } finally {
       _currentLoading.sink.add(None());
@@ -310,6 +368,7 @@ class SyncManager {
   dispose() {
     kPrint("SyncManager: Disposing and cancelling timer");
     _syncTimer.cancel();
+    _currentLoading.close();
   }
 
   void pauseSync() {

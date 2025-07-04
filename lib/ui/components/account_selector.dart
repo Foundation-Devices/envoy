@@ -261,17 +261,17 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
   );
 
   // return spring properties, defines how bouncy the stacked accounts are
-  final SpringDescription _reverseSpring = const SpringDescription(
-    mass: 5.6,
-    stiffness: 180.0,
-    damping: 12.0,
-  );
+  // final SpringDescription _reverseSpring = const SpringDescription(
+  //   mass: 5.6,
+  //   stiffness: 180.0,
+  //   damping: 12.0,
+  // );
 
   //spring simulation to animate the cards
   late final _forwardSimulation =
       SpringSimulation(_forwardSpring, 0.0, 1.0, 0.0);
-  late final _reverseSpringSimulation =
-      SpringSimulation(_reverseSpring, 1.0, 0.0, 0.0);
+  // late final _reverseSpringSimulation =
+  //     SpringSimulation(_reverseSpring, 1.0, 0.0, 0.0);
 
   @override
   void initState() {
@@ -360,7 +360,13 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
         setState(() {
           _exiting = true;
         });
-        animationController.animateWith(_reverseSpringSimulation).then((value) {
+        animationController
+            .animateTo(
+          0.0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        )
+            .then((value) {
           widget.onAnimChanges(animationController.status);
           widget.onOverlayChanges(false);
           _entry?.remove();

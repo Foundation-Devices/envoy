@@ -4,7 +4,6 @@
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
@@ -43,53 +42,41 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
   Widget build(BuildContext context) {
     return Container(
       width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
-      height: 440,
-      padding: const EdgeInsets.all(EnvoySpacing.small),
-      child: EnvoyScaffold(
-          resizeToAvoidBottomInset: false,
-          removeAppBarPadding: true,
-          extendBody: true,
-          child: Stack(
-            fit: StackFit.passthrough,
-            children: [
-              Align(
-                alignment: const Alignment(1.00, -1.02),
-                child: IconButton(
-                  icon: const Icon(Icons.close),
-                  padding: const EdgeInsets.all(12),
-                  onPressed: () {
-                    if (ref.read(selectedAccountProvider) != null) {
-                      coinSelectionOverlayKey.currentState
-                          ?.show(SpendOverlayContext.preselectCoins);
-                    }
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-                  Image.asset(
-                    "assets/exclamation_icon.png",
-                    height: 68,
-                    width: 68,
-                  ),
-                  const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-                  Text(
-                    S().change_output_from_multiple_tags_modal_heading,
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium
-                        ?.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-                  _tagWidget(context),
-                ],
-              ),
-            ],
-          )),
+      padding: const EdgeInsets.all(EnvoySpacing.medium2),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Align(
+            alignment: const Alignment(1.00, -1.02),
+            child: IconButton(
+              icon: const Icon(Icons.close),
+              padding: const EdgeInsets.all(EnvoySpacing.small),
+              onPressed: () {
+                if (ref.read(selectedAccountProvider) != null) {
+                  coinSelectionOverlayKey.currentState
+                      ?.show(SpendOverlayContext.preselectCoins);
+                }
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+          const SizedBox(height: EnvoySpacing.small),
+          Image.asset(
+            "assets/exclamation_icon.png",
+            height: 68,
+            width: 68,
+          ),
+          const SizedBox(height: EnvoySpacing.medium1),
+          Text(
+            S().change_output_from_multiple_tags_modal_heading,
+            style: EnvoyTypography.heading
+                .copyWith(color: EnvoyColors.textPrimary),
+          ),
+          const SizedBox(height: EnvoySpacing.medium1),
+          _tagWidget(context),
+        ],
+      ),
     );
   }
 
@@ -232,25 +219,19 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
                 ],
               ),
             ),
-            const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
-              child: EnvoyButton(
-                S().component_continue,
-                enabled: _tagController.text.isNotEmpty,
-                textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: _tagController.text.isNotEmpty
-                          ? EnvoyColors.textPrimaryInverse
-                          : EnvoyColors.textTertiary,
-                    ),
-                type: _tagController.text.isNotEmpty
-                    ? EnvoyButtonTypes.primaryModal
-                    : EnvoyButtonTypes.tertiary,
-                onTap: () => tagSelected(context, ref),
-              ),
+            EnvoyButton(
+              S().component_continue,
+              enabled: _tagController.text.isNotEmpty,
+              textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: _tagController.text.isNotEmpty
+                        ? EnvoyColors.textPrimaryInverse
+                        : EnvoyColors.textTertiary,
+                  ),
+              type: _tagController.text.isNotEmpty
+                  ? EnvoyButtonTypes.primaryModal
+                  : EnvoyButtonTypes.tertiary,
+              onTap: () => tagSelected(context, ref),
             ),
-            const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
           ],
         );
       },

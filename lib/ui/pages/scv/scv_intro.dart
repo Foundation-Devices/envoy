@@ -14,6 +14,7 @@ class ScvIntroPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return OnboardingPage(
       key: const Key("scv_intro"),
+      rightFunction: null,
       clipArt:
           Center(child: Image.asset("assets/shield_inspect.png", width: 150)),
       text: [

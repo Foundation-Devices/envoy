@@ -227,6 +227,7 @@ class _AccountsListState extends ConsumerState<AccountsList> {
           ),
         ),
         shrinkWrap: true,
+        physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 20),
         scrollController: _scrollController,
         //proxyDecorator is the widget that is shown when dragging

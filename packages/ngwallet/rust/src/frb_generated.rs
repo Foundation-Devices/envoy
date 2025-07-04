@@ -30,7 +30,6 @@ use crate::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::{transform_result_dco, Lifetimeable, Lockable};
 use flutter_rust_bridge::{Handler, IntoIntoDart};
-use ngwallet::rbf::*;
 use ngwallet::send::*;
 
 // Section: boilerplate
@@ -526,7 +525,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_compose_cancellation_tx_i
                 <ngwallet::transaction::BitcoinTransaction>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, BumpFeeError>((move || {
+                transform_result_sse::<_, crate::api::errors::RBFBumpFeeError>((move || {
                     let mut api_that_guard = None;
                     let decode_indices_ =
                         flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
@@ -636,9 +635,11 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_compose_rbf_psbt_impl(
             let api_fee_rate = <u64>::sse_decode(&mut deserializer);
             let api_bitcoin_transaction =
                 <ngwallet::transaction::BitcoinTransaction>::sse_decode(&mut deserializer);
+            let api_note = <Option<String>>::sse_decode(&mut deserializer);
+            let api_tag = <Option<String>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, BumpFeeError>((move || {
+                transform_result_sse::<_, crate::api::errors::RBFBumpFeeError>((move || {
                     let mut api_that_guard = None;
                     let decode_indices_ =
                         flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
@@ -659,6 +660,8 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_compose_rbf_psbt_impl(
                             api_selected_outputs,
                             api_fee_rate,
                             api_bitcoin_transaction,
+                            api_note,
+                            api_tag,
                         )?;
                     Ok(output_ok)
                 })())
@@ -951,7 +954,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_get_max_bump_fee_rates_im
                 <ngwallet::transaction::BitcoinTransaction>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, BumpFeeError>((move || {
+                transform_result_sse::<_, crate::api::errors::RBFBumpFeeError>((move || {
                     let mut api_that_guard = None;
                     let decode_indices_ =
                         flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
@@ -1614,7 +1617,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_scan_wallet_impl(
     rust_vec_len_: i32,
     data_len_: i32,
 ) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
             debug_name: "EnvoyAccountHandler_scan_wallet",
             port: Some(port_),
@@ -1635,16 +1638,18 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_scan_wallet_impl(
             let api_electrum_server = <String>::sse_decode(&mut deserializer);
             let api_tor_port = <Option<u16>>::sse_decode(&mut deserializer);
             deserializer.end();
-            move |context| {
+            move |context| async move {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
-                    (move || {
+                    (move || async move {
                         let output_ok = crate::api::envoy_wallet::EnvoyAccountHandler::scan_wallet(
                             api_scan_request,
                             &api_electrum_server,
                             api_tor_port,
-                        )?;
+                        )
+                        .await?;
                         Ok(output_ok)
-                    })(),
+                    })()
+                    .await,
                 )
             }
         },
@@ -2213,7 +2218,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_sync_wallet_impl(
     rust_vec_len_: i32,
     data_len_: i32,
 ) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
             debug_name: "EnvoyAccountHandler_sync_wallet",
             port: Some(port_),
@@ -2236,16 +2241,18 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_sync_wallet_impl(
             let api_electrum_server = <String>::sse_decode(&mut deserializer);
             let api_tor_port = <Option<u16>>::sse_decode(&mut deserializer);
             deserializer.end();
-            move |context| {
+            move |context| async move {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
-                    (move || {
+                    (move || async move {
                         let output_ok = crate::api::envoy_wallet::EnvoyAccountHandler::sync_wallet(
                             api_sync_request,
                             &api_electrum_server,
                             api_tor_port,
-                        )?;
+                        )
+                        .await?;
                         Ok(output_ok)
-                    })(),
+                    })()
+                    .await,
                 )
             }
         },
@@ -2894,6 +2901,7 @@ const _: fn() = || {
         let _: Option<String> = BitcoinTransaction.note;
         let _: Option<u64> = BitcoinTransaction.date;
         let _: usize = BitcoinTransaction.vsize;
+        let _: String = BitcoinTransaction.account_id;
     }
     {
         let DraftTransaction = None::<ngwallet::send::DraftTransaction>.unwrap();
@@ -2989,9 +2997,6 @@ flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc<Mutex<Update>>>
 );
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
-    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BumpFeeError>
-);
-flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>
 );
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
@@ -3052,16 +3057,6 @@ impl SseDecode for Arc<Mutex<Update>> {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <RustOpaqueMoi<
             flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc<Mutex<Update>>>,
-        >>::sse_decode(deserializer);
-        return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
-    }
-}
-
-impl SseDecode for BumpFeeError {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut inner = <RustOpaqueMoi<
-            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BumpFeeError>,
         >>::sse_decode(deserializer);
         return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
     }
@@ -3164,16 +3159,6 @@ impl SseDecode
 }
 
 impl SseDecode
-    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BumpFeeError>>
-{
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut inner = <usize>::sse_decode(deserializer);
-        return decode_rust_opaque_moi(inner);
-    }
-}
-
-impl SseDecode
     for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3258,6 +3243,7 @@ impl SseDecode for ngwallet::transaction::BitcoinTransaction {
         let mut var_note = <Option<String>>::sse_decode(deserializer);
         let mut var_date = <Option<u64>>::sse_decode(deserializer);
         let mut var_vsize = <usize>::sse_decode(deserializer);
+        let mut var_accountId = <String>::sse_decode(deserializer);
         return ngwallet::transaction::BitcoinTransaction {
             tx_id: var_txId,
             block_height: var_blockHeight,
@@ -3272,6 +3258,7 @@ impl SseDecode for ngwallet::transaction::BitcoinTransaction {
             note: var_note,
             date: var_date,
             vsize: var_vsize,
+            account_id: var_accountId,
         };
     }
 }
@@ -3787,6 +3774,60 @@ impl SseDecode for ngwallet::transaction::Output {
             do_not_spend: var_doNotSpend,
             keychain: var_keychain,
         };
+    }
+}
+
+impl SseDecode for crate::api::errors::RBFBumpFeeError {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                return crate::api::errors::RBFBumpFeeError::InsufficientFunds;
+            }
+            1 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return crate::api::errors::RBFBumpFeeError::ComposeBumpTxError(var_field0);
+            }
+            2 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return crate::api::errors::RBFBumpFeeError::ComposeTxError(var_field0);
+            }
+            3 => {
+                return crate::api::errors::RBFBumpFeeError::ChangeOutputLocked;
+            }
+            4 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return crate::api::errors::RBFBumpFeeError::UnknownUtxo(var_field0);
+            }
+            5 => {
+                return crate::api::errors::RBFBumpFeeError::TransactionNotFound;
+            }
+            6 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return crate::api::errors::RBFBumpFeeError::TransactionConfirmed(var_field0);
+            }
+            7 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return crate::api::errors::RBFBumpFeeError::IrreplaceableTransaction(var_field0);
+            }
+            8 => {
+                return crate::api::errors::RBFBumpFeeError::FeeRateUnavailable;
+            }
+            9 => {
+                return crate::api::errors::RBFBumpFeeError::UnableToAccessWallet;
+            }
+            10 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return crate::api::errors::RBFBumpFeeError::UnableToAddForeignUtxo(var_field0);
+            }
+            11 => {
+                return crate::api::errors::RBFBumpFeeError::WalletNotAvailable;
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 
@@ -4412,21 +4453,6 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<Arc<Mutex<Update>>>> for Arc<M
 }
 
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for FrbWrapper<BumpFeeError> {
-    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
-            .into_dart()
-    }
-}
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for FrbWrapper<BumpFeeError> {}
-
-impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<BumpFeeError>> for BumpFeeError {
-    fn into_into_dart(self) -> FrbWrapper<BumpFeeError> {
-        self.into()
-    }
-}
-
-// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for FrbWrapper<EnvoyAccountHandler> {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
@@ -4521,6 +4547,7 @@ impl flutter_rust_bridge::IntoDart for FrbWrapper<ngwallet::transaction::Bitcoin
             self.0.note.into_into_dart().into_dart(),
             self.0.date.into_into_dart().into_dart(),
             self.0.vsize.into_into_dart().into_dart(),
+            self.0.account_id.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -4840,6 +4867,53 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<ngwallet::transaction::Output>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::errors::RBFBumpFeeError {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            crate::api::errors::RBFBumpFeeError::InsufficientFunds => [0.into_dart()].into_dart(),
+            crate::api::errors::RBFBumpFeeError::ComposeBumpTxError(field0) => {
+                [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::errors::RBFBumpFeeError::ComposeTxError(field0) => {
+                [2.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::errors::RBFBumpFeeError::ChangeOutputLocked => [3.into_dart()].into_dart(),
+            crate::api::errors::RBFBumpFeeError::UnknownUtxo(field0) => {
+                [4.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::errors::RBFBumpFeeError::TransactionNotFound => [5.into_dart()].into_dart(),
+            crate::api::errors::RBFBumpFeeError::TransactionConfirmed(field0) => {
+                [6.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::errors::RBFBumpFeeError::IrreplaceableTransaction(field0) => {
+                [7.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::errors::RBFBumpFeeError::FeeRateUnavailable => [8.into_dart()].into_dart(),
+            crate::api::errors::RBFBumpFeeError::UnableToAccessWallet => {
+                [9.into_dart()].into_dart()
+            }
+            crate::api::errors::RBFBumpFeeError::UnableToAddForeignUtxo(field0) => {
+                [10.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::errors::RBFBumpFeeError::WalletNotAvailable => [11.into_dart()].into_dart(),
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::errors::RBFBumpFeeError
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::errors::RBFBumpFeeError>
+    for crate::api::errors::RBFBumpFeeError
+{
+    fn into_into_dart(self) -> crate::api::errors::RBFBumpFeeError {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::envoy_wallet::ServerFeatures {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -5005,13 +5079,6 @@ impl SseEncode for Arc<Mutex<Update>> {
     }
 }
 
-impl SseEncode for BumpFeeError {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BumpFeeError>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
-    }
-}
-
 impl SseEncode for EnvoyAccountHandler {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -5097,17 +5164,6 @@ impl SseEncode
 
 impl SseEncode
     for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc<Mutex<Update>>>>
-{
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        let (ptr, size) = self.sse_encode_raw();
-        <usize>::sse_encode(ptr, serializer);
-        <i32>::sse_encode(size, serializer);
-    }
-}
-
-impl SseEncode
-    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BumpFeeError>>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -5207,6 +5263,7 @@ impl SseEncode for ngwallet::transaction::BitcoinTransaction {
         <Option<String>>::sse_encode(self.note, serializer);
         <Option<u64>>::sse_encode(self.date, serializer);
         <usize>::sse_encode(self.vsize, serializer);
+        <String>::sse_encode(self.account_id, serializer);
     }
 }
 
@@ -5607,6 +5664,59 @@ impl SseEncode for ngwallet::transaction::Output {
     }
 }
 
+impl SseEncode for crate::api::errors::RBFBumpFeeError {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            crate::api::errors::RBFBumpFeeError::InsufficientFunds => {
+                <i32>::sse_encode(0, serializer);
+            }
+            crate::api::errors::RBFBumpFeeError::ComposeBumpTxError(field0) => {
+                <i32>::sse_encode(1, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            crate::api::errors::RBFBumpFeeError::ComposeTxError(field0) => {
+                <i32>::sse_encode(2, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            crate::api::errors::RBFBumpFeeError::ChangeOutputLocked => {
+                <i32>::sse_encode(3, serializer);
+            }
+            crate::api::errors::RBFBumpFeeError::UnknownUtxo(field0) => {
+                <i32>::sse_encode(4, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            crate::api::errors::RBFBumpFeeError::TransactionNotFound => {
+                <i32>::sse_encode(5, serializer);
+            }
+            crate::api::errors::RBFBumpFeeError::TransactionConfirmed(field0) => {
+                <i32>::sse_encode(6, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            crate::api::errors::RBFBumpFeeError::IrreplaceableTransaction(field0) => {
+                <i32>::sse_encode(7, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            crate::api::errors::RBFBumpFeeError::FeeRateUnavailable => {
+                <i32>::sse_encode(8, serializer);
+            }
+            crate::api::errors::RBFBumpFeeError::UnableToAccessWallet => {
+                <i32>::sse_encode(9, serializer);
+            }
+            crate::api::errors::RBFBumpFeeError::UnableToAddForeignUtxo(field0) => {
+                <i32>::sse_encode(10, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            crate::api::errors::RBFBumpFeeError::WalletNotAvailable => {
+                <i32>::sse_encode(11, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
 impl SseEncode for (ngwallet::config::AddressType, KeychainKind, u32) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -5763,7 +5873,6 @@ mod io {
     };
     use flutter_rust_bridge::for_generated::{transform_result_dco, Lifetimeable, Lockable};
     use flutter_rust_bridge::{Handler, IntoIntoDart};
-    use ngwallet::rbf::*;
     use ngwallet::send::*;
 
     // Section: boilerplate
@@ -5859,20 +5968,6 @@ mod io {
     }
 
     #[unsafe(no_mangle)]
-    pub extern "C" fn frbgen_ngwallet_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
-        ptr: *const std::ffi::c_void,
-    ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BumpFeeError>>::increment_strong_count(ptr as _);
-    }
-
-    #[unsafe(no_mangle)]
-    pub extern "C" fn frbgen_ngwallet_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
-        ptr: *const std::ffi::c_void,
-    ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BumpFeeError>>::decrement_strong_count(ptr as _);
-    }
-
-    #[unsafe(no_mangle)]
     pub extern "C" fn frbgen_ngwallet_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
         ptr: *const std::ffi::c_void,
     ) {
@@ -5935,7 +6030,6 @@ mod web {
     use flutter_rust_bridge::for_generated::wasm_bindgen::prelude::*;
     use flutter_rust_bridge::for_generated::{transform_result_dco, Lifetimeable, Lockable};
     use flutter_rust_bridge::{Handler, IntoIntoDart};
-    use ngwallet::rbf::*;
     use ngwallet::send::*;
 
     // Section: boilerplate
@@ -6028,20 +6122,6 @@ mod web {
         ptr: *const std::ffi::c_void,
     ) {
         MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < Update > >>>::decrement_strong_count(ptr as _);
-    }
-
-    #[wasm_bindgen]
-    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
-        ptr: *const std::ffi::c_void,
-    ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BumpFeeError>>::increment_strong_count(ptr as _);
-    }
-
-    #[wasm_bindgen]
-    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBumpFeeError(
-        ptr: *const std::ffi::c_void,
-    ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BumpFeeError>>::decrement_strong_count(ptr as _);
     }
 
     #[wasm_bindgen]

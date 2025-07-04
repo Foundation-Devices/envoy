@@ -89,7 +89,7 @@ EnvoyNotification transactionToEnvoyNotification(EnvoyTransaction transaction) {
     transaction.txId,
     transaction,
     amount: transaction.amount,
-    accountId: NgAccountManager().getAccountIdByTransaction(transaction.txId),
+    accountId: transaction.accountId,
   );
 }
 

@@ -97,7 +97,7 @@ class _TransactionsDetailsWidgetState
       (value) => value?.note ?? "",
     ));
 
-    if (!tx.isConfirmed) {
+    if (!tx.isConfirmed && tx is RampTransaction) {
       final noteFromStorage =
           ref.watch(txNoteFromStorageProvider(widget.tx.txId));
 
@@ -459,7 +459,7 @@ class _TransactionsDetailsWidgetState
                             noteHintText: S().add_note_modal_ie_text_field,
                             noteSubTitle: S().add_note_modal_subheading,
                             onAdd: (note) async {
-                              if (!tx.isConfirmed) {
+                              if (!tx.isConfirmed && tx is RampTransaction) {
                                 await EnvoyStorage()
                                     .addTxNote(key: tx.txId, note: note);
                               } else {
@@ -482,32 +482,8 @@ class _TransactionsDetailsWidgetState
                         size: EnvoyIconSize.small,
                         color: EnvoyColors.textPrimary,
                       ),
-                      trailing: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Flexible(
-                            child: Text(note,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                style: EnvoyTypography.body
-                                    .copyWith(color: EnvoyColors.textPrimary),
-                                textAlign: TextAlign.end),
-                          ),
-                          const Padding(
-                              padding: EdgeInsets.all(EnvoySpacing.xs)),
-                          note.trim().isNotEmpty
-                              ? SvgPicture.asset(
-                                  note.trim().isNotEmpty
-                                      ? "assets/icons/ic_edit_note.svg"
-                                      : "assets/icons/ic_notes.svg",
-                                  color: Theme.of(context).primaryColor,
-                                  height: 14,
-                                )
-                              : const Icon(Icons.add_circle_rounded,
-                                  color: EnvoyColors.accentPrimary, size: 24),
-                        ],
+                      trailing: NoteDisplay(
+                        note: note,
                       ),
                     ),
                   ),
@@ -616,10 +592,12 @@ String getTransactionDateAndTimeString(int? date, bool isConfirmed) {
       return S().receive_tx_list_awaitingConfirmation;
     }
     final timeStamp = date.toInt() * 1000;
+    final dateTimeUtc =
+        DateTime.fromMillisecondsSinceEpoch(timeStamp, isUtc: true);
+    final dateTimeLocal = dateTimeUtc.toLocal();
+
     final String transactionDateInfo =
-        "${DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(timeStamp, isUtc: true))} ${S().coindetails_overlay_at} ${DateFormat.Hm(currentLocale).format(
-      DateTime.fromMillisecondsSinceEpoch(timeStamp, isUtc: true),
-    )}";
+        "${DateFormat.yMd().format(dateTimeLocal)} ${S().coindetails_overlay_at} ${DateFormat.Hm(currentLocale).format(dateTimeLocal)}";
     return transactionDateInfo;
   }
 }
@@ -690,5 +668,53 @@ String? getBaseUrlForNetwork(Network network) {
       return Fees.testnetMempoolFoundationInstance;
     case Network.regtest:
       return null;
+  }
+}
+
+class NoteDisplay extends StatelessWidget {
+  final String note;
+
+  const NoteDisplay({
+    super.key,
+    required this.note,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      textAlign: TextAlign.end,
+      text: TextSpan(
+        style: EnvoyTypography.body.copyWith(
+          color: EnvoyColors.textPrimary,
+        ),
+        children: [
+          TextSpan(text: note.trim()),
+          if (note.trim().isNotEmpty)
+            WidgetSpan(
+              alignment: PlaceholderAlignment.middle,
+              child: Padding(
+                padding: const EdgeInsets.only(left: EnvoySpacing.xs),
+                child: SvgPicture.asset(
+                  "assets/icons/ic_edit_note.svg",
+                  color: Theme.of(context).primaryColor,
+                  height: 14,
+                ),
+              ),
+            )
+          else
+            WidgetSpan(
+              alignment: PlaceholderAlignment.middle,
+              child: Padding(
+                padding: const EdgeInsets.only(left: EnvoySpacing.xs),
+                child: Icon(
+                  Icons.add_circle_rounded,
+                  color: EnvoyColors.accentPrimary,
+                  size: 24,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
   }
 }

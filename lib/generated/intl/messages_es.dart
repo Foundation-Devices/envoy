@@ -29,23 +29,28 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m2(AccountName) =>
       "Navega a ${AccountName} en Passport, selecciona \'Account Tools\'>\'Verify Address\' y, a continuación, escanea el código QR.";
 
-  static String m3(tagName) =>
+  static String m3(number) =>
+      "La tasa de envío representa un ${number}% de la cantidad total";
+
+  static String m4(tagName) =>
       "Tu etiqueta ${tagName} ahora está vacía. ¿Quieres eliminarla?";
 
-  static String m4(time_remaining) => "${time_remaining} restante(s)";
+  static String m5(number) => "DIRECCIÓN #${number}";
 
-  static String m5(current_keyOS_version) =>
+  static String m6(time_remaining) => "${time_remaining} restante(s)";
+
+  static String m7(current_keyOS_version) =>
       "Tu Passport Prime actualmente utiliza ${current_keyOS_version}.\n\nActualiza ahora para obtener las últimas funcionalidades y correcciones de errores.";
 
-  static String m6(est_upd_time) =>
+  static String m8(est_upd_time) =>
       "Tiempo Estimado de Actualización: ${est_upd_time}";
 
-  static String m7(new_keyOS_version) => "Novedades en ${new_keyOS_version}";
+  static String m9(new_keyOS_version) => "Novedades en ${new_keyOS_version}";
 
-  static String m8(new_keyOS_version) =>
+  static String m10(new_keyOS_version) =>
       "Passport Prime se ha actualizado\ncorrectamente a ${new_keyOS_version}";
 
-  static String m9(amount, total_amount) =>
+  static String m11(amount, total_amount) =>
       "Re-sincronizando tus cuentas.\nPor favor, no cierres Envoy.\n\n${amount} de ${total_amount} sincronizado";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -109,7 +114,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Signet Global"),
         "accounts_upgradeBdkTestnetModal_content":
             MessageLookupByLibrary.simpleMessage(
-                "\'testnet3\' ha quedado obsoleto y Envoy ahora usa \'testnet4\'. Tus cuentas anteriores de testnet3 han sido eliminadas. \n\nPara empezar a usar testnet4, ve a Ajustes y activa el botón Testnet."),
+                "\'Testnet3\' ha quedado obsoleto y Envoy ahora usa \'testnet4\'. Tus cuentas anteriores de testnet3 han sido eliminadas. \n\nPara empezar a usar testnet4, ve a Ajustes y activa el botón Testnet."),
         "accounts_upgradeBdkTestnetModal_header":
             MessageLookupByLibrary.simpleMessage("Presentamos​•​testnet4"),
         "activity_boosted": MessageLookupByLibrary.simpleMessage("Acelerado"),
@@ -233,6 +238,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Dispositivos"),
         "bottomNav_learn": MessageLookupByLibrary.simpleMessage("Aprender"),
         "bottomNav_privacy": MessageLookupByLibrary.simpleMessage("Privacidad"),
+        "bottomNav_transfer":
+            MessageLookupByLibrary.simpleMessage("Transferir"),
         "btcpay_connection_modal_expired_subheading": m1,
         "btcpay_connection_modal_fail_heading":
             MessageLookupByLibrary.simpleMessage("Cupón Caducado"),
@@ -446,8 +453,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Editar Transacción"),
         "coincontrol_tx_detail_custom_fee_cta":
             MessageLookupByLibrary.simpleMessage("Confirmar Tasa"),
-        "coincontrol_tx_detail_custom_fee_insufficients_funds_25_cta":
-            MessageLookupByLibrary.simpleMessage("Más del 25%"),
         "coincontrol_tx_detail_custom_fee_insufficients_funds_25_prompt":
             MessageLookupByLibrary.simpleMessage("Más del 25%"),
         "coincontrol_tx_detail_destination":
@@ -469,6 +474,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_detail_feeChange_information":
             MessageLookupByLibrary.simpleMessage(
                 "Es posible que al actualizar la tasa tu selección de monedas haya cambiado. Revísalo por favor."),
+        "coincontrol_tx_detail_fee_alert": m3,
         "coincontrol_tx_detail_fee_custom":
             MessageLookupByLibrary.simpleMessage("Otro"),
         "coincontrol_tx_detail_fee_faster":
@@ -505,6 +511,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "coindetails_overlay_address":
             MessageLookupByLibrary.simpleMessage("Dirección"),
         "coindetails_overlay_at": MessageLookupByLibrary.simpleMessage("a las"),
+        "coindetails_overlay_block":
+            MessageLookupByLibrary.simpleMessage("Bloque"),
         "coindetails_overlay_boostedFees":
             MessageLookupByLibrary.simpleMessage("Tasas de Aceleración"),
         "coindetails_overlay_confirmation":
@@ -523,6 +531,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("semanas"),
         "coindetails_overlay_confirmation_boost":
             MessageLookupByLibrary.simpleMessage("Acelerar"),
+        "coindetails_overlay_confirmations":
+            MessageLookupByLibrary.simpleMessage("Confirmaciones"),
         "coindetails_overlay_date":
             MessageLookupByLibrary.simpleMessage("Fecha"),
         "coindetails_overlay_explorer":
@@ -536,7 +546,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Estás a punto de salir de Envoy y ver esta transacción en un explorador alojado por Foundation. Asegúrate de entender las reprecusiones que esta acción tiene en cuanto a privacidad antes de continuar. "),
         "coindetails_overlay_noBoostNoFunds_heading":
             MessageLookupByLibrary.simpleMessage(
-                "Error al Impuslar Transacción"),
+                "Error al Acelerar Transacción"),
         "coindetails_overlay_noBoostNoFunds_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Esto se debe a que no hay suficientes monedas confirmadas o desbloqueadas de donde elegir. \n\nSi es posible, deja que las monedas pendientes se confirmen o desbloquea algunas monedas e inténtalo de nuevo."),
@@ -569,6 +579,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_Apply":
             MessageLookupByLibrary.simpleMessage("Aplicar Filtro"),
         "component_advanced": MessageLookupByLibrary.simpleMessage("Avanzado"),
+        "component_apply": MessageLookupByLibrary.simpleMessage("Aplicar"),
         "component_back": MessageLookupByLibrary.simpleMessage("Atrás"),
         "component_cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
         "component_confirm": MessageLookupByLibrary.simpleMessage("Confirmar"),
@@ -596,8 +607,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_redeem": MessageLookupByLibrary.simpleMessage("Canjear"),
         "component_reset":
             MessageLookupByLibrary.simpleMessage("Restablecer filtro"),
+        "component_resetFilter":
+            MessageLookupByLibrary.simpleMessage("Restablecer filtro"),
+        "component_resetSorting":
+            MessageLookupByLibrary.simpleMessage("Restablecer orden"),
         "component_retry": MessageLookupByLibrary.simpleMessage("Reintentar"),
         "component_save": MessageLookupByLibrary.simpleMessage("Guardar"),
+        "component_searching": MessageLookupByLibrary.simpleMessage("Buscando"),
         "component_skip": MessageLookupByLibrary.simpleMessage("Saltar"),
         "component_sortBy": MessageLookupByLibrary.simpleMessage("Ordenar por"),
         "component_tryAgain":
@@ -650,7 +666,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Ver Más Tarde"),
         "devices_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
             "Asegura tus Bitcoin con Passport."),
-        "empty_tag_modal_subheading": m3,
+        "empty_tag_modal_subheading": m4,
         "envoy_account_tos_cta": MessageLookupByLibrary.simpleMessage("Acepto"),
         "envoy_account_tos_heading": MessageLookupByLibrary.simpleMessage(
             "Por favor, revise y acepte los Términos de Uso de Passport"),
@@ -897,6 +913,35 @@ class MessageLookup extends MessageLookupByLibrary {
         "erase_wallet_with_balance_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Por favor, vacía tus cuentas antes de eliminar la Cartera Envoy. \nVe a Copia de Seguridad > Eliminar Carteras y Copias de Seguridad una vez que lo hayas hecho."),
+        "exploreAddresses_listFilter_unused":
+            MessageLookupByLibrary.simpleMessage("Sin utilizar"),
+        "exploreAddresses_listFilter_used":
+            MessageLookupByLibrary.simpleMessage("Utilizadas"),
+        "exploreAddresses_listFilter_zeroBalance":
+            MessageLookupByLibrary.simpleMessage("Saldo 0"),
+        "exploreAddresses_listModal_backToList":
+            MessageLookupByLibrary.simpleMessage("Volver a Lista"),
+        "exploreAddresses_listModal_content": MessageLookupByLibrary.simpleMessage(
+            "Esta dirección se ha utilizado al menos una vez. Cuando recibas Bitcoin, es una buena práctica de privacidad utilizar una nueva dirección."),
+        "exploreAddresses_listModal_showAddress":
+            MessageLookupByLibrary.simpleMessage("Mostrar Dirección"),
+        "exploreAddresses_list_header":
+            MessageLookupByLibrary.simpleMessage("Explorar direcciones"),
+        "exploreAddresses_qr_derivationPath":
+            MessageLookupByLibrary.simpleMessage("Ruta de Derivación"),
+        "exploreAddresses_qr_header": m5,
+        "exploreAddresses_qr_warningReused": MessageLookupByLibrary.simpleMessage(
+            "Esta dirección ya ha sido utilizada. Evita reutilizar direcciones para preservar tu privacidad. "),
+        "exploreAdresses_activityOptions_deleteAccount":
+            MessageLookupByLibrary.simpleMessage("Eliminar Cuenta"),
+        "exploreAdresses_activityOptions_editAccountName":
+            MessageLookupByLibrary.simpleMessage("Editar Nombre de Cuenta"),
+        "exploreAdresses_activityOptions_exploreAddresses":
+            MessageLookupByLibrary.simpleMessage("Explorar Direcciones"),
+        "exploreAdresses_activityOptions_showDescriptor":
+            MessageLookupByLibrary.simpleMessage("Mostrar Descriptor"),
+        "exploreAdresses_activityOptions_signMessage":
+            MessageLookupByLibrary.simpleMessage("Firmar Mensaje"),
         "export_backup_modal_subheading": MessageLookupByLibrary.simpleMessage(
             "Este archivo encriptado contiene datos útiles de la cartera, como etiquetas, notas, cuentas y configuración.\n\nEste archivo está encriptado con tu Semilla Envoy. Asegúrate de que tienes copias de seguridad de tu semilla. "),
         "export_backup_send_CTA1": MessageLookupByLibrary.simpleMessage(
@@ -958,15 +1003,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Actualización Descargada"),
         "firmware_downloadingUpdate_header":
             MessageLookupByLibrary.simpleMessage("Descargando Actualización"),
-        "firmware_downloadingUpdate_timeRemaining": m4,
+        "firmware_downloadingUpdate_timeRemaining": m6,
         "firmware_downloadingUpdate_transferring":
             MessageLookupByLibrary.simpleMessage(
                 "Transfiriendo a Passport Prime"),
-        "firmware_updateAvailable_content2": m5,
-        "firmware_updateAvailable_estimatedUpdateTime": m6,
+        "firmware_updateAvailable_content2": m7,
+        "firmware_updateAvailable_estimatedUpdateTime": m8,
         "firmware_updateAvailable_header":
             MessageLookupByLibrary.simpleMessage("Actualización Disponible"),
-        "firmware_updateAvailable_whatsNew": m7,
+        "firmware_updateAvailable_whatsNew": m9,
         "firmware_updateError_downloadFailed":
             MessageLookupByLibrary.simpleMessage("Error al Descargar"),
         "firmware_updateError_header":
@@ -985,7 +1030,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Reconectando..."),
         "firmware_updateModalConnectionLost_tryToReconnect":
             MessageLookupByLibrary.simpleMessage("Reintentar Conexión"),
-        "firmware_updateSuccess_content1": m8,
+        "firmware_updateSuccess_content1": m10,
         "firmware_updateSuccess_content2": MessageLookupByLibrary.simpleMessage(
             "Continúa con la inicialización en Passport Prime."),
         "firmware_updateSuccess_header":
@@ -1481,7 +1526,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Envoy está subiendo la copia de seguridad encriptada de tu cartera a los servidores de Foundation.\n\nComo la copia de seguridad está encriptada de extremo a extremo, Foundation no tiene acceso a ella, ni tiene conocimiento sobre su contenido."),
         "onboarding_magicUserMobileUploading_header":
             MessageLookupByLibrary.simpleMessage("Cargando Copia de Seguridad"),
-        "onboarding_migrating_xOfYSynced": m9,
+        "onboarding_migrating_xOfYSynced": m11,
         "onboarding_passpportSelectCamera_sub235VersionAlert":
             MessageLookupByLibrary.simpleMessage(
                 "¿Quieres inicializar una Passport Core en la versión 2.3.5 o anterior?"),
@@ -1566,6 +1611,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Bloqueo de aplicación"),
         "privacy_applicationLock_unlock":
             MessageLookupByLibrary.simpleMessage("Desbloqueo con Huella o PIN"),
+        "privacy_explorer_configure": MessageLookupByLibrary.simpleMessage(
+            "Mejora tu privacidad con tu propio explorador de bloques. Pulsa Más información arriba."),
+        "privacy_explorer_explorerAddress":
+            MessageLookupByLibrary.simpleMessage(
+                "Introduce la dirección de tu explorador"),
+        "privacy_explorer_explorerType_personal":
+            MessageLookupByLibrary.simpleMessage(
+                "Explorador de Bloques Personal"),
+        "privacy_explorer_title":
+            MessageLookupByLibrary.simpleMessage("Explorador de Bloques"),
         "privacy_node_configure": MessageLookupByLibrary.simpleMessage(
             "Mejora tu privacidad con tu propio nodo. Pulsa Más información arriba. "),
         "privacy_node_configure_blockHeight":
@@ -1635,11 +1690,21 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Usar Dirección Taproot"),
         "receive_qr_code_heading":
             MessageLookupByLibrary.simpleMessage("RECIBIR"),
+        "receive_qr_copy": MessageLookupByLibrary.simpleMessage("Copiar"),
+        "receive_qr_share": MessageLookupByLibrary.simpleMessage("Compartir"),
+        "receive_qr_signMessage":
+            MessageLookupByLibrary.simpleMessage("Firmar Mensaje"),
         "receive_tx_list_awaitingConfirmation":
             MessageLookupByLibrary.simpleMessage("Esperando confirmación"),
+        "receive_tx_list_change":
+            MessageLookupByLibrary.simpleMessage("Cambio"),
         "receive_tx_list_receive":
             MessageLookupByLibrary.simpleMessage("Recibir"),
+        "receive_tx_list_scan":
+            MessageLookupByLibrary.simpleMessage("Escanear"),
         "receive_tx_list_send": MessageLookupByLibrary.simpleMessage("Enviar"),
+        "receive_tx_list_transfer":
+            MessageLookupByLibrary.simpleMessage("Transferir"),
         "recovery_scenario_Android_instruction1":
             MessageLookupByLibrary.simpleMessage(
                 "Inicia sesión en Google y restaura tus datos de copia de seguridad"),
@@ -1739,6 +1804,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Fondos insuficientes"),
         "send_keyboard_amount_too_low_info":
             MessageLookupByLibrary.simpleMessage("Cantidad demasiado baja"),
+        "send_keyboard_enterAddress":
+            MessageLookupByLibrary.simpleMessage("Introduce una dirección"),
         "send_keyboard_send_max":
             MessageLookupByLibrary.simpleMessage("Enviar máximo"),
         "send_keyboard_to": MessageLookupByLibrary.simpleMessage("A:"),
@@ -1773,7 +1840,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Aprende a hacerlo [[aquí]]."),
         "settings_advanced_enabled_testnet_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Al habilitar Testnet, se añade una versión de Testnet3 de tu Cartera Envoy y te permite conectar cuentas de Testnet de tu Passport."),
+                "Al habilitar Testnet, se añade una versión de Testnet4 de tu Cartera Envoy y te permite conectar cuentas de Testnet de tu Passport."),
         "settings_advanced_receiveToTaproot":
             MessageLookupByLibrary.simpleMessage("Recibir a Taproot"),
         "settings_advanced_signet":
@@ -1794,6 +1861,39 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Mostrar Valores Fiat"),
         "settings_viewEnvoyLogs":
             MessageLookupByLibrary.simpleMessage("Ver Registros de Envoy"),
+        "signMessage_mainHot_signMessage":
+            MessageLookupByLibrary.simpleMessage("Sign Message"),
+        "signMessage_mainSignedQr_scanQr":
+            MessageLookupByLibrary.simpleMessage("Scan the QR"),
+        "signMessage_mainSignedQr_scanQrSubheader":
+            MessageLookupByLibrary.simpleMessage(
+                "It contains the signed message."),
+        "signMessage_mainSigned_copySignature":
+            MessageLookupByLibrary.simpleMessage("Copy Signature"),
+        "signMessage_mainSigned_header":
+            MessageLookupByLibrary.simpleMessage("Message Signed"),
+        "signMessage_mainSigned_saveSignatureToFile":
+            MessageLookupByLibrary.simpleMessage("Save Signature to File"),
+        "signMessage_main_addressDoesNotBelong":
+            MessageLookupByLibrary.simpleMessage(
+                "Address does not belong to this account.\nPlease enter another address."),
+        "signMessage_main_enterPasteMessage":
+            MessageLookupByLibrary.simpleMessage("Enter or paste the message"),
+        "signMessage_main_header":
+            MessageLookupByLibrary.simpleMessage("Sign Message"),
+        "signMessage_main_messageHeader":
+            MessageLookupByLibrary.simpleMessage("Message"),
+        "signMessage_main_signatureHeader":
+            MessageLookupByLibrary.simpleMessage("Signature"),
+        "signMessage_qr_header": MessageLookupByLibrary.simpleMessage(
+            "Scan the QR with your Passport"),
+        "signMessage_qr_saveToFile":
+            MessageLookupByLibrary.simpleMessage("Save to File"),
+        "signMessage_qr_scannedSignedByPassport":
+            MessageLookupByLibrary.simpleMessage(
+                "Scanned and signed by Passport"),
+        "signMessage_qr_subheader": MessageLookupByLibrary.simpleMessage(
+            "It contains the message for your Passport to sign."),
         "stalls_before_sending_tx_add_note_modal_cta2":
             MessageLookupByLibrary.simpleMessage("No, gracias"),
         "stalls_before_sending_tx_add_note_modal_subheading":
@@ -1839,6 +1939,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Etiquetar Selección"),
         "tagged_tagDetails_sheet_retag_cta2":
             MessageLookupByLibrary.simpleMessage("Reetiquetar Selección"),
+        "tagged_tagDetails_sheet_transferSelected":
+            MessageLookupByLibrary.simpleMessage("Transferir Selección"),
         "tap_and_drag_first_time_text": MessageLookupByLibrary.simpleMessage(
             "Mantén pulsado y arrastra para reordenar tus cuentas."),
         "taproot_passport_dialog_heading":
@@ -1862,6 +1964,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Es posible que experimentes un rendimiento degradado de la aplicación hasta que Envoy pueda restablecer una conexión con Tor.\n\nDesactivando Tor se establecerá una conexión directa con el servidor de Envoy, [[a cambio]] de reducir la privacidad."),
         "tor_connectivity_toast_warning": MessageLookupByLibrary.simpleMessage(
             "Problema de conectividad Tor"),
+        "transfer_fromTo_transferFrom":
+            MessageLookupByLibrary.simpleMessage("Transferir de"),
+        "transfer_fromTo_transferTo":
+            MessageLookupByLibrary.simpleMessage("Transferir a"),
         "video_connectingToTorNetwork":
             MessageLookupByLibrary.simpleMessage("Conectando a la Red Tor"),
         "video_loadingTorText": MessageLookupByLibrary.simpleMessage(

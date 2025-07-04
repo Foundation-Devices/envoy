@@ -12,6 +12,7 @@ import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/send_screen_state.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/list_utils.dart';
@@ -45,22 +46,21 @@ final draftTransactionProvider = Provider<DraftTransaction?>((ref) {
   return ref.watch(spendTransactionProvider).draftTransaction;
 });
 
-// If the user performed coin selection or finalized a non-hot wallet transaction,
+// If the user performed coin selection on a non-hot wallet transaction,
 // they should see a confirmation dialog before exiting the review screen.
 final isTransactionCancellableProvider = Provider<bool>((ref) {
   EnvoyAccount? account = ref.watch(selectedAccountProvider);
   if (account == null) {
     return false;
   }
-  TransactionModel transactionModel = ref.watch(spendTransactionProvider);
+  TransactionModel spendState = ref.watch(spendTransactionProvider);
   bool userChangedCoins = ref.watch(userSelectedCoinsThisSessionProvider);
-  final finalizedTx = transactionModel.draftTransaction?.isFinalized ?? false;
-  bool cancellable = true;
+  final txNotFinalized =
+      spendState.broadcastProgress != BroadcastProgress.success;
+  bool cancellable = false;
 
-  if (account.isHot) {
-    cancellable = userChangedCoins;
-  } else {
-    cancellable = finalizedTx || userChangedCoins;
+  if (txNotFinalized && userChangedCoins) {
+    cancellable = true;
   }
 
   return cancellable;
@@ -139,11 +139,15 @@ final spendInputTagsProvider = Provider<List<Tuple<CoinTag, Coin>>?>((ref) {
 ///since total amount calculation rely on CoinRepository.getBlockedCoins which is a Future
 ///
 final _totalSpendableAmountProvider = FutureProvider<int>((ref) async {
-  final account = ref.watch(selectedAccountProvider);
-  if (account == null) {
+  final selectedAccount = ref.watch(selectedAccountProvider);
+  if (selectedAccount == null) {
     return 0;
   }
-  final selectedUtxos = ref.watch(getSelectedCoinsProvider(account.id));
+  final accountState = ref.watch(accountStateProvider(selectedAccount.id));
+  final selectedUtxos = ref.watch(getSelectedCoinsProvider(selectedAccount.id));
+  if (accountState == null) {
+    return 0;
+  }
   if (selectedUtxos.isNotEmpty) {
     int amount = 0;
     for (var element in selectedUtxos) {
@@ -152,12 +156,12 @@ final _totalSpendableAmountProvider = FutureProvider<int>((ref) async {
     return amount;
   }
   final lockedCoins = ref
-      .read(outputsProvider(account.id))
+      .read(outputsProvider(selectedAccount.id))
       .where((element) => element.doNotSpend)
       .toList();
   final blockedAmount = lockedCoins.fold(
       0, (previousValue, element) => previousValue + element.amount.toInt());
-  return account.balance.toInt() - blockedAmount;
+  return accountState.balance.toInt() - blockedAmount;
 });
 
 ///listens to _totalSpendableAmountProvider provider and updates the value
@@ -264,6 +268,7 @@ void clearSpendState(ProviderContainer ref) {
             : AmountDisplayUnit.sat;
     ref.read(displayFiatSendAmountProvider.notifier).state = 0;
     ref.read(coinSelectionStateProvider.notifier).reset();
+    ref.read(spendTransactionProvider.notifier).reset();
   } catch (e) {
     kPrint("Error clearing spend state: $e");
   }

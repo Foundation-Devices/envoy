@@ -14,6 +14,7 @@ import 'package:envoy/ui/components/envoy_tag_list_item.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
@@ -30,7 +31,6 @@ import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -89,7 +89,8 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
 
     final totalReceiveAmount = (stagedTransaction.amount.toInt());
 
-    final inputs = stagedTransaction.inputs;
+    final inputs = stagedTransaction.inputs.map((e) => "${e.txId}:${e.vout}");
+    final inputTags = stagedTransaction.inputs.map((e) => e.tag);
 
     final totalChangeAmount = (stagedTransaction.outputs.firstWhereOrNull(
           (outPut) => outPut.keychain == KeyChain.internal,
@@ -193,14 +194,14 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                           unit: formatUnit,
                           account: account,
                           displayFiatAmount: displayFiatSendAmount,
-                          amountSats: totalReceiveAmount,
+                          amountSats: totalReceiveAmount.abs(),
                           millionaireMode: false,
                           amountWidgetStyle: AmountWidgetStyle.singleLine),
                       bottomWidgets: [
                         EnvoyInfoCardListItem(
                           spacingPriority: FlexPriority.trailing,
                           title:
-                              "${S().coincontrol_tx_detail_expand_spentFrom} ${inputs.length} ${inputs.length == 1 ? S().coincontrol_tx_detail_expand_coin : S().coincontrol_tx_detail_expand_coins}",
+                              "${S().coincontrol_tx_detail_expand_spentFrom} ${inputs.toSet().length} ${inputs.toSet().length == 1 ? S().coincontrol_tx_detail_expand_coin : S().coincontrol_tx_detail_expand_coins}",
                           icon: const EnvoyIcon(EnvoyIcons.utxo,
                               color: EnvoyColors.textPrimary,
                               size: EnvoyIconSize.small),
@@ -212,7 +213,6 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                               millionaireMode: false,
                               amountWidgetStyle: AmountWidgetStyle.normal),
                         ),
-                        const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                         Padding(
                           padding:
                               const EdgeInsets.only(left: EnvoySpacing.small),
@@ -224,8 +224,8 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                               child: Wrap(
                                 spacing: EnvoySpacing.small,
                                 runSpacing: EnvoySpacing.small,
-                                children: inputs
-                                    .map((e) => e.tag ?? "")
+                                children: inputTags
+                                    .map((e) => e ?? "")
                                     .map((e) => (e.isEmpty)
                                         ? S().account_details_untagged_card
                                         : e)
@@ -317,70 +317,38 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          height: EnvoySpacing.medium2,
+                        SizedBox(
+                          height:
+                              totalChangeAmount != 0 ? EnvoySpacing.medium2 : 0,
                         ),
                         EnvoyInfoCardListItem(
                           title: S().coincontrol_tx_history_tx_detail_note,
                           icon: const EnvoyIcon(EnvoyIcons.note,
                               color: EnvoyColors.textPrimary,
                               size: EnvoyIconSize.small),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text(note,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 2,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall
-                                      ?.copyWith(
-                                          color: EnvoyColors.textPrimary,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 12),
-                                  textAlign: TextAlign.end),
-                              const Padding(
-                                  padding: EdgeInsets.all(EnvoySpacing.xs)),
-                              GestureDetector(
-                                onTap: () {
-                                  showEnvoyDialog(
-                                    context: context,
-                                    dialog: TxNoteDialog(
-                                      onAdd: (noteText) {
-                                        ref
-                                            .read(
-                                                stagingTxNoteProvider.notifier)
-                                            .state = noteText;
-                                        widget.onTxNoteUpdated?.call();
-                                        Navigator.pop(context);
-                                      },
-                                      txId: "UpcomingTx",
-                                      noteHintText: "i.e. Bought P2P Bitcoin",
-                                      noteSubTitle: S()
-                                          .coincontrol_tx_add_note_subheading,
-                                      noteTitle: S().add_note_modal_heading,
-                                      value: note,
-                                    ),
-                                    alignment: const Alignment(0.0, -0.5),
-                                  );
-                                },
-                                child: note.trim().isNotEmpty
-                                    ? SvgPicture.asset(
-                                        note.trim().isNotEmpty
-                                            ? "assets/icons/ic_edit_note.svg"
-                                            : "assets/icons/ic_notes.svg",
-                                        color: Theme.of(context).primaryColor,
-                                        height: 18,
-                                      )
-                                    : const Icon(
-                                        Icons.add_circle_rounded,
-                                        color: EnvoyColors.accentPrimary,
-                                        size: 24,
-                                      ),
-                              ),
-                            ],
-                          ),
+                          trailing: GestureDetector(
+                              child: NoteDisplay(note: note),
+                              onTap: () {
+                                showEnvoyDialog(
+                                  context: context,
+                                  dialog: TxNoteDialog(
+                                    onAdd: (noteText) {
+                                      ref
+                                          .read(stagingTxNoteProvider.notifier)
+                                          .state = noteText;
+                                      widget.onTxNoteUpdated?.call();
+                                      Navigator.pop(context);
+                                    },
+                                    txId: "UpcomingTx",
+                                    noteHintText: "i.e. Bought P2P Bitcoin",
+                                    noteSubTitle:
+                                        S().coincontrol_tx_add_note_subheading,
+                                    noteTitle: S().add_note_modal_heading,
+                                    value: note,
+                                  ),
+                                  alignment: const Alignment(0.0, -0.5),
+                                );
+                              }),
                         ),
                       ]),
                   if (uneconomicSpends) ...[

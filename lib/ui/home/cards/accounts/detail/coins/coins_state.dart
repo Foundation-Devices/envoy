@@ -53,9 +53,6 @@ class Tag {
 
 final coinBlockStateStreamProvider =
     StreamProvider((ref) => CoinRepository().getCoinBlockStateStream());
-// final coinTagsStreamProvider = StreamProvider.family<List<NgCoinTag>, String>(
-//     (ref, accountId) =>
-//         CoinRepository().getCoinTagStream(accountId: accountId));
 
 class CoinStateNotifier extends StateNotifier<Set<String>> {
   CoinStateNotifier(super.state);
@@ -107,6 +104,8 @@ final coinSelectionFromWallet =
     StateNotifierProvider<CoinStateNotifier, Set<String>>(
   (ref) => CoinStateNotifier({}),
 );
+
+final rbfChangeOutputProvider = StateProvider<Output?>((ref) => null);
 
 final isCoinSelectedProvider = Provider.family<bool, String>(
     (ref, coinId) => ref.watch(coinSelectionStateProvider).contains(coinId));

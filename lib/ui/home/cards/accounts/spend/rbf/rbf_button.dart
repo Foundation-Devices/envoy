@@ -23,6 +23,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -79,14 +80,14 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _checkIfCanBoost();
+      _checkBoost();
       setState(() {
         _isLoading = true;
       });
     });
   }
 
-  Future<void> _checkIfCanBoost() async {
+  Future<void> _checkBoost() async {
     try {
       ref.watch(rbfSpendStateProvider.notifier).state = null;
       final account = ref.read(selectedAccountProvider);
@@ -108,7 +109,6 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
       int minRate = result.minFeeRate.toInt();
       int maxRate = result.maxFeeRate.toInt();
       int fasterFeeRate = minRate + 1;
-
       if (minRate == maxRate) {
         fasterFeeRate = maxRate;
       } else {
@@ -131,7 +131,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         draftTx: result.draftTransaction,
       );
     } catch (e) {
-      //TODO: handle rbf error
+      EnvoyReport().log("RBF", "RBF check failed : $e");
     } finally {
       if (mounted) {
         setState(() {
@@ -337,7 +337,7 @@ class _RBFWarningState extends State<RBFWarning> {
           ),
           onTap: () {
             launchUrl(Uri.parse(
-                "https://docs.foundation.xyz/en/envoy/accounts#boost-or-cancel-a-transaction"));
+                "https://docs.foundation.xyz/envoy/envoy-menu/account/#boost-or-cancel-a-transaction"));
           },
         ),
         const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),

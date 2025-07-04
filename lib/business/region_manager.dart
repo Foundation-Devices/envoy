@@ -3,8 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:convert';
+
 import 'package:flutter/services.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+
+// Cache the inapp-country availability
+bool? _isAllowed;
 
 class AllowedRegions {
   static Future<Map<String, Map<String, dynamic>>> allowedRegions() async {
@@ -40,8 +44,18 @@ class AllowedRegions {
   static const buyDisabled = ["IND", "GBR"];
 
   static Future<bool> checkBuyDisabled() async {
-    return InAppPurchase.instance.countryCode().then(
-          (value) => buyDisabled.contains(value),
-        );
+    if (_isAllowed != null) {
+      return _isAllowed!;
+    }
+    if (await InAppPurchase.instance.isAvailable()) {
+      return false;
+    }
+    try {
+      String? countryCode = await InAppPurchase.instance.countryCode();
+      _isAllowed = buyDisabled.contains(countryCode);
+    } catch (e) {
+      _isAllowed = false;
+    }
+    return _isAllowed!;
   }
 }

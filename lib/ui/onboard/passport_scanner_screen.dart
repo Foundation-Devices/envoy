@@ -2,8 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,6 +24,16 @@ class PassportScannerScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     String path = ref.watch(routePathProvider);
+    final bool onboardingCompleted =
+        LocalStorage().prefs.getBool(PREFS_ONBOARDED) ?? false;
+
+    void handleBack() {
+      if (onboardingCompleted) {
+        context.goNamed("/");
+      } else {
+        Navigator.of(context).pop();
+      }
+    }
 
     // Prevents the camera from running in the background
     return (path == "/onboard/passport_scan")
@@ -33,14 +45,13 @@ class PassportScannerScreen extends ConsumerWidget {
               }
             },
             child: PopScope(
+              canPop: false,
               onPopInvokedWithResult: (_, __) {
-                context.goNamed("/");
+                handleBack();
               },
               child: QrScanner(
                 showInfoDialog: true,
-                onBackPressed: (context) {
-                  Navigator.of(context).pop();
-                },
+                onBackPressed: (_) => handleBack(),
                 decoder: GenericQrDecoder(onScan: (String payload) {
                   final uri = Uri.parse(payload);
                   final params = uri.queryParameters;
@@ -81,52 +92,43 @@ class LegacyFirmwareAlert extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onVerticalDragUpdate: (_) {},
-      onVerticalDragStart: (_) {},
-      onVerticalDragEnd: (_) {},
-      behavior: HitTestBehavior.opaque,
-      child: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: EnvoySpacing.medium3),
-              alignment: Alignment.center,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.medium3),
-                    child: Text(
-                      S().onboarding_passpportSelectCamera_sub235VersionAlert,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: EnvoyColors.textPrimaryInverse,
-                          ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  TextButton(
-                    child: Text(
-                      S().onboarding_passpportSelectCamera_tapHere,
-                      style: EnvoyTypography.button.copyWith(
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.medium3),
+          alignment: Alignment.center,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: EnvoySpacing.medium3),
+                child: Text(
+                  S().onboarding_passpportSelectCamera_sub235VersionAlert,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w700,
                         color: EnvoyColors.textPrimaryInverse,
                       ),
-                    ),
-                    onPressed: () async {
-                      context.goNamed(ONBOARD_PASSPORT_SETUP);
-                    },
-                  ),
-                ],
+                  textAlign: TextAlign.center,
+                ),
               ),
-            ),
-          ],
+              TextButton(
+                child: Text(
+                  S().onboarding_passpportSelectCamera_tapHere,
+                  style: EnvoyTypography.button.copyWith(
+                    color: EnvoyColors.textPrimaryInverse,
+                  ),
+                ),
+                onPressed: () async {
+                  context.goNamed(ONBOARD_PASSPORT_SETUP);
+                },
+              ),
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }

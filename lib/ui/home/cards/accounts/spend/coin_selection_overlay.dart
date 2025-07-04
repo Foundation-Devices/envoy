@@ -5,6 +5,7 @@
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_tag_list_screen.dart';
@@ -31,8 +32,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:envoy/ui/components/pop_up.dart';
 import 'package:ngwallet/ngwallet.dart';
+
+final coinSelectionOverlayMinimized = StateProvider<bool>((ref) => false);
 
 OverlayEntry? overlayEntry;
 final GlobalKey<CoinSelectionOverlayState> coinSelectionOverlayKey =
@@ -245,7 +247,8 @@ class SpendRequirementOverlayState
 
   @override
   Widget build(BuildContext context) {
-    final totalSelectedAmount =
+    final selectedChangeOutput = ref.watch(rbfChangeOutputProvider);
+    int totalSelectedAmount =
         ref.watch(getTotalSelectedAmount(widget.account.id));
     final size = MediaQuery.of(context).size;
 
@@ -267,6 +270,10 @@ class SpendRequirementOverlayState
     bool inTagSelectionMode = requiredAmount == 0;
 
     bool showRequiredAmount = !inTagSelectionMode;
+
+    if (spendEditMode == SpendOverlayContext.rbfSelection) {
+      totalSelectedAmount += selectedChangeOutput?.amount.toInt() ?? 0;
+    }
 
     bool valid =
         (totalSelectedAmount != 0 && totalSelectedAmount >= requiredAmount);
@@ -317,6 +324,7 @@ class SpendRequirementOverlayState
           },
           onPanEnd: (details) {
             _isInMinimizedState = false;
+            ref.read(coinSelectionOverlayMinimized.notifier).state = false;
 
             double currentY = _dragAlignment.y;
             if (currentY < 1.5) {
@@ -337,6 +345,7 @@ class SpendRequirementOverlayState
             //threshold to show dismiss dialog
             if (currentY >= 1.2) {
               _isInMinimizedState = true;
+              ref.read(coinSelectionOverlayMinimized.notifier).state = true;
               _runSpringSimulation(
                   details.velocity.pixelsPerSecond, _minimizedAlignment, size);
             }
@@ -344,9 +353,11 @@ class SpendRequirementOverlayState
           onTap: () {
             if (_isInMinimizedState) {
               _isInMinimizedState = false;
+              ref.read(coinSelectionOverlayMinimized.notifier).state = false;
               _runSpringSimulation(const Offset(0, 0), _endAlignment, size);
             } else {
               _isInMinimizedState = true;
+              ref.read(coinSelectionOverlayMinimized.notifier).state = true;
               _runSpringSimulation(
                   const Offset(0, 0), _minimizedAlignment, size);
             }
