@@ -56,11 +56,7 @@ final filteredTransactionsProvider =
       .toList();
   List<EnvoyTransaction> confirmedTransactions =
       walletTransactions.where((element) => element.confirmations > 0).toList();
-  pendingTransactions.sort((a, b) => (a.date ??
-          BigInt.from(DateTime.now().millisecondsSinceEpoch))
-      .toInt()
-      .compareTo((b.date ?? BigInt.from(DateTime.now().millisecondsSinceEpoch))
-          .toInt()));
+
   List<EnvoyTransaction> transactions = [];
   transactions.addAll(confirmedTransactions);
   transactions.addAll(pendingTransactions.toList());

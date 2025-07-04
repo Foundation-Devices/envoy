@@ -66,9 +66,8 @@ class RBFSpendState {
 
 class TxRBFButton extends ConsumerStatefulWidget {
   final EnvoyTransaction tx;
-  final Function(bool isRBFReady) onRBFReady;
 
-  const TxRBFButton({super.key, required this.tx, required this.onRBFReady});
+  const TxRBFButton({super.key, required this.tx});
 
   @override
   ConsumerState<TxRBFButton> createState() => _TxRBFButtonState();
@@ -81,14 +80,14 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _checkIfCanBoost();
+      _checkBoost();
       setState(() {
         _isLoading = true;
       });
     });
   }
 
-  Future<void> _checkIfCanBoost() async {
+  Future<void> _checkBoost() async {
     try {
       ref.watch(rbfSpendStateProvider.notifier).state = null;
       final account = ref.read(selectedAccountProvider);
@@ -131,9 +130,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         originalAmount: originalTx.amount,
         draftTx: result.draftTransaction,
       );
-      widget.onRBFReady(true);
     } catch (e) {
-      widget.onRBFReady(false);
       EnvoyReport().log("RBF", "RBF check failed : $e");
     } finally {
       if (mounted) {
