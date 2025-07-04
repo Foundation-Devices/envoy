@@ -244,6 +244,11 @@ class _TxReviewState extends ConsumerState<TxReview> {
         if (!continueBroadcast) {
           return;
         }
+        ref
+            .read(spendTransactionProvider.notifier)
+            .setProgressState(BroadcastProgress.inProgress);
+        await Future.delayed(const Duration(milliseconds: 200));
+        if (context.mounted) _broadcastToNetwork(context);
       }
     } else {
       if (context.mounted) {
@@ -422,6 +427,9 @@ class _TxReviewState extends ConsumerState<TxReview> {
             hasMultipleTagsInput: true,
             onTagUpdate: () async {
               Navigator.pop(context);
+              ref
+                  .read(spendTransactionProvider.notifier)
+                  .setTag(ref.read(stagingTxChangeOutPutTagProvider));
               completer.complete(true);
             },
           ),
