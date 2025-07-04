@@ -27,6 +27,14 @@ class PassportScannerScreen extends ConsumerWidget {
     final bool onboardingCompleted =
         LocalStorage().prefs.getBool(PREFS_ONBOARDED) ?? false;
 
+    void handleBack() {
+      if (onboardingCompleted) {
+        context.goNamed("/");
+      } else {
+        Navigator.of(context).pop();
+      }
+    }
+
     // Prevents the camera from running in the background
     return (path == "/onboard/passport_scan")
         ? GestureDetector(
@@ -39,21 +47,11 @@ class PassportScannerScreen extends ConsumerWidget {
             child: PopScope(
               canPop: false,
               onPopInvokedWithResult: (_, __) {
-                if (onboardingCompleted) {
-                  context.goNamed("/");
-                } else {
-                  Navigator.of(context).pop();
-                }
+                handleBack();
               },
               child: QrScanner(
                 showInfoDialog: true,
-                onBackPressed: (context) {
-                  if (onboardingCompleted) {
-                    context.goNamed("/");
-                  } else {
-                    Navigator.of(context).pop();
-                  }
-                },
+                onBackPressed: (_) => handleBack(),
                 decoder: GenericQrDecoder(onScan: (String payload) {
                   final uri = Uri.parse(payload);
                   final params = uri.queryParameters;
