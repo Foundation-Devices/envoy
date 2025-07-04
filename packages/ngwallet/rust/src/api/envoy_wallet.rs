@@ -402,18 +402,15 @@ impl EnvoyAccountHandler {
             .map_err(|er| anyhow::anyhow!("Failed to deserialize PSBT: {}", er))
             .unwrap();
         {
-            let account = self.ng_account.lock().unwrap();
+            let mut account = self.ng_account.lock().unwrap();
             account.mark_utxo_as_used(psbt.unsigned_tx.clone());
-            let transactions = account.transactions().unwrap_or_default();
-            //get the last transaction date or current time if no transactions exist,
-            //transactions are sorted by date in descending order,so we need to get the first transaction
-            let last_tx = transactions.first();
-            let last_date = last_tx
-                .and_then(|tx| tx.date)
-                .unwrap_or_else(|| now.timestamp() as u64);
+            let std_time = SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap_or(Duration::from_secs(0)).as_secs();
             account
                 .get_coordinator_wallet()
-                .insert_tx(psbt.unsigned_tx.clone(), last_date + 125000);
+                .insert_tx(psbt.unsigned_tx.clone(), std_time+1000);
+            account.persist().expect("Failed to persist account after broadcast");
         }
         self.send_update();
     }
@@ -482,7 +479,7 @@ impl EnvoyAccountHandler {
                 .apply((address_type, scan_request_guard.to_owned()))
                 .unwrap();
             account.config.date_synced = Some(format!("{:?}", Utc::now()));
-            account.persist().unwrap();
+            account.persist().expect("Failed to persist account after scan");
         }
         self.send_update();
     }

@@ -345,7 +345,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
           automaticallyImplyLeading: false,
         ),
         header: Transform.translate(
-          offset: const Offset(0, 54),
+          offset: const Offset(0, 70),
           child: TweenAnimationBuilder(
             duration: const Duration(milliseconds: 600),
             tween: Tween<double>(end: 1.0, begin: 0.0),
@@ -354,8 +354,9 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
               return Opacity(opacity: value, child: child);
             },
             child: Image.asset(
-              "assets/images/prime_bluetooth_shield.png",
-              // TODO: add "X shield" on deniedBluetooth
+              deniedBluetooth
+                  ? "assets/images/bluetooth_shield_denied.png"
+                  : "assets/images/prime_bluetooth_shield.png",
               alignment: Alignment.bottomCenter,
               width: MediaQuery.of(context).size.width * 0.8,
               height: 320,

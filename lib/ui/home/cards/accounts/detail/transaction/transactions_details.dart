@@ -74,10 +74,6 @@ class _TransactionsDetailsWidgetState
   bool showPaymentId = false;
   final GlobalKey _detailWidgetKey = GlobalKey();
 
-  // Wait for Boost tx to be calculated first before calculating cancellation tx,
-  // this is to prevent ngwallet mutex being locked by two different calculations
-  bool rbfTxCalculated = false;
-
   String _getConfirmationTimeString(int minutes) {
     String confirmationTime = "";
 
@@ -448,13 +444,6 @@ class _TransactionsDetailsWidgetState
                           ),
                           trailing: TxRBFButton(
                             tx: tx,
-                            onRBFReady: (isRBFReady) {
-                              if (mounted) {
-                                setState(() {
-                                  rbfTxCalculated = isRBFReady;
-                                });
-                              }
-                            },
                           ),
                         )
                       : Container(),
@@ -498,7 +487,7 @@ class _TransactionsDetailsWidgetState
                       ),
                     ),
                   ),
-                  rbfPossible && tx.vsize != BigInt.zero && rbfTxCalculated
+                  rbfPossible && tx.vsize != BigInt.zero
                       ? CancelTxButton(
                           transaction: tx,
                         )

@@ -778,7 +778,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       (element) => element.keychain == KeyChain.internal,
     );
 
-    ref.read(rbfChangeOutputTagProvider.notifier).state = changeOutput;
+    ref.read(rbfChangeOutputProvider.notifier).state = changeOutput;
     ref.read(coinSelectionStateProvider.notifier).reset();
     ref.read(coinSelectionStateProvider.notifier).addAll(inputs);
 
@@ -796,7 +796,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         builder: (context) => const ChooseCoinsWidget(),
         fullscreenDialog: true));
 
-    ref.read(rbfChangeOutputTagProvider.notifier).state = null;
+    ref.read(rbfChangeOutputProvider.notifier).state = null;
     ref.read(coinSelectionStateProvider.notifier).reset();
 
     if (newSelection != null && newSelection is Set<String>) {
