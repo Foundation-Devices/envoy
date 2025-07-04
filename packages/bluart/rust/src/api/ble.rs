@@ -21,6 +21,7 @@ pub mod device;
 pub mod peripheral;
 
 use crate::frb_generated::StreamSink;
+use flutter_rust_bridge::frb;
 
 pub use device::*;
 pub use peripheral::*;
@@ -297,6 +298,7 @@ pub fn read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
     command::send(Command::Read { id, sink })
 }
 
+#[frb(ignore)]
 mod command {
     use anyhow::Context;
 
