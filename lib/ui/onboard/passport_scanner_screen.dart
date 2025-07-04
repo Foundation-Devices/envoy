@@ -2,8 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,6 +24,8 @@ class PassportScannerScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     String path = ref.watch(routePathProvider);
+    final bool onboardingCompleted =
+        LocalStorage().prefs.getBool(PREFS_ONBOARDED) ?? false;
 
     // Prevents the camera from running in the background
     return (path == "/onboard/passport_scan")
@@ -33,13 +37,22 @@ class PassportScannerScreen extends ConsumerWidget {
               }
             },
             child: PopScope(
+              canPop: false,
               onPopInvokedWithResult: (_, __) {
-                context.goNamed("/");
+                if (onboardingCompleted) {
+                  context.goNamed("/");
+                } else {
+                  Navigator.of(context).pop();
+                }
               },
               child: QrScanner(
                 showInfoDialog: true,
                 onBackPressed: (context) {
-                  Navigator.of(context).pop();
+                  if (onboardingCompleted) {
+                    context.goNamed("/");
+                  } else {
+                    Navigator.of(context).pop();
+                  }
                 },
                 decoder: GenericQrDecoder(onScan: (String payload) {
                   final uri = Uri.parse(payload);
