@@ -89,9 +89,15 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     EnvoyAccount? account = ref.watch(selectedAccountProvider);
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
 
-    String subHeading = (account!.isHot || transactionModel.isFinalized)
+    String subHeading = (account!.isHot || rbfState.draftTx.isFinalized)
         ? S().coincontrol_tx_detail_subheading
         : S().coincontrol_txDetail_subheading_passport;
+
+    bool showReviewCoin = true;
+    //if the tx finalized and if its a passport tx,no need to show review coin
+    if (rbfState.draftTx.isFinalized && !account.isHot) {
+      showReviewCoin = false;
+    }
 
     bool canPop =
         !(_broadcastProgress == BroadcastProgress.inProgress) && !_rebuildingTx;
@@ -153,13 +159,14 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      EnvoyButton(
-                                        label: S()
-                                            .replaceByFee_boost_reviewCoinSelection,
-                                        state: ButtonState.defaultState,
-                                        onTap: () => _editCoins(context),
-                                        type: ButtonType.secondary,
-                                      ),
+                                      if (showReviewCoin)
+                                        EnvoyButton(
+                                          label: S()
+                                              .replaceByFee_boost_reviewCoinSelection,
+                                          state: ButtonState.defaultState,
+                                          onTap: () => _editCoins(context),
+                                          type: ButtonType.secondary,
+                                        ),
                                       const Padding(
                                           padding: EdgeInsets.symmetric(
                                               vertical: EnvoySpacing.small)),
@@ -524,7 +531,6 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     if (rbfState == null || handler == null) {
       return;
     }
-
     try {
       setState(() {
         _broadcastProgress = BroadcastProgress.inProgress;
