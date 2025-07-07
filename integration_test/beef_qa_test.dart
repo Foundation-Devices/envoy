@@ -1146,7 +1146,7 @@ Future<void> main() async {
         // find And Toggle Taproot Switch
         await findAndToggleSettingsSwitch(tester, 'Receive to Taproot');
         final closeDialogButton = find.byIcon(Icons.close);
-        await tester.tap(closeDialogButton.last);
+        await tester.tap(closeDialogButton.first, warnIfMissed: false);
         await tester.pump(Durations.long2);
       }
 
