@@ -62,6 +62,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
   bool _rebuildingTx = false;
   BroadcastProgress _broadcastProgress = BroadcastProgress.staging;
   bool _warningShown = false;
+  bool _inputsChanged = false;
 
   @override
   void initState() {
@@ -455,40 +456,43 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     ref.read(stagingTxNoteProvider.notifier).state = originalTx.note;
     if (originalInputs.length != draftInputs.length) {
       setState(() {
+        _inputsChanged = true;
         _rebuildingTx = false;
       });
+      if (_warningShown) {
+        return;
+      }
+      if (_inputsChanged) {
+        showEnvoyDialog(
+            context: context,
+            dialog: Builder(builder: (context) {
+              return EnvoyPopUp(
+                icon: EnvoyIcons.alert,
+                typeOfMessage: PopUpState.warning,
+                title: S().component_warning,
+                showCloseButton: false,
+                content:
+                    S().replaceByFee_warning_extraUTXO_overlay_modal_subheading,
+                onLearnMore: () {
+                  launchUrl(Uri.parse(
+                      "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions"));
+                },
+                primaryButtonLabel: S().component_continue,
+                onPrimaryButtonTap: (context) {
+                  _warningShown = true;
+                  Navigator.pop(context);
+                },
+                secondaryButtonLabel: S().component_back,
+                onSecondaryButtonTap: (context) {
+                  //hide dialog
+                  Navigator.pop(context);
+                  //hide RBF screen
+                  Navigator.pop(context);
+                },
+              );
+            }));
+      }
     }
-    if (_warningShown) {
-      return;
-    }
-    showEnvoyDialog(
-        context: context,
-        dialog: Builder(builder: (context) {
-          return EnvoyPopUp(
-            icon: EnvoyIcons.alert,
-            typeOfMessage: PopUpState.warning,
-            title: S().component_warning,
-            showCloseButton: false,
-            content:
-                S().replaceByFee_warning_extraUTXO_overlay_modal_subheading,
-            onLearnMore: () {
-              launchUrl(Uri.parse(
-                  "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions"));
-            },
-            primaryButtonLabel: S().component_continue,
-            onPrimaryButtonTap: (context) {
-              _warningShown = true;
-              Navigator.pop(context);
-            },
-            secondaryButtonLabel: S().component_back,
-            onSecondaryButtonTap: (context) {
-              //hide dialog
-              Navigator.pop(context);
-              //hide RBF screen
-              Navigator.pop(context);
-            },
-          );
-        }));
   }
 
   _boostTx(BuildContext context) async {
