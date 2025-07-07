@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use flutter_rust_bridge::frb;
 use crate::api::ble::RUNTIME;
+use flutter_rust_bridge::frb;
 
 #[frb(ignore)]
 pub fn create_runtime() -> anyhow::Result<()> {

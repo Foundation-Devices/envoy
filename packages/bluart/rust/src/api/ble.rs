@@ -82,7 +82,9 @@ impl std::fmt::Debug for Command {
             }
             Command::Read { id, sink: _ } => f.debug_struct("Read").field("id", id).finish(),
             Command::Write { id, .. } => f.debug_struct("Write").field("id", id).finish(),
-            Command::WriteAll { id, sink: _ ,.. } => f.debug_struct("WriteAll").field("id", id).finish(),
+            Command::WriteAll { id, sink: _, .. } => {
+                f.debug_struct("WriteAll").field("id", id).finish()
+            }
         }
     }
 }
@@ -108,12 +110,12 @@ fn ble_state() -> &'static BleState {
 }
 
 fn init_logging(level: log::LevelFilter) {
-  //  #[cfg(target_os = "android")]
-//        let _ = android_logger::init_once(android_logger::Config::default().with_max_level(level));
+    //  #[cfg(target_os = "android")]
+    //        let _ = android_logger::init_once(android_logger::Config::default().with_max_level(level));
 
-  //      #[cfg(any(target_os = "ios", target_os = "macos"))]
+    //      #[cfg(any(target_os = "ios", target_os = "macos"))]
     //    let _ = oslog::OsLogger::new("frb_user").level_filter(level).init();
- }
+}
 
 /// The init() function must be called before anything else.
 /// At the moment the developer has to make sure it is only called once.
@@ -468,22 +470,14 @@ mod command {
         device.write(data).await
     }
 
-async fn inner_write_all(id: String, data: Vec<Vec<u8>>, sink: StreamSink<f64>) -> Result<()> {
-    debug!("inner write all: {id}");
+    async fn inner_write_all(id: String, data: Vec<Vec<u8>>, sink: StreamSink<f64>) -> Result<()> {
+        debug!("inner write all: {id}");
 
-    let devices = ble_state().devices.lock().await;
-    let device = devices
-        .get(&id)
-        .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
+        let devices = ble_state().devices.lock().await;
+        let device = devices
+            .get(&id)
+            .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
 
-    let total = data.len();
-    for (i, chunk) in data.into_iter().enumerate() {
-        device.write(chunk).await?; // Call simple `write` method
-
-        let progress = (i + 1) as f64 / total as f64;
-        sink.add(progress).unwrap();
+        device.write_all(data, sink).await
     }
-
-    Ok(())
-}
 }

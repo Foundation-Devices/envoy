@@ -5,10 +5,10 @@
 use flutter_rust_bridge::frb;
 use jni::objects::GlobalRef;
 use jni::{AttachGuard, JNIEnv, JavaVM};
+use log::{debug, info};
 use std::cell::RefCell;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::OnceLock;
-use log::{debug, info};
 // use crate::api::ble::Error;
 
 use super::RUNTIME;
