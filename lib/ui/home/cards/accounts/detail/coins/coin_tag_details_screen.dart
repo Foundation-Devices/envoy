@@ -220,11 +220,30 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     Color cardBackground =
         tag.untagged ? const Color(0xff808080) : accountAccent;
     const cardRadius = EnvoySpacing.medium2;
-    final maxAvailableHeight = MediaQuery.of(context).size.height * 0.8;
+    final screenHeight = MediaQuery.of(context).size.height;
     final baseHeight = 145.0;
     final itemHeight = 45.0;
-    final maxItems = ((maxAvailableHeight - baseHeight) / itemHeight).floor();
-    final calculatedMaxHeight = baseHeight + itemHeight * maxItems;
+    final padding = EnvoySpacing.medium2;
+
+    // 1. Original maxAvailableHeight
+    final maxAvailableHeight = screenHeight * 0.8;
+    final maxItems1 = ((maxAvailableHeight - baseHeight) / itemHeight).floor();
+    final calculatedMaxHeight = baseHeight + itemHeight * maxItems1;
+
+    // 2. With extended overlay
+    final maxAvailableHeightWithExtendedOverlay = screenHeight - 350 - padding;
+
+    // 3. With minimized overlay
+    final maxAvailableHeightWithMinimizedOverlay = screenHeight - 250 - padding;
+
+    final spendEditMode = ref.watch(spendEditModeProvider);
+    final isMinimized = ref.watch(coinSelectionOverlayMinimized);
+
+    final selectedMaxHeight = spendEditMode != SpendOverlayContext.hidden
+        ? (isMinimized
+            ? maxAvailableHeightWithMinimizedOverlay
+            : maxAvailableHeightWithExtendedOverlay)
+        : calculatedMaxHeight;
 
     void animateToIndex(int index) {
       if (!scrollController.hasClients) return;
@@ -234,18 +253,17 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
       }
 
       final isLast = index == tag.utxo.length - 1;
+      final maxScroll = scrollController.position.maxScrollExtent;
+      final target = (index * itemHeight - 45).clamp(0, maxScroll).toDouble();
 
-      if (isLast) {
+      if (isLast && (scrollController.offset - target).abs() > 50) {
         scrollController.animateTo(
-          scrollController.position.maxScrollExtent + 50,
+          scrollController.position.maxScrollExtent + 45,
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeIn,
         );
         return;
       }
-
-      final maxScroll = scrollController.position.maxScrollExtent;
-      final target = (index * itemHeight - 50).clamp(0, maxScroll).toDouble();
 
       if (index > 6 && (scrollController.offset - target).abs() > 50) {
         scrollController.animateTo(
@@ -296,10 +314,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               child: AnimatedContainer(
                 constraints: BoxConstraints(
                   // Fixed maxHeight to ensure consistent layout and prevent coin tags from being cut off across different mobile screen sizes (ENV-2079)
-                  maxHeight: (ref.watch(spendEditModeProvider) !=
-                          SpendOverlayContext.hidden
-                      ? (ref.watch(coinSelectionOverlayMinimized) ? 510 : 420)
-                      : calculatedMaxHeight),
+                  maxHeight: selectedMaxHeight,
                 ),
                 decoration: BoxDecoration(
                     borderRadius:

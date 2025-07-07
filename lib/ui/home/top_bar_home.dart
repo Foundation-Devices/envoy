@@ -489,7 +489,10 @@ class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: widget.onPressed,
+              onTap: () {
+                FocusScope.of(context).unfocus(); // ENV-2125
+                widget.onPressed();
+              },
               child: Center(
                 child: SizedBox.fromSize(
                   size: const Size.square(24),

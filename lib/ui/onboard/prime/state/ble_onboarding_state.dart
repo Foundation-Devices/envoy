@@ -32,7 +32,10 @@ final deviceSecurityProvider =
 
 final firmWareUpdateProvider =
     StateNotifierProvider<StepNotifier, StepModel>((ref) {
-  return StepNotifier();
+  return StepNotifier(
+    stepName: S().onboarding_connectionIntro_checkForUpdates,
+    state: EnvoyStepState.IDLE,
+  );
 });
 
 final creatingPinProvider =
