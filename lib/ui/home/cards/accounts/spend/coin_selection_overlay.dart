@@ -71,7 +71,7 @@ class CoinSelectionOverlayState extends ConsumerState<CoinSelectionOverlay> {
             if (account != null) show(SpendOverlayContext.preselectCoins);
           } else {
             if (ref.read(spendEditModeProvider) != SpendOverlayContext.hidden) {
-              hide();
+              hideCoinSnack(ref);
             }
           }
         }
@@ -118,11 +118,6 @@ class CoinSelectionOverlayState extends ConsumerState<CoinSelectionOverlay> {
     if (context.mounted) {
       Overlay.of(context, rootOverlay: true).insert(overlayEntry!);
     }
-  }
-
-  void hide() {
-    ref.read(spendEditModeProvider.notifier).state = SpendOverlayContext.hidden;
-    ref.read(hideBottomNavProvider.notifier).state = false;
   }
 }
 
@@ -861,6 +856,11 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
   }
 }
 
+void hideCoinSnack(ref) {
+  ref.read(spendEditModeProvider.notifier).state = SpendOverlayContext.hidden;
+  ref.read(hideBottomNavProvider.notifier).state = false;
+}
+
 class SpendSelectionCancelWarning extends ConsumerStatefulWidget {
   const SpendSelectionCancelWarning({super.key});
 
@@ -887,10 +887,12 @@ class _SpendSelectionCancelWarningState
       content: S().manual_coin_preselection_dialog_description,
       primaryButtonLabel: S().component_yes,
       onPrimaryButtonTap: (context) {
+        hideCoinSnack(ref);
         Navigator.of(context).pop(true);
       },
       tertiaryButtonLabel: S().component_no,
       onTertiaryButtonTap: (context) {
+        hideCoinSnack(ref);
         Navigator.of(context).pop(false);
       },
       checkBoxText: S().component_dontShowAgain,
