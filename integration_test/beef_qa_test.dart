@@ -6,6 +6,7 @@ import 'dart:io';
 
 import 'package:envoy/main.dart';
 import 'package:envoy/ui/amount_display.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/widgets/card_swipe_wrapper.dart';
@@ -1107,22 +1108,18 @@ Future<void> main() async {
       await enablePerformance(tester);
       await checkTorShieldIcon(tester, expectPrivacy: false);
     });
-    /*testWidgets('Boost screen', (tester) async {
-      await checkSync(tester);
+    testWidgets('Boost screen', (tester) async {
       await goBackHome(tester);
 
       await disableAllNetworks(tester);
 
-      const hotSignetAddress = 'tb1qt0h7r2hhphnsctj3akmusquszxvtkkupgmwrpq';
-      const signetWalletAddress =
-          'tb1p7n5z27jfsef6552q560y5z4a69c7ry9u5d74u0s2qelwa4dt7p5qs4ujrm';
+      //const hotSignetReceiveAddress =
+      //    'tb1paj3dzfa392fp44hadwj3mnryqqurtp6qel6svyfzgelfs6j42x3q6xw9jg';
+      // TODO: fill this wallet if there is no money from here https://signet257.bublina.eu.org/
+      // TODO: when getting more coins you need to wait for the transaction confirmation before running the tests!!!
 
-      /// Also there should be at least 2 Coins inside the current Tag
-      /// Should wait a few minutes for another test
-
-      // pull some money for the next test
-      // await getSatsFromSignetFaucet(5000, hotSignetAddress); //TODO: not used because page limits
-      // await tester.pump(Durations.long2);
+      const hotSignetSendAddress =
+          'tb1pddwvqpcv5s4a738cs2av3x4kq3lr3kqt4w2flmpyha3srenxxseq9mlz5h'; // send coins to this address from base wallet
 
       await tester.pump(Durations.long2);
 
@@ -1143,7 +1140,7 @@ Future<void> main() async {
         // find And Toggle Signet Switch
         await findAndToggleSettingsSwitch(tester, 'Signet');
         final closeDialogButton = find.byIcon(Icons.close);
-        await tester.tap(closeDialogButton.last);
+        await tester.tap(closeDialogButton.last, warnIfMissed: false);
         await tester.pump(Durations.long2);
       }
 
@@ -1151,7 +1148,7 @@ Future<void> main() async {
         // find And Toggle Taproot Switch
         await findAndToggleSettingsSwitch(tester, 'Receive to Taproot');
         final closeDialogButton = find.byIcon(Icons.close);
-        await tester.tap(closeDialogButton.last);
+        await tester.tap(closeDialogButton.last, warnIfMissed: false);
         await tester.pump(Durations.long2);
       }
 
@@ -1159,17 +1156,10 @@ Future<void> main() async {
       await pressHamburgerMenu(tester);
       await pressHamburgerMenu(tester);
 
+      await checkSync(tester, waitAccSync: "Signet");
       await tester.pump(Durations.long2);
 
-      await sendFromBaseWallet(
-          tester, hotSignetAddress);
-
-      /// getSatsFromSignetFaucet does not work
-
-      final signetFinder = find.text("Signet");
-      expect(signetFinder, findsWidgets);
-      await tester.tap(signetFinder.first);
-      await tester.pump(Durations.long2);
+      await sendFromBaseWallet(tester, hotSignetSendAddress);
 
       // go to tags
       await findAndTapActivitySlideButton(tester);
@@ -1185,64 +1175,51 @@ Future<void> main() async {
         await findAndPressTextButton(tester, 'Lock');
       }
 
-      // go to Untagged
-      await findAndPressTextButton(tester, 'Untagged');
-      await tester.pump(Durations.long2);
-
-      // unlock the first Coin
-      final Finder lockButtonFinder = find.byType(CoinLockButton);
-      await tester.tap(lockButtonFinder.at(2));
-      await tester.pump();
-      await tester.pump(Durations.long2);
-      await findAndPressTextButton(tester, 'Unlock');
-
-      // toggle that coin for Send
-      await findAndToggleCoinTagSwitch(tester);
-
-      await findAndPressTextButton(tester, 'Send Selected');
-
-      await enterTextInField(
-          tester, find.byType(TextFormField), signetWalletAddress);
-
-      await findAndPressTextButton(
-          tester, 'Send Selected'); // send the whole coin
-
-      // go to staging
-      await waitForTealTextAndTap(tester, 'Confirm');
-      await tester.pump(Durations.long2);
-
-      // now wait for it to go to staging
-      final textFinder = find.text("Fee");
-      await tester.pumpUntilFound(textFinder,
-          tries: 100, duration: Durations.long2);
-
-      await findAndPressTextButton(tester, 'Send Transaction');
-
-      await findAndPressTextButton(tester, 'No thanks');
-
-      await slowSearchAndToggleText(tester, 'Continue');
-
       // go to activity
-      await findAndPressWidget<SlidingToggle>(tester);
+      await findAndTapActivitySlideButton(tester);
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
 
-      await tester.pump();
+      // go to tags
+      await findAndTapActivitySlideButton(tester);
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
+
+      /// Check if the tag is locked (retry for good measures, it is bugged somehow)
+      if (switchFinder.evaluate().isNotEmpty) {
+        // If there's a CoinTagSwitch, lock all of the Coins by tapping the CoinLockButton
+        await findAndTapCoinLockButton(tester);
+        await findAndPressTextButton(tester, 'Lock');
+      }
+
+      // go to Activity
+      await findAndTapActivitySlideButton(tester);
       await tester.pump(Durations.long2);
 
       await findFirstTextButtonAndPress(tester, 'Sent');
 
-      // check if you are out of pop-up
-      await slowSearchAndToggleText(tester, 'Boost');
-
-      await tester.pump(const Duration(milliseconds: 1000));
+      /// Test does not press on X for some reason, it works on iOS but only sometimes
+      // enter to pop-up
+      // await slowSearchAndToggleText(tester, 'Boost');
+      //
+      // await tester.pump(const Duration(milliseconds: 1000));
 
       //close via X button
-      final closeDialogButton = find.byIcon(Icons.close);
-      await tester.pumpUntilFound(closeDialogButton,
-          duration: Durations.long2, tries: 200);
+      // final closeDialogButton = find.byIcon(Icons.close);
+      //
+      //
+      // await tester.pumpUntilFound(closeDialogButton.first,
+      //     duration: Durations.long2, tries: 20);
+      // await tester.pump(Durations.long2);
+      //
+      // await tester.pump(const Duration(milliseconds: 1000));
 
+      //enter to pop-up
+      await slowSearchAndToggleText(tester, 'Boost');
+      await tester.pump(const Duration(milliseconds: 1000));
+      //close via Continue button
+      await findAndPressTextButton(tester, "Continue");
       await tester.pump(Durations.long2);
-
-      await findTextOnScreen(tester, 'Boost');
 
       /// go back and unlock all coins for the next test
       await pressHamburgerMenu(tester);
@@ -1251,7 +1228,8 @@ Future<void> main() async {
       // go to tags
       await findAndTapActivitySlideButton(tester);
 
-      /// lock all coins in the Untagged
+      /// Unlock all coins in the Untagged for the next test
+
       // Find all instances of the CoinTagSwitch
       switchFinder = find.byType(CoinTagSwitch);
       await tester.pump(Durations.long2);
@@ -1262,7 +1240,7 @@ Future<void> main() async {
         await findAndTapCoinLockButton(tester);
         await findAndPressTextButton(tester, 'Unlock');
       }
-    });*/
+    });
     testWidgets('Switching Fiat in App', (tester) async {
       await goBackHome(tester);
       const String accountPassportName = "GH TEST ACC (#1)";

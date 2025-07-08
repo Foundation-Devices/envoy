@@ -62,6 +62,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
   bool _rebuildingTx = false;
   BroadcastProgress _broadcastProgress = BroadcastProgress.staging;
   bool _warningShown = false;
+  bool _inputsChanged = false;
 
   @override
   void initState() {
@@ -89,9 +90,15 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     EnvoyAccount? account = ref.watch(selectedAccountProvider);
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
 
-    String subHeading = (account!.isHot || transactionModel.isFinalized)
+    String subHeading = (account!.isHot || rbfState.draftTx.isFinalized)
         ? S().coincontrol_tx_detail_subheading
         : S().coincontrol_txDetail_subheading_passport;
+
+    bool showReviewCoin = true;
+    //if the tx finalized and if its a passport tx,no need to show review coin
+    if (rbfState.draftTx.isFinalized && !account.isHot) {
+      showReviewCoin = false;
+    }
 
     bool canPop =
         !(_broadcastProgress == BroadcastProgress.inProgress) && !_rebuildingTx;
@@ -153,13 +160,14 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      EnvoyButton(
-                                        label: S()
-                                            .replaceByFee_boost_reviewCoinSelection,
-                                        state: ButtonState.defaultState,
-                                        onTap: () => _editCoins(context),
-                                        type: ButtonType.secondary,
-                                      ),
+                                      if (showReviewCoin)
+                                        EnvoyButton(
+                                          label: S()
+                                              .replaceByFee_boost_reviewCoinSelection,
+                                          state: ButtonState.defaultState,
+                                          onTap: () => _editCoins(context),
+                                          type: ButtonType.secondary,
+                                        ),
                                       const Padding(
                                           padding: EdgeInsets.symmetric(
                                               vertical: EnvoySpacing.small)),
@@ -448,40 +456,43 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     ref.read(stagingTxNoteProvider.notifier).state = originalTx.note;
     if (originalInputs.length != draftInputs.length) {
       setState(() {
+        _inputsChanged = true;
         _rebuildingTx = false;
       });
+      if (_warningShown) {
+        return;
+      }
+      if (_inputsChanged) {
+        showEnvoyDialog(
+            context: context,
+            dialog: Builder(builder: (context) {
+              return EnvoyPopUp(
+                icon: EnvoyIcons.alert,
+                typeOfMessage: PopUpState.warning,
+                title: S().component_warning,
+                showCloseButton: false,
+                content:
+                    S().replaceByFee_warning_extraUTXO_overlay_modal_subheading,
+                onLearnMore: () {
+                  launchUrl(Uri.parse(
+                      "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions"));
+                },
+                primaryButtonLabel: S().component_continue,
+                onPrimaryButtonTap: (context) {
+                  _warningShown = true;
+                  Navigator.pop(context);
+                },
+                secondaryButtonLabel: S().component_back,
+                onSecondaryButtonTap: (context) {
+                  //hide dialog
+                  Navigator.pop(context);
+                  //hide RBF screen
+                  Navigator.pop(context);
+                },
+              );
+            }));
+      }
     }
-    if (_warningShown) {
-      return;
-    }
-    showEnvoyDialog(
-        context: context,
-        dialog: Builder(builder: (context) {
-          return EnvoyPopUp(
-            icon: EnvoyIcons.alert,
-            typeOfMessage: PopUpState.warning,
-            title: S().component_warning,
-            showCloseButton: false,
-            content:
-                S().replaceByFee_warning_extraUTXO_overlay_modal_subheading,
-            onLearnMore: () {
-              launchUrl(Uri.parse(
-                  "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions"));
-            },
-            primaryButtonLabel: S().component_continue,
-            onPrimaryButtonTap: (context) {
-              _warningShown = true;
-              Navigator.pop(context);
-            },
-            secondaryButtonLabel: S().component_back,
-            onSecondaryButtonTap: (context) {
-              //hide dialog
-              Navigator.pop(context);
-              //hide RBF screen
-              Navigator.pop(context);
-            },
-          );
-        }));
   }
 
   _boostTx(BuildContext context) async {
@@ -524,7 +535,6 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     if (rbfState == null || handler == null) {
       return;
     }
-
     try {
       setState(() {
         _broadcastProgress = BroadcastProgress.inProgress;

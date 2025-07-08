@@ -665,7 +665,7 @@ Widget transactionIcon(
             left: EnvoySpacing.xs,
           ),
           child: Transform.scale(
-            scale: 1.1,
+            scale: cancelState?.newTxId == transaction.txId ? 0.95 : 1.1,
             child: EnvoyIcon(
               getTransactionIcon(transaction, cancelState, isBoosted)!,
               color: iconColor,
