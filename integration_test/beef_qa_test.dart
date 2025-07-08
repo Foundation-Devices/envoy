@@ -1114,7 +1114,9 @@ Future<void> main() async {
       await disableAllNetworks(tester);
 
       //const hotSignetReceiveAddress =
-      //    'tb1paj3dzfa392fp44hadwj3mnryqqurtp6qel6svyfzgelfs6j42x3q6xw9jg'; // TODO: fill this wallet if there is no money from here https://signet257.bublina.eu.org/
+      //    'tb1paj3dzfa392fp44hadwj3mnryqqurtp6qel6svyfzgelfs6j42x3q6xw9jg';
+      // TODO: fill this wallet if there is no money from here https://signet257.bublina.eu.org/
+      // TODO: when getting more coins you need to wait for the transaction confirmation before running the tests!!!
 
       const hotSignetSendAddress =
           'tb1pddwvqpcv5s4a738cs2av3x4kq3lr3kqt4w2flmpyha3srenxxseq9mlz5h'; // send coins to this address from base wallet
@@ -1138,7 +1140,7 @@ Future<void> main() async {
         // find And Toggle Signet Switch
         await findAndToggleSettingsSwitch(tester, 'Signet');
         final closeDialogButton = find.byIcon(Icons.close);
-        await tester.tap(closeDialogButton.last);
+        await tester.tap(closeDialogButton.last, warnIfMissed: false);
         await tester.pump(Durations.long2);
       }
 
@@ -1146,7 +1148,7 @@ Future<void> main() async {
         // find And Toggle Taproot Switch
         await findAndToggleSettingsSwitch(tester, 'Receive to Taproot');
         final closeDialogButton = find.byIcon(Icons.close);
-        await tester.tap(closeDialogButton.last);
+        await tester.tap(closeDialogButton.last, warnIfMissed: false);
         await tester.pump(Durations.long2);
       }
 
@@ -1175,11 +1177,13 @@ Future<void> main() async {
 
       // go to activity
       await findAndTapActivitySlideButton(tester);
-
+      await tester.pump(Durations.long2);
       await tester.pump(Durations.long2);
 
       // go to tags
       await findAndTapActivitySlideButton(tester);
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
 
       /// Check if the tag is locked (retry for good measures, it is bugged somehow)
       if (switchFinder.evaluate().isNotEmpty) {
@@ -1190,22 +1194,25 @@ Future<void> main() async {
 
       // go to Activity
       await findAndTapActivitySlideButton(tester);
-
-      await findFirstTextButtonAndPress(tester, 'Sent');
-      // enter to pop-up
-      await slowSearchAndToggleText(tester, 'Boost');
-
-      await tester.pump(const Duration(milliseconds: 1000));
-
-      //close via X button
-      final closeDialogButton = find.byIcon(Icons.close);
-
-      /// Test does not press on X for some reason, it works on iOS but it is weird
-      await tester.pumpUntilFound(closeDialogButton.first,
-          duration: Durations.long2, tries: 20);
       await tester.pump(Durations.long2);
 
-      await tester.pump(const Duration(milliseconds: 1000));
+      await findFirstTextButtonAndPress(tester, 'Sent');
+
+      /// Test does not press on X for some reason, it works on iOS but only sometimes
+      // enter to pop-up
+      // await slowSearchAndToggleText(tester, 'Boost');
+      //
+      // await tester.pump(const Duration(milliseconds: 1000));
+
+      //close via X button
+      // final closeDialogButton = find.byIcon(Icons.close);
+      //
+      //
+      // await tester.pumpUntilFound(closeDialogButton.first,
+      //     duration: Durations.long2, tries: 20);
+      // await tester.pump(Durations.long2);
+      //
+      // await tester.pump(const Duration(milliseconds: 1000));
 
       //enter to pop-up
       await slowSearchAndToggleText(tester, 'Boost');

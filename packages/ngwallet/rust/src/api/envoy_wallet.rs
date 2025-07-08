@@ -419,8 +419,8 @@ impl EnvoyAccountHandler {
         &mut self,
         address_type: AddressType,
     ) -> Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>> {
-        let scan_request = self.ng_account.lock().unwrap().sync_request(address_type);
-        match scan_request {
+        let sync_req = self.ng_account.lock().unwrap().sync_request(address_type);
+        match sync_req {
             Ok((_, request)) => Arc::new(Mutex::new(Some(request))),
             Err(_) => return Arc::new(Mutex::new(None)),
         }
@@ -623,7 +623,7 @@ impl EnvoyAccountHandler {
             .map_err(TxComposeError::map_err)
     }
 
-    pub fn compose_cancellation_tx(
+    pub fn   compose_cancellation_tx(
         &mut self,
         bitcoin_transaction: BitcoinTransaction,
     ) -> Result<DraftTransaction, RBFBumpFeeError> {
@@ -657,7 +657,7 @@ impl EnvoyAccountHandler {
         self.ng_account
             .lock()
             .map_err(|_| RBFBumpFeeError::WalletNotAvailable)?
-            .get_rbf_draft_tx(selected_outputs, bitcoin_transaction, fee_rate, note, tag)
+            .get_rbf_draft_tx(selected_outputs, bitcoin_transaction, fee_rate,None,None, note, tag)
             .map_err(RBFBumpFeeError::from)
     }
 
