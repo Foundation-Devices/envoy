@@ -158,15 +158,14 @@ class FadingEdgeScrollView extends StatefulWidget {
 
 class FadingEdgeScrollViewState extends State<FadingEdgeScrollView>
     with WidgetsBindingObserver {
-  late ScrollController _controller;
+  late final ScrollController _controller;
   bool? _isScrolledToStart;
   bool? _isScrolledToEnd;
 
   @override
   void initState() {
     super.initState();
-
-    _controller = widget.scrollController;
+    _controller = ScrollController();
     _isScrolledToStart = _controller.initialScrollOffset == 0;
     _controller.addListener(_onScroll);
 
@@ -180,9 +179,7 @@ class FadingEdgeScrollViewState extends State<FadingEdgeScrollView>
       _controller.hasClients && _controller.position.hasContentDimensions;
 
   void _postFrameCallback(Duration _) {
-    if (!mounted) {
-      return;
-    }
+    if (!mounted) return;
 
     if (_isScrolledToEnd == null &&
         _controllerIsReady &&
@@ -196,11 +193,9 @@ class FadingEdgeScrollViewState extends State<FadingEdgeScrollView>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
     _controller.removeListener(_onScroll);
-    if (widget.shouldDisposeScrollController) {
-      _controller.dispose();
-    }
+    _controller.dispose();
+    super.dispose();
   }
 
   void _onScroll() {
