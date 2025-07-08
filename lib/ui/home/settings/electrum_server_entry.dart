@@ -192,18 +192,29 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
       return;
     }
 
-    getServerFeatures(
-            server: address,
-            proxy: useTor ? "127.0.0.1:${Tor.instance.port}" : null)
-        .then((features) {
-      // If required fields are missing, treat it as a failure.
+    _tryGetServerFeatures(address, useTor, retryCount: 0);
+  }
+
+  void _tryGetServerFeatures(String address, bool useTor,
+      {int retryCount = 0}) {
+    final proxy = useTor ? "127.0.0.1:${Tor.instance.port}" : null;
+
+    getServerFeatures(server: address, proxy: proxy).then((features) {
       if (features.serverVersion == null || features.genesisHash == null) {
-        setState(() {
-          _state = ElectrumServerEntryState.invalid;
-          _isError = true;
-          _textBelow = S().privacy_node_connection_couldNotReach;
-        });
-        ConnectivityManager().electrumFailure();
+        if (retryCount < 3) {
+          Future.delayed(const Duration(seconds: 1), () {
+            _tryGetServerFeatures(address, useTor, retryCount: retryCount + 1);
+          });
+        } else {
+          if (mounted) {
+            setState(() {
+              _state = ElectrumServerEntryState.invalid;
+              _isError = true;
+              _textBelow = S().privacy_node_connection_couldNotReach;
+            });
+          }
+          ConnectivityManager().electrumFailure();
+        }
         return;
       }
 
@@ -216,16 +227,22 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
               "${S().privacy_node_connectedTo} ${features.serverVersion}";
         });
       }
-    }, onError: (e) {
-      ConnectivityManager().electrumFailure();
-      if (mounted) {
-        setState(() {
-          _state = ElectrumServerEntryState.invalid;
-          _isError = true;
-          _textBelow = e is InvalidPort
-              ? "Invalid port."
-              : S().privacy_node_connection_couldNotReach;
+    }).catchError((e) {
+      if (retryCount < 3) {
+        Future.delayed(const Duration(seconds: 1), () {
+          _tryGetServerFeatures(address, useTor, retryCount: retryCount + 1);
         });
+      } else {
+        ConnectivityManager().electrumFailure();
+        if (mounted) {
+          setState(() {
+            _state = ElectrumServerEntryState.invalid;
+            _isError = true;
+            _textBelow = e is InvalidPort
+                ? "Invalid port."
+                : S().privacy_node_connection_couldNotReach;
+          });
+        }
       }
     });
   }
