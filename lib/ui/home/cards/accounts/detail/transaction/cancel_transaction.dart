@@ -4,6 +4,7 @@
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
+import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -557,17 +558,21 @@ class _CancelTransactionProgressState
     if (handler == null || account == null) {
       return;
     }
-    int? port = Settings().getPort(account.network);
-    if (port == -1) {
-      port = null;
-    }
-    final electrum = Settings().electrumAddress(account.network);
+
     try {
+      final server = SyncManager.getElectrumServer(account.network);
+      int? port = Settings().getPort(account.network);
+      if (port == -1) {
+        port = null;
+      }
+
+      /// get the raw transaction from the database
       await EnvoyAccountHandler.broadcast(
-        electrumServer: electrum,
-        torPort: port,
         draftTransaction: widget.cancelTx,
+        electrumServer: server,
+        torPort: port,
       );
+      await handler.updateBroadcastState(draftTransaction: widget.cancelTx);
       await EnvoyStorage().addCancelState(RBFState(
               originalTxId: widget.originalTx.txId,
               newTxId: widget.cancelTx.transaction.txId,
@@ -578,8 +583,10 @@ class _CancelTransactionProgressState
               previousTxTimeStamp: widget.originalTx.date?.toInt() ??
                   DateTime.now().millisecondsSinceEpoch)
           .toJson());
-      await handler.updateBroadcastState(draftTransaction: widget.cancelTx);
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 100));
+      final _ =
+          ref.refresh(cancelTxStateProvider(widget.cancelTx.transaction.txId));
+      await Future.delayed(const Duration(milliseconds: 200));
       ref.read(rbfBroadCastedTxProvider.notifier).state = [
         ...ref.read(rbfBroadCastedTxProvider),
         widget.originalTx.txId
@@ -592,6 +599,7 @@ class _CancelTransactionProgressState
         broadcastProgress = BroadcastProgress.success;
       });
     } catch (e) {
+      kPrint("RBF:Cancel: $e");
       EnvoyReport().log("RBF:Cancel", e.toString());
       _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
       _stateMachineController?.findInput<bool>("happy")?.change(false);
