@@ -1140,7 +1140,7 @@ Future<void> main() async {
         // find And Toggle Signet Switch
         await findAndToggleSettingsSwitch(tester, 'Signet');
         final closeDialogButton = find.byIcon(Icons.close);
-        await tester.tap(closeDialogButton.last);
+        await tester.tap(closeDialogButton.last, warnIfMissed: false);
         await tester.pump(Durations.long2);
       }
 
@@ -1148,7 +1148,7 @@ Future<void> main() async {
         // find And Toggle Taproot Switch
         await findAndToggleSettingsSwitch(tester, 'Receive to Taproot');
         final closeDialogButton = find.byIcon(Icons.close);
-        await tester.tap(closeDialogButton.last);
+        await tester.tap(closeDialogButton.last, warnIfMissed: false);
         await tester.pump(Durations.long2);
       }
 
@@ -1177,11 +1177,13 @@ Future<void> main() async {
 
       // go to activity
       await findAndTapActivitySlideButton(tester);
-
+      await tester.pump(Durations.long2);
       await tester.pump(Durations.long2);
 
       // go to tags
       await findAndTapActivitySlideButton(tester);
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
 
       /// Check if the tag is locked (retry for good measures, it is bugged somehow)
       if (switchFinder.evaluate().isNotEmpty) {
@@ -1192,6 +1194,7 @@ Future<void> main() async {
 
       // go to Activity
       await findAndTapActivitySlideButton(tester);
+      await tester.pump(Durations.long2);
 
       await findFirstTextButtonAndPress(tester, 'Sent');
 
