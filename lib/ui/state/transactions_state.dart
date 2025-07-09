@@ -54,8 +54,9 @@ final filteredTransactionsProvider =
   List<EnvoyTransaction> pendingTransactions = walletTransactions
       .where((element) => element.confirmations == 0)
       .toList();
-  List<EnvoyTransaction> confirmedTransactions =
-      walletTransactions.where((element) => element.confirmations > 0).toList();
+  List<EnvoyTransaction> confirmedTransactions = walletTransactions
+      .where((element) => element.confirmations >= 3)
+      .toList();
 
   List<EnvoyTransaction> transactions = [];
   transactions.addAll(confirmedTransactions);
