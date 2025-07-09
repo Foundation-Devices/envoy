@@ -6,7 +6,6 @@
 import 'package:envoy/ui/onboard/advanced_settings.dart';
 import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
 import 'package:envoy/ui/onboard/magic/magic_setup_generate.dart';
-import 'package:envoy/ui/onboard/magic/magic_setup_tutorial.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup_import_backup.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup_import_seed.dart';
@@ -149,6 +148,7 @@ final onboardRoutes = GoRoute(
         GoRoute(
           path: "magic",
           name: ONBOARD_ENVOY_MAGIC_SETUP,
+          redirect: (_, __) => null,
           routes: [
             GoRoute(
               path: "generate",
@@ -187,7 +187,6 @@ final onboardRoutes = GoRoute(
               },
             )
           ],
-          builder: (context, state) => const MagicSetupTutorial(),
         ),
       ],
       builder: (context, state) => const OnboardEnvoyWelcomeScreen(),
