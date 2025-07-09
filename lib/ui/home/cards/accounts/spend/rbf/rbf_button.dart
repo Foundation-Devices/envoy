@@ -162,11 +162,11 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
       }
       return;
     }
+    final originalTx = ref.read(getTransactionProvider(widget.tx.txId));
     final rbfSpendState = ref.read(rbfSpendStateProvider);
     if (rbfSpendState != null) {
       ref.read(spendFeeRateProvider.notifier).state = rbfSpendState.feeRate;
-      ref.read(stagingTxNoteProvider.notifier).state =
-          rbfSpendState.originalTx.note;
+      ref.read(stagingTxNoteProvider.notifier).state = originalTx?.note ?? "";
       ref.read(stagingTxChangeOutPutTagProvider.notifier).state =
           rbfSpendState.draftTx.changeOutPutTag;
       for (var element in rbfSpendState.originalTx.outputs) {
@@ -175,6 +175,14 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
               element.tag;
         }
       }
+      // Update RBF state with latest transaction data
+      // The original transaction may have changed since we started the RBF check,
+      // as calculations happen in the background while viewing transaction details
+      ref.read(rbfSpendStateProvider.notifier).state = rbfSpendState.copyWith(
+        originalTx: originalTx ?? rbfSpendState.originalTx,
+        preparedTx: rbfSpendState.draftTx,
+        feeRate: rbfSpendState.feeRate,
+      );
       navigator.push(MaterialPageRoute(
         builder: (context) {
           return const RBFSpendScreen();
@@ -273,13 +281,13 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
           content: RBFWarning(
             onConfirm: () {
               Navigator.pop(context);
-              _checkRBF(context);
+              _showBoostScreen(context);
             },
           ),
         ),
       );
     } else {
-      _checkRBF(context);
+      _showBoostScreen(context);
     }
   }
 }
