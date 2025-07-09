@@ -192,20 +192,33 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
       return;
     }
 
-    _tryGetServerFeatures(address, useTor, retryCount: 0);
+    _tryGetServerFeatures(address, useTor);
   }
 
-  void _tryGetServerFeatures(String address, bool useTor,
-      {int retryCount = 0}) {
+  void _tryGetServerFeatures(String address, bool useTor) async {
     final proxy = useTor ? "127.0.0.1:${Tor.instance.port}" : null;
+    const maxRetries = 3;
 
-    getServerFeatures(server: address, proxy: proxy).then((features) {
-      if (features.serverVersion == null || features.genesisHash == null) {
-        if (retryCount < 3) {
-          Future.delayed(const Duration(seconds: 1), () {
-            _tryGetServerFeatures(address, useTor, retryCount: retryCount + 1);
-          });
-        } else {
+    for (int attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        final features = await getServerFeatures(server: address, proxy: proxy);
+
+        final isValid =
+            features.serverVersion != null && features.genesisHash != null;
+        if (isValid) {
+          ConnectivityManager().electrumSuccess();
+          if (mounted) {
+            setState(() {
+              _state = ElectrumServerEntryState.valid;
+              _isError = false;
+              _textBelow =
+                  "${S().privacy_node_connectedTo} ${features.serverVersion}";
+            });
+          }
+          return;
+        } else if (attempt == maxRetries) {
+          // Valid response structure but missing critical fields
+          ConnectivityManager().electrumFailure();
           if (mounted) {
             setState(() {
               _state = ElectrumServerEntryState.invalid;
@@ -213,38 +226,27 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
               _textBelow = S().privacy_node_connection_couldNotReach;
             });
           }
-          ConnectivityManager().electrumFailure();
+          return;
         }
-        return;
+      } catch (e) {
+        if (attempt == maxRetries) {
+          ConnectivityManager().electrumFailure();
+          if (mounted) {
+            setState(() {
+              _state = ElectrumServerEntryState.invalid;
+              _isError = true;
+              _textBelow = e is InvalidPort
+                  ? "Invalid port."
+                  : S().privacy_node_connection_couldNotReach;
+            });
+          }
+          return;
+        }
       }
 
-      ConnectivityManager().electrumSuccess();
-      if (mounted) {
-        setState(() {
-          _state = ElectrumServerEntryState.valid;
-          _isError = false;
-          _textBelow =
-              "${S().privacy_node_connectedTo} ${features.serverVersion}";
-        });
-      }
-    }).catchError((e) {
-      if (retryCount < 3) {
-        Future.delayed(const Duration(seconds: 1), () {
-          _tryGetServerFeatures(address, useTor, retryCount: retryCount + 1);
-        });
-      } else {
-        ConnectivityManager().electrumFailure();
-        if (mounted) {
-          setState(() {
-            _state = ElectrumServerEntryState.invalid;
-            _isError = true;
-            _textBelow = e is InvalidPort
-                ? "Invalid port."
-                : S().privacy_node_connection_couldNotReach;
-          });
-        }
-      }
-    });
+      // Only delay if we're going to try again
+      await Future.delayed(const Duration(seconds: 1));
+    }
   }
 
   Future<void> _checkEsploraServer(String address) async {
