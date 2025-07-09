@@ -9,7 +9,6 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/manual/dialogs.dart';
-import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup_create_and_store_backup.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -321,9 +320,10 @@ Future<void> tryMagicRecover(List<String> seedList, String seed,
       return const WalletSetupSuccess();
     }));
   } else {
-    navigator.push(MaterialPageRoute(builder: (context) {
-      return const ManualSetup();
-    }));
+    if (context.mounted) {
+      recoverManually(seedList, context);
+      Navigator.pop(context);
+    }
   }
 }
 
