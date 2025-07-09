@@ -4,14 +4,12 @@
 
 import 'dart:async';
 
-import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
-import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_spend_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
@@ -23,7 +21,6 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
-import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -49,12 +46,13 @@ class RBFSpendState {
   RBFSpendState? copyWith({
     required int feeRate,
     required DraftTransaction preparedTx,
+    BitcoinTransaction? originalTx,
   }) {
     return RBFSpendState(
         receiveAddress: receiveAddress,
         receiveAmount: receiveAmount,
         feeRate: feeRate,
-        originalTx: originalTx,
+        originalTx: originalTx ?? this.originalTx,
         originalAmount: originalAmount,
         draftTx: preparedTx);
   }
@@ -65,83 +63,22 @@ class RBFSpendState {
 }
 
 class TxRBFButton extends ConsumerStatefulWidget {
+  final bool loading;
   final EnvoyTransaction tx;
 
-  const TxRBFButton({super.key, required this.tx});
+  const TxRBFButton({super.key, required this.tx, required this.loading});
 
   @override
   ConsumerState<TxRBFButton> createState() => _TxRBFButtonState();
 }
 
 class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
-  bool _isLoading = false;
-
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _checkBoost();
-      setState(() {
-        _isLoading = true;
-      });
-    });
   }
 
-  Future<void> _checkBoost() async {
-    try {
-      ref.watch(rbfSpendStateProvider.notifier).state = null;
-      final account = ref.read(selectedAccountProvider);
-      final handler = account?.handler;
-      if (account == null || handler == null) {
-        return;
-      }
-      setState(() {
-        _isLoading = true;
-      });
-      BitcoinTransaction originalTx = widget.tx;
-
-      TransactionFeeResult result = await handler.getMaxBumpFeeRates(
-          selectedOutputs: [], bitcoinTransaction: originalTx);
-
-      setState(() {
-        _isLoading = false;
-      });
-      int minRate = result.minFeeRate.toInt();
-      int maxRate = result.maxFeeRate.toInt();
-      int fasterFeeRate = minRate + 1;
-      if (minRate == maxRate) {
-        fasterFeeRate = maxRate;
-      } else {
-        if (minRate < maxRate) {
-          fasterFeeRate = (minRate + 1).clamp(minRate, maxRate);
-        }
-      }
-      ref.read(feeChooserStateProvider.notifier).state = FeeChooserState(
-        standardFeeRate: minRate,
-        fasterFeeRate: fasterFeeRate,
-        minFeeRate: minRate,
-        maxFeeRate: maxRate,
-      );
-      ref.read(rbfSpendStateProvider.notifier).state = RBFSpendState(
-        receiveAddress: result.draftTransaction.transaction.address,
-        receiveAmount: originalTx.amount,
-        feeRate: minRate,
-        originalTx: originalTx,
-        originalAmount: originalTx.amount,
-        draftTx: result.draftTransaction,
-      );
-    } catch (e) {
-      EnvoyReport().log("RBF", "RBF check failed : $e");
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  Future _checkRBF(BuildContext context) async {
+  Future _showBoostScreen(BuildContext context) async {
     final navigator = Navigator.of(context);
     if (ref.read(getTransactionProvider(widget.tx.txId))?.isConfirmed == true) {
       EnvoyToast(
@@ -155,11 +92,6 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
           color: EnvoyColors.solidWhite,
         ),
       ).show(context);
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
       return;
     }
     final originalTx = ref.read(getTransactionProvider(widget.tx.txId));
@@ -198,12 +130,12 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (_isLoading) return;
+        if (widget.loading) return;
         _showRBFDialog(context);
       },
       child: _buildButtonContainer(
-          active: ref.watch(rbfSpendStateProvider) != null || _isLoading,
-          child: _isLoading
+          active: ref.watch(rbfSpendStateProvider) != null || widget.loading,
+          child: widget.loading
               ? const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
@@ -264,7 +196,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
   }
 
   void _showRBFDialog(BuildContext context) async {
-    if (_isLoading) {
+    if (widget.loading) {
       return;
     }
     if (ref.read(rbfSpendStateProvider) == null) {

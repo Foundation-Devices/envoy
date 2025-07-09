@@ -85,81 +85,28 @@ class RBFState {
 
 class CancelTxButton extends ConsumerStatefulWidget {
   final EnvoyTransaction transaction;
+  final DraftTransaction? draftTransaction;
+  final bool loading;
 
-  const CancelTxButton({super.key, required this.transaction});
+  const CancelTxButton(
+      {super.key,
+      required this.transaction,
+      required this.draftTransaction,
+      this.loading = false});
 
   @override
   ConsumerState<CancelTxButton> createState() => _CancelTxButtonState();
 }
 
 class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
-  bool _loading = false;
-  bool _canCancel = false;
-  late DraftTransaction draftTransaction;
-
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) => checkCancel());
-  }
-
-  Future<void> checkCancel() async {
-    if (mounted) {
-      setState(() {
-        _loading = true;
-        _canCancel = false;
-      });
-    }
-
-    final selectedAccount = ref.read(selectedAccountProvider);
-    final handler = selectedAccount?.handler;
-    if (handler == null) {
-      if (mounted) {
-        setState(() {
-          _loading = false;
-          _canCancel = false;
-        });
-      }
-      return;
-    }
-
-    try {
-      draftTransaction = await handler.composeCancellationTx(
-          bitcoinTransaction: widget.transaction);
-      if (mounted) {
-        setState(() {
-          _canCancel = true;
-        });
-      }
-    } catch (e, s) {
-      if (e is RBFBumpFeeError) {
-        if (e is InsufficientFunds) {
-          if (mounted) {
-            setState(() {
-              _canCancel = false;
-            });
-          }
-          return;
-        }
-      }
-      debugPrintStack(stackTrace: s);
-      kPrint(e);
-      if (mounted) {
-        setState(() {
-          _canCancel = false;
-        });
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _loading = false;
-        });
-      }
-    }
   }
 
   @override
   Widget build(BuildContext context) {
+    bool canCancel = widget.draftTransaction != null && widget.loading == false;
     return Padding(
       padding: const EdgeInsets.all(EnvoySpacing.xs),
       child: Column(
@@ -174,22 +121,22 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
               });
             },
             onTapUp: (_) {
-              ref.watch(rbfSpendStateProvider) != null && _canCancel
+              ref.watch(rbfSpendStateProvider) != null && canCancel
                   ? showEnvoyDialog(
                       context: context,
                       useRootNavigator: true,
                       builder: Builder(
                           builder: (context) => TxCancelDialog(
                               originalTx: widget.transaction,
-                              cancelTx: draftTransaction)))
+                              cancelTx: widget.draftTransaction!)))
                   : showNoCancelNoFundsDialog(context);
             },
             child: Container(
               height: EnvoySpacing.medium2,
               decoration: BoxDecoration(
-                  color: EnvoyColors.chilli500.applyOpacity(_loading
+                  color: EnvoyColors.chilli500.applyOpacity(widget.loading
                       ? 1
-                      : (ref.watch(rbfSpendStateProvider) != null && _canCancel
+                      : (ref.watch(rbfSpendStateProvider) != null && canCancel
                           ? 1
                           : 0.5)),
                   borderRadius: BorderRadius.circular(EnvoySpacing.small)),
@@ -197,7 +144,7 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _loading && ref.watch(rbfSpendStateProvider) == null
+                  widget.loading
                       ? const SizedBox.square(
                           dimension: EnvoySpacing.medium1,
                           child: CircularProgressIndicator(
@@ -227,7 +174,7 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
   }
 
   void showNoCancelNoFundsDialog(BuildContext context) {
-    if (_loading) {
+    if (widget.loading) {
       return;
     }
 
