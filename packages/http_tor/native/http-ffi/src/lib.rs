@@ -40,13 +40,13 @@ thread_local! {
 
 /// Update the most recent error, clearing whatever may have been there before.
 pub fn update_last_error<E: Error + 'static>(err: E) {
-    error!("Setting LAST_ERROR: {}", err);
+    error!("Setting LAST_ERROR: {err}");
     {
         // Print a pseudo-backtrace for this error, following back each error's
         // cause until we reach the root error.
         let mut cause = err.source();
         while let Some(parent_err) = cause {
-            warn!("Caused by: {}", parent_err);
+            warn!("Caused by: {parent_err}");
             cause = parent_err.source();
         }
     }
@@ -138,7 +138,7 @@ async fn http_get_file_async(path: &str, url: &str, client: reqwest::Client, iso
         downloaded = new_size;
 
         // Send progress to Dart via Isolate
-        isolate.post(format!("{}/{}", new_size, total_size));
+        isolate.post(format!("{new_size}/{total_size}"));
 
         // An opportunity to kill it
         time::sleep(Duration::from_secs(0)).await;
@@ -216,7 +216,7 @@ pub unsafe extern "C" fn http_request(
 #[no_mangle]
 pub unsafe extern "C" fn http_post(uri: *const c_char) {
     let path = CStr::from_ptr(uri).to_str().unwrap();
-    println!("{}", path);
+    println!("{path}");
 }
 
 #[no_mangle]

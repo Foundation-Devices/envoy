@@ -157,7 +157,7 @@ pub unsafe extern "C" fn decode_single_part(value: *const c_char) -> *const Char
     let decoded = match bytewords::decode(parsed_ur.as_bytewords().unwrap(), Style::Minimal) {
         Ok(d) => d,
         Err(e) => {
-            println!("Error decoding: {:?}", e);
+            println!("Error decoding: {e:?}");
             Vec::new()
         }
     };
