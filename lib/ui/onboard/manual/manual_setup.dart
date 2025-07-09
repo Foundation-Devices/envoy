@@ -2,12 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:io';
-
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/components/envoy_scaffold.dart';
-import 'package:envoy/ui/embedded_video.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/manual/generate_seed.dart';
 import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
@@ -20,116 +16,9 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/seed_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
-import 'package:envoy/util/build_context_extension.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-class ManualSetup extends StatefulWidget {
-  const ManualSetup({super.key});
-
-  @override
-  State<ManualSetup> createState() => _ManualSetupState();
-}
-
-class _ManualSetupState extends State<ManualSetup> {
-  final GlobalKey<EmbeddedVideoState> _playerKey = GlobalKey();
-
-  @override
-  Widget build(BuildContext context) {
-    return OnboardPageBackground(
-        child: EnvoyScaffold(
-      removeAppBarPadding: true,
-      topBarLeading: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: const Icon(Icons.arrow_back_ios_rounded,
-              color: EnvoyColors.textPrimary, size: EnvoySpacing.medium2)),
-      topBarActions: [
-        TextButton(
-          child: Text(S().component_skip,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: Colors.black)),
-          onPressed: () {
-            context.go("/");
-          },
-        ),
-      ],
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.xs),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
-              child: Container(
-                padding: const EdgeInsets.only(top: 5),
-                child: Column(
-                  children: [
-                    !Platform.isLinux
-                        ? EmbeddedVideo(
-                            path: "assets/videos/fd_wallet_manual.m4v",
-                            key: _playerKey,
-                          )
-                        : Container(),
-                  ],
-                ),
-              ),
-            ),
-            const Padding(padding: EdgeInsets.only(bottom: 6)),
-            Text(
-              S().manual_setup_tutorial_heading,
-              textAlign: TextAlign.center,
-              style: EnvoyTypography.heading,
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
-              child: Text(
-                S().manual_setup_tutorial_subheading,
-                textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall!
-                    .copyWith(fontSize: 13),
-              ),
-            ),
-            Column(
-              children: [
-                OnboardingButton(
-                    label: S().manual_setup_tutorial_CTA2,
-                    type: EnvoyButtonTypes.secondary,
-                    fontWeight: FontWeight.w600,
-                    onTap: () {
-                      _playerKey.currentState?.pause();
-                      context.goNamed(ONBOARD_ENVOY_MANUAL_IMPORT);
-                    }),
-                !EnvoySeed().walletDerived()
-                    ? OnboardingButton(
-                        label: S().manual_setup_tutorial_CTA1,
-                        fontWeight: FontWeight.w600,
-                        onTap: () {
-                          _playerKey.currentState?.pause();
-                          context.goNamed(ONBOARD_ENVOY_MANUAL_GENERATE);
-                        })
-                    : const SizedBox.shrink(),
-                const SizedBox(height: EnvoySpacing.xs),
-                SizedBox(
-                    height: context.isSmallScreen
-                        ? EnvoySpacing.medium1
-                        : EnvoySpacing.medium2),
-              ],
-            )
-          ],
-        ),
-      ),
-    ));
-  }
-}
 
 enum SeedIntroScreenType {
   generate,

@@ -2,16 +2,17 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use std::pin::Pin;
+use crate::frb_generated::StreamSink;
 use anyhow::Result;
-use btleplug::{api::Peripheral as _, platform::PeripheralId};
 use btleplug::api::{Characteristic, ValueNotification, WriteType};
+use btleplug::{api::Peripheral as _, platform::PeripheralId};
 use flutter_rust_bridge::frb;
 use futures::Stream;
+use log::debug;
+use std::pin::Pin;
 use tokio::time;
 use tokio::time::Instant;
 use uuid::Uuid;
-use log::debug;
 
 pub const WRITE_CHARACTERISTIC_UUID: Uuid = Uuid::from_u128(0x6E400002_B5A3_F393_E0A9_E50E24DCCA9E);
 pub const READ_CHARACTERISTIC_UUID: Uuid = Uuid::from_u128(0x6E400003_B5A3_F393_E0A9_E50E24DCCA9E);
@@ -74,19 +75,26 @@ impl Device {
     pub async fn write(&self, data: Vec<u8>) -> Result<()> {
         debug!("before uart_characteristic");
         let uart_characteristic = self.get_uart_write_characteristic();
-        self.peripheral.write(&uart_characteristic, &data, WriteType::WithoutResponse)
+        self.peripheral
+            .write(&uart_characteristic, &data, WriteType::WithoutResponse)
             .await?;
 
         Ok(())
     }
 
-    pub async fn write_all(&self, data: Vec<Vec<u8>>) -> Result<()> {
+    pub async fn write_all(&self, data: Vec<Vec<u8>>, sink: StreamSink<f64>) -> Result<()> {
         let uart_characteristic = self.get_uart_write_characteristic();
 
         let start = Instant::now();
-        for data in data {
-            self.peripheral.write(&uart_characteristic, &data, WriteType::WithoutResponse)
+        let total = data.len();
+        for (i, chunk) in data.into_iter().enumerate() {
+            self.peripheral
+                .write(&uart_characteristic, &chunk, WriteType::WithoutResponse)
                 .await?;
+
+            let progress = (i + 1) as f64 / total as f64;
+            let _ = sink.add(progress);
+
             tokio::time::sleep(time::Duration::from_millis(30)).await;
         }
 
@@ -136,7 +144,7 @@ impl Device {
 
         for characteristic in characteristics.clone() {
             debug!("  {:?}", characteristic);
-        };
+        }
 
         let uart_characteristic = characteristics
             .iter()
