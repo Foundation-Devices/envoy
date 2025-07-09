@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:animations/animations.dart';
+import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -358,7 +359,20 @@ class _PrimeFwDownloadProgressState
                     step: ref.watch(fwTransferStateProvider), highlight: false),
                 const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                 Consumer(builder: (context, ref, child) {
-                  final progress = ref.watch(fwDownloadProgressProvider);
+                  final progress = ref.watch(sendProgressProvider);
+                  var timeRemaining = ref.watch(remainingTimeProvider);
+
+                  String formatDuration(Duration d) {
+                    final totalSeconds = d.inSeconds;
+
+                    if (totalSeconds < 60) {
+                      return " ${totalSeconds}s";
+                    } else {
+                      final minutes = (totalSeconds / 60).round();
+                      return " ~${minutes}min";
+                    }
+                  }
+
                   return Column(
                     children: [
                       EnvoyGradientProgress(
@@ -366,12 +380,14 @@ class _PrimeFwDownloadProgressState
                       ),
                       const Padding(
                           padding: EdgeInsets.all(EnvoySpacing.small)),
-                      //TODO: update with time remaining
-                      Text(
-                        S().firmware_downloadingUpdate_timeRemaining(
-                            "time_remaining"), // TODO
-                        style: EnvoyTypography.explainer.copyWith(fontSize: 14),
-                      ),
+                      if (ref.watch(fwDownloadStateProvider).state ==
+                          EnvoyStepState.FINISHED)
+                        Text(
+                          S().firmware_downloadingUpdate_timeRemaining(
+                              formatDuration(timeRemaining)), //
+                          style:
+                              EnvoyTypography.explainer.copyWith(fontSize: 14),
+                        ),
                     ],
                   );
                 })

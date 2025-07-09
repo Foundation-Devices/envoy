@@ -21,13 +21,14 @@ pub mod device;
 pub mod peripheral;
 
 use crate::frb_generated::StreamSink;
+use flutter_rust_bridge::frb;
 
 pub use device::*;
 pub use peripheral::*;
 
 use log::{debug, error};
 
-enum Command {
+pub enum Command {
     Scan {
         filter: Vec<String>,
     },
@@ -52,6 +53,7 @@ enum Command {
     WriteAll {
         id: String,
         data: Vec<Vec<u8>>,
+        sink: StreamSink<f64>,
     },
 }
 
@@ -80,7 +82,9 @@ impl std::fmt::Debug for Command {
             }
             Command::Read { id, sink: _ } => f.debug_struct("Read").field("id", id).finish(),
             Command::Write { id, .. } => f.debug_struct("Write").field("id", id).finish(),
-            Command::WriteAll { id, .. } => f.debug_struct("WriteAll").field("id", id).finish(),
+            Command::WriteAll { id, sink: _, .. } => {
+                f.debug_struct("WriteAll").field("id", id).finish()
+            }
         }
     }
 }
@@ -106,12 +110,12 @@ fn ble_state() -> &'static BleState {
 }
 
 fn init_logging(level: log::LevelFilter) {
-  //  #[cfg(target_os = "android")]
-//        let _ = android_logger::init_once(android_logger::Config::default().with_max_level(level));
+    //  #[cfg(target_os = "android")]
+    //        let _ = android_logger::init_once(android_logger::Config::default().with_max_level(level));
 
-  //      #[cfg(any(target_os = "ios", target_os = "macos"))]
+    //      #[cfg(any(target_os = "ios", target_os = "macos"))]
     //    let _ = oslog::OsLogger::new("frb_user").level_filter(level).init();
- }
+}
 
 /// The init() function must be called before anything else.
 /// At the moment the developer has to make sure it is only called once.
@@ -288,14 +292,15 @@ pub fn write(id: String, data: Vec<u8>) -> Result<()> {
     command::send(Command::Write { id, data })
 }
 
-pub fn write_all(id: String, data: Vec<Vec<u8>>) -> Result<()> {
-    command::send(Command::WriteAll { id, data })
+pub fn write_all(id: String, data: Vec<Vec<u8>>, sink: StreamSink<f64>) -> Result<()> {
+    command::send(Command::WriteAll { id, data, sink })
 }
 
 pub fn read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
     command::send(Command::Read { id, sink })
 }
 
+#[frb(ignore)]
 mod command {
     use anyhow::Context;
 
@@ -327,8 +332,8 @@ mod command {
                     Command::Write { id, data } => {
                         spawn_command(inner_write(id, data), kind);
                     }
-                    Command::WriteAll { id, data } => {
-                        spawn_command(inner_write_all(id, data), kind);
+                    Command::WriteAll { id, data, sink } => {
+                        spawn_command(inner_write_all(id, data, sink), kind);
                     }
                 }
             }
@@ -465,13 +470,14 @@ mod command {
         device.write(data).await
     }
 
-    async fn inner_write_all(id: String, data: Vec<Vec<u8>>) -> Result<()> {
+    async fn inner_write_all(id: String, data: Vec<Vec<u8>>, sink: StreamSink<f64>) -> Result<()> {
         debug!("inner write all: {id}");
+
         let devices = ble_state().devices.lock().await;
         let device = devices
             .get(&id)
             .ok_or(anyhow::anyhow!("UnknownPeripheral(id)"))?;
 
-        device.write_all(data).await
+        device.write_all(data, sink).await
     }
 }

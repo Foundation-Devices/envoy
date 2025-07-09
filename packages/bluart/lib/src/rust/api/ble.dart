@@ -9,9 +9,9 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'ble.freezed.dart';
 
-// These functions are ignored because they are not marked as `pub`: `inner_benchmark`, `inner_connect`, `inner_disconnect`, `inner_read`, `inner_scan`, `inner_write_all`, `inner_write`, `remove_stale_devices`, `send_devices`, `send`
-// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `Command`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `fmt`
+// These functions are ignored because they are not marked as `pub`: `ble_state`, `init_logging`, `kind`, `remove_stale_devices`, `send_devices`
+// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `BleState`, `Command`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `fmt`
 
 /// The init() function must be called before anything else.
 /// At the moment the developer has to make sure it is only called once.
@@ -39,7 +39,7 @@ Stream<BigInt> benchmark({required String id}) =>
 Future<void> write({required String id, required List<int> data}) =>
     RustLib.instance.api.crateApiBleWrite(id: id, data: data);
 
-Future<void> writeAll({required String id, required List<Uint8List> data}) =>
+Stream<double> writeAll({required String id, required List<Uint8List> data}) =>
     RustLib.instance.api.crateApiBleWriteAll(id: id, data: data);
 
 Stream<Uint8List> read({required String id}) =>
