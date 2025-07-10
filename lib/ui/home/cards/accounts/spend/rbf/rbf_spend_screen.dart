@@ -6,6 +6,7 @@ import 'dart:ui';
 
 import 'package:animations/animations.dart';
 import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/uniform_resource.dart';
@@ -528,9 +529,11 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     }
   }
 
-  Future broadcastTx(EnvoyAccount account, DraftTransaction draftTransaction,
+  Future broadcastTx(EnvoyAccount account, DraftTransaction draft,
       BuildContext context) async {
     final rbfState = ref.read(rbfSpendStateProvider);
+    final stagingTxNote = ref.read(stagingTxNoteProvider);
+    final changeOutputTag = ref.read(stagingTxChangeOutPutTagProvider);
     final handler = account.handler;
     if (rbfState == null || handler == null) {
       return;
@@ -569,13 +572,23 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         port = null;
       }
 
+      //update draft transaction with latest note and change output tag
+      final draftTransaction = DraftTransaction(
+          transaction: draft.transaction.copyWith(
+            note: stagingTxNote,
+          ),
+          psbt: draft.psbt,
+          inputTags: draft.inputTags,
+          isFinalized: draft.isFinalized,
+          changeOutPutTag: changeOutputTag);
+
       /// get the raw transaction from the database
       await EnvoyAccountHandler.broadcast(
-        draftTransaction: rbfState.draftTx,
+        draftTransaction: draftTransaction,
         electrumServer: server,
         torPort: port,
       );
-      await handler.updateBroadcastState(draftTransaction: rbfState.draftTx);
+      await handler.updateBroadcastState(draftTransaction: draftTransaction);
 
       BitcoinTransaction originalTx = rbfState.originalTx;
       BitcoinTransaction bumpedTx = rbfState.getBumpedTransaction;
