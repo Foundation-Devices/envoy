@@ -757,6 +757,7 @@ Future<void> checkForToast(WidgetTester tester) async {
           offset.dy >= 0 &&
           offset.dx <= 400 &&
           offset.dy <= 800) {
+        await tester.pump(Durations.long2);
         await tester.tap(closeToastButton.last);
         await tester.pump(Durations.long2);
       } else {
@@ -784,7 +785,9 @@ Future<void> findAndTapActivitySlideButton(WidgetTester tester) async {
 
     // If the specific EnvoyIcon is found inside this GestureDetector, tap it
     if (iconFinder.evaluate().isNotEmpty) {
+      await tester.pump(Durations.long2);
       await tester.tap(find.byWidget(gestureDetectorWidget));
+      await tester.pump(Durations.long2);
       await tester.pump();
       return; // Exit after tapping
     }
