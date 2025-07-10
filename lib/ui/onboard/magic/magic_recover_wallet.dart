@@ -31,6 +31,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart';
 
 class MagicRecoverWallet extends ConsumerStatefulWidget {
@@ -48,6 +49,7 @@ enum MagicRecoveryWalletState {
   seedNotFound,
   unableToDecryptBackup,
   failure,
+  validSeedNoBackup,
 }
 
 class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
@@ -55,6 +57,8 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
 
   MagicRecoveryWalletState _magicRecoverWalletState =
       MagicRecoveryWalletState.recovering;
+
+  String? _seed;
 
   @override
   void initState() {
@@ -268,6 +272,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           passphrase = passphrase0;
         });
       }
+      bool isValidSeed = await EnvoyBip39.validateSeed(seedWords: seed);
+      _seed = seed;
+
       bool success =
           await EnvoySeed().restoreData(seed: seed, passphrase: passphrase);
 
@@ -284,6 +291,12 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
             if (mounted && !ref.read(triedAutomaticRecovery)) {
               _tryAutomaticRecovery();
             }
+          });
+        } else if (isValidSeed) {
+          _setUnhappyState();
+          setState(() {
+            _magicRecoverWalletState =
+                MagicRecoveryWalletState.validSeedNoBackup;
           });
         } else {
           _setUnhappyState();
@@ -322,6 +335,10 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
     }
     if (_magicRecoverWalletState == MagicRecoveryWalletState.success) {
       return _successMessage(context);
+    }
+    if (_magicRecoverWalletState ==
+        MagicRecoveryWalletState.validSeedNoBackup) {
+      return _manualSeedRecovery(context);
     }
     if (_magicRecoverWalletState == MagicRecoveryWalletState.backupNotFound ||
         _magicRecoverWalletState ==
@@ -378,7 +395,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
               label: S().component_continue,
               type: EnvoyButtonTypes.tertiary,
               onTap: () {
-                showContinueWarningDialog(context);
+                showContinueWarningDialog(context, _seed!);
               },
             ),
             OnboardingButton(
@@ -466,7 +483,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
       );
     }
     if (_magicRecoverWalletState ==
-        MagicRecoveryWalletState.serverNotReachable) {
+            MagicRecoveryWalletState.serverNotReachable ||
+        _magicRecoverWalletState ==
+            MagicRecoveryWalletState.validSeedNoBackup) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
@@ -476,7 +495,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
               label: S().component_continue,
               type: EnvoyButtonTypes.tertiary,
               onTap: () {
-                showContinueWarningDialog(context);
+                showContinueWarningDialog(context, _seed!);
               },
             ),
             Consumer(
@@ -484,8 +503,13 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                 return OnboardingButton(
                   label: S().manual_setup_import_backup_CTA2,
                   type: EnvoyButtonTypes.secondary,
-                  onTap: () {
-                    _openExternalBackUpFile(context);
+                  onTap: () async {
+                    if (_seed != null) {
+                      await EnvoySeed().deriveAndAddWallets(_seed!);
+                    }
+                    if (context.mounted) {
+                      _openExternalBackUpFile(context);
+                    }
                   },
                 );
               },
@@ -559,6 +583,33 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
               ),
             ),
           ]),
+    );
+  }
+
+  Widget _manualSeedRecovery(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Text(
+            S().magic_setup_recovery_fail_backup_heading,
+            textAlign: TextAlign.center,
+            style: EnvoyTypography.heading,
+          ),
+        ),
+        const Padding(padding: EdgeInsets.all(28)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Text(
+            S().magic_setup_recovery_fail_backup_subheading,
+            textAlign: TextAlign.center,
+            style:
+                EnvoyTypography.info.copyWith(color: EnvoyColors.textTertiary),
+          ),
+        ),
+      ],
     );
   }
 
@@ -671,7 +722,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
     }
   }
 
-  void showContinueWarningDialog(BuildContext context) {
+  void showContinueWarningDialog(BuildContext context, String seed) {
     showEnvoyDialog(
       context: context,
       dismissible: false,
@@ -686,14 +737,13 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           style: EnvoyTypography.info,
         ),
         primaryButtonLabel: S().component_continue,
-        onPrimaryButtonTap: (context) {
-          EnvoySeed().get().then((seed) async {
-            await EnvoySeed().deriveAndAddWallets(seed!);
-            await Future.delayed(const Duration(milliseconds: 120));
-            if (context.mounted) {
-              context.go("/");
-            }
-          });
+        onPrimaryButtonTap: (context) async {
+          await EnvoySeed().deriveAndAddWallets(seed);
+
+          await Future.delayed(const Duration(milliseconds: 120));
+          if (context.mounted) {
+            context.goNamed(WALLET_SUCCESS);
+          }
         },
         tertiaryButtonLabel: S().component_back,
         tertiaryButtonTextColor: EnvoyColors.accentPrimary,
