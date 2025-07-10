@@ -614,6 +614,21 @@ Future<void> scrollUntilVisible(WidgetTester tester, String text,
       'Widget with text "$text" not found after scrolling $maxScrolls times.');
 }
 
+Future<void> scrollStagingFeeWheel(
+  WidgetTester tester, {
+  double scrollIncrement = -2000,
+}) async {
+  final scrollableFinder = find.byType(ListWheelScrollView);
+  final gestureOffset = Offset(scrollIncrement, 0); // Horizontal flick
+
+  await tester.fling(scrollableFinder, gestureOffset, 100); // velocity = 1000
+  await tester.pump(Durations.long2);
+  await tester.pump(Durations.long2);
+  await tester.pump(Durations.long2);
+  await tester.pump(Durations.long2);
+  await tester.pump(Durations.long2);
+}
+
 Future<void> scrollFindAndTapText(WidgetTester tester, String text,
     {int maxScrolls = 50, double scrollIncrement = -100}) async {
   Finder finder = find.text(text);
@@ -757,6 +772,7 @@ Future<void> checkForToast(WidgetTester tester) async {
           offset.dy >= 0 &&
           offset.dx <= 400 &&
           offset.dy <= 800) {
+        await tester.pump(Durations.long2);
         await tester.tap(closeToastButton.last);
         await tester.pump(Durations.long2);
       } else {
@@ -784,7 +800,9 @@ Future<void> findAndTapActivitySlideButton(WidgetTester tester) async {
 
     // If the specific EnvoyIcon is found inside this GestureDetector, tap it
     if (iconFinder.evaluate().isNotEmpty) {
+      await tester.pump(Durations.long2);
       await tester.tap(find.byWidget(gestureDetectorWidget));
+      await tester.pump(Durations.long2);
       await tester.pump();
       return; // Exit after tapping
     }
@@ -925,6 +943,28 @@ Future<Finder> checkForEnvoyIcon(
   await tester.pumpUntilFound(iconFinder, tries: 20, duration: Durations.long2);
 
   return iconFinder;
+}
+
+Future<void> checkForEnvoyIconNotFound(
+  WidgetTester tester,
+  EnvoyIcons unexpectedIcon,
+) async {
+  final iconFinder = find.byWidgetPredicate(
+    (widget) => widget is EnvoyIcon && widget.icon == unexpectedIcon,
+  );
+
+  const int tries = 20;
+  const Duration delay = Duration(milliseconds: 100);
+
+  for (int i = 0; i < tries; i++) {
+    await tester.pump(delay);
+    if (!tester.any(iconFinder)) {
+      return; // Success: icon not found
+    }
+  }
+
+  throw Exception(
+      '❌ EnvoyIcon "$unexpectedIcon" was still found after $tries tries.');
 }
 
 Future<void> findAndPressTextButton(

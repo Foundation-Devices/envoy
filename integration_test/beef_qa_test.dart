@@ -1266,7 +1266,9 @@ Future<void> main() async {
 
       if (!isSettingsSignetSwitchOn) {
         // find And Toggle Signet Switch
+        await tester.pump(Durations.long2);
         await findAndToggleSettingsSwitch(tester, 'Signet');
+        await tester.pump(Durations.long2);
         final closeDialogButton = find.byIcon(Icons.close);
         await tester.tap(closeDialogButton.last, warnIfMissed: false);
         await tester.pump(Durations.long2);
@@ -1274,6 +1276,7 @@ Future<void> main() async {
 
       if (!isSettingsTaprootSwitchOn) {
         // find And Toggle Taproot Switch
+        await tester.pump(Durations.long2);
         await findAndToggleSettingsSwitch(tester, 'Receive to Taproot');
         final closeDialogButton = find.byIcon(Icons.close);
         await tester.tap(closeDialogButton.last, warnIfMissed: false);
@@ -1315,7 +1318,48 @@ Future<void> main() async {
       await tester.pumpUntilFound(textFeeFinder,
           tries: 100, duration: Durations.long2);
 
-      // TODO: check fee data and warning
+      // scroll to see if /!\ alert icon is not present
+      await scrollHome(tester, -300,
+          scrollableWidgetType: SingleChildScrollView);
+
+      await checkForEnvoyIconNotFound(tester, EnvoyIcons.alert);
+
+      // change fee
+      await findAndPressTextButton(tester, 'Custom');
+      await tester.pump(Durations.long2);
+
+      await scrollStagingFeeWheel(tester);
+
+      await findAndPressTextButton(tester, 'Confirm Fee');
+      await tester.pump(Durations.long2);
+      await tester.pumpAndSettle();
+
+      // scroll to see if /!\ alert icon IS present
+      await scrollHome(tester, -300,
+          scrollableWidgetType: SingleChildScrollView);
+
+      await checkForEnvoyIcon(tester, EnvoyIcons.alert);
+
+// TODO: check the amount
+      // 1. Find the Text widget
+      final textFinder =
+          find.textContaining(RegExp(r'Fee is .*% of total amount'));
+
+      expect(textFinder, findsOneWidget); // Ensure it's found
+
+      // 2. Extract the text
+      final Text textWidget = tester.widget(textFinder);
+      final String fullText = textWidget.data ?? '';
+
+      // 3. Extract the number using RegExp
+      final match = RegExp(r'Fee is ([\d.]+)%').firstMatch(fullText);
+      expect(match, isNotNull);
+
+      final String percentageString = match!.group(1)!;
+      final double feePercentage = double.parse(percentageString);
+
+      // 4. Assert on the extracted value
+      expect(feePercentage, equals(89)); // Or your expected value
     });
     testWidgets('Switching Fiat in App', (tester) async {
       await goBackHome(tester);
