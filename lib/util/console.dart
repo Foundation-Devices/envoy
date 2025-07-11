@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 
 // A debug printing utility that prints the given message and optional stack trace in debug mode.
 kPrint(Object? message, {StackTrace? stackTrace}) {
-  if (!kReleaseMode) {
+  if (!kReleaseMode || !kProfileMode) {
     // ignore: avoid_print
     print(message);
     // If a stackTrace is provided, print the stack trace
