@@ -83,12 +83,6 @@ final filteredTransactionsProvider =
     case TransactionSortTypes.newestFirst:
       transactions.sort(
         (a, b) {
-          if (!a.isConfirmed) {
-            return 1;
-          }
-          if (!b.isConfirmed) {
-            return -1;
-          }
           return compareTimestamps(a.date, b.date);
         },
       );
@@ -97,12 +91,6 @@ final filteredTransactionsProvider =
     case TransactionSortTypes.oldestFirst:
       transactions.sort(
         (a, b) {
-          if (!a.isConfirmed) {
-            return -1;
-          }
-          if (!b.isConfirmed) {
-            return 1;
-          }
           return compareTimestamps(b.date, a.date);
         },
       );

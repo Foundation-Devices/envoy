@@ -179,6 +179,7 @@ class _TransactionsDetailsWidgetState
       _cancelTx =
           await handler.composeCancellationTx(bitcoinTransaction: widget.tx);
     } catch (e, s) {
+      EnvoyReport().log("RBF:cancel", e.toString(), stackTrace: s);
       if (e is RBFBumpFeeError) {
         if (e is InsufficientFunds) {
           if (mounted) {
