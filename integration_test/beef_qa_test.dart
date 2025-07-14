@@ -10,6 +10,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/widgets/card_swipe_wrapper.dart';
+import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -1323,7 +1324,7 @@ Future<void> main() async {
       await tester.pumpUntilFound(textFeeFinder,
           tries: 100, duration: Durations.long2);
 
-      // scroll to see if /!\ alert icon is not present
+      // scroll to see if /!\ alert icon is NOT present
       await scrollHome(tester, -300,
           scrollableWidgetType: SingleChildScrollView);
 
@@ -1337,15 +1338,16 @@ Future<void> main() async {
 
       await findAndPressTextButton(tester, 'Confirm Fee');
       await tester.pump(Durations.long2);
-      await tester.pumpAndSettle();
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
 
       // scroll to see if /!\ alert icon IS present
-      await scrollHome(tester, -300,
+      await scrollHome(tester, -600,
           scrollableWidgetType: SingleChildScrollView);
 
       await checkForEnvoyIcon(tester, EnvoyIcons.alert);
 
-// TODO: check the amount
+      /// Check the amount
       // 1. Find the Text widget
       final textFinder =
           find.textContaining(RegExp(r'Fee is .*% of total amount'));
@@ -1363,8 +1365,21 @@ Future<void> main() async {
       final String percentageString = match!.group(1)!;
       final double feePercentage = double.parse(percentageString);
 
+      // Find all EnvoyAmount widgets
+      final envoyAmountFinder = find.byType(EnvoyAmount);
+      // Get all EnvoyAmount widgets in order
+      final envoyAmountWidgets =
+          tester.widgetList<EnvoyAmount>(envoyAmountFinder).toList();
+
+      // Extract amount, fee, and total
+      final fee = envoyAmountWidgets[1].amountSats;
+      final total = envoyAmountWidgets[2].amountSats;
+
       // 4. Assert on the extracted value
-      expect(feePercentage, equals(89)); // Or your expected value
+      final expectedFeePercentage =
+          ((fee.toInt() / (total.toInt())) * 100).round();
+
+      expect(feePercentage, equals(expectedFeePercentage));
     });
     testWidgets('Switching Fiat in App', (tester) async {
       await goBackHome(tester);
