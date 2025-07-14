@@ -1138,7 +1138,9 @@ Future<void> main() async {
 
       if (!isSettingsSignetSwitchOn) {
         // find And Toggle Signet Switch
+        await tester.pump(Durations.long2);
         await findAndToggleSettingsSwitch(tester, 'Signet');
+        await tester.pump(Durations.long2);
         final closeDialogButton = find.byIcon(Icons.close);
         await tester.tap(closeDialogButton.last, warnIfMissed: false);
         await tester.pump(Durations.long2);
@@ -1146,7 +1148,9 @@ Future<void> main() async {
 
       if (!isSettingsTaprootSwitchOn) {
         // find And Toggle Taproot Switch
+        await tester.pump(Durations.long2);
         await findAndToggleSettingsSwitch(tester, 'Receive to Taproot');
+        await tester.pump(Durations.long2);
         final closeDialogButton = find.byIcon(Icons.close);
         await tester.tap(closeDialogButton.last, warnIfMissed: false);
         await tester.pump(Durations.long2);
@@ -1194,6 +1198,7 @@ Future<void> main() async {
 
       // go to Activity
       await findAndTapActivitySlideButton(tester);
+      await tester.pump(Durations.long2);
       await tester.pump(Durations.long2);
 
       await findFirstTextButtonAndPress(tester, 'Sent');

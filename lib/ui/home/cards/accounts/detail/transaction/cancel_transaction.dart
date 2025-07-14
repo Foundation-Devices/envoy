@@ -85,81 +85,28 @@ class RBFState {
 
 class CancelTxButton extends ConsumerStatefulWidget {
   final EnvoyTransaction transaction;
+  final DraftTransaction? draftTransaction;
+  final bool loading;
 
-  const CancelTxButton({super.key, required this.transaction});
+  const CancelTxButton(
+      {super.key,
+      required this.transaction,
+      required this.draftTransaction,
+      this.loading = false});
 
   @override
   ConsumerState<CancelTxButton> createState() => _CancelTxButtonState();
 }
 
 class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
-  bool _loading = false;
-  bool _canCancel = false;
-  late DraftTransaction draftTransaction;
-
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) => checkCancel());
-  }
-
-  Future<void> checkCancel() async {
-    if (mounted) {
-      setState(() {
-        _loading = true;
-        _canCancel = false;
-      });
-    }
-
-    final selectedAccount = ref.read(selectedAccountProvider);
-    final handler = selectedAccount?.handler;
-    if (handler == null) {
-      if (mounted) {
-        setState(() {
-          _loading = false;
-          _canCancel = false;
-        });
-      }
-      return;
-    }
-
-    try {
-      draftTransaction = await handler.composeCancellationTx(
-          bitcoinTransaction: widget.transaction);
-      if (mounted) {
-        setState(() {
-          _canCancel = true;
-        });
-      }
-    } catch (e, s) {
-      if (e is RBFBumpFeeError) {
-        if (e is InsufficientFunds) {
-          if (mounted) {
-            setState(() {
-              _canCancel = false;
-            });
-          }
-          return;
-        }
-      }
-      debugPrintStack(stackTrace: s);
-      kPrint(e);
-      if (mounted) {
-        setState(() {
-          _canCancel = false;
-        });
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _loading = false;
-        });
-      }
-    }
   }
 
   @override
   Widget build(BuildContext context) {
+    bool canCancel = widget.draftTransaction != null && widget.loading == false;
     return Padding(
       padding: const EdgeInsets.all(EnvoySpacing.xs),
       child: Column(
@@ -174,22 +121,22 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
               });
             },
             onTapUp: (_) {
-              ref.watch(rbfSpendStateProvider) != null && _canCancel
+              ref.watch(rbfSpendStateProvider) != null && canCancel
                   ? showEnvoyDialog(
                       context: context,
                       useRootNavigator: true,
                       builder: Builder(
                           builder: (context) => TxCancelDialog(
                               originalTx: widget.transaction,
-                              cancelTx: draftTransaction)))
+                              cancelTx: widget.draftTransaction!)))
                   : showNoCancelNoFundsDialog(context);
             },
             child: Container(
               height: EnvoySpacing.medium2,
               decoration: BoxDecoration(
-                  color: EnvoyColors.chilli500.applyOpacity(_loading
+                  color: EnvoyColors.chilli500.applyOpacity(widget.loading
                       ? 1
-                      : (ref.watch(rbfSpendStateProvider) != null && _canCancel
+                      : (ref.watch(rbfSpendStateProvider) != null && canCancel
                           ? 1
                           : 0.5)),
                   borderRadius: BorderRadius.circular(EnvoySpacing.small)),
@@ -197,7 +144,7 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _loading && ref.watch(rbfSpendStateProvider) == null
+                  widget.loading
                       ? const SizedBox.square(
                           dimension: EnvoySpacing.medium1,
                           child: CircularProgressIndicator(
@@ -227,7 +174,7 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
   }
 
   void showNoCancelNoFundsDialog(BuildContext context) {
-    if (_loading) {
+    if (widget.loading) {
       return;
     }
 
@@ -547,6 +494,9 @@ class _CancelTransactionProgressState
   }
 
   _broadcastTx() async {
+    final originalTx =
+        ref.read(getTransactionProvider(widget.originalTx.txId)) ??
+            widget.originalTx;
     setState(() {
       broadcastProgress = BroadcastProgress.inProgress;
     });
@@ -565,27 +515,46 @@ class _CancelTransactionProgressState
       if (port == -1) {
         port = null;
       }
+      //update draft transaction with updated tx state
+      DraftTransaction cancelTx = DraftTransaction(
+          transaction: BitcoinTransaction(
+            txId: widget.cancelTx.transaction.txId,
+            blockHeight: widget.cancelTx.transaction.blockHeight,
+            confirmations: widget.cancelTx.transaction.confirmations,
+            isConfirmed: widget.cancelTx.transaction.isConfirmed,
+            fee: widget.cancelTx.transaction.fee,
+            feeRate: widget.cancelTx.transaction.feeRate,
+            amount: widget.cancelTx.transaction.amount,
+            inputs: widget.cancelTx.transaction.inputs,
+            address: widget.cancelTx.transaction.address,
+            outputs: widget.cancelTx.transaction.outputs,
+            vsize: widget.cancelTx.transaction.vsize,
+            accountId: widget.cancelTx.transaction.accountId,
+            note: originalTx.note,
+          ),
+          psbt: widget.cancelTx.psbt,
+          inputTags: widget.cancelTx.inputTags,
+          isFinalized: widget.cancelTx.isFinalized);
 
       /// get the raw transaction from the database
       await EnvoyAccountHandler.broadcast(
-        draftTransaction: widget.cancelTx,
+        draftTransaction: cancelTx,
         electrumServer: server,
         torPort: port,
       );
-      await handler.updateBroadcastState(draftTransaction: widget.cancelTx);
+      await handler.updateBroadcastState(draftTransaction: cancelTx);
       await EnvoyStorage().addCancelState(RBFState(
               originalTxId: widget.originalTx.txId,
-              newTxId: widget.cancelTx.transaction.txId,
+              newTxId: cancelTx.transaction.txId,
               oldFee: widget.originalTx.fee.toInt(),
-              newFee: widget.cancelTx.transaction.fee.toInt(),
+              newFee: cancelTx.transaction.fee.toInt(),
               accountId: account.id,
               rbfTimeStamp: DateTime.now().millisecondsSinceEpoch,
               previousTxTimeStamp: widget.originalTx.date?.toInt() ??
                   DateTime.now().millisecondsSinceEpoch)
           .toJson());
       await Future.delayed(const Duration(milliseconds: 100));
-      final _ =
-          ref.refresh(cancelTxStateProvider(widget.cancelTx.transaction.txId));
+      final _ = ref.refresh(cancelTxStateProvider(cancelTx.transaction.txId));
       await Future.delayed(const Duration(milliseconds: 200));
       ref.read(rbfBroadCastedTxProvider.notifier).state = [
         ...ref.read(rbfBroadCastedTxProvider),

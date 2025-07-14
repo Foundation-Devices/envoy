@@ -15,10 +15,13 @@ import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/envoy_info_card.dart';
 import 'package:envoy/ui/components/envoy_tag_list_item.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_button.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_spend_screen.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
@@ -32,6 +35,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/amount.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -72,7 +76,135 @@ class _TransactionsDetailsWidgetState
   bool showTxIdExpanded = false;
   bool showAddressExpanded = false;
   bool showPaymentId = false;
+  bool _checkingBoost = true;
+  bool _checkingCancel = true;
+  DraftTransaction? _cancelTx;
   final GlobalKey _detailWidgetKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await Future.delayed(const Duration(milliseconds: 50));
+      _checkForRBF();
+    });
+  }
+
+  Future _checkForRBF() async {
+    try {
+      await _checkBoost();
+    } catch (e) {
+      kPrint(e);
+    }
+    try {
+      await _checkCancel();
+    } catch (e) {
+      kPrint(e);
+    }
+  }
+
+  Future<void> _checkBoost() async {
+    try {
+      ref.watch(rbfSpendStateProvider.notifier).state = null;
+      final account = ref.read(selectedAccountProvider);
+      final handler = account?.handler;
+      if (account == null || handler == null) {
+        return;
+      }
+      setState(() {
+        _checkingBoost = true;
+      });
+      BitcoinTransaction originalTx = widget.tx;
+
+      TransactionFeeResult result = await handler.getMaxBumpFeeRates(
+          selectedOutputs: [], bitcoinTransaction: originalTx);
+
+      setState(() {
+        _checkingBoost = false;
+      });
+      int minRate = result.minFeeRate.toInt();
+      int maxRate = result.maxFeeRate.toInt();
+      int fasterFeeRate = minRate + 1;
+      if (minRate == maxRate) {
+        fasterFeeRate = maxRate;
+      } else {
+        if (minRate < maxRate) {
+          fasterFeeRate = (minRate + 1).clamp(minRate, maxRate);
+        }
+      }
+      ref.read(feeChooserStateProvider.notifier).state = FeeChooserState(
+        standardFeeRate: minRate,
+        fasterFeeRate: fasterFeeRate,
+        minFeeRate: minRate,
+        maxFeeRate: maxRate,
+      );
+      ref.read(rbfSpendStateProvider.notifier).state = RBFSpendState(
+        receiveAddress: result.draftTransaction.transaction.address,
+        receiveAmount: originalTx.amount,
+        feeRate: minRate,
+        originalTx: originalTx,
+        originalAmount: originalTx.amount,
+        draftTx: result.draftTransaction,
+      );
+    } catch (e) {
+      EnvoyReport().log("RBF", "RBF check failed : $e");
+    } finally {
+      if (mounted) {
+        setState(() {
+          _checkingBoost = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _checkCancel() async {
+    if (mounted) {
+      setState(() {
+        _cancelTx = null;
+      });
+    }
+
+    final selectedAccount = ref.read(selectedAccountProvider);
+    final handler = selectedAccount?.handler;
+    if (handler == null) {
+      if (mounted) {
+        setState(() {
+          _checkingCancel = false;
+        });
+      }
+      return;
+    }
+
+    try {
+      _cancelTx =
+          await handler.composeCancellationTx(bitcoinTransaction: widget.tx);
+    } catch (e, s) {
+      EnvoyReport().log("RBF:cancel", e.toString(), stackTrace: s);
+      if (e is RBFBumpFeeError) {
+        if (e is InsufficientFunds) {
+          if (mounted) {
+            setState(() {
+              _cancelTx = null;
+            });
+          }
+          return;
+        }
+      }
+      debugPrintStack(stackTrace: s);
+      kPrint(e);
+      if (mounted) {
+        setState(() {
+          _cancelTx = null;
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _checkingCancel = false;
+        });
+      }
+    }
+  }
 
   String _getConfirmationTimeString(int minutes) {
     String confirmationTime = "";
@@ -444,6 +576,7 @@ class _TransactionsDetailsWidgetState
                           ),
                           trailing: TxRBFButton(
                             tx: tx,
+                            loading: _checkingBoost,
                           ),
                         )
                       : Container(),
@@ -490,6 +623,8 @@ class _TransactionsDetailsWidgetState
                   rbfPossible && tx.vsize != BigInt.zero
                       ? CancelTxButton(
                           transaction: tx,
+                          draftTransaction: _cancelTx,
+                          loading: _checkingCancel,
                         )
                       : const SizedBox.shrink(),
                 ],
