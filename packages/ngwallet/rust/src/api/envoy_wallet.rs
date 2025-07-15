@@ -403,13 +403,14 @@ impl EnvoyAccountHandler {
             .unwrap();
         {
             let mut account = self.ng_account.lock().unwrap();
-            account.mark_utxo_as_used(psbt.unsigned_tx.clone());
             let std_time = SystemTime::now()
                 .duration_since(UNIX_EPOCH)
                 .unwrap_or(Duration::from_secs(0)).as_secs();
+
             account
                 .get_coordinator_wallet()
                 .insert_tx(psbt.unsigned_tx.clone(), std_time+1000);
+            account.mark_utxo_as_used(psbt.unsigned_tx.clone());
             account.persist().expect("Failed to persist account after broadcast");
         }
         self.send_update();
