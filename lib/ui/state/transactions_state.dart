@@ -51,9 +51,8 @@ final filteredTransactionsProvider =
   List<EnvoyTransaction> walletTransactions =
       ref.watch(transactionsProvider(accountId));
 
-  List<EnvoyTransaction> pendingTransactions = walletTransactions
-      .where((element) => element.confirmations == 0)
-      .toList();
+  List<EnvoyTransaction> pendingTransactions =
+      walletTransactions.where((element) => element.confirmations < 3).toList();
   List<EnvoyTransaction> confirmedTransactions = walletTransactions
       .where((element) => element.confirmations >= 3)
       .toList();

@@ -65,6 +65,7 @@ class SyncManager {
         return;
       }
       _syncAll();
+      dumpProgress();
     });
   }
 
@@ -141,7 +142,7 @@ class SyncManager {
               null) {
             FullScanRequest request = await account.handler!
                 .requestFullScan(addressType: descriptor.addressType);
-            _fullScanRequests[(account, descriptor.addressType)] = request;
+            performFullScan(account.handler!, descriptor.addressType, request);
           }
         }
       }
@@ -180,6 +181,7 @@ class SyncManager {
   Future<void> _startSync() async {
     // Process sync requests in batches
     final entries = _syncRequests.entries.toList();
+
     for (int i = 0; i < entries.length; i += _syncBatchSize) {
       final batch = entries.skip(i).take(_syncBatchSize);
       final futures = <Future>[];
@@ -267,6 +269,10 @@ class SyncManager {
   Future<void> performFullScan(EnvoyAccountHandler handler,
       AddressType addressType, FullScanRequest fullScanRequest) async {
     final account = await handler.state();
+    if (_activeFullScanOperations.contains((account.id, addressType))) {
+      return;
+    }
+    _activeFullScanOperations.add((account.id, addressType));
     final server = SyncManager.getElectrumServer(account.network);
     int? port = Settings().getPort(account.network);
     if (port == -1) {
@@ -278,6 +284,7 @@ class SyncManager {
     _currentLoading.sink.add(Scanning(account.id));
 
     if (fullScanRequest.isDisposed) {
+      _currentLoading.sink.add(None());
       kPrint("FullScanRequest is disposed");
       return;
     }
@@ -305,6 +312,7 @@ class SyncManager {
           e.toString());
     } finally {
       _currentLoading.sink.add(None());
+      _activeFullScanOperations.remove((account.id, addressType));
     }
   }
 
@@ -312,6 +320,7 @@ class SyncManager {
       SyncRequest syncRequest, int? port, AddressType addressType) async {
     try {
       _currentLoading.sink.add(Syncing(account.id));
+      DateTime time = DateTime.now();
       kPrint(
           "⏳Syncing account $addressType - ${account.name}| ${account.network} | $server  |Tor : $port");
       // Use the scheduler to run this task in the background
@@ -320,13 +329,18 @@ class SyncManager {
         electrumServer: server,
         torPort: port,
       );
+      DateTime finish = DateTime.now();
+      final duration = finish.difference(time);
 
       if (account.handler != null) {
         await account.handler!
             .applyUpdate(update: update, addressType: addressType);
+
+        kPrint(
+            "✨Finished Sync ${addressType.toString().split(".").last} - ${account.name} | ${account.network} | $server | Tor: ${port != null} | Time: ${duration.inMilliseconds / 1000} seconds");
+      } else {
+        kPrint("Sync failed because account handler is null");
       }
-      kPrint(
-          "✨Finished Sync $addressType - ${account.name} | ${account.network} | $server | Tor: ${port != null}");
     } catch (e, stack) {
       debugPrintStack(stackTrace: stack);
       kPrint(
@@ -379,5 +393,36 @@ class SyncManager {
   void resumeSync() {
     kPrint("SyncManager: Resuming sync");
     _pauseSync = false;
+  }
+
+  /// Dumps the current progress of sync and scan operations to the log
+  String dumpProgress() {
+    final StringBuffer buffer = StringBuffer();
+
+    buffer.writeln('=== SyncManager Progress Dump ===');
+    buffer.writeln('Active sync operations: ${_activeSyncOperations.length}');
+    buffer.writeln(
+        'Active full scan operations: ${_activeFullScanOperations.length}');
+    buffer.writeln('Pending sync requests: ${_syncRequests.length}');
+    buffer.writeln('Pending full scan requests: ${_fullScanRequests.length}');
+    buffer.writeln('Sync paused: $_pauseSync');
+
+    if (_activeSyncOperations.isNotEmpty) {
+      buffer.writeln('\nActive sync operations:');
+      for (final op in _activeSyncOperations) {
+        buffer.writeln('  - Account Name: ${op.$1}, Address Type: ${op.$2}');
+      }
+    }
+
+    if (_activeFullScanOperations.isNotEmpty) {
+      buffer.writeln('\nActive full scan operations:');
+      for (final op in _activeFullScanOperations) {
+        buffer.writeln('  - Account ID: ${op.$1}, Address Type: ${op.$2}');
+      }
+    }
+
+    final String result = buffer.toString();
+    kPrint(result);
+    return result;
   }
 }
