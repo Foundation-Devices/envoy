@@ -553,8 +553,7 @@ class SignetInfoModal extends StatelessWidget {
                         linkStyle: EnvoyTypography.button
                             .copyWith(color: EnvoyColors.accentPrimary),
                         onTap: () {
-                          launchUrlString(
-                              "https://blog.mutinywallet.com/mutinynet");
+                          launchUrlString("https://en.bitcoin.it/wiki/Signet");
                         })),
                 const Padding(padding: EdgeInsets.all(4)),
               ],
