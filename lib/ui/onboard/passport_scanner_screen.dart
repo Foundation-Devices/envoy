@@ -12,11 +12,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/widgets/scanner/decoders/generic_qr_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/home/setup_overlay.dart';
+import 'package:envoy/ui/widgets/scanner/decoders/device_decoder.dart';
+import 'package:envoy/ui/widgets/scanner/decoders/pair_decoder.dart';
 
 class PassportScannerScreen extends ConsumerWidget {
   const PassportScannerScreen({super.key});
@@ -52,7 +54,11 @@ class PassportScannerScreen extends ConsumerWidget {
               child: QrScanner(
                 showInfoDialog: true,
                 onBackPressed: (_) => handleBack(),
-                decoder: GenericQrDecoder(onScan: (String payload) {
+                decoder: DeviceDecoder(pairPayloadDecoder: PairPayloadDecoder(
+                  onScan: (binary) {
+                    addPassportAccount(binary, context);
+                  },
+                ), onScan: (String payload) {
                   final uri = Uri.parse(payload);
                   final params = uri.queryParameters;
 
