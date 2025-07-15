@@ -335,7 +335,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                                 title: SettingText(
                                     S().backups_downloadBIP329BackupFile,
                                     onTap: () {
-                                  NgAccountManager().exportBIP329();
+                                  NgAccountManager().exportBIP329(ref);
                                 }),
                               ),
                             ],

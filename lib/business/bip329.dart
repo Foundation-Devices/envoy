@@ -76,10 +76,11 @@ Future<List<String>> getTxData(EnvoyAccount account) async {
   return txDataList;
 }
 
-Future<List<String>> getUtxosData(EnvoyAccount account) async {
+Future<List<String>> getUtxosData(List<Output> utxos) async {
   List<String> utxoDataList = [];
-  for (Output utxo in account.utxo) {
+  for (Output utxo in utxos) {
     // Generate utxoData and add it to the list
+
     String utxoData = buildKeyJson(
         "output", "${utxo.txId}:${utxo.vout}", utxo.tag ?? "",
         spendable: !utxo.doNotSpend);
@@ -87,4 +88,26 @@ Future<List<String>> getUtxosData(EnvoyAccount account) async {
   }
 
   return utxoDataList;
+}
+
+List<Output> mergeLatestOutputs(
+    List<Output> currentOutputs, List<Output> latestOutputs) {
+  final Map<String, Output> merged = {
+    for (final output in currentOutputs)
+      "${output.txId}:${output.vout}": output,
+  };
+
+  for (final latest in latestOutputs) {
+    final key = "${latest.txId}:${latest.vout}";
+    final existing = merged[key];
+
+    if (existing == null ||
+        existing.tag != latest.tag ||
+        existing.doNotSpend != latest.doNotSpend) {
+      // Add new or updated output
+      merged[key] = latest;
+    }
+  }
+
+  return merged.values.toList();
 }
