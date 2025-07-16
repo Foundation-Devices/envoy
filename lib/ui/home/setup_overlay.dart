@@ -25,6 +25,7 @@ import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/ui/onboard/passport_scanner_screen.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 
 double cardButtonHeight = 125;
 
@@ -233,8 +234,26 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
         ), onScan: (String payload) {
           Navigator.pop(context);
           final uri = Uri.parse(payload);
-          context.pushNamed(ONBOARD_PRIME,
-              queryParameters: uri.queryParameters);
+          final params = uri.queryParameters;
+          if (params.containsKey("p")) {
+            context.pushNamed(ONBOARD_PRIME, queryParameters: params);
+          } else if (params.containsKey("t")) {
+            context.goNamed(ONBOARD_PASSPORT_TOU, queryParameters: params);
+          } else {
+            EnvoyToast(
+              replaceExisting: true,
+              duration: const Duration(seconds: 6),
+              message: "Invalid QR code",
+              isDismissible: true,
+              onActionTap: () {
+                EnvoyToast.dismissPreviousToasts(context);
+              },
+              icon: const Icon(
+                Icons.info_outline,
+                color: EnvoyColors.accentPrimary,
+              ),
+            ).show(context);
+          }
         }),
         child: LegacyFirmwareAlert());
   }
