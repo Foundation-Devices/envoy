@@ -386,23 +386,19 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                             alignment: Alignment
                                                                 .center,
                                                             child:
-                                                                GestureDetector(
-                                                              onTap: () {},
-                                                              child:
-                                                                  CoinBalanceWidget(
-                                                                output: coin,
-                                                                coinTag: tag,
-                                                                onEnable: () {
-                                                                  Future.delayed(
-                                                                      const Duration(
-                                                                          milliseconds:
-                                                                              300),
-                                                                      () {
-                                                                    animateToIndex(
-                                                                        index);
-                                                                  });
-                                                                },
-                                                              ),
+                                                                CoinBalanceWidget(
+                                                              output: coin,
+                                                              coinTag: tag,
+                                                              onEnable: () {
+                                                                Future.delayed(
+                                                                    const Duration(
+                                                                        milliseconds:
+                                                                            300),
+                                                                    () {
+                                                                  animateToIndex(
+                                                                      index);
+                                                                });
+                                                              },
                                                             )),
                                                       );
                                                     },
