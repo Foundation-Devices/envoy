@@ -236,7 +236,7 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
           final uri = Uri.parse(payload);
           final params = uri.queryParameters;
           if (params.containsKey("p")) {
-            context.goNamed(ONBOARD_PRIME, queryParameters: params);
+            context.pushNamed(ONBOARD_PRIME, queryParameters: params);
           } else if (params.containsKey("t")) {
             context.goNamed(ONBOARD_PASSPORT_TOU, queryParameters: params);
           } else {
