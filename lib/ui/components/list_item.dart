@@ -23,7 +23,6 @@ import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
-import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/tx_utils.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/util/blur_container_transform.dart';
@@ -149,6 +148,7 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
       Widget? unitIcon;
       final Locale activeLocale = Localizations.localeOf(context);
       final notification = widget.notification;
+      final accountId = notification.accountId;
       final transaction = notification.transaction;
 
       if (transaction != null) {
@@ -162,22 +162,12 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
         txIcon = getTransactionIcon(transaction, cancelState, isBoosted);
 
         unitIcon = () {
-          final accounts = ref.watch(accountsProvider);
-          bool isTransactionHidden = false;
+          bool isTransactionHidden =
+              ref.watch(balanceHideStateStatusProvider(accountId));
           EnvoyAccount? transactionAccount;
 
-          // Check if the account of the current transaction is hidden
-          for (var account in accounts) {
-            final transactions = ref.watch(transactionsProvider(account.id));
-            for (var tx in transactions) {
-              if (tx.txId == transaction.txId) {
-                transactionAccount = account;
-                isTransactionHidden =
-                    ref.watch(balanceHideStateStatusProvider(account.id));
-                break;
-              }
-            }
-            if (isTransactionHidden) break;
+          if (!isTransactionHidden) {
+            transactionAccount = NgAccountManager().getAccountById(accountId!);
           }
 
           if (transactionAccount == null) {
@@ -246,16 +236,12 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
         iconColor = EnvoyColors.textTertiary;
       }
 
-      return notification.transaction != null
+      return transaction != null
           ? BlurContainerTransform(
               useRootNavigator: true,
               closedBuilder: (context, action) {
                 return GestureDetector(
                     onTap: () {
-                      final tx = notification.transaction;
-                      if (tx == null) return;
-
-                      final accountId = widget.notification.accountId;
                       if (accountId == null) return;
 
                       final isHidden =
@@ -267,7 +253,7 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
                       }
                     },
                     onLongPress: () async {
-                      await copyTxId(context, transaction!.txId, transaction);
+                      await copyTxId(context, transaction.txId, transaction);
                     },
                     child: EnvoyListTile(
                       titleText: titleText,
@@ -278,7 +264,7 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
                     ));
               },
               openBuilder: (context, action) {
-                return openTransactionDetails(context, transaction!);
+                return openTransactionDetails(context, transaction);
               },
             )
           : GestureDetector(
