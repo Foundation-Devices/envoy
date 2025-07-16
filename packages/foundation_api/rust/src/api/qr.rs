@@ -3,16 +3,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use std::sync::{Arc, Mutex};
-use bc_envelope::base::envelope;
 use bc_envelope::prelude::*;
-use bc_ur::URType;
 use bc_xid::XIDDocument;
 use flutter_rust_bridge::for_generated::anyhow;
-use foundation_api::discovery::Discovery;
 use foundation_api::message::{PassportMessage, QuantumLinkMessage};
 use foundation_api::pairing::PairingResponse;
 use foundation_api::passport::{PassportFirmwareVersion, PassportModel, PassportSerial};
-use foundation_api::quantum_link::{generate_identity, QuantumLinkIdentity};
+use foundation_api::quantum_link::QuantumLinkIdentity;
 use foundation_api::status::{DeviceState, DeviceStatus, EnvoyStatus};
 use foundation_ur::{Decoder, UR};
 

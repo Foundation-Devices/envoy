@@ -5,6 +5,7 @@
 
 import '../frb_generated.dart';
 import '../third_party/bc_xid.dart';
+import '../third_party/foundation_api/api/backup.dart';
 import '../third_party/foundation_api/api/bitcoin.dart';
 import '../third_party/foundation_api/api/firmware.dart';
 import '../third_party/foundation_api/api/fx.dart';
@@ -13,6 +14,7 @@ import '../third_party/foundation_api/api/onboarding.dart';
 import '../third_party/foundation_api/api/pairing.dart';
 import '../third_party/foundation_api/api/passport.dart';
 import '../third_party/foundation_api/api/quantum_link.dart';
+import '../third_party/foundation_api/api/raw.dart';
 import '../third_party/foundation_api/api/scv.dart';
 import '../third_party/foundation_api/api/status.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';

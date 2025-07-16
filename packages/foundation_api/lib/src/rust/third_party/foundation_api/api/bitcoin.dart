@@ -29,7 +29,7 @@ class AccountUpdate {
 
 class BroadcastTransaction {
   final String accountId;
-  final String psbt;
+  final Uint8List psbt;
 
   const BroadcastTransaction({
     required this.accountId,
@@ -50,7 +50,7 @@ class BroadcastTransaction {
 
 class SignPsbt {
   final String accountId;
-  final String psbt;
+  final Uint8List psbt;
 
   const SignPsbt({
     required this.accountId,

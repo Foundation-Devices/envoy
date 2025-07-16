@@ -228,7 +228,7 @@ class BluetoothManager {
     await EnvoyStorage().savePrime(prime);
   }
 
-  Future<void> sendPsbt(String accountId, String psbt) async {
+  Future<void> sendPsbt(String accountId, Uint8List psbt) async {
     final encoded = await encodeMessage(
         message: api.QuantumLinkMessage.signPsbt(
             api.SignPsbt(psbt: psbt, accountId: accountId)));

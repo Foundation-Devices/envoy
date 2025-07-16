@@ -13,6 +13,7 @@ import 'dart:convert';
 import 'frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_web.dart';
 import 'third_party/bc_xid.dart';
+import 'third_party/foundation_api/api/backup.dart';
 import 'third_party/foundation_api/api/bitcoin.dart';
 import 'third_party/foundation_api/api/firmware.dart';
 import 'third_party/foundation_api/api/fx.dart';
@@ -21,6 +22,7 @@ import 'third_party/foundation_api/api/onboarding.dart';
 import 'third_party/foundation_api/api/pairing.dart';
 import 'third_party/foundation_api/api/passport.dart';
 import 'third_party/foundation_api/api/quantum_link.dart';
+import 'third_party/foundation_api/api/raw.dart';
 import 'third_party/foundation_api/api/scv.dart';
 import 'third_party/foundation_api/api/status.dart';
 
@@ -156,12 +158,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   PassportMessage dco_decode_box_autoadd_passport_message(dynamic raw);
 
   @protected
+  RawData dco_decode_box_autoadd_raw_data(dynamic raw);
+
+  @protected
   SecurityChallengeMessage dco_decode_box_autoadd_security_challenge_message(
       dynamic raw);
 
   @protected
   SecurityProofMessage dco_decode_box_autoadd_security_proof_message(
       dynamic raw);
+
+  @protected
+  Shard dco_decode_box_autoadd_shard(dynamic raw);
 
   @protected
   SignPsbt dco_decode_box_autoadd_sign_psbt(dynamic raw);
@@ -253,10 +261,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   QuantumLinkMessage dco_decode_quantum_link_message(dynamic raw);
 
   @protected
+  RawData dco_decode_raw_data(dynamic raw);
+
+  @protected
   SecurityChallengeMessage dco_decode_security_challenge_message(dynamic raw);
 
   @protected
   SecurityProofMessage dco_decode_security_proof_message(dynamic raw);
+
+  @protected
+  Shard dco_decode_shard(dynamic raw);
 
   @protected
   SignPsbt dco_decode_sign_psbt(dynamic raw);
@@ -391,12 +405,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  RawData sse_decode_box_autoadd_raw_data(SseDeserializer deserializer);
+
+  @protected
   SecurityChallengeMessage sse_decode_box_autoadd_security_challenge_message(
       SseDeserializer deserializer);
 
   @protected
   SecurityProofMessage sse_decode_box_autoadd_security_proof_message(
       SseDeserializer deserializer);
+
+  @protected
+  Shard sse_decode_box_autoadd_shard(SseDeserializer deserializer);
 
   @protected
   SignPsbt sse_decode_box_autoadd_sign_psbt(SseDeserializer deserializer);
@@ -493,12 +513,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  RawData sse_decode_raw_data(SseDeserializer deserializer);
+
+  @protected
   SecurityChallengeMessage sse_decode_security_challenge_message(
       SseDeserializer deserializer);
 
   @protected
   SecurityProofMessage sse_decode_security_proof_message(
       SseDeserializer deserializer);
+
+  @protected
+  Shard sse_decode_shard(SseDeserializer deserializer);
 
   @protected
   SignPsbt sse_decode_sign_psbt(SseDeserializer deserializer);
@@ -638,12 +664,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       PassportMessage self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_raw_data(RawData self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_security_challenge_message(
       SecurityChallengeMessage self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_security_proof_message(
       SecurityProofMessage self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_shard(Shard self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_sign_psbt(
@@ -750,12 +782,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       QuantumLinkMessage self, SseSerializer serializer);
 
   @protected
+  void sse_encode_raw_data(RawData self, SseSerializer serializer);
+
+  @protected
   void sse_encode_security_challenge_message(
       SecurityChallengeMessage self, SseSerializer serializer);
 
   @protected
   void sse_encode_security_proof_message(
       SecurityProofMessage self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_shard(Shard self, SseSerializer serializer);
 
   @protected
   void sse_encode_sign_psbt(SignPsbt self, SseSerializer serializer);
