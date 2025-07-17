@@ -498,6 +498,7 @@ class NgAccountManager extends ChangeNotifier {
     if (await dir.exists()) {
       EnvoyReport().log("AccountManager",
           "Failed to create account directory for ${config.name}:${config.deviceSerial}, already exists: ${dir.path}");
+      throw AccountAlreadyPaired();
     } else {
       await dir.create(recursive: true);
     }

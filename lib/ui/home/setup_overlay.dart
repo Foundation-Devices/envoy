@@ -276,7 +276,7 @@ void addPassportAccount(Binary binary, BuildContext context) async {
         break;
     }
     if (account == null) {
-      goRouter.go("/");
+      goRouter.pop();
     } else {
       //TODO: let the user know if the account
       //was updated or added ?
@@ -291,6 +291,11 @@ void addPassportAccount(Binary binary, BuildContext context) async {
       content: Text("Account already connected"), // TODO: FIGMA
     ));
     return;
+  } catch (e) {
+    goRouter.pop();
+    scaffold.showSnackBar(const SnackBar(
+      content: Text("An unexpected error occurred. Please try again."),
+    )); // TODO: FIGMA
   }
 }
 
