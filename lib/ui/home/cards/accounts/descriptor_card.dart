@@ -32,7 +32,8 @@ class DescriptorCard extends ConsumerStatefulWidget {
 }
 
 class _DescriptorCardState extends ConsumerState<DescriptorCard> {
-  late List<(AddressType, String)> descriptors = widget.account.externalPublicDescriptors;
+  late List<(AddressType, String)> descriptors =
+      widget.account.externalPublicDescriptors;
   int selectedIndex = 0;
 
   @override
@@ -46,8 +47,8 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
         });
       } else {
         setState(() {
-          selectedIndex = descriptors.indexWhere(
-              (descriptor) => descriptor.$1 == AddressType.p2Wpkh);
+          selectedIndex = descriptors
+              .indexWhere((descriptor) => descriptor.$1 == AddressType.p2Wpkh);
         });
       }
     } catch (e) {
