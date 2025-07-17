@@ -91,15 +91,17 @@ class _TransactionsDetailsWidgetState
   }
 
   Future _checkForRBF() async {
-    try {
-      await _checkBoost();
-    } catch (e) {
-      kPrint(e);
-    }
-    try {
-      await _checkCancel();
-    } catch (e) {
-      kPrint(e);
+    if (widget.tx.confirmations == 0) {
+      try {
+        await _checkBoost();
+      } catch (e) {
+        kPrint(e);
+      }
+      try {
+        await _checkCancel();
+      } catch (e) {
+        kPrint(e);
+      }
     }
   }
 
@@ -574,10 +576,12 @@ class _TransactionsDetailsWidgetState
                             size: EnvoyIconSize.extraSmall,
                             color: EnvoyColors.textPrimary,
                           ),
-                          trailing: TxRBFButton(
-                            tx: tx,
-                            loading: _checkingBoost,
-                          ),
+                          trailing: rbfPossible
+                              ? TxRBFButton(
+                                  tx: tx,
+                                  loading: _checkingBoost,
+                                )
+                              : SizedBox.shrink(),
                         )
                       : Container(),
                   if (tx is! RampTransaction) _renderFeeWidget(context, tx),

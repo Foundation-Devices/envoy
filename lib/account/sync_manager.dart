@@ -30,6 +30,8 @@ class Syncing extends WalletProgress {
 class None extends WalletProgress {}
 
 class SyncManager {
+  static const int _syncInterval = 10;
+
   // Track sync and scan requests
   final Map<(EnvoyAccount, AddressType), SyncRequest> _syncRequests = {};
   final Map<(EnvoyAccount, AddressType), FullScanRequest> _fullScanRequests =
@@ -60,7 +62,8 @@ class SyncManager {
   }
 
   startSync() {
-    _syncTimer = Timer.periodic(const Duration(seconds: 15), (timer) {
+    _syncTimer =
+        Timer.periodic(const Duration(seconds: _syncInterval), (timer) {
       if (NgAccountManager().accounts.isEmpty || _pauseSync) {
         return;
       }
