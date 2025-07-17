@@ -230,8 +230,7 @@ class _TransactionsDetailsWidgetState
     ));
 
     if (!tx.isConfirmed && tx is RampTransaction) {
-      final noteFromStorage =
-          ref.watch(txNoteFromStorageProvider(tx.txId));
+      final noteFromStorage = ref.watch(txNoteFromStorageProvider(tx.txId));
 
       note = noteFromStorage.maybeWhen(
         data: (value) => value,
