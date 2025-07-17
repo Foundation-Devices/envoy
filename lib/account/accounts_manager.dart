@@ -394,10 +394,11 @@ class NgAccountManager extends ChangeNotifier {
     String fileContent = allData.join('\n');
     Uint8List fileContentBytes = Uint8List.fromList(utf8.encode(fileContent));
     await FileSaver.instance.saveAs(
-        mimeType: MimeType.json,
+        mimeType: MimeType.custom,
+        customMimeType: 'application/jsonl',
         name: 'bip329_export',
         bytes: fileContentBytes,
-        ext: 'json');
+        ext: 'jsonl');
   }
 
   EnvoyAccount? getHotWalletAccount({network = Network.bitcoin}) {
@@ -498,6 +499,7 @@ class NgAccountManager extends ChangeNotifier {
     if (await dir.exists()) {
       EnvoyReport().log("AccountManager",
           "Failed to create account directory for ${config.name}:${config.deviceSerial}, already exists: ${dir.path}");
+      throw AccountAlreadyPaired();
     } else {
       await dir.create(recursive: true);
     }

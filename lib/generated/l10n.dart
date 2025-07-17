@@ -52,10 +52,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `Done`
+  /// `1`
   String get _ {
     return Intl.message(
-      'Done',
+      '1',
       name: '_',
       desc: '',
       args: [],
@@ -5378,10 +5378,10 @@ class S {
     );
   }
 
-  /// `For privacy, we create a new address each time you visit this screen.`
+  /// `Envoy will generate a new address after the one below is used.`
   String get manage_account_address_card_subheading {
     return Intl.message(
-      'For privacy, we create a new address each time you visit this screen.',
+      'Envoy will generate a new address after the one below is used.',
       name: 'manage_account_address_card_subheading',
       desc: '',
       args: [],
@@ -6758,10 +6758,10 @@ class S {
     );
   }
 
-  /// `Also known as a “hot wallet.” Spending from this wallet requires only your phone for authorization.`
+  /// `Also known as a “hot wallet”. Spending from this wallet requires only your phone for authorization.`
   String get onboarding_magicUserMobileIntro_content1 {
     return Intl.message(
-      'Also known as a “hot wallet.” Spending from this wallet requires only your phone for authorization.',
+      'Also known as a “hot wallet”. Spending from this wallet requires only your phone for authorization.',
       name: 'onboarding_magicUserMobileIntro_content1',
       desc: '',
       args: [],
@@ -8338,16 +8338,6 @@ class S {
     );
   }
 
-  /// `Sign Message`
-  String get signMessage_mainHot_signMessage {
-    return Intl.message(
-      'Sign Message',
-      name: 'signMessage_mainHot_signMessage',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Scan the QR`
   String get signMessage_mainSignedQr_scanQr {
     return Intl.message(
@@ -8413,16 +8403,6 @@ class S {
     return Intl.message(
       'Enter or paste the message',
       name: 'signMessage_main_enterPasteMessage',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Sign Message`
-  String get signMessage_main_header {
-    return Intl.message(
-      'Sign Message',
-      name: 'signMessage_main_header',
       desc: '',
       args: [],
     );

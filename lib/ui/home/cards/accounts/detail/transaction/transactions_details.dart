@@ -91,15 +91,17 @@ class _TransactionsDetailsWidgetState
   }
 
   Future _checkForRBF() async {
-    try {
-      await _checkBoost();
-    } catch (e) {
-      kPrint(e);
-    }
-    try {
-      await _checkCancel();
-    } catch (e) {
-      kPrint(e);
+    if (widget.tx.confirmations == 0) {
+      try {
+        await _checkBoost();
+      } catch (e) {
+        kPrint(e);
+      }
+      try {
+        await _checkCancel();
+      } catch (e) {
+        kPrint(e);
+      }
     }
   }
 
@@ -223,15 +225,14 @@ class _TransactionsDetailsWidgetState
   @override
   Widget build(BuildContext context) {
     ///watch transaction changes to get real time updates
-    final tx = ref.watch(getTransactionProvider(widget.tx.txId)) ?? widget.tx;
+    final tx = widget.tx;
 
-    String note = ref.watch(getTransactionProvider(widget.tx.txId).select(
+    String note = ref.watch(getTransactionProvider(tx.txId).select(
       (value) => value?.note ?? "",
     ));
 
     if (!tx.isConfirmed && tx is RampTransaction) {
-      final noteFromStorage =
-          ref.watch(txNoteFromStorageProvider(widget.tx.txId));
+      final noteFromStorage = ref.watch(txNoteFromStorageProvider(tx.txId));
 
       note = noteFromStorage.maybeWhen(
         data: (value) => value,
@@ -574,10 +575,12 @@ class _TransactionsDetailsWidgetState
                             size: EnvoyIconSize.extraSmall,
                             color: EnvoyColors.textPrimary,
                           ),
-                          trailing: TxRBFButton(
-                            tx: tx,
-                            loading: _checkingBoost,
-                          ),
+                          trailing: rbfPossible
+                              ? TxRBFButton(
+                                  tx: tx,
+                                  loading: _checkingBoost,
+                                )
+                              : SizedBox.shrink(),
                         )
                       : Container(),
                   if (tx is! RampTransaction) _renderFeeWidget(context, tx),
