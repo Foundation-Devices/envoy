@@ -36,5 +36,6 @@ class EnvoyAccount with _$EnvoyAccount {
     required List<BitcoinTransaction> transactions,
     required List<Output> utxo,
     required List<String> tags,
+    required List<(AddressType, String)> externalPublicDescriptors,
   }) = _EnvoyAccount;
 }

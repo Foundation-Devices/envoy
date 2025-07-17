@@ -2647,8 +2647,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   EnvoyAccount dco_decode_envoy_account(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 19)
-      throw Exception('unexpected arr length: expect 19 but see ${arr.length}');
+    if (arr.length != 20)
+      throw Exception('unexpected arr length: expect 20 but see ${arr.length}');
     return EnvoyAccount(
       name: dco_decode_String(arr[0]),
       color: dco_decode_String(arr[1]),
@@ -2669,6 +2669,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       transactions: dco_decode_list_bitcoin_transaction(arr[16]),
       utxo: dco_decode_list_output(arr[17]),
       tags: dco_decode_list_String(arr[18]),
+      externalPublicDescriptors:
+          dco_decode_list_record_address_type_string(arr[19]),
     );
   }
 
@@ -2676,7 +2678,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   EnvoyBip39 dco_decode_envoy_bip_39(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 0)
+    if (arr.isNotEmpty)
       throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
     return EnvoyBip39();
   }
@@ -2769,6 +2771,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     return (raw as List<dynamic>)
         .map(
             dco_decode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32)
+        .toList();
+  }
+
+  @protected
+  List<(AddressType, String)> dco_decode_list_record_address_type_string(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>)
+        .map(dco_decode_record_address_type_string)
         .toList();
   }
 
@@ -2981,6 +2992,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
           arr[1]),
       dco_decode_u_32(arr[2]),
+    );
+  }
+
+  @protected
+  (AddressType, String) dco_decode_record_address_type_string(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2) {
+      throw Exception('Expected 2 elements, got ${arr.length}');
+    }
+    return (
+      dco_decode_address_type(arr[0]),
+      dco_decode_String(arr[1]),
     );
   }
 
@@ -3517,6 +3541,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_transactions = sse_decode_list_bitcoin_transaction(deserializer);
     var var_utxo = sse_decode_list_output(deserializer);
     var var_tags = sse_decode_list_String(deserializer);
+    var var_externalPublicDescriptors =
+        sse_decode_list_record_address_type_string(deserializer);
     return EnvoyAccount(
         name: var_name,
         color: var_color,
@@ -3536,7 +3562,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         isHot: var_isHot,
         transactions: var_transactions,
         utxo: var_utxo,
-        tags: var_tags);
+        tags: var_tags,
+        externalPublicDescriptors: var_externalPublicDescriptors);
   }
 
   @protected
@@ -3676,6 +3703,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       ans_.add(
           sse_decode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
               deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<(AddressType, String)> sse_decode_list_record_address_type_string(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <(AddressType, String)>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_record_address_type_string(deserializer));
     }
     return ans_;
   }
@@ -3954,6 +3994,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             deserializer);
     var var_field2 = sse_decode_u_32(deserializer);
     return (var_field0, var_field1, var_field2);
+  }
+
+  @protected
+  (AddressType, String) sse_decode_record_address_type_string(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_field0 = sse_decode_address_type(deserializer);
+    var var_field1 = sse_decode_String(deserializer);
+    return (var_field0, var_field1);
   }
 
   @protected
@@ -4470,6 +4519,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_list_bitcoin_transaction(self.transactions, serializer);
     sse_encode_list_output(self.utxo, serializer);
     sse_encode_list_String(self.tags, serializer);
+    sse_encode_list_record_address_type_string(
+        self.externalPublicDescriptors, serializer);
   }
 
   @protected
@@ -4588,6 +4639,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     for (final item in self) {
       sse_encode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
           item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_record_address_type_string(
+      List<(AddressType, String)> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_record_address_type_string(item, serializer);
     }
   }
 
@@ -4811,6 +4872,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
         self.$2, serializer);
     sse_encode_u_32(self.$3, serializer);
+  }
+
+  @protected
+  void sse_encode_record_address_type_string(
+      (AddressType, String) self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_address_type(self.$1, serializer);
+    sse_encode_String(self.$2, serializer);
   }
 
   @protected

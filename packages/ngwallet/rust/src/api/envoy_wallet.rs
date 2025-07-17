@@ -325,6 +325,9 @@ impl EnvoyAccountHandler {
                     .iter()
                     .map(|(address, address_type)| (address.to_string(), address_type.clone()))
                     .collect::<Vec<(String, AddressType)>>();
+
+                let external_public_descriptors = account.get_external_public_descriptors();
+
                 Ok(EnvoyAccount {
                     name: config.name.clone(),
                     color: config.color.clone(),
@@ -345,6 +348,7 @@ impl EnvoyAccountHandler {
                     unlocked_balance: 0,
                     utxo: utxo.clone(),
                     tags,
+                    external_public_descriptors,
                 })
             }
             Err(error) => Err(anyhow!("Failed to lock account: {}", error)),
