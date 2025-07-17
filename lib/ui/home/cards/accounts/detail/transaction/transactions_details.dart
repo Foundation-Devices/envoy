@@ -225,15 +225,14 @@ class _TransactionsDetailsWidgetState
   @override
   Widget build(BuildContext context) {
     ///watch transaction changes to get real time updates
-    final tx = ref.watch(getTransactionProvider(widget.tx.txId)) ?? widget.tx;
+    final tx = widget.tx;
 
-    String note = ref.watch(getTransactionProvider(widget.tx.txId).select(
+    String note = ref.watch(getTransactionProvider(tx.txId).select(
       (value) => value?.note ?? "",
     ));
 
     if (!tx.isConfirmed && tx is RampTransaction) {
-      final noteFromStorage =
-          ref.watch(txNoteFromStorageProvider(widget.tx.txId));
+      final noteFromStorage = ref.watch(txNoteFromStorageProvider(tx.txId));
 
       note = noteFromStorage.maybeWhen(
         data: (value) => value,
