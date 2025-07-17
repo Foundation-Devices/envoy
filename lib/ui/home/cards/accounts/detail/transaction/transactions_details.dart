@@ -576,10 +576,12 @@ class _TransactionsDetailsWidgetState
                             size: EnvoyIconSize.extraSmall,
                             color: EnvoyColors.textPrimary,
                           ),
-                          trailing: rbfPossible ? TxRBFButton(
-                            tx: tx,
-                            loading: _checkingBoost,
-                          ) : SizedBox.shrink(),
+                          trailing: rbfPossible
+                              ? TxRBFButton(
+                                  tx: tx,
+                                  loading: _checkingBoost,
+                                )
+                              : SizedBox.shrink(),
                         )
                       : Container(),
                   if (tx is! RampTransaction) _renderFeeWidget(context, tx),

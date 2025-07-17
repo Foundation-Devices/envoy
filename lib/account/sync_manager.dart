@@ -30,7 +30,6 @@ class Syncing extends WalletProgress {
 class None extends WalletProgress {}
 
 class SyncManager {
-
   static const int _syncInterval = 10;
 
   // Track sync and scan requests
@@ -63,7 +62,8 @@ class SyncManager {
   }
 
   startSync() {
-    _syncTimer = Timer.periodic(const Duration(seconds: _syncInterval), (timer) {
+    _syncTimer =
+        Timer.periodic(const Duration(seconds: _syncInterval), (timer) {
       if (NgAccountManager().accounts.isEmpty || _pauseSync) {
         return;
       }
