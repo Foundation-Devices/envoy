@@ -648,10 +648,6 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                 navigator.pop();
               },
               onSecondaryButtonTap: () async {
-                //TODO: use ngwallet
-                // await CoinRepository().deleteTag(widget.coinTag);
-                //refresh coins list to update deleted tag item
-                // ignore: unused_result
                 final selectedAccount = ref.read(selectedAccountProvider);
                 if (selectedAccount != null) {
                   try {
