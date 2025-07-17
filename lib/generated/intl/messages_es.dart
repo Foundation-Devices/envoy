@@ -30,7 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Navega a ${AccountName} en Passport, selecciona \'Account Tools\'>\'Verify Address\' y, a continuación, escanea el código QR.";
 
   static String m3(number) =>
-      "La tasa de envío representa un ${number}% de la cantidad total";
+      "La tasa representa un ${number}% de la cantidad total";
 
   static String m4(tagName) =>
       "Tu etiqueta ${tagName} ahora está vacía. ¿Quieres eliminarla?";
@@ -1168,7 +1168,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "La forma más fácil de crear una cartera nueva de Bitcoin manteniendo tu soberanía.\n\nLa Copia de Seguridad Mágica realiza automáticamente una copia de seguridad de tu cartera y su configuración en tu Llavero iCloud, 100% encriptado de extremo a extremo. \n\n[[Más información]]."),
         "manage_account_address_card_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Por motivos de privacidad, creamos una dirección nueva cada vez que visitas esta pantalla."),
+                "Envoy generará una nueva dirección después de que la que se muestra debajo haya sido utilizada."),
         "manage_account_address_heading":
             MessageLookupByLibrary.simpleMessage("DETALLES DE CUENTA"),
         "manage_account_descriptor_subheading":
@@ -1209,7 +1209,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Copia de Seguridad Mágica desactivada"),
         "manual_setup_change_from_magic_modal_subheader":
             MessageLookupByLibrary.simpleMessage(
-                "Tu Copia de Seguridad de Mágica está a punto de eliminarse de forma permanente. Asegúrate de tener una copia de seguridad segura de tu semilla y de descargar tu Copia de Seguridad de Envoy.\n\nEsta acción eliminará permanentemente tu semilla de Envoy de tu cuenta de Apple o Google, y también eliminará tus datos cifrados de Envoy de los servidores de Foundation."),
+                "Tu Copia de Seguridad de Mágica está a punto de eliminarse de forma permanente. Asegúrate de tener una copia de seguridad segura de tu semilla y de descargar tu Copia de Seguridad de Envoy.\n\nEsta acción eliminará permanentemente tu semilla de Envoy de tu cuenta de Apple o Google, y también eliminará tus datos cifrados de Envoy de los servidores de Foundation tras un periodo de 24 horas."),
         "manual_setup_change_from_magic_subheaderApple":
             MessageLookupByLibrary.simpleMessage(
                 "Los datos de tu Copia de Seguridad Mágica de Envoy se han eliminado correctamente de tu cuenta Apple y de los servidores de Foundation."),
@@ -1861,39 +1861,35 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Mostrar Valores Fiat"),
         "settings_viewEnvoyLogs":
             MessageLookupByLibrary.simpleMessage("Ver Registros de Envoy"),
-        "signMessage_mainHot_signMessage":
-            MessageLookupByLibrary.simpleMessage("Sign Message"),
         "signMessage_mainSignedQr_scanQr":
-            MessageLookupByLibrary.simpleMessage("Scan the QR"),
+            MessageLookupByLibrary.simpleMessage("Escanea el Código QR"),
         "signMessage_mainSignedQr_scanQrSubheader":
             MessageLookupByLibrary.simpleMessage(
-                "It contains the signed message."),
+                "Contiene el mensaje firmado."),
         "signMessage_mainSigned_copySignature":
-            MessageLookupByLibrary.simpleMessage("Copy Signature"),
+            MessageLookupByLibrary.simpleMessage("Copiar Firma"),
         "signMessage_mainSigned_header":
-            MessageLookupByLibrary.simpleMessage("Message Signed"),
+            MessageLookupByLibrary.simpleMessage("Mensaje Firmado"),
         "signMessage_mainSigned_saveSignatureToFile":
-            MessageLookupByLibrary.simpleMessage("Save Signature to File"),
+            MessageLookupByLibrary.simpleMessage("Guardar Firma como Archivo"),
         "signMessage_main_addressDoesNotBelong":
             MessageLookupByLibrary.simpleMessage(
-                "Address does not belong to this account.\nPlease enter another address."),
+                "La dirección no pertenece a esta cuenta.\nPor favor, introduce otra dirección."),
         "signMessage_main_enterPasteMessage":
-            MessageLookupByLibrary.simpleMessage("Enter or paste the message"),
-        "signMessage_main_header":
-            MessageLookupByLibrary.simpleMessage("Sign Message"),
+            MessageLookupByLibrary.simpleMessage("Introduce o pega el mensaje"),
         "signMessage_main_messageHeader":
-            MessageLookupByLibrary.simpleMessage("Message"),
+            MessageLookupByLibrary.simpleMessage("Mensaje"),
         "signMessage_main_signatureHeader":
-            MessageLookupByLibrary.simpleMessage("Signature"),
+            MessageLookupByLibrary.simpleMessage("Firma"),
         "signMessage_qr_header": MessageLookupByLibrary.simpleMessage(
-            "Scan the QR with your Passport"),
+            "Escanea el QR con tu Passport"),
         "signMessage_qr_saveToFile":
-            MessageLookupByLibrary.simpleMessage("Save to File"),
+            MessageLookupByLibrary.simpleMessage("Guardar como Archivo"),
         "signMessage_qr_scannedSignedByPassport":
             MessageLookupByLibrary.simpleMessage(
-                "Scanned and signed by Passport"),
+                "Escaneado y firmado por Passport"),
         "signMessage_qr_subheader": MessageLookupByLibrary.simpleMessage(
-            "It contains the message for your Passport to sign."),
+            "Contiene el mensaje para que lo firme tu Passport."),
         "stalls_before_sending_tx_add_note_modal_cta2":
             MessageLookupByLibrary.simpleMessage("No, gracias"),
         "stalls_before_sending_tx_add_note_modal_subheading":
