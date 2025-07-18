@@ -499,6 +499,7 @@ class NgAccountManager extends ChangeNotifier {
       deviceSerial: config.deviceSerial ?? "unknown-serial_${config.id}",
       network: config.network.toString(),
       number: config.index,
+      accountId: config.id,
     );
     if (await dir.exists()) {
       EnvoyReport().log("AccountManager",
