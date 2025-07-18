@@ -727,6 +727,11 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                           ? ButtonState.loading
                           : ButtonState.defaultState,
                       onTap: () async {
+                        String newTagName =
+                            textEntry.enteredText.toString().trim();
+                        if (newTagName.isEmpty) {
+                          return;
+                        }
                         stateSetter(() {
                           renameInProgress = true;
                         });
