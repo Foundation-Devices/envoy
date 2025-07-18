@@ -258,6 +258,10 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
           .map((element) => element.getId())
           .toList();
       String tag = _tagController.text;
+
+      if (tag.toLowerCase().trim().isEmpty) {
+        return;
+      }
       if (tag.toLowerCase().trim() ==
               S().account_details_untagged_card.toLowerCase().trim() ||
           tag.toLowerCase().trim() == "untagged") {
