@@ -4,16 +4,16 @@
 
 import 'dart:convert';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:envoy/ui/state/transactions_state.dart';
 
-String getXpub(NgDescriptor ngDescriptor, EnvoyAccount account) {
+String getXpub(String descriptor, EnvoyAccount account) {
   // Check if the wallet is hot
   if (!account.isHot) {
     return account.name;
   } else {
     // Extract xpub from publicExternalDescriptor
-    //TODO: fix for unified descriptors
-    String descriptor = ngDescriptor.external_ ?? "";
     int start = descriptor.indexOf(']') + 1;
     int end = descriptor.indexOf('/', start);
     if (start > 0 && end > start) {
@@ -58,20 +58,20 @@ String extractDescriptor(String input) {
 }
 
 //TODO: fix for unified wallet transactions
-Future<List<String>> getTxData(EnvoyAccount account) async {
+Future<List<String>> getTxData(
+    String accountId, String descriptor, WidgetRef ref) async {
   List<String> txDataList = [];
-  // List<BitcoinTransaction> transactions = account.transactions;
-  // for(NgDescriptor descriptor in account.descriptors) {
-  //
-  //   String origin = extractDescriptor(descriptor.external_ ?? "");
-  //   List<String> txDataList = [];
-  //   for (Transaction tx in transactions) {
-  //     String note = await EnvoyStorage().getTxNote(tx.txId) ?? "";
-  //     String txData = buildKeyJson("tx", tx.txId, note, origin: origin);
-  //     txDataList.add(txData);
-  //   }
-  //
-  // }
+  // Use the provider to ensure we get the latest updated transactions for the account
+  List<BitcoinTransaction> transactions =
+      ref.read(transactionsProvider(accountId));
+
+  String origin = extractDescriptor(descriptor);
+
+  for (BitcoinTransaction tx in transactions) {
+    String note = tx.note ?? "";
+    String txData = buildKeyJson("tx", tx.txId, note, origin: origin);
+    txDataList.add(txData);
+  }
 
   return txDataList;
 }
