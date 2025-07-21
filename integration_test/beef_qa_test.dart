@@ -970,9 +970,14 @@ Future<void> main() async {
       await pressHamburgerMenu(tester); // back to home
       await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
       await findAndPressTextButton(tester, "Receive");
+      await tester.pump(Durations.long2);
 
       // copy Taproot address
       final address1 = await getAddressFromReceiveScreen(tester);
+      await tester.pump(Durations.long2);
+      expect(address1.startsWith('bc1p'), isTrue,
+          reason:
+              'The first address should be a Taproot address starting with bc1p');
 
       // back to home
       await pressHamburgerMenu(tester);
@@ -992,10 +997,10 @@ Future<void> main() async {
 
       // Grab the second address
       final address2 = await getAddressFromReceiveScreen(tester);
-
-      // Compare them
-      expect(address1.length < address2.length, isTrue,
-          reason: 'Disabling Taproot should shorten the address format');
+      await tester.pump(Durations.long2);
+      expect(address2.startsWith('bc1q'), isTrue,
+          reason:
+              'The second address should be a non-Taproot address starting with bc1q');
 
       // Check if "Reconnect Passport" button working
       // back to home
