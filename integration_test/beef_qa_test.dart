@@ -939,38 +939,26 @@ Future<void> main() async {
       await openAdvancedMenu(tester);
       bool taprootAlreadyEnabled =
           await isSlideSwitchOn(tester, "Receive to Taproot");
-      final confirmTextFromDialog = find.text('Confirm');
-
       if (taprootAlreadyEnabled) {
         // Disable it
         await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
-        await tester.pump(Durations.long2);
-        // Check that a pop up comes up
-        await tester.pumpUntilFound(confirmTextFromDialog,
-            duration: Durations.long1);
       }
-      await findAndPressTextButton(tester, 'Confirm');
-      await tester.pump(Durations.long2);
-
       await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
       await tester.pump(Durations.long2);
+      final confirmTextFromDialog = find.text('Confirm');
 
       // Check that a pop up comes up
       await tester.pumpUntilFound(confirmTextFromDialog,
           duration: Durations.long1);
-      // Check that a pop up closed
-      expect(confirmTextFromDialog, findsNothing);
+
       await tester.tap(confirmTextFromDialog);
       await tester.pump(Durations.long2);
-
-      // await findAndToggleSettingsSwitch(
-      //     tester, "Receive to Taproot"); // Disable
-      // await tester.pump(Durations.long2);
-      // await findAndPressTextButton(tester, 'Confirm');
-      await tester.pump(Durations.long2);
+      // Check that a pop up closed
+      expect(confirmTextFromDialog, findsNothing);
+      await findAndToggleSettingsSwitch(
+          tester, "Receive to Taproot"); // Disable
       await findAndToggleSettingsSwitch(
           tester, "Receive to Taproot"); // Enable again
-      await tester.pump(Durations.long2);
 
       // Check that a pop up comes up
       expect(confirmTextFromDialog, findsOneWidget);
@@ -983,13 +971,14 @@ Future<void> main() async {
       await pressHamburgerMenu(tester); // back to home
       await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
       await findAndPressTextButton(tester, "Receive");
+      await tester.pump(Durations.long2);
 
       // copy Taproot address
       final address1 = await getAddressFromReceiveScreen(tester);
-
-      /// check if it starts with bc1p (Taproot address)
+      await tester.pump(Durations.long2);
       expect(address1.startsWith('bc1p'), isTrue,
-          reason: 'Expected Taproot address to start with "bc1p"');
+          reason:
+              'The first address should be a Taproot address starting with bc1p');
 
       // back to home
       await pressHamburgerMenu(tester);
@@ -1009,10 +998,10 @@ Future<void> main() async {
 
       // Grab the second address
       final address2 = await getAddressFromReceiveScreen(tester);
-
-      /// check if it starts with bc1q (non-Taproot address)
+      await tester.pump(Durations.long2);
       expect(address2.startsWith('bc1q'), isTrue,
-          reason: 'Expected non-Taproot address to start with "bc1q"');
+          reason:
+              'The second address should be a non-Taproot address starting with bc1q');
 
       // Check if "Reconnect Passport" button working
       // back to home
