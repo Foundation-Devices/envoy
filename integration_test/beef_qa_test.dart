@@ -35,7 +35,7 @@ Future<void> main() async {
 
   group('Hot wallet tests', () {
     // These tests use wallet which is set up from zero (no need for passport account)
-    testWidgets('Buy ATM filter by country first and flow to map',
+    testWidgets('<Buy ATM filter by country first and flow to map>',
         (tester) async {
       await tester.pumpWidget(const EnvoyApp());
 
@@ -82,14 +82,13 @@ Future<void> main() async {
       final atmName = find.text("Kurant Bitcoin ATM");
       expect(atmName, findsAny);
     });
-
-    testWidgets('Buy button', (tester) async {
+    testWidgets('<Buy button>', (tester) async {
       await goBackHome(tester);
 
       await findAndPressBuyOptions(tester);
       await checkBuyOptionAndTitle(tester);
     });
-    testWidgets('Buy button - enable from Settings', (tester) async {
+    testWidgets('<Buy button - enable from Settings>', (tester) async {
       await goBackHome(tester);
 
       // Find the Buy button (enabled in Settings by default)
@@ -109,8 +108,7 @@ Future<void> main() async {
 
       expect(buyButtonFinder, findsNothing);
     });
-
-    testWidgets('About', (tester) async {
+    testWidgets('<About>', (tester) async {
       await goBackHome(tester);
 
       await pressHamburgerMenu(tester);
@@ -127,8 +125,7 @@ Future<void> main() async {
       final licensePage = find.text('Licenses');
       expect(licensePage, findsOneWidget);
     });
-
-    testWidgets('Check support buttons in settings', (tester) async {
+    testWidgets('<Check support buttons in settings>', (tester) async {
       await goBackHome(tester);
 
       await pressHamburgerMenu(tester);
@@ -138,8 +135,7 @@ Future<void> main() async {
       await goToCommunity(tester);
       await goToEmail(tester);
     });
-
-    testWidgets('Flow to edit acc name', (tester) async {
+    testWidgets('<Flow to edit acc name>', (tester) async {
       await goBackHome(tester);
 
       await fromHomeToHotWallet(tester);
@@ -166,8 +162,7 @@ Future<void> main() async {
       await enterTextInField(tester, find.byType(TextField), 'Mobile Wallet');
       await saveName(tester);
     });
-
-    testWidgets('Testing Prompts for Wallets with Balances', (tester) async {
+    testWidgets('<Testing Prompts for Wallets with Balances>', (tester) async {
       await goBackHome(tester);
 
       await clearPromptStates(tester);
@@ -250,8 +245,7 @@ Future<void> main() async {
       await fromHomeToAdvancedMenu(tester);
       await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
     });
-
-    testWidgets('Test decimal point in Send', (tester) async {
+    testWidgets('<Test decimal point in Send>', (tester) async {
       await goBackHome(tester);
 
       await pressHamburgerMenu(tester);
@@ -292,7 +286,7 @@ Future<void> main() async {
 
   group('Passport wallet tests', () {
     // Below tests require already set up wallet with passport and coins
-    testWidgets('Magic recovery from Foundation server', (tester) async {
+    testWidgets('<Magic recovery from Foundation server>', (tester) async {
       // Wallet for BEEFQA: this seed has magic recovery enabled on the Foundation server
       const List<String> seed = [
         "vault",
@@ -312,10 +306,10 @@ Future<void> main() async {
       await tester.pumpWidget(const EnvoyApp());
       await setUpWalletFromSeedViaBackupFile(tester, seed);
     });
-    testWidgets('Pump until balance sync', (tester) async {
+    testWidgets('<Pump until balance sync>', (tester) async {
       await checkSync(tester);
     });
-    testWidgets('Testing Prompts for Wallets with Balances', (tester) async {
+    testWidgets('<Testing Prompts for Wallets with Balances>', (tester) async {
       await goBackHome(tester);
 
       await disableAllNetworks(tester);
@@ -395,7 +389,7 @@ Future<void> main() async {
       reorderPromptFinder = find.text(reorderPromptMessage);
       expect(tapCardsPromptFinder, findsNothing);
     });
-    testWidgets('Edit device name', (tester) async {
+    testWidgets('<Edit device name>', (tester) async {
       await goBackHome(tester);
 
       final devicesButton = find.text('Devices');
@@ -429,7 +423,7 @@ Future<void> main() async {
       await enterTextInField(tester, find.byType(TextField), 'Passport');
       await saveName(tester);
     });
-    testWidgets('Edit Passport account name', (tester) async {
+    testWidgets('<Edit Passport account name>', (tester) async {
       await goBackHome(tester);
 
       const String accountPassportName = "GH TEST ACC (#1)";
@@ -461,7 +455,7 @@ Future<void> main() async {
           tester, find.byType(TextField), accountPassportName);
       await saveName(tester);
     });
-    testWidgets('BUY forever back loop', (tester) async {
+    testWidgets('<BUY forever back loop>', (tester) async {
       await goBackHome(tester);
 
       await fromHomeToBuyOptions(tester);
@@ -489,7 +483,7 @@ Future<void> main() async {
       await findTextOnScreen(tester, "SETTINGS");
       await tester.pump(Durations.long2);
     });
-    testWidgets('Fiat in App', (tester) async {
+    testWidgets('<Fiat in App>', (tester) async {
       await checkSync(tester);
       await goBackHome(tester);
 
@@ -631,7 +625,7 @@ Future<void> main() async {
         expect(fiatCheckResult, isTrue);
       }
     });
-    testWidgets('Test send to all address types', (tester) async {
+    testWidgets('<Test send to all address types>', (tester) async {
       await checkSync(tester);
       await goBackHome(tester);
       await disableAllNetworks(tester);
@@ -666,7 +660,7 @@ Future<void> main() async {
           "bc1pgqnxzknhzyypgslhcevt96cnry4jkarv5gqp560a95uv6mzf4x7s0r67mm";
       await trySendToAddress(tester, p2trAddress);
     });
-    testWidgets('BTC/sats in App', (tester) async {
+    testWidgets('<BTC/sats in App>', (tester) async {
       await checkSync(tester);
 
       await goBackHome(tester);
@@ -880,7 +874,7 @@ Future<void> main() async {
       await findAndPressTextButton(tester,
           'Accounts'); // TODO: Since Send is f***ed I must go back like this
     });
-    testWidgets('Enable testnet', (tester) async {
+    testWidgets('<Enable testnet>', (tester) async {
       await goBackHome(tester);
 
       await fromHomeToAdvancedMenu(tester);
@@ -936,7 +930,7 @@ Future<void> main() async {
       // Ensure there are at least two badges: one for the passport and one for the hot testnet wallet.
       expect(testnetAccountBadge, findsAtLeast(2));
     });
-    testWidgets('Enable taproot', (tester) async {
+    testWidgets('<Enable taproot>', (tester) async {
       await goBackHome(tester);
 
       await pressHamburgerMenu(tester);
@@ -1014,7 +1008,7 @@ Future<void> main() async {
       await findAndToggleSettingsSwitch(
           tester, "Receive to Taproot"); // Enable again
     });
-    testWidgets('Check Signet in App', (tester) async {
+    testWidgets('<Check Signet in App>', (tester) async {
       await goBackHome(tester);
 
       await fromHomeToAdvancedMenu(tester);
@@ -1088,7 +1082,7 @@ Future<void> main() async {
       signetTextAccount = find.text('Signet');
       expect(signetTextAccount, findsNothing);
     });
-    testWidgets('Node selection', (tester) async {
+    testWidgets('<Node selection>', (tester) async {
       await goBackHome(tester);
 
       // Go to privacy
@@ -1150,7 +1144,7 @@ Future<void> main() async {
         duration: Durations.long1,
       );
     });
-    testWidgets('Enable tor and check top shield', (tester) async {
+    testWidgets('<Enable tor and check top shield>', (tester) async {
       await goBackHome(tester);
 
       await findAndPressTextButton(tester, 'Privacy');
@@ -1170,7 +1164,7 @@ Future<void> main() async {
       await enablePerformance(tester);
       await checkTorShieldIcon(tester, expectPrivacy: false);
     });
-    testWidgets('Boost screen', (tester) async {
+    testWidgets('<Boost screen>', (tester) async {
       await goBackHome(tester);
 
       await disableAllNetworks(tester);
@@ -1213,8 +1207,7 @@ Future<void> main() async {
         await tester.pump(Durations.long2);
         await findAndToggleSettingsSwitch(tester, 'Receive to Taproot');
         await tester.pump(Durations.long2);
-        final closeDialogButton = find.byIcon(Icons.close);
-        await tester.tap(closeDialogButton.last, warnIfMissed: false);
+        await findAndPressTextButton(tester, "Confirm");
         await tester.pump(Durations.long2);
       }
 
@@ -1308,7 +1301,85 @@ Future<void> main() async {
         await findAndPressTextButton(tester, 'Unlock');
       }
     });
-    testWidgets('Switching Fiat in App', (tester) async {
+    testWidgets('<Receiving txs - check Boost and Cancel>', (tester) async {
+      await goBackHome(tester);
+
+      await disableAllNetworks(tester);
+
+      //const testnetReceiveAddress =
+      //    'tb1qe78y9rk4nwh9xuwmug7unpldfvpgkcqlufmgct';
+      // TODO: fill this wallet if there is no money from here https://coinfaucet.eu/en/btc-testnet4/
+      // TODO: when getting more coins you need to wait for the transaction confirmation before running the tests!!!
+
+      const testnetSendAddress =
+          'tb1qrjfqkufhvxexvkvss5e0ng2j5v3u0jhurcrlyk'; // send coins to this address from base wallet
+
+      const testWallet = "Mobile Wallet";
+
+      await tester.pump(Durations.long2);
+
+      await fromHomeToAdvancedMenu(tester);
+      await tester.pump(Durations.long2);
+
+      bool isSettingsSignetSwitchOn = await isSlideSwitchOn(tester, 'Testnet');
+      bool isSettingsTaprootSwitchOn =
+          await isSlideSwitchOn(tester, 'Receive to Taproot');
+      bool isSettingsViewSatsSwitchOn =
+          await isSlideSwitchOn(tester, 'View Amount in Sats');
+
+      if (!isSettingsViewSatsSwitchOn) {
+        // find And Toggle DisplayFiat Switch
+        await findAndToggleSettingsSwitch(tester, 'View Amount in Sats');
+      }
+
+      if (!isSettingsSignetSwitchOn) {
+        // find And Toggle Testnet Switch
+        await tester.pump(Durations.long2);
+        await findAndToggleSettingsSwitch(tester, 'Testnet');
+        await tester.pump(Durations.long2);
+        final closeDialogButton = find.byIcon(Icons.close);
+        await tester.tap(closeDialogButton.last, warnIfMissed: false);
+        await tester.pump(Durations.long2);
+      }
+
+      if (isSettingsTaprootSwitchOn) {
+        // find And Toggle Taproot Switch
+        await tester.pump(Durations.long2);
+        await findAndToggleSettingsSwitch(tester, 'Receive to Taproot');
+        await tester.pump(Durations.long2);
+        await findAndPressTextButton(tester, "Confirm");
+        await tester.pump(Durations.long2);
+      }
+
+      // go back to accounts
+      await pressHamburgerMenu(tester);
+      await pressHamburgerMenu(tester);
+      await tester.pump(Durations.long2);
+
+      await checkSync(tester, waitAccSync: testWallet, findFirst: false);
+      await tester.pump(Durations.long2);
+
+      await sendFromBaseWallet(tester, testnetSendAddress,
+          baseWallet: testWallet, findFirst: false);
+
+      // Go back to accounts
+      // await pressHamburgerMenu(tester);
+      await findAndPressTextButton(tester, "Accounts");
+      await tester.pump(Durations.long2);
+
+      await findAndPressTextButton(tester, "Primary (#0)");
+      await tester.pump(Durations.long2);
+
+      // check if Received tx has boost/cancel
+      await findLastTextButtonAndPress(tester, "Received");
+      await tester.pump(Durations.long2);
+
+      final boostButton = find.text('Boost');
+      final cancelButton = find.text('Cancel Transaction');
+      expect(boostButton, findsNothing);
+      expect(cancelButton, findsNothing);
+    });
+    testWidgets('<Switching Fiat in App>', (tester) async {
       await goBackHome(tester);
       const String accountPassportName = "GH TEST ACC (#1)";
 
@@ -1475,7 +1546,7 @@ Future<void> main() async {
       // Check if the numbers differ from different Fiats
       expect(newFiatAmount != usdFiatAmount, isTrue);
     });
-    testWidgets('Account delete icon', (tester) async {
+    testWidgets('<Account delete icon>', (tester) async {
       await goBackHome(tester);
 
       await disableAllNetworks(tester);
@@ -1495,7 +1566,7 @@ Future<void> main() async {
 
       expect(envoyIconFinder, findsOneWidget);
     });
-    testWidgets('Delete device', (tester) async {
+    testWidgets('<Delete device>', (tester) async {
       await goBackHome(tester);
       String deviceName = "Passport";
 
@@ -1542,7 +1613,7 @@ Future<void> main() async {
 
       expect(passportAccount, findsNothing);
     });
-    testWidgets('Logs freeze', (tester) async {
+    testWidgets('<Logs freeze>', (tester) async {
       await goBackHome(tester);
 
       await fromHomeToAdvancedMenu(tester);

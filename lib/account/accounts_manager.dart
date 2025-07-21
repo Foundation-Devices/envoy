@@ -369,8 +369,8 @@ class NgAccountManager extends ChangeNotifier {
       List<Output> latestOutputs = ref.read(outputsProvider(account.id));
       List<Output> mergedUtxos =
           mergeLatestOutputs(account.utxo, latestOutputs);
-      for (var descriptor in account.descriptors) {
-        String xpub = getXpub(descriptor, account);
+      for (var descriptor in account.externalPublicDescriptors) {
+        String xpub = getXpub(descriptor.$2, account);
         String xpubData = buildKeyJson("xpub", xpub, account.name);
         allData.add(xpubData);
 
@@ -378,9 +378,13 @@ class NgAccountManager extends ChangeNotifier {
         List<String> outputData = await getUtxosData(mergedUtxos);
         allData.addAll(outputData);
 
-        // Get transaction data and add each entry to allData
-        List<String> txData = await getTxData(account);
-        allData.addAll(txData);
+        // TODO: Link transactions to the correct descriptor.
+        // Currently, all transactions are linked to the first external descriptor only.
+        if (descriptor == account.externalPublicDescriptors.first) {
+          // Get transaction data and add each entry to allData
+          List<String> txData = await getTxData(account.id, descriptor.$2, ref);
+          allData.addAll(txData);
+        }
       }
       // Get xpub and create JSON data
 
@@ -495,6 +499,7 @@ class NgAccountManager extends ChangeNotifier {
       deviceSerial: config.deviceSerial ?? "unknown-serial_${config.id}",
       network: config.network.toString(),
       number: config.index,
+      accountId: config.id,
     );
     if (await dir.exists()) {
       EnvoyReport().log("AccountManager",
