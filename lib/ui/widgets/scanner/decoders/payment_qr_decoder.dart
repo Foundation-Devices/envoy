@@ -33,7 +33,7 @@ class PaymentQrDecoder extends ScannerDecoder {
 
   @override
   Future<void> onDetectBarCode(Barcode barCode) async {
-    String code = barCode.code!.toLowerCase();
+    String code = barCode.code!;
     if (barCode.code == null) {
       return;
     }
@@ -64,7 +64,8 @@ class PaymentQrDecoder extends ScannerDecoder {
     // Remove bitcoin: prefix in case BIP-21 parsing failed
     address = address.replaceFirst("bitcoin:", "").trim();
     kPrint("address scanned $address");
-    if (await EnvoyAccountHandler.validateAddress(address: address)) {
+    if (await EnvoyAccountHandler.validateAddress(
+        address: address, network: account.network)) {
       // Convert the address to lowercase for consistent display in Envoy
       if (address.startsWith('bc') || address.startsWith("tb")) {
         address = address.toLowerCase();

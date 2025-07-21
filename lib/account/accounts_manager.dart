@@ -22,8 +22,10 @@ import 'package:envoy/util/console.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 
 class AccountAlreadyPaired implements Exception {}
 
@@ -360,22 +362,29 @@ class NgAccountManager extends ChangeNotifier {
     }
   }
 
-  Future<void> exportBIP329() async {
+  Future<void> exportBIP329(WidgetRef ref) async {
     List<String> allData = [];
 
     for (EnvoyAccount account in accounts) {
-      for (var descriptor in account.descriptors) {
-        String xpub = getXpub(descriptor, account);
+      List<Output> latestOutputs = ref.read(outputsProvider(account.id));
+      List<Output> mergedUtxos =
+          mergeLatestOutputs(account.utxo, latestOutputs);
+      for (var descriptor in account.externalPublicDescriptors) {
+        String xpub = getXpub(descriptor.$2, account);
         String xpubData = buildKeyJson("xpub", xpub, account.name);
         allData.add(xpubData);
 
         // Get output data and add each entry to allData
-        List<String> outputData = await getUtxosData(account);
+        List<String> outputData = await getUtxosData(mergedUtxos);
         allData.addAll(outputData);
 
-        // Get transaction data and add each entry to allData
-        List<String> txData = await getTxData(account);
-        allData.addAll(txData);
+        // TODO: Link transactions to the correct descriptor.
+        // Currently, all transactions are linked to the first external descriptor only.
+        if (descriptor == account.externalPublicDescriptors.first) {
+          // Get transaction data and add each entry to allData
+          List<String> txData = await getTxData(account.id, descriptor.$2, ref);
+          allData.addAll(txData);
+        }
       }
       // Get xpub and create JSON data
 
@@ -383,13 +392,17 @@ class NgAccountManager extends ChangeNotifier {
 
       // Save the file
     }
+    // Remove duplicates
+    allData = allData.toSet().toList();
+
     String fileContent = allData.join('\n');
     Uint8List fileContentBytes = Uint8List.fromList(utf8.encode(fileContent));
     await FileSaver.instance.saveAs(
-        mimeType: MimeType.json,
+        mimeType: MimeType.custom,
+        customMimeType: 'application/jsonl',
         name: 'bip329_export',
         bytes: fileContentBytes,
-        ext: 'json');
+        ext: 'jsonl');
   }
 
   EnvoyAccount? getHotWalletAccount({network = Network.bitcoin}) {
@@ -486,10 +499,12 @@ class NgAccountManager extends ChangeNotifier {
       deviceSerial: config.deviceSerial ?? "unknown-serial_${config.id}",
       network: config.network.toString(),
       number: config.index,
+      accountId: config.id,
     );
     if (await dir.exists()) {
       EnvoyReport().log("AccountManager",
           "Failed to create account directory for ${config.name}:${config.deviceSerial}, already exists: ${dir.path}");
+      throw AccountAlreadyPaired();
     } else {
       await dir.create(recursive: true);
     }

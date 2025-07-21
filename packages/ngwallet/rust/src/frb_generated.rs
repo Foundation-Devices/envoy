@@ -3356,6 +3356,8 @@ impl SseDecode for crate::api::envoy_account::EnvoyAccount {
             <Vec<ngwallet::transaction::BitcoinTransaction>>::sse_decode(deserializer);
         let mut var_utxo = <Vec<ngwallet::transaction::Output>>::sse_decode(deserializer);
         let mut var_tags = <Vec<String>>::sse_decode(deserializer);
+        let mut var_externalPublicDescriptors =
+            <Vec<(ngwallet::config::AddressType, String)>>::sse_decode(deserializer);
         return crate::api::envoy_account::EnvoyAccount {
             name: var_name,
             color: var_color,
@@ -3376,6 +3378,7 @@ impl SseDecode for crate::api::envoy_account::EnvoyAccount {
             transactions: var_transactions,
             utxo: var_utxo,
             tags: var_tags,
+            external_public_descriptors: var_externalPublicDescriptors,
         };
     }
 }
@@ -3526,6 +3529,20 @@ impl SseDecode for Vec<(ngwallet::config::AddressType, KeychainKind, u32)> {
             ans_.push(
                 <(ngwallet::config::AddressType, KeychainKind, u32)>::sse_decode(deserializer),
             );
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<(ngwallet::config::AddressType, String)> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<(ngwallet::config::AddressType, String)>::sse_decode(
+                deserializer,
+            ));
         }
         return ans_;
     }
@@ -3838,6 +3855,15 @@ impl SseDecode for (ngwallet::config::AddressType, KeychainKind, u32) {
         let mut var_field1 = <KeychainKind>::sse_decode(deserializer);
         let mut var_field2 = <u32>::sse_decode(deserializer);
         return (var_field0, var_field1, var_field2);
+    }
+}
+
+impl SseDecode for (ngwallet::config::AddressType, String) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_field0 = <ngwallet::config::AddressType>::sse_decode(deserializer);
+        let mut var_field1 = <String>::sse_decode(deserializer);
+        return (var_field0, var_field1);
     }
 }
 
@@ -4664,6 +4690,9 @@ impl flutter_rust_bridge::IntoDart for crate::api::envoy_account::EnvoyAccount {
             self.transactions.into_into_dart().into_dart(),
             self.utxo.into_into_dart().into_dart(),
             self.tags.into_into_dart().into_dart(),
+            self.external_public_descriptors
+                .into_into_dart()
+                .into_dart(),
         ]
         .into_dart()
     }
@@ -5341,6 +5370,10 @@ impl SseEncode for crate::api::envoy_account::EnvoyAccount {
         <Vec<ngwallet::transaction::BitcoinTransaction>>::sse_encode(self.transactions, serializer);
         <Vec<ngwallet::transaction::Output>>::sse_encode(self.utxo, serializer);
         <Vec<String>>::sse_encode(self.tags, serializer);
+        <Vec<(ngwallet::config::AddressType, String)>>::sse_encode(
+            self.external_public_descriptors,
+            serializer,
+        );
     }
 }
 
@@ -5465,6 +5498,16 @@ impl SseEncode for Vec<(ngwallet::config::AddressType, KeychainKind, u32)> {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <(ngwallet::config::AddressType, KeychainKind, u32)>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<(ngwallet::config::AddressType, String)> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <(ngwallet::config::AddressType, String)>::sse_encode(item, serializer);
         }
     }
 }
@@ -5723,6 +5766,14 @@ impl SseEncode for (ngwallet::config::AddressType, KeychainKind, u32) {
         <ngwallet::config::AddressType>::sse_encode(self.0, serializer);
         <KeychainKind>::sse_encode(self.1, serializer);
         <u32>::sse_encode(self.2, serializer);
+    }
+}
+
+impl SseEncode for (ngwallet::config::AddressType, String) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <ngwallet::config::AddressType>::sse_encode(self.0, serializer);
+        <String>::sse_encode(self.1, serializer);
     }
 }
 

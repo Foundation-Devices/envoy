@@ -443,7 +443,7 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
     if (cryptoPsbt is CryptoPsbt && received == false) {
       try {
         final preparedTx = await EnvoyAccountHandler.decodePsbt(
-            draftTransaction: draftTransaction, psbt: cryptoPsbt.payload);
+            draftTransaction: draftTransaction, psbt: cryptoPsbt.decoded);
         draftTransaction = preparedTx;
         await Future.delayed(const Duration(milliseconds: 50));
         //pop dialog

@@ -32,7 +32,8 @@ class DescriptorCard extends ConsumerStatefulWidget {
 }
 
 class _DescriptorCardState extends ConsumerState<DescriptorCard> {
-  late List<NgDescriptor> descriptors = widget.account.descriptors;
+  late List<(AddressType, String)> descriptors =
+      widget.account.externalPublicDescriptors;
   int selectedIndex = 0;
 
   @override
@@ -42,12 +43,12 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
       if (Settings().taprootEnabled()) {
         setState(() {
           selectedIndex = descriptors
-              .indexWhere((element) => element.addressType == AddressType.p2Tr);
+              .indexWhere((descriptor) => descriptor.$1 == AddressType.p2Tr);
         });
       } else {
         setState(() {
-          selectedIndex = descriptors.indexWhere(
-              (element) => element.addressType == AddressType.p2Wpkh);
+          selectedIndex = descriptors
+              .indexWhere((descriptor) => descriptor.$1 == AddressType.p2Wpkh);
         });
       }
     } catch (e) {
@@ -79,14 +80,14 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
   late List<EnvoyDropdownOption> options = descriptors.map((descriptor) {
     return EnvoyDropdownOption(
       type: EnvoyDropdownOptionType.normal,
-      label: mapAddressTypeToName(descriptor.addressType),
+      label: mapAddressTypeToName(descriptor.$1),
       value: descriptors.indexOf(descriptor).toString(),
     );
   }).toList();
 
   @override
   Widget build(BuildContext context) {
-    String descriptor = descriptors[selectedIndex].external_ ?? "";
+    String descriptor = descriptors[selectedIndex].$2;
     return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

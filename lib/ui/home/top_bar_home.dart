@@ -14,12 +14,12 @@ import 'package:envoy/ui/routes/home_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart';
-import 'package:envoy/util/envoy_storage.dart';
 
 class HomeAppBar extends ConsumerStatefulWidget {
   final bool backGroundShown;
@@ -449,11 +449,20 @@ class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
     super.dispose();
   }
 
-  void updateAnimationState(HamburgerMenu? oldWidget) {
+  void updateAnimationState(HamburgerMenu? oldWidget) async {
     if (oldWidget?.iconState == widget.iconState) return;
+    final pos = _menuController?.findInput<double>("state_pos")?.value;
     switch (widget.iconState) {
       case HamburgerState.idle:
-        _menuController?.findInput<double>("state_pos")?.change(0.0);
+        //there is no direct animation path from 2.0 to 0
+        //just a work around to mitigate this path.
+        if (pos == 2.0) {
+          _menuController?.findInput<double>("state_pos")?.change(1);
+          await Future.delayed(Duration(milliseconds: 200));
+          _menuController?.findInput<double>("state_pos")?.change(0);
+        } else {
+          _menuController?.findInput<double>("state_pos")?.change(0.0);
+        }
         break;
       case HamburgerState.upward:
         _menuController?.findInput<double>("state_pos")?.change(1);

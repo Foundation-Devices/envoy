@@ -52,7 +52,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("Done"),
+        "_": MessageLookupByLibrary.simpleMessage("1"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versió de l\'aplicació"),
         "about_openSourceLicences":
@@ -1168,7 +1168,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "La manera més senzilla de crear una nova cartera Bitcoin mantenint la vostra sobirania.\n\nLa Còpia de Seguretat Màgica fa una còpia de seguretat automàtica de la teva cartera i configuració amb Clauer d\'ICloud , 100% xifrat d\'extrem a extrem. [[Aprèn més]]."),
         "manage_account_address_card_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Per privacitat, creem una adreça nova cada vegada que visiteu aquesta pantalla."),
+                "Envoy generarà una nova adreça després que s\'utilitzi la següent."),
         "manage_account_address_heading":
             MessageLookupByLibrary.simpleMessage("DETALLS DEL COMPTE"),
         "manage_account_descriptor_subheading":
@@ -1496,7 +1496,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Encrypting Wallet Backup"),
         "onboarding_magicUserMobileIntro_content1":
             MessageLookupByLibrary.simpleMessage(
-                "Also known as a “hot wallet.” Spending from this wallet requires only your phone for authorization."),
+                "Also known as a “hot wallet”. Spending from this wallet requires only your phone for authorization."),
         "onboarding_magicUserMobileIntro_content2":
             MessageLookupByLibrary.simpleMessage(
                 "Your Mobile Wallet Key will be stored in your phone\'s secure enclave, encrypted, and backed up to your Apple or Google account."),
@@ -1852,8 +1852,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Mostra els valors en Fiat"),
         "settings_viewEnvoyLogs": MessageLookupByLibrary.simpleMessage(
             "Veure els registres d\'Envoy"),
-        "signMessage_mainHot_signMessage":
-            MessageLookupByLibrary.simpleMessage("Sign Message"),
         "signMessage_mainSignedQr_scanQr":
             MessageLookupByLibrary.simpleMessage("Scan the QR"),
         "signMessage_mainSignedQr_scanQrSubheader":
@@ -1870,8 +1868,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Address does not belong to this account.\nPlease enter another address."),
         "signMessage_main_enterPasteMessage":
             MessageLookupByLibrary.simpleMessage("Enter or paste the message"),
-        "signMessage_main_header":
-            MessageLookupByLibrary.simpleMessage("Sign Message"),
         "signMessage_main_messageHeader":
             MessageLookupByLibrary.simpleMessage("Message"),
         "signMessage_main_signatureHeader":

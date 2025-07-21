@@ -386,23 +386,19 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                             alignment: Alignment
                                                                 .center,
                                                             child:
-                                                                GestureDetector(
-                                                              onTap: () {},
-                                                              child:
-                                                                  CoinBalanceWidget(
-                                                                output: coin,
-                                                                coinTag: tag,
-                                                                onEnable: () {
-                                                                  Future.delayed(
-                                                                      const Duration(
-                                                                          milliseconds:
-                                                                              300),
-                                                                      () {
-                                                                    animateToIndex(
-                                                                        index);
-                                                                  });
-                                                                },
-                                                              ),
+                                                                CoinBalanceWidget(
+                                                              output: coin,
+                                                              coinTag: tag,
+                                                              onEnable: () {
+                                                                Future.delayed(
+                                                                    const Duration(
+                                                                        milliseconds:
+                                                                            300),
+                                                                    () {
+                                                                  animateToIndex(
+                                                                      index);
+                                                                });
+                                                              },
                                                             )),
                                                       );
                                                     },
@@ -652,10 +648,6 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                 navigator.pop();
               },
               onSecondaryButtonTap: () async {
-                //TODO: use ngwallet
-                // await CoinRepository().deleteTag(widget.coinTag);
-                //refresh coins list to update deleted tag item
-                // ignore: unused_result
                 final selectedAccount = ref.read(selectedAccountProvider);
                 if (selectedAccount != null) {
                   try {
@@ -735,6 +727,11 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                           ? ButtonState.loading
                           : ButtonState.defaultState,
                       onTap: () async {
+                        String newTagName =
+                            textEntry.enteredText.toString().trim();
+                        if (newTagName.isEmpty) {
+                          return;
+                        }
                         stateSetter(() {
                           renameInProgress = true;
                         });
