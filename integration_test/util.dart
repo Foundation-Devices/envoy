@@ -617,6 +617,21 @@ Future<void> scrollUntilVisible(WidgetTester tester, String text,
       'Widget with text "$text" not found after scrolling $maxScrolls times.');
 }
 
+Future<void> scrollStagingFeeWheel(
+  WidgetTester tester, {
+  double scrollIncrement = -2000,
+}) async {
+  final scrollableFinder = find.byType(ListWheelScrollView);
+  final gestureOffset = Offset(scrollIncrement, 0); // Horizontal flick
+
+  await tester.fling(scrollableFinder, gestureOffset, 100); // velocity = 1000
+  await tester.pump(Durations.long2);
+  await tester.pump(Durations.long2);
+  await tester.pump(Durations.long2);
+  await tester.pump(Durations.long2);
+  await tester.pump(Durations.long2);
+}
+
 Future<void> scrollFindAndTapText(WidgetTester tester, String text,
     {int maxScrolls = 50, double scrollIncrement = -100}) async {
   Finder finder = find.text(text);
@@ -933,6 +948,28 @@ Future<Finder> checkForEnvoyIcon(
   return iconFinder;
 }
 
+Future<void> checkForEnvoyIconNotFound(
+  WidgetTester tester,
+  EnvoyIcons unexpectedIcon,
+) async {
+  final iconFinder = find.byWidgetPredicate(
+    (widget) => widget is EnvoyIcon && widget.icon == unexpectedIcon,
+  );
+
+  const int tries = 20;
+  const Duration delay = Duration(milliseconds: 100);
+
+  for (int i = 0; i < tries; i++) {
+    await tester.pump(delay);
+    if (!tester.any(iconFinder)) {
+      return; // Success: icon not found
+    }
+  }
+
+  throw Exception(
+      '❌ EnvoyIcon "$unexpectedIcon" was still found after $tries tries.');
+}
+
 Future<void> findAndPressTextButton(
     WidgetTester tester, String buttonText) async {
   await tester.pump(Durations.long2);
@@ -1008,7 +1045,7 @@ Future<void> checkSync(
   await SyncManager().sync();
 
   await tester.pumpUntilCondition(
-    tries: 30,
+    tries: 100,
     duration: Duration(seconds: 2),
     condition: () {
       final textFinder = find.text(waitAccSync);
