@@ -7,6 +7,7 @@ import 'dart:ui';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/address_widget.dart';
+import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/envoy_info_card.dart';
 import 'package:envoy/ui/components/envoy_tag_list_item.dart';
 import 'package:envoy/ui/envoy_colors.dart' as old_colors;
@@ -19,6 +20,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_w
 import 'package:envoy/ui/state/transactions_note_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
@@ -47,6 +49,7 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
     Color accountAccentColor =
         ref.read(selectedAccountProvider)?.color.toColor() ??
             old_colors.EnvoyColors.listAccountTileColors[0];
+    final selectedAccount = ref.read(selectedAccountProvider);
 
     final String utxoAddress = widget.output.address;
     final coinTag = widget.tag;
@@ -103,39 +106,57 @@ class _CoinDetailsWidgetState extends ConsumerState<CoinDetailsWidget> {
             icon: const EnvoyIcon(EnvoyIcons.compass,
                 color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
             trailing: GestureDetector(
-                onLongPress: () {
-                  copyTxId(context, output.txId, null);
-                },
-                onTap: () {
-                  setState(() {
-                    showExpandedTxId = !showExpandedTxId;
-                    showExpandedAddress = false;
-                  });
-                },
-                child: TweenAnimationBuilder(
-                  curve: EnvoyEasing.easeInOut,
-                  tween: Tween<double>(begin: 0, end: showExpandedTxId ? 1 : 0),
-                  duration: const Duration(milliseconds: 200),
-                  builder: (context, value, child) {
-                    return Container(
-                      constraints: const BoxConstraints(
-                        maxHeight: 80,
-                      ),
-                      child: SingleChildScrollView(
-                        child: Text(
-                          truncateWithEllipsisInCenter(
-                              output.txId,
-                              lerpDouble(16, output.txId.length, value)!
-                                  .toInt()),
-                          style: EnvoyTypography.body
-                              .copyWith(color: EnvoyColors.textSecondary),
-                          textAlign: TextAlign.end,
-                          maxLines: 4,
+              behavior: HitTestBehavior.opaque,
+              onLongPress: () {
+                copyTxId(context, output.txId, null);
+              },
+              onTap: () {
+                setState(() {
+                  showExpandedTxId = !showExpandedTxId;
+                  showExpandedAddress = false;
+                });
+              },
+              child: TweenAnimationBuilder(
+                curve: EnvoyEasing.easeInOut,
+                tween: Tween<double>(begin: 0, end: showExpandedTxId ? 1 : 0),
+                duration: const Duration(milliseconds: 200),
+                builder: (context, value, child) {
+                  return Container(
+                    constraints: const BoxConstraints(
+                      maxHeight: 80,
+                    ),
+                    child: SingleChildScrollView(
+                      child: Text(
+                        truncateWithEllipsisInCenter(
+                          output.txId,
+                          lerpDouble(16, output.txId.length, value)!.toInt(),
                         ),
+                        style: EnvoyTypography.body
+                            .copyWith(color: EnvoyColors.textSecondary),
+                        textAlign: TextAlign.end,
                       ),
-                    );
-                  },
-                )),
+                    ),
+                  );
+                },
+              ),
+            ),
+            button: (showExpandedTxId)
+                ? EnvoyButton(
+                    height: EnvoySpacing.medium3,
+                    icon: EnvoyIcons.externalLink,
+                    label: S().coindetails_overlay_explorer,
+                    type: ButtonType.primary,
+                    state: ButtonState.defaultState,
+                    onTap: () {
+                      if (selectedAccount != null) {
+                        openTxDetailsInExplorer(
+                            context, output.txId, selectedAccount.network);
+                      }
+                    },
+                    edgeInsets: const EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.medium1),
+                  )
+                : null,
           ),
           EnvoyInfoCardListItem(
             title: S().coindetails_overlay_date,
