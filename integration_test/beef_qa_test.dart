@@ -10,6 +10,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/widgets/card_swipe_wrapper.dart';
+import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -114,7 +115,7 @@ Future<void> main() async {
       await pressHamburgerMenu(tester);
       await goToAbout(tester);
 
-      final appVersion = find.text('2.0.0');
+      final appVersion = find.text('2.0.1');
       expect(appVersion, findsOneWidget);
 
       final showButton = find.text('Show');
@@ -941,6 +942,7 @@ Future<void> main() async {
       if (taprootAlreadyEnabled) {
         // Disable it
         await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
+        await findAndPressTextButton(tester, "Confirm");
       }
       await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
       await tester.pump(Durations.long2);
@@ -956,6 +958,8 @@ Future<void> main() async {
       expect(confirmTextFromDialog, findsNothing);
       await findAndToggleSettingsSwitch(
           tester, "Receive to Taproot"); // Disable
+      await tester.tap(confirmTextFromDialog);
+      await tester.pump(Durations.long2);
       await findAndToggleSettingsSwitch(
           tester, "Receive to Taproot"); // Enable again
 
@@ -1305,6 +1309,140 @@ Future<void> main() async {
         await findAndTapCoinLockButton(tester);
         await findAndPressTextButton(tester, 'Unlock');
       }
+    });
+    testWidgets('<Fee % test>', (tester) async {
+      await goBackHome(tester);
+
+      await disableAllNetworks(tester);
+
+      const hotSignetSendAddress =
+          'tb1pddwvqpcv5s4a738cs2av3x4kq3lr3kqt4w2flmpyha3srenxxseq9mlz5h'; // send coins to this address from base wallet
+
+      await tester.pump(Durations.long2);
+
+      await fromHomeToAdvancedMenu(tester);
+
+      bool isSettingsSignetSwitchOn = await isSlideSwitchOn(tester, 'Signet');
+      bool isSettingsTaprootSwitchOn =
+          await isSlideSwitchOn(tester, 'Receive to Taproot');
+      bool isSettingsViewSatsSwitchOn =
+          await isSlideSwitchOn(tester, 'View Amount in Sats');
+
+      if (!isSettingsViewSatsSwitchOn) {
+        // find And Toggle DisplayFiat Switch
+        await findAndToggleSettingsSwitch(tester, 'View Amount in Sats');
+      }
+
+      if (!isSettingsSignetSwitchOn) {
+        // find And Toggle Signet Switch
+        await tester.pump(Durations.long2);
+        await findAndToggleSettingsSwitch(tester, 'Signet');
+        await tester.pump(Durations.long2);
+        final closeDialogButton = find.byIcon(Icons.close);
+        await tester.tap(closeDialogButton.last, warnIfMissed: false);
+        await tester.pump(Durations.long2);
+      }
+
+      if (!isSettingsTaprootSwitchOn) {
+        // find And Toggle Taproot Switch
+        await tester.pump(Durations.long2);
+        await findAndToggleSettingsSwitch(tester, 'Receive to Taproot');
+        final closeDialogButton = find.byIcon(Icons.close);
+        await tester.tap(closeDialogButton.last, warnIfMissed: false);
+        await tester.pump(Durations.long2);
+      }
+
+      // go back to accounts
+      await pressHamburgerMenu(tester);
+      await pressHamburgerMenu(tester);
+
+      await checkSync(tester, waitAccSync: "Signet");
+      await tester.pump(Durations.long2);
+
+      final baseWalletFinder = find.text("Signet");
+      expect(baseWalletFinder, findsWidgets);
+      await tester.tap(baseWalletFinder.first);
+      await tester.pump(Durations.long2);
+
+      final sendButtonFinder = find.text("Send");
+      expect(sendButtonFinder, findsWidgets);
+      await tester.tap(sendButtonFinder.last);
+      await tester.pump(Durations.long2);
+
+      await enterTextInField(
+          tester, find.byType(TextFormField), hotSignetSendAddress);
+
+      // enter amount
+      await findAndPressTextButton(tester, '5');
+      await findAndPressTextButton(tester, '6');
+      await findAndPressTextButton(tester, '7');
+      await findAndPressTextButton(tester, '8');
+
+      // go to staging
+      await waitForTealTextAndTap(tester, 'Confirm');
+      await tester.pump(Durations.long2);
+
+      // now wait for it to go to staging
+      final textFeeFinder = find.text("Fee");
+      await tester.pumpUntilFound(textFeeFinder,
+          tries: 100, duration: Durations.long2);
+
+      // scroll to see if /!\ alert icon is NOT present
+      await scrollHome(tester, -300,
+          scrollableWidgetType: SingleChildScrollView);
+
+      await checkForEnvoyIconNotFound(tester, EnvoyIcons.alert);
+
+      // change fee
+      await findAndPressTextButton(tester, 'Custom');
+      await tester.pump(Durations.long2);
+
+      await scrollStagingFeeWheel(tester);
+
+      await findAndPressTextButton(tester, 'Confirm Fee');
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
+
+      // scroll to see if /!\ alert icon IS present
+      await scrollHome(tester, -600,
+          scrollableWidgetType: SingleChildScrollView);
+
+      await checkForEnvoyIcon(tester, EnvoyIcons.alert);
+
+      /// Check the amount
+      // 1. Find the Text widget
+      final textFinder =
+          find.textContaining(RegExp(r'Fee is .*% of total amount'));
+
+      expect(textFinder, findsOneWidget); // Ensure it's found
+
+      // 2. Extract the text
+      final Text textWidget = tester.widget(textFinder);
+      final String fullText = textWidget.data ?? '';
+
+      // 3. Extract the number using RegExp
+      final match = RegExp(r'Fee is ([\d.]+)%').firstMatch(fullText);
+      expect(match, isNotNull);
+
+      final String percentageString = match!.group(1)!;
+      final double feePercentage = double.parse(percentageString);
+
+      // Find all EnvoyAmount widgets
+      final envoyAmountFinder = find.byType(EnvoyAmount);
+      // Get all EnvoyAmount widgets in order
+      final envoyAmountWidgets =
+          tester.widgetList<EnvoyAmount>(envoyAmountFinder).toList();
+
+      // Extract amount, fee, and total
+      final fee = envoyAmountWidgets[1].amountSats;
+      final total = envoyAmountWidgets[2].amountSats;
+
+      // 4. Assert on the extracted value
+      final expectedFeePercentage =
+          ((fee.toInt() / (total.toInt())) * 100).round();
+
+      expect(feePercentage, equals(expectedFeePercentage));
     });
     testWidgets('<Receiving txs - check Boost and Cancel>', (tester) async {
       await goBackHome(tester);
