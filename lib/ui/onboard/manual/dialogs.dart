@@ -28,13 +28,13 @@ Future showRestoreFailedDialog(BuildContext context) async {
       icon: EnvoyIcons.alert);
 }
 
-Future<bool> openBackupFile(BuildContext buildContext) async {
+Future<bool> openBackupFile(BuildContext buildContext, {String? seed}) async {
   var success = false;
   var result = await FilePicker.platform.pickFiles();
   if (result != null) {
     try {
-      success =
-          await EnvoySeed().restoreData(filePath: result.files.single.path!);
+      success = await EnvoySeed()
+          .restoreData(filePath: result.files.single.path!, seed: seed);
     } catch (e) {
       success = false;
     }
