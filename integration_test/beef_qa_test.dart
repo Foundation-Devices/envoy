@@ -5,7 +5,6 @@
 import 'dart:io';
 
 import 'package:envoy/main.dart';
-import 'package:envoy/ui/amount_display.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
