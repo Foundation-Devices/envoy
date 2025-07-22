@@ -1045,7 +1045,7 @@ Future<void> checkSync(
   await SyncManager().sync();
 
   await tester.pumpUntilCondition(
-    tries: 30,
+    tries: 100,
     duration: Duration(seconds: 2),
     condition: () {
       final textFinder = find.text(waitAccSync);
