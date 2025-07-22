@@ -8,6 +8,7 @@ import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/main.dart';
+import 'package:envoy/ui/amount_display.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/big_tab.dart';
@@ -138,6 +139,24 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
       tries: 500, duration: Durations.long2);
 }
 
+/// Check if you are entering sats/btc/fiat over the given icon in Send
+Future<void> cycleToEnvoyIcon(
+    WidgetTester tester, EnvoyIcons targetIcon) async {
+  while (true) {
+    final iconFinder = await checkForEnvoyIcon(tester, targetIcon);
+    final iconCount = iconFinder.evaluate().length;
+
+    if (iconCount >= 2) {
+      // Two instances of the target icon found — confirmed loop
+      break;
+    }
+
+    // Cycle to the next icon
+    await findAndPressWidget<AmountDisplay>(tester);
+    await tester.pumpAndSettle();
+  }
+}
+
 /// Send money
 Future<void> sendFromBaseWallet(
   WidgetTester tester,
@@ -158,6 +177,9 @@ Future<void> sendFromBaseWallet(
 
   /// SEND some money to hot signet wallet
   await enterTextInField(tester, find.byType(TextFormField), hotSignetAddress);
+
+  /// Check if you are entering sats
+  await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
 
   // enter amount
   await findAndPressTextButton(tester, '5');
@@ -317,6 +339,8 @@ Future<void> findAndToggleSettingsSwitch(
   final switchFinder =
       find.descendant(of: listTileFinder, matching: find.byType(SettingToggle));
   expect(switchFinder, findsOneWidget);
+  await tester.pump(Durations.long2);
+  await tester.pump();
 
   // Tap the switch to toggle it
   await tester.tap(switchFinder);

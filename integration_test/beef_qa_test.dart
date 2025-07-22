@@ -642,6 +642,9 @@ Future<void> main() async {
       await tester.tap(sendButtonFinder.last);
       await tester.pump(Durations.long2);
 
+      /// Check if you are entering sats
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
+
       // enter amount
       await findAndPressTextButton(tester, '1');
       await findAndPressTextButton(tester, '2');
@@ -684,7 +687,7 @@ Future<void> main() async {
       bool isSettingsViewSatsSwitchOn =
           await isSlideSwitchOn(tester, 'View Amount in Sats');
       if (isSettingsViewSatsSwitchOn) {
-        // find And Toggle DisplayFiat Switch
+        // turn it off
         await findAndToggleSettingsSwitch(tester, 'View Amount in Sats');
       }
 
@@ -733,14 +736,14 @@ Future<void> main() async {
       await findFirstTextButtonAndPress(tester, 'Signet');
       await findAndPressTextButton(tester, 'Send');
 
+      /// This is not important anymore because of the new sendUnit (depending on the last Send selection)?
       /// Make sure the first proposed unit is BTC
       // function is checking icons from top to bottom so the first icon in Send needs to be BTC
-      await checkForEnvoyIcon(tester, EnvoyIcons.btc);
+      // await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
       /// Tap the BTC number in the send screen until you get to fiat (you might need to enable fiat from settings first)
-      // press the widget two times so it can circle to BTC
-      await findAndPressWidget<AmountDisplay>(tester);
-      await findAndPressWidget<AmountDisplay>(tester);
+      // circle to BTC
+      await cycleToEnvoyIcon(tester, EnvoyIcons.btc);
 
       if (currentSettingsFiatCode != null) {
         await tester.pump(Durations.long2);
@@ -751,8 +754,7 @@ Future<void> main() async {
       await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
       // switch to SATS for easy input
-      await findAndPressWidget<AmountDisplay>(tester);
-      await tester.pump(Durations.long2);
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
 
       /// With the unit in SATS, paste a valid address, enter a valid amount, tap continue
       await enterTextInField(
@@ -766,7 +768,7 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
 
       // switch back to BTC
-      await findAndPressWidget<AmountDisplay>(tester);
+      await cycleToEnvoyIcon(tester, EnvoyIcons.btc);
 
       // go to staging
       await waitForTealTextAndTap(tester, 'Confirm');
@@ -826,23 +828,25 @@ Future<void> main() async {
       await findFirstTextButtonAndPress(tester, 'Signet');
       await findAndPressTextButton(tester, 'Send');
 
-      /// Make sure the first proposed unit is sats
-      // function is checking icons from top to bottom so the first icon in Send needs to be sats
-      await checkForEnvoyIcon(tester, EnvoyIcons.sats);
+      /// Make sure the first proposed unit is BTC (last selected in send was BTC)
+      // function is checking icons from top to bottom so the first icon in Send needs to be BTC
+      await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
       if (currentSettingsFiatCode != null) {
         await tester.pump(Durations.long2);
         await findTextOnScreen(tester, "\$");
       }
 
-      ///  Check that the number below the fiat is displayed in sats
-      await checkForEnvoyIcon(tester, EnvoyIcons.sats);
+      ///  Check that the number below the fiat is displayed in btc
+      await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
-      /// With the unit in sats, paste a valid address, enter a valid amount, tap continue
+      /// With the unit in BTC, paste a valid address, enter a valid amount, tap continue
       await enterTextInField(
           tester, find.byType(TextFormField), someValidSignetReceiveAddress);
 
       // enter amount in SATS
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
+
       // This can fail if the fee is too high (small total amount) !!!
       await findAndPressTextButton(tester, '5');
       await findAndPressTextButton(tester, '6');
