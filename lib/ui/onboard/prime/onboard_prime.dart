@@ -18,6 +18,7 @@ import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class OnboardPrimeWelcome extends StatefulWidget {
   const OnboardPrimeWelcome({super.key});
@@ -41,15 +42,44 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
   }
 
   _connectToPrime() async {
+    // Check Bluetooth permissions
+    bool isDenied = await Permission.bluetooth.isDenied ||
+        await Permission.bluetoothConnect.isDenied ||
+        await Permission.bluetoothScan.isDenied;
+    String? bleId;
+
+    if (mounted) {
+      // Get the initial bleId from the router (if available)
+      bleId = GoRouter.of(context).state.uri.queryParameters["p"];
+    }
+
+    if (isDenied && mounted) {
+      // Navigate to the permission denied screen and wait for result
+      final result = await context.pushNamed(
+        ONBOARD_BLUETOOTH_DENIED,
+        queryParameters: {"p": bleId ?? ""},
+      );
+
+      // If user provided a bleId, use it; else exit
+      if (result is String) {
+        bleId = result;
+      } else {
+        return;
+      }
+    }
+
+    if (!mounted) return;
+
     setState(() {
       bleConnectState = BleConnectState.connecting;
     });
+
     try {
-      String? bleId = GoRouter.of(context).state.uri.queryParameters["p"];
       final regex = RegExp(r'^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$');
       kPrint("bleId $bleId");
       if (regex.hasMatch(bleId ?? "")) {
         await BluetoothManager().getPermissions();
+
         kPrint("Connecting to Prime with ID: $bleId");
         await BluetoothManager().scan();
         await BluetoothManager().events?.any((bluart.Event event) {
