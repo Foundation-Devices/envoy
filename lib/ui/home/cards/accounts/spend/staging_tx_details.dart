@@ -20,7 +20,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
-import 'package:envoy/ui/state/send_screen_state.dart';
+import 'package:envoy/ui/state/send_unit_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -105,7 +105,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
     double? displayFiatTotalInputAmount =
         displayFiatSendAmount! + displayFiatTotalChangeAmount;
 
-    final sendScreenUnit = ref.watch(sendScreenUnitProvider);
+    final sendScreenUnit = ref.watch(sendUnitProvider);
     final uneconomicSpends = ref.watch(uneconomicSpendsProvider);
 
     /// if user selected unit from the form screen then use that, otherwise use the default

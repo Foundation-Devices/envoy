@@ -12,7 +12,8 @@ import 'package:envoy/ui/home/cards/accounts/spend/rbf/rbf_spend_screen.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
-import 'package:envoy/ui/state/send_screen_state.dart';
+import 'package:envoy/ui/state/app_unit_state.dart';
+import 'package:envoy/ui/state/send_unit_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -113,7 +114,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
 
     EnvoyAccount account = ref.read(selectedAccountProvider)!;
     final accountAccent = fromHex(account.color);
-    final sendScreenUnit = ref.watch(sendScreenUnitProvider);
+    final sendScreenUnit = ref.watch(sendUnitProvider);
 
     /// if user selected unit from the form screen then use that, otherwise use the default
     DisplayUnit unit = sendScreenUnit == AmountDisplayUnit.btc

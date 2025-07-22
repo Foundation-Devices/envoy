@@ -9,6 +9,7 @@ import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/node_url.dart';
+import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -140,6 +141,17 @@ class Settings extends ChangeNotifier {
     selectedFiat = displayFiat;
     ExchangeRate().setCurrency(selectedFiat);
 
+    notifyListeners();
+    store();
+  }
+
+  @JsonKey(includeIfNull: false)
+  AmountDisplayUnit? sendUnit;
+
+  /// send and staging unit
+
+  void setSendUnit(AmountDisplayUnit unit) {
+    sendUnit = unit;
     notifyListeners();
     store();
   }
