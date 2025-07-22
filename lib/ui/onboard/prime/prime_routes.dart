@@ -19,11 +19,17 @@ const ONBOARD_PRIME_FIRMWARE_UPDATE = "update";
 const ONBOARD_PRIME_MAGIC_BACKUP = "magic";
 const ONBOARD_PRIME_CONTINUING_SETUP = "continuing_setup";
 const ONBOARD_PRIME_CONNECTED_SUCCESS = "connected_success";
+const ONBOARD_BLUETOOTH_DENIED = "bluetooth_denied";
 
 final primeRoutes = GoRoute(
   path: "prime",
   name: ONBOARD_PRIME,
   routes: [
+    GoRoute(
+      path: "bluetooth_denied",
+      name: ONBOARD_BLUETOOTH_DENIED,
+      builder: (context, state) => const OnboardBluetoothDenied(),
+    ),
     GoRoute(
       path: "bluetooth",
       name: ONBOARD_PRIME_BLUETOOTH,

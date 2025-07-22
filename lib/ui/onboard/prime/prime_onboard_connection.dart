@@ -152,7 +152,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
       StepModel deviceCheck, StepModel firmWareCheck, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-          vertical: EnvoySpacing.xs, horizontal: EnvoySpacing.medium1),
+          vertical: EnvoySpacing.medium1, horizontal: EnvoySpacing.medium1),
       child: Column(
         children: [
           Text(
@@ -165,7 +165,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
             return Container(
               margin: const EdgeInsets.symmetric(
                 vertical: EnvoySpacing.medium1,
-                horizontal: EnvoySpacing.medium2,
+                horizontal: EnvoySpacing.medium3,
               ),
               child: Wrap(
                 alignment: WrapAlignment.center,
