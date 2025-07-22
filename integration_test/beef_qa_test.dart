@@ -942,6 +942,7 @@ Future<void> main() async {
       if (taprootAlreadyEnabled) {
         // Disable it
         await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
+        await findAndPressTextButton(tester, "Confirm");
       }
       await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
       await tester.pump(Durations.long2);
@@ -957,6 +958,8 @@ Future<void> main() async {
       expect(confirmTextFromDialog, findsNothing);
       await findAndToggleSettingsSwitch(
           tester, "Receive to Taproot"); // Disable
+      await tester.tap(confirmTextFromDialog);
+      await tester.pump(Durations.long2);
       await findAndToggleSettingsSwitch(
           tester, "Receive to Taproot"); // Enable again
 
