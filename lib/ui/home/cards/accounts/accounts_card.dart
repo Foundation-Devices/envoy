@@ -60,8 +60,7 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
         Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // TODO: show if have account with passphrase AND without them
-            if (true)
+            if (ref.watch(primePassphraseAccountsProvider).isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(
                     left: 20, right: 20, top: EnvoySpacing.medium2),
@@ -180,7 +179,13 @@ class _AccountsListState extends ConsumerState<AccountsList> {
 
   @override
   Widget build(BuildContext context) {
-    final accounts = ref.watch(accountsProvider);
+    bool showDefaultAccounts = ref.watch(showDefaultAccountProvider);
+    List<EnvoyAccount> primePassphraseAccounts =
+        ref.watch(primePassphraseAccountsProvider);
+    List<EnvoyAccount> accounts = ref.watch(accountsProvider);
+    if (!showDefaultAccounts && primePassphraseAccounts.isNotEmpty) {
+      accounts = primePassphraseAccounts;
+    }
     final listContentHeight = accounts.length * _accountHeight;
     //update order if and only if new accounts are added
     ref.listen(accountOrderStream,
