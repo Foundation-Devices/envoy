@@ -284,10 +284,6 @@ class _AdvancedSettingsOptionsState
                                                     label: PublicServer
                                                         .diyNodes.label,
                                                     value: "diyNodes"),
-                                                EnvoyDropdownOption(
-                                                    label:
-                                                        PublicServer.luke.label,
-                                                    value: "luke"),
                                               ],
                                               onOptionChanged:
                                                   (selectedOption) {
@@ -352,9 +348,6 @@ class _AdvancedSettingsOptionsState
     if (newOption.value == "diyNodes") {
       Settings().setCustomElectrumAddress(PublicServer.diyNodes.address);
       return;
-    }
-    if (newOption.value == "luke") {
-      Settings().setCustomElectrumAddress(PublicServer.luke.address);
     }
   }
 

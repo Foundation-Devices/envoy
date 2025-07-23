@@ -102,10 +102,6 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
       Settings().useDefaultElectrumServer(false);
       return;
     }
-    if (newOption.value == "luke") {
-      Settings().setCustomElectrumAddress(PublicServer.luke.address);
-      Settings().useDefaultElectrumServer(false);
-    }
   }
 
   @override
@@ -222,8 +218,6 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
                           EnvoyDropdownOption(
                               label: PublicServer.diyNodes.label,
                               value: "diyNodes"),
-                          EnvoyDropdownOption(
-                              label: PublicServer.luke.label, value: "luke"),
                         ],
                         onOptionChanged: (selectedOption) {
                           if (selectedOption != null) {
