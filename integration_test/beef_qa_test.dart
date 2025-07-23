@@ -986,8 +986,6 @@ Future<void> main() async {
       // copy Taproot address
       final address1 = await getAddressFromReceiveScreen(tester);
       await tester.pump(Durations.long2);
-      print('Address 1 ========= $address1');
-
       expect(address1.startsWith('bc1p'), isTrue,
           reason:
               'The first address should be a Taproot address starting with bc1p');
