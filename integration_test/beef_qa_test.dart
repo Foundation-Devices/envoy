@@ -942,26 +942,32 @@ Future<void> main() async {
       if (taprootAlreadyEnabled) {
         // Disable it
         await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
+        await tester.pump(Durations.long2);
         await findAndPressTextButton(tester, "Confirm");
+        await tester.pump(Durations.long2);
       }
-      await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
+      await findAndToggleSettingsSwitch(
+          tester, "Receive to Taproot"); //enable it
       await tester.pump(Durations.long2);
-      final confirmTextFromDialog = find.text('Confirm');
 
+      final confirmTextFromDialog = find.text('Confirm');
+      await tester.pump(Durations.long2);
       // Check that a pop up comes up
       await tester.pumpUntilFound(confirmTextFromDialog,
           duration: Durations.long1);
-
       await tester.tap(confirmTextFromDialog);
       await tester.pump(Durations.long2);
       // Check that a pop up closed
       expect(confirmTextFromDialog, findsNothing);
+
       await findAndToggleSettingsSwitch(
-          tester, "Receive to Taproot"); // Disable
+          tester, "Receive to Taproot"); // disable
+      await tester.pump(Durations.long2);
       await tester.tap(confirmTextFromDialog);
       await tester.pump(Durations.long2);
+
       await findAndToggleSettingsSwitch(
-          tester, "Receive to Taproot"); // Enable again
+          tester, "Receive to Taproot"); // enable again
 
       // Check that a pop up comes up
       expect(confirmTextFromDialog, findsOneWidget);
@@ -972,6 +978,7 @@ Future<void> main() async {
 
       await pressHamburgerMenu(tester); // back to settings menu
       await pressHamburgerMenu(tester); // back to home
+
       await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
       await findAndPressTextButton(tester, "Receive");
       await tester.pump(Durations.long2);
@@ -979,6 +986,8 @@ Future<void> main() async {
       // copy Taproot address
       final address1 = await getAddressFromReceiveScreen(tester);
       await tester.pump(Durations.long2);
+      print('Address 1 ========= $address1');
+
       expect(address1.startsWith('bc1p'), isTrue,
           reason:
               'The first address should be a Taproot address starting with bc1p');
