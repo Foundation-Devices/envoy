@@ -141,19 +141,37 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
 
 /// Check if you are entering sats/btc/fiat over the given icon in Send
 Future<void> cycleToEnvoyIcon(
-    WidgetTester tester, EnvoyIcons targetIcon) async {
+  WidgetTester tester,
+  EnvoyIcons targetIcon, {
+  int maxAttempts = 20,
+}) async {
+  int attempt = 0;
+
   while (true) {
+    // Ensure the widget tree is fully built and settled
+    await tester.pumpAndSettle();
+
+    // Attempt to find the target icon
     final iconFinder = await checkForEnvoyIcon(tester, targetIcon);
     final iconCount = iconFinder.evaluate().length;
 
     if (iconCount >= 2) {
-      // Two instances of the target icon found — confirmed loop
+      // Successfully found at least 2 icons — break the loop
       break;
     }
 
-    // Cycle to the next icon
+    // Safety check to avoid infinite loop
+    if (attempt >= maxAttempts) {
+      throw Exception(
+        'Failed to find 2 instances of $targetIcon after $maxAttempts attempts.',
+      );
+    }
+
+    // Tap the widget to cycle to the next icon
     await findAndPressWidget<AmountDisplay>(tester);
     await tester.pumpAndSettle();
+
+    attempt++;
   }
 }
 
@@ -572,20 +590,22 @@ Future<void> setUpWalletFromSeedViaBackupFile(
   await tester.pump(Durations.long2);
   expect(continueButtonFinder, findsOneWidget);
   await tester.tap(continueButtonFinder);
-  await tester.pump(Durations.long2);
-  await tester.pump(Durations.long2);
+  await tester.pump(Durations.extralong4);
 
   // testnet4, signet, unified address - modals
   if (find.text('Introducing testnet4').evaluate().isNotEmpty) {
     await findAndTapPopUpText(tester, 'Confirm');
+    await tester.pump(Durations.extralong4);
   }
 
   if (find.text('Global Signet').evaluate().isNotEmpty) {
     await findAndTapPopUpText(tester, 'Confirm');
+    await tester.pump(Durations.extralong4);
   }
 
   if (find.text('Unified Address Types').evaluate().isNotEmpty) {
     await findAndTapPopUpText(tester, 'Confirm');
+    await tester.pump(Durations.extralong4);
   }
 
   // Scroll down by 600 pixels

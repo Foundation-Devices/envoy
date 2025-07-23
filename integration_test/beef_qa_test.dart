@@ -114,7 +114,7 @@ Future<void> main() async {
       await pressHamburgerMenu(tester);
       await goToAbout(tester);
 
-      final appVersion = find.text('2.0.1');
+      final appVersion = find.text('2.0.2');
       expect(appVersion, findsOneWidget);
 
       final showButton = find.text('Show');
@@ -581,8 +581,9 @@ Future<void> main() async {
 
       /// in Send
       await findAndPressTextButton(tester, 'Send');
-      // press the widget so it can circle to Sats
-      //   await findAndPressWidget<AmountDisplay>(tester);
+
+      /// Check if you are entering sats
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
 
       if (currentSettingsFiatCode != null) {
         await tester.pump(Durations.long2);
@@ -626,8 +627,8 @@ Future<void> main() async {
       }
     });
     testWidgets('<Test send to all address types>', (tester) async {
-      await checkSync(tester);
       await goBackHome(tester);
+      await checkSync(tester);
       await disableAllNetworks(tester);
 
       final walletWithBalance = find.text("GH TEST ACC (#1)");
@@ -664,9 +665,8 @@ Future<void> main() async {
       await trySendToAddress(tester, p2trAddress);
     });
     testWidgets('<BTC/sats in App>', (tester) async {
-      await checkSync(tester);
-
       await goBackHome(tester);
+      await checkSync(tester);
 
       String someValidSignetReceiveAddress =
           'tb1plhv9qthzz4trg5te27ulz6k8y46jd84azhe5fdmu6kehl9xwpp8qum6h3a';
@@ -1562,7 +1562,8 @@ Future<void> main() async {
       bool torIsConnected =
           await checkTorShieldIcon(tester, expectPrivacy: true);
 
-      expect(torIsConnected, isTrue);
+      expect(torIsConnected, isTrue,
+          reason: 'Tor should be connected, but it is not.');
 
       /// Open Envoy settings, enable fiat
       await pressHamburgerMenu(tester);
