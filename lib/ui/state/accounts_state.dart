@@ -154,3 +154,5 @@ final accountsZeroBalanceProvider = Provider<bool>((ref) {
   }
   return true;
 });
+
+final showDefaultAccountProvider = StateProvider<bool>((ref) => true);
