@@ -298,7 +298,6 @@ impl EnvoyAccountHandler {
                 let wallet_transactions = account.transactions().unwrap_or_default();
                 let utxo = account.utxos().unwrap_or_default();
                 let tags = account.list_tags().unwrap_or_default();
-
                 let mut transactions = vec![];
 
                 wallet_transactions.clone().iter().for_each(|tx| {
@@ -325,6 +324,9 @@ impl EnvoyAccountHandler {
                     .iter()
                     .map(|(address, address_type)| (address.to_string(), address_type.clone()))
                     .collect::<Vec<(String, AddressType)>>();
+
+                let external_public_descriptors = account.get_external_public_descriptors();
+
                 Ok(EnvoyAccount {
                     name: config.name.clone(),
                     color: config.color.clone(),
@@ -345,6 +347,7 @@ impl EnvoyAccountHandler {
                     unlocked_balance: 0,
                     utxo: utxo.clone(),
                     tags,
+                    external_public_descriptors,
                 })
             }
             Err(error) => Err(anyhow!("Failed to lock account: {}", error)),
@@ -405,13 +408,16 @@ impl EnvoyAccountHandler {
             let mut account = self.ng_account.lock().unwrap();
             let std_time = SystemTime::now()
                 .duration_since(UNIX_EPOCH)
-                .unwrap_or(Duration::from_secs(0)).as_secs();
+                .unwrap_or(Duration::from_secs(0))
+                .as_secs();
 
             account
                 .get_coordinator_wallet()
-                .insert_tx(psbt.unsigned_tx.clone(), std_time+1000);
+                .insert_tx(psbt.unsigned_tx.clone(), std_time + 1000);
             account.mark_utxo_as_used(psbt.unsigned_tx.clone());
-            account.persist().expect("Failed to persist account after broadcast");
+            account
+                .persist()
+                .expect("Failed to persist account after broadcast");
         }
         self.send_update();
     }
@@ -439,15 +445,14 @@ impl EnvoyAccountHandler {
         );
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
         let socks_proxy = socks_proxy.as_ref().map(|s| s.as_str());
-        let mut scan_request_guard = sync_request.lock().unwrap();
-        return if let Some(sync_request) = scan_request_guard.take() {
-            // Use take() to move
+        let mut scan_request_guard = sync_request.lock().expect("Failed to lock request");
+        if let Some(sync_request) = scan_request_guard.take() {
             let update = NgWallet::<Connection>::sync(sync_request, electrum_server, socks_proxy)
                 .expect("Electrum sync failed");
             Ok(Arc::new(Mutex::new(Update::from(update))))
         } else {
             Err(anyhow!("No sync request found"))
-        };
+        }
     }
 
     pub async fn scan_wallet(
@@ -480,7 +485,9 @@ impl EnvoyAccountHandler {
                 .apply((address_type, scan_request_guard.to_owned()))
                 .unwrap();
             account.config.date_synced = Some(format!("{:?}", Utc::now()));
-            account.persist().expect("Failed to persist account after scan");
+            account
+                .persist()
+                .expect("Failed to persist account after scan");
         }
         self.send_update();
     }
@@ -624,7 +631,7 @@ impl EnvoyAccountHandler {
             .map_err(TxComposeError::map_err)
     }
 
-    pub fn   compose_cancellation_tx(
+    pub fn compose_cancellation_tx(
         &mut self,
         bitcoin_transaction: BitcoinTransaction,
     ) -> Result<DraftTransaction, RBFBumpFeeError> {
@@ -658,7 +665,15 @@ impl EnvoyAccountHandler {
         self.ng_account
             .lock()
             .map_err(|_| RBFBumpFeeError::WalletNotAvailable)?
-            .get_rbf_draft_tx(selected_outputs, bitcoin_transaction, fee_rate,None,None, note, tag)
+            .get_rbf_draft_tx(
+                selected_outputs,
+                bitcoin_transaction,
+                fee_rate,
+                None,
+                None,
+                note,
+                tag,
+            )
             .map_err(RBFBumpFeeError::from)
     }
 

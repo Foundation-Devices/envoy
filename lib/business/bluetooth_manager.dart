@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:bluart/bluart.dart' as bluart;
@@ -77,7 +78,10 @@ class BluetoothManager {
   }
 
   BluetoothManager._internal() {
-    _init();
+    //if (!Platform.isIOS) {
+      _init();
+    //}
+
     kPrint("Instance of BluetoothManager created!");
   }
 

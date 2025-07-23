@@ -253,6 +253,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
+  List<(AddressType, String)> dco_decode_list_record_address_type_string(
+      dynamic raw);
+
+  @protected
   List<(String, AddressType)> dco_decode_list_record_string_address_type(
       dynamic raw);
 
@@ -312,6 +316,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     int
   ) dco_decode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
       dynamic raw);
+
+  @protected
+  (AddressType, String) dco_decode_record_address_type_string(dynamic raw);
 
   @protected
   (String, AddressType) dco_decode_record_string_address_type(dynamic raw);
@@ -562,6 +569,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  List<(AddressType, String)> sse_decode_list_record_address_type_string(
+      SseDeserializer deserializer);
+
+  @protected
   List<(String, AddressType)> sse_decode_list_record_string_address_type(
       SseDeserializer deserializer);
 
@@ -622,6 +633,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     KeychainKind,
     int
   ) sse_decode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
+      SseDeserializer deserializer);
+
+  @protected
+  (AddressType, String) sse_decode_record_address_type_string(
       SseDeserializer deserializer);
 
   @protected
@@ -884,6 +899,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseSerializer serializer);
 
   @protected
+  void sse_encode_list_record_address_type_string(
+      List<(AddressType, String)> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_record_string_address_type(
       List<(String, AddressType)> self, SseSerializer serializer);
 
@@ -949,6 +968,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void
       sse_encode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
           (AddressType, KeychainKind, int) self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_record_address_type_string(
+      (AddressType, String) self, SseSerializer serializer);
 
   @protected
   void sse_encode_record_string_address_type(

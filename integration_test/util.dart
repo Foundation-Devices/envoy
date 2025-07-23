@@ -138,12 +138,17 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
       tries: 500, duration: Durations.long2);
 }
 
-/// Send Signet money back to test Account
+/// Send money
 Future<void> sendFromBaseWallet(
-    WidgetTester tester, String hotSignetAddress) async {
-  final baseWalletFinder = find.text("Signet");
+  WidgetTester tester,
+  String hotSignetAddress, {
+  String baseWallet = "Signet",
+  bool findFirst = true,
+}) async {
+  final baseWalletFinder = find.text(baseWallet);
   expect(baseWalletFinder, findsWidgets);
-  await tester.tap(baseWalletFinder.first);
+
+  await tester.tap(findFirst ? baseWalletFinder.first : baseWalletFinder.last);
   await tester.pump(Durations.long2);
 
   final sendButtonFinder = find.text("Send");
@@ -169,9 +174,7 @@ Future<void> sendFromBaseWallet(
       tries: 100, duration: Durations.long2);
 
   await findAndPressTextButton(tester, 'Send Transaction');
-
   await findAndPressTextButton(tester, 'No thanks');
-
   await slowSearchAndToggleText(tester, 'Continue');
 }
 
@@ -614,6 +617,21 @@ Future<void> scrollUntilVisible(WidgetTester tester, String text,
       'Widget with text "$text" not found after scrolling $maxScrolls times.');
 }
 
+Future<void> scrollStagingFeeWheel(
+  WidgetTester tester, {
+  double scrollIncrement = -2000,
+}) async {
+  final scrollableFinder = find.byType(ListWheelScrollView);
+  final gestureOffset = Offset(scrollIncrement, 0); // Horizontal flick
+
+  await tester.fling(scrollableFinder, gestureOffset, 100); // velocity = 1000
+  await tester.pump(Durations.long2);
+  await tester.pump(Durations.long2);
+  await tester.pump(Durations.long2);
+  await tester.pump(Durations.long2);
+  await tester.pump(Durations.long2);
+}
+
 Future<void> scrollFindAndTapText(WidgetTester tester, String text,
     {int maxScrolls = 50, double scrollIncrement = -100}) async {
   Finder finder = find.text(text);
@@ -930,6 +948,28 @@ Future<Finder> checkForEnvoyIcon(
   return iconFinder;
 }
 
+Future<void> checkForEnvoyIconNotFound(
+  WidgetTester tester,
+  EnvoyIcons unexpectedIcon,
+) async {
+  final iconFinder = find.byWidgetPredicate(
+    (widget) => widget is EnvoyIcon && widget.icon == unexpectedIcon,
+  );
+
+  const int tries = 20;
+  const Duration delay = Duration(milliseconds: 100);
+
+  for (int i = 0; i < tries; i++) {
+    await tester.pump(delay);
+    if (!tester.any(iconFinder)) {
+      return; // Success: icon not found
+    }
+  }
+
+  throw Exception(
+      '❌ EnvoyIcon "$unexpectedIcon" was still found after $tries tries.');
+}
+
 Future<void> findAndPressTextButton(
     WidgetTester tester, String buttonText) async {
   await tester.pump(Durations.long2);
@@ -996,17 +1036,21 @@ Future<String> getAddressFromReceiveScreen(WidgetTester tester) async {
   return address.trim();
 }
 
-Future<void> checkSync(WidgetTester tester,
-    {String waitAccSync = 'GH TEST ACC (#1)'}) async {
+Future<void> checkSync(
+  WidgetTester tester, {
+  String waitAccSync = 'GH TEST ACC (#1)',
+  bool findFirst = true,
+}) async {
   await goBackHome(tester);
   await SyncManager().sync();
 
   await tester.pumpUntilCondition(
-    tries: 30,
+    tries: 100,
     duration: Duration(seconds: 2),
     condition: () {
+      final textFinder = find.text(waitAccSync);
       final accountTile = find.ancestor(
-        of: find.text(waitAccSync).first,
+        of: findFirst ? textFinder.first : textFinder.last,
         matching: find.byType(AccountListTile),
       );
 

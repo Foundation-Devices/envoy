@@ -37,6 +37,8 @@ mixin _$EnvoyAccount {
       throw _privateConstructorUsedError;
   List<Output> get utxo => throw _privateConstructorUsedError;
   List<String> get tags => throw _privateConstructorUsedError;
+  List<(AddressType, String)> get externalPublicDescriptors =>
+      throw _privateConstructorUsedError;
 
   /// Create a copy of EnvoyAccount
   /// with the given fields replaced by the non-null parameter values.
@@ -70,7 +72,8 @@ abstract class $EnvoyAccountCopyWith<$Res> {
       bool isHot,
       List<BitcoinTransaction> transactions,
       List<Output> utxo,
-      List<String> tags});
+      List<String> tags,
+      List<(AddressType, String)> externalPublicDescriptors});
 }
 
 /// @nodoc
@@ -107,6 +110,7 @@ class _$EnvoyAccountCopyWithImpl<$Res, $Val extends EnvoyAccount>
     Object? transactions = null,
     Object? utxo = null,
     Object? tags = null,
+    Object? externalPublicDescriptors = null,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -185,6 +189,10 @@ class _$EnvoyAccountCopyWithImpl<$Res, $Val extends EnvoyAccount>
           ? _value.tags
           : tags // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      externalPublicDescriptors: null == externalPublicDescriptors
+          ? _value.externalPublicDescriptors
+          : externalPublicDescriptors // ignore: cast_nullable_to_non_nullable
+              as List<(AddressType, String)>,
     ) as $Val);
   }
 }
@@ -216,7 +224,8 @@ abstract class _$$EnvoyAccountImplCopyWith<$Res>
       bool isHot,
       List<BitcoinTransaction> transactions,
       List<Output> utxo,
-      List<String> tags});
+      List<String> tags,
+      List<(AddressType, String)> externalPublicDescriptors});
 }
 
 /// @nodoc
@@ -251,6 +260,7 @@ class __$$EnvoyAccountImplCopyWithImpl<$Res>
     Object? transactions = null,
     Object? utxo = null,
     Object? tags = null,
+    Object? externalPublicDescriptors = null,
   }) {
     return _then(_$EnvoyAccountImpl(
       name: null == name
@@ -329,6 +339,10 @@ class __$$EnvoyAccountImplCopyWithImpl<$Res>
           ? _value._tags
           : tags // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      externalPublicDescriptors: null == externalPublicDescriptors
+          ? _value._externalPublicDescriptors
+          : externalPublicDescriptors // ignore: cast_nullable_to_non_nullable
+              as List<(AddressType, String)>,
     ));
   }
 }
@@ -355,12 +369,14 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
       required this.isHot,
       required final List<BitcoinTransaction> transactions,
       required final List<Output> utxo,
-      required final List<String> tags})
+      required final List<String> tags,
+      required final List<(AddressType, String)> externalPublicDescriptors})
       : _descriptors = descriptors,
         _nextAddress = nextAddress,
         _transactions = transactions,
         _utxo = utxo,
-        _tags = tags;
+        _tags = tags,
+        _externalPublicDescriptors = externalPublicDescriptors;
 
   @override
   final String name;
@@ -430,9 +446,18 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
     return EqualUnmodifiableListView(_tags);
   }
 
+  final List<(AddressType, String)> _externalPublicDescriptors;
+  @override
+  List<(AddressType, String)> get externalPublicDescriptors {
+    if (_externalPublicDescriptors is EqualUnmodifiableListView)
+      return _externalPublicDescriptors;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_externalPublicDescriptors);
+  }
+
   @override
   String toString() {
-    return 'EnvoyAccount(name: $name, color: $color, deviceSerial: $deviceSerial, dateAdded: $dateAdded, preferredAddressType: $preferredAddressType, seedHasPassphrase: $seedHasPassphrase, index: $index, descriptors: $descriptors, dateSynced: $dateSynced, walletPath: $walletPath, network: $network, id: $id, nextAddress: $nextAddress, balance: $balance, unlockedBalance: $unlockedBalance, isHot: $isHot, transactions: $transactions, utxo: $utxo, tags: $tags)';
+    return 'EnvoyAccount(name: $name, color: $color, deviceSerial: $deviceSerial, dateAdded: $dateAdded, preferredAddressType: $preferredAddressType, seedHasPassphrase: $seedHasPassphrase, index: $index, descriptors: $descriptors, dateSynced: $dateSynced, walletPath: $walletPath, network: $network, id: $id, nextAddress: $nextAddress, balance: $balance, unlockedBalance: $unlockedBalance, isHot: $isHot, transactions: $transactions, utxo: $utxo, tags: $tags, externalPublicDescriptors: $externalPublicDescriptors)';
   }
 
   @override
@@ -468,7 +493,9 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
             const DeepCollectionEquality()
                 .equals(other._transactions, _transactions) &&
             const DeepCollectionEquality().equals(other._utxo, _utxo) &&
-            const DeepCollectionEquality().equals(other._tags, _tags));
+            const DeepCollectionEquality().equals(other._tags, _tags) &&
+            const DeepCollectionEquality().equals(
+                other._externalPublicDescriptors, _externalPublicDescriptors));
   }
 
   @override
@@ -492,7 +519,8 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
         isHot,
         const DeepCollectionEquality().hash(_transactions),
         const DeepCollectionEquality().hash(_utxo),
-        const DeepCollectionEquality().hash(_tags)
+        const DeepCollectionEquality().hash(_tags),
+        const DeepCollectionEquality().hash(_externalPublicDescriptors)
       ]);
 
   /// Create a copy of EnvoyAccount
@@ -524,7 +552,9 @@ abstract class _EnvoyAccount implements EnvoyAccount {
       required final bool isHot,
       required final List<BitcoinTransaction> transactions,
       required final List<Output> utxo,
-      required final List<String> tags}) = _$EnvoyAccountImpl;
+      required final List<String> tags,
+      required final List<(AddressType, String)>
+          externalPublicDescriptors}) = _$EnvoyAccountImpl;
 
   @override
   String get name;
@@ -564,6 +594,8 @@ abstract class _EnvoyAccount implements EnvoyAccount {
   List<Output> get utxo;
   @override
   List<String> get tags;
+  @override
+  List<(AddressType, String)> get externalPublicDescriptors;
 
   /// Create a copy of EnvoyAccount
   /// with the given fields replaced by the non-null parameter values.

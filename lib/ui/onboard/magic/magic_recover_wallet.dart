@@ -33,6 +33,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart';
+import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 
 class MagicRecoverWallet extends ConsumerStatefulWidget {
   const MagicRecoverWallet({super.key});
@@ -50,6 +51,7 @@ enum MagicRecoveryWalletState {
   unableToDecryptBackup,
   failure,
   validSeedNoBackup,
+  readingBackup,
 }
 
 class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
@@ -151,7 +153,8 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   }
 
   Future<bool> _handleBackPress() async {
-    if (_magicRecoverWalletState == MagicRecoveryWalletState.recovering) {
+    if (_magicRecoverWalletState == MagicRecoveryWalletState.recovering ||
+        _magicRecoverWalletState == MagicRecoveryWalletState.readingBackup) {
       return false;
     }
     //remove seed that recovered from qr
@@ -194,7 +197,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                         if (_magicRecoverWalletState !=
                                 MagicRecoveryWalletState.success &&
                             _magicRecoverWalletState !=
-                                MagicRecoveryWalletState.recovering)
+                                MagicRecoveryWalletState.recovering &&
+                            _magicRecoverWalletState !=
+                                MagicRecoveryWalletState.readingBackup)
                           CupertinoNavigationBarBackButton(
                             color: Colors.black,
                             onPressed: () {
@@ -357,7 +362,8 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   }
 
   Widget? getBottomButtons() {
-    if (_magicRecoverWalletState == MagicRecoveryWalletState.recovering) {
+    if (_magicRecoverWalletState == MagicRecoveryWalletState.recovering ||
+        _magicRecoverWalletState == MagicRecoveryWalletState.readingBackup) {
       return null;
     }
     if (_magicRecoverWalletState == MagicRecoveryWalletState.success) {
@@ -402,7 +408,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
               label: S().manual_setup_import_backup_CTA2,
               type: EnvoyButtonTypes.secondary,
               onTap: () {
-                _openExternalBackUpFile(context);
+                _openExternalBackUpFile(context, onFailure: () {
+                  showRestoreFailedDialog(context);
+                });
               },
             ),
             OnboardingButton(
@@ -499,16 +507,26 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
               },
             ),
             Consumer(
-              builder: (context, ref, child) {
+              builder: (contextButton, ref, child) {
                 return OnboardingButton(
                   label: S().manual_setup_import_backup_CTA2,
                   type: EnvoyButtonTypes.secondary,
                   onTap: () async {
-                    if (_seed != null) {
-                      await EnvoySeed().deriveAndAddWallets(_seed!);
-                    }
+                    setState(() {
+                      _magicRecoverWalletState =
+                          MagicRecoveryWalletState.readingBackup;
+                    });
+                    _setIndeterminateState();
                     if (context.mounted) {
-                      _openExternalBackUpFile(context);
+                      _openExternalBackUpFile(context, seed: _seed,
+                          onFailure: () {
+                        showRestoreFailedDialog(context);
+                        setState(() {
+                          _magicRecoverWalletState =
+                              MagicRecoveryWalletState.validSeedNoBackup;
+                        });
+                        _setUnhappyState();
+                      });
                     }
                   },
                 );
@@ -702,23 +720,28 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
     _stateMachineController?.findInput<bool>("unhappy")?.change(false);
   }
 
-  Future<void> _openExternalBackUpFile(BuildContext context) async {
+  Future<void> _openExternalBackUpFile(
+    BuildContext context, {
+    String? seed,
+    required VoidCallback onFailure,
+  }) async {
     try {
       final navigator = Navigator.of(context);
-      bool success = await openBackupFile(context);
+      bool success = await openBackupFile(context, seed: seed);
+      if (success && seed != null) {
+        if (context.mounted) {
+          context.pushNamed(ONBOARD_ENVOY_MAGIC_GENERATE_SETUP);
+        }
+      }
       if (success) {
         await navigator.push(MaterialPageRoute(builder: (context) {
           return const WalletSetupSuccess();
         }));
       } else {
-        if (context.mounted) {
-          await showRestoreFailedDialog(context);
-        }
+        onFailure();
       }
     } catch (e) {
-      if (context.mounted) {
-        await showRestoreFailedDialog(context);
-      }
+      onFailure();
     }
   }
 

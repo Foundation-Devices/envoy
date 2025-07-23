@@ -257,7 +257,16 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
           .where((element) => selections.contains(element.getId()))
           .map((element) => element.getId())
           .toList();
-      final tag = _tagController.text.toLowerCase();
+      String tag = _tagController.text;
+
+      if (tag.toLowerCase().trim().isEmpty) {
+        return;
+      }
+      if (tag.toLowerCase().trim() ==
+              S().account_details_untagged_card.toLowerCase().trim() ||
+          tag.toLowerCase().trim() == "untagged") {
+        tag = "";
+      }
       await selectedAccount.handler
           ?.setTagMultiple(utxo: selectedCoins, tag: tag);
       //Reset the selection

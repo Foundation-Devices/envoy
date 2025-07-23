@@ -174,7 +174,7 @@ checksum = "9d297deb1925b89f2ccc13d7635fa0714f12c87adce1c75356b39ca9b7178567"
 [[package]]
 name = "bdk_chain"
 version = "0.23.0"
-source = "git+https://github.com/Foundation-Devices/bdk-1?rev=fd5b8152fdb49b3d457ec4c92591bdc45f00f43f#fd5b8152fdb49b3d457ec4c92591bdc45f00f43f"
+source = "git+https://github.com/Foundation-Devices/bdk-1?rev=aa0cad567e9fa3553e5649b3a682f8dfad930946#aa0cad567e9fa3553e5649b3a682f8dfad930946"
 dependencies = [
  "bdk_core",
  "bitcoin",
@@ -186,7 +186,7 @@ dependencies = [
 [[package]]
 name = "bdk_core"
 version = "0.6.0"
-source = "git+https://github.com/Foundation-Devices/bdk-1?rev=fd5b8152fdb49b3d457ec4c92591bdc45f00f43f#fd5b8152fdb49b3d457ec4c92591bdc45f00f43f"
+source = "git+https://github.com/Foundation-Devices/bdk-1?rev=aa0cad567e9fa3553e5649b3a682f8dfad930946#aa0cad567e9fa3553e5649b3a682f8dfad930946"
 dependencies = [
  "bitcoin",
  "hashbrown",
@@ -196,16 +196,17 @@ dependencies = [
 [[package]]
 name = "bdk_electrum"
 version = "0.23.0"
-source = "git+https://github.com/Foundation-Devices/bdk-1?rev=fd5b8152fdb49b3d457ec4c92591bdc45f00f43f#fd5b8152fdb49b3d457ec4c92591bdc45f00f43f"
+source = "git+https://github.com/Foundation-Devices/bdk-1?rev=aa0cad567e9fa3553e5649b3a682f8dfad930946#aa0cad567e9fa3553e5649b3a682f8dfad930946"
 dependencies = [
  "bdk_core",
  "electrum-client",
+ "serde_json",
 ]
 
 [[package]]
 name = "bdk_wallet"
-version = "2.0.0"
-source = "git+https://github.com/Foundation-Devices/bdk_wallet?rev=c35b0fd03fa3b858b97208cf663974da019995fd#c35b0fd03fa3b858b97208cf663974da019995fd"
+version = "2.1.0-alpha.0"
+source = "git+https://github.com/Foundation-Devices/bdk_wallet?rev=622143d55c8a5607b144db70fca358ceb2c648f5#622143d55c8a5607b144db70fca358ceb2c648f5"
 dependencies = [
  "bdk_chain",
  "bip39",
@@ -1083,7 +1084,7 @@ dependencies = [
 [[package]]
 name = "ngwallet"
 version = "1.1.1"
-source = "git+https://github.com/Foundation-Devices/ngwallet?rev=3debfac26e4fea16e8bd2ba8ebc0a1369869e273#3debfac26e4fea16e8bd2ba8ebc0a1369869e273"
+source = "git+https://github.com/Foundation-Devices/ngwallet?rev=78d6e1b066ce65120113f1974adc37c1bb1784a2#78d6e1b066ce65120113f1974adc37c1bb1784a2"
 dependencies = [
  "anyhow",
  "bdk_core",

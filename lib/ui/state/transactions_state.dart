@@ -58,8 +58,9 @@ final filteredTransactionsProvider =
       .toList();
 
   List<EnvoyTransaction> transactions = [];
-  transactions.addAll(confirmedTransactions);
-  transactions.addAll(pendingTransactions.toList());
+
+  transactions.addAll(confirmedTransactions.reversed);
+  transactions.addAll(pendingTransactions.reversed);
 
   if (txFilterState.contains(TransactionFilters.sent) &&
       txFilterState.contains(TransactionFilters.received)) {
@@ -80,20 +81,24 @@ final filteredTransactionsProvider =
 
   switch (txSortState) {
     case TransactionSortTypes.newestFirst:
-      transactions.sort(
-        (a, b) {
-          return compareTimestamps(a.date, b.date);
-        },
-      );
-      transactions = transactions.reversed.toList();
-      break;
+      {
+        transactions = transactions.reversed.toList();
+        break;
+      }
     case TransactionSortTypes.oldestFirst:
-      transactions.sort(
+      confirmedTransactions.sort(
         (a, b) {
           return compareTimestamps(b.date, a.date);
         },
       );
-      transactions = transactions.reversed.toList();
+      pendingTransactions.sort(
+        (a, b) {
+          return compareTimestamps(b.date, a.date);
+        },
+      );
+      transactions.clear();
+      transactions.addAll(confirmedTransactions.reversed);
+      transactions.addAll(pendingTransactions.reversed);
       break;
     case TransactionSortTypes.amountLowToHigh:
       transactions.sort(
