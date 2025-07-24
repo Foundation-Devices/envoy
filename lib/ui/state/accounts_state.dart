@@ -10,6 +10,7 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:envoy/business/devices.dart';
 
 final _accountOrderStream = StreamProvider<List<String>>(((ref) {
   return NgAccountManager().order;
@@ -153,4 +154,16 @@ final accountsZeroBalanceProvider = Provider<bool>((ref) {
     }
   }
   return true;
+});
+
+final showDefaultAccountProvider = StateProvider<bool>((ref) => true);
+
+final primePassphraseAccountsProvider = Provider<List<EnvoyAccount>>((ref) {
+  final accounts = ref.watch(accountsProvider);
+  final primeSerials = Devices().getPrimeDevices.map((d) => d.serial).toSet();
+
+  return accounts.where((account) {
+    return account.seedHasPassphrase &&
+        primeSerials.contains(account.deviceSerial);
+  }).toList();
 });
