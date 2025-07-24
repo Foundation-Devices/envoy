@@ -148,10 +148,8 @@ Future<void> cycleToEnvoyIcon(
   int attempt = 0;
 
   while (true) {
-    // Ensure the widget tree is fully built and settled
-    await tester.pumpAndSettle();
+    await tester.pump(Durations.long2);
 
-    // Attempt to find the target icon
     final iconFinder = await checkForEnvoyIcon(tester, targetIcon);
     final iconCount = iconFinder.evaluate().length;
 
@@ -160,16 +158,19 @@ Future<void> cycleToEnvoyIcon(
       break;
     }
 
-    // Safety check to avoid infinite loop
     if (attempt >= maxAttempts) {
       throw Exception(
         'Failed to find 2 instances of $targetIcon after $maxAttempts attempts.',
       );
     }
 
-    // Tap the widget to cycle to the next icon
-    await findAndPressWidget<AmountDisplay>(tester);
-    await tester.pumpAndSettle();
+    final amountFinder = find.byType(AmountDisplay);
+    if (amountFinder.evaluate().isEmpty) {
+      throw Exception('AmountDisplay widget not found on attempt $attempt.');
+    }
+
+    await tester.tap(amountFinder);
+    await tester.pump(Durations.long2);
 
     attempt++;
   }
