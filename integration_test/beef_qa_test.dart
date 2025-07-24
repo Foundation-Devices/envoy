@@ -115,7 +115,7 @@ Future<void> main() async {
       await pressHamburgerMenu(tester);
       await goToAbout(tester);
 
-      final appVersion = find.text('2.0.1');
+      final appVersion = find.text('2.0.2');
       expect(appVersion, findsOneWidget);
 
       final showButton = find.text('Show');

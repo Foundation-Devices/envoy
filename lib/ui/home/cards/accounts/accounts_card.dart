@@ -8,6 +8,7 @@ import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/region_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/label_switch.dart';
 import 'package:envoy/ui/components/linear_gradient.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
@@ -52,10 +53,35 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
 
     final mainNetAccounts = ref.watch(mainnetAccountsProvider(null));
     final allowBuyInEnvoy = ref.watch(allowBuyInEnvoyProvider);
+    final showDefaultAccounts = ref.watch(showDefaultAccountProvider);
 
     return Stack(
       children: [
-        AccountsList(),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (ref.watch(primePassphraseAccountsProvider).isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 20, right: 20, top: EnvoySpacing.medium2),
+                child: LabelSwitch(
+                  initialValue: showDefaultAccounts,
+                  onChanged: (bool newValue) {
+                    ref.read(showDefaultAccountProvider.notifier).state =
+                        newValue;
+                  },
+                  trueOption: LabelSwitchOption(
+                    label: S().accounts_switchDefault,
+                  ),
+                  falseOption: LabelSwitchOption(
+                    label: S().accounts_switchPassphrase,
+                    icon: EnvoyIcons.passphrase_shield,
+                  ),
+                ),
+              ),
+            const Flexible(child: AccountsList()),
+          ],
+        ),
         Padding(
           padding: const EdgeInsets.only(bottom: 10),
           child: FutureBuilder(
@@ -153,7 +179,13 @@ class _AccountsListState extends ConsumerState<AccountsList> {
 
   @override
   Widget build(BuildContext context) {
-    final accounts = ref.watch(accountsProvider);
+    bool showDefaultAccounts = ref.watch(showDefaultAccountProvider);
+    List<EnvoyAccount> primePassphraseAccounts =
+        ref.watch(primePassphraseAccountsProvider);
+    List<EnvoyAccount> accounts = ref.watch(accountsProvider);
+    if (!showDefaultAccounts && primePassphraseAccounts.isNotEmpty) {
+      accounts = primePassphraseAccounts;
+    }
     final listContentHeight = accounts.length * _accountHeight;
     //update order if and only if new accounts are added
     ref.listen(accountOrderStream,
