@@ -36,7 +36,14 @@ class LegacyAccount {
   Map<String, dynamic> toJson() => _$LegacyAccountToJson(this);
 
   String getUnificationId() {
-    return "$deviceSerial:${wallet.network}:$number";
+    return "$deviceSerial:${wallet.network}:$number:${extractFingerprint()}";
+  }
+
+  String? extractFingerprint() {
+    final descriptor = wallet.externalDescriptor ?? "";
+    final regex = RegExp(r'\[([0-9a-f]{8})/');
+    final matches = regex.allMatches(descriptor);
+    return matches.map((m) => m.group(1)!).first;
   }
 }
 

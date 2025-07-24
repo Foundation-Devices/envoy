@@ -151,7 +151,8 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
           required List<NgDescriptor> descriptors,
           required String dbPath,
           required Network network,
-          required String id}) =>
+          required String id,
+          required bool seedHasPassphrase}) =>
       RustLib.instance.api
           .crateApiEnvoyWalletEnvoyAccountHandlerNewFromDescriptor(
               name: name,
@@ -163,7 +164,8 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
               descriptors: descriptors,
               dbPath: dbPath,
               network: network,
-              id: id);
+              id: id,
+              seedHasPassphrase: seedHasPassphrase);
 
   Future<List<(String, AddressType)>> nextAddress();
 
@@ -235,6 +237,8 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
 
   Future<void> updateBroadcastState(
       {required DraftTransaction draftTransaction});
+
+  Future<void> updateWalletPath({required String walletPath});
 
   Future<List<Output>> utxo();
 
