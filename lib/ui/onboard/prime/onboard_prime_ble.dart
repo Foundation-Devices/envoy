@@ -36,6 +36,7 @@ import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../business/devices.dart';
 import 'firmware_update/prime_fw_update_state.dart';
 
 // TODO: remove this, store somewhere else
@@ -61,18 +62,26 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   @override
   void initState() {
     super.initState();
-    _listenForPassPortMessages();
+    _listenForPassportMessages();
     _startBluetoothDisconnectionListener(context);
   }
 
-  void _listenForPassPortMessages() {
+  void _listenForPassportMessages() {
     BluetoothManager()
         .passportMessageStream
         .listen((PassportMessage message) async {
       kPrint("Got the Passport Message : ${message.message}");
 
       if (message.message is QuantumLinkMessage_PairingResponse) {
-        kPrint("Found it!");
+        kPrint("Got a pairing response!");
+
+        final response =
+            (message.message as QuantumLinkMessage_PairingResponse).field0;
+
+        final deviceColor = response.passportColor == PassportColor.dark ? DeviceColor.dark : DeviceColor.light;
+        BluetoothManager().addDevice(response.passportSerial.field0, response.passportFirmwareVersion.field0, deviceColor);
+
+
         //  final response = message.message as QuantumLinkMessage_PairingResponse;
         // Create the thing that I'm gonna reveal later
         // await AccountNg().restore(response.field0.descriptor);
@@ -92,6 +101,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         final onboardingState =
             (message.message as QuantumLinkMessage_OnboardingState).field0;
 
+
+        kPrint("Got onboarding message: $onboardingState");
         _handleOnboardingState(onboardingState);
       }
 

@@ -996,8 +996,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       passportModel: dco_decode_passport_model(arr[0]),
       passportFirmwareVersion: dco_decode_passport_firmware_version(arr[1]),
       passportSerial: dco_decode_passport_serial(arr[2]),
-      descriptor: dco_decode_String(arr[3]),
+      passportColor: dco_decode_passport_color(arr[3]),
     );
+  }
+
+  @protected
+  PassportColor dco_decode_passport_color(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return PassportColor.values[raw as int];
   }
 
   @protected
@@ -1637,12 +1643,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_passportFirmwareVersion =
         sse_decode_passport_firmware_version(deserializer);
     var var_passportSerial = sse_decode_passport_serial(deserializer);
-    var var_descriptor = sse_decode_String(deserializer);
+    var var_passportColor = sse_decode_passport_color(deserializer);
     return PairingResponse(
         passportModel: var_passportModel,
         passportFirmwareVersion: var_passportFirmwareVersion,
         passportSerial: var_passportSerial,
-        descriptor: var_descriptor);
+        passportColor: var_passportColor);
+  }
+
+  @protected
+  PassportColor sse_decode_passport_color(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return PassportColor.values[inner];
   }
 
   @protected
@@ -2236,7 +2249,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_passport_firmware_version(
         self.passportFirmwareVersion, serializer);
     sse_encode_passport_serial(self.passportSerial, serializer);
-    sse_encode_String(self.descriptor, serializer);
+    sse_encode_passport_color(self.passportColor, serializer);
+  }
+
+  @protected
+  void sse_encode_passport_color(PassportColor self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
   }
 
   @protected

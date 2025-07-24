@@ -241,6 +241,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   PairingResponse dco_decode_pairing_response(dynamic raw);
 
   @protected
+  PassportColor dco_decode_passport_color(dynamic raw);
+
+  @protected
   PassportFirmwareVersion dco_decode_passport_firmware_version(dynamic raw);
 
   @protected
@@ -489,6 +492,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PairingResponse sse_decode_pairing_response(SseDeserializer deserializer);
+
+  @protected
+  PassportColor sse_decode_passport_color(SseDeserializer deserializer);
 
   @protected
   PassportFirmwareVersion sse_decode_passport_firmware_version(
@@ -755,6 +761,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_pairing_response(
       PairingResponse self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_passport_color(PassportColor self, SseSerializer serializer);
 
   @protected
   void sse_encode_passport_firmware_version(

@@ -792,7 +792,7 @@ const _: fn() = || {
         let _: foundation_api::api::passport::PassportFirmwareVersion =
             PairingResponse.passport_firmware_version;
         let _: foundation_api::api::passport::PassportSerial = PairingResponse.passport_serial;
-        let _: String = PairingResponse.descriptor;
+        let _: foundation_api::api::passport::PassportColor = PairingResponse.passport_color;
     }
     {
         let PassportFirmwareVersion_ =
@@ -1261,12 +1261,25 @@ impl SseDecode for foundation_api::api::pairing::PairingResponse {
             <foundation_api::api::passport::PassportFirmwareVersion>::sse_decode(deserializer);
         let mut var_passportSerial =
             <foundation_api::api::passport::PassportSerial>::sse_decode(deserializer);
-        let mut var_descriptor = <String>::sse_decode(deserializer);
+        let mut var_passportColor =
+            <foundation_api::api::passport::PassportColor>::sse_decode(deserializer);
         return foundation_api::api::pairing::PairingResponse {
             passport_model: var_passportModel,
             passport_firmware_version: var_passportFirmwareVersion,
             passport_serial: var_passportSerial,
-            descriptor: var_descriptor,
+            passport_color: var_passportColor,
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::passport::PassportColor {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => foundation_api::api::passport::PassportColor::Light,
+            1 => foundation_api::api::passport::PassportColor::Dark,
+            _ => unreachable!("Invalid variant for PassportColor: {}", inner),
         };
     }
 }
@@ -1925,7 +1938,7 @@ impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::pairing::
                 .into_into_dart()
                 .into_dart(),
             self.0.passport_serial.into_into_dart().into_dart(),
-            self.0.descriptor.into_into_dart().into_dart(),
+            self.0.passport_color.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -1938,6 +1951,27 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::pairing::
     for foundation_api::api::pairing::PairingResponse
 {
     fn into_into_dart(self) -> FrbWrapper<foundation_api::api::pairing::PairingResponse> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::passport::PassportColor> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            foundation_api::api::passport::PassportColor::Light => 0.into_dart(),
+            foundation_api::api::passport::PassportColor::Dark => 1.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::passport::PassportColor>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::passport::PassportColor>>
+    for foundation_api::api::passport::PassportColor
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::passport::PassportColor> {
         self.into()
     }
 }
@@ -2527,7 +2561,23 @@ impl SseEncode for foundation_api::api::pairing::PairingResponse {
             self.passport_serial,
             serializer,
         );
-        <String>::sse_encode(self.descriptor, serializer);
+        <foundation_api::api::passport::PassportColor>::sse_encode(self.passport_color, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::passport::PassportColor {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                foundation_api::api::passport::PassportColor::Light => 0,
+                foundation_api::api::passport::PassportColor::Dark => 1,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
     }
 }
 

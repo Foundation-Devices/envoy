@@ -21,6 +21,9 @@ import 'package:uuid/uuid_value.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/account/accounts_manager.dart';
 
+import '../ui/envoy_colors.dart';
+import 'devices.dart';
+
 final sendProgressProvider =
     StateNotifierProvider<SendProgressNotifier, double>(
   (ref) => SendProgressNotifier(ref),
@@ -224,12 +227,34 @@ class BluetoothManager {
 
     // Listen for response
     listen(id: bleId);
-    Future.delayed(Duration(seconds: 2));
+    //Future.delayed(Duration(seconds: 2));
 
-    connected = true;
-
+    // TODO: handle this in same place
     PrimeDevice prime = PrimeDevice(bleId, recipientXid);
     await EnvoyStorage().savePrime(prime);
+
+    connected = true;
+  }
+
+  Future<void> addDevice(String serialNumber, String firmwareVersion, DeviceColor deviceColor) async {
+    Devices().add(Device("Prime", DeviceType.passportPrime, serialNumber,
+        DateTime.now(), firmwareVersion, EnvoyColors.listAccountTileColors[0], deviceColor: deviceColor));
+  }
+
+  Future<void> deleteAllDevices() async {
+    if (connected) {
+      disconnect();
+    }
+    
+    EnvoyStorage().deletePrimeByBleId(bleId);
+    
+    bleId = "";
+    _recipientXid = null;
+  }
+
+  void disconnect() {
+    bluart.disconnect(id: bleId);
+    connected = false;
   }
 
   Future<void> sendPsbt(String accountId, Uint8List psbt) async {
@@ -396,10 +421,10 @@ class BluetoothManager {
 
   void setupExchangeRateListener() {
     ExchangeRate().addListener(() async {
-      if (connected) {
+/*      if (connected) {
         kPrint("Sending exchange rate");
         await sendExchangeRate();
-      }
+      }*/
     });
   }
 

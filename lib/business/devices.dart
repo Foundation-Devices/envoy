@@ -4,6 +4,7 @@
 // ignore_for_file: constant_identifier_names
 import 'dart:ui';
 import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/foundation.dart';
@@ -25,10 +26,16 @@ enum DeviceType {
   const DeviceType(this.id);
 }
 
+enum DeviceColor {
+  light,
+  dark
+}
+
 @JsonSerializable()
 class Device {
   String name;
   final DeviceType type;
+  final DeviceColor deviceColor;
   final String serial;
   final DateTime datePaired;
   String firmwareVersion;
@@ -38,7 +45,7 @@ class Device {
   final Color color;
 
   Device(this.name, this.type, this.serial, this.datePaired,
-      this.firmwareVersion, this.color);
+      this.firmwareVersion, this.color, {this.deviceColor = DeviceColor.light});
 
   // Serialisation
   factory Device.fromJson(Map<String, dynamic> json) => _$DeviceFromJson(json);
@@ -138,6 +145,10 @@ class Devices extends ChangeNotifier {
     devices.remove(device);
     storeDevices();
     notifyListeners();
+
+    if (device.type == DeviceType.passportPrime) {
+      BluetoothManager().deleteAllDevices();
+    }
   }
 
   getDeviceName(String serialNumber) {
