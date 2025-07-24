@@ -115,7 +115,7 @@ class Settings extends ChangeNotifier {
 
   // MutinyNet Electrum
   static const String SIGNET_ELECTRUM_SERVER =
-      "tls://signet.foundation.xyz:50002";
+      "ssl://signet.foundation.xyz:50002";
 
   DisplayUnit displayUnit = DisplayUnit.btc;
 
