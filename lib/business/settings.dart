@@ -114,7 +114,8 @@ class Settings extends ChangeNotifier {
       "ssl://testnet4.foundation.xyz:50002";
 
   // MutinyNet Electrum
-  static const String SIGNET_ELECTRUM_SERVER = "ssl://mempool.space:60602";
+  static const String SIGNET_ELECTRUM_SERVER =
+      "tls://signet.foundation.xyz:50002";
 
   DisplayUnit displayUnit = DisplayUnit.btc;
 
