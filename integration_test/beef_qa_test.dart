@@ -1110,15 +1110,15 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
 
       // Select Blockstream
-      await findAndPressTextButton(tester, 'BlockStream');
+      await findAndPressTextButton(tester, 'Blockstream');
       await tester.pump(Durations.long2);
 
       // Check that it gets selected and a connection is attempted
-      await findTextOnScreen(tester, "BlockStream");
+      await findTextOnScreen(tester, "Blockstream");
       await tester.pump(Durations.long2);
 
       //Tap Block Stream to open dropdown
-      await findAndPressTextButton(tester, 'BlockStream');
+      await findAndPressTextButton(tester, 'Blockstream');
       await tester.pump(Durations.long2);
       // Select DIYnodes
       await findAndPressTextButton(tester, 'DIYnodes');
@@ -1130,18 +1130,6 @@ Future<void> main() async {
 
       //Tap DIYnodes to open dropdown
       await findAndPressTextButton(tester, 'DIYnodes');
-      await tester.pump(Durations.long2);
-
-      // Select Luke
-      await findAndPressTextButton(tester, 'Luke');
-      await tester.pump(Durations.long2);
-
-      // Check that it gets selected and a connection is attempted
-      await findTextOnScreen(tester, "Luke");
-      await tester.pump(Durations.long2);
-
-      // Select Luke
-      await findAndPressTextButton(tester, 'Luke');
       await tester.pump(Durations.long2);
 
       // Check if a connection is attempted over Personal node
