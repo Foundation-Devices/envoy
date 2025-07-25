@@ -278,7 +278,7 @@ class _AdvancedSettingsOptionsState
                                                             .sectionBreak),
                                                 EnvoyDropdownOption(
                                                     label: PublicServer
-                                                        .blockStream.label,
+                                                        .blockstream.label,
                                                     value: "blockStream"),
                                                 EnvoyDropdownOption(
                                                     label: PublicServer
@@ -342,7 +342,7 @@ class _AdvancedSettingsOptionsState
       return;
     }
     if (newOption.value == "blockStream") {
-      Settings().setCustomElectrumAddress(PublicServer.blockStream.address);
+      Settings().setCustomElectrumAddress(PublicServer.blockstream.address);
       return;
     }
     if (newOption.value == "diyNodes") {

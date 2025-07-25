@@ -93,7 +93,7 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
       return;
     }
     if (newOption.value == "blockStream") {
-      Settings().setCustomElectrumAddress(PublicServer.blockStream.address);
+      Settings().setCustomElectrumAddress(PublicServer.blockstream.address);
       Settings().useDefaultElectrumServer(false);
       return;
     }
@@ -213,7 +213,7 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
                               value: "break",
                               type: EnvoyDropdownOptionType.sectionBreak),
                           EnvoyDropdownOption(
-                              label: PublicServer.blockStream.label,
+                              label: PublicServer.blockstream.label,
                               value: "blockStream"),
                           EnvoyDropdownOption(
                               label: PublicServer.diyNodes.label,
