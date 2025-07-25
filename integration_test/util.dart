@@ -29,6 +29,7 @@ import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
@@ -149,6 +150,7 @@ Future<void> cycleToEnvoyIcon(
 
   while (true) {
     await tester.pump(Durations.long2);
+    await tester.pump();
 
     final iconFinder = await checkForEnvoyIcon(tester, targetIcon);
     final iconCount = iconFinder.evaluate().length;
@@ -984,11 +986,27 @@ Future<void> findAndPressFirstEnvoyIcon(
 }
 
 Future<Finder> checkForEnvoyIcon(
-    WidgetTester tester, EnvoyIcons expectedIcon) async {
+  WidgetTester tester,
+  EnvoyIcons expectedIcon,
+) async {
+  /// This is for icons with a badge or icons buried in a stack !!!!
+  final assetPath = "assets/components/icons/${expectedIcon.name}.svg";
+
   final iconFinder = find.byWidgetPredicate(
-    (widget) => widget is EnvoyIcon && widget.icon == expectedIcon,
+    (widget) =>
+        widget is SvgPicture &&
+        widget.pictureProvider is ExactAssetPicture &&
+        (widget.pictureProvider as ExactAssetPicture).assetName == assetPath,
+    description: 'SvgPicture with asset $assetPath',
   );
-  await tester.pumpUntilFound(iconFinder, tries: 20, duration: Durations.long2);
+
+  await tester.pump();
+
+  await tester.pumpUntilFound(
+    iconFinder,
+    tries: 20,
+    duration: Durations.long2,
+  );
 
   return iconFinder;
 }
@@ -1077,6 +1095,8 @@ Future<String> getAddressFromReceiveScreen(WidgetTester tester) async {
 
   final textSpan = richTextWidget.text as TextSpan;
   final address = extractTextFromTextSpan(textSpan);
+  await tester.pump(Durations.extralong4);
+  await tester.pump();
 
   return address.trim();
 }
