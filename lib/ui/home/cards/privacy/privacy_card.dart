@@ -93,7 +93,7 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
       return;
     }
     if (newOption.value == "blockStream") {
-      Settings().setCustomElectrumAddress(PublicServer.blockStream.address);
+      Settings().setCustomElectrumAddress(PublicServer.blockstream.address);
       Settings().useDefaultElectrumServer(false);
       return;
     }
@@ -101,10 +101,6 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
       Settings().setCustomElectrumAddress(PublicServer.diyNodes.address);
       Settings().useDefaultElectrumServer(false);
       return;
-    }
-    if (newOption.value == "luke") {
-      Settings().setCustomElectrumAddress(PublicServer.luke.address);
-      Settings().useDefaultElectrumServer(false);
     }
   }
 
@@ -217,13 +213,11 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
                               value: "break",
                               type: EnvoyDropdownOptionType.sectionBreak),
                           EnvoyDropdownOption(
-                              label: PublicServer.blockStream.label,
+                              label: PublicServer.blockstream.label,
                               value: "blockStream"),
                           EnvoyDropdownOption(
                               label: PublicServer.diyNodes.label,
                               value: "diyNodes"),
-                          EnvoyDropdownOption(
-                              label: PublicServer.luke.label, value: "luke"),
                         ],
                         onOptionChanged: (selectedOption) {
                           if (selectedOption != null) {

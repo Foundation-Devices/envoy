@@ -10,6 +10,7 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:envoy/business/devices.dart';
 
 final _accountOrderStream = StreamProvider<List<String>>(((ref) {
   return NgAccountManager().order;
@@ -36,13 +37,12 @@ final _accountSyncStatusStream =
 final isAccountRequiredScan =
     Provider.family<bool, EnvoyAccount>((ref, account) {
   for (var descriptor in account.descriptors) {
-    //if there is false in the stream, it means the account is not scanned
     bool isScanned = ref
             .watch(
                 _accountSyncStatusStream((account.id, descriptor.addressType)))
             .value ??
         false;
-    if (isScanned == false) {
+    if (!isScanned) {
       return true;
     }
   }
@@ -153,4 +153,16 @@ final accountsZeroBalanceProvider = Provider<bool>((ref) {
     }
   }
   return true;
+});
+
+final showDefaultAccountProvider = StateProvider<bool>((ref) => true);
+
+final primePassphraseAccountsProvider = Provider<List<EnvoyAccount>>((ref) {
+  final accounts = ref.watch(accountsProvider);
+  final primeSerials = Devices().getPrimeDevices.map((d) => d.serial).toSet();
+
+  return accounts.where((account) {
+    return account.seedHasPassphrase &&
+        primeSerials.contains(account.deviceSerial);
+  }).toList();
 });

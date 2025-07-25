@@ -129,9 +129,7 @@ class EnvoySeed {
     await clearDeleteFlag();
 
     if (await NgAccountManager().checkIfWalletFromSeedExists(seed,
-        passphrase: passphrase,
-        type: AddressType.p2Wpkh,
-        network: network ?? Network.bitcoin)) {
+        passphrase: passphrase, network: network ?? Network.bitcoin)) {
       return true;
     }
 
@@ -210,6 +208,7 @@ class EnvoySeed {
           index: 0,
           descriptors: descriptors,
           dbPath: newAccountDir.path,
+          seedHasPassphrase: passphrase != null,
           network: network,
           id: Uuid().v4());
       final state = await handler.state();
