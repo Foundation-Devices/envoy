@@ -34,8 +34,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import 'firmware_update/prime_fw_update_state.dart';
 
 // TODO: remove this, store somewhere else
@@ -54,7 +54,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   final s = Settings();
   bool scanForPayload = false;
 
-  bool deniedBluetooth = false;
   Completer<QuantumLinkMessage_BroadcastTransaction>? _completer;
 
   get completer => _completer;
@@ -354,9 +353,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
               return Opacity(opacity: value, child: child);
             },
             child: Image.asset(
-              deniedBluetooth
-                  ? "assets/images/bluetooth_shield_denied.png"
-                  : "assets/images/prime_bluetooth_shield.png",
+              "assets/images/prime_bluetooth_shield.png",
               alignment: Alignment.bottomCenter,
               width: MediaQuery.of(context).size.width * 0.8,
               height: 320,
@@ -372,18 +369,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                   transitionType: SharedAxisTransitionType.vertical,
                   child: child);
             },
-            child: !deniedBluetooth
-                ? quantumLinkIntro(context)
-                : bluetoothPermission(context)));
-  }
-
-  requestBluetooth(BuildContext context) async {
-    //   //TODO: call ble
-    // setState(() {
-    //   deniedBluetooth = true;
-    // });
-
-    // context.goNamed(ONBOARD_PRIME_PAIR);
+            child: quantumLinkIntro(context)));
   }
 
   Widget quantumLinkIntro(BuildContext context) {
@@ -477,107 +463,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
               const SizedBox(height: EnvoySpacing.medium1),
               EnvoyButton(S().onboarding_bluetoothIntro_connect, onTap: () {
                 showCommunicationModal(context);
-              }),
-              const SizedBox(height: EnvoySpacing.small),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget bluetoothPermission(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(height: EnvoySpacing.medium1),
-        Flexible(
-          child: Container(
-            constraints: const BoxConstraints(
-              minHeight: 300,
-            ),
-            child: SingleChildScrollView(
-              child: Container(
-                margin: const EdgeInsets.symmetric(
-                  vertical: EnvoySpacing.medium3,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: EnvoySpacing.medium2),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Text(
-                                S().onboarding_bluetoothDisabled_header,
-                                textAlign: TextAlign.center,
-                                style: EnvoyTypography.body.copyWith(
-                                  fontSize: 20,
-                                  color: EnvoyColors.gray1000,
-                                  decoration: TextDecoration.none,
-                                ),
-                              ),
-                              const SizedBox(height: EnvoySpacing.medium2),
-                              Text(
-                                S().onboarding_bluetoothDisabled_content,
-                                style: EnvoyTypography.info.copyWith(
-                                  color: EnvoyColors.inactiveDark,
-                                  decoration: TextDecoration.none,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(
-            left: EnvoySpacing.medium1,
-            right: EnvoySpacing.medium1,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              // const SizedBox(height: EnvoySpacing.medium1),
-              // Consumer(
-              //   builder: (context, ref, child) {
-              //     final payload = GoRouter.of(context)
-              //         .state
-              //         ?.uri
-              //         .queryParameters["p"];
-              //     return Text("Debug Payload : $payload");
-              //   },
-              // ),
-
-              const SizedBox(height: EnvoySpacing.medium1),
-              LinkText(
-                text: S().component_learnMore,
-                textStyle: EnvoyTypography.button.copyWith(
-                  color: EnvoyColors.accentPrimary,
-                ),
-                linkStyle: EnvoyTypography.button
-                    .copyWith(color: EnvoyColors.accentPrimary),
-                onTap: () {
-                  launchUrl(Uri.parse(
-                      "https://foundation.xyz/2025/01/quantumlink-reinventing-secure-wireless-communication/"));
-                },
-              ),
-              const SizedBox(height: EnvoySpacing.medium1),
-              EnvoyButton(S().onboarding_bluetoothDisabled_enable, onTap: () {
-                requestBluetooth(context);
               }),
               const SizedBox(height: EnvoySpacing.small),
             ],
@@ -745,6 +630,147 @@ class _QuantumLinkCommunicationInfoState
           ],
         ),
       ),
+    );
+  }
+}
+
+class OnboardBluetoothDenied extends StatelessWidget {
+  const OnboardBluetoothDenied({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return EnvoyPatternScaffold(
+        gradientHeight: 1.8,
+        appBar: AppBar(
+          elevation: 0,
+          toolbarHeight: kToolbarHeight,
+          backgroundColor: Colors.transparent,
+          leading: CupertinoNavigationBarBackButton(
+            color: Colors.white,
+            onPressed: () {
+              context.pop();
+              return;
+            },
+          ),
+          automaticallyImplyLeading: false,
+        ),
+        header: Transform.translate(
+          offset: const Offset(0, 70),
+          child: TweenAnimationBuilder(
+            duration: const Duration(milliseconds: 600),
+            tween: Tween<double>(end: 1.0, begin: 0.0),
+            curve: Curves.decelerate,
+            builder: (context, value, child) {
+              return Opacity(opacity: value, child: child);
+            },
+            child: Image.asset(
+              "assets/images/bluetooth_shield_denied.png",
+              alignment: Alignment.bottomCenter,
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: 320,
+            ),
+          ),
+        ),
+        shield: PageTransitionSwitcher(
+            transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
+              return SharedAxisTransition(
+                  fillColor: Colors.transparent,
+                  animation: primaryAnimation,
+                  secondaryAnimation: secondaryAnimation,
+                  transitionType: SharedAxisTransitionType.vertical,
+                  child: child);
+            },
+            child: bluetoothPermission(context)));
+  }
+
+  Widget bluetoothPermission(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: EnvoySpacing.medium1),
+        Flexible(
+          child: Container(
+            constraints: const BoxConstraints(
+              minHeight: 300,
+            ),
+            child: SingleChildScrollView(
+              child: Container(
+                margin: const EdgeInsets.symmetric(
+                  vertical: EnvoySpacing.medium3,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: EnvoySpacing.medium2),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text(
+                                S().onboarding_bluetoothDisabled_header,
+                                textAlign: TextAlign.center,
+                                style: EnvoyTypography.body.copyWith(
+                                  fontSize: 20,
+                                  color: EnvoyColors.gray1000,
+                                  decoration: TextDecoration.none,
+                                ),
+                              ),
+                              const SizedBox(height: EnvoySpacing.medium2),
+                              Text(
+                                S().onboarding_bluetoothDisabled_content,
+                                style: EnvoyTypography.info.copyWith(
+                                  color: EnvoyColors.inactiveDark,
+                                  decoration: TextDecoration.none,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(
+            left: EnvoySpacing.medium1,
+            right: EnvoySpacing.medium1,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              const SizedBox(height: EnvoySpacing.medium1),
+              LinkText(
+                text: S().component_learnMore,
+                textStyle: EnvoyTypography.button.copyWith(
+                  color: EnvoyColors.accentPrimary,
+                ),
+                linkStyle: EnvoyTypography.button
+                    .copyWith(color: EnvoyColors.accentPrimary),
+                onTap: () {
+                  launchUrl(Uri.parse(
+                      "https://foundation.xyz/2025/01/quantumlink-reinventing-secure-wireless-communication/"));
+                },
+              ),
+              const SizedBox(height: EnvoySpacing.medium1),
+              EnvoyButton(S().onboarding_bluetoothDisabled_enable, onTap: () {
+                context.pop();
+                openAppSettings();
+              }),
+              const SizedBox(height: EnvoySpacing.small),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

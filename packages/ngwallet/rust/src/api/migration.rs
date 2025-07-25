@@ -53,7 +53,7 @@ pub fn get_last_used_index(path: &PathBuf, tree_name: String) -> HashMap<Keychai
     let external = get_last_index(&tree, KeychainKind::External)
         .unwrap()
         .unwrap_or(0);
-    let internal = get_last_index(&tree, KeychainKind::External)
+    let internal = get_last_index(&tree, KeychainKind::Internal)
         .unwrap()
         .unwrap_or(0);
     let mut key_index_map = HashMap::new();

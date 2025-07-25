@@ -216,9 +216,17 @@ Future<bool> isMigrationRequired() async {
       LocalStorage().prefs.containsKey(NgAccountManager.v1AccountsPrefKey);
   //check if the user has already migrated
 
+  final migrationVersion = (await EnvoyStorage()
+      .getNoBackUpPreference(MigrationManager.migrationPrefs));
   final hasMigrated = (await EnvoyStorage()
           .getNoBackUpPreference(MigrationManager.migrationPrefs)) ==
       MigrationManager.migrationVersion;
+
+  kPrint("Migration version: $migrationVersion");
+  //v2 -> v2.1 migration, for xfp based accounts
+  if (migrationVersion == "v2") {
+    return true;
+  }
 
   return hasAccounts && !hasMigrated;
 }
