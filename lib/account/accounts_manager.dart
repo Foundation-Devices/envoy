@@ -13,19 +13,20 @@ import 'package:envoy/account/device_manager.dart';
 import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/bip329.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/uniform_resource.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:envoy/util/envoy_storage.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 
 class AccountAlreadyPaired implements Exception {}
 
@@ -117,7 +118,7 @@ class NgAccountManager extends ChangeNotifier {
 
     final walletDirectory = Directory(walletsDirectory);
 
-    if (!walletDirectory.existsSync()) {
+    if (!(await walletDirectory.exists())) {
       await walletDirectory.create(recursive: true);
     }
 
@@ -125,13 +126,14 @@ class NgAccountManager extends ChangeNotifier {
     for (var dir in dirs) {
       if (dir is Directory) {
         try {
+          kPrint("Opening wallet: ${dir.path}");
           final accountHandler =
               await EnvoyAccountHandler.openAccount(dbPath: dir.path);
           final state = await accountHandler.state();
           _accountsHandler.add((state, accountHandler));
           await accountHandler.sendUpdate();
         } catch (e) {
-          kPrint("Error opening wallet: $e");
+          kPrint("Error opening wallet: $e ${dir.path}");
         }
       }
     }
@@ -141,6 +143,38 @@ class NgAccountManager extends ChangeNotifier {
     SyncManager().startSync();
     _accountsOrder.sink.add(order);
     notifyListeners();
+
+    if (hotAccountsExist()) {
+      for (var element in accounts) {
+        if (element.isHot) {
+          bool isP2TrDerived = element.descriptors
+              .any((element) => element.addressType == AddressType.p2Tr);
+          if (!isP2TrDerived) {
+            final seed = await EnvoySeed().get();
+            if (seed != null && !element.seedHasPassphrase) {
+              try {
+                final derivations = await EnvoyBip39.deriveDescriptorFromSeed(
+                    seedWords: seed,
+                    network: element.network,
+                    passphrase: null);
+                final descriptor = derivations
+                    .where((element) => element.addressType == AddressType.p2Tr)
+                    .map((element) => NgDescriptor(
+                          internal: element.internalDescriptor,
+                          external_: element.externalDescriptor,
+                          addressType: element.addressType,
+                        ))
+                    .first;
+                element.handler?.addDescriptor(ngDescriptor: descriptor);
+              } catch (e) {
+                EnvoyReport().log("Accounts",
+                    "Error adding p2Tr descriptor to ${element.name} $e");
+              }
+            }
+          }
+        }
+      }
+    }
     // for (var stream in streams) {
     //   _syncSubscription.add(stream.listen((_) {
     //     notifyIfAccountBalanceHigherThanUsd1000();
@@ -225,13 +259,16 @@ class NgAccountManager extends ChangeNotifier {
   }
 
   Future<bool> checkIfWalletFromSeedExists(String seed,
-      {String? passphrase,
-      required AddressType type,
-      required Network network}) async {
+      {String? passphrase, required Network network}) async {
     var dir = NgAccountManager.getAccountDirectory(
         deviceSerial: "envoy", network: network.toString(), number: 0);
     if (await dir.exists()) {
-      if (dir.listSync().isNotEmpty) {
+      final files = dir.listSync();
+      bool hasP2tr =
+          files.any((file) => file.path.toLowerCase().endsWith('p2tr.sqlite'));
+      bool hasP2wpkh = files
+          .any((file) => file.path.toLowerCase().endsWith('p2wpkh.sqlite'));
+      if (hasP2tr || hasP2wpkh) {
         return true;
       }
     }
