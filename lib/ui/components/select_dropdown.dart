@@ -234,8 +234,6 @@ int getInitialElectrumDropdownIndex() {
     return 3;
   } else if (savedElectrumServerType == "diyNodes") {
     return 4;
-  } else if (savedElectrumServerType == "luke") {
-    return 5;
   }
 
   return 0; // Default to foundation as a safe fallback

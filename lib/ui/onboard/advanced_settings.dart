@@ -278,16 +278,12 @@ class _AdvancedSettingsOptionsState
                                                             .sectionBreak),
                                                 EnvoyDropdownOption(
                                                     label: PublicServer
-                                                        .blockStream.label,
+                                                        .blockstream.label,
                                                     value: "blockStream"),
                                                 EnvoyDropdownOption(
                                                     label: PublicServer
                                                         .diyNodes.label,
                                                     value: "diyNodes"),
-                                                EnvoyDropdownOption(
-                                                    label:
-                                                        PublicServer.luke.label,
-                                                    value: "luke"),
                                               ],
                                               onOptionChanged:
                                                   (selectedOption) {
@@ -346,15 +342,12 @@ class _AdvancedSettingsOptionsState
       return;
     }
     if (newOption.value == "blockStream") {
-      Settings().setCustomElectrumAddress(PublicServer.blockStream.address);
+      Settings().setCustomElectrumAddress(PublicServer.blockstream.address);
       return;
     }
     if (newOption.value == "diyNodes") {
       Settings().setCustomElectrumAddress(PublicServer.diyNodes.address);
       return;
-    }
-    if (newOption.value == "luke") {
-      Settings().setCustomElectrumAddress(PublicServer.luke.address);
     }
   }
 
