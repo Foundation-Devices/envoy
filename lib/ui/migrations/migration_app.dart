@@ -159,7 +159,8 @@ class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
                     SizedBox(
                       width: 300,
                       child: LinearProgressIndicator(
-                        value: progress.progress,
+                        value:
+                            progress.indeterminate() ? null : progress.progress,
                         backgroundColor: Colors.grey.shade800,
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),

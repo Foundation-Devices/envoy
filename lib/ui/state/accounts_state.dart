@@ -37,13 +37,12 @@ final _accountSyncStatusStream =
 final isAccountRequiredScan =
     Provider.family<bool, EnvoyAccount>((ref, account) {
   for (var descriptor in account.descriptors) {
-    //if there is false in the stream, it means the account is not scanned
     bool isScanned = ref
             .watch(
                 _accountSyncStatusStream((account.id, descriptor.addressType)))
             .value ??
         false;
-    if (isScanned == false) {
+    if (!isScanned) {
       return true;
     }
   }

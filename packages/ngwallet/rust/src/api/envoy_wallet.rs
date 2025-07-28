@@ -104,6 +104,7 @@ impl EnvoyAccountHandler {
         db_path: String,
         network: Network,
         id: String,
+        seed_has_passphrase: bool,
     ) -> Result<EnvoyAccountHandler> {
         let descriptors = Self::get_descriptors(&descriptors, db_path.clone());
 
@@ -119,6 +120,7 @@ impl EnvoyAccountHandler {
             .id(id.clone())
             .preferred_address_type(address_type.clone())
             .index(index)
+            .seed_has_passphrase(seed_has_passphrase)
             .build_from_file(Some(db_path.clone()));
         match ng_account {
             Ok(mut ng_account) => match ng_account.persist() {
@@ -271,6 +273,15 @@ impl EnvoyAccountHandler {
                 return Err(anyhow!("Failed to open account: {}", e));
             }
         }
+    }
+
+    pub fn update_wallet_path(&mut self, wallet_path: String) -> Result<()> {
+        {
+            let mut account = self.ng_account.lock().unwrap();
+            account.set_account_path(wallet_path).expect("Failed to set wallet path");
+        }
+        self.send_update();
+        Ok(())
     }
 
     pub fn rename_account(&mut self, name: &str) -> Result<()> {
@@ -829,6 +840,7 @@ impl EnvoyAccountHandler {
                     .account_path(Some(db_path.clone()))
                     .network(config.network)
                     .id(config.id.clone())
+                    .seed_has_passphrase(config.seed_has_passphrase)
                     .preferred_address_type(config.preferred_address_type)
                     .index(config.index)
                     .build_from_file(Some(db_path));
