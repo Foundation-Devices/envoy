@@ -253,6 +253,9 @@ Future<String?> findSymbolOnScreen(
 }
 
 Future<void> pressHamburgerMenu(WidgetTester tester) async {
+  await tester.pump(Durations.extralong4);
+  await tester.pump();
+
   // check if the toast pop-up is there before pressing on to the tob bar
   await checkForToast(tester);
   // go with top bar hamburger button
@@ -260,7 +263,7 @@ Future<void> pressHamburgerMenu(WidgetTester tester) async {
   expect(hamburgerIcon, findsOneWidget);
 
   await tester.tap(hamburgerIcon, warnIfMissed: false);
-  await tester.pump(Durations.long2);
+  await tester.pump(Durations.extralong4);
 }
 
 Future<void> goToSettings(WidgetTester tester) async {
@@ -269,7 +272,8 @@ Future<void> goToSettings(WidgetTester tester) async {
   expect(settingsButton, findsOneWidget);
 
   await tester.tap(settingsButton);
-  await tester.pump(Durations.long2);
+  await tester.pump(Durations.extralong4);
+  await tester.pump();
 }
 
 Future<String?> findCurrentFiatInSettings(WidgetTester tester) async {
@@ -982,7 +986,8 @@ Future<void> findAndPressTextButton(
 
 Future<void> findFirstTextButtonAndPress(
     WidgetTester tester, String buttonText) async {
-  await tester.pump(Durations.long2);
+  await tester.pump(Durations.extralong4);
+  await tester.pump();
 
   // Find all widgets that match the text
   final textButtons = find.text(buttonText);
@@ -992,7 +997,8 @@ Future<void> findFirstTextButtonAndPress(
 
   // Tap the first widget that matches
   await tester.tap(textButtons.first);
-  await tester.pump(Durations.long2);
+  await tester.pump(Durations.extralong4);
+  await tester.pump();
 }
 
 Future<void> findAndPressWidget<T extends Widget>(
@@ -1269,7 +1275,8 @@ Future<void> openAdvancedMenu(WidgetTester tester) async {
   expect(advancedButton, findsOneWidget);
 
   await tester.tap(advancedButton);
-  await tester.pump(Durations.long2);
+  await tester.pump(Durations.extralong4);
+  await tester.pump();
 }
 
 Future<void> findAndTapCoinLockButton(WidgetTester tester) async {

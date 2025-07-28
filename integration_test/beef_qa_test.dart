@@ -942,29 +942,37 @@ Future<void> main() async {
       if (taprootAlreadyEnabled) {
         // Disable it
         await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
-        await tester.pump(Durations.long2);
+        await tester.pump(Durations.extralong4);
+        await tester.pump();
         await findAndPressTextButton(tester, "Confirm");
-        await tester.pump(Durations.long2);
+        await tester.pump(Durations.extralong4);
+        await tester.pump();
       }
       await findAndToggleSettingsSwitch(
           tester, "Receive to Taproot"); //enable it
-      await tester.pump(Durations.long2);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
 
       final confirmTextFromDialog = find.text('Confirm');
-      await tester.pump(Durations.long2);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
       // Check that a pop up comes up
       await tester.pumpUntilFound(confirmTextFromDialog,
-          duration: Durations.long1);
+          duration: Durations.extralong4);
+      await tester.pump();
       await tester.tap(confirmTextFromDialog);
-      await tester.pump(Durations.long2);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
       // Check that a pop up closed
       expect(confirmTextFromDialog, findsNothing);
 
       await findAndToggleSettingsSwitch(
           tester, "Receive to Taproot"); // disable
-      await tester.pump(Durations.long2);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
       await tester.tap(confirmTextFromDialog);
-      await tester.pump(Durations.long2);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
 
       await findAndToggleSettingsSwitch(
           tester, "Receive to Taproot"); // enable again
@@ -972,7 +980,8 @@ Future<void> main() async {
       // Check that a pop up comes up
       expect(confirmTextFromDialog, findsOneWidget);
       await tester.tap(confirmTextFromDialog);
-      await tester.pump(Durations.long2);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
       // Check that a pop up closed
       expect(confirmTextFromDialog, findsNothing);
 
@@ -981,11 +990,13 @@ Future<void> main() async {
 
       await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
       await findAndPressTextButton(tester, "Receive");
-      await tester.pump(Durations.long2);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
 
       // copy Taproot address
       final address1 = await getAddressFromReceiveScreen(tester);
-      await tester.pump(Durations.long2);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
       expect(address1.startsWith('bc1p'), isTrue,
           reason:
               'The first address should be a Taproot address starting with bc1p');
@@ -1008,7 +1019,8 @@ Future<void> main() async {
 
       // Grab the second address
       final address2 = await getAddressFromReceiveScreen(tester);
-      await tester.pump(Durations.long2);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
       expect(address2.startsWith('bc1q'), isTrue,
           reason:
               'The second address should be a non-Taproot address starting with bc1q');
