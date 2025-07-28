@@ -44,33 +44,45 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      bool? value = LocalStorage().prefs.getBool("useLocalAuth");
-      if (value != null) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Load local auth setting
+      bool? useLocalAuthValue = LocalStorage().prefs.getBool("useLocalAuth");
+      if (useLocalAuthValue != null) {
         setState(() {
-          _useLocalAuth = value;
+          _useLocalAuth = useLocalAuthValue;
         });
       }
 
-      // Retrieve the saved persisted Electrum server type
-      String? savedElectrumServerType =
+      // Fix invalid Electrum server type (may update prefs)
+      final String? savedElectrumServerType =
           LocalStorage().prefs.getString("electrumServerType");
 
-      if (savedElectrumServerType == null &&
-          !Settings().usingDefaultElectrumServer) {
-        setState(() {
-          _showPersonalNodeTextField = true;
-        });
+      const validOptions = [
+        "foundation",
+        "personalNode",
+        "blockStream",
+        "diyNodes"
+      ];
 
+      if (!validOptions.contains(savedElectrumServerType)) {
+        // Reset to default
+        LocalStorage().prefs.setString("electrumServerType", "foundation");
+        Settings().useDefaultElectrumServer(true);
+      }
+
+      bool showPersonalNodeTextField =
+          savedElectrumServerType == "personalNode" ||
+              (savedElectrumServerType == null &&
+                  !Settings().usingDefaultElectrumServer);
+
+      // If missing but we want personalNode, set prefs accordingly
+      if (savedElectrumServerType == null && showPersonalNodeTextField) {
         LocalStorage().prefs.setString("electrumServerType", "personalNode");
       }
 
-      if (savedElectrumServerType != null) {
-        setState(() {
-          _showPersonalNodeTextField =
-              savedElectrumServerType == "personalNode";
-        });
-      }
+      setState(() {
+        _showPersonalNodeTextField = showPersonalNodeTextField;
+      });
     });
   }
 
