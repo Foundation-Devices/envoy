@@ -53,8 +53,8 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
         });
       }
 
-      // Fix invalid Electrum server type (may update prefs)
-      final String? savedElectrumServerType =
+      // Retrieve the saved persisted Electrum server type
+      String? savedElectrumServerType =
           LocalStorage().prefs.getString("electrumServerType");
 
       const validOptions = [
@@ -68,6 +68,8 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
         // Reset to default
         LocalStorage().prefs.setString("electrumServerType", "foundation");
         Settings().useDefaultElectrumServer(true);
+        savedElectrumServerType =
+            LocalStorage().prefs.getString("electrumServerType");
       }
 
       bool showPersonalNodeTextField =
