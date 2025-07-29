@@ -6,10 +6,10 @@
 import '../../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-class SecurityChallengeMessage {
+class SecurityChallengeRequest {
   final Uint8List data;
 
-  const SecurityChallengeMessage({
+  const SecurityChallengeRequest({
     required this.data,
   });
 
@@ -19,15 +19,15 @@ class SecurityChallengeMessage {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SecurityChallengeMessage &&
+      other is SecurityChallengeRequest &&
           runtimeType == other.runtimeType &&
           data == other.data;
 }
 
-class SecurityProofMessage {
+class SecurityChallengeResponse {
   final Uint8List data;
 
-  const SecurityProofMessage({
+  const SecurityChallengeResponse({
     required this.data,
   });
 
@@ -37,7 +37,7 @@ class SecurityProofMessage {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SecurityProofMessage &&
+      other is SecurityChallengeResponse &&
           runtimeType == other.runtimeType &&
           data == other.data;
 }

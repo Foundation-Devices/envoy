@@ -5,46 +5,134 @@
 
 import '../../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
+part 'firmware.freezed.dart';
 
-class FirmwarePayload {
-  final Uint8List payload;
+class FirmwareChunk {
+  final int index;
+  final Uint8List data;
 
-  const FirmwarePayload({
-    required this.payload,
+  const FirmwareChunk({
+    required this.index,
+    required this.data,
   });
 
   @override
-  int get hashCode => payload.hashCode;
+  int get hashCode => index.hashCode ^ data.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is FirmwarePayload &&
+      other is FirmwareChunk &&
           runtimeType == other.runtimeType &&
-          payload == other.payload;
+          index == other.index &&
+          data == other.data;
 }
 
-class FirmwareUpdate {
+class FirmwareDownloadRequest {
   final String version;
-  final int timestamp;
-  final String changelog;
 
-  const FirmwareUpdate({
+  const FirmwareDownloadRequest({
     required this.version,
-    required this.timestamp,
+  });
+
+  @override
+  int get hashCode => version.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is FirmwareDownloadRequest &&
+          runtimeType == other.runtimeType &&
+          version == other.version;
+}
+
+@freezed
+sealed class FirmwareDownloadResponse with _$FirmwareDownloadResponse {
+  const FirmwareDownloadResponse._();
+
+  const factory FirmwareDownloadResponse.envoyDownloadProgress({
+    required double progress,
+  }) = FirmwareDownloadResponse_EnvoyDownloadProgress;
+  const factory FirmwareDownloadResponse.start({
+    required int totalChunks,
+  }) = FirmwareDownloadResponse_Start;
+  const factory FirmwareDownloadResponse.chunk(
+    FirmwareChunk field0,
+  ) = FirmwareDownloadResponse_Chunk;
+  const factory FirmwareDownloadResponse.error(
+    String field0,
+  ) = FirmwareDownloadResponse_Error;
+}
+
+class FirmwareUpdateAvailable {
+  final String version;
+  final String changelog;
+  final int timestamp;
+  final int size;
+
+  const FirmwareUpdateAvailable({
+    required this.version,
     required this.changelog,
+    required this.timestamp,
+    required this.size,
   });
 
   @override
   int get hashCode =>
-      version.hashCode ^ timestamp.hashCode ^ changelog.hashCode;
+      version.hashCode ^
+      changelog.hashCode ^
+      timestamp.hashCode ^
+      size.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is FirmwareUpdate &&
+      other is FirmwareUpdateAvailable &&
           runtimeType == other.runtimeType &&
           version == other.version &&
+          changelog == other.changelog &&
           timestamp == other.timestamp &&
-          changelog == other.changelog;
+          size == other.size;
+}
+
+class FirmwareUpdateCheckRequest {
+  final String currentVersion;
+
+  const FirmwareUpdateCheckRequest({
+    required this.currentVersion,
+  });
+
+  @override
+  int get hashCode => currentVersion.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is FirmwareUpdateCheckRequest &&
+          runtimeType == other.runtimeType &&
+          currentVersion == other.currentVersion;
+}
+
+@freezed
+sealed class FirmwareUpdateCheckResponse with _$FirmwareUpdateCheckResponse {
+  const FirmwareUpdateCheckResponse._();
+
+  const factory FirmwareUpdateCheckResponse.available(
+    FirmwareUpdateAvailable field0,
+  ) = FirmwareUpdateCheckResponse_Available;
+  const factory FirmwareUpdateCheckResponse.notAvailable() =
+      FirmwareUpdateCheckResponse_NotAvailable;
+}
+
+@freezed
+sealed class FirmwareUpdateResult with _$FirmwareUpdateResult {
+  const FirmwareUpdateResult._();
+
+  const factory FirmwareUpdateResult.success({
+    required String installedVersion,
+  }) = FirmwareUpdateResult_Success;
+  const factory FirmwareUpdateResult.error(
+    String field0,
+  ) = FirmwareUpdateResult_Error;
 }

@@ -5,6 +5,60 @@
 
 import '../../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
+part 'backup.freezed.dart';
+
+class BackupShardRequest {
+  final Shard field0;
+
+  const BackupShardRequest({
+    required this.field0,
+  });
+
+  @override
+  int get hashCode => field0.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BackupShardRequest &&
+          runtimeType == other.runtimeType &&
+          field0 == other.field0;
+}
+
+@freezed
+sealed class BackupShardResponse with _$BackupShardResponse {
+  const BackupShardResponse._();
+
+  const factory BackupShardResponse.success() = BackupShardResponse_Success;
+  const factory BackupShardResponse.error(
+    String field0,
+  ) = BackupShardResponse_Error;
+}
+
+class RestoreShardRequest {
+  const RestoreShardRequest();
+
+  @override
+  int get hashCode => 0;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is RestoreShardRequest && runtimeType == other.runtimeType;
+}
+
+@freezed
+sealed class RestoreShardResponse with _$RestoreShardResponse {
+  const RestoreShardResponse._();
+
+  const factory RestoreShardResponse.success(
+    Shard field0,
+  ) = RestoreShardResponse_Success;
+  const factory RestoreShardResponse.error(
+    String field0,
+  ) = RestoreShardResponse_Error;
+}
 
 class Shard {
   final Uint8List payload;

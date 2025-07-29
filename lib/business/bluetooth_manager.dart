@@ -117,8 +117,8 @@ class BluetoothManager {
       }
 
       if (event is bluart.Event_ScanResult) {
-        //kPrint("Scan result received, bleId = $bleId");
-        if (bleId == "") {
+        kPrint("Scan result received, count ${event.field0.length}");
+        if (bleId.isEmpty) {
           return;
         }
 
@@ -138,10 +138,10 @@ class BluetoothManager {
 
     await scan();
     _listenForAccountUpdate();
-    _listenWriteProgress();
+    _listenToWriteProgress();
   }
 
-  void _listenWriteProgress() {
+  void _listenToWriteProgress() {
     BluetoothManager().writeProgressStream.listen((progress) {
       kPrint("Write progress: ${(progress * 100).toStringAsFixed(1)}%");
     });
@@ -213,17 +213,8 @@ class BluetoothManager {
     final recipientXid =
         await api.serializeXidDocument(xidDocument: _recipientXid!);
 
-    api.PairingRequest request = api.PairingRequest(xidDocument: xid);
-    kPrint("Encoding...");
-
-    final encoded = await encodeMessage(
-        message: api.QuantumLinkMessage.pairingRequest(request));
-
-/*    kPrint("Encoded...");
-    kPrint("post-decode quantum isDisposed = ${qlIdentity!.isDisposed}");
-    kPrint("Number of chunks: ${encoded.length}");*/
-
-    _writeWithProgress(encoded);
+    await writeMessage(api.QuantumLinkMessage.pairingRequest(
+        api.PairingRequest(xidDocument: xid)));
 
     // Listen for response
     listen(id: bleId);
@@ -236,18 +227,27 @@ class BluetoothManager {
     connected = true;
   }
 
-  Future<void> addDevice(String serialNumber, String firmwareVersion, DeviceColor deviceColor) async {
+  Future<void> writeMessage(api.QuantumLinkMessage message) async {
+    kPrint("Sending message: $message");
+
+    final encoded = await encodeMessage(message: message);
+    _writeWithProgress(encoded);
+  }
+
+  Future<void> addDevice(String serialNumber, String firmwareVersion,
+      DeviceColor deviceColor) async {
     Devices().add(Device("Prime", DeviceType.passportPrime, serialNumber,
-        DateTime.now(), firmwareVersion, EnvoyColors.listAccountTileColors[0], deviceColor: deviceColor));
+        DateTime.now(), firmwareVersion, EnvoyColors.listAccountTileColors[0],
+        deviceColor: deviceColor));
   }
 
   Future<void> deleteAllDevices() async {
     if (connected) {
       disconnect();
     }
-    
+
     EnvoyStorage().deletePrimeByBleId(bleId);
-    
+
     bleId = "";
     _recipientXid = null;
   }
@@ -258,12 +258,8 @@ class BluetoothManager {
   }
 
   Future<void> sendPsbt(String accountId, Uint8List psbt) async {
-    final encoded = await encodeMessage(
-        message: api.QuantumLinkMessage.signPsbt(
-            api.SignPsbt(psbt: psbt, accountId: accountId)));
-
-    kPrint("before sending psbt");
-    _writeWithProgress(encoded);
+    await writeMessage(api.QuantumLinkMessage.signPsbt(
+        api.SignPsbt(psbt: psbt, accountId: accountId)));
   }
 
   Future<void> _generateQlIdentity() async {
@@ -292,7 +288,7 @@ class BluetoothManager {
         if (value != null) {
           _passportMessageStream.add(value);
           kPrint(
-              "get passport message type:: ${value.message.runtimeType} ${value.message}");
+              "Got Passport message type: ${value.message.runtimeType} ${value.message}");
           _transactionStream.add(value);
         }
       }, onError: (e) {
@@ -316,18 +312,7 @@ class BluetoothManager {
   }
 
   Future<void> sendOnboardingState(api.OnboardingState state) async {
-    final encoded = await encodeMessage(
-      message: api.QuantumLinkMessage.onboardingState(state),
-    );
-
-    _writeWithProgress(encoded);
-  }
-
-  Future<void> send(api.QuantumLinkMessage message) async {
-    final encoded = await encodeMessage(
-      message: message,
-    );
-    _writeWithProgress(encoded);
+    writeMessage(api.QuantumLinkMessage.onboardingState(state));
   }
 
   Future<void> sendFirmwarePayload() async {
@@ -338,17 +323,15 @@ class BluetoothManager {
       List.generate(payloadSize, (_) => random.nextInt(256)),
     );
 
-    final payload = api.FirmwarePayload(payload: randomBytes);
+    // TODO: split this into chunks
+    final chunk = api.FirmwareChunk(index: 0, data: randomBytes);
 
-    final encoded = await encodeMessage(
-      message: api.QuantumLinkMessage.firmwarePayload(payload),
-    );
-
-    _writeWithProgress(encoded);
+    writeMessage(api.QuantumLinkMessage.firmwareDownloadResponse(
+        api.FirmwareDownloadResponse.chunk(chunk)));
   }
 
-  Future<void> sendChallengeMessage() async {
-    api.SecurityChallengeMessage? challenge =
+  Future<void> sendSecurityChallengeRequest() async {
+    api.SecurityChallengeRequest? challenge =
         await ScvServer().getPrimeChallenge();
 
     if (challenge == null) {
@@ -357,11 +340,7 @@ class BluetoothManager {
       return;
     }
 
-    final encoded = await encodeMessage(
-      message: api.QuantumLinkMessage.securityChallengeMessage(challenge),
-    );
-
-    _writeWithProgress(encoded);
+    writeMessage(api.QuantumLinkMessage.securityChallengeRequest(challenge));
   }
 
   Future<void> restorePrimeDevice() async {
@@ -409,11 +388,7 @@ class BluetoothManager {
         rate: exchangeRate.usdRate! + Random().nextDouble() * 10,
       );
 
-      final encoded = await encodeMessage(
-        message: api.QuantumLinkMessage.exchangeRate(exchangeRateMessage),
-      );
-
-      _writeWithProgress(encoded);
+      writeMessage(api.QuantumLinkMessage.exchangeRate(exchangeRateMessage));
     } catch (e) {
       kPrint('Failed to send exchange rate: $e');
     }
@@ -431,25 +406,17 @@ class BluetoothManager {
   Future<void> sendFirmwareUpdateInfo() async {
     // TODO: replace with actual firmware update info
     // Create dummy firmware update metadata
-    final dummyUpdate = api.FirmwareUpdate(
+    final dummyUpdate = api.QuantumLinkMessage.firmwareUpdateCheckResponse(
+        api.FirmwareUpdateCheckResponse.available(api.FirmwareUpdateAvailable(
       version: 'v1.2.3-test',
       timestamp: DateTime.now().millisecondsSinceEpoch,
+      size: 100,
       changelog:
           '• Fixed minor bugs\n• Improved performance\n• Added test logging',
-    );
+    )));
 
-    // Create the firmware update message
-    final message = api.QuantumLinkMessage.firmwareUpdate(
-      api.FirmwareUpdate(
-        version: dummyUpdate.version,
-        timestamp: dummyUpdate.timestamp,
-        changelog: dummyUpdate.changelog,
-      ),
-    );
 
-    // Encode and send
-    final encoded = await encodeMessage(message: message);
-    _writeWithProgress(encoded);
+    writeMessage(dummyUpdate);
   }
 
   Future<void> _writeWithProgress(List<Uint8List> data) async {

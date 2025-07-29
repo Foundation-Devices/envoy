@@ -67,45 +67,63 @@ sealed class QuantumLinkMessage with _$QuantumLinkMessage {
   const factory QuantumLinkMessage.exchangeRate(
     ExchangeRate field0,
   ) = QuantumLinkMessage_ExchangeRate;
-  const factory QuantumLinkMessage.firmwareUpdate(
-    FirmwareUpdate field0,
-  ) = QuantumLinkMessage_FirmwareUpdate;
+  const factory QuantumLinkMessage.firmwareUpdateCheckRequest(
+    FirmwareUpdateCheckRequest field0,
+  ) = QuantumLinkMessage_FirmwareUpdateCheckRequest;
+  const factory QuantumLinkMessage.firmwareUpdateCheckResponse(
+    FirmwareUpdateCheckResponse field0,
+  ) = QuantumLinkMessage_FirmwareUpdateCheckResponse;
+  const factory QuantumLinkMessage.firmwareDownloadRequest(
+    FirmwareDownloadRequest field0,
+  ) = QuantumLinkMessage_FirmwareDownloadRequest;
+  const factory QuantumLinkMessage.firmwareDownloadResponse(
+    FirmwareDownloadResponse field0,
+  ) = QuantumLinkMessage_FirmwareDownloadResponse;
+  const factory QuantumLinkMessage.firmwareUpdateResult(
+    FirmwareUpdateResult field0,
+  ) = QuantumLinkMessage_FirmwareUpdateResult;
   const factory QuantumLinkMessage.deviceStatus(
     DeviceStatus field0,
   ) = QuantumLinkMessage_DeviceStatus;
   const factory QuantumLinkMessage.envoyStatus(
     EnvoyStatus field0,
   ) = QuantumLinkMessage_EnvoyStatus;
-  const factory QuantumLinkMessage.pairingResponse(
-    PairingResponse field0,
-  ) = QuantumLinkMessage_PairingResponse;
   const factory QuantumLinkMessage.pairingRequest(
     PairingRequest field0,
   ) = QuantumLinkMessage_PairingRequest;
+  const factory QuantumLinkMessage.pairingResponse(
+    PairingResponse field0,
+  ) = QuantumLinkMessage_PairingResponse;
   const factory QuantumLinkMessage.onboardingState(
     OnboardingState field0,
   ) = QuantumLinkMessage_OnboardingState;
   const factory QuantumLinkMessage.signPsbt(
     SignPsbt field0,
   ) = QuantumLinkMessage_SignPsbt;
-  const factory QuantumLinkMessage.accountUpdate(
-    AccountUpdate field0,
-  ) = QuantumLinkMessage_AccountUpdate;
-  const factory QuantumLinkMessage.firmwarePayload(
-    FirmwarePayload field0,
-  ) = QuantumLinkMessage_FirmwarePayload;
   const factory QuantumLinkMessage.broadcastTransaction(
     BroadcastTransaction field0,
   ) = QuantumLinkMessage_BroadcastTransaction;
-  const factory QuantumLinkMessage.securityChallengeMessage(
-    SecurityChallengeMessage field0,
-  ) = QuantumLinkMessage_SecurityChallengeMessage;
-  const factory QuantumLinkMessage.securityProofMessage(
-    SecurityProofMessage field0,
-  ) = QuantumLinkMessage_SecurityProofMessage;
-  const factory QuantumLinkMessage.shard(
-    Shard field0,
-  ) = QuantumLinkMessage_Shard;
+  const factory QuantumLinkMessage.accountUpdate(
+    AccountUpdate field0,
+  ) = QuantumLinkMessage_AccountUpdate;
+  const factory QuantumLinkMessage.securityChallengeRequest(
+    SecurityChallengeRequest field0,
+  ) = QuantumLinkMessage_SecurityChallengeRequest;
+  const factory QuantumLinkMessage.securityChallengeResponse(
+    SecurityChallengeResponse field0,
+  ) = QuantumLinkMessage_SecurityChallengeResponse;
+  const factory QuantumLinkMessage.backupShardRequest(
+    BackupShardRequest field0,
+  ) = QuantumLinkMessage_BackupShardRequest;
+  const factory QuantumLinkMessage.backupShardResponse(
+    BackupShardResponse field0,
+  ) = QuantumLinkMessage_BackupShardResponse;
+  const factory QuantumLinkMessage.restoreShardRequest(
+    RestoreShardRequest field0,
+  ) = QuantumLinkMessage_RestoreShardRequest;
+  const factory QuantumLinkMessage.restoreShardResponse(
+    RestoreShardResponse field0,
+  ) = QuantumLinkMessage_RestoreShardResponse;
   const factory QuantumLinkMessage.rawData(
     RawData field0,
   ) = QuantumLinkMessage_RawData;

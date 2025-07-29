@@ -119,12 +119,24 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AccountUpdate dco_decode_account_update(dynamic raw);
 
   @protected
+  BackupShardRequest dco_decode_backup_shard_request(dynamic raw);
+
+  @protected
+  BackupShardResponse dco_decode_backup_shard_response(dynamic raw);
+
+  @protected
   XidDocument
       dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           dynamic raw);
 
   @protected
   AccountUpdate dco_decode_box_autoadd_account_update(dynamic raw);
+
+  @protected
+  BackupShardRequest dco_decode_box_autoadd_backup_shard_request(dynamic raw);
+
+  @protected
+  BackupShardResponse dco_decode_box_autoadd_backup_shard_response(dynamic raw);
 
   @protected
   BroadcastTransaction dco_decode_box_autoadd_broadcast_transaction(
@@ -143,10 +155,31 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ExchangeRate dco_decode_box_autoadd_exchange_rate(dynamic raw);
 
   @protected
-  FirmwarePayload dco_decode_box_autoadd_firmware_payload(dynamic raw);
+  FirmwareChunk dco_decode_box_autoadd_firmware_chunk(dynamic raw);
 
   @protected
-  FirmwareUpdate dco_decode_box_autoadd_firmware_update(dynamic raw);
+  FirmwareDownloadRequest dco_decode_box_autoadd_firmware_download_request(
+      dynamic raw);
+
+  @protected
+  FirmwareDownloadResponse dco_decode_box_autoadd_firmware_download_response(
+      dynamic raw);
+
+  @protected
+  FirmwareUpdateAvailable dco_decode_box_autoadd_firmware_update_available(
+      dynamic raw);
+
+  @protected
+  FirmwareUpdateCheckRequest
+      dco_decode_box_autoadd_firmware_update_check_request(dynamic raw);
+
+  @protected
+  FirmwareUpdateCheckResponse
+      dco_decode_box_autoadd_firmware_update_check_response(dynamic raw);
+
+  @protected
+  FirmwareUpdateResult dco_decode_box_autoadd_firmware_update_result(
+      dynamic raw);
 
   @protected
   PairingRequest dco_decode_box_autoadd_pairing_request(dynamic raw);
@@ -161,11 +194,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RawData dco_decode_box_autoadd_raw_data(dynamic raw);
 
   @protected
-  SecurityChallengeMessage dco_decode_box_autoadd_security_challenge_message(
+  RestoreShardRequest dco_decode_box_autoadd_restore_shard_request(dynamic raw);
+
+  @protected
+  RestoreShardResponse dco_decode_box_autoadd_restore_shard_response(
       dynamic raw);
 
   @protected
-  SecurityProofMessage dco_decode_box_autoadd_security_proof_message(
+  SecurityChallengeRequest dco_decode_box_autoadd_security_challenge_request(
+      dynamic raw);
+
+  @protected
+  SecurityChallengeResponse dco_decode_box_autoadd_security_challenge_response(
       dynamic raw);
 
   @protected
@@ -205,10 +245,27 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   double dco_decode_f_64(dynamic raw);
 
   @protected
-  FirmwarePayload dco_decode_firmware_payload(dynamic raw);
+  FirmwareChunk dco_decode_firmware_chunk(dynamic raw);
 
   @protected
-  FirmwareUpdate dco_decode_firmware_update(dynamic raw);
+  FirmwareDownloadRequest dco_decode_firmware_download_request(dynamic raw);
+
+  @protected
+  FirmwareDownloadResponse dco_decode_firmware_download_response(dynamic raw);
+
+  @protected
+  FirmwareUpdateAvailable dco_decode_firmware_update_available(dynamic raw);
+
+  @protected
+  FirmwareUpdateCheckRequest dco_decode_firmware_update_check_request(
+      dynamic raw);
+
+  @protected
+  FirmwareUpdateCheckResponse dco_decode_firmware_update_check_response(
+      dynamic raw);
+
+  @protected
+  FirmwareUpdateResult dco_decode_firmware_update_result(dynamic raw);
 
   @protected
   int dco_decode_i_32(dynamic raw);
@@ -267,16 +324,25 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RawData dco_decode_raw_data(dynamic raw);
 
   @protected
-  SecurityChallengeMessage dco_decode_security_challenge_message(dynamic raw);
+  RestoreShardRequest dco_decode_restore_shard_request(dynamic raw);
 
   @protected
-  SecurityProofMessage dco_decode_security_proof_message(dynamic raw);
+  RestoreShardResponse dco_decode_restore_shard_response(dynamic raw);
+
+  @protected
+  SecurityChallengeRequest dco_decode_security_challenge_request(dynamic raw);
+
+  @protected
+  SecurityChallengeResponse dco_decode_security_challenge_response(dynamic raw);
 
   @protected
   Shard dco_decode_shard(dynamic raw);
 
   @protected
   SignPsbt dco_decode_sign_psbt(dynamic raw);
+
+  @protected
+  int dco_decode_u_16(dynamic raw);
 
   @protected
   int dco_decode_u_32(dynamic raw);
@@ -360,12 +426,28 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AccountUpdate sse_decode_account_update(SseDeserializer deserializer);
 
   @protected
+  BackupShardRequest sse_decode_backup_shard_request(
+      SseDeserializer deserializer);
+
+  @protected
+  BackupShardResponse sse_decode_backup_shard_response(
+      SseDeserializer deserializer);
+
+  @protected
   XidDocument
       sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           SseDeserializer deserializer);
 
   @protected
   AccountUpdate sse_decode_box_autoadd_account_update(
+      SseDeserializer deserializer);
+
+  @protected
+  BackupShardRequest sse_decode_box_autoadd_backup_shard_request(
+      SseDeserializer deserializer);
+
+  @protected
+  BackupShardResponse sse_decode_box_autoadd_backup_shard_response(
       SseDeserializer deserializer);
 
   @protected
@@ -388,11 +470,33 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  FirmwarePayload sse_decode_box_autoadd_firmware_payload(
+  FirmwareChunk sse_decode_box_autoadd_firmware_chunk(
       SseDeserializer deserializer);
 
   @protected
-  FirmwareUpdate sse_decode_box_autoadd_firmware_update(
+  FirmwareDownloadRequest sse_decode_box_autoadd_firmware_download_request(
+      SseDeserializer deserializer);
+
+  @protected
+  FirmwareDownloadResponse sse_decode_box_autoadd_firmware_download_response(
+      SseDeserializer deserializer);
+
+  @protected
+  FirmwareUpdateAvailable sse_decode_box_autoadd_firmware_update_available(
+      SseDeserializer deserializer);
+
+  @protected
+  FirmwareUpdateCheckRequest
+      sse_decode_box_autoadd_firmware_update_check_request(
+          SseDeserializer deserializer);
+
+  @protected
+  FirmwareUpdateCheckResponse
+      sse_decode_box_autoadd_firmware_update_check_response(
+          SseDeserializer deserializer);
+
+  @protected
+  FirmwareUpdateResult sse_decode_box_autoadd_firmware_update_result(
       SseDeserializer deserializer);
 
   @protected
@@ -411,11 +515,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RawData sse_decode_box_autoadd_raw_data(SseDeserializer deserializer);
 
   @protected
-  SecurityChallengeMessage sse_decode_box_autoadd_security_challenge_message(
+  RestoreShardRequest sse_decode_box_autoadd_restore_shard_request(
       SseDeserializer deserializer);
 
   @protected
-  SecurityProofMessage sse_decode_box_autoadd_security_proof_message(
+  RestoreShardResponse sse_decode_box_autoadd_restore_shard_response(
+      SseDeserializer deserializer);
+
+  @protected
+  SecurityChallengeRequest sse_decode_box_autoadd_security_challenge_request(
+      SseDeserializer deserializer);
+
+  @protected
+  SecurityChallengeResponse sse_decode_box_autoadd_security_challenge_response(
       SseDeserializer deserializer);
 
   @protected
@@ -456,10 +568,31 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   double sse_decode_f_64(SseDeserializer deserializer);
 
   @protected
-  FirmwarePayload sse_decode_firmware_payload(SseDeserializer deserializer);
+  FirmwareChunk sse_decode_firmware_chunk(SseDeserializer deserializer);
 
   @protected
-  FirmwareUpdate sse_decode_firmware_update(SseDeserializer deserializer);
+  FirmwareDownloadRequest sse_decode_firmware_download_request(
+      SseDeserializer deserializer);
+
+  @protected
+  FirmwareDownloadResponse sse_decode_firmware_download_response(
+      SseDeserializer deserializer);
+
+  @protected
+  FirmwareUpdateAvailable sse_decode_firmware_update_available(
+      SseDeserializer deserializer);
+
+  @protected
+  FirmwareUpdateCheckRequest sse_decode_firmware_update_check_request(
+      SseDeserializer deserializer);
+
+  @protected
+  FirmwareUpdateCheckResponse sse_decode_firmware_update_check_response(
+      SseDeserializer deserializer);
+
+  @protected
+  FirmwareUpdateResult sse_decode_firmware_update_result(
+      SseDeserializer deserializer);
 
   @protected
   int sse_decode_i_32(SseDeserializer deserializer);
@@ -522,11 +655,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RawData sse_decode_raw_data(SseDeserializer deserializer);
 
   @protected
-  SecurityChallengeMessage sse_decode_security_challenge_message(
+  RestoreShardRequest sse_decode_restore_shard_request(
       SseDeserializer deserializer);
 
   @protected
-  SecurityProofMessage sse_decode_security_proof_message(
+  RestoreShardResponse sse_decode_restore_shard_response(
+      SseDeserializer deserializer);
+
+  @protected
+  SecurityChallengeRequest sse_decode_security_challenge_request(
+      SseDeserializer deserializer);
+
+  @protected
+  SecurityChallengeResponse sse_decode_security_challenge_response(
       SseDeserializer deserializer);
 
   @protected
@@ -534,6 +675,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SignPsbt sse_decode_sign_psbt(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_u_16(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_32(SseDeserializer deserializer);
@@ -621,6 +765,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_account_update(AccountUpdate self, SseSerializer serializer);
 
   @protected
+  void sse_encode_backup_shard_request(
+      BackupShardRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_backup_shard_response(
+      BackupShardResponse self, SseSerializer serializer);
+
+  @protected
   void
       sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           XidDocument self, SseSerializer serializer);
@@ -628,6 +780,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_account_update(
       AccountUpdate self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_backup_shard_request(
+      BackupShardRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_backup_shard_response(
+      BackupShardResponse self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_broadcast_transaction(
@@ -650,12 +810,32 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       ExchangeRate self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_firmware_payload(
-      FirmwarePayload self, SseSerializer serializer);
+  void sse_encode_box_autoadd_firmware_chunk(
+      FirmwareChunk self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_firmware_update(
-      FirmwareUpdate self, SseSerializer serializer);
+  void sse_encode_box_autoadd_firmware_download_request(
+      FirmwareDownloadRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_firmware_download_response(
+      FirmwareDownloadResponse self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_firmware_update_available(
+      FirmwareUpdateAvailable self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_firmware_update_check_request(
+      FirmwareUpdateCheckRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_firmware_update_check_response(
+      FirmwareUpdateCheckResponse self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_firmware_update_result(
+      FirmwareUpdateResult self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_pairing_request(
@@ -673,12 +853,20 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_box_autoadd_raw_data(RawData self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_security_challenge_message(
-      SecurityChallengeMessage self, SseSerializer serializer);
+  void sse_encode_box_autoadd_restore_shard_request(
+      RestoreShardRequest self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_security_proof_message(
-      SecurityProofMessage self, SseSerializer serializer);
+  void sse_encode_box_autoadd_restore_shard_response(
+      RestoreShardResponse self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_security_challenge_request(
+      SecurityChallengeRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_security_challenge_response(
+      SecurityChallengeResponse self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_shard(Shard self, SseSerializer serializer);
@@ -719,12 +907,31 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_f_64(double self, SseSerializer serializer);
 
   @protected
-  void sse_encode_firmware_payload(
-      FirmwarePayload self, SseSerializer serializer);
+  void sse_encode_firmware_chunk(FirmwareChunk self, SseSerializer serializer);
 
   @protected
-  void sse_encode_firmware_update(
-      FirmwareUpdate self, SseSerializer serializer);
+  void sse_encode_firmware_download_request(
+      FirmwareDownloadRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_firmware_download_response(
+      FirmwareDownloadResponse self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_firmware_update_available(
+      FirmwareUpdateAvailable self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_firmware_update_check_request(
+      FirmwareUpdateCheckRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_firmware_update_check_response(
+      FirmwareUpdateCheckResponse self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_firmware_update_result(
+      FirmwareUpdateResult self, SseSerializer serializer);
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
@@ -794,18 +1001,29 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_raw_data(RawData self, SseSerializer serializer);
 
   @protected
-  void sse_encode_security_challenge_message(
-      SecurityChallengeMessage self, SseSerializer serializer);
+  void sse_encode_restore_shard_request(
+      RestoreShardRequest self, SseSerializer serializer);
 
   @protected
-  void sse_encode_security_proof_message(
-      SecurityProofMessage self, SseSerializer serializer);
+  void sse_encode_restore_shard_response(
+      RestoreShardResponse self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_security_challenge_request(
+      SecurityChallengeRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_security_challenge_response(
+      SecurityChallengeResponse self, SseSerializer serializer);
 
   @protected
   void sse_encode_shard(Shard self, SseSerializer serializer);
 
   @protected
   void sse_encode_sign_psbt(SignPsbt self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_u_16(int self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_32(int self, SseSerializer serializer);

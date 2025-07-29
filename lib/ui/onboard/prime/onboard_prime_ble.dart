@@ -106,9 +106,9 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         _handleOnboardingState(onboardingState);
       }
 
-      if (message.message is QuantumLinkMessage_SecurityProofMessage) {
-        final SecurityProofMessage proofMessage =
-            (message.message as QuantumLinkMessage_SecurityProofMessage).field0;
+      if (message.message is QuantumLinkMessage_SecurityChallengeResponse) {
+        final SecurityChallengeResponse proofMessage =
+            (message.message as QuantumLinkMessage_SecurityChallengeResponse).field0;
 
         bool isVerified = await ScvServer().isProofVerified(proofMessage);
 
@@ -143,12 +143,12 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         }
       }
 
-      if (message.message is QuantumLinkMessage_FirmwareUpdate) {
-        final FirmwareUpdate firmwareUpdate =
-            (message.message as QuantumLinkMessage_FirmwareUpdate).field0;
+      if (message.message is QuantumLinkMessage_FirmwareUpdateCheckRequest) {
+        final FirmwareUpdateCheckRequest updateRequest =
+            (message.message as QuantumLinkMessage_FirmwareUpdateCheckRequest).field0;
 
         ref.read(primeDeviceVersionProvider.notifier).state =
-            firmwareUpdate.version;
+            updateRequest.currentVersion;
       }
     });
   }

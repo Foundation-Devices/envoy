@@ -100,7 +100,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
           S().onboarding_connectionIntro_checkingDeviceSecurity,
           EnvoyStepState.LOADING);
 
-      await BluetoothManager().sendChallengeMessage();
+      await BluetoothManager().sendSecurityChallengeRequest();
     } catch (e) {
       kPrint(e);
     }

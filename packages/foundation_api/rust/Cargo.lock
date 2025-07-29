@@ -337,7 +337,7 @@ dependencies = [
 [[package]]
 name = "btp"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=2.3.0#2cf94fcc205cf1ecadaf3c9ddca331ad0ab89720"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=2.6.1#0dc550e1c82437196b2bbff20c997819c6eb817e"
 dependencies = [
  "bytemuck",
  "consts",
@@ -474,8 +474,8 @@ checksum = "c2459377285ad874054d797f3ccebf984978aa39129f6eafde5cdc8315b612f8"
 
 [[package]]
 name = "consts"
-version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/prime-ble-firmware.git#e238c1000cf462db760129d0de7a79c2a3f09ee7"
+version = "1.0.0"
+source = "git+https://github.com/Foundation-Devices/prime-ble-firmware.git#543345473e874d7b45c47b386168ff24b9b7f060"
 
 [[package]]
 name = "core-foundation-sys"
@@ -815,7 +815,7 @@ dependencies = [
 [[package]]
 name = "foundation-api"
 version = "2.0.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=2.3.0#2cf94fcc205cf1ecadaf3c9ddca331ad0ab89720"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=2.6.1#0dc550e1c82437196b2bbff20c997819c6eb817e"
 dependencies = [
  "anyhow",
  "bc-components",
@@ -1768,7 +1768,7 @@ dependencies = [
 [[package]]
 name = "quantum-link-macros"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=2.3.0#2cf94fcc205cf1ecadaf3c9ddca331ad0ab89720"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=2.6.1#0dc550e1c82437196b2bbff20c997819c6eb817e"
 dependencies = [
  "quote",
  "syn 2.0.99",
